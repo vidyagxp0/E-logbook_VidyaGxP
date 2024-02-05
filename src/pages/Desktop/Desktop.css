@@ -1,0 +1,35 @@
+.desktop-input-table-wrapper {
+  height: calc(100vh - 150px);
+  width: 100vw;
+  padding: 20px 20px;
+  /* background-color: white; */
+}
+
+.desktop-input-table-wrapper .input-wrapper {
+  display: grid;
+  grid-template-columns: 8fr 1fr 100px;
+  justify-content: space-between;
+  align-content: space-between;
+  /* align-content: ; */
+  border-radius: 10px;
+  gap: 60px;
+  padding: 5px 0px;
+  margin-bottom: 20px;
+}
+
+.desktop-input-table-wrapper > .input-wrapper > .group-input-2 {
+  border: 1px solid rgb(231, 227, 227);
+}
+
+.desktop-input-table-wrapper .table-wrapper {
+  overflow-y: auto;
+  height: calc(100vh - 240px);
+}
+
+.btn {
+  cursor: pointer;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 15px;
+  background-color: #006fc0;
+}
