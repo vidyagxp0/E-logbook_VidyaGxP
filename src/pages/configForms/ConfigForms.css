@@ -170,6 +170,7 @@
   grid-template-columns: 135px 1fr;
   border: 2px solid #000000;
   margin-bottom: 20px;
+  padding: 1.5%;
 }
 
 #config-form-document-page .document-form .sop-type-header .main-head {

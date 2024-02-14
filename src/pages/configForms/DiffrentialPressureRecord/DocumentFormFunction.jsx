@@ -2,6 +2,38 @@ export const site = localStorage.getItem("site");
 export const currentDate = new Date();
 export const currentYear = currentDate.getFullYear();
 
+const object = getCurrentDateTime();
+let time = object.currentTime;
+let date = object.currentDate;
+function getCurrentDateTime() {
+  // Get current date and time
+  const now = new Date();
+
+  // Format time to 10:30 AM format
+  let hours = now.getHours();
+  let minutes = now.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 12-hour clock, so 0 becomes 12
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  const currentTime = `${hours}:${minutes} ${ampm}`;
+
+  // Format date to 12/12/12 format
+  const year = now.getFullYear().toString().slice(-2); // Get last two digits of year
+  const month = (now.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+  const day = now.getDate().toString().padStart(2, "0");
+  const currentDate = `${month}/${day}/${year}`;
+
+  // Return object containing current time and date
+  return {
+    currentTime: currentTime,
+    currentDate: currentDate,
+  };
+}
+
+// Test the function
+// console.log(getCurrentDateTime());
+
 export const formList = [
   "Document Information",
   "Chemistry SOP",
@@ -90,6 +122,7 @@ export const testData = {
     { id: "2.1.5", name: "Remarks", type: "text" },
   ],
 };
+
 export const Survey = {
   label: "Survey(0)",
   instruction: <div></div>,
@@ -102,6 +135,7 @@ export const Survey = {
     { id: "2.1.5", name: "Remarks", type: "text" },
   ],
 };
+
 export const docFormFile = [
   {
     label: "Attach Draft Document",
@@ -124,19 +158,36 @@ export const docFormFile = [
     ],
   },
   {
-    label: "File Attachment",
-    instruction: "Add relevant attachments, if any.",
+    label: "",
+    instruction: "Add Differential Pressure and Remarks by clicking here ",
     coloredLabel: true,
     required: false,
     columnList: [
-      { id: "2.1.1.1", name: "Title of Document", type: "text" },
-      { id: "2.1.1.2", name: "Attached File", type: "File" },
-      { id: "2.1.1.3", name: "Remark", type: "text" },
+      { id: "2.1.1.1", name: "Date", value: "12/12/2", content: date, type: "date", isEditable: false },
+      { id: "2.1.1.2", name: "Time", value: "10:00 AM", content: time, type: "text", isEditable: false },
+      {
+        id: "2.1.1.3",
+        name: "Differential Pressure",
+        content: "12/12/2",
+        value: "Default Value",
+        type: "Number",
+        isEditable: true,
+      },
+      { id: "2.1.1.4", name: "Remark", value: "Default Value", content: "12/12/2", type: "text", isEditable: true }, // Change to true if editable
+      {
+        id: "2.1.1.5",
+        name: "Checked By",
+        value: "Default Value",
+        content: "Amit Guru",
+        type: "text",
+        isEditable: false,
+      },
     ],
   },
 ];
+
 export const docDetails = {
-  label: "Distribution & Retrieval ",
+  label: "Distribution & Retrieval",
   instruction: <div></div>,
   required: true,
   columnList: [
@@ -157,6 +208,7 @@ export const docDetails = {
     { id: "15", name: "Remarks", type: "text" },
   ],
 };
+
 export const PersonPrintPermission = [
   { label: "Anshul Patel", value: "1" },
   { label: "Shaleen", value: "shaleen" },

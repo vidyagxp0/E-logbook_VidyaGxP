@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import "./DataFields.css";
-
 function Grid(_props) {
   const [rows, setRows] = useState(_props.initialValues || []);
+
   function handleAddRow() {
     const newRow = {
       id: Math.random(),
@@ -10,17 +10,20 @@ function Grid(_props) {
         if (index === 0) {
           return rows.length + 1;
         } else {
-          return "";
+          const column = _props.columnList[index - 1];
+          return column.isEditable ? "" : column.content || column.value; // Use content if not editable, else use value
         }
       }),
     };
 
     setRows([...rows, newRow]);
   }
+
   function handleDeleteRow(id) {
     const updatedRows = rows.filter((row) => row.id !== id);
     setRows(updatedRows);
   }
+
   const handleFileUpload = (rowId, event) => {
     const file = event.target.files[0];
     if (file) {
@@ -30,6 +33,7 @@ function Grid(_props) {
       setRows(updatedRows);
     }
   };
+
   return (
     <>
       <div className="group-input grid-input-field">
@@ -64,6 +68,8 @@ function Grid(_props) {
                     <td key={index}>
                       {index === 0 ? (
                         <input type="text" value={rowIndex + 1} readOnly />
+                      ) : !_props.columnList[index - 1].isEditable ? (
+                        <input type="text" value={_props.columnList[index - 1].content || cell} readOnly /> // Use content if available and not editable
                       ) : _props.columnList[index - 1].type === "singleSelection" ? (
                         <select
                           value={cell}
@@ -81,7 +87,7 @@ function Grid(_props) {
                             </option>
                           ))}
                         </select>
-                      ) : _props.columnList[index - 1].type === "singleSelection" ? (
+                      ) : _props.columnList[index - 1].type === "fileUpload" ? (
                         <input
                           type="file"
                           onChange={(e) => {

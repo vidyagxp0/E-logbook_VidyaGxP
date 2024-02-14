@@ -24,8 +24,12 @@ import {
 
 import RelatedRecords from "../../../components/datafields/RelatedRecords.jsx";
 import Grid from "../../../components/datafields/Grid.jsx";
+import { useNavigate } from "react-router-dom";
 export default function DiffrentialPressure() {
-    const [selectedsetInstrumentSop, setSelectedsetInstrumentSop] = useState([]);
+  const navigate = useNavigate();
+  const [selectedsetInstrumentSop, setSelectedsetInstrumentSop] = useState([]);
+  const currentDate = new Date();
+  const currentMonth = currentDate.toLocaleString("default", { month: "long" });
   const [instrumentSop, setInstrumentSop] = useReducer(
     (prev, next) => ({
       ...prev,
@@ -44,6 +48,17 @@ export default function DiffrentialPressure() {
       references: "",
       changeControl: "",
       fileAttachment: "",
+    }
+  );
+  const [differentialPRecord, setDifferentialPRecord] = useReducer(
+    (prev, next) => ({
+      ...prev,
+      ...next,
+    }),
+    {
+      department: "",
+      compressionArea: "",
+      limit: "",
     }
   );
   return (
@@ -72,103 +87,80 @@ export default function DiffrentialPressure() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/customer.png" alt="..." />
+                  <img src="/lifelogo.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>Diffrential Pressure Record</div>
-                  <div>Environmental Laboratory</div>
+                  <div>Lifelink ltd</div>
+                  {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
-              <div className="sub-head-2">Instrument SOP</div>
+              <div className="sub-head-2">Differential Pressure Record</div>
+
               <div className="group-input">
-                <label className="color-label">1.0 Purpose</label>
-                <div className="instruction">
-                  To establish a plan for handling, operating, calibration and maintaining of instrumentation
+                <label>Department</label>
+
+                <div className="instruction">&nbsp;</div>
+                <select
+                  className="form-control"
+                  name="assign_to"
+                  value={differentialPRecord.department}
+                  onChange={(e) =>
+                    setDifferentialPRecord({
+                      department: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">-- Select --</option>
+                  <option value="CQA">Corporate Quality Assurance</option>
+                  <option value="QAB">Quality Assurance Bio-Pharma</option>
+                  <option value="CQC">Central Quality Control</option>
+                  <option value="Manu">Manufacturing</option>
+                  <option value="PSG">Plasma Sourcing Group</option>
+                  <option value="CS">Central Stores</option>
+                  <option value="ITG">Information Technology Group</option>
+                  <option value="MM">Molecular Medicine</option>
+                  <option value="CL">Central Laboratory</option>
+                  <option value="TT">Tech team</option>
+                </select>
+              </div>
+
+              <div className="group-input">
+                <label>Compression Area with respect to Corridor</label>
+
+                <div className="instruction">&nbsp;</div>
+                <select
+                  className="form-control"
+                  name="assign_to"
+                  value={differentialPRecord.compressionArea}
+                  onChange={(e) =>
+                    setDifferentialPRecord({
+                      compressionArea: e.target.value,
+                    })
+                  }
+                >
+                  <option value="Select a value">Select a value</option>
+                  <option value="Shaleen Mishra">Area 1</option>
+                  <option value="Amit guru">Area 2</option>
+                  <option value="Vikash Prajapati">Area 3</option>
+                  <option value="Anshul patel">Area 4</option>
+                  <option value="Amit Patel">Area 5</option>
+                  <option value="Aakash Asthana">Area 6</option>
+                </select>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Limit</label>
+                <div className="instruction"></div>
+                <textarea type="text" rows="2" value="1.3" readOnly></textarea>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Month:</label>
+                <div>
+                  <input type="text" value={currentMonth} readOnly />
                 </div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.purpose}
-                  onChange={(e) => setInstrumentSop({ purpose: e.target.value })}
-                ></textarea>
               </div>
-              <div className="group-input">
-                <label className="color-label">2.0 Scope/Field of Application</label>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.scopeField}
-                  onChange={(e) => setInstrumentSop({ scopeField: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label>
-                  {instrumentSop.responsibilities === "Yes" && ""}
-                  <div className="required"></div>3.0 Responsibilities
-                </label>
-                <div className="instruction">The performance of the tests should be done by</div>
-                <MultiSelect
-                  options={responsibilities}
-                  value={selectedsetInstrumentSop}
-                  onChange={setSelectedsetInstrumentSop}
-                  labelledBy="selectedsetInstrumentSop"
-                  required={instrumentSop.responsibilities === "Yes"}
-                  disabled={!instrumentSop.responsibilities === "Yes"}
-                />
-              </div>
-              <div className="group-input">
-                <label className="color-label">4.0 Materials Required</label>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.materialsRequired}
-                  onChange={(e) => setInstrumentSop({ materialsRequired: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label className="color-label">5.0 Procedure</label>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.procedure}
-                  onChange={(e) => setInstrumentSop({ procedure: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label className="color-label">6.0 Operations</label>
-                <div className="instruction"></div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.operations}
-                  onChange={(e) => setInstrumentSop({ operations: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label className="color-label">7.0 Authorization Matrix</label>
-                <div className="instruction"></div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.authorizationMatrix}
-                  onChange={(e) => setInstrumentSop({ authorizationMatrix: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label className="color-label">8.0 References</label>
-                <div className="instruction"></div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.references}
-                  onChange={(e) => setInstrumentSop({ references: e.target.value })}
-                ></textarea>
-              </div>
-              <RelatedRecords
-                label="9.0 Change Control"
-                coloredLabel={true}
-                instruction="Add referenced Change Control records"
-              />
+
               <Grid
                 label={docFormFile[2].label}
                 coloredLabel={docFormFile[2].coloredLabel}
@@ -176,6 +168,12 @@ export default function DiffrentialPressure() {
                 instruction={docFormFile[2].instruction}
                 columnList={docFormFile[2].columnList}
               />
+            </div>
+            <div className="button-block" style={{ width: "100%" }}>
+              <button className="themeBtn">Save</button>
+              <button className="themeBtn" onClick={() => navigate("/desktop")}>
+                Exit
+              </button>
             </div>
           </div>
         </div>
