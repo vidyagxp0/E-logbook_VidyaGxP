@@ -1,8 +1,30 @@
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { useState } from "react";
 
 function Login() {
   const navigate = useNavigate();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleChange = (e) => {
+      if (e.target.name === "username") {
+        setUsername(e.target.value);
+      } else if (e.target.name === "password") {
+        setPassword(e.target.value);
+      }
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (username === "Gaurav" && password === "Gaurav") {
+        navigate("/desktop");
+      } else if (username === "Amit" && password === "Amit@121") {
+        navigate("/desktop");
+      } else {
+        alert("Invalid Username or Password");
+      }
+    };
   return (
     <>
       <div id="admin-console-login-page">
@@ -13,11 +35,7 @@ function Login() {
             </div>
             <div className="head">Welcome to eLogBook</div>
           </div>
-          <form
-            onSubmit={() => {
-              navigate("/desktop");
-            }}
-          >
+          <form onSubmit={handleSubmit}>
             <div className="group-input">
               <label>
                 <svg width="20" height="20" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
@@ -27,7 +45,7 @@ function Login() {
                   />
                 </svg>
               </label>
-              <input type="text" placeholder="Enter Your E-Mail" />
+              <input type="text" name="username" placeholder="Enter Your Username" onChange={handleChange} />
             </div>
             <div className="group-input">
               <label>
@@ -40,7 +58,7 @@ function Login() {
                   />
                 </svg>
               </label>
-              <input type="password" placeholder="Enter Your Password" />
+              <input type="password" name="password" placeholder="Enter Your Password" onChange={handleChange} />
             </div>
             <div>
               <input type="submit" value="Login" className="submit-btn" />

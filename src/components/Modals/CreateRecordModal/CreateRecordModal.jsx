@@ -28,38 +28,6 @@ function CreateRecordModal(_props) {
             name: "Equipment Cleaning Checklist",
             link: "/equipment-cleaning-checklist",
           },
-          //   {
-          //     name: "Audit Program",
-          //     link: "/audit-program",
-          //   },
-          //   {
-          //     name: "Lab Incident",
-          //     link: "/lab-incident",
-          //   },
-          //   {
-          //     name: "Risk Opportunity",
-          //     link: "/risk-opportunity",
-          //   },
-          //   {
-          //     name: "Root Cause Analysis",
-          //     link: "/root-cause-analysis",
-          //   },
-          //   {
-          //     name: "Change Control",
-          //     link: "/change-control",
-          //   },
-          //   {
-          //     name: "Management Review",
-          //     link: "/management-review",
-          //   },
-          //   {
-          //     name: "New Document",
-          //     link: "/new-document",
-          //   },
-          //   {
-          //     name: "Training plan",
-          //     link: "/training-management-system",
-          //   },
         ],
       },
       {
