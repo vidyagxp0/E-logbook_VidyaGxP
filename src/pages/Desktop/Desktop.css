@@ -7,7 +7,7 @@
 
 .desktop-input-table-wrapper .input-wrapper {
   display: grid;
-  grid-template-columns: 8fr 1fr 100px;
+  grid-template-columns: 8fr 1.5fr ;
   justify-content: space-between;
   align-content: space-between;
   /* align-content: ; */

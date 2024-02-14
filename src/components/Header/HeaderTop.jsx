@@ -8,8 +8,8 @@ function HeaderTop() {
                 <div className="header_inner">
                     <div className="left">
                         <div className="logo">
-                            <img src="/logo1.png" alt="..." />
-                            <img src="/logo.png" alt="..." />
+                            {/* <img src="/logo1.png" alt="..." /> */}
+                            <img src="/new-logo.png" alt="..." />
                         </div>
                     </div>
                     <div className="center">

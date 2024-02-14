@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 function Login() {
+  const navigate = useNavigate();
   return (
     <>
       <div id="admin-console-login-page">
@@ -11,15 +13,14 @@ function Login() {
             </div>
             <div className="head">Welcome to eLogBook</div>
           </div>
-          <form>
+          <form
+            onSubmit={() => {
+              navigate("/desktop");
+            }}
+          >
             <div className="group-input">
               <label>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 1200 1200"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg width="20" height="20" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
                   <path
                     fill="#ffffff"
                     d="M0 146.484v168.677l600 342.114l600-342.114V146.484zm0 276.563v494.604L305.64 597.29zm1200 0L894.36 597.29L1200 917.651zM389.575 645.19L0 1053.516h1200L810.425 645.19L600 765.161z"
@@ -30,12 +31,7 @@ function Login() {
             </div>
             <div className="group-input">
               <label>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path
                     fill="#ffffff"
                     fill-rule="evenodd"

@@ -5,6 +5,9 @@ import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login/Login.jsx";
 import Desktop from "./pages/Desktop/Desktop.jsx";
+import DiffrentialPressure from "./pages/configForms/DiffrentialPressureRecord/DiffrentialPressure.jsx";
+import AreaAndEquiment from "./pages/configForms/AreaAndEquipment/AreaAndEquiment.jsx";
+import EquipmentCleaningCheckList from "./pages/configForms/EquipmentCheckList/EquipmentCleaningCheckList.jsx";
 
 function App() {
   return (
@@ -14,7 +17,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/desktop" element={<Desktop />} />
-          {/* <Route path="/login1" element={<Login />} /> */}
+          <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
+          <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />
+          <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
         </Routes>
       </BrowserRouter>
     </>

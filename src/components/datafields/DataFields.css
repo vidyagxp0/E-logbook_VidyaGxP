@@ -1,0 +1,177 @@
+/*! ===================================================================== */
+/*! DATA FIELDS CSS */
+/*! ===================================================================== */
+.group-input .input-date {
+  position: relative;
+}
+
+.group-input .input-date input.hide-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.group-input .input-date input[type="date"]::-webkit-calendar-picker-indicator {
+  width: 100%;
+}
+
+.group-input .table-responsive {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.group-input table th {
+  width: 80px;
+  background-color: var(--themeColor);
+  color: #ffffff;
+}
+
+.grid-input-field label {
+  padding: 7px 15px;
+  border: 1px dashed grey;
+}
+
+label.color-label {
+  background: #80808045;
+}
+
+.grid-input-field .instruction {
+  color: #006fc0;
+}
+
+.grid-input-field tr:nth-child(2n) {
+  background: #006fc026;
+}
+
+.grid-input-field tr:nth-child(2n) input,
+.grid-input-field tr:nth-child(2n) select,
+.grid-input-field tr:nth-child(2n) textarea {
+  background: transparent !important;
+}
+
+.grid-input-field th div {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/*! ===================================================================== */
+/*! FISHBONE AND ISHIKAWA DIAGRAM CSS */
+/*! ===================================================================== */
+.fishbone-ishikawa-structure {
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  align-items: center;
+  gap: 30px;
+}
+
+.fishbone-ishikawa-structure .left-group .grid-field {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 30px;
+}
+
+.fishbone-ishikawa-structure .field-name {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #393cd4;
+}
+
+.fishbone-ishikawa-structure .fields {
+  margin-bottom: 10px;
+}
+
+.fishbone-ishikawa-structure input,
+.fishbone-ishikawa-structure textarea {
+  border: 1px solid #808080;
+  border-radius: 5px;
+}
+
+.fishbone-ishikawa-structure .fields div {
+  position: relative;
+}
+
+.fishbone-ishikawa-structure .fields div::after {
+  position: absolute;
+  content: "";
+  height: 10px;
+  left: calc(50% - 1px);
+  width: 2px;
+  background: #393cd4;
+}
+
+.fishbone-ishikawa-structure .fields.top-field div::after {
+  top: 100%;
+}
+
+.fishbone-ishikawa-structure .fields.bottom-field div::after {
+  bottom: 100%;
+}
+
+.fishbone-ishikawa-structure .mid {
+  height: 2px;
+  background: #393cd4;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.fishbone-ishikawa-structure .mid::after {
+  position: absolute;
+  content: "";
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  left: 100%;
+  background: #393cd4;
+}
+
+.fishbone-ishikawa-structure .problem-block {
+  position: relative;
+}
+
+.fishbone-ishikawa-structure .problem-block .field-name {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  width: 100%;
+}
+
+/*! ===================================================================== */
+/*! WHY WHY CHART CSS */
+/*! ===================================================================== */
+.why-why-chart table tr td:nth-child(1) {
+  width: 200px;
+  font-weight: bold;
+}
+
+.why-why-chart table tr td:nth-child(1) {
+  vertical-align: top;
+}
+
+.why-why-chart table tr td:nth-child(1) > div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.why-why-chart table tr td:nth-child(2) > div {
+  display: grid;
+  gap: 10px;
+}
+
+.why-why-chart table tr td textarea {
+  background: transparent;
+  border-bottom: 1px solid #808080 !important;
+}
+
+.why-why-chart table .problem-statement {
+  background: #f4bb22;
+}
+
+.why-why-chart table .root-cause {
+  background: #0080006b;
+}
