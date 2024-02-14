@@ -76,7 +76,7 @@ export default function AreaAndEquiment() {
                   <img src="/customer.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>Diffrential Pressure Record</div>
+                  <div>Area and Equipment Usage Log</div>
                   <div>Environmental Laboratory</div>
                 </div>
               </div>

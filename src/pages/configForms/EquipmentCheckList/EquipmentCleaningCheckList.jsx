@@ -76,7 +76,7 @@ export default function EquipmentCleaningCheckList() {
                   <img src="/customer.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>Diffrential Pressure Record</div>
+                  <div>Equipment Cleaning CheckList</div>
                   <div>Environmental Laboratory</div>
                 </div>
               </div>
