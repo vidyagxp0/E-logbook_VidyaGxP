@@ -3,7 +3,7 @@
   height: 82px;
   width: 100%;
   border-bottom: 1px solid rgb(235, 228, 228);
-  /* background-color: ; */
+  overflow: auto;
 }
 
 .Header_Top .header_inner {
@@ -54,7 +54,7 @@
   display: flex;
   width: 80%;
   border-radius: 50px;
-  box-shadow: 5px 5px 15px 5px rgb(241, 237, 237);
+  box-shadow: 5px 5px 15px 5px rgb(155, 155, 155);
 }
 
 .Header_Top .header_inner .center .inputContainer .inputInnerLeft {
@@ -79,6 +79,29 @@
 .Header_Top .header_inner .center .inputContainer .inputInnerRight {
   border-radius: 0px 50px 50px 0px;
   width: 90%;
+  display: flex;
+  flex-direction: row;
+}
+.Header_Top .header_inner .center .inputContainer .inputInnerRight input {
+  border-radius: 0px 50px 50px 0px;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+}
+.Header_Top .header_inner .center .inputContainer .inputInnerRight button {
+  padding: 3%;
+  width: 30%;
+  height: 100%;
+  border: none;
+  border-radius: 0px 50px 50px 0px;
+  background: var(--themeColor);
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .Header_Top .header_inner .center input {
@@ -134,4 +157,7 @@
   height: 40px;
   width: 40px;
   border-radius: 50px;
+}
+.Header_Top .header_inner .right .profileRight button {
+  padding: 5%;
 }
