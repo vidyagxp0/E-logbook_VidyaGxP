@@ -73,14 +73,14 @@ export default function EquipmentCleaningCheckList() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/customer.png" alt="..." />
+                  <img src="/lifelogo.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>Equipment Cleaning CheckList</div>
-                  <div>Environmental Laboratory</div>
+                  <div>LifeLink ltd</div>
+                  {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
-              <div className="sub-head-2">Instrument SOP</div>
+              <div className="sub-head-2">Equipment Cleaning CheckList</div>
               <div className="group-input">
                 <label className="color-label">1.0 Purpose</label>
                 <div className="instruction">
