@@ -31,8 +31,21 @@ function getCurrentDateTime() {
   };
 }
 
-// Test the function
-// console.log(getCurrentDateTime());
+function generateRandomNumber(digits) {
+  let randomNumber = "";
+  for (let i = 0; i < digits; i++) {
+    randomNumber += Math.floor(Math.random() * 10); // Append a random digit (0-9)
+  }
+  return randomNumber;
+}
+
+let numberOfDigits = 12; // Change this to the desired number of digits
+let uniqueID = generateRandomNumber(numberOfDigits);
+// console.log(uniqueNumber);
+// let uniqueID = generateUUID();
+// console.log(uniqueID);
+
+
 
 export const formList = [
   "Document Information",
@@ -163,6 +176,7 @@ export const docFormFile = [
     coloredLabel: true,
     required: false,
     columnList: [
+      { id: "2.1.1.0", name: "uniqueId", value: "12/12/2", content: uniqueID, type: "text", isEditable: false },
       { id: "2.1.1.1", name: "Date", value: "12/12/2", content: date, type: "date", isEditable: false },
       { id: "2.1.1.2", name: "Time", value: "10:00 AM", content: time, type: "text", isEditable: false },
       {
@@ -173,7 +187,7 @@ export const docFormFile = [
         type: "Number",
         isEditable: true,
       },
-      { id: "2.1.1.4", name: "Remark", value: "Default Value", content: "12/12/2", type: "text", isEditable: true }, // Change to true if editable
+      { id: "2.1.1.4", name: "Remark", value: "Default Value", content: "12/12/2", type: "text", isEditable: true },
       {
         id: "2.1.1.5",
         name: "Checked By",

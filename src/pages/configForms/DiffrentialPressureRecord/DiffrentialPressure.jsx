@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
 import { MultiSelect } from "react-multi-select-component";
@@ -25,11 +25,36 @@ import {
 import RelatedRecords from "../../../components/datafields/RelatedRecords.jsx";
 import Grid from "../../../components/datafields/Grid.jsx";
 import { useNavigate } from "react-router-dom";
-export default function DiffrentialPressure() {
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+
+export default function DiffrentialPressure(props) {
+
+   const dispatch = useDispatch();
+
+
+
+ useEffect(() => {
+  // console.log(props.name);
+  console.log(differentialPRecord);
+ })
+
   const navigate = useNavigate();
   const [selectedsetInstrumentSop, setSelectedsetInstrumentSop] = useState([]);
   const currentDate = new Date();
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
+
+  const handleSave = (data) => {
+
+    
+    toast.success("eLog Saved Successfully!");
+    
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
+      createObject(data);
+    navigate("/desktop");
+  }
   const [instrumentSop, setInstrumentSop] = useReducer(
     (prev, next) => ({
       ...prev,
@@ -58,9 +83,26 @@ export default function DiffrentialPressure() {
     {
       department: "",
       compressionArea: "",
-      limit: "",
+      limit: "1.3",
+      month: "february",
+      gridData: [],
     }
   );
+
+    const createObject = (newObject) => {
+      dispatch({ type: "ADD_OBJECT", payload: newObject });
+    };
+
+     const updateDifferentialPRecord = (data) => {
+       dispatch({
+         type: "UPDATE_DIFFERENTIAL_P_RECORD",
+         payload: data,
+       });
+     };
+    //  useEffect(() => {
+    //    localStorage.setItem("differentialPRecord", JSON.stringify(differentialPRecord));
+    //  }, [differentialPRecord]);
+
   return (
     <>
       <HeaderTop />
@@ -111,16 +153,16 @@ export default function DiffrentialPressure() {
                   }
                 >
                   <option value="">-- Select --</option>
-                  <option value="CQA">Corporate Quality Assurance</option>
-                  <option value="QAB">Quality Assurance Bio-Pharma</option>
-                  <option value="CQC">Central Quality Control</option>
-                  <option value="Manu">Manufacturing</option>
-                  <option value="PSG">Plasma Sourcing Group</option>
-                  <option value="CS">Central Stores</option>
-                  <option value="ITG">Information Technology Group</option>
-                  <option value="MM">Molecular Medicine</option>
-                  <option value="CL">Central Laboratory</option>
-                  <option value="TT">Tech team</option>
+                  <option value="Corporate Quality Assurance">Corporate Quality Assurance</option>
+                  <option value="Quality Assurance Bio-Pharma">Quality Assurance Bio-Pharma</option>
+                  <option value="Central Quality Control">Central Quality Control</option>
+                  <option value="Manufacturing">Manufacturing</option>
+                  <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
+                  <option value="Central Stores">Central Stores</option>
+                  <option value="Information Technology Group">Information Technology Group</option>
+                  <option value="Molecular Medicine">Molecular Medicine</option>
+                  <option value="Central Laboratory">Central Laboratory</option>
+                  <option value="Tech team">Tech team</option>
                 </select>
               </div>
 
@@ -139,12 +181,12 @@ export default function DiffrentialPressure() {
                   }
                 >
                   <option value="Select a value">Select a value</option>
-                  <option value="Shaleen Mishra">Area 1</option>
-                  <option value="Amit guru">Area 2</option>
-                  <option value="Vikash Prajapati">Area 3</option>
-                  <option value="Anshul patel">Area 4</option>
-                  <option value="Amit Patel">Area 5</option>
-                  <option value="Aakash Asthana">Area 6</option>
+                  <option value="Area 1">Area 1</option>
+                  <option value="Area 2">Area 2</option>
+                  <option value="Area 3">Area 3</option>
+                  <option value="Area 4">Area 4</option>
+                  <option value="Area 5">Area 5</option>
+                  <option value="Area 6">Area 6</option>
                 </select>
               </div>
 
@@ -167,10 +209,13 @@ export default function DiffrentialPressure() {
                 required={docFormFile[2].required}
                 instruction={docFormFile[2].instruction}
                 columnList={docFormFile[2].columnList}
+                onChange={(data) => setDifferentialPRecord({ gridData: data })}
               />
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              <button className="themeBtn">Save</button>
+              <button className="themeBtn" onClick={() => handleSave(differentialPRecord)}>
+                Save
+              </button>
               <button className="themeBtn" onClick={() => navigate("/desktop")}>
                 Exit
               </button>

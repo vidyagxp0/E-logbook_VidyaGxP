@@ -4,22 +4,27 @@ import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Desktop.css";
 import { convertDateFormat } from "../../components/DateReturners";
 import { Link } from "react-router-dom";
+import DiffrentialPressure from "../configForms/DiffrentialPressureRecord/DiffrentialPressure";
+import { useSelector } from "react-redux";
 // import { toast } from "react-toastify";
 
 function Desktop() {
+  // const [differentialPRecordHistory, setDifferentialPRecordHistory] = useState([]);
+
+  const differentialPRecordHistory = useSelector((state) => state.objects);
+
+  useEffect(() => {
+    console.log(differentialPRecordHistory);
+  });
   const [labIncident, setLabIncident] = useState();
   const [changeControl, setChangeControl] = useState();
   function padNumber(number, width) {
     number = number + "";
-    return number.length >= width
-      ? number
-      : new Array(width - number.length + 1).join("0") + number;
+    return number.length >= width ? number : new Array(width - number.length + 1).join("0") + number;
   }
   const fetchLabIncidentData = async () => {
     try {
-      const response = await fetch(
-        "http://195.35.6.197:9091/LabIncident/api/findAllDivision"
-      );
+      const response = await fetch("http://195.35.6.197:9091/LabIncident/api/findAllDivision");
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
@@ -31,16 +36,13 @@ function Desktop() {
   };
   const fetchChangeControlData = async () => {
     try {
-      const response = await fetch(
-        "http://195.35.6.197:9091/changeControl/api/findAllDivision",
-        {
-          method: "GET",
-          headers: {
-            "access-control-allow-origin": "*",
-            "Content-type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("http://195.35.6.197:9091/changeControl/api/findAllDivision", {
+        method: "GET",
+        headers: {
+          "access-control-allow-origin": "*",
+          "Content-type": "application/json",
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
@@ -54,12 +56,12 @@ function Desktop() {
     // fetchLabIncidentData();
     // fetchChangeControlData();
   }, []);
+  const gaurav = "meena";
   return (
     <>
+      {false && <DiffrentialPressure name={gaurav} />}
       <HeaderTop />
-
       <HeaderBottom />
-
       <div className="desktop-input-table-wrapper">
         <div className="input-wrapper">
           <div className="group-input-2">
@@ -71,34 +73,35 @@ function Desktop() {
               <option value="external_audit">Equipment Cleaning Checklist</option>
             </select>
           </div>
-          {/* <div className="group-input-2">
-            <label>Criteria</label>
-            <select>
-              <option value="all_records">All Records</option>
-              <option value="1">Closed Records</option>
-              <option value="2">Opened Records</option>
-              <option value="3">Cancelled Records</option>
-              <option value="4">Overdue Records</option>
-              <option value="5">Assigned To Me</option>
-              <option value="6">Records Created Today</option>
-            </select>
-          </div> */}
           <button className="btn">Print</button>
         </div>
         <div className="table-wrapper">
           <table>
             <thead>
               <tr>
-                <th>Record</th>
-                <th>Division</th>
-                <th>eLog</th>
-                <th>Short Description</th>
-                <th>Date Opened</th>
-                <th>Initiator</th>
-                {/* <th>Due Date</th> */}
-                <th>Status</th>
+                <th>s no</th>
+                <th>uniqueId</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Differential Pressure</th>
+                <th>Remark</th>
+                <th>Checked by</th>
+                <th>Department</th>
+                <th>Compression Area</th>
               </tr>
             </thead>
+            <tbody>
+              {differentialPRecordHistory &&
+                differentialPRecordHistory.map((doc) => (
+                  <>
+                    <tr key={doc.gridData[0]}>
+                      {doc.gridData[0] && doc.gridData[0].cells.map((item) => <td>{item}</td>)}
+                      <td>{doc.department}</td>
+                      <td>{doc.compressionArea}</td>
+                    </tr>
+                  </>
+                ))}
+            </tbody>
             <tbody>
               {labIncident &&
                 labIncident.map((item) => (
