@@ -3,6 +3,8 @@
 // import viteLogo from '/vite.svg'
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/Login/Login.jsx";
 import Desktop from "./pages/Desktop/Desktop.jsx";
 import DiffrentialPressure from "./pages/configForms/DiffrentialPressureRecord/DiffrentialPressure.jsx";
@@ -12,7 +14,6 @@ import EquipmentCleaningCheckList from "./pages/configForms/EquipmentCheckList/E
 function App() {
   return (
     <>
-      {/* <Login /> */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -22,6 +23,7 @@ function App() {
           <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer autoClose={2000} pauseOnHover={false}/>
     </>
   );
 }

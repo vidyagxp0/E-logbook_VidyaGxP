@@ -68,11 +68,11 @@ export default function DiffrentialPressure() {
         <div id="config-form-document-page">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Document
+              <strong> Record Name:&nbsp;</strong>Differential Pressure
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
-              KSA
+              India
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>Under Initiation
@@ -90,14 +90,14 @@ export default function DiffrentialPressure() {
                   <img src="/lifelogo.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>Lifelink ltd</div>
+                  <div>Life Link ltd.</div>
                   {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
               <div className="sub-head-2">Differential Pressure Record</div>
 
               <div className="group-input">
-                <label>Department</label>
+                <label className="color-label">Department</label>
 
                 <div className="instruction">&nbsp;</div>
                 <select
@@ -125,7 +125,7 @@ export default function DiffrentialPressure() {
               </div>
 
               <div className="group-input">
-                <label>Compression Area with respect to Corridor</label>
+                <label className="color-label">Compression Area with respect to Corridor</label>
 
                 <div className="instruction">&nbsp;</div>
                 <select

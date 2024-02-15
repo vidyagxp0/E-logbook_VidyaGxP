@@ -66,13 +66,9 @@ function Desktop() {
             <label>eLog</label>
             <select>
               <option value="all_records">All Records</option>
-              <option value="internal_audit">Internal Audit</option>
-              <option value="external_audit">External Audit</option>
-              <option value="capa">Capa</option>
-              <option value="lab_incident">Lab Incident</option>
-              <option value="risk_assement">Risk Assesment</option>
-              <option value="root_cause_analysis">Root Cause Analysis</option>
-              <option value="management_review">Management Review</option>
+              <option value="all_records">Diffrential Pressure Record</option>
+              <option value="internal_audit">Area & Equipment Usage Log</option>
+              <option value="external_audit">Equipment Cleaning Checklist</option>
             </select>
           </div>
           {/* <div className="group-input-2">
@@ -108,18 +104,14 @@ function Desktop() {
                 labIncident.map((item) => (
                   <tr key={item.id}>
                     <td>
-                      <Link to={`/lab-incident-panel/${item.id}`}>
-                        {padNumber(item.id, 5)}
-                      </Link>
+                      <Link to={`/lab-incident-panel/${item.id}`}>{padNumber(item.id, 5)}</Link>
                     </td>
                     <td>{item.generalInformation[0].divisionCode}</td>
                     <td>{item.name}</td>
                     <td>{item.generalInformation[0].shortDescription}</td>
                     <td>{item.generalInformation[0].invocationType}</td>
                     <td>{item.generalInformation[0].assignedTo}</td>
-                    <td>
-                      {convertDateFormat(item.generalInformation[0].dueDate)}
-                    </td>
+                    <td>{convertDateFormat(item.generalInformation[0].dueDate)}</td>
                     <td></td>
                   </tr>
                 ))}
@@ -127,9 +119,7 @@ function Desktop() {
                 changeControl.map((item) => (
                   <tr key={item.id}>
                     <td>
-                      <Link to={`/change-control-panel/${item.id}`}>
-                        {padNumber(item.id, 5)}
-                      </Link>
+                      <Link to={`/change-control-panel/${item.id}`}>{padNumber(item.id, 5)}</Link>
                     </td>
                     <td>{item.generalInfo[0].divisionCode}</td>
                     <td>{item.changeControlName}</td>

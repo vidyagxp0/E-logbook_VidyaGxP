@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 function Login() {
   const navigate = useNavigate();
@@ -19,10 +20,13 @@ function Login() {
       e.preventDefault();
       if (username === "Gaurav" && password === "Gaurav") {
         navigate("/desktop");
+        toast.success("Login Successful");
       } else if (username === "Amit" && password === "Amit@121") {
         navigate("/desktop");
+        toast.success("Login Successful");
       } else {
-        alert("Invalid Username or Password");
+        // alert("Invalid Username or Password");
+        toast.error("Invalid Username or Password");``
       }
     };
   return (

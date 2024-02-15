@@ -1,4 +1,3 @@
-
 import React, { useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
@@ -58,7 +57,7 @@ export default function EquipmentCleaningCheckList() {
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
-              KSA
+              India
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>Under Initiation
@@ -76,7 +75,7 @@ export default function EquipmentCleaningCheckList() {
                   <img src="/lifelogo.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>LifeLink ltd</div>
+                  <div>Life Link ltd.</div>
                   {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
