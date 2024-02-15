@@ -4,34 +4,35 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 function Login() {
-    const [isDropdownVisible, setDropdownVisible] = useState(false);
-    const toggleDropdown = () => {
-      setDropdownVisible(!isDropdownVisible);
-    };
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const toggleDropdown = () => {
+    setDropdownVisible(!isDropdownVisible);
+  };
   const navigate = useNavigate();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-    const handleChange = (e) => {
-      if (e.target.name === "username") {
-        setUsername(e.target.value);
-      } else if (e.target.name === "password") {
-        setPassword(e.target.value);
-      }
-    };
+  const handleChange = (e) => {
+    if (e.target.name === "username") {
+      setUsername(e.target.value);
+    } else if (e.target.name === "password") {
+      setPassword(e.target.value);
+    }
+  };
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      if (username === "Gaurav" && password === "Gaurav") {
-        navigate("/desktop");
-        toast.success("Login Successful");
-      } else if (username === "Amit" && password === "Amit@121") {
-        navigate("/desktop");
-        toast.success("Login Successful");
-      } else {
-        toast.error("Invalid Username or Password");``
-      }
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (username === "Gaurav" && password === "Gaurav") {
+      navigate("/desktop");
+      toast.success("Login Successful");
+    } else if (username === "Amit" && password === "Amit@121") {
+      navigate("/desktop");
+      toast.success("Login Successful");
+    } else {
+      toast.error("Invalid Username or Password");
+      ``;
+    }
+  };
   return (
     <>
       <div id="admin-console-login-page">
