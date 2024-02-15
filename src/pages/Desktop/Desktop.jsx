@@ -96,9 +96,36 @@ function Desktop() {
                   <>
                     <tr key={doc.gridData[0]}>
                       {doc.gridData[0] && doc.gridData[0].cells.map((item) => <td>{item}</td>)}
+                      {!doc.gridData[0] && (
+                        <>
+=                          <td>null</td> <td>null</td> <td>null</td> <td>null</td> <td>null</td> <td>null</td>{" "}
+                          <td>null</td>{" "}
+                        </>
+                      )}
                       <td>{doc.department}</td>
                       <td>{doc.compressionArea}</td>
                     </tr>
+                    {doc.gridData[1] && (
+                      <tr key={doc.gridData[1]}>
+                        {doc.gridData[1] && doc.gridData[1].cells.map((item) => <td>{item}</td>)}
+                        <td>{doc.department}</td>
+                        <td>{doc.compressionArea}</td>
+                      </tr>
+                    )}
+                    {doc.gridData[2] && (
+                      <tr key={doc.gridData[2]}>
+                        {doc.gridData[2] && doc.gridData[2].cells.map((item) => <td>{item}</td>)}
+                        <td>{doc.department}</td>
+                        <td>{doc.compressionArea}</td>
+                      </tr>
+                    )}
+                    {doc.gridData[3] && (
+                      <tr key={doc.gridData[3]}>
+                        {doc.gridData[3] && doc.gridData[3].cells.map((item) => <td>{item}</td>)}
+                        <td>{doc.department}</td>
+                        <td>{doc.compressionArea}</td>
+                      </tr>
+                    )}
                   </>
                 ))}
             </tbody>
