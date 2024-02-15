@@ -4,6 +4,10 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 function Login() {
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const toggleDropdown = () => {
+      setDropdownVisible(!isDropdownVisible);
+    };
   const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -25,7 +29,6 @@ function Login() {
         navigate("/desktop");
         toast.success("Login Successful");
       } else {
-        // alert("Invalid Username or Password");
         toast.error("Invalid Username or Password");``
       }
     };
@@ -35,7 +38,7 @@ function Login() {
         <div className="login-form-block">
           <div className="top-block">
             <div className="logo">
-              <img src="/logo.png" alt="..." />
+              <img src="/lifelogo.png" alt="..." />
             </div>
             <div className="head">Welcome to eLogBook</div>
           </div>

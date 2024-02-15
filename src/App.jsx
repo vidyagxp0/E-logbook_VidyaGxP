@@ -23,7 +23,7 @@ function App() {
           <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
         </Routes>
       </BrowserRouter>
-      <ToastContainer autoClose={2000} pauseOnHover={false}/>
+      <ToastContainer autoClose={2000} pauseOnHover={false} />
     </>
   );
 }
