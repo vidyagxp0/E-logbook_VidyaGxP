@@ -1,34 +1,16 @@
-import React, { useEffect, useReducer, useState } from "react";
+import  { useEffect, useReducer,  } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import { MultiSelect } from "react-multi-select-component";
-import {
-  formList,
-  site,
-  NotifyTo,
-  currentYear,
-  interpretationOfResult,
-  criticalSteps,
-  referenceProcedures,
-  approvers,
-  responsibilities,
-  reviewers,
-  testData,
-  Survey,
-  docFormFile,
-  docDetails,
-  PersonPrintPermission,
-  PersonDownloadPermission,
-  workFlow,
-} from "./DocumentFormFunction";
+// import { MultiSelect } from "react-multi-select-component";
+import { docFormFile,} from "./DifferentialPressureFunction.jsx";
 
-import RelatedRecords from "../../../components/datafields/RelatedRecords.jsx";
+// import RelatedRecords from "../../../components/datafields/RelatedRecords.jsx";
 import Grid from "../../../components/datafields/Grid.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
-export default function DiffrentialPressure(props) {
+export default function DiffrentialPressure() {
 
    const dispatch = useDispatch();
 
@@ -40,7 +22,7 @@ export default function DiffrentialPressure(props) {
  })
 
   const navigate = useNavigate();
-  const [selectedsetInstrumentSop, setSelectedsetInstrumentSop] = useState([]);
+  // const [selectedsetInstrumentSop, setSelectedsetInstrumentSop] = useState([]);
   const currentDate = new Date();
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
@@ -55,30 +37,30 @@ export default function DiffrentialPressure(props) {
       createObject(data);
     navigate("/desktop");
   }
-  const [instrumentSop, setInstrumentSop] = useReducer(
-    (prev, next) => ({
-      ...prev,
-      ...next,
-    }),
-    {
-      responsibilities: "",
-      purpose: "",
-      scopeField: "",
-      materialsRequired: "",
-      equipmentInstruments: "",
-      safetyPrecautions: "",
-      procedure: "",
-      operations: "",
-      authorizationMatrix: "",
-      references: "",
-      changeControl: "",
-      fileAttachment: "",
-    }
-  );
+  // const [instrumentSop, setInstrumentSop] = useReducer(
+  //   (prev, next) => ({
+  //     ...prev,
+  //     ...next,
+  //   }),
+  //   {
+  //     responsibilities: "",
+  //     purpose: "",
+  //     scopeField: "",
+  //     materialsRequired: "",
+  //     equipmentInstruments: "",
+  //     safetyPrecautions: "",
+  //     procedure: "",
+  //     operations: "",
+  //     authorizationMatrix: "",
+  //     references: "",
+  //     changeControl: "",
+  //     fileAttachment: "",
+  //   }
+  // );
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
     (prev, next) => ({
       ...prev,
-      ...next,
+      ...next, 
     }),
     {
       department: "",
@@ -93,18 +75,19 @@ export default function DiffrentialPressure(props) {
       dispatch({ type: "ADD_OBJECT", payload: newObject });
     };
 
-     const updateDifferentialPRecord = (data) => {
-       dispatch({
-         type: "UPDATE_DIFFERENTIAL_P_RECORD",
-         payload: data,
-       });
-     };
+    //  const updateDifferentialPRecord = (data) => {
+    //    dispatch({
+    //      type: "UPDATE_DIFFERENTIAL_P_RECORD",
+    //      payload: data,
+    //    });
+    //  };
     //  useEffect(() => {
     //    localStorage.setItem("differentialPRecord", JSON.stringify(differentialPRecord));
     //  }, [differentialPRecord]);
 
   return (
     <>
+    
       <HeaderTop />
       <div id="main-form-container">
         <div id="config-form-document-page">
@@ -132,7 +115,7 @@ export default function DiffrentialPressure(props) {
                   <img src="/lifelogo.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>Life Link ltd.</div>
+                  <div>LifeLink Digital ltd.</div>
                   {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>

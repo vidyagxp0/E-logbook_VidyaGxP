@@ -20,7 +20,7 @@ import {
   PersonPrintPermission,
   PersonDownloadPermission,
   workFlow,
-} from "./DocumentFormFunction";
+} from "./AreaAndEquimentFunction.jsx";
 
 import RelatedRecords from "../../../components/datafields/RelatedRecords.jsx";
 import Grid from "../../../components/datafields/Grid.jsx";

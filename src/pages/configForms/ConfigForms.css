@@ -20,13 +20,13 @@
   align-items: center;
 }
 
-#main-form-container .aside-container .head > div:nth-child(1) {
+#main-form-container .aside-container .head>div:nth-child(1) {
   display: inline-block;
   border-bottom: 1px solid #ffffff;
   margin-bottom: 7px;
 }
 
-#main-form-container .aside-container .head > div:nth-child(2) {
+#main-form-container .aside-container .head>div:nth-child(2) {
   font-size: 0.9rem;
   border-bottom: 1px solid #ffffff;
   width: 100%;
@@ -40,7 +40,7 @@
   gap: 30px;
 }
 
-#main-form-container .aside-container .workflow > div {
+#main-form-container .aside-container .workflow>div {
   text-align: center;
   padding: 7px 15px;
   border-radius: 35px;
@@ -49,15 +49,15 @@
   position: relative;
 }
 
-#main-form-container .aside-container .workflow > div.green-state {
+#main-form-container .aside-container .workflow>div.green-state {
   background: #00ff0026;
 }
 
-#main-form-container .aside-container .workflow > div.red-state {
+#main-form-container .aside-container .workflow>div.red-state {
   background: #ff000026;
 }
 
-#main-form-container .aside-container .workflow > div img {
+#main-form-container .aside-container .workflow>div img {
   position: absolute;
   top: 100%;
   left: 50%;
@@ -245,11 +245,11 @@
   gap: 20px;
 }
 
-#config-form-document-page .group-input .file-attachment-field .file-attachment-list > div {
+#config-form-document-page .group-input .file-attachment-field .file-attachment-list>div {
   font-size: 0.9rem;
 }
 
-#config-form-document-page .group-input .file-attachment-field .file-attachment-list > div a {
+#config-form-document-page .group-input .file-attachment-field .file-attachment-list>div a {
   color: #0039bd;
   font-size: 0.8rem;
   text-decoration: underline;
@@ -296,7 +296,7 @@
   gap: 20px;
 }
 
-#config-form-document-page .document-block .option-grid > div {
+#config-form-document-page .document-block .option-grid>div {
   display: grid;
   grid-template-columns: 1fr 15px 20px;
   gap: 20px;
@@ -341,4 +341,22 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 30px;
   margin-bottom: 10px;
+}
+
+.radio-btn {
+  display: column;
+}
+
+.dialog {
+  width: 500px;
+  height: 300px;
+}
+
+.Actions {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+
 }
