@@ -1,6 +1,8 @@
 
 import "./ESignatureModal.css";
-import { useState } from "react";
+import { useState , useEffect } from "react";
+import { useDispatch } from 'react-redux';
+import { saveSignature } from "../../../actions";
 
 function ESignatureModal(_props) {
   const [username, setUsername] = useState("");
@@ -8,14 +10,34 @@ function ESignatureModal(_props) {
   const [comment, setComment] = useState("");
   const currentUsername = localStorage.getItem("username");
   const currentPassword = localStorage.getItem("password");
+  const dispatch = useDispatch();
   function handleSubmit() {
-    if (username === currentUsername && password === currentPassword) {
-      _props.returnSignature(true);
-    } else {
-      _props.returnSignature(false);
+    if (!username || !password) {
+      alert('Please fill in all fields.');
+      return;
     }
+
+    localStorage.setItem('username', username);
+    localStorage.setItem('password', password);
+
+    dispatch(
+      saveSignature({
+        username:username,
+        password:password,
+        comment:comment,
+      })
+    );
     _props.closeModal();
   }
+ 
+  useEffect(() => {
+    function exportData() {
+      return { username: currentUsername, password: currentPassword };
+    }
+    const exportedData = exportData();
+    console.log(exportedData);
+    // Use the exportedData in other parts of your code here...
+  }, [currentUsername, currentPassword]);
   return (
     <>
       <div className="custom-modal" id="e-signature-modal">

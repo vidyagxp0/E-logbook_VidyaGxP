@@ -27,10 +27,7 @@ export default function DiffrentialPressure() {
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
   const handleSave = (data) => {
-
-    
     toast.success("eLog Saved Successfully!");
-    
       // setTimeout(() => {
       //   window.location.reload();
       // }, 1000);

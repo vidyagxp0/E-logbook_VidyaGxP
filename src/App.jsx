@@ -10,10 +10,13 @@ import Desktop from "./pages/Desktop/Desktop.jsx";
 import DiffrentialPressure from "./pages/configForms/DiffrentialPressureRecord/DiffrentialPressure.jsx";
 import AreaAndEquiment from "./pages/configForms/AreaAndEquipment/AreaAndEquiment.jsx";
 import EquipmentCleaningCheckList from "./pages/configForms/EquipmentCheckList/EquipmentCleaningCheckList.jsx";
+import { Provider } from "react-redux";
+import store from "./store.js";
 
 function App() {
   return (
     <>
+     <Provider store={store}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -24,6 +27,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       <ToastContainer autoClose={2000} pauseOnHover={false} />
+      </Provider>
     </>
   );
 }

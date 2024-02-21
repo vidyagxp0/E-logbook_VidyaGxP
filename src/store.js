@@ -1,6 +1,10 @@
 // store.js
-import { createStore } from "redux";
-import rootReducer from "./reducers"; // You'll define your reducers in this file
+import { createStore, combineReducers } from 'redux';
+import signatureReducer from './reducers';
+
+const rootReducer = combineReducers({
+  signature: signatureReducer,
+});
 
 const store = createStore(rootReducer);
 
