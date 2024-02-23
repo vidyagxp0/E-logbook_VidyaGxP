@@ -14,7 +14,7 @@ function Desktop() {
   const differentialPRecordHistory = useSelector((state) => state.objects);
 
   useEffect(() => {
-    console.log(differentialPRecordHistory);
+    console.log(differentialPRecordHistory,"differentialPRecordHistory");
   });
   const [labIncident, setLabIncident] = useState();
   const [changeControl, setChangeControl] = useState();
@@ -56,10 +56,10 @@ function Desktop() {
     // fetchLabIncidentData();
     // fetchChangeControlData();
   }, []);
-  const gaurav = "meena";
+  // const gaurav = "meena";
   return (
     <>
-      {false && <DiffrentialPressure name={gaurav} />}
+      {/* {false && <DiffrentialPressure name={gaurav} />} */}
       <HeaderTop />
       <HeaderBottom />
       <div className="desktop-input-table-wrapper">

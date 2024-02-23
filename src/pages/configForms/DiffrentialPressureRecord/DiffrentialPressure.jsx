@@ -18,7 +18,7 @@ export default function DiffrentialPressure() {
 
  useEffect(() => {
   // console.log(props.name);
-  console.log(differentialPRecord);
+  console.log(differentialPRecord,"differentialPRecord");
  })
 
   const navigate = useNavigate();

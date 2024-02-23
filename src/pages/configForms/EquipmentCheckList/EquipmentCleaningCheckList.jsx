@@ -6,12 +6,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
-import ESignatureModal from '../../../components/Modals/ESignatureModal/ESignatureModal'
+import ESignatureModal from '../../../components/Modals/ESignatureModal/ESignatureModal';
 import { Tooltip } from "@mui/material";
 import { useSelector } from "react-redux";
 
 export default function EquipmentCleaningCheckList() {
-
+  const [currentDate, setCurrentDate] = useState("");
+  const [signatureModal, setSignatureModal] = useState(false);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [saveModal, setSaveModal] = useState(false)
+  const [clickedRowIndex, setClickedRowIndex] = useState();
   const [instrumentSop, setInstrumentSop] = useReducer(
     (prev, next) => ({
       ...prev,
@@ -25,12 +29,6 @@ export default function EquipmentCleaningCheckList() {
       fileAttachment: "",
     }
   );
-
-  const [currentDate, setCurrentDate] = useState("");
-  const [signatureModal, setSignatureModal] = useState(false);
-  const [updateModal, setUpdateModal] = useState(false);
-  const [saveModal, setSaveModal] = useState(false)
-  const [clickedRowIndex, setClickedRowIndex] = useState(-1);
 
   const closeSignatureModal = () => setSignatureModal(false);
   useEffect(() => {
@@ -52,18 +50,7 @@ export default function EquipmentCleaningCheckList() {
 
   ]);
 
-  // const handleInputChange = (index, name, value, action) => {
-  //   const updatedTableData = tableData.map((item, idx) => {
-  //     if (idx !== index) {
-  //       return item;
-  //     }
-  //     return { ...item, [name]: value };
-  //   });
-  //   if (action === 'delete') {
-  //     updatedTableData.splice(index, 1);
-  //   }
-  //   setTableData(updatedTableData);
-  // };
+
   const handleInputChange = (index, name, value, action) => {
     const updatedTableData = tableData.map((item, idx) => {
       if (idx !== index) {
@@ -78,17 +65,8 @@ export default function EquipmentCleaningCheckList() {
     }
     setTableData(updatedTableData);
   };
-  
-
-
-  // const handleInputChange = (index, name, value) => {
-  //   const updatedTableData = [...tableData];
-  //   updatedTableData[index][name] = value;
-  //   setTableData(updatedTableData);
-  // };
 
   function getCurrentDateTime() {
-
     const now = new Date();
     const year = now.getFullYear().toString().slice(-2);
     const month = (now.getMonth() + 1).toString().padStart(2, "0");
@@ -100,9 +78,9 @@ export default function EquipmentCleaningCheckList() {
     };
   }
 
+  const eSignatureData = useSelector((state) => state.signature.eSignatureData);
+  console.log(eSignatureData, "pankaj")
 
-  const signatureData = useSelector((state) => state.signature.signatureData);
-  console.log(signatureData, "pankaj")
   return (
     <>
       <HeaderTop />
@@ -139,7 +117,6 @@ export default function EquipmentCleaningCheckList() {
               <div className="sub-head-2">Equipment Cleaning CheckList</div>
               <div className="group-input">
                 <label className="color-label">Date :</label>
-
                 <input
                   type="text"
                   rows="2"
@@ -167,7 +144,6 @@ export default function EquipmentCleaningCheckList() {
                   onChange={(e) => setInstrumentSop({ batchNo: e.target.value })}
                 ></textarea>
               </div>
-
               {/* <Grid
                 label={docFormFile[0].label}
                 coloredLabel={docFormFile[0].coloredLabel}
@@ -219,26 +195,23 @@ export default function EquipmentCleaningCheckList() {
                         <td>
                           <input
                             type="text"
-                            value={clickedRowIndex === index ? signatureData.comment : ""}
+                            value={clickedRowIndex === index ? eSignatureData : item.comments}
                             onChange={(e) => handleInputChange(index, "comments", e.target.value)}
                           />
                         </td>
                         <td>
                           <input
                             type="text"
-                            value={index === clickedRowIndex ? signatureData.username
-                              : ""}
+                            value={index === clickedRowIndex ? eSignatureData: ""}
                             onChange={(e) => handleInputChange(index, "doneBy", e.target.value)}
                           />
                         </td>
-
-
                         <td className="Actions">
                           <Tooltip title="Delete">
-                          <DeleteIcon onClick={() => handleInputChange(index, "observation", "ok", "delete")} />
+                            <DeleteIcon onClick={() => handleInputChange(index, "observation", "ok", "delete")} />
                           </Tooltip>
                           <Tooltip title="Update">
-                            <EditIcon onClick={() => setUpdateModal(true)} />
+                            <EditIcon onClick={() => { setUpdateModal(true), handleInputChange(index, "observation", "ok", "edit") }} />
                           </Tooltip>
                           <Tooltip title="Submit">
                             <SaveAltIcon onClick={() => alert("Not clear, What we want")} />
@@ -246,16 +219,12 @@ export default function EquipmentCleaningCheckList() {
                           <Tooltip title="save">
                             <TurnedInNotIcon onClick={() => alert("Data save successfully")} />
                           </Tooltip>
-
                         </td>
                       </tr>
                     })}
-
                   </tbody>
                 </table>
               </div>
-
-
             </div>
           </div>
         </div>
