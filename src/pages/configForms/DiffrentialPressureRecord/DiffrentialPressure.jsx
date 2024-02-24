@@ -1,8 +1,8 @@
-import  { useEffect, useReducer,  } from "react";
+import { useEffect, useReducer, } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
 // import { MultiSelect } from "react-multi-select-component";
-import { docFormFile,} from "./DifferentialPressureFunction.jsx";
+import { docFormFile, } from "./DifferentialPressureFunction.jsx";
 
 // import RelatedRecords from "../../../components/datafields/RelatedRecords.jsx";
 import Grid from "../../../components/datafields/Grid.jsx";
@@ -12,14 +12,37 @@ import { useDispatch } from "react-redux";
 
 export default function DiffrentialPressure() {
 
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
+
+  const object = getCurrentDateTime();
+  let date = object.currentDate;
+  function getCurrentDateTime() {
+
+    const now = new Date();
+
+
+    // Format date to 12/12/12 format
+    const year = now.getFullYear().toString().slice(-2); // Get last two digits of year
+    const month = (now.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${month}/${day}/${year}`;
+
+    // Return object containing current time and date
+    return {
+
+      currentDate: currentDate,
+    };
+  }
 
 
 
- useEffect(() => {
-  // console.log(props.name);
-  console.log(differentialPRecord,"differentialPRecord");
- })
+  const uniqueId = "ABC/" + Math.floor(Math.random() * 1000).toString().padStart(3, '0') + "/" + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+
+
+  useEffect(() => {
+    // console.log(props.name);
+    console.log(differentialPRecord, "differentialPRecord");
+  })
 
   const navigate = useNavigate();
   // const [selectedsetInstrumentSop, setSelectedsetInstrumentSop] = useState([]);
@@ -28,38 +51,25 @@ export default function DiffrentialPressure() {
 
   const handleSave = (data) => {
     toast.success("eLog Saved Successfully!");
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 1000);
-      createObject(data);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1000);
+    createObject(data);
     navigate("/desktop");
   }
-  // const [instrumentSop, setInstrumentSop] = useReducer(
-  //   (prev, next) => ({
-  //     ...prev,
-  //     ...next,
-  //   }),
-  //   {
-  //     responsibilities: "",
-  //     purpose: "",
-  //     scopeField: "",
-  //     materialsRequired: "",
-  //     equipmentInstruments: "",
-  //     safetyPrecautions: "",
-  //     procedure: "",
-  //     operations: "",
-  //     authorizationMatrix: "",
-  //     references: "",
-  //     changeControl: "",
-  //     fileAttachment: "",
-  //   }
-  // );
+
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
     (prev, next) => ({
       ...prev,
-      ...next, 
+      ...next,
     }),
     {
+      eLogId: uniqueId,
+      initiator: "",
+      dateOfInitiation: date,
+      shortDescription: "",
+      description: "",
+      status: "",
       department: "",
       compressionArea: "",
       limit: "1.3",
@@ -68,23 +78,15 @@ export default function DiffrentialPressure() {
     }
   );
 
-    const createObject = (newObject) => {
-      dispatch({ type: "ADD_OBJECT", payload: newObject });
-    };
+  const createObject = (newObject) => {
+    dispatch({ type: "ADD_OBJECT", payload: newObject });
+  };
 
-    //  const updateDifferentialPRecord = (data) => {
-    //    dispatch({
-    //      type: "UPDATE_DIFFERENTIAL_P_RECORD",
-    //      payload: data,
-    //    });
-    //  };
-    //  useEffect(() => {
-    //    localStorage.setItem("differentialPRecord", JSON.stringify(differentialPRecord));
-    //  }, [differentialPRecord]);
+
 
   return (
     <>
-    
+
       <HeaderTop />
       <div id="main-form-container">
         <div id="config-form-document-page">
@@ -117,6 +119,43 @@ export default function DiffrentialPressure() {
                 </div>
               </div>
               <div className="sub-head-2">Differential Pressure Record</div>
+
+              <div className="group-input">
+                <label className="color-label">Initiator </label>
+                <div>
+                  <input type="text" value={differentialPRecord.initiator} onChange={(e) => setDifferentialPRecord({ initiator: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Date of Initiator</label>
+                <div>
+                  <input type="text" value={date} onChange={(e) => setDifferentialPRecord({ dateOfInitiation: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Short Description</label>
+                <div>
+                  <input type="text" value={differentialPRecord.shortDescription} onChange={(e) => setDifferentialPRecord({ shortDescription: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Description</label>
+                <div>
+                  <input type="text" value={differentialPRecord.description} onChange={(e) => setDifferentialPRecord({ description: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Status</label>
+                <div>
+                  <input type="text" value={differentialPRecord.status} onChange={(e) => setDifferentialPRecord({ status: e.target.value })} />
+                </div>
+              </div>
+
+
 
               <div className="group-input">
                 <label className="color-label">Department</label>
@@ -173,7 +212,7 @@ export default function DiffrentialPressure() {
               <div className="group-input">
                 <label className="color-label">Limit</label>
                 <div className="instruction"></div>
-                <textarea type="text" rows="2" value="1.3" readOnly></textarea>
+                <textarea type="text" rows="2" value="1.3" ></textarea>
               </div>
 
               <div className="group-input">

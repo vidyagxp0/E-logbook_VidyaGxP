@@ -75,7 +75,7 @@ function Desktop() {
           </div>
           <button className="btn">Print</button>
         </div>
-        <div className="table-wrapper">
+        {/* <div className="table-wrapper">
           <table>
             <thead>
               <tr>
@@ -162,7 +162,37 @@ function Desktop() {
                 ))}
             </tbody>
           </table>
-        </div>
+        </div> */}
+
+      <table>
+        <thead>
+          <tr>
+          <th>S no</th>
+          <th>E.Log no</th>
+          <th>Initiator</th>
+          <th>Date of initiation</th>
+          <th>Short description</th>
+          <th>Process</th>
+          </tr>
+
+        </thead>
+        <tbody>
+{differentialPRecordHistory.map((item,index)=>{
+  return <tr key={item.index}>
+ <td> {index+1}</td>
+  <td>{item.eLogId}</td>
+  <td>{item.initiator}</td>
+  <td>{item.dateOfInitiation}</td>
+  <td>{item.shortDescription}</td>
+  
+  <td><input/></td>
+ 
+  </tr>
+})}
+ 
+
+        </tbody>
+      </table>
       </div>
     </>
   );

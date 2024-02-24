@@ -16,17 +16,24 @@ export default function EquipmentCleaningCheckList() {
   const [updateModal, setUpdateModal] = useState(false);
   const [saveModal, setSaveModal] = useState(false)
   const [clickedRowIndex, setClickedRowIndex] = useState();
+  const date=getCurrentDateTime()
   const [instrumentSop, setInstrumentSop] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
     }),
     {
+      description:"",
+      initiator:"",
+      dateOfInitiation:date.currentDate,
+      shortDescription:"",
+      status:"",
       currentDate: "",
       product: "",
       batchNo: "",
       changeControl: "",
-      fileAttachment: "",
+    
+
     }
   );
 
@@ -78,9 +85,9 @@ export default function EquipmentCleaningCheckList() {
     };
   }
 
-  const eSignatureData = useSelector((state) => state.signature.eSignatureData);
-  console.log(eSignatureData, "pankaj")
-
+  // const eSignatureData = useSelector((state) => state.signature.eSignatureData);
+  // console.log(eSignatureData, "pankaj")
+console.log(instrumentSop,"instrumentSop")
   return (
     <>
       <HeaderTop />
@@ -115,6 +122,42 @@ export default function EquipmentCleaningCheckList() {
                 </div>
               </div>
               <div className="sub-head-2">Equipment Cleaning CheckList</div>
+
+
+              <div className="group-input">
+                <label className="color-label">Initiator </label>
+                <div>
+                  <input type="text" value={instrumentSop.initiator} onChange={(e) => setInstrumentSop({ initiator: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Date of Initiaton</label>
+                <div>
+                  <input type="text" value={date.currentDate} onChange={(e) => setInstrumentSop({ dateOfInitiation: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Short Description</label>
+                <div>
+                  <input type="text" value={instrumentSop.shortDescription} onChange={(e) => setInstrumentSop({ shortDescription: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Description</label>
+                <div>
+                  <input type="text" value={instrumentSop.description} onChange={(e) => setInstrumentSop({ description: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Status</label>
+                <div>
+                  <input type="text" value={instrumentSop.status} onChange={(e) => setInstrumentSop({ status: e.target.value })} />
+                </div>
+              </div>
               <div className="group-input">
                 <label className="color-label">Date :</label>
                 <input
@@ -195,14 +238,14 @@ export default function EquipmentCleaningCheckList() {
                         <td>
                           <input
                             type="text"
-                            value={clickedRowIndex === index ? eSignatureData : item.comments}
+                            value={clickedRowIndex === index ? '' : item.comments}
                             onChange={(e) => handleInputChange(index, "comments", e.target.value)}
                           />
                         </td>
                         <td>
                           <input
                             type="text"
-                            value={index === clickedRowIndex ? eSignatureData: ""}
+                            value={index === clickedRowIndex ? '' : ""}
                             onChange={(e) => handleInputChange(index, "doneBy", e.target.value)}
                           />
                         </td>

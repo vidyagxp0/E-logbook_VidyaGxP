@@ -1,43 +1,48 @@
 
 import "./ESignatureModal.css";
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from 'react-redux';
 import { saveSignature } from "../../../actions";
+import { useReducer } from "react";
 
 function ESignatureModal(_props) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [comment, setComment] = useState("");
-  const currentUsername = localStorage.getItem("username");
-  const currentPassword = localStorage.getItem("password");
-  const dispatch = useDispatch();
+  // const [username, setUsername] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [comment, setComment] = useState("");
+  // const currentUsername = localStorage.getItem("username");
+  // const currentPassword = localStorage.getItem("password");
+   const [eSignatureData, setESignatureData] = useReducer((prev, next) => ({ ...prev, ...next }), {
+    username: "",
+    password: "", comment: ""
+  })
+ console.log(eSignatureData,"eSignatureData")
   function handleSubmit() {
-    if (!username || !password) {
+    if (!eSignatureData.username || !eSignatureData.password) {
       alert('Please fill in all fields.');
       return;
     }
 
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
+    // localStorage.setItem('username', username);
+    // localStorage.setItem('password', password);
 
-    dispatch(
-      saveSignature({
-        username:username,
-        password:password,
-        comment:comment,
-      })
-    );
+    // dispatch(
+    //   saveSignature({
+    //     username:username,
+    //     password:password,
+    //     comment:comment,
+    //   })
+    // );
     _props.closeModal();
   }
- 
-  useEffect(() => {
-    function exportData() {
-      return { username: currentUsername, password: currentPassword };
-    }
-    const exportedData = exportData();
-    console.log(exportedData);
-    // Use the exportedData in other parts of your code here...
-  }, [currentUsername, currentPassword]);
+
+  // useEffect(() => {
+  //   function exportData() {
+  //     return { username: currentUsername, password: currentPassword };
+  //   }
+  //   const exportedData = exportData();
+  //   console.log(exportedData);
+  //   // Use the exportedData in other parts of your code here...
+  // }, [currentUsername, currentPassword]);
   return (
     <>
       <div className="custom-modal" id="e-signature-modal">
@@ -52,15 +57,15 @@ function ESignatureModal(_props) {
           <div className="modal-middle">
             <div className="group-input-2">
               <label>Username</label>
-              <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <input type="text" value={eSignatureData.username} onChange={(e) => setESignatureData({username:e.target.value})} />
             </div>
             <div className="group-input-2">
               <label>Password</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input type="password" value={eSignatureData.password} onChange={(e) => setESignatureData({password:e.target.value})} />
             </div>
             <div className="group-input-2">
               <label>Comments</label>
-              <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
+              <input type="text" value={eSignatureData.comment} onChange={(e) => setESignatureData({comment:e.target.value})} />
             </div>
           </div>
 
