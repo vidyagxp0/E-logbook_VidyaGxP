@@ -138,7 +138,7 @@ export default function EquipmentCleaningCheckList() {
                   <img src="/lifelogo.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>LifeLink Digital ltd.</div>
+                  <div>LifeLink Digital </div>
 
                 </div>
               </div>

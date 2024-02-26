@@ -96,7 +96,7 @@ export default function DiffrentialPressure() {
                   <img src="/lifelogo.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>LifeLink Digital ltd.</div>
+                  <div>LifeLink Digital </div>
                   {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
