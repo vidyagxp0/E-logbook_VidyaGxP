@@ -3,49 +3,64 @@ import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
 import { MultiSelect } from "react-multi-select-component";
 import {
-  formList,
-  site,
-  NotifyTo,
-  currentYear,
-  interpretationOfResult,
-  criticalSteps,
-  referenceProcedures,
-  approvers,
-  responsibilities,
-  reviewers,
-  testData,
-  Survey,
-  docFormFile,
-  docDetails,
-  PersonPrintPermission,
-  PersonDownloadPermission,
-  workFlow,
+  docFormFile, 
 } from "./AreaAndEquimentFunction.jsx";
 
-import RelatedRecords from "../../../components/datafields/RelatedRecords.jsx";
+
 import Grid from "../../../components/datafields/Grid.jsx";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 export default function AreaAndEquiment() {
-  const [selectedsetInstrumentSop, setSelectedsetInstrumentSop] = useState([]);
-  const [instrumentSop, setInstrumentSop] = useReducer(
+  const [isSelectedGeneral, setIsSelectedGeneral] = useState(false)
+  const [isSelectedDetails, setIsSelectedDetails] = useState(false)
+  const uniqueId = "ABC/" + Math.floor(Math.random() * 1000).toString().padStart(3, '0') + "/" + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  const date = getCurrentDate()
+  const [areaAndEquiment, setAreaAndEquiment] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
     }),
     {
-      responsibilities: "",
-      purpose: "",
-      scopeField: "",
-      materialsRequired: "",
-      equipmentInstruments: "",
-      safetyPrecautions: "",
-      procedure: "",
-      operations: "",
-      authorizationMatrix: "",
-      references: "",
-      changeControl: "",
-      fileAttachment: "",
+      eLogId: uniqueId,
+      area: "",
+      areaCode: "",
+      initiator: "",
+      dateOfInitiation: date.currentDate,
+      shortDescription: "",
+      status: "",
+      description: "",
+      process:"Area and equipment"
     }
   );
+
+  function getCurrentDate() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2);
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${day}/${month}/${year}`;
+
+    return {
+      currentDate: currentDate,
+    };
+  }
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const createObject = (newObject) => {
+    dispatch({ type: "AREAANDEQUIPMENT_DATA", payload: newObject });
+  };
+
+  const handleSave = (data) => {
+    toast.success("eLog Saved Successfully!");
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1000);
+    createObject(data);
+    navigate("/desktop");
+  }
+
   return (
     <>
       <HeaderTop />
@@ -80,102 +95,78 @@ export default function AreaAndEquiment() {
                 </div>
               </div>
               <div className="sub-head-2">Area and Equipment Usage Log</div>
-              <div className="group-input">
-                <label className="color-label">1.0 Purpose</label>
-                <div className="instruction">
-                  To establish a plan for handling, operating, calibration and maintaining of instrumentation
+              <div className="btn-forms">
+                <div className={`${isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"}`} onClick={() => { setIsSelectedGeneral(true), setIsSelectedDetails(false) }}>General Information</div>
+                <div className={`${isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"}`} onClick={() => { setIsSelectedDetails(true), setIsSelectedGeneral(false) }}> Details</div>
+              </div>
+
+
+           {isSelectedGeneral===true?<>   <div className="group-input">
+                <label className="color-label">Initiator </label>
+                <div>
+                  <input type="text" value={areaAndEquiment.initiator} onChange={(e) => setAreaAndEquiment({ initiator: e.target.value })} />
                 </div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.purpose}
-                  onChange={(e) => setInstrumentSop({ purpose: e.target.value })}
-                ></textarea>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Date of Initiaton</label>
+                <div>
+                  <input type="text" value={date.currentDate} onChange={(e) => setAreaAndEquiment({ dateOfInitiation: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Short Description</label>
+                <div>
+                  <input type="text" value={areaAndEquiment.shortDescription} onChange={(e) => setAreaAndEquiment({ shortDescription: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Description</label>
+                <div>
+                  <input type="text" value={areaAndEquiment.description} onChange={(e) => setAreaAndEquiment({ description: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="group-input">
+                <label className="color-label">Status</label>
+                <div>
+                  <input type="text" value={areaAndEquiment.status} onChange={(e) => setAreaAndEquiment({ status: e.target.value })} />
+                </div>
+              </div></>:null}
+
+{isSelectedDetails===true?<> <div className="group-input">
+                <label className="color-label">Area </label>
+                <div>
+                  <input type="text" value={areaAndEquiment.area} onChange={(e) => setAreaAndEquiment({ area: e.target.value })} />
+                </div>
               </div>
               <div className="group-input">
-                <label className="color-label">2.0 Scope/Field of Application</label>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.scopeField}
-                  onChange={(e) => setInstrumentSop({ scopeField: e.target.value })}
-                ></textarea>
+                <label className="color-label">Area Code </label>
+                <div>
+                  <input type="text" value={areaAndEquiment.areaCode} onChange={(e) => setAreaAndEquiment({ areaCode: e.target.value })} />
+                </div>
               </div>
-              <div className="group-input">
-                <label>
-                  {instrumentSop.responsibilities === "Yes" && ""}
-                  <div className="required"></div>3.0 Responsibilities
-                </label>
-                <div className="instruction">The performance of the tests should be done by</div>
-                <MultiSelect
-                  options={responsibilities}
-                  value={selectedsetInstrumentSop}
-                  onChange={setSelectedsetInstrumentSop}
-                  labelledBy="selectedsetInstrumentSop"
-                  required={instrumentSop.responsibilities === "Yes"}
-                  disabled={!instrumentSop.responsibilities === "Yes"}
-                />
-              </div>
-              <div className="group-input">
-                <label className="color-label">4.0 Materials Required</label>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.materialsRequired}
-                  onChange={(e) => setInstrumentSop({ materialsRequired: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label className="color-label">5.0 Procedure</label>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.procedure}
-                  onChange={(e) => setInstrumentSop({ procedure: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label className="color-label">6.0 Operations</label>
-                <div className="instruction"></div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.operations}
-                  onChange={(e) => setInstrumentSop({ operations: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label className="color-label">7.0 Authorization Matrix</label>
-                <div className="instruction"></div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.authorizationMatrix}
-                  onChange={(e) => setInstrumentSop({ authorizationMatrix: e.target.value })}
-                ></textarea>
-              </div>
-              <div className="group-input">
-                <label className="color-label">8.0 References</label>
-                <div className="instruction"></div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.references}
-                  onChange={(e) => setInstrumentSop({ references: e.target.value })}
-                ></textarea>
-              </div>
-              <RelatedRecords
-                label="9.0 Change Control"
-                coloredLabel={true}
-                instruction="Add referenced Change Control records"
-              />
+
               <Grid
                 label={docFormFile[2].label}
                 coloredLabel={docFormFile[2].coloredLabel}
                 required={docFormFile[2].required}
                 instruction={docFormFile[2].instruction}
-                columnList={docFormFile[2].columnList}
-              />
+                columnList={docFormFile[0].columnList}
+              /></>:null}
+             
+
+              <div className="button-block" style={{ width: "100%" }}>
+                <button className="themeBtn" onClick={() => handleSave(areaAndEquiment)}>
+                  Save
+                </button>
+                <button className="themeBtn" onClick={() => navigate("/desktop")}>
+                  Exit
+                </button>
+              </div>
+
             </div>
           </div>
         </div>

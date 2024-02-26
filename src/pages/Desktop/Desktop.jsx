@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../components/Header/HeaderTop";
 import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Desktop.css";
@@ -6,18 +6,18 @@ import { convertDateFormat } from "../../components/DateReturners";
 import { Link } from "react-router-dom";
 import DiffrentialPressure from "../configForms/DiffrentialPressureRecord/DiffrentialPressure";
 import { useSelector } from "react-redux";
-// import { toast } from "react-toastify";
+
 
 function Desktop() {
-  // const [differentialPRecordHistory, setDifferentialPRecordHistory] = useState([]);
 
-  const differentialPRecordHistory = useSelector((state) => state.objects);
 
-  useEffect(() => {
-    console.log(differentialPRecordHistory,"differentialPRecordHistory");
-  });
+  const differentialPRecordHistory = useSelector((state) => state.objects.objects);
+  const equipmentCRecordHistory = useSelector((state) => state.equipment.EquipmentCleaningData);
+  const areaAndERecordHistory = useSelector((state) => state.area.areaAndEquipmentData)
   const [labIncident, setLabIncident] = useState();
   const [changeControl, setChangeControl] = useState();
+  const [eLogSelect, setELogSelect] = useState("All_Records")
+console.log(eLogSelect,"eLogSelect")
   function padNumber(number, width) {
     number = number + "";
     return number.length >= width ? number : new Array(width - number.length + 1).join("0") + number;
@@ -56,21 +56,26 @@ function Desktop() {
     // fetchLabIncidentData();
     // fetchChangeControlData();
   }, []);
-  // const gaurav = "meena";
+
+  const combinedRecords = [
+    ...differentialPRecordHistory,
+    ...equipmentCRecordHistory,
+    ...areaAndERecordHistory,
+  ]
   return (
     <>
-      {/* {false && <DiffrentialPressure name={gaurav} />} */}
+
       <HeaderTop />
       <HeaderBottom />
       <div className="desktop-input-table-wrapper">
         <div className="input-wrapper">
           <div className="group-input-2">
             <label>eLog</label>
-            <select>
-              <option value="all_records">All Records</option>
-              <option value="all_records">Diffrential Pressure Record</option>
-              <option value="internal_audit">Area & Equipment Usage Log</option>
-              <option value="external_audit">Equipment Cleaning Checklist</option>
+            <select value={eLogSelect} onChange={(e) => setELogSelect(e.target.value)}>
+              <option value="All_Records" >All Records</option>
+              <option value="diffrential_pressure">Diffrential Pressure Record</option>
+              <option value="area_and_equipment">Area & Equipment Usage Log</option>
+              <option value="equipment_cleaning">Equipment Cleaning Checklist</option>
             </select>
           </div>
           <button className="btn">Print</button>
@@ -164,35 +169,67 @@ function Desktop() {
           </table>
         </div> */}
 
-      <table>
-        <thead>
-          <tr>
-          <th>S no</th>
-          <th>E.Log no</th>
-          <th>Initiator</th>
-          <th>Date of initiation</th>
-          <th>Short description</th>
-          <th>Process</th>
-          </tr>
+        <table>
+          <thead>
+            <tr>
+              <th>S no</th>
+              <th>E.Log no</th>
+              <th>Initiator</th>
+              <th>Date of initiation</th>
+              <th>Short description</th>
+              <th>Process</th>
+            </tr>
 
-        </thead>
-        <tbody>
-{differentialPRecordHistory.map((item,index)=>{
-  return <tr key={item.index}>
- <td> {index+1}</td>
-  <td>{item.eLogId}</td>
-  <td>{item.initiator}</td>
-  <td>{item.dateOfInitiation}</td>
-  <td>{item.shortDescription}</td>
-  
-  <td><input/></td>
- 
-  </tr>
-})}
- 
+          </thead>
+          <tbody>
+            {eLogSelect === "diffrential_pressure" ? differentialPRecordHistory?.map((item, index) => {
+              return <tr key={item.index}>
+                <td> {index + 1}</td>
+                <td>{item.eLogId}</td>
+                <td>{item.initiator}</td>
+                <td>{item.dateOfInitiation}</td>
+                <td>{item.shortDescription}</td>
+                <td>{item.process}</td>
+              </tr>
+            }) : null}
 
-        </tbody>
-      </table>
+            {eLogSelect === "area_and_equipment" ? areaAndERecordHistory?.map((item, index) => {
+              return <tr key={item.index}>
+                <td> {index + 1}</td>
+                <td>{item.eLogId}</td>
+                <td>{item.initiator}</td>
+                <td>{item.dateOfInitiation}</td>
+                <td>{item.shortDescription}</td>
+                <td>{item.process}</td>
+              </tr>
+            }) : null}
+
+            {eLogSelect === "equipment_cleaning" ? equipmentCRecordHistory?.map((item, index) => {
+              return <tr key={item.index}>
+                <td> {index + 1}</td>
+                <td>{item.eLogId}</td>
+                <td>{item.initiator}</td>
+                <td>{item.dateOfInitiation}</td>
+                <td>{item.shortDescription}</td>
+                <td>{item.process}</td>
+              </tr>
+            }) : null}
+
+ {eLogSelect === "All_Records" && combinedRecords?.map((item, index) => {
+      return (
+        <tr key={item.index}>
+          <td> {index + 1}</td>
+          <td>{item.eLogId}</td>
+          <td>{item.initiator}</td>
+          <td>{item.dateOfInitiation}</td>
+          <td>{item.shortDescription}</td>
+          <td>{item.process}</td>
+        </tr>
+      );
+    })}
+           
+          </tbody>
+        </table>
       </div>
     </>
   );

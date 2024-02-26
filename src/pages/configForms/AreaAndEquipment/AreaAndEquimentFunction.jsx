@@ -108,9 +108,15 @@ export const docFormFile = [
     instruction: "Please Attach all relevant or supporting documents",
     required: true,
     columnList: [
-      { id: "2.1.1.1", name: "Title of Document", type: "text" },
-      { id: "2.1.1.2", name: "Attached File", type: "File" },
-      { id: "2.1.1.3", name: "Remark", type: "text" },
+      { id: "2.1.1.0", name: "Date", type: "text" },
+      { id: "2.1.1.1", name: "Product", type: "text" },
+      { id: "2.1.1.2", name: "Batch No.", type: "text" },
+      { id: "2.1.1.3", name: "Type Of Activity", type: "text" },
+      { id: "2.1.1.4", name: "Reason For Cleaning", type: "text" },
+      { id: "2.1.1.5", name: "Area", type: "text" },
+      { id: "2.1.1.6", name: "Equipment Name:", type: "text" },
+      { id: "2.1.1.7", name: "Equipment Name:", type: "text" },
+      { id: "2.1.1.8", name: "Checked by", type: "text" },
     ],
   },
   {

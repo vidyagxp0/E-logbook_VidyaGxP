@@ -8,31 +8,39 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
 import ESignatureModal from '../../../components/Modals/ESignatureModal/ESignatureModal';
 import { Tooltip } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function EquipmentCleaningCheckList() {
+  const [isSelectedGeneral, setIsSelectedGeneral] = useState(false)
+  const [isSelectedDetails, setIsSelectedDetails] = useState(false)
   const [currentDate, setCurrentDate] = useState("");
   const [signatureModal, setSignatureModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const [saveModal, setSaveModal] = useState(false)
   const [clickedRowIndex, setClickedRowIndex] = useState();
-  const date=getCurrentDateTime()
+  const date = getCurrentDateTime()
+  const dispatch = useDispatch()
+  const uniqueId = "ABC/" + Math.floor(Math.random() * 1000).toString().padStart(3, '0') + "/" + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+
   const [instrumentSop, setInstrumentSop] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
     }),
     {
-      description:"",
-      initiator:"",
-      dateOfInitiation:date.currentDate,
-      shortDescription:"",
-      status:"",
+      eLogId: uniqueId,
+      description: "",
+      initiator: "",
+      dateOfInitiation: date.currentDate,
+      shortDescription: "",
+      status: "",
       currentDate: "",
       product: "",
       batchNo: "",
       changeControl: "",
-    
+      process: "Equipment cleaning checklist"
 
     }
   );
@@ -72,22 +80,35 @@ export default function EquipmentCleaningCheckList() {
     }
     setTableData(updatedTableData);
   };
+  const navigate = useNavigate();
+  const createObject = (newObject) => {
+    dispatch({ type: "ADD-EQUIPMENTDATA", payload: newObject });
+  };
+
+  const handleSave = (data) => {
+    toast.success("eLog Saved Successfully!");
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1000);
+    createObject(data);
+    navigate("/desktop");
+  }
+
 
   function getCurrentDateTime() {
     const now = new Date();
     const year = now.getFullYear().toString().slice(-2);
     const month = (now.getMonth() + 1).toString().padStart(2, "0");
     const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${month}/${day}/${year}`;
+    const currentDate = `${day}/${month}/${year}`;
 
     return {
       currentDate: currentDate,
     };
   }
 
-  // const eSignatureData = useSelector((state) => state.signature.eSignatureData);
-  // console.log(eSignatureData, "pankaj")
-console.log(instrumentSop,"instrumentSop")
+  const eSignatureData = useSelector((state) => state.signature.signatureData);
+
   return (
     <>
       <HeaderTop />
@@ -122,9 +143,12 @@ console.log(instrumentSop,"instrumentSop")
                 </div>
               </div>
               <div className="sub-head-2">Equipment Cleaning CheckList</div>
+              <div className="btn-forms">
+                <div className={`${isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"}`} onClick={() => { setIsSelectedGeneral(true), setIsSelectedDetails(false) }}>General Information</div>
+                <div className={`${isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"}`} onClick={() => { setIsSelectedDetails(true), setIsSelectedGeneral(false) }}> Details</div>
+              </div>
 
-
-              <div className="group-input">
+            {isSelectedGeneral===true?<>  <div className="group-input">
                 <label className="color-label">Initiator </label>
                 <div>
                   <input type="text" value={instrumentSop.initiator} onChange={(e) => setInstrumentSop({ initiator: e.target.value })} />
@@ -157,8 +181,9 @@ console.log(instrumentSop,"instrumentSop")
                 <div>
                   <input type="text" value={instrumentSop.status} onChange={(e) => setInstrumentSop({ status: e.target.value })} />
                 </div>
-              </div>
-              <div className="group-input">
+              </div></>:null}
+
+              {isSelectedDetails===true?<>  <div className="group-input">
                 <label className="color-label">Date :</label>
                 <input
                   type="text"
@@ -209,7 +234,7 @@ console.log(instrumentSop,"instrumentSop")
                   <tbody>
                     {tableData.map((item, index) => {
                       return <tr key={index}>
-                        <td>{item.sNo}</td>
+                        <td>{index + 1}</td>
                         <td>{item.description}</td>
                         <td>
                           <div className="radio-btn">
@@ -238,14 +263,14 @@ console.log(instrumentSop,"instrumentSop")
                         <td>
                           <input
                             type="text"
-                            value={clickedRowIndex === index ? '' : item.comments}
+                            value={clickedRowIndex === index ? eSignatureData.comment : item.comments}
                             onChange={(e) => handleInputChange(index, "comments", e.target.value)}
                           />
                         </td>
                         <td>
                           <input
                             type="text"
-                            value={index === clickedRowIndex ? '' : ""}
+                            value={index === clickedRowIndex ? eSignatureData.username : ""}
                             onChange={(e) => handleInputChange(index, "doneBy", e.target.value)}
                           />
                         </td>
@@ -267,6 +292,15 @@ console.log(instrumentSop,"instrumentSop")
                     })}
                   </tbody>
                 </table>
+              </div></>:null}
+            
+              <div className="button-block" style={{ width: "100%" }}>
+                <button className="themeBtn" onClick={() => handleSave(instrumentSop)}>
+                  Save
+                </button>
+                <button className="themeBtn" onClick={() => navigate("/desktop")}>
+                  Exit
+                </button>
               </div>
             </div>
           </div>

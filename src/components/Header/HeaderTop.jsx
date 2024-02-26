@@ -36,8 +36,8 @@ function HeaderTop() {
               <i className="ri-notification-3-fill"></i>
             </div>
 
-            <div class="drop-container">
-              <div class="drop-btn name-btn">
+            <div className="drop-container">
+              <div className="drop-btn name-btn">
                 <div className="profile-img">
                   <img src="amit_guru.jpg" alt="" />
                 </div>
