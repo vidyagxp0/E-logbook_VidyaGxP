@@ -3,7 +3,7 @@ import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
 import { MultiSelect } from "react-multi-select-component";
 import {
-  docFormFile, 
+  docFormFile,
 } from "./AreaAndEquimentFunction.jsx";
 
 
@@ -31,7 +31,7 @@ export default function AreaAndEquiment() {
       shortDescription: "",
       status: "",
       description: "",
-      process:"Area and equipment"
+      process: "Area and equipment"
     }
   );
 
@@ -101,62 +101,62 @@ export default function AreaAndEquiment() {
               </div>
 
 
-           {isSelectedGeneral===true?<>   <div className="group-input">
+              {isSelectedGeneral === true ? <>   <div className="group-input">
                 <label className="color-label">Initiator </label>
                 <div>
                   <input type="text" value={areaAndEquiment.initiator} onChange={(e) => setAreaAndEquiment({ initiator: e.target.value })} />
                 </div>
               </div>
 
-              <div className="group-input">
-                <label className="color-label">Date of Initiaton</label>
-                <div>
-                  <input type="text" value={date.currentDate} onChange={(e) => setAreaAndEquiment({ dateOfInitiation: e.target.value })} />
+                <div className="group-input">
+                  <label className="color-label">Date of Initiaton</label>
+                  <div>
+                    <input type="text" value={date.currentDate} onChange={(e) => setAreaAndEquiment({ dateOfInitiation: e.target.value })} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="group-input">
-                <label className="color-label">Short Description</label>
-                <div>
-                  <input type="text" value={areaAndEquiment.shortDescription} onChange={(e) => setAreaAndEquiment({ shortDescription: e.target.value })} />
+                <div className="group-input">
+                  <label className="color-label">Short Description</label>
+                  <div>
+                    <input type="text" value={areaAndEquiment.shortDescription} onChange={(e) => setAreaAndEquiment({ shortDescription: e.target.value })} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="group-input">
-                <label className="color-label">Description</label>
-                <div>
-                  <input type="text" value={areaAndEquiment.description} onChange={(e) => setAreaAndEquiment({ description: e.target.value })} />
+                <div className="group-input">
+                  <label className="color-label">Description</label>
+                  <div>
+                    <input type="text" value={areaAndEquiment.description} onChange={(e) => setAreaAndEquiment({ description: e.target.value })} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="group-input">
-                <label className="color-label">Status</label>
-                <div>
-                  <input type="text" value={areaAndEquiment.status} onChange={(e) => setAreaAndEquiment({ status: e.target.value })} />
-                </div>
-              </div></>:null}
+                <div className="group-input">
+                  <label className="color-label">Status</label>
+                  <div>
+                    <input type="text" value={areaAndEquiment.status} onChange={(e) => setAreaAndEquiment({ status: e.target.value })} />
+                  </div>
+                </div></> : null}
 
-{isSelectedDetails===true?<> <div className="group-input">
+              {isSelectedDetails === true ? <> <div className="group-input">
                 <label className="color-label">Area </label>
                 <div>
                   <input type="text" value={areaAndEquiment.area} onChange={(e) => setAreaAndEquiment({ area: e.target.value })} />
                 </div>
               </div>
-              <div className="group-input">
-                <label className="color-label">Area Code </label>
-                <div>
-                  <input type="text" value={areaAndEquiment.areaCode} onChange={(e) => setAreaAndEquiment({ areaCode: e.target.value })} />
+                <div className="group-input">
+                  <label className="color-label">Area Code </label>
+                  <div>
+                    <input type="text" value={areaAndEquiment.areaCode} onChange={(e) => setAreaAndEquiment({ areaCode: e.target.value })} />
+                  </div>
                 </div>
-              </div>
 
-              <Grid
-                label={docFormFile[2].label}
-                coloredLabel={docFormFile[2].coloredLabel}
-                required={docFormFile[2].required}
-                instruction={docFormFile[2].instruction}
-                columnList={docFormFile[0].columnList}
-              /></>:null}
-             
+                <Grid
+                  label={docFormFile[2].label}
+                  coloredLabel={docFormFile[2].coloredLabel}
+                  required={docFormFile[2].required}
+                  instruction={docFormFile[2].instruction}
+                  columnList={docFormFile[0].columnList}
+                /></> : null}
+
 
               <div className="button-block" style={{ width: "100%" }}>
                 <button className="themeBtn" onClick={() => handleSave(areaAndEquiment)}>

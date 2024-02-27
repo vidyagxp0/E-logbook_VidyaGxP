@@ -178,7 +178,7 @@
   place-items: center;
   align-content: center;
   font-size: 1.2rem;
-  border-left: 2px solid #000000;
+  /* border-left: 2px solid #000000; */
 }
 
 #config-form-document-page .document-form .sop-type-header .main-head div:nth-child(1) {
@@ -187,19 +187,19 @@
 }
 
 #config-form-document-page .button-block {
-  padding: 19px 20px;   
-  background: white;   
-  display: flex;   
-  justify-content: flex-end;   
-  align-items: center;   
-  flex-wrap: wrap;   
-  gap: 20px;   
-  border-left: 1px solid #808080;   
-  position: fixed;   
-  bottom: 0;   
-  right: 0;   
-  z-index: 2;   
-  box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px 10px;   
+  padding: 19px 20px;
+  background: white;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  border-left: 1px solid #808080;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px 10px;
 }
 
 #config-form-document-page .details-form-data .sub-head {
@@ -361,13 +361,17 @@
 
 }
 
-.btn-forms-select{
-  border: 1px solid grey;
+.btn-forms-select {
+  border: 1px solid rgb(68, 67, 67);
   padding: 5px 10px;
   border-radius: 28px;
 }
 
-.btn-forms-isSelected{
+.btn-forms-select:hover{
+ cursor: pointer;
+}
+
+.btn-forms-isSelected {
   background-color: grey;
   color: #ffffff;
   /* border: ; */
@@ -375,7 +379,7 @@
   border-radius: 28px;
 }
 
-.btn-forms{
+.btn-forms {
   display: flex;
   gap: 10px;
   margin: 10px;

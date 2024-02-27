@@ -148,42 +148,42 @@ export default function EquipmentCleaningCheckList() {
                 <div className={`${isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"}`} onClick={() => { setIsSelectedDetails(true), setIsSelectedGeneral(false) }}> Details</div>
               </div>
 
-            {isSelectedGeneral===true?<>  <div className="group-input">
+              {isSelectedGeneral === true ? <>  <div className="group-input">
                 <label className="color-label">Initiator </label>
                 <div>
                   <input type="text" value={instrumentSop.initiator} onChange={(e) => setInstrumentSop({ initiator: e.target.value })} />
                 </div>
               </div>
 
-              <div className="group-input">
-                <label className="color-label">Date of Initiaton</label>
-                <div>
-                  <input type="text" value={date.currentDate} onChange={(e) => setInstrumentSop({ dateOfInitiation: e.target.value })} />
+                <div className="group-input">
+                  <label className="color-label">Date of Initiaton</label>
+                  <div>
+                    <input type="text" value={date.currentDate} onChange={(e) => setInstrumentSop({ dateOfInitiation: e.target.value })} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="group-input">
-                <label className="color-label">Short Description</label>
-                <div>
-                  <input type="text" value={instrumentSop.shortDescription} onChange={(e) => setInstrumentSop({ shortDescription: e.target.value })} />
+                <div className="group-input">
+                  <label className="color-label">Short Description</label>
+                  <div>
+                    <input type="text" value={instrumentSop.shortDescription} onChange={(e) => setInstrumentSop({ shortDescription: e.target.value })} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="group-input">
-                <label className="color-label">Description</label>
-                <div>
-                  <input type="text" value={instrumentSop.description} onChange={(e) => setInstrumentSop({ description: e.target.value })} />
+                <div className="group-input">
+                  <label className="color-label">Description</label>
+                  <div>
+                    <input type="text" value={instrumentSop.description} onChange={(e) => setInstrumentSop({ description: e.target.value })} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="group-input">
-                <label className="color-label">Status</label>
-                <div>
-                  <input type="text" value={instrumentSop.status} onChange={(e) => setInstrumentSop({ status: e.target.value })} />
-                </div>
-              </div></>:null}
+                <div className="group-input">
+                  <label className="color-label">Status</label>
+                  <div>
+                    <input type="text" value={instrumentSop.status} onChange={(e) => setInstrumentSop({ status: e.target.value })} />
+                  </div>
+                </div></> : null}
 
-              {isSelectedDetails===true?<>  <div className="group-input">
+              {isSelectedDetails === true ? <>  <div className="group-input">
                 <label className="color-label">Date :</label>
                 <input
                   type="text"
@@ -192,108 +192,108 @@ export default function EquipmentCleaningCheckList() {
                   onChange={(e) => setInstrumentSop({ currentDate: e.target.value })}
                 ></input>
               </div>
-              <div className="group-input">
-                <label className="color-label">Product :</label>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.product}
-                  onChange={(e) => setInstrumentSop({ product: e.target.value })}
-                ></textarea>
-              </div>
+                <div className="group-input">
+                  <label className="color-label">Product :</label>
+                  <textarea
+                    type="text"
+                    rows="2"
+                    value={instrumentSop.product}
+                    onChange={(e) => setInstrumentSop({ product: e.target.value })}
+                  ></textarea>
+                </div>
 
-              <div className="group-input">
-                <label className="color-label">Batch No :</label>
-                <div className="instruction"></div>
-                <textarea
-                  type="text"
-                  rows="2"
-                  value={instrumentSop.batchNo}
-                  onChange={(e) => setInstrumentSop({ batchNo: e.target.value })}
-                ></textarea>
-              </div>
-              {/* <Grid
+                <div className="group-input">
+                  <label className="color-label">Batch No :</label>
+                  <div className="instruction"></div>
+                  <textarea
+                    type="text"
+                    rows="2"
+                    value={instrumentSop.batchNo}
+                    onChange={(e) => setInstrumentSop({ batchNo: e.target.value })}
+                  ></textarea>
+                </div>
+                {/* <Grid
                 label={docFormFile[0].label}
                 coloredLabel={docFormFile[0].coloredLabel}
                 required={docFormFile[0].required}
                 instruction={docFormFile[0].instruction}
                 columnList={docFormFile[0].columnList}
               /> */}
-              <div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>S no.</th>
-                      <th>Description</th>
-                      <th>Observation</th>
-                      <th>Comments</th>
-                      <th>Done By</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableData.map((item, index) => {
-                      return <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{item.description}</td>
-                        <td>
-                          <div className="radio-btn">
-                            <input
-                              type="radio"
-                              id={`ok${index}`}
-                              name={`observation${index}`}
-                              value="ok"
-                              checked={item.observation === "ok"}
-                              onChange={(e) => handleInputChange(index, "observation", e.target.value)}
-                            />
-                            <label>OK</label>
-                          </div>
-                          <div>
-                            <input
-                              type="radio"
-                              id={`no${index}`}
-                              name={`observation${index}`}
-                              value="no"
-                              checked={item.observation === "no"}
-                              onChange={(e) => handleInputChange(index, "observation", e.target.value)}
-                            />
-                            <label>Not ok</label>
-                          </div>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            value={clickedRowIndex === index ? eSignatureData.comment : item.comments}
-                            onChange={(e) => handleInputChange(index, "comments", e.target.value)}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            value={index === clickedRowIndex ? eSignatureData.username : ""}
-                            onChange={(e) => handleInputChange(index, "doneBy", e.target.value)}
-                          />
-                        </td>
-                        <td className="Actions">
-                          <Tooltip title="Delete">
-                            <DeleteIcon onClick={() => handleInputChange(index, "observation", "ok", "delete")} />
-                          </Tooltip>
-                          <Tooltip title="Update">
-                            <EditIcon onClick={() => { setUpdateModal(true), handleInputChange(index, "observation", "ok", "edit") }} />
-                          </Tooltip>
-                          <Tooltip title="Submit">
-                            <SaveAltIcon onClick={() => alert("Not clear, What we want")} />
-                          </Tooltip>
-                          <Tooltip title="save">
-                            <TurnedInNotIcon onClick={() => alert("Data save successfully")} />
-                          </Tooltip>
-                        </td>
+                <div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>S no.</th>
+                        <th>Description</th>
+                        <th>Observation</th>
+                        <th>Comments</th>
+                        <th>Done By</th>
+                        <th>Actions</th>
                       </tr>
-                    })}
-                  </tbody>
-                </table>
-              </div></>:null}
-            
+                    </thead>
+                    <tbody>
+                      {tableData.map((item, index) => {
+                        return <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.description}</td>
+                          <td>
+                            <div className="radio-btn">
+                              <input
+                                type="radio"
+                                id={`ok${index}`}
+                                name={`observation${index}`}
+                                value="ok"
+                                checked={item.observation === "ok"}
+                                onChange={(e) => handleInputChange(index, "observation", e.target.value)}
+                              />
+                              <label>OK</label>
+                            </div>
+                            <div>
+                              <input
+                                type="radio"
+                                id={`no${index}`}
+                                name={`observation${index}`}
+                                value="no"
+                                checked={item.observation === "no"}
+                                onChange={(e) => handleInputChange(index, "observation", e.target.value)}
+                              />
+                              <label>Not ok</label>
+                            </div>
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={clickedRowIndex === index ? eSignatureData.comment : item.comments}
+                              onChange={(e) => handleInputChange(index, "comments", e.target.value)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={index === clickedRowIndex ? eSignatureData.username : ""}
+                              onChange={(e) => handleInputChange(index, "doneBy", e.target.value)}
+                            />
+                          </td>
+                          <td className="Actions">
+                            <Tooltip title="Delete">
+                              <DeleteIcon onClick={() => handleInputChange(index, "observation", "ok", "delete")} />
+                            </Tooltip>
+                            <Tooltip title="Update">
+                              <EditIcon onClick={() => { setUpdateModal(true), handleInputChange(index, "observation", "ok", "edit") }} />
+                            </Tooltip>
+                            <Tooltip title="Submit">
+                              <SaveAltIcon onClick={() => alert("Not clear, What we want")} />
+                            </Tooltip>
+                            <Tooltip title="save">
+                              <TurnedInNotIcon onClick={() => alert("Data save successfully")} />
+                            </Tooltip>
+                          </td>
+                        </tr>
+                      })}
+                    </tbody>
+                  </table>
+                </div></> : null}
+
               <div className="button-block" style={{ width: "100%" }}>
                 <button className="themeBtn" onClick={() => handleSave(instrumentSop)}>
                   Save
