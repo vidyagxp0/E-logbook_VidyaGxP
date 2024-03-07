@@ -12,6 +12,7 @@ import AreaAndEquiment from "./pages/configForms/AreaAndEquipment/AreaAndEquimen
 import EquipmentCleaningCheckList from "./pages/configForms/EquipmentCheckList/EquipmentCleaningCheckList.jsx";
 import { Provider } from "react-redux";
 import store from "./store.js";
+import Chart from "./chart/Chart.jsx";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
      <Provider store={store}>
       <BrowserRouter>
         <Routes>
+        <Route path="/chart" element={<Chart/>} />
           <Route path="/" element={<Login />} />
           <Route path="/desktop" element={<Desktop />} />
           <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />

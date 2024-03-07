@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function EquipmentCleaningCheckList() {
-  const [isSelectedGeneral, setIsSelectedGeneral] = useState(false)
+  const [isSelectedGeneral, setIsSelectedGeneral] = useState(true)
   const [isSelectedDetails, setIsSelectedDetails] = useState(false)
   const [currentDate, setCurrentDate] = useState("");
   const [signatureModal, setSignatureModal] = useState(false);

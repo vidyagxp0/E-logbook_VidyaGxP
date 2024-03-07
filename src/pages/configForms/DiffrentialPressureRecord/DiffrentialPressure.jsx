@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
 export default function DiffrentialPressure() {
-  const [isSelectedGeneral, setIsSelectedGeneral] = useState(false)
+  const [isSelectedGeneral, setIsSelectedGeneral] = useState(true)
   const [isSelectedDetails, setIsSelectedDetails] = useState(false)
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
@@ -64,11 +64,9 @@ export default function DiffrentialPressure() {
     dispatch({ type: "ADD_OBJECT", payload: newObject });
   };
 
-
-
+  
   return (
     <>
-
       <HeaderTop />
       <div id="main-form-container">
         <div id="config-form-document-page">
@@ -199,7 +197,7 @@ export default function DiffrentialPressure() {
                 <div className="group-input">
                   <label className="color-label">Limit</label>
                   <div className="instruction"></div>
-                  <input type="number" value={differentialPRecord.limit} onChange={(e) => setDifferentialPRecord({ limit: e.target.value })} />
+                  <input type="number" className={`${differentialPRecord.limit< 0.6?"limit":(differentialPRecord.limit>2.6?"limit":"") }`} value={differentialPRecord.limit} onChange={(e) => setDifferentialPRecord({ limit: e.target.value })} />
                 </div>
 
                 <div className="group-input">

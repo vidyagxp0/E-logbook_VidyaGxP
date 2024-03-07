@@ -5,6 +5,8 @@ export const currentYear = currentDate.getFullYear();
 const object = getCurrentDateTime();
 let time = object.currentTime;
 let date = object.currentDate;
+
+
 function getCurrentDateTime() {
   // Get current date and time
   const now = new Date();
@@ -40,10 +42,10 @@ function generateRandomNumber(digits) {
 }
 
 let numberOfDigits = 12; // Change this to the desired number of digits
-let uniqueID = generateRandomNumber(numberOfDigits);
+const uniqueID = generateRandomNumber(numberOfDigits);
 // console.log(uniqueNumber);
 // let uniqueID = generateUUID();
-// console.log(uniqueID);
+console.log(uniqueID);
 
 export const docFormFile = [
   {
@@ -59,7 +61,7 @@ export const docFormFile = [
         type: "Number",
         isEditable: true,
       },
-      { id: "2.1.1.0", name: "uniqueId", value: "12/12/2", content:"pankaj", uniqueID, type: "text", isEditable: true },
+      { id: "2.1.1.0", name: "uniqueId", value: "12/12/2", content:uniqueID, type: "text", isEditable: true },
       { id: "2.1.1.1", name: "Title of Document", type: "text" },
       { id: "2.1.1.2", name: "Attached File", type: "File" },
       { id: "2.1.1.3", name: "Remark", type: "text" },
@@ -81,7 +83,7 @@ export const docFormFile = [
     coloredLabel: true,
     required: false,
     columnList: [
-      { id: "2.1.1.0", name: "uniqueId", value: "12/12/2", content:"pankaj", uniqueID, type: "text", isEditable: true },
+      { id: "2.1.1.0", name: "uniqueId", value:"", content:uniqueID,  type: "text", isEditable: false },
       { id: "2.1.1.1", name: "Date", value: "12/12/2", content: date, type: "date", isEditable: false },
       { id: "2.1.1.2", name: "Time", value: "10:00 AM", content: time, type: "text", isEditable: false },
       {
@@ -91,6 +93,7 @@ export const docFormFile = [
         value: "Default Value",
         type: "Number",
         isEditable: true,
+        
       },
       { id: "2.1.1.4", name: "Remark", value: "Default Value", content: "12/12/2", type: "text", isEditable: true },
       {
