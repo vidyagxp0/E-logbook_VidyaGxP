@@ -138,7 +138,7 @@ export default function EquipmentCleaningCheckList() {
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>LifeLink Digital </div>
+                  <div>VidyaGxp </div>
 
                 </div>
               </div>

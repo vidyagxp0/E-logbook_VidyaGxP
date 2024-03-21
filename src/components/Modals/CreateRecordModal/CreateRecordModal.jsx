@@ -36,29 +36,29 @@ function CreateRecordModal(_props) {
         projects: [
           {
             name: "Differential Pressure Record",
-            link: "/internal-audit",
+            link: "/differential-pressure-record",
           },
           {
             name: "Area & Equipment Usage Log",
-            link: "/external-audit",
+            link: "/area-and-equiment-usage-log",
           },
           {
             name: "Equipment Cleaning Checklist",
-            link: "/capa",
+            link: "/equipment-cleaning-checklist",
           },
         ],
         // projects: [
         //   {
         //     name: "Internal Audit",
-        //     link: "/internal-audit",
+        //     link: "/differential-pressure-record",
         //   },
         //   {
         //     name: "External Audit",
-        //     link: "/external-audit",
+        //     link: "/area-and-equiment-usage-log",
         //   },
         //   {
         //     name: "CAPA",
-        //     link: "/capa",
+        //     link: "/equipment-cleaning-checklist",
         //   },
         //   {
         //     name: "Audit Program",
@@ -100,29 +100,29 @@ function CreateRecordModal(_props) {
         projects: [
           {
             name: "Differential Pressure Record",
-            link: "/internal-audit",
+            link: "/differential-pressure-record",
           },
           {
             name: "Area & Equipment Usage Log",
-            link: "/external-audit",
+            link: "/area-and-equiment-usage-log",
           },
           {
             name: "Equipment Cleaning Checklist",
-            link: "/capa",
+            link: "/equipment-cleaning-checklist",
           },
         ],
         // projects: [
         //   {
         //     name: "Internal Audit",
-        //     link: "/internal-audit",
+        //     link: "/differential-pressure-record",
         //   },
         //   {
         //     name: "External Audit",
-        //     link: "/external-audit",
+        //     link: "/area-and-equiment-usage-log",
         //   },
         //   {
         //     name: "CAPA",
-        //     link: "/capa",
+        //     link: "/equipment-cleaning-checklist",
         //   },
         //   {
         //     name: "Audit Program",
@@ -164,29 +164,29 @@ function CreateRecordModal(_props) {
         projects: [
           {
             name: "Differential Pressure Record",
-            link: "/internal-audit",
+            link: "/differential-pressure-record",
           },
           {
             name: "Area & Equipment Usage Log",
-            link: "/external-audit",
+            link: "/area-and-equiment-usage-log",
           },
           {
             name: "Equipment Cleaning Checklist",
-            link: "/capa",
+            link: "/equipment-cleaning-checklist",
           },
         ],
         // projects: [
         //   {
         //     name: "Internal Audit",
-        //     link: "/internal-audit",
+        //     link: "/differential-pressure-record",
         //   },
         //   {
         //     name: "External Audit",
-        //     link: "/external-audit",
+        //     link: "/area-and-equiment-usage-log",
         //   },
         //   {
         //     name: "CAPA",
-        //     link: "/capa",
+        //     link: "/equipment-cleaning-checklist",
         //   },
         //   {
         //     name: "Audit Program",

@@ -94,7 +94,7 @@ export default function DiffrentialPressure() {
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>LifeLink Digital </div>
+                  <div>VidyaGxp</div>
                   {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
