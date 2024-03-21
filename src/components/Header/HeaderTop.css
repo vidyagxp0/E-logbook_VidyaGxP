@@ -94,7 +94,7 @@
   border: none;
   border-radius: 0px 50px 50px 0px;
   /* background: var(--themeColor); */
-  background:#efa035 ;
+  background: #efa035;
   color: white;
   font-weight: 900;
   cursor: pointer;
@@ -121,7 +121,7 @@
 }
 
 /* header right div  */
-.right{
+.right {
   height: 90px;
 }
 .Header_Top .header_inner .right {
@@ -139,7 +139,7 @@
   justify-content: center;
   color: #207ec6;
   border-radius: 50px;
-  margin-left: 225px;
+  margin-left: 200px;
 }
 
 .Header_Top .header_inner .right .bellLeft i {
@@ -165,17 +165,16 @@
   padding: 5%;
 }
 
-
-
 /* --------------------------------------- */
 .drop-container {
   position: relative;
   z-index: 9999;
+  right: 10px;
 }
 
 .drop-container .drop-btn {
   /* color: var(--theme1); */
-  color:#efa035;
+  color: #efa035;
   text-align: center;
   border-radius: 50%;
   height: 40px;
@@ -260,7 +259,6 @@
   background: #118dec36;
   /* color: var(--theme1); */
   color: #efa035;
-
 }
 
 .drop-container:hover .drop-list {

@@ -30,7 +30,6 @@ function Login() {
       toast.success("Login Successful");
     } else {
       toast.error("Invalid Username or Password");
-      ``;
     }
   };
   return (

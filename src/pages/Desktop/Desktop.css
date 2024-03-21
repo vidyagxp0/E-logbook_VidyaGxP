@@ -1,13 +1,13 @@
 .desktop-input-table-wrapper {
   height: calc(100vh - 150px);
-  width: 100vw;
+  width: 100%;
   padding: 20px 20px;
   /* background-color: white; */
 }
 
 .desktop-input-table-wrapper .input-wrapper {
   display: grid;
-  grid-template-columns: 8fr 1.5fr ;
+  grid-template-columns: 8fr 1.5fr;
   justify-content: space-between;
   align-content: space-between;
   /* align-content: ; */
