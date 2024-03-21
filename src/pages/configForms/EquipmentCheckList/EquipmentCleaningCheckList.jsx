@@ -135,10 +135,10 @@ export default function EquipmentCleaningCheckList() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/lifelogo.png" alt="..." />
+                  <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>LifeLink Digital </div>
+                  <div>VidyaGxp </div>
 
                 </div>
               </div>

@@ -30,13 +30,13 @@
 }
 
 .Header_Top .header_inner .left .logo img:nth-child(1) {
-  height: 35px;
-  width: 150px;
+  height: 70px;
+  width: 180px;
 }
 
 .Header_Top .header_inner .left .logo img {
-  height: 50px;
-  width: 150px;
+  height: 70px;
+  width: 180px;
 }
 
 /* center div  */
@@ -93,7 +93,8 @@
   height: 100%;
   border: none;
   border-radius: 0px 50px 50px 0px;
-  background: var(--themeColor);
+  /* background: var(--themeColor); */
+  background: #efa035;
   color: white;
   font-weight: 900;
   cursor: pointer;
@@ -120,7 +121,7 @@
 }
 
 /* header right div  */
-.right{
+.right {
   height: 90px;
 }
 .Header_Top .header_inner .right {
@@ -138,7 +139,7 @@
   justify-content: center;
   color: #207ec6;
   border-radius: 50px;
-  margin-left: 225px;
+  margin-left: 200px;
 }
 
 .Header_Top .header_inner .right .bellLeft i {
@@ -164,16 +165,16 @@
   padding: 5%;
 }
 
-
-
 /* --------------------------------------- */
 .drop-container {
   position: relative;
   z-index: 9999;
+  right: 10px;
 }
 
 .drop-container .drop-btn {
-  color: var(--theme1);
+  /* color: var(--theme1); */
+  color: #efa035;
   text-align: center;
   border-radius: 50%;
   height: 40px;
@@ -203,7 +204,8 @@
   border-radius: 55px;
   align-items: center;
   justify-content: center;
-  background: var(--theme1);
+  background: #efa035;
+  /* background: var(--theme1); */
   /* border-radius: 5px; */
   color: white;
   background-image: url("amit_guru.jpg");
@@ -255,7 +257,8 @@
 
 .drop-container .drop-list .drop-item:hover {
   background: #118dec36;
-  color: var(--theme1);
+  /* color: var(--theme1); */
+  color: #efa035;
 }
 
 .drop-container:hover .drop-list {

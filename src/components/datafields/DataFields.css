@@ -23,7 +23,8 @@
 
 .group-input table th {
   width: 80px;
-  background-color: var(--themeColor);
+  /* background-color: var(--themeColor); */
+  background-color: #efa035;
   color: #ffffff;
 }
 

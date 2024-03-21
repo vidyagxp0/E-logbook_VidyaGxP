@@ -15,7 +15,7 @@ function HeaderTop() {
           <div className="left">
             <div className="logo">
               {/* <img src="/logo1.png" alt="..." /> */}
-              <img src="/new-logo.png" alt="..." />
+              <img src="/vidyalogo2.png" alt="..." />
             </div>
           </div>
           <div className="center">
@@ -25,7 +25,7 @@ function HeaderTop() {
               </div>
               <div className="inputInnerRight flex flex-row">
                 <input type="search" />
-                <button className="btn btn-secondary" style={{ width: "30%", marginLeft: "20%", padding: "3%" }}>
+                <button className="" style={{ width: "30%", marginLeft: "20%", padding: "3%" }}>
                   Search
                 </button>
               </div>
