@@ -1,14 +1,6 @@
-import React, { useReducer, useState } from "react";
+import { useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-
-import { MultiSelect } from "react-multi-select-component";
-import {
-  docFormFile,
-} from "./AreaAndEquimentFunction.jsx";
-
-
-import Grid from "../../../components/datafields/Grid.jsx";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -182,8 +174,57 @@ export default function AreaAndEquiment() {
                       <td>OP / QL / PM / BM </td>
                       <td>PP / CB / CD / BD / CO / PM / CV / CR / BB / ID /  SS / ES </td>
 
-                      <td className="removedBorder3" rowSpan={"3"}>
-                      <table className="removedBorder3" id="2">
+                      <td className="removedBorder3 " rowSpan={"3"}>
+                        
+                      <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        <thead>
+          <tr>
+            <th colSpan="5" >Activity Time</th>
+          </tr>
+        </thead>
+        <tbody className=" ">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="custom-table">
+        <thead>
+          <tr>
+            <th colSpan="5">Cleaning time</th>
+          </tr>
+        </thead>
+        <tbody className="">
+          <tr>
+            <td className="truncate ">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+                      {/* <table className="removedBorder3" id="2">
                           <tbody className="removedBorder3">
                             <tr className="removedBorder3">
                               <td className="removedBorder3"   >
@@ -209,7 +250,7 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                         {/* <table className="removedBorder3" id="1">
                           <thead className="removedBorder3" >
                             <tr className="removedBorder3">
@@ -249,7 +290,55 @@ export default function AreaAndEquiment() {
 
 
                       <td className="removedBorder3" rowSpan={"3"}>
-                      <table className="removedBorder3" id="2">
+                      <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        <thead>
+          <tr>
+            <th colSpan="5">Activity Time</th>
+          </tr>
+        </thead>
+        <tbody className="">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="custom-table">
+        <thead>
+          <tr>
+            <th colSpan="5">Cleaning time</th>
+          </tr>
+        </thead>
+        <tbody className="">
+          <tr>
+            <td className="truncate">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+                      {/* <table className="removedBorder3" id="2">
                           <tbody className="removedBorder3">
                             <tr className="removedBorder3">
                               <td className="removedBorder3"   >
@@ -275,7 +364,7 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                         {/* <table className="removedBorder3">
                           <thead className="removedBorder3">
                           <tr className="removedBorder3">
@@ -313,19 +402,67 @@ export default function AreaAndEquiment() {
 
 
                       <td className="removedBorder3" rowSpan={"3"}>
+                        <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        <thead>
+          <tr>
+            <th colSpan="5">Activity Time</th>
+          </tr>
+        </thead>
+        <tbody className="">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
 
-                      <table className="removedBorder3" id="2">
+      <table className="custom-table">
+        <thead>
+          <tr>
+            <th colSpan="5">Cleaning time</th>
+          </tr>
+        </thead>
+        <tbody className="">
+          <tr>
+            <td className="truncate">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+
+                      {/* <table className="removedBorder3" id="2">
                            <tr className="removedBorder3">
-                              <td colspan="4" className="removedBorder3">Activity Time</td>
+                              <td colSpan="4" className="removedBorder3">Activity Time</td>
                             </tr>
                             <tr>
-                            <td colspan="5" className="removedBorder3">Cleaning Time</td>
+                            <td colSpan="5" className="removedBorder3">Cleaning Time</td>
                             </tr>
-                          <tbody className="removedBorder3">
+                          <tbody className="removedBorder3 deg">
                             <tr className="removedBorder3">
                               <td className="removedBorder3"   >
-                                <table className="removedBorder3">
-                                  <tr className="removedBorder3">
+                                <table className="removedBorder3 ">
+                                  <tr className="removedBorder3 ">
                                     <td> 1</td>
                                     <td> 2</td>
                                     <td> 3</td>
@@ -346,7 +483,7 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                         {/* <table className="removedBorder3" >
                           <thead className="removedBorder3">
                           <tr className="removedBorder3">
@@ -380,10 +517,7 @@ export default function AreaAndEquiment() {
                             </tr>
                           </tbody>
                         </table> */}
-                      </td>
-
-                      <td></td>
-                      <td></td>
+                      </td>   
                     </tr>
                   </tbody>
 
@@ -402,7 +536,47 @@ export default function AreaAndEquiment() {
                       <td>NA </td>
 
                       <td className="removedBorder3" >
-                        <table className="removedBorder3" id="2">
+                      <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        
+        <tbody className=" ">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="custom-table">
+        
+        <tbody className="">
+          <tr>
+            <td className="truncate ">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+                        {/* <table className="removedBorder3" id="2">
                           <tbody className="removedBorder3">
                             <tr className="removedBorder3">
                               <td className="removedBorder3"   >
@@ -428,11 +602,51 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                       </td>
 
                       <td className="removedBorder3" >
-                        <table className="removedBorder3">
+                      <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        
+        <tbody className=" ">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="custom-table">
+        
+        <tbody className="">
+          <tr>
+            <td className="truncate ">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+                        {/* <table className="removedBorder3">
                           <tbody className="removedBorder3">
                             <tr className="removedBorder3">
                               <td className="removedBorder3">
@@ -458,11 +672,51 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                       </td>
 
                       <td className="removedBorder3" >
-                        <table className="removedBorder3">
+                      <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        
+        <tbody className=" ">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="custom-table">
+        
+        <tbody className="">
+          <tr>
+            <td className="truncate ">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+                        {/* <table className="removedBorder3">
                           <tbody className="removedBorder3">
                             <tr className="removedBorder3">
                               <td className="removedBorder3">
@@ -488,7 +742,7 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                       </td>
 
                       <td className="table-td-eSign">E-sign</td>
@@ -511,7 +765,47 @@ export default function AreaAndEquiment() {
                       <td>NA </td>
 
                       <td className="removedBorder3">
-                        <table className="removedBorder3">
+                      <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        
+        <tbody className=" ">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="custom-table">
+        
+        <tbody className="">
+          <tr>
+            <td className="truncate ">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+                        {/* <table className="removedBorder3">
                           <tbody className="removedBorder2">
                             <tr className="removedBorder3">
                               <td className="removedBorder3">
@@ -537,11 +831,51 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                       </td>
 
                       <td className="removedBorder3">
-                        <table className="removedBorder3">
+                      <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        
+        <tbody className=" ">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="custom-table">
+        
+        <tbody className="">
+          <tr>
+            <td className="truncate ">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+                        {/* <table className="removedBorder3">
                           <tbody className="removedBorder3">
                             <tr className="removedBorder3">
                               <td className="removedBorder3">
@@ -567,11 +901,51 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                       </td>
 
                       <td className="removedBorder3">
-                        <table className="removedBorder3">
+                      <div className="d-flex" style={{display:"flex",justifyContent:"flex-start",alignItems:"start"}}>
+                        <table className="custom-table">
+        
+        <tbody className=" ">
+          <tr>
+            <td className="truncate">Data 1</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 2</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 3</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="custom-table">
+        
+        <tbody className="">
+          <tr>
+            <td className="truncate ">Data A</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data B</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data C</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data D</td>
+          </tr>
+          <tr>
+            <td className="truncate">Data E</td>
+          </tr>
+        </tbody>
+      </table>
+                        </div>
+                        {/* <table className="removedBorder3">
                           <tbody className="removedBorder3">
                             <tr className="removedBorder3">
                               <td className="removedBorder3">
@@ -597,7 +971,7 @@ export default function AreaAndEquiment() {
                               </td>
                             </tr>
                           </tbody>
-                        </table>
+                        </table> */}
                       </td>
 
                       <td className="table-td-eSign">E-sign</td>
