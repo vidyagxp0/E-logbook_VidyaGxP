@@ -2,10 +2,10 @@ import { useReducer, useState, useEffect } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
 import { tableData } from "./EquipmentCleaningFunction";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
+// import DeleteIcon from '@mui/icons-material/Delete';
+// import EditIcon from '@mui/icons-material/Edit';
+// import SaveAltIcon from '@mui/icons-material/SaveAlt';
+// import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
 import ESignatureModal from '../../../components/Modals/ESignatureModal/ESignatureModal';
 import { Tooltip } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -135,7 +135,7 @@ export default function EquipmentCleaningCheckList() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/lifelogo.png" alt="..." />
+                  <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>LifeLink Digital </div>

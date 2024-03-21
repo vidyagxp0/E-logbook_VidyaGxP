@@ -213,12 +213,13 @@
 
 #config-form-document-page .details-form-data .sub-head-2 {
   text-align: center;
-  background: var(--themeColor);
+  background: #efa035;
+  /* background: var(--themeColor); */
   /* margin-bottom: 20px; */
   padding: 10px 20px;
   font-size: 1.5rem;
   color: #ffffff;
-  border: 2px solid #000000;
+  /* border: 2px solid #000000; */
   border-radius: 40px;
 }
 
@@ -260,7 +261,7 @@
 }
 
 #config-form-document-page .group-input .file-attachment-field .add-btn div {
-  background: #002bff;
+  background: #efa035;
   color: white;
   border-radius: 5px;
   text-align: center;
