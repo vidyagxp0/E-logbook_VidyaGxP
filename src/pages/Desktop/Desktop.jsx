@@ -17,7 +17,7 @@ function Desktop() {
   const [labIncident, setLabIncident] = useState();
   const [changeControl, setChangeControl] = useState();
   const [eLogSelect, setELogSelect] = useState("All_Records")
-console.log(eLogSelect,"eLogSelect")
+
   function padNumber(number, width) {
     number = number + "";
     return number.length >= width ? number : new Array(width - number.length + 1).join("0") + number;

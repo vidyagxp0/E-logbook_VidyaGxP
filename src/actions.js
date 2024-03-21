@@ -21,3 +21,8 @@ export const saveAreaAndEquipmentData=(areaData)=>({
   type:"AREAANDEQUIPMENT_DATA",
   payload:areaData
 })
+
+export const differentialTable=(tabledata)=>({
+  type:"DIFERENTIALTABLE_DATA",
+  payload:tabledata
+})

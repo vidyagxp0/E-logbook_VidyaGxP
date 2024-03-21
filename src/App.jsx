@@ -13,6 +13,7 @@ import EquipmentCleaningCheckList from "./pages/configForms/EquipmentCheckList/E
 import { Provider } from "react-redux";
 import store from "./store.js";
 import Chart from "./chart/Chart.jsx";
+import Analytics from "./pages/analytics/Analytics.jsx";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Routes>
         <Route path="/chart" element={<Chart/>} />
           <Route path="/" element={<Login />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/desktop" element={<Desktop />} />
           <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
           <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />

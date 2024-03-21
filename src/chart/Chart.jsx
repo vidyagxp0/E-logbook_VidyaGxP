@@ -22,6 +22,8 @@ const Chart = () => {
         { name: '06 Mar 24', uv: 4.0, pv: 0.1, amt: 0.1, UCL: 5.6, LCL: 2.0 }
     ];
 
+
+    // const differentialPressure = useSelector((state) => state..objects);
     
     return (
         <LineChart width={1500} height={600} data={data} margin={{ top: 5, right: 20, bottom: 60, left: 0 }}>
