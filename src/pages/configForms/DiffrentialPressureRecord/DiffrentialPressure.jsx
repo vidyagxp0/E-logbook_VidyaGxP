@@ -1,11 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import {
-  docFormFile,
-  tableData,
-  time,
-} from "./DifferentialPressureFunction.jsx";
+import { docFormFile, tableData, time } from "./DifferentialPressureFunction.jsx";
 import Grid from "../../../components/datafields/Grid.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
@@ -109,7 +105,7 @@ export default function DiffrentialPressure() {
       description: "",
       status: "",
       department: "",
-      reviewComment:"",
+      reviewComment: "",
       compressionArea: "",
       limit: "",
       month: "february",
@@ -174,9 +170,7 @@ export default function DiffrentialPressure() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      isSelectedGeneral === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedGeneral(true), setIsSelectedDetails(false);
@@ -186,9 +180,7 @@ export default function DiffrentialPressure() {
                   </div>
                   <div
                     className={`${
-                      isSelectedDetails === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(true), setIsSelectedGeneral(false);
@@ -198,10 +190,7 @@ export default function DiffrentialPressure() {
                   </div>
                 </div>
                 <div className="analytics-btn">
-                  <button
-                    className="btn-print"
-                    onClick={() => navigate("/analytics")}
-                  >
+                  <button className="btn-print" onClick={() => navigate("/analytics")}>
                     Analytics
                   </button>
                   <button className="btn-print" onClick={() => {}}>
@@ -218,9 +207,7 @@ export default function DiffrentialPressure() {
                       <input
                         type="text"
                         value={differentialPRecord.initiator}
-                        onChange={(e) =>
-                          setDifferentialPRecord({ initiator: e.target.value })
-                        }
+                        onChange={(e) => setDifferentialPRecord({ initiator: e.target.value })}
                       />
                     </div>
                   </div>
@@ -276,9 +263,7 @@ export default function DiffrentialPressure() {
                       <input
                         type="text"
                         value={differentialPRecord.status}
-                        onChange={(e) =>
-                          setDifferentialPRecord({ status: e.target.value })
-                        }
+                        onChange={(e) => setDifferentialPRecord({ status: e.target.value })}
                       />
                     </div>
                   </div>
@@ -308,31 +293,21 @@ export default function DiffrentialPressure() {
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
                       </option>
-                      <option value="Central Quality Control">
-                        Central Quality Control
-                      </option>
+                      <option value="Central Quality Control">Central Quality Control</option>
                       <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">
-                        Plasma Sourcing Group
-                      </option>
+                      <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
                       <option value="Central Stores">Central Stores</option>
                       <option value="Information Technology Group">
                         Information Technology Group
                       </option>
-                      <option value="Molecular Medicine">
-                        Molecular Medicine
-                      </option>
-                      <option value="Central Laboratory">
-                        Central Laboratory
-                      </option>
+                      <option value="Molecular Medicine">Molecular Medicine</option>
+                      <option value="Central Laboratory">Central Laboratory</option>
                       <option value="Tech team">Tech team</option>
                     </select>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">
-                      Compression Area with respect to Corridor
-                    </label>
+                    <label className="color-label">Compression Area with respect to Corridor</label>
 
                     <div className="instruction">&nbsp;</div>
                     <select
@@ -368,9 +343,7 @@ export default function DiffrentialPressure() {
                           : ""
                       }`}
                       value={differentialPRecord.limit}
-                      onChange={(e) =>
-                        setDifferentialPRecord({ limit: e.target.value })
-                      }
+                      onChange={(e) => setDifferentialPRecord({ limit: e.target.value })}
                     />
                   </div>
 
@@ -385,8 +358,7 @@ export default function DiffrentialPressure() {
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction">
-                        {" "}
-                        Please Attach all relevant or supporting documents
+                        Add Differential Pressure and Remarks by clicking here
                       </div>
                     </div>
                   </div>
@@ -434,11 +406,7 @@ export default function DiffrentialPressure() {
                               type="number"
                               value={item.limit}
                               className={`${
-                                item.limit < 0.6
-                                  ? "limit"
-                                  : item.limit > 2.6
-                                  ? "limit"
-                                  : ""
+                                item.limit < 0.6 ? "limit" : item.limit > 2.6 ? "limit" : ""
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];
@@ -469,36 +437,29 @@ export default function DiffrentialPressure() {
                           </td>
                           <td>
                             <div className="w-5">
-                            <input
-                              type="file"
-                              onChange={(e) =>
-                                handleFileChange(index, e.target.files[0])
-                              }
-                            />
+                              <input
+                                type="file"
+                                onChange={(e) => handleFileChange(index, e.target.files[0])}
+                              />
                             </div>
-                           <div className="w-5">
-                           {item.file && (
-                              <button onClick={() => handleDeleteFile(index)}>
-                                Delete File
-                              </button>
-                            )}
-                           </div>
-                           
-                           
+                            <div className="w-5">
+                              {item.file && (
+                                <button onClick={() => handleDeleteFile(index)}>Delete File</button>
+                              )}
+                            </div>
                           </td>
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" &&
-                              (item.limit < 0.6 || item.limit > 2.6) && (
-                                <button
-                                  className="deviation-btn"
-                                  onClick={() => {
-                                    navigate("/chart"), handleTableDataSave;
-                                  }}
-                                >
-                                  Launch Deviation
-                                </button>
-                              )}
+                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
+                              <button
+                                className="deviation-btn"
+                                onClick={() => {
+                                  navigate("/chart"), handleTableDataSave;
+                                }}
+                              >
+                                Launch Deviation
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -518,13 +479,17 @@ export default function DiffrentialPressure() {
               ) : null}
 
               <div className="group-input">
-              <label>  Review By :- </label>
+                <label> Review By :- </label>
               </div>
 
               <div className="group-input">
                 <label htmlFor="">Review Comments</label>
-                <input value={differentialPRecord.reviewComment}
-                onChange={(e)=>{setDifferentialPRecord({reviewComment:e.target.value})}}/>
+                <input
+                  value={differentialPRecord.reviewComment}
+                  onChange={(e) => {
+                    setDifferentialPRecord({ reviewComment: e.target.value });
+                  }}
+                />
               </div>
             </div>
             <div className="button-block" style={{ width: "100%" }}>
