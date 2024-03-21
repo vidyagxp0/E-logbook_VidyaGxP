@@ -16,7 +16,7 @@ export default function DiffrentialPressure() {
   const [allTableData, setAllTableData] = useState([]);
   const navigate = useNavigate();
 
-  console.log(allTableData);
+  // console.log(allTableData);
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
   let date = object.currentDate;
@@ -357,9 +357,7 @@ export default function DiffrentialPressure() {
                   <div>
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
-                      <div className="addrowinstruction">
-                        Add Differential Pressure and Remarks by clicking here
-                      </div>
+                      <div className="addrowinstruction"></div>
                     </div>
                   </div>
                   <table>
@@ -465,6 +463,20 @@ export default function DiffrentialPressure() {
                       ))}
                     </tbody>
                   </table>
+
+                  <div className="group-input">
+                    <label> Review By :- </label>
+                  </div>
+
+                  <div className="group-input">
+                    <label htmlFor="">Review Comments</label>
+                    <input
+                      value={differentialPRecord.reviewComment}
+                      onChange={(e) => {
+                        setDifferentialPRecord({ reviewComment: e.target.value });
+                      }}
+                    />
+                  </div>
                   {/* Your JSX content */}
 
                   {/* <Grid
@@ -477,20 +489,6 @@ export default function DiffrentialPressure() {
                 /> */}
                 </>
               ) : null}
-
-              <div className="group-input">
-                <label> Review By :- </label>
-              </div>
-
-              <div className="group-input">
-                <label htmlFor="">Review Comments</label>
-                <input
-                  value={differentialPRecord.reviewComment}
-                  onChange={(e) => {
-                    setDifferentialPRecord({ reviewComment: e.target.value });
-                  }}
-                />
-              </div>
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button

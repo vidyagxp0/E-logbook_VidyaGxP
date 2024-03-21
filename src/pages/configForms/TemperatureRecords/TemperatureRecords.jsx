@@ -1,11 +1,9 @@
 import React from 'react'
 
-const TempratureRecords = () => {
+export default function TemperatureRecords() {
   return (
     <div>
       
     </div>
   )
 }
-
-export default TempratureRecords
