@@ -8,3 +8,10 @@
     border-radius: 10px;
     padding: 10px;
 }
+.heading{
+height: 20px;
+display: flex;
+justify-content: center;
+align-items: center;
+padding-top: 2rem;
+}
