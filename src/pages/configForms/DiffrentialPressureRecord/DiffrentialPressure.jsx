@@ -488,7 +488,7 @@ export default function DiffrentialPressure() {
 
                   <div className="group-input">
                     <label htmlFor="">Review Comments</label>
-                    <input
+                    <textarea
                       value={differentialPRecord.reviewComment}
                       onChange={(e) => {
                         setDifferentialPRecord({ reviewComment: e.target.value });
