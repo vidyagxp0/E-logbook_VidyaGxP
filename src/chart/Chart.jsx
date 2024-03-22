@@ -106,10 +106,11 @@ const Chart = () => {
             <option value="month">Month</option>
           </select>
         </div>
+        <div>{displayData}</div>
       </div>
       
     </div>
-    <div>{displayData}</div>
+    
     </>
   );
 };
