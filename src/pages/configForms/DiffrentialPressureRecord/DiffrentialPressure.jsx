@@ -9,6 +9,9 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { NoteAdd } from "@mui/icons-material";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import Report from "../../Reports/Report.jsx";
+
 
 export default function DiffrentialPressure() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -32,7 +35,7 @@ export default function DiffrentialPressure() {
   }
 
   useEffect(() => {
-    // Load data from local storage if available
+   
     const storedData = JSON.parse(localStorage.getItem("allTableData"));
     if (storedData) {
       setAllTableData(storedData);
@@ -193,9 +196,12 @@ export default function DiffrentialPressure() {
                   <button className="btn-print" onClick={() => navigate("/analytics")}>
                     Analytics
                   </button>
-                  <button className="btn-print" onClick={() => {}}>
+
+      <PDFDownloadLink document={<Report/>} filename="FORM">
+      {(  <button style={{padding:"10px"}} className="btn-print" onClick={() => {}}>
                     Print
-                  </button>
+                  </button> )} 
+      </PDFDownloadLink>
                 </div>
               </div>
 
