@@ -544,13 +544,3 @@ th.removedBorder3{
 
 
 
- .rotate-270 {
-    transform: rotate(270deg);
-  }
-  
-  .truncate {
-    max-width: 100px; /* Adjust this width as needed */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }

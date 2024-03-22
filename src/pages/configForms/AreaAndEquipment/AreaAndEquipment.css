@@ -132,17 +132,5 @@
     border:none !important
   }
   
-  .rotate-270 {
-    transform: rotate(270deg);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
   
-  .truncate {
-    max-width: 100px; /* Adjust this width as needed */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  

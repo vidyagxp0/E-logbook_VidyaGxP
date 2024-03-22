@@ -6,7 +6,6 @@ import EquipmentCleaningReducers from './components/Reducers/EquipmentCleaningRe
 import signatureReducer from './components/Reducers/saveSignatureReducer';
 import areaAndEquipmentReducers from './components/Reducers/areaAndEquipmentReducers';
 import DifferentialPressureReducers from './components/Reducers/DifferentialPressureReducer';
-import DPRpanelReducers from './components/Reducers/DPRpanelReducers';
 
 // const rootReducer = combineReducers({
 //   signature: signatureReducer,
@@ -17,8 +16,7 @@ const reducer=combineReducers({
     equipment:EquipmentCleaningReducers,
     signature:signatureReducer,
     area:areaAndEquipmentReducers,
-    tableData:DifferentialPressureReducers,
-    dprPanelData:DPRpanelReducers
+    tableData:DifferentialPressureReducers
 })
 const store = createStore(reducer);
 
