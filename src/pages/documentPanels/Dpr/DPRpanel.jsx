@@ -3,16 +3,16 @@ import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../docPanel.css";
 import { docFormFile, tableData, time } from "./Dprpanelfunctions.jsx";
-import Grid from "../../../components/datafields/Grid.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { NoteAdd } from "@mui/icons-material";
+
 export default function DPRpanel() {
   const differentialPRecordHistory = useSelector((state) => state.objects.objects);
-  console.log(differentialPRecordHistory);
+  const elogId=useSelector((state)=>state.dprPanelData)
+ console.log(differentialPRecordHistory,"elogId")
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
@@ -30,7 +30,7 @@ export default function DPRpanel() {
       currentDate: currentDate,
     };
   }
-console.log(allTableData);
+
   useEffect(() => {
     // Load data from local storage if available
     const storedData = JSON.parse(localStorage.getItem("allTableData"));
@@ -131,6 +131,10 @@ console.log(allTableData);
   const TableData = (data) => {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
+
+  const differentialData=useSelector(state=>state.tableData.differentialTableData
+    )
+  console.log(differentialData,"differentialData")
   return (
     <>
       <HeaderTop />
@@ -199,15 +203,21 @@ console.log(allTableData);
                 </div>
               </div>
 
-              {isSelectedGeneral === true ? (
+            {differentialPRecordHistory?.map((itm,idx)=>{
+              return <>
+                {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Initiator </label>
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.initiator}
-                        onChange={(e) => setDifferentialPRecord({ initiator: e.target.value })}
+                        value={itm.initiator}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].initiator = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -232,12 +242,12 @@ console.log(allTableData);
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.shortDescription}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            shortDescription: e.target.value,
-                          })
-                        }
+                        value={itm.shortDescription}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].shortDescription = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -247,12 +257,12 @@ console.log(allTableData);
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.description}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            description: e.target.value,
-                          })
-                        }
+                        value={itm.description}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].description = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -262,8 +272,12 @@ console.log(allTableData);
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.status}
-                        onChange={(e) => setDifferentialPRecord({ status: e.target.value })}
+                        value={itm.status}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].status = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -279,7 +293,7 @@ console.log(allTableData);
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={differentialPRecord.department}
+                      value={itm.department}
                       onChange={(e) =>
                         setDifferentialPRecord({
                           department: e.target.value,
@@ -313,7 +327,7 @@ console.log(allTableData);
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={differentialPRecord.compressionArea}
+                      value={itm.compressionArea}
                       onChange={(e) =>
                         setDifferentialPRecord({
                           compressionArea: e.target.value,
@@ -336,13 +350,13 @@ console.log(allTableData);
                     <input
                       type="number"
                       className={`${
-                        differentialPRecord.limit < 0.6
+                        itm.limit < 0.6
                           ? "limit"
-                          : differentialPRecord.limit > 2.6
+                          : itm.limit > 2.6
                           ? "limit"
                           : ""
                       }`}
-                      value={differentialPRecord.limit}
+                      value={itm.limit}
                       onChange={(e) => setDifferentialPRecord({ limit: e.target.value })}
                     />
                   </div>
@@ -375,7 +389,7 @@ console.log(allTableData);
                       </tr>
                     </thead>
                     <tbody>
-                      {allTableData.map((item, index) => (
+                      {differentialData[0].map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>UID000{index + 1}</td>
@@ -471,7 +485,7 @@ console.log(allTableData);
                   <div className="group-input">
                     <label htmlFor="">Review Comments</label>
                     <input
-                      value={differentialPRecord.reviewComment}
+                      value={itm.reviewComment}
                       onChange={(e) => {
                         setDifferentialPRecord({ reviewComment: e.target.value });
                       }}
@@ -489,6 +503,10 @@ console.log(allTableData);
                 /> */}
                 </>
               ) : null}
+              </>
+            })}
+
+              
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button

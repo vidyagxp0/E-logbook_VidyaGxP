@@ -92,6 +92,7 @@ export default function DiffrentialPressure() {
     }
     toast.success("eLog Saved Successfully!");
     createObject(data);
+    TableData(allTableData);
     navigate("/desktop");
   };
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
@@ -134,6 +135,8 @@ export default function DiffrentialPressure() {
   const TableData = (data) => {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
+
+  
   return (
     <>
       <HeaderTop />
@@ -192,7 +195,7 @@ export default function DiffrentialPressure() {
                     Details
                   </div>
                 </div>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button className="btn-print" onClick={() => navigate("/analytics")}>
                     Analytics
                   </button>
@@ -203,6 +206,8 @@ export default function DiffrentialPressure() {
                   </button> )} 
       </PDFDownloadLink>
                 </div>
+                  </button>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -456,13 +461,28 @@ export default function DiffrentialPressure() {
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
                               <button
+                                style={{
+                                  cursor: "pointer",
+                                }}
+                                className="deviation-btn"
+                                onClick={() => {
+                                  window.location.href = "https://naveen.vidyagxp.com/deviation";
+                                }}
+                              >
+                                 Deviation
+                              </button>
+                              
+                            )}
+                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
+                              <button
                                 className="deviation-btn"
                                 onClick={() => {
                                   navigate("/chart"), handleTableDataSave;
                                 }}
                               >
-                                Launch Deviation
+                                 Action item
                               </button>
+                              
                             )}
                           </td>
                         </tr>
@@ -470,19 +490,20 @@ export default function DiffrentialPressure() {
                     </tbody>
                   </table>
 
-                  <div className="group-input">
+                  {/* <div className="group-input m">
                     <label> Review By :- </label>
-                  </div>
-
+                  </div> */}
+{/* 
                   <div className="group-input">
                     <label htmlFor="">Review Comments</label>
-                    <input
+                    <textarea
                       value={differentialPRecord.reviewComment}
                       onChange={(e) => {
                         setDifferentialPRecord({ reviewComment: e.target.value });
                       }}
                     />
-                  </div>
+                  </div> */}
+
                   {/* Your JSX content */}
 
                   {/* <Grid

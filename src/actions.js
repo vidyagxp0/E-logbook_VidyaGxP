@@ -26,3 +26,8 @@ export const differentialTable=(tabledata)=>({
   type:"DIFERENTIALTABLE_DATA",
   payload:tabledata
 })
+
+export const setSelectedELogId = (eLogId) => ({
+  type: "SET_SELECTED_ELOG_ID",
+  payload: eLogId,
+});
