@@ -3,16 +3,15 @@ import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../docPanel.css";
 import { docFormFile, tableData, time } from "./Dprpanelfunctions.jsx";
-import Grid from "../../../components/datafields/Grid.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { NoteAdd } from "@mui/icons-material";
+
 export default function DPRpanel() {
   const differentialPRecordHistory = useSelector((state) => state.objects.objects);
-  console.log(differentialPRecordHistory);
+ 
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
@@ -30,7 +29,7 @@ export default function DPRpanel() {
       currentDate: currentDate,
     };
   }
-console.log(allTableData);
+
   useEffect(() => {
     // Load data from local storage if available
     const storedData = JSON.parse(localStorage.getItem("allTableData"));
@@ -131,6 +130,9 @@ console.log(allTableData);
   const TableData = (data) => {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
+
+  const differentialData=useSelector(state=>state.tableData)
+  console.log(differentialData,"differentialData")
   return (
     <>
       <HeaderTop />

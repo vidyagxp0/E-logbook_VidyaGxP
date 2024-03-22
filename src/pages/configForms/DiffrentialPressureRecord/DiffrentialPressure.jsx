@@ -89,6 +89,7 @@ export default function DiffrentialPressure() {
     }
     toast.success("eLog Saved Successfully!");
     createObject(data);
+    TableData(allTableData);
     navigate("/desktop");
   };
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
@@ -131,6 +132,8 @@ export default function DiffrentialPressure() {
   const TableData = (data) => {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
+
+  
   return (
     <>
       <HeaderTop />
@@ -458,8 +461,20 @@ export default function DiffrentialPressure() {
                                   window.location.href = "https://naveen.vidyagxp.com/deviation";
                                 }}
                               >
-                                Launch Deviation
+                                 Deviation
                               </button>
+                              
+                            )}
+                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
+                              <button
+                                className="deviation-btn"
+                                onClick={() => {
+                                  navigate("/chart"), handleTableDataSave;
+                                }}
+                              >
+                                 Action item
+                              </button>
+                              
                             )}
                           </td>
                         </tr>
@@ -467,7 +482,7 @@ export default function DiffrentialPressure() {
                     </tbody>
                   </table>
 
-                  <div className="group-input">
+                  <div className="group-input m">
                     <label> Review By :- </label>
                   </div>
 
