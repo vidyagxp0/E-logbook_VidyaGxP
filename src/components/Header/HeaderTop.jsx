@@ -15,7 +15,12 @@ function HeaderTop() {
           <div className="left">
             <div className="logo">
               {/* <img src="/logo1.png" alt="..." /> */}
-              <img src="/vidyalogo2.png" alt="..." />
+              <img
+                onClick={() => navigate("/desktop")}
+                style={{ cursor: "pointer" }}
+                src="/vidyalogo2.png"
+                alt="..."
+              />
             </div>
           </div>
           <div className="center">
@@ -68,7 +73,6 @@ function HeaderTop() {
                 </Link>
               </div>
             </div>
-            
           </div>
         </div>
       </div>

@@ -2,9 +2,9 @@ export const site = localStorage.getItem("site");
 export const currentDate = new Date();
 export const currentYear = currentDate.getFullYear();
 
-const object = getCurrentDateTime();
-let time = object.currentTime;
-let date = object.currentDate;
+ const object = getCurrentDateTime();
+ export let time = object.currentTime;
+ export let date = object.currentDate;
 
 
 function getCurrentDateTime() {
@@ -33,19 +33,21 @@ function getCurrentDateTime() {
   };
 }
 
-function generateRandomNumber(digits) {
-  let randomNumber = "";
-  for (let i = 0; i < digits; i++) {
-    randomNumber += Math.floor(Math.random() * 10); // Append a random digit (0-9)
+
+
+let counter = 0; // Counter for the last digit
+
+function generateUniqueID() {
+  if (counter === 9999) {
+    counter = 0; // Reset the counter when it reaches 9999
   }
-  return randomNumber;
+  counter++;
+  return "UID" + counter.toString().padStart(4, '0'); 
 }
 
-let numberOfDigits = 12; // Change this to the desired number of digits
-const uniqueID = generateRandomNumber(numberOfDigits);
-// console.log(uniqueNumber);
-// let uniqueID = generateUUID();
+const uniqueID = generateUniqueID();
 console.log(uniqueID);
+
 
 export const docFormFile = [
   {
@@ -61,7 +63,7 @@ export const docFormFile = [
         type: "Number",
         isEditable: true,
       },
-      { id: "2.1.1.0", name: "uniqueId", value: "12/12/2", content:uniqueID, type: "text", isEditable: true },
+      { id: "2.1.1.0", name: "Unique Id", value: "12/12/2", content:uniqueID, type: "text", isEditable: true },
       { id: "2.1.1.1", name: "Title of Document", type: "text" },
       { id: "2.1.1.2", name: "Attached File", type: "File" },
       { id: "2.1.1.3", name: "Remark", type: "text" },
@@ -83,7 +85,7 @@ export const docFormFile = [
     coloredLabel: true,
     required: false,
     columnList: [
-      { id: "2.1.1.0", name: "uniqueId", value:"", content:uniqueID,  type: "text", isEditable: false },
+      { id: "2.1.1.0", name: "Unique Id", value:"", content:uniqueID,  type: "text", isEditable: false },
       { id: "2.1.1.1", name: "Date", value: "12/12/2", content: date, type: "date", isEditable: false },
       { id: "2.1.1.2", name: "Time", value: "10:00 AM", content: time, type: "text", isEditable: false },
       {
@@ -107,6 +109,19 @@ export const docFormFile = [
     ],
   },
 ];
+
+export const tableData=[{sNo:"1",description:"	Machine is switched OFF",observation:"",comments:"",doneBy:""},
+{sNo:"2",description:"Hopper and constant amount feeder Cleaned",observation:"",comments:"",doneBy:""},
+{sNo:"3",description:"	Scrapper assembly, ejection chute and powder scraper cleaned.	",observation:"",comments:"",doneBy:""},
+{sNo:"4",description:"Powder conveying system, hosepipes and filter cleaned. 	",observation:"",comments:"",doneBy:""},
+{sNo:"5",description:"Turret clean	",observation:"",comments:"",doneBy:""},
+{sNo:"6",description:"Punches and dies cleaned.	",observation:"",comments:"",doneBy:""},
+{sNo:"7",description:"Main compression and pre-compression rollers cleaned.	",observation:"",comments:"",doneBy:""},
+{sNo:"8",description:"Turret clean	",observation:"",comments:"",doneBy:""},
+{sNo:"9",description:"Machine platform cleaned.	",observation:"",comments:"",doneBy:""},
+{sNo:"10",description:"Top and bottom side of the machine cleaned.",observation:"",comments:"",doneBy:""},
+{sNo:"11",description:"All the screws, bolts and sensors cleaned.	",observation:"",comments:"",doneBy:""},]
+
 
 // this data is old project data start
 

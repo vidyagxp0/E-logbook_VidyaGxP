@@ -13,22 +13,26 @@ import EquipmentCleaningCheckList from "./pages/configForms/EquipmentCheckList/E
 import { Provider } from "react-redux";
 import store from "./store.js";
 import Chart from "./chart/Chart.jsx";
+import Analytics from "./pages/analytics/Analytics.jsx";
+import DPRpanel from "./pages/documentPanels/Dpr/DPRpanel.jsx";
 
 function App() {
   return (
     <>
-     <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-        <Route path="/chart" element={<Chart/>} />
-          <Route path="/" element={<Login />} />
-          <Route path="/desktop" element={<Desktop />} />
-          <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
-          <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />
-          <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
-        </Routes>
-      </BrowserRouter>
-      <ToastContainer autoClose={2000} pauseOnHover={false} />
+      <Provider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/chart" element={<Chart />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/dpr-panel" element={<DPRpanel />} />
+            <Route path="/desktop" element={<Desktop />} />
+            <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
+            <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />
+            <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
+          </Routes>
+        </BrowserRouter>
+        <ToastContainer autoClose={2000} pauseOnHover={false} />
       </Provider>
     </>
   );
