@@ -10,9 +10,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
 
 export default function DPRpanel() {
-  const differentialPRecordHistory = useSelector((state) => state.objects.objects);
-  const elogId=useSelector((state)=>state.dprPanelData)
- console.log(differentialPRecordHistory,"elogId")
+  const differentialPRecordHistory = useSelector(
+    (state) => state.objects.objects
+  );
+  const elogId = useSelector((state) => state.dprPanelData);
+  console.log(differentialPRecordHistory, "elogId");
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
@@ -132,9 +134,10 @@ export default function DPRpanel() {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
 
-  const differentialData=useSelector(state=>state.tableData.differentialTableData
-    )
-  console.log(differentialData,"differentialData")
+  const differentialData = useSelector(
+    (state) => state.tableData.differentialTableData
+  );
+  console.log(differentialData, "differentialData");
   return (
     <>
       <HeaderTop />
@@ -174,7 +177,9 @@ export default function DPRpanel() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      isSelectedGeneral === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedGeneral(true), setIsSelectedDetails(false);
@@ -184,7 +189,9 @@ export default function DPRpanel() {
                   </div>
                   <div
                     className={`${
-                      isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      isSelectedDetails === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(true), setIsSelectedGeneral(false);
@@ -194,7 +201,10 @@ export default function DPRpanel() {
                   </div>
                 </div>
                 <div className="analytics-btn">
-                  <button className="btn-print" onClick={() => navigate("/analytics")}>
+                  <button
+                    className="btn-print"
+                    onClick={() => navigate("/analytics")}
+                  >
                     Analytics
                   </button>
                   <button className="btn-print" onClick={() => {}}>
@@ -203,297 +213,355 @@ export default function DPRpanel() {
                 </div>
               </div>
 
-            {differentialPRecordHistory?.map((itm,idx)=>{
-              return <>
-                {isSelectedGeneral === true ? (
-                <>
-                  <div className="group-input">
-                    <label className="color-label">Initiator </label>
-                    <div>
-                      <input
-                        type="text"
-                        value={itm.initiator}
-                        onChange={(e) => {
-                          const updatedHistory = [...differentialPRecordHistory];
-                          updatedHistory[idx].initiator = e.target.value;
-                          setDifferentialPRecord(updatedHistory);
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Date of Initiator</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={date}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            dateOfInitiation: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Short Description</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={itm.shortDescription}
-                        onChange={(e) => {
-                          const updatedHistory = [...differentialPRecordHistory];
-                          updatedHistory[idx].shortDescription = e.target.value;
-                          setDifferentialPRecord(updatedHistory);
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Description</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={itm.description}
-                        onChange={(e) => {
-                          const updatedHistory = [...differentialPRecordHistory];
-                          updatedHistory[idx].description = e.target.value;
-                          setDifferentialPRecord(updatedHistory);
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Status</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={itm.status}
-                        onChange={(e) => {
-                          const updatedHistory = [...differentialPRecordHistory];
-                          updatedHistory[idx].status = e.target.value;
-                          setDifferentialPRecord(updatedHistory);
-                        }}
-                      />
-                    </div>
-                  </div>
-                </>
-              ) : null}
-
-              {isSelectedDetails === true ? (
-                <>
-                  <div className="group-input">
-                    <label className="color-label">Department</label>
-
-                    <div className="instruction">&nbsp;</div>
-                    <select
-                      className="form-control"
-                      name="assign_to"
-                      value={itm.department}
-                      onChange={(e) =>
-                        setDifferentialPRecord({
-                          department: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">-- Select --</option>
-                      <option value="Corporate Quality Assurance">
-                        Corporate Quality Assurance
-                      </option>
-                      <option value="Quality Assurance Bio-Pharma">
-                        Quality Assurance Bio-Pharma
-                      </option>
-                      <option value="Central Quality Control">Central Quality Control</option>
-                      <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
-                      <option value="Central Stores">Central Stores</option>
-                      <option value="Information Technology Group">
-                        Information Technology Group
-                      </option>
-                      <option value="Molecular Medicine">Molecular Medicine</option>
-                      <option value="Central Laboratory">Central Laboratory</option>
-                      <option value="Tech team">Tech team</option>
-                    </select>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Compression Area with respect to Corridor</label>
-
-                    <div className="instruction">&nbsp;</div>
-                    <select
-                      className="form-control"
-                      name="assign_to"
-                      value={itm.compressionArea}
-                      onChange={(e) =>
-                        setDifferentialPRecord({
-                          compressionArea: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="Select a value">Select a value</option>
-                      <option value="Area 1">Area 1</option>
-                      <option value="Area 2">Area 2</option>
-                      <option value="Area 3">Area 3</option>
-                      <option value="Area 4">Area 4</option>
-                      <option value="Area 5">Area 5</option>
-                      <option value="Area 6">Area 6</option>
-                    </select>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Limit</label>
-                    <div className="instruction"></div>
-                    <input
-                      type="number"
-                      className={`${
-                        itm.limit < 0.6
-                          ? "limit"
-                          : itm.limit > 2.6
-                          ? "limit"
-                          : ""
-                      }`}
-                      value={itm.limit}
-                      onChange={(e) => setDifferentialPRecord({ limit: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Month:</label>
-                    <div>
-                      <input type="text" value={currentMonth} readOnly />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
-                      <div className="addrowinstruction"></div>
-                    </div>
-                  </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>S no.</th>
-                        <th>Unique Id</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Differential Pressure</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
-                        <th>Supporting Documents</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {differentialData[0].map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>UID000{index + 1}</td>
-                          <td>
+              {differentialPRecordHistory?.map((itm, idx) => {
+                return (
+                  <>
+                    {isSelectedGeneral === true ? (
+                      <>
+                        <div className="group-input">
+                          <label className="color-label">Initiator </label>
+                          <div>
                             <input
-                              value={item.date}
+                              type="text"
+                              value={itm.initiator}
                               onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].date = e.target.value;
-                                setAllTableData(newData);
+                                const updatedHistory = [
+                                  ...differentialPRecordHistory,
+                                ];
+                                updatedHistory[idx].initiator = e.target.value;
+                                setDifferentialPRecord(updatedHistory);
                               }}
                             />
-                          </td>
-                          <td>
-                            <input
-                              value={item.time}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].time = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              value={item.limit}
-                              className={`${
-                                item.limit < 0.6 ? "limit" : item.limit > 2.6 ? "limit" : ""
-                              }`}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].limit = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.remark}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].remark = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.checkedBy}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].checkedBy = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <div className="w-5">
-                              <input
-                                type="file"
-                                onChange={(e) => handleFileChange(index, e.target.files[0])}
-                              />
-                            </div>
-                            <div className="w-5">
-                              {item.file && (
-                                <button onClick={() => handleDeleteFile(index)}>Delete File</button>
-                              )}
-                            </div>
-                          </td>
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
-                              <button
-                                className="deviation-btn"
-                                onClick={() => {
-                                  navigate("/chart"), handleTableDataSave;
-                                }}
-                              >
-                                Launch Deviation
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          </div>
+                        </div>
 
-                  <div className="group-input">
-                    <label> Review By :- </label>
-                  </div>
+                        <div className="group-input">
+                          <label className="color-label">
+                            Date of Initiator
+                          </label>
+                          <div>
+                            <input
+                              type="text"
+                              value={date}
+                              onChange={(e) =>
+                                setDifferentialPRecord({
+                                  dateOfInitiation: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
 
-                  <div className="group-input">
-                    <label htmlFor="">Review Comments</label>
-                    <input
-                      value={itm.reviewComment}
-                      onChange={(e) => {
-                        setDifferentialPRecord({ reviewComment: e.target.value });
-                      }}
-                    />
-                  </div>
-                  {/* Your JSX content */}
+                        <div className="group-input">
+                          <label className="color-label">
+                            Short Description
+                          </label>
+                          <div>
+                            <input
+                              type="text"
+                              value={itm.shortDescription}
+                              onChange={(e) => {
+                                const updatedHistory = [
+                                  ...differentialPRecordHistory,
+                                ];
+                                updatedHistory[idx].shortDescription =
+                                  e.target.value;
+                                setDifferentialPRecord(updatedHistory);
+                              }}
+                            />
+                          </div>
+                        </div>
 
-                  {/* <Grid
+                        <div className="group-input">
+                          <label className="color-label">Description</label>
+                          <div>
+                            <input
+                              type="text"
+                              value={itm.description}
+                              onChange={(e) => {
+                                const updatedHistory = [
+                                  ...differentialPRecordHistory,
+                                ];
+                                updatedHistory[idx].description =
+                                  e.target.value;
+                                setDifferentialPRecord(updatedHistory);
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="group-input">
+                          <label className="color-label">Status</label>
+                          <div>
+                            <input
+                              type="text"
+                              value={itm.status}
+                              onChange={(e) => {
+                                const updatedHistory = [
+                                  ...differentialPRecordHistory,
+                                ];
+                                updatedHistory[idx].status = e.target.value;
+                                setDifferentialPRecord(updatedHistory);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+
+                    {isSelectedDetails === true ? (
+                      <>
+                        <div className="group-input">
+                          <label className="color-label">Department</label>
+
+                          <div className="instruction">&nbsp;</div>
+                          <select
+                            className="form-control"
+                            name="assign_to"
+                            value={itm.department}
+                            onChange={(e) =>
+                              setDifferentialPRecord({
+                                department: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="">-- Select --</option>
+                            <option value="Corporate Quality Assurance">
+                              Corporate Quality Assurance
+                            </option>
+                            <option value="Quality Assurance Bio-Pharma">
+                              Quality Assurance Bio-Pharma
+                            </option>
+                            <option value="Central Quality Control">
+                              Central Quality Control
+                            </option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Plasma Sourcing Grou">
+                              Plasma Sourcing Group
+                            </option>
+                            <option value="Central Stores">
+                              Central Stores
+                            </option>
+                            <option value="Information Technology Group">
+                              Information Technology Group
+                            </option>
+                            <option value="Molecular Medicine">
+                              Molecular Medicine
+                            </option>
+                            <option value="Central Laboratory">
+                              Central Laboratory
+                            </option>
+                            <option value="Tech team">Tech team</option>
+                          </select>
+                        </div>
+
+                        <div className="group-input">
+                          <label className="color-label">
+                            Compression Area with respect to Corridor
+                          </label>
+
+                          <div className="instruction">&nbsp;</div>
+                          <select
+                            className="form-control"
+                            name="assign_to"
+                            value={itm.compressionArea}
+                            onChange={(e) =>
+                              setDifferentialPRecord({
+                                compressionArea: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="Select a value">
+                              Select a value
+                            </option>
+                            <option value="Area 1">Area 1</option>
+                            <option value="Area 2">Area 2</option>
+                            <option value="Area 3">Area 3</option>
+                            <option value="Area 4">Area 4</option>
+                            <option value="Area 5">Area 5</option>
+                            <option value="Area 6">Area 6</option>
+                          </select>
+                        </div>
+
+                        <div className="group-input">
+                          <label className="color-label">Limit</label>
+                          <div className="instruction"></div>
+                          <input
+                            type="number"
+                            className={`${
+                              itm.limit < 0.6
+                                ? "limit"
+                                : itm.limit > 2.6
+                                ? "limit"
+                                : ""
+                            }`}
+                            value={itm.limit}
+                            onChange={(e) => {
+                              const newValue = parseFloat(e.target.value);
+                              if (!isNaN(newValue) && newValue >= 0) {
+                                setDifferentialPRecord({ limit: newValue });
+                              }
+                            }}
+                          />
+                        </div>
+
+                        <div className="group-input">
+                          <label className="color-label">Month:</label>
+                          <div>
+                            <input type="text" value={currentMonth} readOnly />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="AddRows d-flex">
+                            <NoteAdd onClick={addRow} />
+                            <div className="addrowinstruction"></div>
+                          </div>
+                        </div>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>S no.</th>
+                              <th>Unique Id</th>
+                              <th>Date</th>
+                              <th>Time</th>
+                              <th>Differential Pressure</th>
+                              <th>Remark</th>
+                              <th>Checked By</th>
+                              <th>Supporting Documents</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {differentialData[0].map((item, index) => (
+                              <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>UID000{index + 1}</td>
+                                <td>
+                                  <input
+                                    value={item.date}
+                                    onChange={(e) => {
+                                      const newData = [...allTableData];
+                                      newData[index].date = e.target.value;
+                                      setAllTableData(newData);
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    value={item.time}
+                                    onChange={(e) => {
+                                      const newData = [...allTableData];
+                                      newData[index].time = e.target.value;
+                                      setAllTableData(newData);
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    type="number"
+                                    value={item.limit}
+                                    className={`${
+                                      item.limit < 0.6
+                                        ? "limit"
+                                        : item.limit > 2.6
+                                        ? "limit"
+                                        : ""
+                                    }`}
+                                    onChange={(e) => {
+                                      const newValue = parseFloat(
+                                        e.target.value
+                                      );
+                                      if (!isNaN(newValue) && newValue >= 0) {
+                                        const newData = [...allTableData];
+                                        newData[index].limit = newValue;
+                                        setAllTableData(newData);
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    value={item.remark}
+                                    onChange={(e) => {
+                                      const newData = [...allTableData];
+                                      newData[index].remark = e.target.value;
+                                      setAllTableData(newData);
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    value={item.checkedBy}
+                                    onChange={(e) => {
+                                      const newData = [...allTableData];
+                                      newData[index].checkedBy = e.target.value;
+                                      setAllTableData(newData);
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <div className="w-5">
+                                    <input
+                                      type="file"
+                                      onChange={(e) =>
+                                        handleFileChange(
+                                          index,
+                                          e.target.files[0]
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                  <div className="w-5">
+                                    {item.file && (
+                                      <button
+                                        onClick={() => handleDeleteFile(index)}
+                                      >
+                                        Delete File
+                                      </button>
+                                    )}
+                                  </div>
+                                </td>
+                                <td>
+                                  <DeleteIcon
+                                    onClick={() => deleteRow(index)}
+                                  />
+                                  {item.limit !== "" &&
+                                    (item.limit < 0.6 || item.limit > 2.6) && (
+                                      <button
+                                        className="deviation-btn"
+                                        onClick={() => {
+                                          navigate("/chart"),
+                                            handleTableDataSave;
+                                        }}
+                                      >
+                                        Launch Deviation
+                                      </button>
+                                    )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+
+                        <div className="group-input">
+                          <label> Review By :- </label>
+                        </div>
+
+                        <div className="group-input">
+                          <label htmlFor="">Review Comments</label>
+                          <input
+                            value={itm.reviewComment}
+                            onChange={(e) => {
+                              setDifferentialPRecord({
+                                reviewComment: e.target.value,
+                              });
+                            }}
+                          />
+                        </div>
+                        {/* Your JSX content */}
+
+                        {/* <Grid
                   label={docFormFile[2].label}
                   coloredLabel={docFormFile[2].coloredLabel}
                   required={docFormFile[2].required}
@@ -501,12 +569,11 @@ export default function DPRpanel() {
                   columnList={docFormFile[2].columnList}
                   onChange={(data) => setDifferentialPRecord({ gridData: data })}
                 /> */}
-                </>
-              ) : null}
-              </>
-            })}
-
-              
+                      </>
+                    ) : null}
+                  </>
+                );
+              })}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button

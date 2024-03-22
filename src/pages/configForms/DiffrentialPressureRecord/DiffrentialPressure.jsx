@@ -1,7 +1,11 @@
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import { docFormFile, tableData, time } from "./DifferentialPressureFunction.jsx";
+import {
+  docFormFile,
+  tableData,
+  time,
+} from "./DifferentialPressureFunction.jsx";
 import Grid from "../../../components/datafields/Grid.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
@@ -133,7 +137,6 @@ export default function DiffrentialPressure() {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
 
-  
   return (
     <>
       <HeaderTop />
@@ -173,7 +176,9 @@ export default function DiffrentialPressure() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      isSelectedGeneral === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedGeneral(true), setIsSelectedDetails(false);
@@ -183,7 +188,9 @@ export default function DiffrentialPressure() {
                   </div>
                   <div
                     className={`${
-                      isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      isSelectedDetails === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(true), setIsSelectedGeneral(false);
@@ -210,7 +217,9 @@ export default function DiffrentialPressure() {
                       <input
                         type="text"
                         value={differentialPRecord.initiator}
-                        onChange={(e) => setDifferentialPRecord({ initiator: e.target.value })}
+                        onChange={(e) =>
+                          setDifferentialPRecord({ initiator: e.target.value })
+                        }
                       />
                     </div>
                   </div>
@@ -266,7 +275,9 @@ export default function DiffrentialPressure() {
                       <input
                         type="text"
                         value={differentialPRecord.status}
-                        onChange={(e) => setDifferentialPRecord({ status: e.target.value })}
+                        onChange={(e) =>
+                          setDifferentialPRecord({ status: e.target.value })
+                        }
                       />
                     </div>
                   </div>
@@ -296,21 +307,31 @@ export default function DiffrentialPressure() {
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
                       </option>
-                      <option value="Central Quality Control">Central Quality Control</option>
+                      <option value="Central Quality Control">
+                        Central Quality Control
+                      </option>
                       <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
+                      <option value="Plasma Sourcing Grou">
+                        Plasma Sourcing Group
+                      </option>
                       <option value="Central Stores">Central Stores</option>
                       <option value="Information Technology Group">
                         Information Technology Group
                       </option>
-                      <option value="Molecular Medicine">Molecular Medicine</option>
-                      <option value="Central Laboratory">Central Laboratory</option>
+                      <option value="Molecular Medicine">
+                        Molecular Medicine
+                      </option>
+                      <option value="Central Laboratory">
+                        Central Laboratory
+                      </option>
                       <option value="Tech team">Tech team</option>
                     </select>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Compression Area with respect to Corridor</label>
+                    <label className="color-label">
+                      Compression Area with respect to Corridor
+                    </label>
 
                     <div className="instruction">&nbsp;</div>
                     <select
@@ -346,7 +367,12 @@ export default function DiffrentialPressure() {
                           : ""
                       }`}
                       value={differentialPRecord.limit}
-                      onChange={(e) => setDifferentialPRecord({ limit: e.target.value })}
+                      onChange={(e) => {
+                        const newValue = parseFloat(e.target.value);
+                        if (newValue >= 0) {
+                          setDifferentialPRecord({ limit: newValue });
+                        }
+                      }}
                     />
                   </div>
 
@@ -407,12 +433,19 @@ export default function DiffrentialPressure() {
                               type="number"
                               value={item.limit}
                               className={`${
-                                item.limit < 0.6 ? "limit" : item.limit > 2.6 ? "limit" : ""
+                                item.limit < 0.6
+                                  ? "limit"
+                                  : item.limit > 2.6
+                                  ? "limit"
+                                  : ""
                               }`}
                               onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].limit = e.target.value;
-                                setAllTableData(newData);
+                                const newValue = parseFloat(e.target.value);
+                                if (newValue >= 0) {
+                                  const newData = [...allTableData];
+                                  newData[index].limit = newValue;
+                                  setAllTableData(newData);
+                                }
                               }}
                             />
                           </td>
@@ -437,42 +470,50 @@ export default function DiffrentialPressure() {
                             />
                           </td>
                           <td>
-                            <div className="w-5">
-                              <input
-                                type="file"
-                                onChange={(e) => handleFileChange(index, e.target.files[0])}
-                              />
-                            </div>
-                            <div className="w-5">
-                              {item.file && (
-                                <button onClick={() => handleDeleteFile(index)}>Delete File</button>
-                              )}
+                            <div className="d-flex w-full">
+                              <div className="fileAttachment">
+                                <input
+                                  type="file"
+                                  onChange={(e) =>
+                                    handleFileChange(index, e.target.files[0])
+                                  }
+                                />
+                              </div>
+                              <div className="">
+                                {item.file && (
+                                  <button
+                                    onClick={() => handleDeleteFile(index)}
+                                  >
+                                    Delete File
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </td>
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
-                              <button
-                                className="deviation-btn"
-                                onClick={() => {
-                                  navigate("/chart"), handleTableDataSave;
-                                }}
-                              >
-                                 Deviation
-                              </button>
-                              
-                            )}
-                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
-                              <button
-                                className="deviation-btn"
-                                onClick={() => {
-                                  navigate("/chart"), handleTableDataSave;
-                                }}
-                              >
-                                 Action item
-                              </button>
-                              
-                            )}
+                            {item.limit !== "" &&
+                              (item.limit < 0.6 || item.limit > 2.6) && (
+                                <button
+                                  className="deviation-btn"
+                                  onClick={() => {
+                                    navigate("/chart"), handleTableDataSave;
+                                  }}
+                                >
+                                  Deviation
+                                </button>
+                              )}
+                            {item.limit !== "" &&
+                              (item.limit < 0.6 || item.limit > 2.6) && (
+                                <button
+                                  className="deviation-btn"
+                                  onClick={() => {
+                                    navigate("/chart"), handleTableDataSave;
+                                  }}
+                                >
+                                  Action item
+                                </button>
+                              )}
                           </td>
                         </tr>
                       ))}
@@ -482,7 +523,7 @@ export default function DiffrentialPressure() {
                   {/* <div className="group-input m">
                     <label> Review By :- </label>
                   </div> */}
-{/* 
+                  {/* 
                   <div className="group-input">
                     <label htmlFor="">Review Comments</label>
                     <textarea
