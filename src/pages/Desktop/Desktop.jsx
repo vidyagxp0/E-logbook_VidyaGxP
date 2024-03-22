@@ -5,16 +5,18 @@ import "./Desktop.css";
 import { convertDateFormat } from "../../components/DateReturners";
 import { Link, useNavigate } from "react-router-dom";
 import DiffrentialPressure from "../configForms/DiffrentialPressureRecord/DiffrentialPressure";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
 
 function Desktop() {
   const navigate = useNavigate();
   const differentialPRecordHistory = useSelector((state) => state.objects.objects);
   const equipmentCRecordHistory = useSelector((state) => state.equipment.EquipmentCleaningData);
   const areaAndERecordHistory = useSelector((state) => state.area.areaAndEquipmentData);
-  const [labIncident, setLabIncident] = useState();
-  const [changeControl, setChangeControl] = useState();
   const [eLogSelect, setELogSelect] = useState("All_Records");
+  const [selectedELogId, setSelectedELogId] = useState("");
+  console.log(selectedELogId)
+  const dispatch = useDispatch();
 
   function padNumber(number, width) {
     number = number + "";
@@ -22,11 +24,13 @@ function Desktop() {
       ? number
       : new Array(width - number.length + 1).join("0") + number;
   }
-  useEffect(() => {
-    // fetchLabIncidentData();
-    // fetchChangeControlData();
-  }, []);
+ 
 
+  const handleId = (eLogId) => {
+    setSelectedELogId(eLogId);
+    dispatch({ type: "SELECTED_ELOG_ID", payload: eLogId }); // Dispatching the selected ELog ID
+    navigate("/dpr-panel");
+  };
   const combinedRecords = [
     ...differentialPRecordHistory,
     ...equipmentCRecordHistory,
@@ -117,9 +121,7 @@ function Desktop() {
                         cursor: "pointer",
                         color: "black", // Default text color
                       }}
-                      onClick={() => {
-                        navigate("/dpr-panel");
-                      }}
+                      onClick={() => handleId(item.eLogId)}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
                       }} // Change text color on hover
