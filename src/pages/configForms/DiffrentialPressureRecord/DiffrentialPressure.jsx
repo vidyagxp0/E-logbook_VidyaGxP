@@ -192,14 +192,14 @@ export default function DiffrentialPressure() {
                     Details
                   </div>
                 </div>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button className="btn-print" onClick={() => navigate("/analytics")}>
                     Analytics
                   </button>
                   <button className="btn-print" onClick={() => {}}>
                     Print
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -482,10 +482,10 @@ export default function DiffrentialPressure() {
                     </tbody>
                   </table>
 
-                  <div className="group-input m">
+                  {/* <div className="group-input m">
                     <label> Review By :- </label>
-                  </div>
-
+                  </div> */}
+{/* 
                   <div className="group-input">
                     <label htmlFor="">Review Comments</label>
                     <textarea
@@ -494,7 +494,8 @@ export default function DiffrentialPressure() {
                         setDifferentialPRecord({ reviewComment: e.target.value });
                       }}
                     />
-                  </div>
+                  </div> */}
+
                   {/* Your JSX content */}
 
                   {/* <Grid

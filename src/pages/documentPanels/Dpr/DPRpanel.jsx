@@ -203,7 +203,7 @@ export default function DPRpanel() {
                 </div>
               </div>
 
-            {differentialPRecordHistory?.map((itm)=>{
+            {differentialPRecordHistory?.map((itm,idx)=>{
               return <>
                 {isSelectedGeneral === true ? (
                 <>
@@ -213,7 +213,11 @@ export default function DPRpanel() {
                       <input
                         type="text"
                         value={itm.initiator}
-                        onChange={(e) => setDifferentialPRecord({ initiator: e.target.value })}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].initiator = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -239,11 +243,11 @@ export default function DPRpanel() {
                       <input
                         type="text"
                         value={itm.shortDescription}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            shortDescription: e.target.value,
-                          })
-                        }
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].shortDescription = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -254,11 +258,11 @@ export default function DPRpanel() {
                       <input
                         type="text"
                         value={itm.description}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            description: e.target.value,
-                          })
-                        }
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].description = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -269,7 +273,11 @@ export default function DPRpanel() {
                       <input
                         type="text"
                         value={itm.status}
-                        onChange={(e) => setDifferentialPRecord({ status: e.target.value })}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].status = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
