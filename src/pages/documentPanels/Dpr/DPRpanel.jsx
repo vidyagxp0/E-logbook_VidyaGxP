@@ -11,7 +11,8 @@ import { NoteAdd } from "@mui/icons-material";
 
 export default function DPRpanel() {
   const differentialPRecordHistory = useSelector((state) => state.objects.objects);
- 
+  const elogId=useSelector((state)=>state.dprPanelData)
+ console.log(differentialPRecordHistory,"elogId")
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
@@ -131,7 +132,8 @@ export default function DPRpanel() {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
 
-  const differentialData=useSelector(state=>state.tableData)
+  const differentialData=useSelector(state=>state.tableData.differentialTableData
+    )
   console.log(differentialData,"differentialData")
   return (
     <>
@@ -201,15 +203,21 @@ export default function DPRpanel() {
                 </div>
               </div>
 
-              {isSelectedGeneral === true ? (
+            {differentialPRecordHistory?.map((itm,idx)=>{
+              return <>
+                {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Initiator </label>
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.initiator}
-                        onChange={(e) => setDifferentialPRecord({ initiator: e.target.value })}
+                        value={itm.initiator}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].initiator = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -234,12 +242,12 @@ export default function DPRpanel() {
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.shortDescription}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            shortDescription: e.target.value,
-                          })
-                        }
+                        value={itm.shortDescription}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].shortDescription = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -249,12 +257,12 @@ export default function DPRpanel() {
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.description}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            description: e.target.value,
-                          })
-                        }
+                        value={itm.description}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].description = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -264,8 +272,12 @@ export default function DPRpanel() {
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.status}
-                        onChange={(e) => setDifferentialPRecord({ status: e.target.value })}
+                        value={itm.status}
+                        onChange={(e) => {
+                          const updatedHistory = [...differentialPRecordHistory];
+                          updatedHistory[idx].status = e.target.value;
+                          setDifferentialPRecord(updatedHistory);
+                        }}
                       />
                     </div>
                   </div>
@@ -281,7 +293,7 @@ export default function DPRpanel() {
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={differentialPRecord.department}
+                      value={itm.department}
                       onChange={(e) =>
                         setDifferentialPRecord({
                           department: e.target.value,
@@ -315,7 +327,7 @@ export default function DPRpanel() {
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={differentialPRecord.compressionArea}
+                      value={itm.compressionArea}
                       onChange={(e) =>
                         setDifferentialPRecord({
                           compressionArea: e.target.value,
@@ -338,13 +350,13 @@ export default function DPRpanel() {
                     <input
                       type="number"
                       className={`${
-                        differentialPRecord.limit < 0.6
+                        itm.limit < 0.6
                           ? "limit"
-                          : differentialPRecord.limit > 2.6
+                          : itm.limit > 2.6
                           ? "limit"
                           : ""
                       }`}
-                      value={differentialPRecord.limit}
+                      value={itm.limit}
                       onChange={(e) => setDifferentialPRecord({ limit: e.target.value })}
                     />
                   </div>
@@ -377,7 +389,7 @@ export default function DPRpanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {allTableData.map((item, index) => (
+                      {differentialData[0].map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>UID000{index + 1}</td>
@@ -473,7 +485,7 @@ export default function DPRpanel() {
                   <div className="group-input">
                     <label htmlFor="">Review Comments</label>
                     <input
-                      value={differentialPRecord.reviewComment}
+                      value={itm.reviewComment}
                       onChange={(e) => {
                         setDifferentialPRecord({ reviewComment: e.target.value });
                       }}
@@ -491,6 +503,10 @@ export default function DPRpanel() {
                 /> */}
                 </>
               ) : null}
+              </>
+            })}
+
+              
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button

@@ -5,6 +5,7 @@ import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import { time } from '../DiffrentialPressureRecord/DifferentialPressureFunction';
+import { toast } from 'react-toastify';
 
 export default function TemperatureRecords() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -43,7 +44,7 @@ export default function TemperatureRecords() {
     // Perform save logic here
     toast.success("eLog Saved Successfully!");
     saveDataToLocalStorage(allTableData);
-    TableData(allTableData);
+    // TableData(allTableData);
   };
 
   // Function to add a new row to the table
@@ -79,12 +80,12 @@ export default function TemperatureRecords() {
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
   const handleSave = (data) => {
-    if (parseFloat(data.limit) < 0.6 || parseFloat(data.limit) > 2.6) {
-      toast.error("The limit value must be between 0.6 and 2.6.");
-      return;
-    }
+    // if (parseFloat(data.limit) < 0.6 || parseFloat(data.limit) > 2.6) {
+    //   toast.error("The limit value must be between 0.6 and 2.6.");
+    //   return;
+    // }
     toast.success("eLog Saved Successfully!");
-    createObject(data);
+    // createObject(data);
     navigate("/desktop");
   };
   const [temperatureRecords, setTemperatureRecords] = useReducer(
@@ -116,17 +117,18 @@ export default function TemperatureRecords() {
     }
   );
 
-  const createObject = (newObject) => {
-    dispatch({ type: "ADD_OBJECT", payload: newObject });
-  };
+  // const createObject = (newObject) => {
+  //   dispatch({ type: "ADD_OBJECT", payload: newObject });
+  // };
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
     updatedData[index].file = null;
     setAllTableData(updatedData);
   };
-  const TableData = (data) => {
-    dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
-  };
+  // const TableData = (data) => {
+  //   dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
+  // };
+  
   return (
     <>
     <HeaderTop />
