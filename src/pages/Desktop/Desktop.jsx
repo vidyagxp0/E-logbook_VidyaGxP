@@ -18,9 +18,11 @@ function Desktop() {
   const areaAndERecordHistory = useSelector(
     (state) => state.area.areaAndEquipmentData
   );
+  const temperatureRecordHistory=useSelector((state)=>state.temperature.tempratureRecordData)
+
   const [eLogSelect, setELogSelect] = useState("All_Records");
-  const [selectedELogId, setSelectedELogId] = useState("");
-  console.log(selectedELogId,"index")
+ const [getId,setGetId]=useState(null)
+ console.log(getId)
   const dispatch = useDispatch();
 
   function padNumber(number, width) {
@@ -39,6 +41,7 @@ function Desktop() {
     ...differentialPRecordHistory,
     ...equipmentCRecordHistory,
     ...areaAndERecordHistory,
+    ...temperatureRecordHistory,
   ];
   return (
     <>
@@ -126,7 +129,7 @@ function Desktop() {
               : null}
 
             {eLogSelect === "temprature_records"
-              ? equipmentCRecordHistory?.map((item, index) => {
+              ? temperatureRecordHistory?.map((item, index) => {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -150,7 +153,8 @@ function Desktop() {
                         cursor: "pointer",
                         color: "black", // Default text color
                       }}
-                      onClick={() =>{ handleId(item.eLogId), setSelectedELogId(index)}}
+                      onClick={() =>{ handleId(item.eLogId),   console.log("Clicked, item.eLogId:", item.eLogId);
+                      setGetId(item.eLogId);}}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
                       }} // Change text color on hover

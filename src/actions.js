@@ -31,3 +31,8 @@ export const setSelectedELogId = (eLogId) => ({
   type: "SET_SELECTED_ELOG_ID",
   payload: eLogId,
 });
+
+export const tempratureRecord=(temprature)=>({
+type:"TEMPRATURE_RECORD_DATA",
+payload:temprature
+})

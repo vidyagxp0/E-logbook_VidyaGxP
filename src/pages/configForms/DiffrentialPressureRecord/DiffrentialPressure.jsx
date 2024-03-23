@@ -7,7 +7,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { NoteAdd } from "@mui/icons-material";
 
 export default function DiffrentialPressure() {
@@ -77,7 +76,7 @@ export default function DiffrentialPressure() {
     "/" +
     Math.floor(Math.random() * 10000)
       .toString()
-      .padStart(4, "0");
+      .padStart(2, "0");
 
   const currentDate = new Date();
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
@@ -110,16 +109,10 @@ export default function DiffrentialPressure() {
       compressionArea: "",
       limit: "",
       month: "february",
-      gridData: {
-        uniqueId: "",
-        date,
-        time,
-        dPressure: "",
-        remark: "",
-        checkedBy: "Amit Guru",
-      },
+      gridData: allTableData
     }
   );
+console.log(differentialPRecord,"differentialPRecord")
 
   const createObject = (newObject) => {
     dispatch({ type: "ADD_OBJECT", payload: newObject });
