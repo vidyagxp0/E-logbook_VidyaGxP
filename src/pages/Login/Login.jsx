@@ -38,7 +38,7 @@ function Login() {
         <div className="login-form-block">
           <div className="top-block">
             <div className="logo">
-              <img src="/lifelogo.png" alt="..." />
+              <img src="/vidyalogo2.png" alt="..." />
             </div>
             <div className="head">Welcome to eLogBook</div>
           </div>
