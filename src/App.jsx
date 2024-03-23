@@ -16,6 +16,7 @@ import Chart from "./chart/Chart.jsx";
 import Analytics from "./pages/analytics/Analytics.jsx";
 import DPRpanel from "./pages/documentPanels/Dpr/DPRpanel.jsx";
 import TemperatureRecords from "./pages/configForms/TemperatureRecords/TemperatureRecords.jsx";
+import TempretureRecordsPanel from "./pages/documentPanels/TempreratureRecordsPanel/TempretureRecordsPanel.jsx";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/dpr-panel" element={<DPRpanel />} />
+            <Route path="/tpr-panel" element={<TempretureRecordsPanel />} />
             <Route path="/desktop" element={<Desktop />} />
             <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
             <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />

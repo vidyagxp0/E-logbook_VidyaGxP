@@ -18,11 +18,13 @@ function Desktop() {
   const areaAndERecordHistory = useSelector(
     (state) => state.area.areaAndEquipmentData
   );
-  const temperatureRecordHistory=useSelector((state)=>state.temperature.tempratureRecordData)
+  const temperatureRecordHistory = useSelector(
+    (state) => state.temperature.tempratureRecordData
+  );
 
   const [eLogSelect, setELogSelect] = useState("All_Records");
- const [getId,setGetId]=useState(null)
- console.log(getId)
+  const [getId, setGetId] = useState(null);
+  console.log(getId);
   const dispatch = useDispatch();
 
   function padNumber(number, width) {
@@ -33,9 +35,8 @@ function Desktop() {
   }
 
   const handleId = (eLogId) => {
-   
     dispatch({ type: "SELECTED_ELOG_ID", payload: eLogId }); // Dispatching the selected ELog ID
-    navigate("/dpr-panel");
+    navigate("/tpr-panel");
   };
   const combinedRecords = [
     ...differentialPRecordHistory,
@@ -153,8 +154,11 @@ function Desktop() {
                         cursor: "pointer",
                         color: "black", // Default text color
                       }}
-                      onClick={() =>{ handleId(item.eLogId),   console.log("Clicked, item.eLogId:", item.eLogId);
-                      setGetId(item.eLogId);}}
+                      onClick={() => {
+                        handleId(item.eLogId),
+                          console.log("Clicked, item.eLogId:", item.eLogId);
+                        setGetId(item.eLogId);
+                      }}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
                       }} // Change text color on hover
