@@ -446,9 +446,12 @@ console.log(differentialPRecord,"differentialPRecord")
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
                               <button
+                                style={{
+                                  cursor: "pointer",
+                                }}
                                 className="deviation-btn"
                                 onClick={() => {
-                                  navigate("/chart"), handleTableDataSave;
+                                  window.location.href = "https://naveen.vidyagxp.com/deviation";
                                 }}
                               >
                                  Deviation
