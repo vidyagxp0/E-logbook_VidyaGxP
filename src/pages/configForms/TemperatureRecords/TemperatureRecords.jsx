@@ -86,6 +86,7 @@ export default function TemperatureRecords() {
     // }
     toast.success("eLog Saved Successfully!");
     // createObject(data);
+    TempratureData(data)
     navigate("/desktop");
   };
   const [temperatureRecords, setTemperatureRecords] = useReducer(
@@ -94,7 +95,7 @@ export default function TemperatureRecords() {
       ...next,
     }),
     {
-      process: "Diffrential pressure",
+      process: "Temperature Records",
       eLogId: uniqueId + 1,
       initiator: "",
       dateOfInitiation: date,
@@ -117,9 +118,9 @@ export default function TemperatureRecords() {
     }
   );
 
-  // const createObject = (newObject) => {
-  //   dispatch({ type: "ADD_OBJECT", payload: newObject });
-  // };
+  const TempratureData = (data) => {
+    dispatch({ type: "TEMPRATURE_RECORD_DATA", payload: data });
+  };
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
     updatedData[index].file = null;
@@ -128,7 +129,7 @@ export default function TemperatureRecords() {
   // const TableData = (data) => {
   //   dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   // };
-  
+
   return (
     <>
     <HeaderTop />
@@ -159,7 +160,6 @@ export default function TemperatureRecords() {
               </div>
               <div className="main-head">
                 <div>VidyaGxp</div>
-                {/* <div>Environmental Laboratory</div> */}
               </div>
             </div>
             <div className="sub-head-2">Temperature  Records</div>
@@ -187,14 +187,14 @@ export default function TemperatureRecords() {
                   Details
                 </div>
               </div>
-              <div className="analytics-btn">
+              {/* <div className="analytics-btn">
                 <button className="btn-print" onClick={() => navigate("/analytics")}>
                   Analytics
                 </button>
                 <button className="btn-print" onClick={() => {}}>
                   Print
                 </button>
-              </div>
+              </div> */}
             </div>
 
             {isSelectedGeneral === true ? (
@@ -474,7 +474,7 @@ export default function TemperatureRecords() {
                   </tbody>
                 </table>
 
-                <div className="group-input">
+                {/* <div className="group-input">
                   <label> Review By :- </label>
                 </div>
 
@@ -486,7 +486,9 @@ export default function TemperatureRecords() {
                       setTemperatureRecords({ reviewComment: e.target.value });
                     }}
                   />
-                </div>
+                </div> */}
+
+
                 {/* Your JSX content */}
 
                 {/* <Grid
