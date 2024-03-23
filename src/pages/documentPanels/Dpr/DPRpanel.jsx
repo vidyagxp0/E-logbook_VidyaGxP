@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import Report from "../../Reports/Report.jsx";
+
 
 export default function DPRpanel() {
   const differentialPRecordHistory = useSelector((state) => state.objects.objects);
@@ -197,9 +200,15 @@ export default function DPRpanel() {
                   <button className="btn-print" onClick={() => navigate("/analytics")}>
                     Analytics
                   </button>
-                  <button className="btn-print" onClick={() => {}}>
+                  <PDFDownloadLink document={<Report/>} filename="FORM">
+      {(  <button style={{padding:"10px"}} className="btn-print" onClick={() => {}}>
                     Print
-                  </button>
+                  </button> )} 
+      </PDFDownloadLink>
+
+                  {/* <button className="btn-print" onClick={() => {}}>
+                    Print
+                  </button> */}
                 </div>
               </div>
 
