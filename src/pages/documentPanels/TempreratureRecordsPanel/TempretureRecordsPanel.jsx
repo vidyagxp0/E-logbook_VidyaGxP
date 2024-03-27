@@ -11,7 +11,7 @@ import { NoteAdd } from "@mui/icons-material";
 
 const TempretureRecordsPanel = () => {
 
-    const temperatureRecordHistory = useSelector((state) => state.temperature.tempratureRecordData);
+    const temperatureRecordHistory = useSelector((state) => state.temperature.temperatureRecordData);
   const elogId=useSelector((state)=>state.temperature)
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);

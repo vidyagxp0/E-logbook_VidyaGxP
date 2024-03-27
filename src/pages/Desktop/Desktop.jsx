@@ -20,7 +20,7 @@ function Desktop() {
     (state) => state.area.areaAndEquipmentData
   );
   const temperatureRecordHistory = useSelector(
-    (state) => state.temperature.tempratureRecordData
+    (state) => state.temperature.temperatureRecordData
   );
 
   const [eLogSelect, setELogSelect] = useState("All_Records");
@@ -67,7 +67,7 @@ function Desktop() {
               <option value="equipment_cleaning">
                 Equipment Cleaning Checklist
               </option>
-              <option value="temprature_records">Temperature Records</option>
+              <option value="temperature_records">Temperature Records</option>
             </select>
           </div>
           <button className="btn">Print</button>
@@ -130,7 +130,7 @@ function Desktop() {
                 })
               : null}
 
-            {eLogSelect === "temprature_records"
+            {eLogSelect === "temperature_records"
               ? temperatureRecordHistory?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -148,7 +148,7 @@ function Desktop() {
             {eLogSelect === "All_Records" &&
               combinedRecords?.map((item, index) => {
                 return (
-                  <tr key={item.index}>
+                  <tr key={item.eLogId}>
                     <td> {index + 1}</td>
                     <td
                       style={{

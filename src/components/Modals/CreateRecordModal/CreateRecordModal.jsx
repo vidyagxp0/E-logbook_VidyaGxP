@@ -29,8 +29,8 @@ function CreateRecordModal(_props) {
             link: "/equipment-cleaning-checklist",
           },
           {
-            name: "Temprature Records",
-            link: "/temprature-records",
+            name: "Temperature Records",
+            link: "/temperature-records",
           },
         ],
       },
@@ -51,8 +51,8 @@ function CreateRecordModal(_props) {
             link: "/equipment-cleaning-checklist",
           },
           {
-            name: "Temprature Records",
-            link: "/temprature-records",
+            name: "Temperature Records",
+            link: "/temperature-records",
           }
         ],
         // projects: [
@@ -119,8 +119,8 @@ function CreateRecordModal(_props) {
             link: "/equipment-cleaning-checklist",
           },
           {
-            name: "Temprature Records",
-            link: "/temprature-records",
+            name: "Temperature Records",
+            link: "/temperature-records",
           }
         ],
         // projects: [
@@ -187,8 +187,8 @@ function CreateRecordModal(_props) {
             link: "/equipment-cleaning-checklist",
           },
           {
-            name: "Temprature Records",
-            link: "/temprature-records",
+            name: "Temperature Records",
+            link: "/temperature-records",
           }
         ],
         // projects: [

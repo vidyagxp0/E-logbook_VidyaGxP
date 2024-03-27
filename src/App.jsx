@@ -32,7 +32,7 @@ function App() {
             <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
             <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />
             <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
-            <Route path="/temprature-records" element={<TemperatureRecords/>}/>
+            <Route path="/temperature-records" element={<TemperatureRecords/>}/>
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={2000} pauseOnHover={false} />
