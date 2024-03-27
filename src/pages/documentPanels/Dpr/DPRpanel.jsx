@@ -294,7 +294,7 @@ export default function DPRpanel() {
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={itm.department}
+                      value={itm?.department}
                       onChange={(e) =>
                         setDifferentialPRecord({
                           department: e.target.value,

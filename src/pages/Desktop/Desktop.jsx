@@ -37,7 +37,7 @@ function Desktop() {
 
   const handleId = (eLogId) => {
     dispatch({ type: "SELECTED_ELOG_ID", payload: eLogId }); // Dispatching the selected ELog ID
-    navigate("/tpr-panel");
+    navigate("/dpr-panel");
   };
   const combinedRecords = [
     ...differentialPRecordHistory,
