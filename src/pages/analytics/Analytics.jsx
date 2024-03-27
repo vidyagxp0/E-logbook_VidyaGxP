@@ -32,7 +32,8 @@ export default function Analytics() {
       setChartData([
         {
           name: "differential pressure",
-          data: [0.25, 0.5, 0.75, 1, 1.5, 2,2.5,3,3.5,3.75,],
+          data: [0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 3.5, 3.75],
+          title: "-------------------------Hourly-------------------------",
         },
       ]);
       setChartCategories([
@@ -50,7 +51,8 @@ export default function Analytics() {
       setChartData([
         {
           name: "differential pressure",
-          data: [0.25, 2.65, 0.75, 1,2.75,2,2.75],
+          data: [0.25, 2.65, 0.75, 1, 2.75, 2, 2.75],
+          title: "-------------------------Day-Wise--------------------------",
         },
       ]);
       setChartCategories([
@@ -66,7 +68,10 @@ export default function Analytics() {
       setChartData([
         {
           name: "differential pressure",
-          data: [0,0.25, 2.65, 0.75,3.5, 1,2.75,2,2.75,3,3.25,2.2,3.75,],
+          data: [
+            0, 0.25, 2.65, 0.75, 3.5, 1, 2.75, 2, 2.75, 3, 3.25, 2.2, 3.75,
+          ],
+          title: "-------------------------Month-------------------------",
         },
       ]);
       setChartCategories([
@@ -91,7 +96,6 @@ export default function Analytics() {
     <div>
       <HeaderTop />
       <HeaderBottom />
-      <h2 className="heading">Differential Pressure Record</h2>
       <div className="graph-2" style={{ display: "flex" }}>
         <div className="chart-analytics">
           <Chart
@@ -113,9 +117,28 @@ export default function Analytics() {
               },
               xaxis: {
                 categories: chartCategories,
+                title: {
+                  text: chartData.length > 0 ? chartData[0].title : "",
+                  style: {
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  },
+                },
               },
               yaxis: {
-                max: 5, // Change the maximum value according to your data
+                title: {
+                  text: "--------------------Limit()--------------------",
+                  style: {
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  },
+                },
+                max: 5,
+                min: 0.25,
+              },
+              title: {
+                text: "Differential Pressure Record",
+                align: "left",
               },
               plotOptions: {
                 line: {
@@ -155,7 +178,7 @@ export default function Analytics() {
                 ],
               },
             }}
-            series={chartData} // Use chartData here
+            series={chartData}
             type="line"
             width="1500"
             height={600}
