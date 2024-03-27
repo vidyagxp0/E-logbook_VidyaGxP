@@ -49,9 +49,10 @@ export default function TemperatureRecords() {
 
   // Function to add a new row to the table
   const addRow = () => {
+   const currentTime = new Date().toLocaleTimeString();
     const newRow = {
       date: date,
-      time: time,
+      time: currentTime, 
       limit: "",
       remark: "",
       checkedBy: "Amit Guru",
@@ -159,7 +160,7 @@ export default function TemperatureRecords() {
                 <img src="/vidyalogo2.png" alt="..." />
               </div>
               <div className="main-head">
-                <div>VidyaGxp</div>
+                <div>VidyaGxP Private Limited</div>
               </div>
             </div>
             <div className="sub-head-2">Temperature  Records</div>
@@ -373,7 +374,7 @@ export default function TemperatureRecords() {
                     </tr>
                   </thead>
                   <tbody>
-                    {allTableData.map((item, index) => (
+                    {allTableData?.map((item, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>UID000{index + 1}</td>

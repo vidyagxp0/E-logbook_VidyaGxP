@@ -83,7 +83,7 @@ export default function AreaAndEquiment() {
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>VidyaGxp </div>
+                  <div>VidyaGxP Private Limited </div>
                   {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>

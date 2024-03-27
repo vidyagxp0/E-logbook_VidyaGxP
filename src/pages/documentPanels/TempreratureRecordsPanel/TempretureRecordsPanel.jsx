@@ -53,9 +53,10 @@ const TempretureRecordsPanel = () => {
 
   // Function to add a new row to the table
   const addRow = () => {
+    const currentTime = new Date().toLocaleTimeString();
     const newRow = {
       date: date,
-      time: time,
+      time: currentTime,
       limit: "",
       remark: "",
       checkedBy: "Amit Guru",
@@ -165,7 +166,7 @@ const TempretureRecordsPanel = () => {
                 <img src="/vidyalogo2.png" alt="..." />
               </div>
               <div className="main-head">
-                <div>VidyaGxp</div>
+                <div>VidyaGxP Private Limited</div>
                 {/* <div>Environmental Laboratory</div> */}
               </div>
             </div>
@@ -390,7 +391,7 @@ const TempretureRecordsPanel = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {differentialData[0].map((item, index) => (
+                    {differentialData[0]?.map((item, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>UID000{index + 1}</td>

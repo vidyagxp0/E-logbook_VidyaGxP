@@ -52,9 +52,10 @@ export default function DPRpanel() {
 
   // Function to add a new row to the table
   const addRow = () => {
+    const currentTime = new Date().toLocaleTimeString();
     const newRow = {
       date: date,
-      time: time,
+      time: currentTime,
       limit: "",
       remark: "",
       checkedBy: "Amit Guru",
@@ -164,7 +165,7 @@ export default function DPRpanel() {
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>VidyaGxp</div>
+                  <div>VidyaGxP Private Limited</div>
                   {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>

@@ -182,6 +182,10 @@
   /* border-left: 2px solid #000000; */
 }
 
+.main-head{
+  padding-right: 130px;
+}
+
 #config-form-document-page .document-form .sop-type-header .main-head div:nth-child(1) {
   font-weight: bold;
   font-size: 1.7rem;
