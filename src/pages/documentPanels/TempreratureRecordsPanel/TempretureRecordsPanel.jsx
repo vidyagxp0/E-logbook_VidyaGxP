@@ -13,7 +13,6 @@ const TempretureRecordsPanel = () => {
 
     const temperatureRecordHistory = useSelector((state) => state.temperature.tempratureRecordData);
   const elogId=useSelector((state)=>state.temperature)
- console.log(temperatureRecordHistory,"elogId")
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
@@ -136,7 +135,6 @@ const TempretureRecordsPanel = () => {
 
   const differentialData=useSelector(state=>state.tableData.differentialTableData
     )
-  console.log(differentialData,"differentialData")
   return (
     <>
     <HeaderTop />
@@ -144,7 +142,7 @@ const TempretureRecordsPanel = () => {
       <div id="config-form-document-page">
         <div className="top-block">
           <div>
-            <strong> Record Name:&nbsp;</strong>Differential Pressure
+            <strong> Record Name:&nbsp;</strong>Temperature Records
           </div>
           <div>
             <strong> Site:&nbsp;</strong>
@@ -170,7 +168,7 @@ const TempretureRecordsPanel = () => {
                 {/* <div>Environmental Laboratory</div> */}
               </div>
             </div>
-            <div className="sub-head-2">Differential Pressure Record</div>
+            <div className="sub-head-2">Temperature Records</div>
 
             <div className="outerDiv5">
               <div className="btn-forms">
