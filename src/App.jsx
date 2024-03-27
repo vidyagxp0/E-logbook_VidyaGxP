@@ -1,6 +1,3 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -17,6 +14,7 @@ import Analytics from "./pages/analytics/Analytics.jsx";
 import DPRpanel from "./pages/documentPanels/Dpr/DPRpanel.jsx";
 import TemperatureRecords from "./pages/configForms/TemperatureRecords/TemperatureRecords.jsx";
 import TempretureRecordsPanel from "./pages/documentPanels/TempreratureRecordsPanel/TempretureRecordsPanel.jsx";
+import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 
 function App() {
   return (
@@ -30,6 +28,7 @@ function App() {
             <Route path="/dpr-panel" element={<DPRpanel />} />
             <Route path="/tpr-panel" element={<TempretureRecordsPanel />} />
             <Route path="/desktop" element={<Desktop />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
             <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />
             <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
