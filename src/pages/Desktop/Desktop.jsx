@@ -105,7 +105,7 @@ function Desktop() {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td>{item.eLogId}</td>
+                      <td onClick={()=>navigate("/area-and-equiment-panel")}>{item.eLogId}</td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
