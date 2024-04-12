@@ -294,11 +294,11 @@ const TempretureRecordsPanel = () => {
                     className="form-control"
                     name="assign_to"
                     value={itm.department}
-                    onChange={(e) =>
-                      setDifferentialPRecord({
-                        department: e.target.value,
-                      })
-                    }
+                    onChange={(e) => {
+                      const updatedHistory = [...temperatureRecordHistory];
+                      updatedHistory[idx].department = e.target.value;
+                      setDifferentialPRecord(updatedHistory);
+                    }}
                   >
                     <option value="">-- Select --</option>
                     <option value="Corporate Quality Assurance">
@@ -328,11 +328,11 @@ const TempretureRecordsPanel = () => {
                     className="form-control"
                     name="assign_to"
                     value={itm.compressionArea}
-                    onChange={(e) =>
-                      setDifferentialPRecord({
-                        compressionArea: e.target.value,
-                      })
-                    }
+                    onChange={(e) => {
+                      const updatedHistory = [...temperatureRecordHistory];
+                      updatedHistory[idx].compressionArea = e.target.value;
+                      setDifferentialPRecord(updatedHistory);
+                    }}
                   >
                     <option value="Select a value">Select a value</option>
                     <option value="Area 1">Area 1</option>
@@ -357,7 +357,11 @@ const TempretureRecordsPanel = () => {
                         : ""
                     }`}
                     value={itm.limit}
-                    onChange={(e) => setDifferentialPRecord({ limit: e.target.value })}
+                    onChange={(e) => {
+                      const updatedHistory = [...temperatureRecordHistory];
+                      updatedHistory[idx].limit = e.target.value;
+                      setDifferentialPRecord(updatedHistory);
+                    }}
                   />
                 </div>
 

@@ -113,7 +113,6 @@ export default function DiffrentialPressure() {
       gridData: allTableData
     }
   );
-console.log(differentialPRecord,"differentialPRecord")
 
   const createObject = (newObject) => {
     dispatch({ type: "ADD_OBJECT", payload: newObject });
