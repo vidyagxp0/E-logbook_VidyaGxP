@@ -90,7 +90,7 @@ function Desktop() {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td onClick={()=>setGetId(item.eLogId)}>{item.eLogId}</td>
+                      <td>{item.eLogId}</td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
@@ -158,7 +158,7 @@ function Desktop() {
                       onClick={() => {
                         handleId(item.eLogId),
                           console.log("Clicked, item.eLogId:", item.eLogId);
-                        // setGetId(item.eLogId);
+                        setGetId(item.eLogId);
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
