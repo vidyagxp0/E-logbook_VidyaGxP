@@ -10,12 +10,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
 
 export default function DPRpanel() {
-  const differentialPRecordHistory = useSelector((state) => state.objects.objects);
-  const elogId=useSelector((state)=>state.dprPanelData)
- console.log(differentialPRecordHistory,"elogId")
+  const editedData = useSelector((state) => state.dprPanelData.selectedRow);
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
+  const [editData, setEditData] = useState({
+    shortDescription: "",
+      description: "",
+      status: "",
+      department: "",
+      reviewComment: "",
+      compressionArea: "",
+      limit: "",
+    initiator: "",
+  });
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
@@ -32,12 +41,14 @@ export default function DPRpanel() {
   }
 
   useEffect(() => {
-    // Load data from local storage if available
     const storedData = JSON.parse(localStorage.getItem("allTableData"));
     if (storedData) {
       setAllTableData(storedData);
     }
-  }, []);
+    setEditData(editedData);
+  }, [editedData]);
+
+
 
   const saveDataToLocalStorage = (data) => {
     localStorage.setItem("allTableData", JSON.stringify(data));
@@ -64,6 +75,11 @@ export default function DPRpanel() {
     setAllTableData([...allTableData, newRow]);
   };
 
+  const handleInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
+  };
+
   const deleteRow = (index) => {
     const updatedData = [...allTableData];
     updatedData.splice(index, 1);
@@ -88,8 +104,8 @@ export default function DPRpanel() {
       toast.error("The limit value must be between 0.6 and 2.6.");
       return;
     }
-    toast.success("eLog Saved Successfully!");
-    createObject(data);
+    dispatch({ type: "EDIT-OBJECT", payload:  { id: editData.eLogId, editedData: editData } });
+    toast.success("Data saved successfully!");
     navigate("/desktop");
   };
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
@@ -121,9 +137,7 @@ export default function DPRpanel() {
     }
   );
 
-  const createObject = (newObject) => {
-    dispatch({ type: "ADD_OBJECT", payload: newObject });
-  };
+ 
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
     updatedData[index].file = null;
@@ -204,8 +218,7 @@ export default function DPRpanel() {
                 </div>
               </div>
 
-            {differentialPRecordHistory?.map((itm,idx)=>{
-              return <>
+           
                 {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
@@ -213,12 +226,9 @@ export default function DPRpanel() {
                     <div>
                       <input
                         type="text"
-                        value={itm.initiator}
-                        onChange={(e) => {
-                          const updatedHistory = [...differentialPRecordHistory];
-                          updatedHistory[idx].initiator = e.target.value;
-                          setDifferentialPRecord(updatedHistory);
-                        }}
+                        name="initiator"
+                        value={editData.initiator||""}
+                        onChange={handleInputChange1}
                       />
                     </div>
                   </div>
@@ -242,13 +252,11 @@ export default function DPRpanel() {
                     <label className="color-label">Short Description</label>
                     <div>
                       <input
+              name="shortDescription"
                         type="text"
-                        value={itm.shortDescription}
-                        onChange={(e) => {
-                          const updatedHistory = [...differentialPRecordHistory];
-                          updatedHistory[idx].shortDescription = e.target.value;
-                          setDifferentialPRecord(updatedHistory);
-                        }}
+                        value={editData.shortDescription||""}
+                        onChange={handleInputChange1}
+
                       />
                     </div>
                   </div>
@@ -257,13 +265,11 @@ export default function DPRpanel() {
                     <label className="color-label">Description</label>
                     <div>
                       <input
+                      name="description"
                         type="text"
-                        value={itm.description}
-                        onChange={(e) => {
-                          const updatedHistory = [...differentialPRecordHistory];
-                          updatedHistory[idx].description = e.target.value;
-                          setDifferentialPRecord(updatedHistory);
-                        }}
+                        value={editData.description||""}
+                        onChange={handleInputChange1}
+                    
                       />
                     </div>
                   </div>
@@ -272,13 +278,11 @@ export default function DPRpanel() {
                     <label className="color-label">Status</label>
                     <div>
                       <input
+                      name="status"
                         type="text"
-                        value={itm.status}
-                        onChange={(e) => {
-                          const updatedHistory = [...differentialPRecordHistory];
-                          updatedHistory[idx].status = e.target.value;
-                          setDifferentialPRecord(updatedHistory);
-                        }}
+                        value={editData.status||""}
+                        onChange={handleInputChange1}
+
                       />
                     </div>
                   </div>
@@ -293,13 +297,10 @@ export default function DPRpanel() {
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
-                      name="assign_to"
-                      value={itm.department}
-                      onChange={(e) => {
-                        const updatedHistory = [...differentialPRecordHistory];
-                        updatedHistory[idx].department = e.target.value;
-                        setDifferentialPRecord(updatedHistory);
-                      }}
+                      name="department"
+                      value={editData.department||""}
+                      onChange={handleInputChange1}
+
                     >
                       <option value="">-- Select --</option>
                       <option value="Corporate Quality Assurance">
@@ -327,13 +328,10 @@ export default function DPRpanel() {
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
-                      name="assign_to"
-                      value={itm.compressionArea}
-                      onChange={(e) => {
-                        const updatedHistory = [...differentialPRecordHistory];
-                        updatedHistory[idx].compressionArea = e.target.value;
-                        setDifferentialPRecord(updatedHistory);
-                      }}
+                      name="compressionArea"
+                      value={editData.compressionArea||""}
+                      onChange={handleInputChange1}
+
                     >
                       <option value="Select a value">Select a value</option>
                       <option value="Area 1">Area 1</option>
@@ -349,20 +347,18 @@ export default function DPRpanel() {
                     <label className="color-label">Limit</label>
                     <div className="instruction"></div>
                     <input
+                    name="limit"
                       type="number"
                       className={`${
-                        itm.limit < 0.6
+                        editData.limit < 0.6
                           ? "limit"
-                          : itm.limit > 2.6
+                          : editData.limit > 2.6
                           ? "limit"
                           : ""
                       }`}
-                      value={itm.limit}
-                      onChange={(e) => {
-                        const updatedHistory = [...differentialPRecordHistory];
-                        updatedHistory[idx].limit = e.target.value;
-                        setDifferentialPRecord(updatedHistory);
-                      }}
+                      value={editData.limit||""}
+                      onChange={handleInputChange1}
+
                     />
                   </div>
 
@@ -490,10 +486,8 @@ export default function DPRpanel() {
                   <div className="group-input">
                     <label htmlFor="">Review Comments</label>
                     <input
-                      value={itm.reviewComment}
-                      onChange={(e) => {
-                        setDifferentialPRecord({ reviewComment: e.target.value });
-                      }}
+                      value={editData.reviewComment||""}
+                      onChange={handleInputChange1}
                     />
                   </div>
                   {/* Your JSX content */}
@@ -508,8 +502,7 @@ export default function DPRpanel() {
                 /> */}
                 </>
               ) : null}
-              </>
-            })}
+             
 
               
             </div>

@@ -1,4 +1,3 @@
-// Reducer
 const initialState = {
   EquipmentCleaningData: [],
 };
@@ -13,7 +12,7 @@ const EquipmentCleaningReducers = (state = initialState, action) => {
     case 'EDIT-EQUIPMENTDATA':
       const { id, editedData } = action.payload;
       const updatedData = state.EquipmentCleaningData.map(item => {
-        if (item.eLogId === id) { // Ensure to use eLogId instead of id
+        if (item.eLogId === id) { 
           return {
             ...item,
             ...editedData,

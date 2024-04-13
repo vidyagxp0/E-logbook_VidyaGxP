@@ -171,9 +171,7 @@ export default function EquipmentCleaningCheckListPanel() {
 
 
   const handleSave = () => {
-    // Dispatch action to update Redux state with edited data
     dispatch({ type: "EDIT-EQUIPMENTDATA", payload:  { id: editData.eLogId, editedData: editData } });
-    
     toast.success("Data saved successfully!");
     navigate("/desktop");
   };
@@ -195,9 +193,6 @@ export default function EquipmentCleaningCheckListPanel() {
     };
   }
 
-  // const equipmentCRecordHistory = useSelector(
-  //   (state) => state.equipment.EquipmentCleaningData
-  // );
 
   const eSignatureData = useSelector((state) => state.signature.signatureData);
 
