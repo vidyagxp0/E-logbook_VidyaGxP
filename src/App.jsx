@@ -15,6 +15,7 @@ import DPRpanel from "./pages/documentPanels/Dpr/DPRpanel.jsx";
 import TemperatureRecords from "./pages/configForms/TemperatureRecords/TemperatureRecords.jsx";
 import TempretureRecordsPanel from "./pages/documentPanels/TempreratureRecordsPanel/TempretureRecordsPanel.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
+import EquipmentCleaningCheckListPanel from "./pages/documentPanels/EquipmentChecklistPanel/EquipmentCleaningChecklistPanel.jsx";
 
 function App() {
   return (
@@ -27,12 +28,13 @@ function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/dpr-panel" element={<DPRpanel />} />
             <Route path="/tpr-panel" element={<TempretureRecordsPanel />} />
+            <Route path="/ecc-panel" element={<EquipmentCleaningCheckListPanel />} />
             <Route path="/desktop" element={<Desktop />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
             <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />
             <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
-            <Route path="/temprature-records" element={<TemperatureRecords/>}/>
+            <Route path="/temperature-records" element={<TemperatureRecords/>}/>
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={2000} pauseOnHover={false} />

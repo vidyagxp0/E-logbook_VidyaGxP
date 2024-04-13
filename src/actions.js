@@ -27,9 +27,9 @@ export const differentialTable=(tabledata)=>({
   payload:tabledata
 })
 
-export const setSelectedELogId = (eLogId) => ({
-  type: "SET_SELECTED_ELOG_ID",
-  payload: eLogId,
+export const selectRow = (row) => ({
+  type: 'SELECT_ROW',
+  payload: row,
 });
 
 export const tempratureRecord=(temprature)=>({

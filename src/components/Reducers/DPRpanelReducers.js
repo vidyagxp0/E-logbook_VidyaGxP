@@ -1,13 +1,13 @@
 const initialState = {
-    selectedELogId: null,
+  selectedRow: null,
   };
   
   const DPRpanelReducers = (state = initialState, action) => {
     switch (action.type) {
-      case "SET_SELECTED_ELOG_ID":
+      case 'SELECT_ROW':
         return {
           ...state,
-          selectedELogId: action.payload,
+          selectedRow: action.payload,
         };
       default:
         return state;

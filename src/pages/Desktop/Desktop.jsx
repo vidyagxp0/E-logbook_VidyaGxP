@@ -12,7 +12,7 @@ function Desktop() {
   const differentialPRecordHistory = useSelector(
     (state) => state.objects.objects
   );
-  console.log(differentialPRecordHistory,"differentialPRecordHistory")
+  console.log(differentialPRecordHistory, "differentialPRecordHistory");
   const equipmentCRecordHistory = useSelector(
     (state) => state.equipment.EquipmentCleaningData
   );
@@ -35,10 +35,10 @@ function Desktop() {
       : new Array(width - number.length + 1).join("0") + number;
   }
 
-  const handleId = (eLogId) => {
-    dispatch({ type: "SELECTED_ELOG_ID", payload: eLogId }); // Dispatching the selected ELog ID
-    navigate("/tpr-panel");
+  const handleRowClick = (row) => {
+    dispatch({ type: "SELECT_ROW", payload: row });
   };
+  
   const combinedRecords = [
     ...differentialPRecordHistory,
     ...equipmentCRecordHistory,
@@ -90,7 +90,9 @@ function Desktop() {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td onClick={()=>setGetId(item.eLogId)}>{item.eLogId}</td>
+                      <td onClick={() => navigate("/dpr-panel")}>
+                        {item.eLogId}
+                      </td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
@@ -105,7 +107,7 @@ function Desktop() {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td>{item.eLogId}</td>
+                      <td onClick={() => navigate("/")}>{item.eLogId}</td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
@@ -120,7 +122,9 @@ function Desktop() {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td>{item.eLogId}</td>
+                      <td onClick={() => navigate("/ecc-panel")}>
+                        {item.eLogId}
+                      </td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
@@ -135,7 +139,9 @@ function Desktop() {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td>{item.eLogId}</td>
+                      <td onClick={() => navigate("/tpr-panel")}>
+                        {item.eLogId}
+                      </td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
@@ -156,9 +162,19 @@ function Desktop() {
                         color: "black", // Default text color
                       }}
                       onClick={() => {
-                        handleId(item.eLogId),
-                          console.log("Clicked, item.eLogId:", item.eLogId);
-                        // setGetId(item.eLogId);
+                        handleRowClick(item)
+                        // setSelectedRow(index);
+                        navigate(
+                          item.process === "Diffrential pressure"
+                            ? "/dpr-panel"
+                            : item.process === "Area and equipment"
+                            ? "/area-and-equipment-panel"
+                            : item.process === "Temperature Records"
+                            ? "/tpr-panel"
+                            : item.process === "Equipment cleaning checklist"
+                            ? "/ecc-panel"
+                            : ""
+                        );
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
