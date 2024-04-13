@@ -19,6 +19,7 @@ function Desktop() {
   const areaAndERecordHistory = useSelector(
     (state) => state.area.areaAndEquipmentData
   );
+  console.log(areaAndERecordHistory,"areaAndERecordHistory")
   const temperatureRecordHistory = useSelector(
     (state) => state.temperature.temperatureRecordData
   );
@@ -107,7 +108,7 @@ function Desktop() {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td onClick={() => navigate("/")}>{item.eLogId}</td>
+                      <td onClick={() => navigate("/area-and-equipment-panel")}>{item.eLogId}</td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>

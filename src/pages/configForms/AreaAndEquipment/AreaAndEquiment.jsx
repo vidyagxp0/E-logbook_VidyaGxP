@@ -50,7 +50,7 @@ export default function AreaAndEquiment() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const createObject = (newObject) => {
-    dispatch({ type: "AREAANDEQUIPMENT_DATA", payload: newObject });
+    dispatch({ type: "ADD-AREAANDEQUIPMENTDATA", payload: newObject });
   };
 
   const handleSave = (data) => {
@@ -671,41 +671,40 @@ export default function AreaAndEquiment() {
                             }}
                           >
                             <table className="custom-table ">
-        <tbody className=" ">
-          <tr>
-            <td className="truncate">08:30</td>
-          </tr>
-          <tr>
-            <td className="truncate">E-sign</td>
-          </tr>
-          <tr>
-            <td className="truncate">10:05</td>
-          </tr>
-          <tr>
-            <td className="truncate">E-sign</td>
-          </tr>
-        </tbody>
-      </table>
-   <table className="">
-
-        <tbody className="">
-          <tr>
-            <td className="truncate ">From</td>
-          </tr>
-          <tr>
-            <td className="truncate">Done By</td>
-          </tr>
-          <tr>
-            <td className="truncate">To</td>
-          </tr>
-          <tr>
-            <td className="truncate">Done by</td>
-          </tr>
-          <tr>
-            <td className="truncate">Type of Cleaning</td>
-          </tr>
-        </tbody>
-      </table>
+                              <tbody className=" ">
+                                <tr>
+                                  <td className="truncate">08:30</td>
+                                </tr>
+                                <tr>
+                                  <td className="truncate">E-sign</td>
+                                </tr>
+                                <tr>
+                                  <td className="truncate">10:05</td>
+                                </tr>
+                                <tr>
+                                  <td className="truncate">E-sign</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table className="">
+                              <tbody className="">
+                                <tr>
+                                  <td className="truncate ">From</td>
+                                </tr>
+                                <tr>
+                                  <td className="truncate">Done By</td>
+                                </tr>
+                                <tr>
+                                  <td className="truncate">To</td>
+                                </tr>
+                                <tr>
+                                  <td className="truncate">Done by</td>
+                                </tr>
+                                <tr>
+                                  <td className="truncate">Type of Cleaning</td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </div>
                           {/* <table className="removedBorder3" id="2">
                           <tbody className="removedBorder3">
@@ -1395,6 +1394,12 @@ export default function AreaAndEquiment() {
                 >
                   Save
                 </button>
+
+                {isSelectedGeneral===true?<button className="themeBtn"  onClick={() => {
+                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                    }}>Next</button>:<button className="themeBtn" onClick={() => {
+                      setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                    }}>Back</button>}
                 <button
                   className="themeBtn"
                   onClick={() => navigate("/desktop")}
