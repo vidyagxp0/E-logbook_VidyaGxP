@@ -47,7 +47,6 @@ export default function DiffrentialPressure() {
   };
 
   const handleTableDataSave = () => {
-    // Perform save logic here
     toast.success("eLog Saved Successfully!");
     saveDataToLocalStorage(allTableData);
     TableData(allTableData);
