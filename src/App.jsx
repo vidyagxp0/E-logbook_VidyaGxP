@@ -28,7 +28,7 @@ function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/dpr-panel" element={<DPRpanel />} />
             <Route path="/tpr-panel" element={<TempretureRecordsPanel />} />
-            <Route path="area-and-equiment-panel" element={<AreaAndEquipmentPanel/>} />
+            <Route path="/area-and-equiment-panel" element={<AreaAndEquipmentPanel/>} />
             <Route path="/desktop" element={<Desktop />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />

@@ -65,6 +65,8 @@ export default function AreaAndEquipmentPanel() {
     (state) => state.area.areaAndEquipmentData
   );
 
+  
+
   return (
     <>
       <HeaderTop />
@@ -138,6 +140,7 @@ export default function AreaAndEquipmentPanel() {
                           <div>
                             <input
                               type="text"
+                              name="initiator"
                               value={e.initiator}
                               onChange={(e) =>
                                 setAreaAndEquiment({
