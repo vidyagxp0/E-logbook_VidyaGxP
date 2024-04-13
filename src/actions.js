@@ -32,7 +32,7 @@ export const selectRow = (row) => ({
   payload: row,
 });
 
-export const tempratureRecord=(temprature)=>({
-type:"TEMPRATURE_RECORD_DATA",
-payload:temprature
+export const temperatureRecord=(temperature)=>({
+type:"TEMPERATURE_RECORD_DATA",
+payload:temperature
 })

@@ -16,6 +16,7 @@ import TemperatureRecords from "./pages/configForms/TemperatureRecords/Temperatu
 import TempretureRecordsPanel from "./pages/documentPanels/TempreratureRecordsPanel/TempretureRecordsPanel.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import EquipmentCleaningCheckListPanel from "./pages/documentPanels/EquipmentChecklistPanel/EquipmentCleaningChecklistPanel.jsx";
+import AreaAndEquipmentPanel from "./pages/documentPanels/AreaAndEquipmentPanel/AreaAndEquipmentPanel.jsx";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/dpr-panel" element={<DPRpanel />} />
             <Route path="/tpr-panel" element={<TempretureRecordsPanel />} />
             <Route path="/ecc-panel" element={<EquipmentCleaningCheckListPanel />} />
+            <Route path="/area-and-equiment-panel" element={<AreaAndEquipmentPanel/>} />
             <Route path="/desktop" element={<Desktop />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />

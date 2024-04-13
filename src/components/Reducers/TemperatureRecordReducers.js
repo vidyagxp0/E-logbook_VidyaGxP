@@ -1,14 +1,14 @@
 
 const initialState = {
-    tempratureRecordData: [],
+    temperatureRecordData: [],
     };
     
     const TemperatureRecordReducers = (state = initialState, action) => {
       switch (action.type) {
-        case 'TEMPRATURE_RECORD_DATA':
+        case 'TEMPERATURE_RECORD_DATA':
           return {
             ...state,
-            tempratureRecordData: [...state.tempratureRecordData, action.payload],
+            temperatureRecordData: [...state.temperatureRecordData, action.payload],
           };
         default:
           return state;

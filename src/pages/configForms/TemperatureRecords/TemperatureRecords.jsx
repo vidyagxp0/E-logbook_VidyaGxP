@@ -87,7 +87,7 @@ export default function TemperatureRecords() {
     // }
     toast.success("eLog Saved Successfully!");
     // createObject(data);
-    TempratureData(data)
+    TemperatureData(data)
     navigate("/desktop");
   };
   const [temperatureRecords, setTemperatureRecords] = useReducer(
@@ -119,8 +119,8 @@ export default function TemperatureRecords() {
     }
   );
 
-  const TempratureData = (data) => {
-    dispatch({ type: "TEMPRATURE_RECORD_DATA", payload: data });
+  const TemperatureData = (data) => {
+    dispatch({ type: "TEMPERATURE_RECORD_DATA", payload: data });
   };
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
