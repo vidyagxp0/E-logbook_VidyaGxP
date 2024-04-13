@@ -133,8 +133,7 @@ const TempretureRecordsPanel = () => {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
 
-  const differentialData=useSelector(state=>state.tableData.differentialTableData
-    )
+  const differentialData=useSelector(state=>state.tableData.differentialTableData)
   return (
     <>
     <HeaderTop />
@@ -165,7 +164,6 @@ const TempretureRecordsPanel = () => {
               </div>
               <div className="main-head">
                 <div>VidyaGxP Private Limited</div>
-                {/* <div>Environmental Laboratory</div> */}
               </div>
             </div>
             <div className="sub-head-2">Temperature Records</div>

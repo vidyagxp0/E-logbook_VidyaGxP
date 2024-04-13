@@ -1,6 +1,5 @@
 import { useReducer, useState, useEffect } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
-import { tableData } from "./EquipmentCleaningChecklistPanelFunction";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
@@ -169,9 +168,11 @@ export default function EquipmentCleaningCheckListPanel() {
   };
   const navigate = useNavigate();
 
-
   const handleSave = () => {
-    dispatch({ type: "EDIT-EQUIPMENTDATA", payload:  { id: editData.eLogId, editedData: editData } });
+    dispatch({
+      type: "EDIT-EQUIPMENTDATA",
+      payload: { id: editData.eLogId, editedData: editData },
+    });
     toast.success("Data saved successfully!");
     navigate("/desktop");
   };
@@ -192,7 +193,6 @@ export default function EquipmentCleaningCheckListPanel() {
       currentDate: currentDate,
     };
   }
-
 
   const eSignatureData = useSelector((state) => state.signature.signatureData);
 
@@ -291,7 +291,7 @@ export default function EquipmentCleaningCheckListPanel() {
                       <input
                         type="text"
                         name="shortDescription"
-                        value={editData.shortDescription||""}
+                        value={editData.shortDescription || ""}
                         onChange={handleInputChange1}
                       />
                     </div>
@@ -302,7 +302,7 @@ export default function EquipmentCleaningCheckListPanel() {
                       <input
                         type="text"
                         name="description"
-                        value={editData.description||""}
+                        value={editData.description || ""}
                         onChange={handleInputChange1}
                       />
                     </div>
@@ -313,7 +313,7 @@ export default function EquipmentCleaningCheckListPanel() {
                       <input
                         type="text"
                         name="status"
-                        value={editData.status||""}
+                        value={editData.status || ""}
                         onChange={handleInputChange1}
                       />
                     </div>
@@ -329,7 +329,8 @@ export default function EquipmentCleaningCheckListPanel() {
                     <input
                       type="text"
                       rows="2"
-                      name=""   value={currentDate}
+                      name=""
+                      value={currentDate}
                       onChange={handleInputChange1}
                     ></input>
                   </div>
@@ -339,7 +340,7 @@ export default function EquipmentCleaningCheckListPanel() {
                       type="text"
                       rows="2"
                       name="product"
-                      value={editData.product||""}
+                      value={editData.product || ""}
                       onChange={handleInputChange1}
                     ></textarea>
                   </div>
@@ -350,7 +351,7 @@ export default function EquipmentCleaningCheckListPanel() {
                       type="text"
                       rows="2"
                       name="batchNo"
-                      value={editData.batchNo||""}
+                      value={editData.batchNo || ""}
                       onChange={handleInputChange1}
                     ></textarea>
                   </div>
@@ -506,6 +507,25 @@ export default function EquipmentCleaningCheckListPanel() {
                 >
                   Save
                 </button>
+                {isSelectedGeneral === true ? (
+                  <button
+                    className="themeBtn"
+                    onClick={() => {
+                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                    }}
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    className="themeBtn"
+                    onClick={() => {
+                      setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                    }}
+                  >
+                    Back
+                  </button>
+                )}
                 <button
                   className="themeBtn"
                   onClick={() => navigate("/desktop")}

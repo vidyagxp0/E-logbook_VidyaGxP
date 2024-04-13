@@ -16,12 +16,12 @@ export default function DPRpanel() {
   const [allTableData, setAllTableData] = useState([]);
   const [editData, setEditData] = useState({
     shortDescription: "",
-      description: "",
-      status: "",
-      department: "",
-      reviewComment: "",
-      compressionArea: "",
-      limit: "",
+    description: "",
+    status: "",
+    department: "",
+    reviewComment: "",
+    compressionArea: "",
+    limit: "",
     initiator: "",
   });
 
@@ -47,8 +47,6 @@ export default function DPRpanel() {
     }
     setEditData(editedData);
   }, [editedData]);
-
-
 
   const saveDataToLocalStorage = (data) => {
     localStorage.setItem("allTableData", JSON.stringify(data));
@@ -99,12 +97,15 @@ export default function DPRpanel() {
   const currentDate = new Date();
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
-  const handleSave = (data) => {
-    if (parseFloat(data.limit) < 0.6 || parseFloat(data.limit) > 2.6) {
+  const handleSave = () => {
+    if (parseFloat(editData.limit) < 0.6 || parseFloat(editData.limit) > 2.6) {
       toast.error("The limit value must be between 0.6 and 2.6.");
       return;
     }
-    dispatch({ type: "EDIT-OBJECT", payload:  { id: editData.eLogId, editedData: editData } });
+    dispatch({
+      type: "EDIT-OBJECT",
+      payload: { id: editData.eLogId, editedData: editData },
+    });
     toast.success("Data saved successfully!");
     navigate("/desktop");
   };
@@ -137,7 +138,6 @@ export default function DPRpanel() {
     }
   );
 
- 
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
     updatedData[index].file = null;
@@ -147,9 +147,10 @@ export default function DPRpanel() {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
 
-  const differentialData=useSelector(state=>state.tableData.differentialTableData
-    )
-  console.log(differentialData,"differentialData")
+  const differentialData = useSelector(
+    (state) => state.tableData.differentialTableData
+  );
+
   return (
     <>
       <HeaderTop />
@@ -189,7 +190,9 @@ export default function DPRpanel() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      isSelectedGeneral === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedGeneral(true), setIsSelectedDetails(false);
@@ -199,7 +202,9 @@ export default function DPRpanel() {
                   </div>
                   <div
                     className={`${
-                      isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      isSelectedDetails === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(true), setIsSelectedGeneral(false);
@@ -209,7 +214,10 @@ export default function DPRpanel() {
                   </div>
                 </div>
                 <div className="analytics-btn">
-                  <button className="btn-print" onClick={() => navigate("/analytics")}>
+                  <button
+                    className="btn-print"
+                    onClick={() => navigate("/analytics")}
+                  >
                     Analytics
                   </button>
                   <button className="btn-print" onClick={() => {}}>
@@ -218,8 +226,7 @@ export default function DPRpanel() {
                 </div>
               </div>
 
-           
-                {isSelectedGeneral === true ? (
+              {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Initiator </label>
@@ -227,7 +234,7 @@ export default function DPRpanel() {
                       <input
                         type="text"
                         name="initiator"
-                        value={editData.initiator||""}
+                        value={editData.initiator || ""}
                         onChange={handleInputChange1}
                       />
                     </div>
@@ -252,11 +259,10 @@ export default function DPRpanel() {
                     <label className="color-label">Short Description</label>
                     <div>
                       <input
-              name="shortDescription"
+                        name="shortDescription"
                         type="text"
-                        value={editData.shortDescription||""}
+                        value={editData.shortDescription || ""}
                         onChange={handleInputChange1}
-
                       />
                     </div>
                   </div>
@@ -265,11 +271,10 @@ export default function DPRpanel() {
                     <label className="color-label">Description</label>
                     <div>
                       <input
-                      name="description"
+                        name="description"
                         type="text"
-                        value={editData.description||""}
+                        value={editData.description || ""}
                         onChange={handleInputChange1}
-                    
                       />
                     </div>
                   </div>
@@ -278,11 +283,10 @@ export default function DPRpanel() {
                     <label className="color-label">Status</label>
                     <div>
                       <input
-                      name="status"
+                        name="status"
                         type="text"
-                        value={editData.status||""}
+                        value={editData.status || ""}
                         onChange={handleInputChange1}
-
                       />
                     </div>
                   </div>
@@ -298,9 +302,8 @@ export default function DPRpanel() {
                     <select
                       className="form-control"
                       name="department"
-                      value={editData.department||""}
+                      value={editData.department || ""}
                       onChange={handleInputChange1}
-
                     >
                       <option value="">-- Select --</option>
                       <option value="Corporate Quality Assurance">
@@ -309,29 +312,38 @@ export default function DPRpanel() {
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
                       </option>
-                      <option value="Central Quality Control">Central Quality Control</option>
+                      <option value="Central Quality Control">
+                        Central Quality Control
+                      </option>
                       <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
+                      <option value="Plasma Sourcing Grou">
+                        Plasma Sourcing Group
+                      </option>
                       <option value="Central Stores">Central Stores</option>
                       <option value="Information Technology Group">
                         Information Technology Group
                       </option>
-                      <option value="Molecular Medicine">Molecular Medicine</option>
-                      <option value="Central Laboratory">Central Laboratory</option>
+                      <option value="Molecular Medicine">
+                        Molecular Medicine
+                      </option>
+                      <option value="Central Laboratory">
+                        Central Laboratory
+                      </option>
                       <option value="Tech team">Tech team</option>
                     </select>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Compression Area with respect to Corridor</label>
+                    <label className="color-label">
+                      Compression Area with respect to Corridor
+                    </label>
 
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="compressionArea"
-                      value={editData.compressionArea||""}
+                      value={editData.compressionArea || ""}
                       onChange={handleInputChange1}
-
                     >
                       <option value="Select a value">Select a value</option>
                       <option value="Area 1">Area 1</option>
@@ -347,7 +359,7 @@ export default function DPRpanel() {
                     <label className="color-label">Limit</label>
                     <div className="instruction"></div>
                     <input
-                    name="limit"
+                      name="limit"
                       type="number"
                       className={`${
                         editData.limit < 0.6
@@ -356,9 +368,8 @@ export default function DPRpanel() {
                           ? "limit"
                           : ""
                       }`}
-                      value={editData.limit||""}
+                      value={editData.limit || ""}
                       onChange={handleInputChange1}
-
                     />
                   </div>
 
@@ -419,7 +430,11 @@ export default function DPRpanel() {
                               type="number"
                               value={item.limit}
                               className={`${
-                                item.limit < 0.6 ? "limit" : item.limit > 2.6 ? "limit" : ""
+                                item.limit < 0.6
+                                  ? "limit"
+                                  : item.limit > 2.6
+                                  ? "limit"
+                                  : ""
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];
@@ -452,27 +467,32 @@ export default function DPRpanel() {
                             <div className="w-5">
                               <input
                                 type="file"
-                                onChange={(e) => handleFileChange(index, e.target.files[0])}
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
                               />
                             </div>
                             <div className="w-5">
                               {item.file && (
-                                <button onClick={() => handleDeleteFile(index)}>Delete File</button>
+                                <button onClick={() => handleDeleteFile(index)}>
+                                  Delete File
+                                </button>
                               )}
                             </div>
                           </td>
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
-                              <button
-                                className="deviation-btn"
-                                onClick={() => {
-                                  navigate("/chart"), handleTableDataSave;
-                                }}
-                              >
-                                Launch Deviation
-                              </button>
-                            )}
+                            {item.limit !== "" &&
+                              (item.limit < 0.6 || item.limit > 2.6) && (
+                                <button
+                                  className="deviation-btn"
+                                  onClick={() => {
+                                    navigate("/chart"), handleTableDataSave;
+                                  }}
+                                >
+                                  Launch Deviation
+                                </button>
+                              )}
                           </td>
                         </tr>
                       ))}
@@ -486,7 +506,7 @@ export default function DPRpanel() {
                   <div className="group-input">
                     <label htmlFor="">Review Comments</label>
                     <input
-                      value={editData.reviewComment||""}
+                      value={editData.reviewComment || ""}
                       onChange={handleInputChange1}
                     />
                   </div>
@@ -502,9 +522,6 @@ export default function DPRpanel() {
                 /> */}
                 </>
               ) : null}
-             
-
-              
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button
@@ -515,6 +532,25 @@ export default function DPRpanel() {
               >
                 Save
               </button>
+              {isSelectedGeneral === true ? (
+                <button
+                  className="themeBtn"
+                  onClick={() => {
+                    setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                  }}
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  className="themeBtn"
+                  onClick={() => {
+                    setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                  }}
+                >
+                  Back
+                </button>
+              )}
               <button className="themeBtn" onClick={() => navigate("/desktop")}>
                 Exit
               </button>
