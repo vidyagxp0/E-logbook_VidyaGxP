@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,29 @@ import { useDispatch, useSelector } from "react-redux";
 export default function AreaAndEquipmentPanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [currentDate, setCurrentDate] = useState("");
+  const [signatureModal, setSignatureModal] = useState(false);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [saveModal, setSaveModal] = useState(false);
+  const [clickedRowIndex, setClickedRowIndex] = useState();
+  const [editData, setEditData] = useState({
+    shortDescription: "",
+    status: "",
+    currentDate: "",
+    product: "",
+    batchNo: "",
+    changeControl: "",
+    description: "",
+    initiator: "",
+    area: "",
+      areaCode: "",
+  });
+  const editedData = useSelector((state) => state.dprPanelData.selectedRow);
+
+  useEffect(() => {
+    setEditData(editedData);
+  }, [editedData]);
+
   const uniqueId =
     "ABC/" +
     Math.floor(Math.random() * 1000)
@@ -48,22 +71,19 @@ export default function AreaAndEquipmentPanel() {
   }
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const createObject = (newObject) => {
-    dispatch({ type: "AREAANDEQUIPMENT_DATA", payload: newObject });
-  };
 
-  const handleSave = (data) => {
-    toast.success("eLog Saved Successfully!");
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 1000);
-    createObject(data);
+  const handleSave = () => {
+    dispatch({ type: "EDIT-AREAANDEQUIPMENTDATA", payload:  { id: editData.eLogId, editedData: editData } });
+    
+    toast.success("Data saved successfully!");
     navigate("/desktop");
   };
+  const handleInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
+  };
 
-  const areaAndERecordHistory = useSelector(
-    (state) => state.area.areaAndEquipmentData
-  );
+  
 
   
 
@@ -129,9 +149,7 @@ export default function AreaAndEquipmentPanel() {
                 </div>
               </div>
 
-              {areaAndERecordHistory.map((e) => {
-                return (
-                  <>
+            
                     {isSelectedGeneral === true ? (
                       <>
                         {" "}
@@ -141,12 +159,8 @@ export default function AreaAndEquipmentPanel() {
                             <input
                               type="text"
                               name="initiator"
-                              value={e.initiator}
-                              onChange={(e) =>
-                                setAreaAndEquiment({
-                                  initiator: e.target.value,
-                                })
-                              }
+                              value={editData.initiator||""}
+                              onChange={handleInputChange1}
                             />
                           </div>
                         </div>
@@ -157,7 +171,7 @@ export default function AreaAndEquipmentPanel() {
                           <div>
                             <input
                               type="text"
-                              value={date.currentDate}
+                              value={editData.dateOfInitiation}
                               onChange={(e) =>
                                 setAreaAndEquiment({
                                   dateOfInitiation: e.target.value,
@@ -173,12 +187,9 @@ export default function AreaAndEquipmentPanel() {
                           <div>
                             <input
                               type="text"
-                              value={e.shortDescription}
-                              onChange={(e) =>
-                                setAreaAndEquiment({
-                                  shortDescription: e.target.value,
-                                })
-                              }
+                              name="shortDescription"
+                              value={editData.shortDescription||""}
+                              onChange={handleInputChange1}
                             />
                           </div>
                         </div>
@@ -187,12 +198,9 @@ export default function AreaAndEquipmentPanel() {
                           <div>
                             <input
                               type="text"
-                              value={e.description}
-                              onChange={(e) =>
-                                setAreaAndEquiment({
-                                  description: e.target.value,
-                                })
-                              }
+                              name="description"
+                              value={editData.description}
+                              onChange={handleInputChange1}
                             />
                           </div>
                         </div>
@@ -201,10 +209,9 @@ export default function AreaAndEquipmentPanel() {
                           <div>
                             <input
                               type="text"
-                              value={e.status}
-                              onChange={(e) =>
-                                setAreaAndEquiment({ status: e.target.value })
-                              }
+                              name="status"
+                              value={editData.status}
+                              onChange={handleInputChange1}
                             />
                           </div>
                         </div>
@@ -219,10 +226,9 @@ export default function AreaAndEquipmentPanel() {
                           <div>
                             <input
                               type="text"
-                              value={e.area}
-                              onChange={(e) =>
-                                setAreaAndEquiment({ area: e.target.value })
-                              }
+                              name="area"
+                              value={editData.area}
+                              onChange={handleInputChange1}
                             />
                           </div>
                         </div>
@@ -231,10 +237,9 @@ export default function AreaAndEquipmentPanel() {
                           <div>
                             <input
                               type="text"
-                              value={e.areaCode}
-                              onChange={(e) =>
-                                setAreaAndEquiment({ areaCode: e.target.value })
-                              }
+                              name="areaCode"
+                              value={editData.areaCode}
+                              onChange={handleInputChange1}
                             />
                           </div>
                         </div>
@@ -1054,9 +1059,7 @@ export default function AreaAndEquipmentPanel() {
                         </table>
                       </>
                     ) : null}
-                  </>
-                );
-              })}
+                
 
               <div className="button-block" style={{ width: "100%" }}>
                 <button
@@ -1065,6 +1068,11 @@ export default function AreaAndEquipmentPanel() {
                 >
                   Save
                 </button>
+                {isSelectedGeneral===true?<button className="themeBtn"  onClick={() => {
+                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                    }}>Next</button>:<button className="themeBtn" onClick={() => {
+                      setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                    }}>Back</button>}
                 <button
                   className="themeBtn"
                   onClick={() => navigate("/desktop")}

@@ -1,18 +1,35 @@
+// Reducer
 
 const initialState = {
-    temperatureRecordData: [],
-    };
-    
-    const TemperatureRecordReducers = (state = initialState, action) => {
-      switch (action.type) {
-        case 'TEMPERATURE_RECORD_DATA':
+  temperatureRecordData: [],
+  };
+  
+
+const TemperatureRecordReducers = (state = initialState, action) => {
+  switch (action.type) {
+    case 'ADD-TEMPERATURETDATA':
+      return {
+        ...state,
+        temperatureRecordData: [...state.temperatureRecordData, action.payload],
+      };
+    case 'EDIT-TEMPERATURETDATA':
+      const { id, editedData } = action.payload;
+      const updatedData = state.temperatureRecordData.map(item => {
+        if (item.eLogId === id) { // Ensure to use eLogId instead of id
           return {
-            ...state,
-            temperatureRecordData: [...state.temperatureRecordData, action.payload],
+            ...item,
+            ...editedData,
           };
-        default:
-          return state;
-      }
-    };
+        }
+        return item;
+      });
+      return {
+        ...state,
+        temperatureRecordData: updatedData,
+      };
+    default:
+      return state;
+  }
+};
     
     export default TemperatureRecordReducers;

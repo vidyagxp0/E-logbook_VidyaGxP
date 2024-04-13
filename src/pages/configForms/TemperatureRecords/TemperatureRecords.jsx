@@ -120,7 +120,7 @@ export default function TemperatureRecords() {
   );
 
   const TemperatureData = (data) => {
-    dispatch({ type: "TEMPERATURE_RECORD_DATA", payload: data });
+    dispatch({ type: "ADD-TEMPERATURETDATA", payload: data });
   };
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
