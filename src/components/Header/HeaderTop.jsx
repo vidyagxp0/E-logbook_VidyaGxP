@@ -64,7 +64,6 @@ function HeaderTop() {
                   <div className="manager-name">Mr.Amit Guru</div>
                 </div>
                 <Link to="#" className="drop-item">
-                  {" "}
                   <i className="ri-settings-2-line"></i> Settings
                 </Link>
                 <Link to="#" className="drop-item">
