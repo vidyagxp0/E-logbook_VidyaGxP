@@ -2,9 +2,7 @@ import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../components/Header/HeaderTop";
 import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Desktop.css";
-import { convertDateFormat } from "../../components/DateReturners";
 import { Link, useNavigate } from "react-router-dom";
-import DiffrentialPressure from "../configForms/DiffrentialPressureRecord/DiffrentialPressure";
 import { useDispatch, useSelector } from "react-redux";
 
 function Desktop() {
@@ -24,27 +22,19 @@ function Desktop() {
   );
 
   const [eLogSelect, setELogSelect] = useState("All_Records");
-  const [getId, setGetId] = useState(null);
-  console.log(getId);
   const dispatch = useDispatch();
-
-  function padNumber(number, width) {
-    number = number + "";
-    return number.length >= width
-      ? number
-      : new Array(width - number.length + 1).join("0") + number;
-  }
 
   const handleRowClick = (row) => {
     dispatch({ type: "SELECT_ROW", payload: row });
   };
-  
+
   const combinedRecords = [
     ...differentialPRecordHistory,
     ...equipmentCRecordHistory,
     ...areaAndERecordHistory,
     ...temperatureRecordHistory,
   ];
+
   return (
     <>
       <HeaderTop />
@@ -159,11 +149,10 @@ function Desktop() {
                     <td
                       style={{
                         cursor: "pointer",
-                        color: "black", // Default text color
+                        color: "black",
                       }}
                       onClick={() => {
-                        handleRowClick(item)
-                        // setSelectedRow(index);
+                        handleRowClick(item);
                         navigate(
                           item.process === "Diffrential pressure"
                             ? "/dpr-panel"
@@ -178,7 +167,7 @@ function Desktop() {
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
-                      }} // Change text color on hover
+                      }}
                       onMouseLeave={(e) => {
                         e.target.style.color = "black";
                       }}
