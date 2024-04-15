@@ -124,7 +124,6 @@ export default function DPRpanel() {
       reviewComment: "",
       compressionArea: "",
       limit: "",
-      month: "february",
       gridData: {
         uniqueId: "",
         date,
@@ -238,7 +237,7 @@ export default function DPRpanel() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Date of Initiator</label>
+                    <label className="color-label">Date of Initiation</label>
                     <div>
                       <input
                         type="text"
