@@ -53,13 +53,11 @@ export default function DPRpanel() {
   };
 
   const handleTableDataSave = () => {
-    // Perform save logic here
     toast.success("eLog Saved Successfully!");
     saveDataToLocalStorage(allTableData);
     TableData(allTableData);
   };
 
-  // Function to add a new row to the table
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
     const newRow = {
@@ -68,7 +66,7 @@ export default function DPRpanel() {
       limit: "",
       remark: "",
       checkedBy: "Amit Guru",
-      file: null, // Adding property for file attachment
+      file: null,
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -181,7 +179,6 @@ export default function DPRpanel() {
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
-                  {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
               <div className="sub-head-2">Differential Pressure Record</div>
@@ -510,16 +507,6 @@ export default function DPRpanel() {
                       onChange={handleInputChange1}
                     />
                   </div>
-                  {/* Your JSX content */}
-
-                  {/* <Grid
-                  label={docFormFile[2].label}
-                  coloredLabel={docFormFile[2].coloredLabel}
-                  required={docFormFile[2].required}
-                  instruction={docFormFile[2].instruction}
-                  columnList={docFormFile[2].columnList}
-                  onChange={(data) => setDifferentialPRecord({ gridData: data })}
-                /> */}
                 </>
               ) : null}
             </div>

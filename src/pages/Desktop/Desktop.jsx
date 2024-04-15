@@ -160,11 +160,10 @@ function Desktop() {
                     <td
                       style={{
                         cursor: "pointer",
-                        color: "black", // Default text color
+                        color: "black", 
                       }}
                       onClick={() => {
                         handleRowClick(item)
-                        // setSelectedRow(index);
                         navigate(
                           item.process === "Diffrential pressure"
                             ? "/dpr-panel"
@@ -179,7 +178,7 @@ function Desktop() {
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
-                      }} // Change text color on hover
+                      }} 
                       onMouseLeave={(e) => {
                         e.target.style.color = "black";
                       }}

@@ -19,7 +19,6 @@ export default function DiffrentialPressure() {
   const [allTableData, setAllTableData] = useState([]);
   const navigate = useNavigate();
 
-  // console.log(allTableData);
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
   let date = object.currentDate;

@@ -55,9 +55,6 @@ export default function AreaAndEquiment() {
 
   const handleSave = (data) => {
     toast.success("eLog Saved Successfully!");
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 1000);
     createObject(data);
     navigate("/desktop");
   };
@@ -92,7 +89,6 @@ export default function AreaAndEquiment() {
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited </div>
-                  {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
               <div className="sub-head-2">Area and Equipment Usage Log</div>
@@ -221,13 +217,7 @@ export default function AreaAndEquiment() {
                       />
                     </div>
                   </div>
-                  {/* <Grid
-                  label={docFormFile[2].label}
-                  coloredLabel={docFormFile[2].coloredLabel}
-                  required={docFormFile[2].required}
-                  instruction={docFormFile[2].instruction}
-                  columnList={docFormFile[0].columnList}
-                /> */}
+                 
                   <table>
                     <thead>
                       <tr>

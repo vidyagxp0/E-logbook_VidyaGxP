@@ -219,12 +219,9 @@
 #config-form-document-page .details-form-data .sub-head-2 {
   text-align: center;
   background: #efa035;
-  /* background: var(--themeColor); */
-  /* margin-bottom: 20px; */
   padding: 10px 20px;
   font-size: 1.5rem;
   color: #ffffff;
-  /* border: 2px solid #000000; */
   border-radius: 40px;
 }
 
@@ -374,7 +371,6 @@
 .btn-forms-isSelected {
   background-color: grey;
   color: #ffffff;
-  /* border: ; */
   padding: 5px 10px;
   border-radius: 28px;
 }
@@ -391,7 +387,6 @@
 
 .table-equipmentName {
   height: 50px;
-  /* width: 20px; */
 }
 
 .width-date {
@@ -494,7 +489,6 @@ tr th {
   justify-content: space-between;
   gap: 5%;
   width: 130px;
-  /* justify-content: end; */
 }
 
 .btn-print {
@@ -503,7 +497,7 @@ tr th {
   border-radius: 50px;
   cursor: pointer;
   color: white;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Adjust values as needed */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .outerDiv5 {
@@ -511,31 +505,3 @@ tr th {
   flex-direction: row;
   justify-content: space-between;
 }
-/* table  {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-table,
-tr,
-td {
-  border: none;
-  border-collapse: collapse;
-}
-
-table.removedBorder2,
-td.removedBorder2,
-th.removedBorder2{
- border-top: 2px solid #808080 !important;
- border-bottom: none;
- border-right: none;
- border-left: none;
-
-}
-
-table.removedBorder3,
-td.removedBorder3,
-th.removedBorder3{
-  border:none !important
-} */
