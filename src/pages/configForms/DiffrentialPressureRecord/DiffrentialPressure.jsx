@@ -19,6 +19,7 @@ export default function DiffrentialPressure() {
   const [allTableData, setAllTableData] = useState([]);
   const navigate = useNavigate();
 
+  
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
   let date = object.currentDate;
@@ -34,7 +35,7 @@ export default function DiffrentialPressure() {
   }
 
   useEffect(() => {
-    // Load data from local storage if available
+  
     const storedData = JSON.parse(localStorage.getItem("allTableData"));
     if (storedData) {
       setAllTableData(storedData);
@@ -86,7 +87,7 @@ export default function DiffrentialPressure() {
 
   const handleSave = (data) => {
     if (parseFloat(data.limit) < 0.6 || parseFloat(data.limit) > 2.6) {
-      toast.error("The limit value must be between 0.6 and 2.6.");
+      toast.error("The limit value must be between 0.6 to 2.6.");
       return;
     }
     toast.success("eLog Saved Successfully!");
@@ -111,7 +112,6 @@ export default function DiffrentialPressure() {
       reviewComment: "",
       compressionArea: "",
       limit: "",
-      month: "february",
       gridData: allTableData,
     }
   );
@@ -215,7 +215,7 @@ export default function DiffrentialPressure() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Date of Initiator</label>
+                    <label className="color-label">Date of Initiation</label>
                     <div>
                       <input
                         type="text"
@@ -278,7 +278,6 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
-
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
@@ -322,7 +321,6 @@ export default function DiffrentialPressure() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
@@ -366,7 +364,7 @@ export default function DiffrentialPressure() {
                   <div className="group-input">
                     <label className="color-label">Month:</label>
                     <div>
-                      <input type="text" value={currentMonth} readOnly />
+                      <input type="text" value={currentMonth} readOnly /> 
                     </div>
                   </div>
 
