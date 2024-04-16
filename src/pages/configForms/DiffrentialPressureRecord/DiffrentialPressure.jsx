@@ -34,13 +34,7 @@ export default function DiffrentialPressure() {
     };
   }
 
-  useEffect(() => {
   
-    const storedData = JSON.parse(localStorage.getItem("allTableData"));
-    if (storedData) {
-      setAllTableData(storedData);
-    }
-  }, []);
 
   const saveDataToLocalStorage = (data) => {
     localStorage.setItem("allTableData", JSON.stringify(data));
@@ -112,10 +106,18 @@ export default function DiffrentialPressure() {
       reviewComment: "",
       compressionArea: "",
       limit: "",
-      gridData: allTableData,
+     
     }
   );
 
+  useEffect(() => {
+  
+    const storedData = JSON.parse(localStorage.getItem("allTableData"));
+    if (storedData) {
+      setAllTableData(storedData);
+    }
+setDifferentialPRecord( {gridData: allTableData},)
+  }, [allTableData]);
   const createObject = (newObject) => {
     dispatch({ type: "ADD_OBJECT", payload: newObject });
   };
@@ -127,7 +129,6 @@ export default function DiffrentialPressure() {
   const TableData = (data) => {
     dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
   };
-
   return (
     <>
       <HeaderTop />

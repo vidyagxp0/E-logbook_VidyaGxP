@@ -39,7 +39,6 @@ export default function DPRpanel() {
       currentDate: currentDate,
     };
   }
-
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("allTableData"));
     if (storedData) {
@@ -397,7 +396,7 @@ export default function DPRpanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {differentialData[0].map((item, index) => (
+                      {editData?.gridData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>UID000{index + 1}</td>
