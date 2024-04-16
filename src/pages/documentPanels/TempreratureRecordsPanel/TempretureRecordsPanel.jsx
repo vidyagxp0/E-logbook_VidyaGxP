@@ -244,7 +244,7 @@ const TempretureRecordsPanel = () => {
                             <input
                               type="text"
                               name="initiator"
-                              value={editData.initiator}
+                              value={editData.initiator || ""}
                               onChange={handleInputChange1}
                             />
                           </div>

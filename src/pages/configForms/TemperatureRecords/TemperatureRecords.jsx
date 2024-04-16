@@ -117,7 +117,9 @@ export default function TemperatureRecords() {
         checkedBy: "Amit Guru",
       },
     }
+    
   );
+
 
   const TemperatureData = (data) => {
     dispatch({ type: "ADD-TEMPERATURETDATA", payload: data });
@@ -512,6 +514,25 @@ export default function TemperatureRecords() {
             >
               Save
             </button>
+            {isSelectedGeneral === true ? (
+                <button
+                  className="themeBtn"
+                  onClick={() => {
+                    setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                  }}
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  className="themeBtn"
+                  onClick={() => {
+                    setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                  }}
+                >
+                  Back
+                </button>
+              )}
             <button className="themeBtn" onClick={() => navigate("/desktop")}>
               Exit
             </button>

@@ -12,21 +12,19 @@ function Desktop() {
   const differentialPRecordHistory = useSelector(
     (state) => state.objects.objects
   );
-  console.log(differentialPRecordHistory, "differentialPRecordHistory");
   const equipmentCRecordHistory = useSelector(
     (state) => state.equipment.EquipmentCleaningData
   );
   const areaAndERecordHistory = useSelector(
     (state) => state.area.areaAndEquipmentData
   );
-  console.log(areaAndERecordHistory,"areaAndERecordHistory")
+
   const temperatureRecordHistory = useSelector(
     (state) => state.temperature.temperatureRecordData
   );
 
   const [eLogSelect, setELogSelect] = useState("All_Records");
   const [getId, setGetId] = useState(null);
-  console.log(getId);
   const dispatch = useDispatch();
 
   function padNumber(number, width) {
@@ -42,8 +40,8 @@ function Desktop() {
   
   const combinedRecords = [
     ...differentialPRecordHistory,
-    ...equipmentCRecordHistory,
     ...areaAndERecordHistory,
+    ...equipmentCRecordHistory,
     ...temperatureRecordHistory,
   ];
   return (
