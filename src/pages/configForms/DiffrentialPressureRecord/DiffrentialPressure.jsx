@@ -61,7 +61,7 @@ export default function DiffrentialPressure() {
       limit: "",
       remark: "",
       checkedBy: "Amit Guru",
-      file: null, // Adding property for file attachment
+      file: null,
     };
     setAllTableData([...allTableData, newRow]);
   };

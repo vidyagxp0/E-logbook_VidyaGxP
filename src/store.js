@@ -9,10 +9,6 @@ import DifferentialPressureReducers from './components/Reducers/DifferentialPres
 import DPRpanelReducers from './components/Reducers/DPRpanelReducers';
 import TemperatureRecordReducers from './components/Reducers/TemperatureRecordReducers';
 
-// const rootReducer = combineReducers({
-//   signature: signatureReducer,
-// });
-
 const reducer=combineReducers({
     objects:rootReducer,
     equipment:EquipmentCleaningReducers,
