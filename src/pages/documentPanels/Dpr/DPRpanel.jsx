@@ -13,7 +13,7 @@ export default function DPRpanel() {
   const editedData = useSelector((state) => state.dprPanelData.selectedRow);
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
-  const [allTableData, setAllTableData] = useState([]);
+  const [fileData, setFileData] = useState(null);
   const [editData, setEditData] = useState({
     shortDescription: "",
     description: "",
@@ -24,7 +24,6 @@ export default function DPRpanel() {
     limit: "",
     initiator: "",
   });
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
@@ -40,22 +39,8 @@ export default function DPRpanel() {
     };
   }
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("allTableData"));
-    if (storedData) {
-      setAllTableData(storedData);
-    }
     setEditData(editedData);
   }, [editedData]);
-
-  const saveDataToLocalStorage = (data) => {
-    localStorage.setItem("allTableData", JSON.stringify(data));
-  };
-
-  const handleTableDataSave = () => {
-    toast.success("eLog Saved Successfully!");
-    saveDataToLocalStorage(allTableData);
-    TableData(allTableData);
-  };
 
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
@@ -67,7 +52,19 @@ export default function DPRpanel() {
       checkedBy: "Amit Guru",
       file: null,
     };
-    setAllTableData([...allTableData, newRow]);
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: [...prevState.gridData, newRow],
+    }));
+  };
+
+  const deleteRow = (index) => {
+    const updatedGridData = [...editData.gridData];
+    updatedGridData.splice(index, 1);
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
   };
 
   const handleInputChange1 = (e) => {
@@ -75,10 +72,26 @@ export default function DPRpanel() {
     setEditData({ ...editData, [name]: value });
   };
 
-  const deleteRow = (index) => {
-    const updatedData = [...allTableData];
-    updatedData.splice(index, 1);
-    setAllTableData(updatedData);
+  const handleDeleteFile = (index) => {
+    const updatedGridData = editData.gridData.map((item, i) => {
+      if (i === index) {
+        return { ...item, file: null };
+      }
+      return item;
+    });
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
+  };
+
+  const handleFileChange = (index, file) => {
+    const updatedGridData = [...editData.gridData];
+    updatedGridData[index].file = file;
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
   };
 
   const uniqueId =
@@ -104,6 +117,7 @@ export default function DPRpanel() {
       payload: { id: editData.eLogId, editedData: editData },
     });
     toast.success("Data saved successfully!");
+    setFileData(null);
     navigate("/desktop");
   };
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
@@ -123,28 +137,8 @@ export default function DPRpanel() {
       reviewComment: "",
       compressionArea: "",
       limit: "",
-      gridData: {
-        uniqueId: "",
-        date,
-        time,
-        dPressure: "",
-        remark: "",
-        checkedBy: "Amit Guru",
-      },
+      gridData: [],
     }
-  );
-
-  const handleDeleteFile = (index) => {
-    const updatedData = [...allTableData];
-    updatedData[index].file = null;
-    setAllTableData(updatedData);
-  };
-  const TableData = (data) => {
-    dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
-  };
-
-  const differentialData = useSelector(
-    (state) => state.tableData.differentialTableData
   );
 
   return (
@@ -384,15 +378,15 @@ export default function DPRpanel() {
                   <table>
                     <thead>
                       <tr>
-                        <th>S no.</th>
-                        <th>Unique Id</th>
-                        <th>Date</th>
-                        <th>Time</th>
+                        <th style={{ width: "50px" }}>S no.</th>
+                        <th style={{ width: "50px" }}>Unique Id</th>
+                        <th style={{ width: "30px" }}>Date</th>
+                        <th style={{ width: "30px" }}>Time</th>
                         <th>Differential Pressure</th>
                         <th>Remark</th>
-                        <th>Checked By</th>
-                        <th>Supporting Documents</th>
-                        <th>Actions</th>
+                        <th style={{ width: "50px" }}>Checked By</th>
+                        <th style={{ width: "300px" }}>Supporting Documents</th>
+                        <th style={{ width: "180px" }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -401,24 +395,10 @@ export default function DPRpanel() {
                           <td>{index + 1}</td>
                           <td>UID000{index + 1}</td>
                           <td>
-                            <input
-                              value={item.date}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].date = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
+                            <input value={item.date} />
                           </td>
                           <td>
-                            <input
-                              value={item.time}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].time = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
+                            <input value={item.time} />
                           </td>
                           <td>
                             <input
@@ -432,9 +412,9 @@ export default function DPRpanel() {
                                   : ""
                               }`}
                               onChange={(e) => {
-                                const newData = [...allTableData];
+                                const newData = [...editData.gridData];
                                 newData[index].limit = e.target.value;
-                                setAllTableData(newData);
+                                setEditData({ ...editData, gridData: newData });
                               }}
                             />
                           </td>
@@ -442,9 +422,9 @@ export default function DPRpanel() {
                             <input
                               value={item.remark}
                               onChange={(e) => {
-                                const newData = [...allTableData];
+                                const newData = [...editData.gridData];
                                 newData[index].remark = e.target.value;
-                                setAllTableData(newData);
+                                setEditData({ ...editData, gridData: newData });
                               }}
                             />
                           </td>
@@ -452,29 +432,56 @@ export default function DPRpanel() {
                             <input
                               value={item.checkedBy}
                               onChange={(e) => {
-                                const newData = [...allTableData];
+                                const newData = [...editData.gridData];
                                 newData[index].checkedBy = e.target.value;
-                                setAllTableData(newData);
+                                setEditData({ ...editData, gridData: newData });
                               }}
                             />
                           </td>
-                          <td>
-                            <div className="w-5">
+                          {/* <td style={{ width: "250px" }}>
+                            <div className="d-flex">
                               <input
+                              value= {item.files}
                                 type="file"
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
                               />
-                            </div>
-                            <div className="w-5">
+                         
                               {item.file && (
-                                <button onClick={() => handleDeleteFile(index)}>
-                                  Delete File
-                                </button>
+                                <DeleteIcon
+                                  style={{ color: "red" }}
+                                  onClick={() => handleDeleteFile(index)}
+                                />
+                              )}
+                            </div>
+                          </td> */}
+
+                          <td style={{ width: "250px" }}>
+                            <div className="d-flex">
+                              <input
+                                type="file"
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
+                                style={{ display: "none" }}
+                                id={`file-input-${index}`}
+                              />
+                              <label
+                                htmlFor={`file-input-${index}`}
+                                className="file-label"
+                              >
+                                {item.file ? item.file.name : "Choose File"}
+                              </label>
+                              {item.file && (
+                                <DeleteIcon
+                                  style={{ color: "red" }}
+                                  onClick={() => handleDeleteFile(index)}
+                                />
                               )}
                             </div>
                           </td>
+
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.limit !== "" &&
