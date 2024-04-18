@@ -19,7 +19,6 @@ export default function DiffrentialPressure() {
   const [allTableData, setAllTableData] = useState([]);
   const navigate = useNavigate();
 
-  
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
   let date = object.currentDate;
@@ -34,19 +33,6 @@ export default function DiffrentialPressure() {
     };
   }
 
-  
-
-  const saveDataToLocalStorage = (data) => {
-    localStorage.setItem("allTableData", JSON.stringify(data));
-  };
-
-  const handleTableDataSave = () => {
-    toast.success("eLog Saved Successfully!");
-    saveDataToLocalStorage(allTableData);
-    TableData(allTableData);
-  };
-
-  // Function to add a new row to the table
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
     const newRow = {
@@ -55,7 +41,7 @@ export default function DiffrentialPressure() {
       limit: "",
       remark: "",
       checkedBy: "Amit Guru",
-      file: null, // Adding property for file attachment
+      file: null,
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -86,7 +72,6 @@ export default function DiffrentialPressure() {
     }
     toast.success("eLog Saved Successfully!");
     createObject(data);
-    TableData(allTableData);
     navigate("/desktop");
   };
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
@@ -106,29 +91,25 @@ export default function DiffrentialPressure() {
       reviewComment: "",
       compressionArea: "",
       limit: "",
-     
     }
   );
-
   useEffect(() => {
-  
-    const storedData = JSON.parse(localStorage.getItem("allTableData"));
-    if (storedData) {
-      setAllTableData(storedData);
-    }
-setDifferentialPRecord( {gridData: allTableData},)
+    setDifferentialPRecord({ gridData: allTableData });
   }, [allTableData]);
   const createObject = (newObject) => {
     dispatch({ type: "ADD_OBJECT", payload: newObject });
   };
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
-    updatedData[index].file = null;
+    updatedData[index].file = null; // This should remove the file
     setAllTableData(updatedData);
   };
-  const TableData = (data) => {
-    dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
+  const handleFileChange = (index, file) => {
+    const updatedData = [...allTableData];
+    updatedData[index].file = file;
+    setAllTableData(updatedData);
   };
+
   return (
     <>
       <HeaderTop />
@@ -365,7 +346,7 @@ setDifferentialPRecord( {gridData: allTableData},)
                   <div className="group-input">
                     <label className="color-label">Month:</label>
                     <div>
-                      <input type="text" value={currentMonth} readOnly /> 
+                      <input type="text" value={currentMonth} readOnly />
                     </div>
                   </div>
 
@@ -385,7 +366,7 @@ setDifferentialPRecord( {gridData: allTableData},)
                         <th>Differential Pressure</th>
                         <th>Remark</th>
                         <th>Checked By</th>
-                        <th>Supporting Documents</th>
+                        <th style={{ width: "300px" }}>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -452,20 +433,19 @@ setDifferentialPRecord( {gridData: allTableData},)
                               }}
                             />
                           </td>
-                          <td>
-                            <div className="w-5">
+                          <td style={{ width: "250px" }}>
+                            <div className="d-flex">
                               <input
                                 type="file"
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
                               />
-                            </div>
-                            <div className="w-5">
                               {item.file && (
-                                <button onClick={() => handleDeleteFile(index)}>
-                                  Delete File
-                                </button>
+                                <DeleteIcon
+                                  style={{ color: "red" }}
+                                  onClick={() => handleDeleteFile(index)}
+                                />
                               )}
                             </div>
                           </td>
