@@ -2,7 +2,6 @@
   height: calc(100vh - 150px);
   width: 100%;
   padding: 20px 20px;
-  /* background-color: white; */
 }
 
 .desktop-input-table-wrapper .input-wrapper {
@@ -10,7 +9,6 @@
   grid-template-columns: 8fr 1.5fr;
   justify-content: space-between;
   align-content: space-between;
-  /* align-content: ; */
   border-radius: 10px;
   gap: 60px;
   padding: 5px 0px;

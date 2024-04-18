@@ -1,4 +1,4 @@
-/*! ===================================================================== */
+! =====================================================================
 /*! DOCUMENT CSS */
 /*! ===================================================================== */
 #main-form-container .aside-container {
@@ -153,7 +153,8 @@
   padding: 15px;
   border-radius: 5px;
   order: 3;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
     rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
 }
 
@@ -177,16 +178,18 @@
   display: grid;
   place-items: center;
   align-content: center;
-
   font-size: 1.2rem;
-  /* border-left: 2px solid #000000; */
 }
 
-.main-head{
+.main-head {
   padding-right: 130px;
 }
 
-#config-form-document-page .document-form .sop-type-header .main-head div:nth-child(1) {
+#config-form-document-page
+  .document-form
+  .sop-type-header
+  .main-head
+  div:nth-child(1) {
   font-weight: bold;
   font-size: 1.7rem;
 }
@@ -237,7 +240,10 @@
   margin: 0;
 }
 
-#config-form-document-page .group-input .file-attachment-field .file-attachment-list {
+#config-form-document-page
+  .group-input
+  .file-attachment-field
+  .file-attachment-list {
   background: white;
   border: 1px solid black;
   padding: 5px 10px;
@@ -248,11 +254,20 @@
   gap: 20px;
 }
 
-#config-form-document-page .group-input .file-attachment-field .file-attachment-list > div {
+#config-form-document-page
+  .group-input
+  .file-attachment-field
+  .file-attachment-list
+  > div {
   font-size: 0.9rem;
 }
 
-#config-form-document-page .group-input .file-attachment-field .file-attachment-list > div a {
+#config-form-document-page
+  .group-input
+  .file-attachment-field
+  .file-attachment-list
+  > div
+  a {
   color: #0039bd;
   font-size: 0.8rem;
   text-decoration: underline;

@@ -19,11 +19,13 @@ function getCurrentDateTime() {
   minutes = minutes < 10 ? "0" + minutes : minutes;
   const currentTime = `${hours}:${minutes} ${ampm}`;
 
+  // Format date to 12/12/12 format
   const year = now.getFullYear().toString().slice(-2); // Get last two digits of year
   const month = (now.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
   const day = now.getDate().toString().padStart(2, "0");
   const currentDate = `${month}/${day}/${year}`;
 
+  // Return object containing current time and date
   return {
     currentTime: currentTime,
     currentDate: currentDate,
