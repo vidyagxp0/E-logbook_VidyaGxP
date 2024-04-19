@@ -28,6 +28,7 @@ const TempretureRecordsPanel = () => {
     limit: "",
     month: "february",
   });
+  console.log(editData,"editData")
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
@@ -62,15 +63,8 @@ const TempretureRecordsPanel = () => {
     setEditData({ ...editData, [name]: value });
   };
 
-  const saveDataToLocalStorage = (data) => {
-    localStorage.setItem("allTableData", JSON.stringify(data));
-  };
 
-  const handleTableDataSave = () => {
-    toast.success("eLog Saved Successfully!");
-    saveDataToLocalStorage(allTableData);
-    TableData(allTableData);
-  };
+  
 
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
@@ -82,7 +76,10 @@ const TempretureRecordsPanel = () => {
       checkedBy: "Amit Guru",
       file: null,
     };
-    setAllTableData([...allTableData, newRow]);
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: [...prevState.gridData, newRow],
+    }));
   };
 
   const deleteRow = (index) => {
@@ -424,10 +421,10 @@ const TempretureRecordsPanel = () => {
                             <td>{index + 1}</td>
                             <td>UID000{index + 1}</td>
                             <td>
-                              <input value={item.date} />
+                              <input value={item.date} readOnly />
                             </td>
                             <td>
-                              <input value={item.time} />
+                              <input value={item.time} readOnly/>
                             </td>
                             <td>
                               <input
@@ -507,7 +504,7 @@ const TempretureRecordsPanel = () => {
                                   <button
                                     className="deviation-btn"
                                     onClick={() => {
-                                      navigate("/chart"), handleTableDataSave;
+                                      navigate("/chart")
                                     }}
                                   >
                                     Launch Deviation
@@ -539,7 +536,7 @@ const TempretureRecordsPanel = () => {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(addTemperatureRecord), handleTableDataSave;
+                  handleSave(addTemperatureRecord)
                 }}
               >
                 Save
