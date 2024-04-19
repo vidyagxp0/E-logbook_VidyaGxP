@@ -471,7 +471,7 @@ export default function DiffrentialPressure() {
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart"), handleTableDataSave;
+                                    navigate("/chart")
                                   }}
                                 >
                                   Action item
@@ -514,7 +514,7 @@ export default function DiffrentialPressure() {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(differentialPRecord), handleTableDataSave;
+                  handleSave(differentialPRecord)
                 }}
               >
                 Save

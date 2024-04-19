@@ -459,7 +459,7 @@ export default function TemperatureRecords() {
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart"), handleTableDataSave;
+                                    navigate("/chart")
                                   }}
                                 >
                                   Deviation
@@ -470,7 +470,7 @@ export default function TemperatureRecords() {
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart"), handleTableDataSave;
+                                    navigate("/chart")
                                   }}
                                 >
                                   Action item
@@ -513,11 +513,30 @@ export default function TemperatureRecords() {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(temperatureRecords), handleTableDataSave;
+                  handleSave(temperatureRecords)
                 }}
               >
                 Save
               </button>
+              {isSelectedGeneral === true ? (
+                <button
+                  className="themeBtn"
+                  onClick={() => {
+                    setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                  }}
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  className="themeBtn"
+                  onClick={() => {
+                    setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                  }}
+                >
+                  Back
+                </button>
+              )}
               <button className="themeBtn" onClick={() => navigate("/desktop")}>
                 Exit
               </button>

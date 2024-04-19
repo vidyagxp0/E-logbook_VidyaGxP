@@ -395,10 +395,10 @@ export default function DPRpanel() {
                           <td>{index + 1}</td>
                           <td>UID000{index + 1}</td>
                           <td>
-                            <input value={item.date} />
+                            <input value={item.date} readOnly />
                           </td>
                           <td>
-                            <input value={item.time} />
+                            <input value={item.time} readOnly />
                           </td>
                           <td>
                             <input
@@ -489,7 +489,7 @@ export default function DPRpanel() {
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart"), handleTableDataSave;
+                                    navigate("/chart")
                                   }}
                                 >
                                   Launch Deviation
@@ -519,7 +519,7 @@ export default function DPRpanel() {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(differentialPRecord), handleTableDataSave;
+                  handleSave(differentialPRecord)
                 }}
               >
                 Save
