@@ -11,11 +11,10 @@ function Grid(_props) {
           return rows.length + 1;
         } else {
           const column = _props.columnList[index - 1];
-          return column.isEditable ? "" : column.content || column.value; // Use content if not editable, else use value
+          return column.isEditable ? "" : column.content || column.value;
         }
       }),
     };
-
     setRows([...rows, newRow]);
   }
 
@@ -69,7 +68,7 @@ function Grid(_props) {
                       {index === 0 ? (
                         <input type="text" value={rowIndex + 1} readOnly />
                       ) : !_props.columnList[index - 1].isEditable ? (
-                        <input type="text" value={_props.columnList[index - 1].content || cell} readOnly /> // Use content if available and not editable
+                        <input type="text" value={_props.columnList[index - 1].content || cell} readOnly /> 
                       ) : _props.columnList[index - 1].type === "singleSelection" ? (
                         <select
                           value={cell}
