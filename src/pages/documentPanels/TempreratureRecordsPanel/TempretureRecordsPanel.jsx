@@ -28,6 +28,7 @@ const TempretureRecordsPanel = () => {
     limit: "",
     month: "february",
   });
+  console.log(editData,"editData")
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
@@ -62,15 +63,8 @@ const TempretureRecordsPanel = () => {
     setEditData({ ...editData, [name]: value });
   };
 
-  const saveDataToLocalStorage = (data) => {
-    localStorage.setItem("allTableData", JSON.stringify(data));
-  };
 
-  const handleTableDataSave = () => {
-    toast.success("eLog Saved Successfully!");
-    saveDataToLocalStorage(allTableData);
-    TableData(allTableData);
-  };
+  
 
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
@@ -82,7 +76,10 @@ const TempretureRecordsPanel = () => {
       checkedBy: "Amit Guru",
       file: null,
     };
-    setAllTableData([...allTableData, newRow]);
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: [...prevState.gridData, newRow],
+    }));
   };
 
   const deleteRow = (index) => {
@@ -145,19 +142,30 @@ const TempretureRecordsPanel = () => {
       },
     }
   );
-
   const handleDeleteFile = (index) => {
-    const updatedData = [...allTableData];
-    updatedData[index].file = null;
-    setAllTableData(updatedData);
+    const updatedGridData = editData.gridData.map((item, i) => {
+      if (i === index) {
+        return { ...item, file: null };
+      }
+      return item;
+    });
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
+  };
+
+  const handleFileChange = (index, file) => {
+    const updatedGridData = [...editData.gridData];
+    updatedGridData[index].file = file;
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
   };
   const TableData = (data) => {
     dispatch({ type: "EDIT-TEMPERATURETDATA", payload: data });
   };
-
-  const temperatureData = useSelector(
-    (state) => state.tableData.differentialTableData
-  );
 
   return (
     <>
@@ -363,14 +371,14 @@ const TempretureRecordsPanel = () => {
                     </div>
 
                     <div className="group-input">
-                      <label className="color-label">Limit</label>
+                      <label className="color-label">Temperature</label>
                       <div className="instruction"></div>
                       <input
                         type="number"
                         className={`${
-                          editData.limit < 0.6
+                          editData.limit < 23
                             ? "limit"
-                            : editData.limit > 2.6
+                            : editData.limit > 27
                             ? "limit"
                             : ""
                         }`}
@@ -400,7 +408,7 @@ const TempretureRecordsPanel = () => {
                           <th>Unique Id</th>
                           <th>Date</th>
                           <th>Time</th>
-                          <th>Differential Pressure</th>
+                          <th>Temperature</th>
                           <th>Remark</th>
                           <th>Checked By</th>
                           <th>Supporting Documents</th>
@@ -408,45 +416,34 @@ const TempretureRecordsPanel = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {temperatureData[0]?.map((item, index) => (
+                        {editData.gridData?.map((item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>UID000{index + 1}</td>
                             <td>
-                              <input
-                                value={item.date}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].date = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                              />
+                              <input value={item.date} readOnly />
                             </td>
                             <td>
-                              <input
-                                value={item.time}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].time = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                              />
+                              <input value={item.time} readOnly/>
                             </td>
                             <td>
                               <input
                                 type="number"
                                 value={item.limit}
                                 className={`${
-                                  item.limit < 0.6
+                                  item.limit < 23
                                     ? "limit"
-                                    : item.limit > 2.6
+                                    : item.limit > 27
                                     ? "limit"
                                     : ""
                                 }`}
                                 onChange={(e) => {
-                                  const newData = [...allTableData];
+                                  const newData = [...editData.gridData];
                                   newData[index].limit = e.target.value;
-                                  setAllTableData(newData);
+                                  setEditData({
+                                    ...editData,
+                                    gridData: newData,
+                                  });
                                 }}
                               />
                             </td>
@@ -454,9 +451,12 @@ const TempretureRecordsPanel = () => {
                               <input
                                 value={item.remark}
                                 onChange={(e) => {
-                                  const newData = [...allTableData];
+                                  const newData = [...editData.gridData];
                                   newData[index].remark = e.target.value;
-                                  setAllTableData(newData);
+                                  setEditData({
+                                    ...editData,
+                                    gridData: newData,
+                                  });
                                 }}
                               />
                             </td>
@@ -464,39 +464,47 @@ const TempretureRecordsPanel = () => {
                               <input
                                 value={item.checkedBy}
                                 onChange={(e) => {
-                                  const newData = [...allTableData];
+                                  const newData = [...editData.gridData];
                                   newData[index].checkedBy = e.target.value;
-                                  setAllTableData(newData);
+                                  setEditData({
+                                    ...editData,
+                                    gridData: newData,
+                                  });
                                 }}
                               />
                             </td>
-                            <td>
-                              <div className="w-5">
+                            <td style={{ width: "250px" }}>
+                              <div className="d-flex">
                                 <input
                                   type="file"
                                   onChange={(e) =>
                                     handleFileChange(index, e.target.files[0])
                                   }
+                                  style={{ display: "none" }}
+                                  id={`file-input-${index}`}
                                 />
-                              </div>
-                              <div className="w-5">
+                                <label
+                                  htmlFor={`file-input-${index}`}
+                                  className="file-label"
+                                >
+                                  {item.file ? item.file.name : "Choose File"}
+                                </label>
                                 {item.file && (
-                                  <button
+                                  <DeleteIcon
+                                    style={{ color: "red" }}
                                     onClick={() => handleDeleteFile(index)}
-                                  >
-                                    Delete File
-                                  </button>
+                                  />
                                 )}
                               </div>
                             </td>
                             <td>
                               <DeleteIcon onClick={() => deleteRow(index)} />
                               {item.limit !== "" &&
-                                (item.limit < 0.6 || item.limit > 2.6) && (
+                                (item.limit < 23 || item.limit > 27) && (
                                   <button
                                     className="deviation-btn"
                                     onClick={() => {
-                                      navigate("/chart"), handleTableDataSave;
+                                      navigate("/chart")
                                     }}
                                   >
                                     Launch Deviation
@@ -528,7 +536,7 @@ const TempretureRecordsPanel = () => {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(addTemperatureRecord), handleTableDataSave;
+                  handleSave(addTemperatureRecord)
                 }}
               >
                 Save

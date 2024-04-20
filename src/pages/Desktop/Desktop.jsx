@@ -10,14 +10,12 @@ function Desktop() {
   const differentialPRecordHistory = useSelector(
     (state) => state.objects.objects
   );
-  console.log(differentialPRecordHistory, "differentialPRecordHistory");
   const equipmentCRecordHistory = useSelector(
     (state) => state.equipment.EquipmentCleaningData
   );
   const areaAndERecordHistory = useSelector(
     (state) => state.area.areaAndEquipmentData
   );
-  console.log(areaAndERecordHistory,"areaAndERecordHistory")
   const temperatureRecordHistory = useSelector(
     (state) => state.temperature.temperatureRecordData
   );
