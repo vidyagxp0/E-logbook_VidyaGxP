@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import DynamicPdf from "../../../components/Reports/DynamicPdf.jsx";
 
 export default function DPRpanel() {
   const editedData = useSelector((state) => state.dprPanelData.selectedRow);
@@ -209,9 +211,18 @@ export default function DPRpanel() {
                   >
                     Analytics
                   </button>
-                  <button className="btn-print" onClick={() => {}}>
-                    Print
-                  </button>
+                  <PDFDownloadLink
+                    document={<DynamicPdf elog={editData} />}
+                    fileName="VidyaGxP.pdf"
+                  >
+                    {({ blob, url, loading, error }) =>
+                      loading ? (
+                        <button className="btn-print">Wait</button>
+                      ) : (
+                        <button className="btn-print">Print</button>
+                      )
+                    }
+                  </PDFDownloadLink>
                 </div>
               </div>
 
@@ -300,7 +311,7 @@ export default function DPRpanel() {
                       </option>
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
-                      </option>
+                      </option> 
                       <option value="Central Quality Control">
                         Central Quality Control
                       </option>
@@ -416,7 +427,7 @@ export default function DPRpanel() {
                                 newData[index].limit = e.target.value;
                                 setEditData({ ...editData, gridData: newData });
                               }}
-                            />
+                            />                                                                                                   
                           </td>
                           <td>
                             <input
@@ -489,7 +500,7 @@ export default function DPRpanel() {
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart")
+                                    navigate("/chart");
                                   }}
                                 >
                                   Launch Deviation
@@ -519,7 +530,7 @@ export default function DPRpanel() {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(differentialPRecord)
+                  handleSave(differentialPRecord);
                 }}
               >
                 Save
