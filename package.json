@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.10",
     "@mui/material": "^5.15.10",
     "@react-icons/all-files": "^4.1.0",
+    "@react-pdf/renderer": "^3.4.2",
     "apexcharts": "^3.48.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",

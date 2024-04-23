@@ -11,7 +11,6 @@
   .btn-forms-isSelected {
     background-color: grey;
     color: #ffffff;
-    /* border: ; */
     padding: 5px 10px;
     border-radius: 28px;
   }
@@ -28,7 +27,6 @@
   
   .table-equipmentName{
     height: 50px;
-    /* width: 20px; */
   }
   
   .width-date{
@@ -112,7 +110,6 @@
   table,
   tr,
   td {
-    /* border: none; */
     border-collapse: collapse;
   }
   
@@ -141,7 +138,7 @@
   }
   
   .truncate {
-    max-width: 100px; /* Adjust this width as needed */
+    max-width: 100px; 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

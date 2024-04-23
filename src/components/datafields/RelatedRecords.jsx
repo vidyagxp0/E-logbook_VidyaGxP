@@ -11,7 +11,9 @@ function RelatedRecords(_props) {
   const [data, setData] = useState();
   function padNumber(number, width) {
     number = number + "";
-    return number.length >= width ? number : new Array(width - number.length + 1).join("0") + number;
+    return number.length >= width
+      ? number
+      : new Array(width - number.length + 1).join("0") + number;
   }
   const fetchData = async () => {
     // try {
@@ -50,7 +52,9 @@ function RelatedRecords(_props) {
             />
           </svg>
         </label>
-        {_props.instruction && <div className="instruction">{_props.instruction}</div>}
+        {_props.instruction && (
+          <div className="instruction">{_props.instruction}</div>
+        )}
         <div className="table-responsive">
           <table>
             <thead>
@@ -77,7 +81,11 @@ function RelatedRecords(_props) {
                         <td>{item.generalInformation[0].shortDescription}</td>
                         <td>{item.generalInformation[0].invocationType}</td>
                         <td>{item.generalInformation[0].assignedTo}</td>
-                        <td>{convertDateFormat(item.generalInformation[0].dueDate)}</td>
+                        <td>
+                          {convertDateFormat(
+                            item.generalInformation[0].dueDate
+                          )}
+                        </td>
                         <td></td>
                       </tr>
                     )

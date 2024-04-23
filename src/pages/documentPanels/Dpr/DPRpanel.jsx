@@ -8,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import DynamicPdf from "../../../components/Reports/DynamicPdf.jsx";
 
 export default function DPRpanel() {
   const editedData = useSelector((state) => state.dprPanelData.selectedRow);
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
-  const [allTableData, setAllTableData] = useState([]);
+  const [fileData, setFileData] = useState(null);
   const [editData, setEditData] = useState({
     shortDescription: "",
     description: "",
@@ -24,7 +26,6 @@ export default function DPRpanel() {
     limit: "",
     initiator: "",
   });
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
@@ -39,27 +40,10 @@ export default function DPRpanel() {
       currentDate: currentDate,
     };
   }
-
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("allTableData"));
-    if (storedData) {
-      setAllTableData(storedData);
-    }
     setEditData(editedData);
   }, [editedData]);
 
-  const saveDataToLocalStorage = (data) => {
-    localStorage.setItem("allTableData", JSON.stringify(data));
-  };
-
-  const handleTableDataSave = () => {
-    // Perform save logic here
-    toast.success("eLog Saved Successfully!");
-    saveDataToLocalStorage(allTableData);
-    TableData(allTableData);
-  };
-
-  // Function to add a new row to the table
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
     const newRow = {
@@ -68,9 +52,21 @@ export default function DPRpanel() {
       limit: "",
       remark: "",
       checkedBy: "Amit Guru",
-      file: null, // Adding property for file attachment
+      file: null,
     };
-    setAllTableData([...allTableData, newRow]);
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: [...prevState.gridData, newRow],
+    }));
+  };
+
+  const deleteRow = (index) => {
+    const updatedGridData = [...editData.gridData];
+    updatedGridData.splice(index, 1);
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
   };
 
   const handleInputChange1 = (e) => {
@@ -78,10 +74,26 @@ export default function DPRpanel() {
     setEditData({ ...editData, [name]: value });
   };
 
-  const deleteRow = (index) => {
-    const updatedData = [...allTableData];
-    updatedData.splice(index, 1);
-    setAllTableData(updatedData);
+  const handleDeleteFile = (index) => {
+    const updatedGridData = editData.gridData.map((item, i) => {
+      if (i === index) {
+        return { ...item, file: null };
+      }
+      return item;
+    });
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
+  };
+
+  const handleFileChange = (index, file) => {
+    const updatedGridData = [...editData.gridData];
+    updatedGridData[index].file = file;
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
   };
 
   const uniqueId =
@@ -107,6 +119,7 @@ export default function DPRpanel() {
       payload: { id: editData.eLogId, editedData: editData },
     });
     toast.success("Data saved successfully!");
+    setFileData(null);
     navigate("/desktop");
   };
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
@@ -126,29 +139,8 @@ export default function DPRpanel() {
       reviewComment: "",
       compressionArea: "",
       limit: "",
-      month: "february",
-      gridData: {
-        uniqueId: "",
-        date,
-        time,
-        dPressure: "",
-        remark: "",
-        checkedBy: "Amit Guru",
-      },
+      gridData: [],
     }
-  );
-
-  const handleDeleteFile = (index) => {
-    const updatedData = [...allTableData];
-    updatedData[index].file = null;
-    setAllTableData(updatedData);
-  };
-  const TableData = (data) => {
-    dispatch({ type: "DIFERENTIALTABLE_DATA", payload: data });
-  };
-
-  const differentialData = useSelector(
-    (state) => state.tableData.differentialTableData
   );
 
   return (
@@ -181,7 +173,6 @@ export default function DPRpanel() {
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
-                  {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
               <div className="sub-head-2">Differential Pressure Record</div>
@@ -220,9 +211,18 @@ export default function DPRpanel() {
                   >
                     Analytics
                   </button>
-                  <button className="btn-print" onClick={() => {}}>
-                    Print
-                  </button>
+                  <PDFDownloadLink
+                    document={<DynamicPdf elog={editData} />}
+                    fileName="VidyaGxP.pdf"
+                  >
+                    {({ blob, url, loading, error }) =>
+                      loading ? (
+                        <button className="btn-print">Wait</button>
+                      ) : (
+                        <button className="btn-print">Print</button>
+                      )
+                    }
+                  </PDFDownloadLink>
                 </div>
               </div>
 
@@ -241,7 +241,7 @@ export default function DPRpanel() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Date of Initiator</label>
+                    <label className="color-label">Date of Initiation</label>
                     <div>
                       <input
                         type="text"
@@ -311,7 +311,7 @@ export default function DPRpanel() {
                       </option>
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
-                      </option>
+                      </option> 
                       <option value="Central Quality Control">
                         Central Quality Control
                       </option>
@@ -389,41 +389,27 @@ export default function DPRpanel() {
                   <table>
                     <thead>
                       <tr>
-                        <th>S no.</th>
-                        <th>Unique Id</th>
-                        <th>Date</th>
-                        <th>Time</th>
+                        <th style={{ width: "50px" }}>S no.</th>
+                        <th style={{ width: "50px" }}>Unique Id</th>
+                        <th style={{ width: "30px" }}>Date</th>
+                        <th style={{ width: "30px" }}>Time</th>
                         <th>Differential Pressure</th>
                         <th>Remark</th>
-                        <th>Checked By</th>
-                        <th>Supporting Documents</th>
-                        <th>Actions</th>
+                        <th style={{ width: "50px" }}>Checked By</th>
+                        <th style={{ width: "300px" }}>Supporting Documents</th>
+                        <th style={{ width: "180px" }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {differentialData[0].map((item, index) => (
+                      {editData?.gridData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>UID000{index + 1}</td>
                           <td>
-                            <input
-                              value={item.date}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].date = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
+                            <input value={item.date} readOnly />
                           </td>
                           <td>
-                            <input
-                              value={item.time}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].time = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
+                            <input value={item.time} readOnly />
                           </td>
                           <td>
                             <input
@@ -437,19 +423,19 @@ export default function DPRpanel() {
                                   : ""
                               }`}
                               onChange={(e) => {
-                                const newData = [...allTableData];
+                                const newData = [...editData.gridData];
                                 newData[index].limit = e.target.value;
-                                setAllTableData(newData);
+                                setEditData({ ...editData, gridData: newData });
                               }}
-                            />
+                            />                                                                                                   
                           </td>
                           <td>
                             <input
                               value={item.remark}
                               onChange={(e) => {
-                                const newData = [...allTableData];
+                                const newData = [...editData.gridData];
                                 newData[index].remark = e.target.value;
-                                setAllTableData(newData);
+                                setEditData({ ...editData, gridData: newData });
                               }}
                             />
                           </td>
@@ -457,29 +443,56 @@ export default function DPRpanel() {
                             <input
                               value={item.checkedBy}
                               onChange={(e) => {
-                                const newData = [...allTableData];
+                                const newData = [...editData.gridData];
                                 newData[index].checkedBy = e.target.value;
-                                setAllTableData(newData);
+                                setEditData({ ...editData, gridData: newData });
                               }}
                             />
                           </td>
-                          <td>
-                            <div className="w-5">
+                          {/* <td style={{ width: "250px" }}>
+                            <div className="d-flex">
                               <input
+                              value= {item.files}
                                 type="file"
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
                               />
-                            </div>
-                            <div className="w-5">
+                         
                               {item.file && (
-                                <button onClick={() => handleDeleteFile(index)}>
-                                  Delete File
-                                </button>
+                                <DeleteIcon
+                                  style={{ color: "red" }}
+                                  onClick={() => handleDeleteFile(index)}
+                                />
+                              )}
+                            </div>
+                          </td> */}
+
+                          <td style={{ width: "250px" }}>
+                            <div className="d-flex">
+                              <input
+                                type="file"
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
+                                style={{ display: "none" }}
+                                id={`file-input-${index}`}
+                              />
+                              <label
+                                htmlFor={`file-input-${index}`}
+                                className="file-label"
+                              >
+                                {item.file ? item.file.name : "Choose File"}
+                              </label>
+                              {item.file && (
+                                <DeleteIcon
+                                  style={{ color: "red" }}
+                                  onClick={() => handleDeleteFile(index)}
+                                />
                               )}
                             </div>
                           </td>
+
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.limit !== "" &&
@@ -487,7 +500,7 @@ export default function DPRpanel() {
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart"), handleTableDataSave;
+                                    navigate("/chart");
                                   }}
                                 >
                                   Launch Deviation
@@ -510,16 +523,6 @@ export default function DPRpanel() {
                       onChange={handleInputChange1}
                     />
                   </div>
-                  {/* Your JSX content */}
-
-                  {/* <Grid
-                  label={docFormFile[2].label}
-                  coloredLabel={docFormFile[2].coloredLabel}
-                  required={docFormFile[2].required}
-                  instruction={docFormFile[2].instruction}
-                  columnList={docFormFile[2].columnList}
-                  onChange={(data) => setDifferentialPRecord({ gridData: data })}
-                /> */}
                 </>
               ) : null}
             </div>
@@ -527,7 +530,7 @@ export default function DPRpanel() {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(differentialPRecord), handleTableDataSave;
+                  handleSave(differentialPRecord);
                 }}
               >
                 Save

@@ -28,6 +28,7 @@ const TempretureRecordsPanel = () => {
     limit: "",
     month: "february",
   });
+  console.log(editData,"editData")
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
@@ -45,7 +46,6 @@ const TempretureRecordsPanel = () => {
   }
 
   useEffect(() => {
-    // Load data from local storage if available
     const storedData = JSON.parse(localStorage.getItem("allTableData"));
     if (storedData) {
       setAllTableData(storedData);
@@ -63,18 +63,9 @@ const TempretureRecordsPanel = () => {
     setEditData({ ...editData, [name]: value });
   };
 
-  const saveDataToLocalStorage = (data) => {
-    localStorage.setItem("allTableData", JSON.stringify(data));
-  };
 
-  const handleTableDataSave = () => {
-    // Perform save logic here
-    toast.success("eLog Saved Successfully!");
-    saveDataToLocalStorage(allTableData);
-    TableData(allTableData);
-  };
+  
 
-  // Function to add a new row to the table
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
     const newRow = {
@@ -83,9 +74,12 @@ const TempretureRecordsPanel = () => {
       limit: "",
       remark: "",
       checkedBy: "Amit Guru",
-      file: null, // Adding property for file attachment
+      file: null,
     };
-    setAllTableData([...allTableData, newRow]);
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: [...prevState.gridData, newRow],
+    }));
   };
 
   const deleteRow = (index) => {
@@ -148,18 +142,30 @@ const TempretureRecordsPanel = () => {
       },
     }
   );
-
- 
   const handleDeleteFile = (index) => {
-    const updatedData = [...allTableData];
-    updatedData[index].file = null;
-    setAllTableData(updatedData);
+    const updatedGridData = editData.gridData.map((item, i) => {
+      if (i === index) {
+        return { ...item, file: null };
+      }
+      return item;
+    });
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
+  };
+
+  const handleFileChange = (index, file) => {
+    const updatedGridData = [...editData.gridData];
+    updatedGridData[index].file = file;
+    setEditData((prevState) => ({
+      ...prevState,
+      gridData: updatedGridData,
+    }));
   };
   const TableData = (data) => {
     dispatch({ type: "EDIT-TEMPERATURETDATA", payload: data });
   };
-
-  const temperatureData= useSelector(state=>state.tableData.differentialTableData)
 
   return (
     <>
@@ -191,7 +197,6 @@ const TempretureRecordsPanel = () => {
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
-                  {/* <div>Environmental Laboratory</div> */}
                 </div>
               </div>
               <div className="sub-head-2">Temperature Records</div>
@@ -235,328 +240,303 @@ const TempretureRecordsPanel = () => {
                   </button>
                 </div>
               </div>
+              <>
+                {isSelectedGeneral === true ? (
                   <>
-                    {isSelectedGeneral === true ? (
-                      <>
-                        <div className="group-input">
-                          <label className="color-label">Initiator </label>
-                          <div>
-                            <input
-                              type="text"
-                              name="initiator"
-                              value={editData.initiator || ""}
-                              onChange={handleInputChange1}
-                            />
-                          </div>
-                        </div>
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator}
+                          onChange={handleInputChange1}
+                        />
+                      </div>
+                    </div>
 
-                        <div className="group-input">
-                          <label className="color-label">
-                            Date of Initiator
-                          </label>
-                          <div>
-                            <input
-                              type="text"
-                              value={date}
-                              onChange={(e) =>
-                                setAddDifferentialPRecord({
-                                  dateOfInitiation: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiator</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={date}
+                          onChange={(e) =>
+                            setAddDifferentialPRecord({
+                              dateOfInitiation: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
 
-                        <div className="group-input">
-                          <label className="color-label">
-                            Short Description
-                          </label>
-                          <div>
-                            <input
-                              type="text"
-                              name="shortDescription"
-                              value={editData.shortDescription||""}
-                              onChange={handleInputChange1}
-                            />
-                          </div>
-                        </div>
+                    <div className="group-input">
+                      <label className="color-label">Short Description</label>
+                      <div>
+                        <input
+                          type="text"
+                          name="shortDescription"
+                          value={editData.shortDescription || ""}
+                          onChange={handleInputChange1}
+                        />
+                      </div>
+                    </div>
 
-                        <div className="group-input">
-                          <label className="color-label">Description</label>
-                          <div>
-                            <input
-                              type="text"
-                              name="description"
-                              value={editData.description||""}
-                              onChange={handleInputChange1}
-                            />
-                          </div>
-                        </div>
+                    <div className="group-input">
+                      <label className="color-label">Description</label>
+                      <div>
+                        <input
+                          type="text"
+                          name="description"
+                          value={editData.description || ""}
+                          onChange={handleInputChange1}
+                        />
+                      </div>
+                    </div>
 
-                        <div className="group-input">
-                          <label className="color-label">Status</label>
-                          <div>
-                            <input
-                              type="text"
-                              name="status"
-                              value={editData.status||""}
-                              onChange={handleInputChange1}
-                            />
-                          </div>
-                        </div>
-                      </>
-                    ) : null}
-
-                    {isSelectedDetails === true ? (
-                      <>
-                        <div className="group-input">
-                          <label className="color-label">Department</label>
-
-                          <div className="instruction">&nbsp;</div>
-                          <select
-                            className="form-control"
-                            name="department"
-                            value={editData.department||""}
-                            onChange={handleInputChange1}
-                          >
-                            <option value="">-- Select --</option>
-                            <option value="Corporate Quality Assurance">
-                              Corporate Quality Assurance
-                            </option>
-                            <option value="Quality Assurance Bio-Pharma">
-                              Quality Assurance Bio-Pharma
-                            </option>
-                            <option value="Central Quality Control">
-                              Central Quality Control
-                            </option>
-                            <option value="Manufacturing">Manufacturing</option>
-                            <option value="Plasma Sourcing Grou">
-                              Plasma Sourcing Group
-                            </option>
-                            <option value="Central Stores">
-                              Central Stores
-                            </option>
-                            <option value="Information Technology Group">
-                              Information Technology Group
-                            </option>
-                            <option value="Molecular Medicine">
-                              Molecular Medicine
-                            </option>
-                            <option value="Central Laboratory">
-                              Central Laboratory
-                            </option>
-                            <option value="Tech team">Tech team</option>
-                          </select>
-                        </div>
-
-                        <div className="group-input">
-                          <label className="color-label">
-                            Compression Area with respect to Corridor
-                          </label>
-
-                          <div className="instruction">&nbsp;</div>
-                          <select
-                            className="form-control"
-                            name="compressionArea"
-                            value={editData.compressionArea||""}
-                            onChange={handleInputChange1}
-                          >
-                            <option value="Select a value">
-                              Select a value
-                            </option>
-                            <option value="Area 1">Area 1</option>
-                            <option value="Area 2">Area 2</option>
-                            <option value="Area 3">Area 3</option>
-                            <option value="Area 4">Area 4</option>
-                            <option value="Area 5">Area 5</option>
-                            <option value="Area 6">Area 6</option>
-                          </select>
-                        </div>
-
-                        <div className="group-input">
-                          <label className="color-label">Limit</label>
-                          <div className="instruction"></div>
-                          <input
-                            type="number"
-                            className={`${
-                              editData.limit < 0.6
-                                ? "limit"
-                                : editData.limit > 2.6
-                                ? "limit"
-                                : ""
-                            }`}
-                            name="limit"
-                            value={editData.limit||""}
-                            onChange={handleInputChange1}
-                          />
-                        </div>
-
-                        <div className="group-input">
-                          <label className="color-label">Month:</label>
-                          <div>
-                            <input type="text" value={currentMonth} readOnly />
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className="AddRows d-flex">
-                            <NoteAdd onClick={addRow} />
-                            <div className="addrowinstruction"></div>
-                          </div>
-                        </div>
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>S no.</th>
-                              <th>Unique Id</th>
-                              <th>Date</th>
-                              <th>Time</th>
-                              <th>Differential Pressure</th>
-                              <th>Remark</th>
-                              <th>Checked By</th>
-                              <th>Supporting Documents</th>
-                              <th>Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {temperatureData[0]?.map((item, index) => (
-                              <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>UID000{index + 1}</td>
-                                <td>
-                                  <input
-                                    value={item.date}
-                                    onChange={(e) => {
-                                      const newData = [...allTableData];
-                                      newData[index].date = e.target.value;
-                                      setAllTableData(newData);
-                                    }}
-                                  />
-                                </td>
-                                <td>
-                                  <input
-                                    value={item.time}
-                                    onChange={(e) => {
-                                      const newData = [...allTableData];
-                                      newData[index].time = e.target.value;
-                                      setAllTableData(newData);
-                                    }}
-                                  />
-                                </td>
-                                <td>
-                                  <input
-                                    type="number"
-                                    value={item.limit}
-                                    className={`${
-                                      item.limit < 0.6
-                                        ? "limit"
-                                        : item.limit > 2.6
-                                        ? "limit"
-                                        : ""
-                                    }`}
-                                    onChange={(e) => {
-                                      const newData = [...allTableData];
-                                      newData[index].limit = e.target.value;
-                                      setAllTableData(newData);
-                                    }}
-                                  />
-                                </td>
-                                <td>
-                                  <input
-                                    value={item.remark}
-                                    onChange={(e) => {
-                                      const newData = [...allTableData];
-                                      newData[index].remark = e.target.value;
-                                      setAllTableData(newData);
-                                    }}
-                                  />
-                                </td>
-                                <td>
-                                  <input
-                                    value={item.checkedBy}
-                                    onChange={(e) => {
-                                      const newData = [...allTableData];
-                                      newData[index].checkedBy = e.target.value;
-                                      setAllTableData(newData);
-                                    }}
-                                  />
-                                </td>
-                                <td>
-                                  <div className="w-5">
-                                    <input
-                                      type="file"
-                                      onChange={(e) =>
-                                        handleFileChange(
-                                          index,
-                                          e.target.files[0]
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                  <div className="w-5">
-                                    {item.file && (
-                                      <button
-                                        onClick={() => handleDeleteFile(index)}
-                                      >
-                                        Delete File
-                                      </button>
-                                    )}
-                                  </div>
-                                </td>
-                                <td>
-                                  <DeleteIcon
-                                    onClick={() => deleteRow(index)}
-                                  />
-                                  {item.limit !== "" &&
-                                    (item.limit < 0.6 || item.limit > 2.6) && (
-                                      <button
-                                        className="deviation-btn"
-                                        onClick={() => {
-                                          navigate("/chart"),
-                                            handleTableDataSave;
-                                        }}
-                                      >
-                                        Launch Deviation
-                                      </button>
-                                    )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-
-                        <div className="group-input">
-                          <label> Review By :- </label>
-                        </div>
-
-                        <div className="group-input">
-                          <label htmlFor="">Review Comments</label>
-                          <input
-                          name="reviewComment"
-                            value={editData.reviewComment||""}
-                           onChange={handleInputChange1}
-                          />
-                        </div>
-                        {/* Your JSX content */}
-
-                        {/* <Grid
-                label={docFormFile[2].label}
-                coloredLabel={docFormFile[2].coloredLabel}
-                required={docFormFile[2].required}
-                instruction={docFormFile[2].instruction}
-                columnList={docFormFile[2].columnList}
-                onChange={(data) => setAddTemperatureRecord({ gridData: data })}
-              /> */}
-                      </>
-                    ) : null}
+                    <div className="group-input">
+                      <label className="color-label">Status</label>
+                      <div>
+                        <input
+                          type="text"
+                          name="status"
+                          value={editData.status || ""}
+                          onChange={handleInputChange1}
+                        />
+                      </div>
+                    </div>
                   </>
-   
+                ) : null}
+
+                {isSelectedDetails === true ? (
+                  <>
+                    <div className="group-input">
+                      <label className="color-label">Department</label>
+
+                      <div className="instruction">&nbsp;</div>
+                      <select
+                        className="form-control"
+                        name="department"
+                        value={editData.department || ""}
+                        onChange={handleInputChange1}
+                      >
+                        <option value="">-- Select --</option>
+                        <option value="Corporate Quality Assurance">
+                          Corporate Quality Assurance
+                        </option>
+                        <option value="Quality Assurance Bio-Pharma">
+                          Quality Assurance Bio-Pharma
+                        </option>
+                        <option value="Central Quality Control">
+                          Central Quality Control
+                        </option>
+                        <option value="Manufacturing">Manufacturing</option>
+                        <option value="Plasma Sourcing Grou">
+                          Plasma Sourcing Group
+                        </option>
+                        <option value="Central Stores">Central Stores</option>
+                        <option value="Information Technology Group">
+                          Information Technology Group
+                        </option>
+                        <option value="Molecular Medicine">
+                          Molecular Medicine
+                        </option>
+                        <option value="Central Laboratory">
+                          Central Laboratory
+                        </option>
+                        <option value="Tech team">Tech team</option>
+                      </select>
+                    </div>
+
+                    <div className="group-input">
+                      <label className="color-label">
+                        Compression Area with respect to Corridor
+                      </label>
+
+                      <div className="instruction">&nbsp;</div>
+                      <select
+                        className="form-control"
+                        name="compressionArea"
+                        value={editData.compressionArea || ""}
+                        onChange={handleInputChange1}
+                      >
+                        <option value="Select a value">Select a value</option>
+                        <option value="Area 1">Area 1</option>
+                        <option value="Area 2">Area 2</option>
+                        <option value="Area 3">Area 3</option>
+                        <option value="Area 4">Area 4</option>
+                        <option value="Area 5">Area 5</option>
+                        <option value="Area 6">Area 6</option>
+                      </select>
+                    </div>
+
+                    <div className="group-input">
+                      <label className="color-label">Temperature</label>
+                      <div className="instruction"></div>
+                      <input
+                        type="number"
+                        className={`${
+                          editData.limit < 23
+                            ? "limit"
+                            : editData.limit > 27
+                            ? "limit"
+                            : ""
+                        }`}
+                        name="limit"
+                        value={editData.limit || ""}
+                        onChange={handleInputChange1}
+                      />
+                    </div>
+
+                    <div className="group-input">
+                      <label className="color-label">Month:</label>
+                      <div>
+                        <input type="text" value={currentMonth} readOnly />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="AddRows d-flex">
+                        <NoteAdd onClick={addRow} />
+                        <div className="addrowinstruction"></div>
+                      </div>
+                    </div>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>S no.</th>
+                          <th>Unique Id</th>
+                          <th>Date</th>
+                          <th>Time</th>
+                          <th>Temperature</th>
+                          <th>Remark</th>
+                          <th>Checked By</th>
+                          <th>Supporting Documents</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {editData.gridData?.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>UID000{index + 1}</td>
+                            <td>
+                              <input value={item.date} readOnly />
+                            </td>
+                            <td>
+                              <input value={item.time} readOnly/>
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.limit}
+                                className={`${
+                                  item.limit < 23
+                                    ? "limit"
+                                    : item.limit > 27
+                                    ? "limit"
+                                    : ""
+                                }`}
+                                onChange={(e) => {
+                                  const newData = [...editData.gridData];
+                                  newData[index].limit = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    gridData: newData,
+                                  });
+                                }}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.remark}
+                                onChange={(e) => {
+                                  const newData = [...editData.gridData];
+                                  newData[index].remark = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    gridData: newData,
+                                  });
+                                }}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.checkedBy}
+                                onChange={(e) => {
+                                  const newData = [...editData.gridData];
+                                  newData[index].checkedBy = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    gridData: newData,
+                                  });
+                                }}
+                              />
+                            </td>
+                            <td style={{ width: "250px" }}>
+                              <div className="d-flex">
+                                <input
+                                  type="file"
+                                  onChange={(e) =>
+                                    handleFileChange(index, e.target.files[0])
+                                  }
+                                  style={{ display: "none" }}
+                                  id={`file-input-${index}`}
+                                />
+                                <label
+                                  htmlFor={`file-input-${index}`}
+                                  className="file-label"
+                                >
+                                  {item.file ? item.file.name : "Choose File"}
+                                </label>
+                                {item.file && (
+                                  <DeleteIcon
+                                    style={{ color: "red" }}
+                                    onClick={() => handleDeleteFile(index)}
+                                  />
+                                )}
+                              </div>
+                            </td>
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                              {item.limit !== "" &&
+                                (item.limit < 23 || item.limit > 27) && (
+                                  <button
+                                    className="deviation-btn"
+                                    onClick={() => {
+                                      navigate("/chart")
+                                    }}
+                                  >
+                                    Launch Deviation
+                                  </button>
+                                )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    <div className="group-input">
+                      <label> Review By :- </label>
+                    </div>
+
+                    <div className="group-input">
+                      <label htmlFor="">Review Comments</label>
+                      <input
+                        name="reviewComment"
+                        value={editData.reviewComment || ""}
+                        onChange={handleInputChange1}
+                      />
+                    </div>
+                  </>
+                ) : null}
+              </>
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(addTemperatureRecord), handleTableDataSave;
+                  handleSave(addTemperatureRecord)
                 }}
               >
                 Save

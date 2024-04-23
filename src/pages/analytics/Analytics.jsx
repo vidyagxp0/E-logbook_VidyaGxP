@@ -27,7 +27,6 @@ export default function Analytics() {
   };
 
   useEffect(() => {
-    // Fetch data for chart based on selected option
     if (selectedOption === "hourly") {
       setChartData([
         {

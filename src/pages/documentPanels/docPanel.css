@@ -1,4 +1,4 @@
-/*! ===================================================================== */
+! =====================================================================
 /*! DOCUMENT CSS */
 /*! ===================================================================== */
 #main-form-container .aside-container {
@@ -153,7 +153,8 @@
   padding: 15px;
   border-radius: 5px;
   order: 3;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
     rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
 }
 
@@ -177,16 +178,18 @@
   display: grid;
   place-items: center;
   align-content: center;
-
   font-size: 1.2rem;
-  /* border-left: 2px solid #000000; */
 }
 
-.main-head{
+.main-head {
   padding-right: 130px;
 }
 
-#config-form-document-page .document-form .sop-type-header .main-head div:nth-child(1) {
+#config-form-document-page
+  .document-form
+  .sop-type-header
+  .main-head
+  div:nth-child(1) {
   font-weight: bold;
   font-size: 1.7rem;
 }
@@ -219,12 +222,9 @@
 #config-form-document-page .details-form-data .sub-head-2 {
   text-align: center;
   background: #efa035;
-  /* background: var(--themeColor); */
-  /* margin-bottom: 20px; */
   padding: 10px 20px;
   font-size: 1.5rem;
   color: #ffffff;
-  /* border: 2px solid #000000; */
   border-radius: 40px;
 }
 
@@ -240,7 +240,10 @@
   margin: 0;
 }
 
-#config-form-document-page .group-input .file-attachment-field .file-attachment-list {
+#config-form-document-page
+  .group-input
+  .file-attachment-field
+  .file-attachment-list {
   background: white;
   border: 1px solid black;
   padding: 5px 10px;
@@ -251,11 +254,20 @@
   gap: 20px;
 }
 
-#config-form-document-page .group-input .file-attachment-field .file-attachment-list > div {
+#config-form-document-page
+  .group-input
+  .file-attachment-field
+  .file-attachment-list
+  > div {
   font-size: 0.9rem;
 }
 
-#config-form-document-page .group-input .file-attachment-field .file-attachment-list > div a {
+#config-form-document-page
+  .group-input
+  .file-attachment-field
+  .file-attachment-list
+  > div
+  a {
   color: #0039bd;
   font-size: 0.8rem;
   text-decoration: underline;
@@ -374,7 +386,6 @@
 .btn-forms-isSelected {
   background-color: grey;
   color: #ffffff;
-  /* border: ; */
   padding: 5px 10px;
   border-radius: 28px;
 }
@@ -391,7 +402,6 @@
 
 .table-equipmentName {
   height: 50px;
-  /* width: 20px; */
 }
 
 .width-date {
@@ -482,9 +492,10 @@ tr th {
 .deviation-btn {
   border-radius: 80px;
   background-color: #2769ed;
-  padding: 5px 10px;
+  padding: 2px 10px;
   color: white;
   margin: 2px;
+  font-size: 12px;
 }
 
 .analytics-btn {
@@ -494,7 +505,6 @@ tr th {
   justify-content: space-between;
   gap: 5%;
   width: 130px;
-  /* justify-content: end; */
 }
 
 .btn-print {
@@ -503,7 +513,7 @@ tr th {
   border-radius: 50px;
   cursor: pointer;
   color: white;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Adjust values as needed */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .outerDiv5 {
@@ -511,31 +521,3 @@ tr th {
   flex-direction: row;
   justify-content: space-between;
 }
-/* table  {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-table,
-tr,
-td {
-  border: none;
-  border-collapse: collapse;
-}
-
-table.removedBorder2,
-td.removedBorder2,
-th.removedBorder2{
- border-top: 2px solid #808080 !important;
- border-bottom: none;
- border-right: none;
- border-left: none;
-
-}
-
-table.removedBorder3,
-td.removedBorder3,
-th.removedBorder3{
-  border:none !important
-} */
