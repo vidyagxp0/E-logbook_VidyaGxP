@@ -1,40 +1,27 @@
 import { useEffect, useState } from "react";
 import HeaderTop from "../../components/Header/HeaderTop";
 import HeaderBottom from "../../components/Header/HeaderBottom";
-import Chart from "react-apexcharts";
+import { Chart as ChartJS } from "chart.js/auto";
+import { Chart  } from "react-chartjs-2";
 import "./Analytics.css";
 
 export default function Analytics() {
   const [selectedOption, setSelectedOption] = useState("hourly");
   const [chartData, setChartData] = useState([]);
-  const [chartCategories, setChartCategories] = useState([
-    "Jan",
-    "Feb",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "Aug",
-    "Sept",
-    "Oct",
-    "Nov",
-    "Dec",
-  ]);
+  const [chartCategories, setChartCategories] = useState([]);
+  const [chartType, setChartType] = useState("bar");
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
 
+  const handleChartTypeChange = (event) => {
+    setChartType(event.target.value);
+  };
+
   useEffect(() => {
     if (selectedOption === "hourly") {
-      setChartData([
-        {
-          name: "differential pressure",
-          data: [0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 3.5, 3.75],
-          title: "-------------------------Hourly-------------------------",
-        },
-      ]);
+      setChartData([0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 3.5]);
       setChartCategories([
         "00:00  PM",
         "01:00  PM",
@@ -47,13 +34,7 @@ export default function Analytics() {
         "08:00  PM",
       ]);
     } else if (selectedOption === "day") {
-      setChartData([
-        {
-          name: "differential pressure",
-          data: [0.25, 2.65, 0.75, 1, 2.75, 2, 2.75],
-          title: "-------------------------Day-Wise--------------------------",
-        },
-      ]);
+      setChartData([0.25, 2.65, 0.75, 1, 2.75, 2, 2.75]);
       setChartCategories([
         "Sunday",
         "Monday",
@@ -64,17 +45,8 @@ export default function Analytics() {
         "Saturday",
       ]);
     } else if (selectedOption === "month") {
-      setChartData([
-        {
-          name: "differential pressure",
-          data: [
-            0, 0.25, 2.65, 0.75, 3.5, 1, 2.75, 2, 2.75, 3, 3.25, 2.2, 3.75,
-          ],
-          title: "-------------------------Month-------------------------",
-        },
-      ]);
+      setChartData([0.25, 2.65, 0.75, 3.5, 1, 2.75, 2, 2.75, 3, 3.25, 2.2, 3.75]);
       setChartCategories([
-        "Month",
         "Jan",
         "Feb",
         "March",
@@ -91,96 +63,109 @@ export default function Analytics() {
     }
   }, [selectedOption]);
 
+  const gridLineLabels = [
+    { value: 2.6, label: 'Danger Zone[2.6] ▴' },
+    { value: 0.6, label: 'Danger Zone[0.6] ▾' },
+  ];
+
+  const customTicks = (value, index, values) => {
+    const labelObj = gridLineLabels.find((obj) => obj.value === value);
+    if (labelObj) {
+      return labelObj.label;
+    }
+    return value;
+  };
+
   return (
     <div>
       <HeaderTop />
       <HeaderBottom />
-      <div className="graph-2" style={{ display: "flex" }}>
-        <div className="chart-analytics">
+      <div className="graph-2" style={{ display: "flex", justifyContent: 'space-between' }}>
+        <div className="chart-analytics" style={{ width:"100%" }}>
           <Chart
-            options={{
-              colors: [
-                "#8ed1fc",
-                "#00FFFF",
-                "#00FA9A",
-                "#F08080",
-                "#008000",
-                "#123456",
-                "#FF7F50",
-                "#43C6DB",
-                "#FFFF00",
-                "#FFE87C",
+            data={{
+              labels: chartCategories,
+              datasets: [
+                {
+                  type: chartType,
+                  pointRadius: 8,
+                  tension: 0.5,
+                  label: "Differential Pressure Record",
+                  data: chartData,
+                  backgroundColor: chartData.map((data) => data > 0.6 & data < 2.6 ? 'rgba(0, 200, 0, 1)' : 'rgba(200, 0, 0, 1)'),
+                },
               ],
-              chart: {
-                id: "bar-chart",
+            }}
+            height={600}
+            width={1500}
+            options={{
+              indexAxis: 'x',
+              barThickness: 5,
+              plugins: {
+                legend: {
+                  labels: {
+                    font: {
+                      size: 22,
+                      weight:'bold',
+                    }
+                  }
+                },
               },
-              xaxis: {
-                categories: chartCategories,
-                title: {
-                  text: chartData.length > 0 ? chartData[0].title : "",
-                  style: {
-                    fontSize: "14px",
-                    fontWeight: "600",
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  ticks: {
+                    color: 'orange',
+                    font: {
+                      size: 12,
+                      weight: 'bold'
+                    }
+                  },
+                  grid: {
+                    color: '#ffffff',
+                  },
+                  title: {
+                    display: true,
+                    text: `---------------  ${selectedOption[0].toUpperCase()+selectedOption.slice(1)} Basis  ---------------`, 
+                    font: {
+                      size: 22,
+                      weight: 'bold',
+                    }
                   },
                 },
-              },
-              yaxis: {
-                title: {
-                  text: "--------------------Limit()--------------------",
-                  style: {
-                    fontSize: "14px",
-                    fontWeight: "600",
-                  },
-                },
-                max: 5,
-                min: 0.25,
-              },
-              title: {
-                text: "Differential Pressure Record",
-                align: "left",
-              },
-              plotOptions: {
-                line: {
-                  horizontal: true,
-                },
-              },
-              annotations: {
-                yaxis: [
-                  {
-                    y: 2.6,
-                    borderColor: "#FF0000",
-                    label: {
-                      borderColor: "#FF0000",
-                      style: {
-                        color: "#fff",
-                        background: "#FF0000",
-                      },
-                      text: "2.6",
-                      offsetX: -30,
-                      offsetY: -5,
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    color: 'orange',
+                    font: {
+                      size: 12,
+                      weight: 'bold'
                     },
+                    stepSize: 0.2,
+                    callback: customTicks,
                   },
-                  {
-                    y: 0.6,
-                    borderColor: "#FF0000",
-                    label: {
-                      borderColor: "#FF0000",
-                      style: {
-                        color: "#fff",
-                        background: "#FF0000",
-                      },
-                      text: "0.6",
-                      offsetX: -30,
-                      offsetY: -5,
-                    },
+                  grid: {
+                    color: (context) => {
+                      let i = context.tick.value
+                      if (i === 0.6 || i === 2.6) {
+                        return 'red';
+                      } else {
+                        return 'rgba(0, 0, 0, 0.04)';
+                      }
+                    }
                   },
-                ],
+                  title: {
+                    display: true,
+                    text: '------------  Differential Pressure  ------------',
+                    font: {
+                      size: 22,
+                      weight: 'bold',
+                    }
+                  },
+                  max: 4,         
+                },
               },
             }}
-            series={chartData}
-            type="line"
-            width="1500"
-            height={600}
           />
         </div>
         <div className="chart-data" style={{ width: "200px" }}>
@@ -193,10 +178,27 @@ export default function Analytics() {
               onChange={handleOptionChange}
               value={selectedOption}
             >
-              <option value="Select a value">Select a value</option>
+              <option value="select" disabled>Select a value</option>
               <option value="hourly">Hour</option>
               <option value="day">Day</option>
               <option value="month">Month</option>
+            </select>
+          </div>
+          <div className="group-input">
+            <label className="color-label">Chart Type</label>
+            <div className="instruction">&nbsp;</div>
+            <select
+              className="form-control"
+              name="assign_to"
+              onChange={handleChartTypeChange}
+              value={chartType}
+            >
+              <option value="select" disabled>Select type</option>
+              <option value="bar">Bar</option>
+              <option value="line">Line</option>
+              <option value="pie">Pie</option>
+              <option value="doughnut">Doughnut</option>
+              <option value="polarArea">Polar Area</option>
             </select>
           </div>
         </div>
