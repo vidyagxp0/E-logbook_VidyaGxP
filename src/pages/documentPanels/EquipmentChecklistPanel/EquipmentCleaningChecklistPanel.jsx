@@ -229,31 +229,43 @@ export default function EquipmentCleaningCheckListPanel() {
                 </div>
               </div>
               <div className="sub-head-2">Equipment Cleaning CheckList</div>
-              <div className="btn-forms">
-                <div
-                  className={`${
-                    isSelectedGeneral === true
-                      ? "btn-forms-isSelected"
-                      : "btn-forms-select"
-                  }`}
-                  onClick={() => {
-                    setIsSelectedGeneral(true), setIsSelectedDetails(false);
-                  }}
-                >
-                  General Information
+              <div className="outerDiv5">
+                <div className="btn-forms">
+                  <div
+                    className={`${
+                      isSelectedGeneral === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                    }}
+                  >
+                    General Information
+                  </div>
+                  <div
+                    className={`${
+                      isSelectedDetails === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                    }}
+                  >
+                    Details
+                  </div>
                 </div>
-                <div
-                  className={`${
-                    isSelectedDetails === true
-                      ? "btn-forms-isSelected"
-                      : "btn-forms-select"
-                  }`}
-                  onClick={() => {
-                    setIsSelectedDetails(true), setIsSelectedGeneral(false);
-                  }}
-                >
-                  {" "}
-                  Details
+                <div className="analytics-btn">
+                  <button
+                    className="btn-print"
+                    onClick={() => navigate("/analytics")}
+                  >
+                    Analytics
+                  </button>
+                  <button className="btn-print" onClick={() => {}}>
+                    Print
+                  </button>
                 </div>
               </div>
 

@@ -366,7 +366,7 @@ const TempretureRecordsPanel = () => {
                         <option value="Area 3">Area 3</option>
                         <option value="Area 4">Area 4</option>
                         <option value="Area 5">Area 5</option>
-                        <option value="Area 6">Area 6</option>
+                        <option value="Area 6">Area 6</option>```````````````````````````````                                                                                                   `    
                       </select>
                     </div>
 
