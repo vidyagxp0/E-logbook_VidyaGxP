@@ -3,17 +3,17 @@ const { connectToDB } = require('./config/db');
 const config = require("./config/config.json");
 const helmet = require('helmet');
 const http = require('http');
-// const userRoutes = require('./routes/user');
+const userRoutes = require('./routes/users');
 
 
 const app = express();
+const server = http.createServer(app);
 
 app.use(express.json());
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
-// app.use('/user', userRoutes);
+app.use('/user', userRoutes);
 
-const server = http.createServer(app);
 
 server.listen(config.development.PORT, async () => {
     connectToDB().then(() => {
