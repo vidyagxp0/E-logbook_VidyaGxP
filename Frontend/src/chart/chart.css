@@ -1,0 +1,9 @@
+.chart-css{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.chart-data{
+    color: red;
+}
