@@ -40,24 +40,7 @@ const User = sequelize.define("User", {
 // User.belongsToMany(Project, { through: UserProject });
 // Project.belongsToMany(User, { through: UserProject });
 
-User.addHook('afterSync', async () => {
-    try {
-        const superAdmin = await User.findOne({ where: { email: 'admin@vidyagxp.com' } });
-        if (!superAdmin) {
-            const hashedPassword = await bcrypt.hash('Amit@121', 10);
-            await User.create({
-                name: 'Super Admin',
-                email: 'admin@vidyagxp.com',
-                password: hashedPassword,
-            });
-            console.log('Super admin user created');
-        } else {
-            console.log('Super admin user already exists');
-        }
-    } catch (error) {
-        console.error('Error creating super admin user:', error);
-    }
-});
+
 
 
 module.exports = User;

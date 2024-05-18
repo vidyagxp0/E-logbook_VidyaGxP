@@ -8,6 +8,8 @@ const User = require("../controllers/users");
 
 router.post('/signup', User.signup);
 
-router.post('/login', User.login);
+router.post('/user-login', User.Userlogin);
+
+router.post('/admin-login', User.Adminlogin);
 
 module.exports = router;
