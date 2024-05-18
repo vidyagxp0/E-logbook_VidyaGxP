@@ -39,10 +39,65 @@ exports.signup = async (req, res) => {
   }
 };
 
+//Update user
+exports.editUser = async (req, res) => {
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      error: true,
+      message: 'Please provide details to update!',
+    });
+  }
+  let userdetails = {
+    name: req.body.name,
+    email: req.body.email,
+    age: req.body.age,
+    gender: req.body.gender,
+  };
+  User.update(userdetails, {
+    where: {
+      user_id: req.params.id,
+    },
+  })
+    .then(() => {
+      res.json({
+        error: false,
+        message: "User Details Updated!!",
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
+        error: true,
+        message: err.message,
+      });
+    });
+};
+
+// delete user
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { user_id: req.params.id } });
+    if (!user) {
+      return res.status(404).json({
+        error: true,
+        message: "User not found",
+      });
+    }
+    await User.destroy({ where: { user_id: req.params.id } });
+    res.json({
+      error: false,
+      message: "User deleted successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: true,
+      message: err.message,
+    });
+  }
+};
+
 // user login
 exports.Userlogin = async (req, res) => {
   const { email, password } = req.body;
-
   User.findOne({
     where: {
       email: email,
@@ -98,9 +153,13 @@ exports.Adminlogin = async (req, res) => {
         message: "Incorrect Password!",
       });
     } else {
-      const token = jwt.sign({ user: "Admin" }, config.development.JWT_SECRET, {
-        expiresIn: "24h",
-      });
+      const token = jwt.sign(
+        { user: "Admin" },
+        config.development.JWT_ADMIN_SECRET,
+        {
+          expiresIn: "24h",
+        }
+      );
       if (token) {
         res.status(200).json({
           error: false,

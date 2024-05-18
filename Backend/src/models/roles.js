@@ -21,11 +21,11 @@ Role.addHook('afterSync', async () => {
         const rolesCount = await Role.count();
         if (rolesCount === 0) {
             await Role.bulkCreate([
-                { role: 'initiator' },
-                { role: 'reviewer' },
-                { role: 'approver' },
-                { role: 'viewonly' },
-                { role: 'fullpermission' }
+                { role: 'Initiator' },
+                { role: 'Reviewer' },
+                { role: 'Approver' },
+                { role: 'Viewonly' },
+                { role: 'Fullpermission' }
             ]);
             console.log('Roles created');
         } else {
