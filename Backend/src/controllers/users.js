@@ -1,11 +1,12 @@
 const User = require("../models/users");
-const Role = require("../models/roles");
-const Site = require("../models/sites");
-const Process = require("../models/processes");
+const UserRole = require("../models/userRoles");
 const roleGroup = require("../models/roleGroups");
 const config = require("../config/config.json");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Role = require("../models/roles");
+const Process = require("../models/processes");
+const Site = require("../models/sites");
 
 //register user
 exports.signup = async (req, res) => {
@@ -24,7 +25,41 @@ exports.signup = async (req, res) => {
       age: req.body.age,
       gender: req.body.gender,
     })
-      .then(() => {
+      .then((result) => {
+        let rolesArray = req.body.rolesArray;
+        rolesArray.forEach(async (role) => {
+          let singleRole = role.split("-");
+          var roleId = await Role.findOne({
+            where: {
+              role: singleRole[2],
+            },
+          });
+          var processId = await Process.findOne({
+            where: {
+              process: singleRole[1],
+            },
+          });
+          var siteId = await Site.findOne({
+            where: {
+              site: singleRole[0],
+            },
+          });
+          UserRole.create({
+            user_id: result.user_id,
+            site_id: siteId.site_id,
+            process_id: processId.process_id,
+            role_id: roleId.role_id,
+          })
+            .then(() => {
+              console.log("User Roles created!");
+            })
+            .catch((e) => {
+              res.status(400).json({
+                error: true,
+                message: `Couldn't register UserRole. "  + ${e}`,
+              });
+            });
+        });
         res.status(200).json({
           error: false,
           message: "User Registered",
@@ -44,7 +79,7 @@ exports.editUser = async (req, res) => {
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({
       error: true,
-      message: 'Please provide details to update!',
+      message: "Please provide details to update!",
     });
   }
   let userdetails = {
