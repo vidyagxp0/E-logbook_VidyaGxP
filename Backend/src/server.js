@@ -4,6 +4,7 @@ const config = require("./config/config.json");
 const helmet = require('helmet');
 const http = require('http');
 const userRoutes = require('./routes/users');
+const processRoutes = require('./routes/processes');
 
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use('/user', userRoutes);
+app.use('/process', processRoutes);
 
 
 server.listen(config.development.PORT, async () => {
