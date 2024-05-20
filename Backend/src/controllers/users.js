@@ -130,6 +130,44 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+//get all users
+exports.getAllUsers = async (req, res) => {
+  User.findAll()
+    .then((result) => {
+      res.status(200).json({
+        error: false,
+        response: result,
+      });
+    })
+    .catch((e) => {
+      res.status(400).json({
+        error: true,
+        response: e.message,
+      });
+    });
+};
+
+// get a single user
+exports.getAUser = async (req, res) => {
+  User.findOne({
+    where: {
+      user_id: req.params.id,
+    },
+  })
+    .then((result) => {
+      res.status(200).json({
+        error: false,
+        response: result,
+      });
+    })
+    .catch((e) => {
+      res.status(400).json({
+        error: true,
+        response: e.message,
+      });
+    });
+};
+
 // user login
 exports.Userlogin = async (req, res) => {
   const { email, password } = req.body;
