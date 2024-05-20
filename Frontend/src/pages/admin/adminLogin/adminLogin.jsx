@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
+import "./adminLogin.css";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import axios from 'axios';
+import axios from "axios";
 
-function Login() {
+function AdminLogin() {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
@@ -27,9 +27,8 @@ function Login() {
       email: username,
       password: password,
     };
-    console.log(username, password,'>>>>>>>>>>>>>>>>>>');
     axios
-      .post("http://localhost:1000/user/user-login", data, {
+      .post("http://localhost:1000/user/admin-login", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -37,12 +36,13 @@ function Login() {
       .then((response) => {
         navigate("/desktop");
         toast.success("Login Successful");
-        localStorage.setItem("user-token", response.data.token);
+        console.log(response.data);
       })
       .catch((error) => {
         toast.error("Invalid Username or Password");
         console.error(error);
       });
+
   };
   return (
     <>
@@ -52,23 +52,38 @@ function Login() {
             <div className="logo">
               <img src="/vidyalogo2.png" alt="..." />
             </div>
-            <div className="head">Welcome to eLogBook</div>
+            <div className="head">Welcome to eLogBook Admin</div>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="group-input">
               <label>
-                <svg width="20" height="20" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 1200 1200"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     fill="#ffffff"
                     d="M0 146.484v168.677l600 342.114l600-342.114V146.484zm0 276.563v494.604L305.64 597.29zm1200 0L894.36 597.29L1200 917.651zM389.575 645.19L0 1053.516h1200L810.425 645.19L600 765.161z"
                   />
                 </svg>
               </label>
-              <input type="text" name="username" placeholder="Enter Your Username" onChange={handleChange} />
+              <input
+                type="text"
+                name="username"
+                placeholder="Enter Your Username"
+                onChange={handleChange}
+              />
             </div>
             <div className="group-input">
               <label>
-                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     fill="#ffffff"
                     fill-rule="evenodd"
@@ -77,7 +92,12 @@ function Login() {
                   />
                 </svg>
               </label>
-              <input type="password" name="password" placeholder="Enter Your Password" onChange={handleChange} />
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter Your Password"
+                onChange={handleChange}
+              />
             </div>
             <div>
               <input type="submit" value="Login" className="submit-btn" />
@@ -89,4 +109,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default AdminLogin;

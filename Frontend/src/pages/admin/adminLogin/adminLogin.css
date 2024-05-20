@@ -1,0 +1,97 @@
+/*! ============================================================================= */
+/*! LOGIN CSS */
+/*! ============================================================================= */
+#admin-console-login-page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-size: cover;
+    background-position: center;
+    background-image: url("/public/bg2.jpg");
+  }
+  
+  #admin-console-login-page .login-form-block {
+    width: 500px;
+    background: white;
+    background-size: cover;
+    background-position: center;
+    background-color: rgb(10, 30, 50);
+    margin-right: 10%;
+  }
+  
+  #admin-console-login-page .login-form-block .top-block {
+    padding: 50px 20px 15px;
+    border-bottom: 2px solid white;
+  }
+  
+  #admin-console-login-page .login-form-block .logo {
+    width: 250px;
+    margin: 0 auto 30px;
+  }
+  
+  #admin-console-login-page .login-form-block .logo img {
+    filter: brightness(0) invert(1);
+    width: 250px;
+  }
+  
+  #admin-console-login-page .login-form-block .head {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+  }
+  
+  #admin-console-login-page .login-form-block form {
+    padding: 30px;
+  }
+  
+  #admin-console-login-page .login-form-block form ::placeholder {
+    color: white;
+  }
+  
+  #admin-console-login-page .group-input {
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    align-items: center;
+    border: 2px solid white;
+    padding: 7px;
+    border-radius: 5px;
+  }
+  
+  #admin-console-login-page label {
+    color: white;
+    display: grid;
+    place-items: center;
+    font-weight: bold;
+  }
+  
+  #admin-console-login-page input,
+  #admin-console-login-page select {
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: white;
+  }
+  
+  #admin-console-login-page .submit-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0) 100%
+      ),
+      #f6f8fa;
+    color: black;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+  }
+  

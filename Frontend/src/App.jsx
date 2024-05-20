@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/Login/Login.jsx";
+import AdminLogin from "./pages/admin/adminLogin/adminLogin.jsx";
 import Desktop from "./pages/Desktop/Desktop.jsx";
 import DiffrentialPressure from "./pages/configForms/DiffrentialPressureRecord/DiffrentialPressure.jsx";
 import AreaAndEquiment from "./pages/configForms/AreaAndEquipment/AreaAndEquiment.jsx";
@@ -17,6 +18,7 @@ import TempretureRecordsPanel from "./pages/documentPanels/TempreratureRecordsPa
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import EquipmentCleaningCheckListPanel from "./pages/documentPanels/EquipmentChecklistPanel/EquipmentCleaningChecklistPanel.jsx";
 import AreaAndEquipmentPanel from "./pages/documentPanels/AreaAndEquipmentPanel/AreaAndEquipmentPanel.jsx";
+import ProtectedRoute from "./components/protectedRoutes/protectedUserRoutes.jsx";
 
 function App() {
   return (
@@ -24,19 +26,41 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
-            <Route path="/chart" element={<Chart />} />
             <Route path="/" element={<Login />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/dpr-panel" element={<DPRpanel />} />
-            <Route path="/tpr-panel" element={<TempretureRecordsPanel />} />
-            <Route path="/ecc-panel" element={<EquipmentCleaningCheckListPanel />} />
-            <Route path="/area-and-equipment-panel" element={<AreaAndEquipmentPanel/>} />
-            <Route path="/desktop" element={<Desktop />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/differential-pressure-record" element={<DiffrentialPressure />} />
-            <Route path="/area-and-equiment-usage-log" element={<AreaAndEquiment />} />
-            <Route path="/equipment-cleaning-checklist" element={<EquipmentCleaningCheckList />} />
-            <Route path="/temperature-records" element={<TemperatureRecords/>}/>
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route
+              path="/chart"
+              element={<ProtectedRoute element={<Chart />} />}
+            />
+            <Route path="/analytics" element={<ProtectedRoute element={<Analytics />} />} />
+            <Route path="/dpr-panel" element={<ProtectedRoute element={<DPRpanel />} />} />
+            <Route path="/tpr-panel" element={<ProtectedRoute element={<TempretureRecordsPanel />} />} />
+            <Route
+              path="/ecc-panel"
+              element={<ProtectedRoute element={<EquipmentCleaningCheckListPanel />} />}
+            />
+            <Route
+              path="/area-and-equipment-panel"
+              element={<ProtectedRoute element={<AreaAndEquipmentPanel />} />}
+            />
+            <Route path="/desktop" element={<ProtectedRoute element={<Desktop />} />} />
+            <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
+            <Route
+              path="/differential-pressure-record"
+              element={<ProtectedRoute element={<DiffrentialPressure />} />}
+            />
+            <Route
+              path="/area-and-equiment-usage-log"
+              element={<ProtectedRoute element={<AreaAndEquiment />} />}
+            />
+            <Route
+              path="/equipment-cleaning-checklist"
+              element={<ProtectedRoute element={<EquipmentCleaningCheckList />} />}
+            />
+            <Route
+              path="/temperature-records"
+              element={<ProtectedRoute element={<TemperatureRecords />} />}
+            />
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={2000} pauseOnHover={false} />

@@ -5,7 +5,7 @@ import "./HeaderTop.css";
 function HeaderTop() {
   const navigate = useNavigate();
   const handleLogout = () => {
-    // Logic for logging out
+    localStorage.removeItem('user-token');
     navigate("/");
   };
   return (
@@ -76,7 +76,7 @@ function HeaderTop() {
                   <i className="ri-customer-service-2-line"></i>
                   Helpdesk Personnel
                 </Link>
-                <Link to="/" className="drop-item">
+                <Link to="/" className="drop-item" onClick={handleLogout}>
                   <i className="ri-logout-circle-line"></i>Logout
                 </Link>
               </div>
