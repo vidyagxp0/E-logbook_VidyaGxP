@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function AdminDashboard() {
   const [allUsers, setAllUsers] = useState([]);
   const navigate = useNavigate();
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
@@ -23,6 +26,34 @@ function AdminDashboard() {
         console.error(error);
       });
   }, []);
+
+  const openConfirmation = (user) => {
+    setSelectedUser(user);
+    setShowConfirmation(true);
+  };
+
+  const closeConfirmation = () => {
+    setShowConfirmation(false);
+    setSelectedUser(null);
+  };
+
+  const handleDelete = () => {
+    const config = {
+      method: "delete",
+      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+      },
+    };
+    axios(config)
+      .then((response) => {
+        toast.success("User Delete Successfully");
+      })
+      .catch((error) => {
+        toast.error("Couldn't delete User");
+      });
+    closeConfirmation();
+  };
 
   return (
     <>
@@ -88,7 +119,9 @@ function AdminDashboard() {
                     borderRadius: "5px",
                     border: "1px solid",
                   }}
-                  onClick={() => {}}
+                  onClick={() => {
+                    openConfirmation(user);
+                  }}
                 >
                   Delete
                 </button>
@@ -97,6 +130,48 @@ function AdminDashboard() {
           </>
         ))}
       </div>
+      {showConfirmation && (
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.1)",
+            zIndex: "1000",
+          }}
+        >
+          <h2 style={{ textAlign: "center" }}>Confirm Deletion</h2>
+          <p>Are you sure you want to delete {selectedUser?.name}?</p>
+          <div style={{ textAlign: "center", alignItems: "center" }}>
+            <button
+              onClick={handleDelete}
+              style={{
+                margin: "10px",
+                padding: "5px 10px",
+                borderRadius: "5px",
+                border: "1px solid",
+              }}
+            >
+              Confirm
+            </button>
+            <button
+              onClick={closeConfirmation}
+              style={{
+                margin: "10px",
+                padding: "5px 10px",
+                borderRadius: "5px",
+                border: "1px solid",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
