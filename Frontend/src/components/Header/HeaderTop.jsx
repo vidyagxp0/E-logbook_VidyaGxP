@@ -6,6 +6,7 @@ function HeaderTop() {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem('user-token');
+    localStorage.removeItem('admin-token');
     navigate("/");
   };
   return (

@@ -19,6 +19,9 @@ import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import EquipmentCleaningCheckListPanel from "./pages/documentPanels/EquipmentChecklistPanel/EquipmentCleaningChecklistPanel.jsx";
 import AreaAndEquipmentPanel from "./pages/documentPanels/AreaAndEquipmentPanel/AreaAndEquipmentPanel.jsx";
 import ProtectedRoute from "./components/protectedRoutes/protectedUserRoutes.jsx";
+import AdminDashboard from "./pages/admin/adminDashboard/adminDashboard.jsx";
+import ProtectedAdminRoute from "./components/protectedRoutes/protectedAdminRoutes.jsx";
+import AddNewUser from "./pages/admin/addUser/addUser.jsx";
 
 function App() {
   return (
@@ -28,6 +31,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/admin-dashboard" element={<ProtectedAdminRoute element={<AdminDashboard />} />} />
+            <Route path="/admin-add-user" element={<ProtectedAdminRoute element={<AddNewUser />} />} />
             <Route
               path="/chart"
               element={<ProtectedRoute element={<Chart />} />}

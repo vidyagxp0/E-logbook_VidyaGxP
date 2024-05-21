@@ -34,9 +34,9 @@ function AdminLogin() {
         },
       })
       .then((response) => {
-        navigate("/desktop");
+        navigate("/admin-dashboard");
         toast.success("Login Successful");
-        console.log(response.data);
+        localStorage.setItem("admin-token", response.data.token);
       })
       .catch((error) => {
         toast.error("Invalid Username or Password");
