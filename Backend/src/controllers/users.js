@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const Role = require("../models/roles");
 const Process = require("../models/processes");
 const Site = require("../models/sites");
+const RoleGroup = require("../models/roleGroups");
 
 //register user
 exports.signup = async (req, res) => {
@@ -28,7 +29,7 @@ exports.signup = async (req, res) => {
       .then((result) => {
         let rolesArray = req.body.rolesArray;
         rolesArray.forEach(async (role) => {
-          let singleRole = role.split("-");
+          let singleRole = role.label.split("-");
           var roleId = await Role.findOne({
             where: {
               role: singleRole[2],
@@ -154,6 +155,22 @@ exports.getAUser = async (req, res) => {
       user_id: req.params.id,
     },
   })
+    .then((result) => {
+      res.status(200).json({
+        error: false,
+        response: result,
+      });
+    })
+    .catch((e) => {
+      res.status(400).json({
+        error: true,
+        response: e.message,
+      });
+    });
+};
+
+exports.getAllRoleGroups = async (req, res) => {
+  RoleGroup.findAll()
     .then((result) => {
       res.status(200).json({
         error: false,
