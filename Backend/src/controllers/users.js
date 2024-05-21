@@ -8,6 +8,7 @@ const Role = require("../models/roles");
 const Process = require("../models/processes");
 const Site = require("../models/sites");
 const RoleGroup = require("../models/roleGroups");
+const { sequelize } = require("../config/db");
 
 //register user
 exports.signup = async (req, res) => {
@@ -110,20 +111,33 @@ exports.editUser = async (req, res) => {
 
 // delete user
 exports.deleteUser = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
   try {
-    const user = await User.findOne({ where: { user_id: req.params.id } });
+    const user = await User.findOne(
+      { where: { user_id: req.params.id } },
+      { transaction }
+    );
     if (!user) {
       return res.status(404).json({
         error: true,
         message: "User not found",
       });
     }
-    await User.destroy({ where: { user_id: req.params.id } });
+
+    await UserRole.destroy(
+      { where: { user_id: req.params.id } },
+      { transaction }
+    );
+
+    await User.destroy({ where: { user_id: req.params.id } }, { transaction });
+    await transaction.commit();
     res.json({
       error: false,
       message: "User deleted successfully",
     });
   } catch (err) {
+    await transaction.rollback();
     res.status(500).json({
       error: true,
       message: err.message,
