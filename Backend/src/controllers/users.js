@@ -1,6 +1,5 @@
 const User = require("../models/users");
 const UserRole = require("../models/userRoles");
-const roleGroup = require("../models/roleGroups");
 const config = require("../config/config.json");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -12,101 +11,133 @@ const { sequelize } = require("../config/db");
 
 //register user
 exports.signup = async (req, res) => {
-  if (req.body.password === "" || undefined) {
-    res.status(400).json({
-      error: true,
-      message: "Please provide a password!",
+  try {
+    // Check if user already exists
+    const existingUser = await User.findOne({
+      where: { email: req.body.email },
     });
-  } else {
-    let salt = await bcrypt.genSalt(10);
-    let hashpass = await bcrypt.hash(req.body.password, salt);
-    User.create({
+    if (existingUser) {
+      return res.status(400).json({
+        error: true,
+        message: "User already registered!!",
+      });
+    }
+
+    // Check if password is provided
+    if (!req.body.password) {
+      return res.status(400).json({
+        error: true,
+        message: "Please provide a password!",
+      });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashpass = await bcrypt.hash(req.body.password, salt);
+
+    // Create the user
+    const newUser = await User.create({
       name: req.body.name,
       email: req.body.email,
       password: hashpass,
       age: req.body.age,
       gender: req.body.gender,
-    })
-      .then((result) => {
-        let rolesArray = req.body.rolesArray;
-        rolesArray.forEach(async (role) => {
-          let singleRole = role.label.split("-");
-          var roleId = await Role.findOne({
-            where: {
-              role: singleRole[2],
-            },
-          });
-          var processId = await Process.findOne({
-            where: {
-              process: singleRole[1],
-            },
-          });
-          var siteId = await Site.findOne({
-            where: {
-              site: singleRole[0],
-            },
-          });
-          UserRole.create({
-            user_id: result.user_id,
-            site_id: siteId.site_id,
-            process_id: processId.process_id,
-            role_id: roleId.role_id,
-          })
-            .then(() => {
-              console.log("User Roles created!");
-            })
-            .catch((e) => {
-              res.status(400).json({
-                error: true,
-                message: `Couldn't register UserRole. "  + ${e}`,
-              });
-            });
-        });
-        res.status(200).json({
-          error: false,
-          message: "User Registered",
-        });
-      })
-      .catch((e) => {
-        res.status(400).json({
-          error: true,
-          message: `Couldn't register User. "  + ${e}`,
-        });
+    });
+
+    // Process roles array
+    const rolesArray = req.body.rolesArray;
+    for (const role of rolesArray) {
+      const singleRole = role.label.split("-");
+      const roleId = await Role.findOne({ where: { role: singleRole[2] } });
+      const processId = await Process.findOne({
+        where: { process: singleRole[1] },
       });
+      const siteId = await Site.findOne({ where: { site: singleRole[0] } });
+
+      await UserRole.create({
+        user_id: newUser.user_id,
+        site_id: siteId.site_id,
+        process_id: processId.process_id,
+        role_id: roleId.role_id,
+      });
+    }
+
+    // Send success response after all roles are processed
+    return res.status(200).json({
+      error: false,
+      message: "User Registered",
+    });
+  } catch (error) {
+    // Handle any errors that occur during the process
+    return res.status(400).json({
+      error: true,
+      message: `Error during registration: ${error.message}`,
+    });
   }
 };
 
 //Update user
 exports.editUser = async (req, res) => {
-  if (Object.keys(req.body).length === 0) {
+  try {
+    // Check if request body is empty
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        error: true,
+        message: "Please provide details to update!",
+      });
+    }
+
+    // Update user details
+    const userdetails = {
+      name: req.body.name,
+      email: req.body.email,
+      age: req.body.age,
+      gender: req.body.gender,
+    };
+    await User.update(userdetails, {
+      where: { user_id: req.params.id },
+    });
+
+    // Delete existing UserRole entries
+    await UserRole.destroy({
+      where: { user_id: req.params.id },
+    });
+
+    // Process roles array sequentially
+    const rolesArray = req.body.rolesArray;
+    for (const role of rolesArray) {
+      const singleRole = role.label.split("-");
+      const roleId = await Role.findOne({
+        where: { role: singleRole[2] },
+      });
+      const processId = await Process.findOne({
+        where: { process: singleRole[1] },
+      });
+      const siteId = await Site.findOne({
+        where: { site: singleRole[0] },
+      });
+
+      await UserRole.create({
+        user_id: req.params.id,
+        site_id: siteId.site_id,
+        process_id: processId.process_id,
+        role_id: roleId.role_id,
+      });
+    }
+
+    // Send success response after all roles are processed
+    return res.status(200).json({
+      error: false,
+      message: "User Details Updated",
+    });
+
+  } catch (error) {
+    // Handle any errors that occur during the process
     return res.status(400).json({
       error: true,
-      message: "Please provide details to update!",
+      message: `Error during update: ${error.message}`,
     });
   }
-  let userdetails = {
-    name: req.body.name,
-    email: req.body.email,
-    age: req.body.age,
-    gender: req.body.gender,
-  };
-  User.update(userdetails, {
-    where: {
-      user_id: req.params.id,
-    },
-  })
-    .then(() => {
-      res.json({
-        error: false,
-        message: "User Details Updated!!",
-      });
-    })
-    .catch((err) => {
-      res.status(400).json({
-        error: true,
-        message: err.message,
-      });
-    });
 };
 
 // delete user
