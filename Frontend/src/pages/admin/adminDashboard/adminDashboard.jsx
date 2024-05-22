@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Sidebar from "../../../components/sidebar/sidebar";
-import './AdminDashboard.css';
+import "./AdminDashboard.css";
 
 function AdminDashboard() {
   const [allUsers, setAllUsers] = useState([]);
@@ -90,50 +90,58 @@ function AdminDashboard() {
             </h3>
             <br></br>
             <hr />
-            {allUsers.length === 0 ? <>No Registered Users</> : allUsers.map((user) => (
-              <div key={user.id}>
-                <li
-                  style={{
-                    listStyle: "none",
-                    margin: "10px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    borderBottom: "1px solid #ccc",
-                    paddingBottom: "10px",
-                  }}
-                >
-                  <div>
-                    Name: {user.name} <br />
-                    Email: {user.email}
-                  </div>
-                  <div>
-                    <button
-                      style={{
-                        margin: "0 5px",
-                        padding: "5px 10px",
-                        borderRadius: "5px",
-                        border: "1px solid",
-                      }}
-                      onClick={() => navigate(`/admin-edit-user/${user.user_id}`)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      style={{
-                        margin: "0 5px",
-                        padding: "5px 10px",
-                        borderRadius: "5px",
-                        border: "1px solid",
-                      }}
-                      onClick={() => openConfirmation(user)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
-              </div>
-            ))}
+            {allUsers.length === 0 ? (
+              <>No Registered Users</>
+            ) : (
+              allUsers.map((user) => (
+                <div key={user.id}>
+                  <li
+                    style={{
+                      listStyle: "none",
+                      margin: "10px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      borderBottom: "1px solid #ccc",
+                      paddingBottom: "10px",
+                    }}
+                  >
+                    <div>
+                      Name: {user.name} <br />
+                      Email: {user.email}
+                    </div>
+                    <div>
+                      <button
+                        style={{
+                          margin: "0 5px",
+                          padding: "5px 10px",
+                          borderRadius: "5px",
+                          border: "1px solid",
+                        }}
+                        onClick={() =>
+                          navigate(`/admin-edit-user`, {
+                            state: { id: user.user_id },
+                          })
+                        }
+                      >
+                        Edit
+                      </button>
+                      <button
+                        style={{
+                          margin: "0 5px",
+                          padding: "5px 10px",
+                          borderRadius: "5px",
+                          border: "1px solid",
+                        }}
+                        onClick={() => openConfirmation(user)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </li>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

@@ -3,21 +3,20 @@ import HeaderTop from "../../../components/Header/HeaderTop";
 import axios from "axios";
 import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-function AddNewUser() {
+function EditUser() {
   const [roleGroups, setRoleGroups] = useState([]);
+  const [userInfo, setUserInfo] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [error, setError] = useState("");
-  const [AgeError, setAgeError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    age: "",
-    gender: "",
-    password: "",
+    name: userInfo?.name,
+    email: userInfo?.email,
+    age: userInfo?.age,
+    gender: userInfo?.gender,
     rolesArray: [],
   });
 
@@ -26,9 +25,17 @@ function AddNewUser() {
   }, [selectedOptions]);
 
   useEffect(() => {
-    const url = "http://localhost:1000/user/get-all-rolegroups";
     axios
-      .get(url)
+      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+        },
+      })
+      .then((response) => {
+        setUserInfo(response.data.response);
+      });
+    axios
+      .get("http://localhost:1000/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []); // Ensure it's an array
       })
@@ -42,6 +49,24 @@ function AddNewUser() {
     value: role.roleGroup_id,
   }));
 
+  function filterObject(obj) {
+    const result = {};
+
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+      if (
+        value !== "" &&
+        value !== null &&
+        value !== undefined &&
+        !(Array.isArray(value) && value.length === 0)
+      ) {
+        result[key] = value;
+      }
+    });
+
+    return result;
+  }
+
   const handleChange = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
   };
@@ -49,53 +74,31 @@ function AddNewUser() {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-    if (name === "password") {
-      if (value.length < 8 || value.length > 25) {
-        setError("Password must be between 8 and 25 characters long.");
-      } else {
-        setError("");
-      }
-    } else if (name === "age") {
-      const age = Number(value);
-      if (!Number.isInteger(age) || age <= 0) {
-        setAgeError("Age must be a positive whole number.");
-        return;
-      } else {
-        setAgeError("");
-      }
-    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (formData.password.length < 8 || formData.password.length > 25) {
-      setAgeError("Age should be a whole number");
-      return;
-    }
-    const myHeaders = {
-      Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
-      "Content-Type": "application/json",
+    let resultObj = filterObject(formData);
+    console.log(formData, ">>>>>>>>>>>>>", resultObj);
+
+    const config = {
+      method: "put",
+      url: `http://localhost:1000/user/edit-user/${location.state.id}`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: resultObj,
     };
 
-    axios
-      .post("http://localhost:1000/user/add-user", formData, {
-        headers: myHeaders,
-      })
+    axios(config)
       .then((response) => {
-        toast.success("User added successfully");
+        toast.success("User Details Updated Successfully")
         navigate(-1);
       })
       .catch((error) => {
-        toast.error("Couldn't add user! " + error.response.data.message);
+        toast.error("Couldn't Update User Details")
       });
-    setFormData({
-      name: "",
-      email: "",
-      age: "",
-      gender: "",
-      password: "",
-      rolesArray: [],
-    });
   };
 
   const buttonStyle = {
@@ -125,7 +128,7 @@ function AddNewUser() {
         <div id="config-form-document-page">
           <form onSubmit={handleSubmit} style={{}}>
             <h2 style={{ textAlign: "center", color: "#EFA035" }}>
-              <strong>Add User</strong>
+              <strong>Edit User</strong>
             </h2>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="name" style={{ color: "#EFA035" }}>
@@ -135,9 +138,9 @@ function AddNewUser() {
                 type="text"
                 name="name"
                 id="name"
-                value={formData.name}
+                // value={userInfo.name}
                 onChange={handleInputChange}
-                required
+                defaultValue={userInfo.name}
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
@@ -148,9 +151,9 @@ function AddNewUser() {
                 type="email"
                 name="email"
                 id="email"
-                value={formData.email}
+                // value={userInfo.email}
                 onChange={handleInputChange}
-                required
+                defaultValue={userInfo.email}
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
@@ -159,50 +162,36 @@ function AddNewUser() {
                 type="number"
                 name="age"
                 id="age"
-                value={formData.age}
+                // value={userInfo.age}
+                defaultValue={userInfo.age}
                 onChange={handleInputChange}
                 min={0}
               />
-              {AgeError && <div style={{ color: "red" }}>{AgeError}</div>}
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="gender" style={{ color: "#EFA035" }}>
                 Gender:
               </label>
-              {/* <input
-                type="text"
-                
-              /> */}
               <select
                 name="gender"
                 id="gender"
-                value={formData.gender}
+                // value={userInfo.gender}
                 onChange={handleInputChange}
+                defaultValue={userInfo.gender}
               >
                 <option>--select--</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
               </select>
-            </div>
-            <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="password" style={{ color: "#EFA035" }}>
-                Password:
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-              />
-              {error && <div style={{ color: "red" }}>{error}</div>}
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="roles" style={{ color: "#EFA035" }}>
                 Roles:
               </label>
+              <div style={{ color: "#9b9696", margin: "8px" }}>
+                Selected roles will replace the previous roles.
+              </div>
               {options.length > 0 ? (
                 <MultiSelect
                   name="selectedRoles"
@@ -216,7 +205,7 @@ function AddNewUser() {
             </div>
             <div style={buttonContainerStyle}>
               <button type="submit" style={buttonStyle}>
-                Add User
+                Edit User
               </button>
             </div>
           </form>
@@ -226,4 +215,4 @@ function AddNewUser() {
   );
 }
 
-export default AddNewUser;
+export default EditUser;
