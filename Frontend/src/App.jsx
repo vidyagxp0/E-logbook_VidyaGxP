@@ -22,6 +22,7 @@ import ProtectedRoute from "./components/protectedRoutes/protectedUserRoutes.jsx
 import AdminDashboard from "./pages/admin/adminDashboard/adminDashboard.jsx";
 import ProtectedAdminRoute from "./components/protectedRoutes/protectedAdminRoutes.jsx";
 import AddNewUser from "./pages/admin/addUser/addUser.jsx";
+import AdminSettings from "./pages/admin/AdminSettings/AdminSettings.jsx";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<ProtectedAdminRoute element={<AdminDashboard />} />} />
             <Route path="/admin-add-user" element={<ProtectedAdminRoute element={<AddNewUser />} />} />
+            <Route path="/admin-settings" element={<ProtectedAdminRoute element={<AdminSettings />} />} />
             <Route
               path="/chart"
               element={<ProtectedRoute element={<Chart />} />}
