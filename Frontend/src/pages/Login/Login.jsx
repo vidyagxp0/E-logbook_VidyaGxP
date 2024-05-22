@@ -27,7 +27,6 @@ function Login() {
       email: username,
       password: password,
     };
-    console.log(username, password,'>>>>>>>>>>>>>>>>>>');
     axios
       .post("http://localhost:1000/user/user-login", data, {
         headers: {

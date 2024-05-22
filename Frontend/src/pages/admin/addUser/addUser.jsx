@@ -5,13 +5,10 @@ import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-
-
 function AddNewUser() {
-
-
   const [roleGroups, setRoleGroups] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -22,7 +19,7 @@ function AddNewUser() {
     password: "",
     rolesArray: [],
   });
-  
+
   useEffect(() => {
     setFormData((prevData) => ({ ...prevData, rolesArray: selectedOptions }));
   }, [selectedOptions]);
@@ -51,13 +48,31 @@ function AddNewUser() {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+    if (name === "password") {
+      if (value.length < 8 || value.length > 25) {
+        setError("Password must be between 8 and 25 characters long.");
+      } else {
+        setError("");
+      }
+    } else if (name === "age") {
+      const age = Number(value);
+      if (!Number.isInteger(age) || age <= 0) {
+        setError("Age must be a positive whole number.");
+        return;
+      } else {
+        setError("");
+      }
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (formData.password.length < 8 || formData.password.length > 25) {
+      setError("Age should be a whole number");
+      return;
+    }
     const myHeaders = {
-      Authorization:
-        `Bearer ${localStorage.getItem("admin-token")}`,
+      Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       "Content-Type": "application/json",
     };
 
@@ -82,17 +97,39 @@ function AddNewUser() {
     });
   };
 
+  const buttonStyle = {
+    backgroundColor: "#EFA035",
+    color: "white", // White text
+    padding: "10px 20px", // Padding
+    textAlign: "center", // Centered text
+    textDecoration: "none", // No underline
+    display: "inline-block", // Inline block
+    fontSize: "16px", // Font size
+    margin: "4px 2px", // Margin
+    cursor: "pointer", // Pointer cursor
+    border: "none", // No border
+    borderRadius: "5px", // Rounded corners
+  };
+
+  const buttonContainerStyle = {
+    display: "flex",
+    justifyContent: "center", // Center horizontally
+    marginTop: "20px", // Margin on top
+  };
+
   return (
     <>
       <HeaderTop />
       <div id="main-form-container">
         <div id="config-form-document-page">
           <form onSubmit={handleSubmit} style={{}}>
-            <h2 style={{ textAlign: "center" }}>
+            <h2 style={{ textAlign: "center", color: "#EFA035" }}>
               <strong>Add User</strong>
             </h2>
             <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="name">Name:</label>
+              <label htmlFor="name" style={{ color: "#EFA035" }}>
+                Name:
+              </label>
               <input
                 type="text"
                 name="name"
@@ -103,7 +140,9 @@ function AddNewUser() {
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="email">Email:</label>
+              <label htmlFor="email" style={{ color: "#EFA035" }}>
+                Email:
+              </label>
               <input
                 type="email"
                 name="email"
@@ -114,17 +153,21 @@ function AddNewUser() {
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
-              <label>Age:</label>
+              <label style={{ color: "#EFA035" }}>Age:</label>
               <input
                 type="number"
                 name="age"
                 id="age"
                 value={formData.age}
                 onChange={handleInputChange}
+                min={0}
               />
+              {error && <div style={{ color: "red" }}>{error}</div>}
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="gender">Gender:</label>
+              <label htmlFor="gender" style={{ color: "#EFA035" }}>
+                Gender:
+              </label>
               {/* <input
                 type="text"
                 
@@ -134,6 +177,7 @@ function AddNewUser() {
                 id="gender"
                 value={formData.gender}
                 onChange={handleInputChange}
+                style={{ color: "#EFA035" }}
               >
                 <option>--select--</option>
                 <option value="male">Male</option>
@@ -142,7 +186,9 @@ function AddNewUser() {
               </select>
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="password">Password:</label>
+              <label htmlFor="password" style={{ color: "#EFA035" }}>
+                Password:
+              </label>
               <input
                 type="password"
                 name="password"
@@ -151,9 +197,12 @@ function AddNewUser() {
                 onChange={handleInputChange}
                 required
               />
+              {error && <div style={{ color: "red" }}>{error}</div>}
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="roles">Roles:</label>
+              <label htmlFor="roles" style={{ color: "#EFA035" }}>
+                Roles:
+              </label>
               {options.length > 0 ? (
                 <MultiSelect
                   name="selectedRoles"
@@ -165,7 +214,11 @@ function AddNewUser() {
                 <p>Loading roles...</p>
               )}
             </div>
-            <button type="submit">Add User</button>
+            <div style={buttonContainerStyle}>
+              <button type="submit" style={buttonStyle}>
+                Add User
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -48,6 +48,9 @@ function AdminDashboard() {
     axios(config)
       .then((response) => {
         toast.success("User Delete Successfully");
+        setAllUsers((prevUsers) =>
+          prevUsers.filter((user) => user.user_id !== selectedUser.user_id)
+        );
       })
       .catch((error) => {
         toast.error("Couldn't delete User");
@@ -73,62 +76,70 @@ function AdminDashboard() {
                 navigate("/admin-add-user");
               }}
             >
-              <div className="themeBtn">Add User</div>
+              <div className="themeBtn" style={{ backgroundColor: "#EFA035", color: "white" }}>
+                Add User
+              </div>
             </div>
           </div>
         </div>
       </>
       <div id="body-container" style={{ margin: "20px" }}>
-        <h3 style={{ textAlign: "center" }}>
+        <h3 style={{ textAlign: "center", margin: "10px" }}>
           <strong>Users</strong>
         </h3>
         <hr></hr>
-        {allUsers?.map((user) => (
-          <>
-            <li
-              style={{
-                listStyle: "none",
-                margin: "10px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderBottom: "1px solid #ccc",
-                paddingBottom: "10px",
-              }}
-              key={user.id}
-            >
-              <div>
-                Name: {user.name} <br />
-                Email: {user.email}
-              </div>
-              <div>
-                <button
-                  style={{
-                    margin: "0 5px",
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    border: "1px solid",
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  style={{
-                    margin: "0 5px",
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    border: "1px solid",
-                  }}
-                  onClick={() => {
-                    openConfirmation(user);
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
-          </>
-        ))}
+        {allUsers.length === 0 ? (
+          <div style={{ textAlign: "center", margin: "15px" }}>
+            No registered Users
+          </div>
+        ) : (
+          allUsers.map((user) => (
+            <>
+              <li
+                style={{
+                  listStyle: "none",
+                  margin: "10px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: "1px solid #ccc",
+                  paddingBottom: "10px",
+                }}
+                key={user.id}
+              >
+                <div>
+                  Name: {user.name} <br />
+                  Email: {user.email}
+                </div>
+                <div>
+                  <button
+                    style={{
+                      margin: "0 5px",
+                      padding: "5px 10px",
+                      borderRadius: "5px",
+                      border: "1px solid",
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    style={{
+                      margin: "0 5px",
+                      padding: "5px 10px",
+                      borderRadius: "5px",
+                      border: "1px solid",
+                    }}
+                    onClick={() => {
+                      openConfirmation(user);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            </>
+          ))
+        )}
       </div>
       {showConfirmation && (
         <div
