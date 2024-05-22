@@ -49,6 +49,9 @@ exports.signup = async (req, res) => {
     for (const role of rolesArray) {
       const singleRole = role.label.split("-");
       const roleId = await Role.findOne({ where: { role: singleRole[2] } });
+      const roleGroup = await RoleGroup.findOne({
+        where: { roleGroup: role.label },
+      });
       const processId = await Process.findOne({
         where: { process: singleRole[1] },
       });
@@ -59,6 +62,7 @@ exports.signup = async (req, res) => {
         site_id: siteId.site_id,
         process_id: processId.process_id,
         role_id: roleId.role_id,
+        roleGroup_id: roleGroup.roleGroup_id,
       });
     }
 
@@ -116,12 +120,16 @@ exports.editUser = async (req, res) => {
       const siteId = await Site.findOne({
         where: { site: singleRole[0] },
       });
+      const roleGroup = await RoleGroup.findOne({
+        where: { roleGroup: role.label },
+      });
 
       await UserRole.create({
         user_id: req.params.id,
         site_id: siteId.site_id,
         process_id: processId.process_id,
         role_id: roleId.role_id,
+        roleGroup_id: roleGroup.roleGroup_id,
       });
     }
 
@@ -130,7 +138,6 @@ exports.editUser = async (req, res) => {
       error: false,
       message: "User Details Updated",
     });
-
   } catch (error) {
     // Handle any errors that occur during the process
     return res.status(400).json({
@@ -210,6 +217,31 @@ exports.getAUser = async (req, res) => {
       res.status(400).json({
         error: true,
         response: e.message,
+      });
+    });
+};
+
+exports.getUserPermissions = async (req, res) => {
+  UserRole.findAll({
+    where: {
+      user_id: req.params.id,
+    },
+    include: [
+      {
+        model: RoleGroup,
+      },
+    ],
+  })
+    .then((result) => {
+      res.json({
+        error: false,
+        message: result,
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: true,
+        message: error.message,
       });
     });
 };
