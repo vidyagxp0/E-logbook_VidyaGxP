@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import AdminHeaderTop from "../../../components/Header/AdminHeader";
 
 function AddNewUser() {
   const [roleGroups, setRoleGroups] = useState([]);
@@ -81,7 +80,7 @@ function AddNewUser() {
       .post("http://localhost:1000/user/add-user", formData, {
         headers: myHeaders,
       })
-      .then((response) => {
+      .then(() => {
         toast.success("User added successfully");
         navigate(-1);
       })
@@ -120,103 +119,104 @@ function AddNewUser() {
 
   return (
     <>
-      <AdminHeaderTop />
-      <div id="main-form-container">
-        <div id="config-form-document-page">
-          <form onSubmit={handleSubmit} style={{}}>
-            <h2 style={{ textAlign: "center", color: "#EFA035" }}>
-              <strong>Add User</strong>
-            </h2>
-            <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="name" style={{ color: "#EFA035" }}>
-                Name:
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="email" style={{ color: "#EFA035" }}>
-                Email:
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="group-input" style={{ margin: "15px" }}>
-              <label style={{ color: "#EFA035" }}>Age:</label>
-              <input
-                type="number"
-                name="age"
-                id="age"
-                value={formData.age}
-                onChange={handleInputChange}
-                min={0}
-              />
-              {AgeError && <div style={{ color: "red" }}>{AgeError}</div>}
-            </div>
-            <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="gender" style={{ color: "#EFA035" }}>
-                Gender:
-              </label>
-              <select
-                name="gender"
-                id="gender"
-                value={formData.gender}
-                defaultValue={formData.gender}
-                onChange={handleInputChange}
-              >
-                <option>--select--</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="password" style={{ color: "#EFA035" }}>
-                Password:
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-              />
-              {error && <div style={{ color: "red" }}>{error}</div>}
-            </div>
-            <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="roles" style={{ color: "#EFA035" }}>
-                Roles:
-              </label>
-              {options.length > 0 ? (
-                <MultiSelect
-                  name="selectedRoles"
-                  onChange={handleChange}
-                  options={options}
-                  value={selectedOptions}
+      <div>
+        <div id="main-form-container">
+          <div id="config-form-document-page">
+            <form onSubmit={handleSubmit} style={{}}>
+              <h2 style={{ textAlign: "center", color: "#EFA035" }}>
+                <strong>Add User</strong>
+              </h2>
+              <div className="group-input" style={{ margin: "15px" }}>
+                <label htmlFor="name" style={{ color: "#EFA035" }}>
+                  Name:
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
                 />
-              ) : (
-                <p>Loading roles...</p>
-              )}
-            </div>
-            <div style={buttonContainerStyle}>
-              <button type="submit" style={buttonStyle}>
-                Add User
-              </button>
-            </div>
-          </form>
+              </div>
+              <div className="group-input" style={{ margin: "15px" }}>
+                <label htmlFor="email" style={{ color: "#EFA035" }}>
+                  Email:
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="group-input" style={{ margin: "15px" }}>
+                <label style={{ color: "#EFA035" }}>Age:</label>
+                <input
+                  type="number"
+                  name="age"
+                  id="age"
+                  value={formData.age}
+                  onChange={handleInputChange}
+                  min={0}
+                />
+                {AgeError && <div style={{ color: "red" }}>{AgeError}</div>}
+              </div>
+              <div className="group-input" style={{ margin: "15px" }}>
+                <label htmlFor="gender" style={{ color: "#EFA035" }}>
+                  Gender:
+                </label>
+                <select
+                  name="gender"
+                  id="gender"
+                  value={formData.gender}
+                  defaultValue={formData.gender}
+                  onChange={handleInputChange}
+                >
+                  <option>--select--</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="group-input" style={{ margin: "15px" }}>
+                <label htmlFor="password" style={{ color: "#EFA035" }}>
+                  Password:
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                />
+                {error && <div style={{ color: "red" }}>{error}</div>}
+              </div>
+              <div className="" style={{ margin: "15px" }}>
+                <label htmlFor="roles" style={{ color: "#EFA035" }}>
+                  Roles:
+                </label>
+                {options.length > 0 ? (
+                  <MultiSelect
+                    name="selectedRoles"
+                    onChange={handleChange}
+                    options={options}
+                    value={selectedOptions}
+                  />
+                ) : (
+                  <p>Loading roles...</p>
+                )}
+              </div>
+              <div style={buttonContainerStyle}>
+                <button type="submit" style={buttonStyle}>
+                  Add User
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>

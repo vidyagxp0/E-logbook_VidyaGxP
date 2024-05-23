@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Sidebar from "../../../components/sidebar/sidebar";
 import "./AdminDashboard.css";
-import AdminHeaderTop from "../../../components/Header/AdminHeader";
 
 function AdminDashboard() {
   const [allUsers, setAllUsers] = useState([]);
@@ -50,13 +48,13 @@ function AdminDashboard() {
       },
     };
     axios(config)
-      .then((response) => {
+      .then(() => {
         toast.success("User Delete Successfully");
         setAllUsers((prevUsers) =>
           prevUsers.filter((user) => user.user_id !== selectedUser.user_id)
         );
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Couldn't delete User");
       });
     closeConfirmation();
@@ -90,16 +88,29 @@ function AdminDashboard() {
 
   return (
     <>
-      <AdminHeaderTop />
       <div className="admin-dashboard">
-        <Sidebar /> {/* Include the Sidebar component */}
         <div className="main-content">
           <div className="Header_Bottom">
-            <div className="headerBottomInner">
-              <div className="headerBottomLft">
-                <div className="navItem">
-                  <i className="ri-home-3-fill"></i>
-                  <h3>User Management</h3>
+            <div
+              className="headerBottomInner"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <div className="headerBottomLft" style={{ marginRight: "auto" }}>
+                <div
+                  className="navItem"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <i
+                    className="ri-home-3-fill"
+                    style={{
+                      marginRight: "10px",
+                      fontSize: "24px",
+                      color: "#EFA035",
+                    }}
+                  ></i>
+                  <h3 style={{ margin: "0", color: "#333" }}>
+                    User Management
+                  </h3>
                 </div>
               </div>
               <div
@@ -108,7 +119,18 @@ function AdminDashboard() {
                   navigate("/admin-add-user");
                 }}
               >
-                <div className="themeBtn">Add User</div>
+                <div
+                  className="themeBtn"
+                  style={{
+                    backgroundColor: "#EFA035",
+                    color: "#fff",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Add User
+                </div>
               </div>
             </div>
           </div>
@@ -121,65 +143,119 @@ function AdminDashboard() {
             {allUsers.length === 0 ? (
               <>No Registered Users</>
             ) : (
-              allUsers.map((user) => (
-                <div key={user.id}>
-                  <li
-                    style={{
-                      listStyle: "none",
-                      margin: "10px",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      borderBottom: "1px solid #ccc",
-                      paddingBottom: "10px",
-                    }}
-                  >
-                    <div>
-                      Name: {user.name} <br />
-                      Email: {user.email}
-                    </div>
-                    <div>
-                      <button
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  backgroundColor: "#fff",
+                  color: "#333",
+                  borderRadius: "10px",
+                  boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      Name
+                    </th>
+                    <th
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      Email
+                    </th>
+                    <th
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allUsers.map((user) => (
+                    <tr key={user.id}>
+                      <td
                         style={{
-                          margin: "0 5px",
-                          padding: "5px 10px",
-                          borderRadius: "5px",
-                          border: "1px solid",
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
                         }}
-                        onClick={() => openPermissionsModal(user)}
                       >
-                        View Permissions
-                      </button>
-                      <button
+                        {user.name}
+                      </td>
+                      <td
                         style={{
-                          margin: "0 5px",
-                          padding: "5px 10px",
-                          borderRadius: "5px",
-                          border: "1px solid",
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
                         }}
-                        onClick={() =>
-                          navigate(`/admin-edit-user`, {
-                            state: { id: user.user_id },
-                          })
-                        }
                       >
-                        Edit
-                      </button>
-                      <button
+                        {user.email}
+                      </td>
+                      <td
                         style={{
-                          margin: "0 5px",
-                          padding: "5px 10px",
-                          borderRadius: "5px",
-                          border: "1px solid",
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
                         }}
-                        onClick={() => openConfirmation(user)}
                       >
-                        Delete
-                      </button>
-                    </div>
-                  </li>
-                </div>
-              ))
+                        <button
+                          style={{
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            border: "1px solid #EFA035",
+                            backgroundColor: "#EFA035",
+                            color: "white",
+                            cursor: "pointer",
+                            marginRight: "5px",
+                          }}
+                          onClick={() => openPermissionsModal(user)}
+                        >
+                          View Permissions
+                        </button>
+                        <button
+                          style={{
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            border: "1px solid #EFA035",
+                            backgroundColor: "#EFA035",
+                            color: "white",
+                            cursor: "pointer",
+                            marginRight: "5px",
+                          }}
+                          onClick={() =>
+                            navigate(`/admin-edit-user`, {
+                              state: { id: user.user_id },
+                            })
+                          }
+                        >
+                          Edit
+                        </button>
+                        <button
+                          style={{
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            border: "1px solid #EFA035",
+                            backgroundColor: "#EFA035",
+                            color: "white",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => openConfirmation(user)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </div>
         </div>
@@ -191,23 +267,42 @@ function AdminDashboard() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            backgroundColor: "white",
+            backgroundColor: "#fff",
+            color: "#333",
             padding: "20px",
             borderRadius: "10px",
             boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.1)",
             zIndex: "1000",
+            width: "500px", // Fixed width
+            maxHeight: "70vh", // Max height to fit within viewport
+            overflowY: "hidden", // Disable vertical scrolling on modal
           }}
         >
-          <h2 style={{ textAlign: "center" }}>Confirm Deletion</h2>
-          <p>Are you sure you want to delete {selectedUser?.name}?</p>
-          <div style={{ textAlign: "center", alignItems: "center" }}>
+          <div style={{ overflowY: "auto", maxHeight: "calc(70vh - 100px)" }}>
+            <h2
+              style={{
+                textAlign: "center",
+                color: "#EFA035",
+                marginBottom: "20px",
+              }}
+            >
+              Confirm Deletion
+            </h2>
+            <p style={{ textAlign: "center" }}>
+              Are you sure you want to delete {selectedUser?.name}?
+            </p>
+          </div>
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
             <button
               onClick={handleDelete}
               style={{
-                margin: "10px",
-                padding: "5px 10px",
+                padding: "10px 20px",
                 borderRadius: "5px",
-                border: "1px solid",
+                border: "1px solid #EFA035",
+                backgroundColor: "#EFA035",
+                color: "white",
+                cursor: "pointer",
+                marginRight: "10px",
               }}
             >
               Confirm
@@ -215,10 +310,12 @@ function AdminDashboard() {
             <button
               onClick={closeConfirmation}
               style={{
-                margin: "10px",
-                padding: "5px 10px",
+                padding: "10px 20px",
                 borderRadius: "5px",
-                border: "1px solid",
+                border: "1px solid #EFA035",
+                backgroundColor: "#EFA035",
+                color: "white",
+                cursor: "pointer",
               }}
             >
               Cancel
@@ -226,12 +323,13 @@ function AdminDashboard() {
           </div>
         </div>
       )}
+
       {showPermissionsModal && (
         <div
           style={{
             position: "fixed",
-            backgroundColor: "#EFA035",
-            color: "white",
+            backgroundColor: "#fff",
+            color: "#333",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
@@ -240,31 +338,65 @@ function AdminDashboard() {
             boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.1)",
             zIndex: "1000",
             width: "500px", // Fixed width
-            height: "250px", // Fixed height
-            overflowY: "scroll", // Enable vertical scrolling
+            maxHeight: "70vh", // Max height to fit within viewport
+            overflowY: "hidden", // Disable vertical scrolling on modal
           }}
         >
-          <h2 style={{ textAlign: "center" }}>
-            Permissions for {selectedUser?.name}
-          </h2>
-          <hr style={{margin: '8px'}}></hr>
-          <ul style={{ padding: "0 20px" }}>
+          <div style={{ overflowY: "auto", maxHeight: "calc(70vh - 100px)" }}>
+            <h2
+              style={{
+                textAlign: "center",
+                color: "#EFA035",
+                marginBottom: "20px",
+              }}
+            >
+              Permissions for {selectedUser?.name}
+            </h2>
             {permissions?.length > 0 ? (
-              permissions?.map((permission) => (
-                <li key={permission?.id}>{permission.RoleGroup.roleGroup}</li>
-              ))
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ddd",
+                        textAlign: "center",
+                        backgroundColor: "#efa035",
+                      }}
+                    >
+                      {permissions.length > 1 ? "Permissions" : "Permission"}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {permissions?.map((permission) => (
+                    <tr key={permission?.id}>
+                      <td
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ddd",
+                        }}
+                      >
+                        {permission.RoleGroup.roleGroup}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             ) : (
-              <li>No permissions found</li>
+              <p style={{ textAlign: "center" }}>No permissions found</p>
             )}
-          </ul>
-          <div style={{ textAlign: "center", alignItems: "center" }}>
+          </div>
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
             <button
               onClick={closePermissionsModal}
               style={{
-                margin: "10px",
-                padding: "5px 10px",
+                padding: "10px 20px",
                 borderRadius: "5px",
-                border: "1px solid",
+                border: "1px solid #EFA035",
+                backgroundColor: "#EFA035",
+                color: "white",
+                cursor: "pointer",
               }}
             >
               Close

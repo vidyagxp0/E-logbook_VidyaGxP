@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
-import AdminHeaderTop from "../../../components/Header/AdminHeader";
 
 function EditUser() {
   const [roleGroups, setRoleGroups] = useState([]);
@@ -92,11 +91,11 @@ function EditUser() {
     };
 
     axios(config)
-      .then((response) => {
+      .then(() => {
         toast.success("User Details Updated Successfully")
         navigate(-1);
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Couldn't Update User Details")
       });
   };
@@ -123,7 +122,7 @@ function EditUser() {
 
   return (
     <>
-      <AdminHeaderTop />
+      {/* <AdminHeaderTop /> */}
       <div id="main-form-container">
         <div id="config-form-document-page">
           <form onSubmit={handleSubmit} style={{}}>
@@ -198,6 +197,7 @@ function EditUser() {
                   onChange={handleChange}
                   options={options}
                   value={selectedOptions}
+                  className="multi-select"
                 />
               ) : (
                 <p>Loading roles...</p>

@@ -4,7 +4,6 @@
   
   .main-content {
     flex-grow: 1;
-    margin-left: 250px; /* Same as sidebar width */
     padding: 20px;
   }
 

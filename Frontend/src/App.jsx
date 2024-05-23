@@ -24,6 +24,7 @@ import ProtectedAdminRoute from "./components/protectedRoutes/protectedAdminRout
 import AddNewUser from "./pages/admin/addUser/addUser.jsx";
 import AdminSettings from "./pages/admin/AdminSettings/AdminSettings.jsx";
 import EditUser from "./pages/admin/EditUser/EditUser.jsx";
+import Wrapper from "./pages/Wrapper.jsx";
 
 function App() {
   return (
@@ -33,27 +34,58 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/admin-login" element={<AdminLogin />} />
-            <Route path="/admin-dashboard" element={<ProtectedAdminRoute element={<AdminDashboard />} />} />
-            <Route path="/admin-add-user" element={<ProtectedAdminRoute element={<AddNewUser />} />} />
-            <Route path="/admin-edit-user" element={<ProtectedAdminRoute element={<EditUser />} />} />
-            <Route path="/admin-settings" element={<ProtectedAdminRoute element={<AdminSettings />} />} />
+            <Route path="" element={<Wrapper />}>
+              <Route
+                path="/admin-dashboard"
+                element={<ProtectedAdminRoute element={<AdminDashboard />} />}
+              />
+              <Route
+                path="/admin-add-user"
+                element={<ProtectedAdminRoute element={<AddNewUser />} />}
+              />
+              <Route
+                path="/admin-edit-user"
+                element={<ProtectedAdminRoute element={<EditUser />} />}
+              />
+              <Route
+                path="/admin-settings"
+                element={<ProtectedAdminRoute element={<AdminSettings />} />}
+              />
+            </Route>
             <Route
               path="/chart"
               element={<ProtectedRoute element={<Chart />} />}
             />
-            <Route path="/analytics" element={<ProtectedRoute element={<Analytics />} />} />
-            <Route path="/dpr-panel" element={<ProtectedRoute element={<DPRpanel />} />} />
-            <Route path="/tpr-panel" element={<ProtectedRoute element={<TempretureRecordsPanel />} />} />
+            <Route
+              path="/analytics"
+              element={<ProtectedRoute element={<Analytics />} />}
+            />
+            <Route
+              path="/dpr-panel"
+              element={<ProtectedRoute element={<DPRpanel />} />}
+            />
+            <Route
+              path="/tpr-panel"
+              element={<ProtectedRoute element={<TempretureRecordsPanel />} />}
+            />
             <Route
               path="/ecc-panel"
-              element={<ProtectedRoute element={<EquipmentCleaningCheckListPanel />} />}
+              element={
+                <ProtectedRoute element={<EquipmentCleaningCheckListPanel />} />
+              }
             />
             <Route
               path="/area-and-equipment-panel"
               element={<ProtectedRoute element={<AreaAndEquipmentPanel />} />}
             />
-            <Route path="/desktop" element={<ProtectedRoute element={<Desktop />} />} />
-            <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
+            <Route
+              path="/desktop"
+              element={<ProtectedRoute element={<Desktop />} />}
+            />
+            <Route
+              path="/dashboard"
+              element={<ProtectedRoute element={<Dashboard />} />}
+            />
             <Route
               path="/differential-pressure-record"
               element={<ProtectedRoute element={<DiffrentialPressure />} />}
@@ -64,7 +96,9 @@ function App() {
             />
             <Route
               path="/equipment-cleaning-checklist"
-              element={<ProtectedRoute element={<EquipmentCleaningCheckList />} />}
+              element={
+                <ProtectedRoute element={<EquipmentCleaningCheckList />} />
+              }
             />
             <Route
               path="/temperature-records"

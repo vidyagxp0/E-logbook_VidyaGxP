@@ -95,7 +95,7 @@
 
 #config-form-document-page {
   padding: 0 0 76px;
-  border-left: 1px solid #808080;
+  /* border-left: 1px solid #808080; */
 }
 
 #config-form-document-page .top-block {
