@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import HeaderTop from "../../../components/Header/HeaderTop";
 import axios from "axios";
 import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import AdminHeaderTop from "../../../components/Header/AdminHeader";
 
 function AddNewUser() {
   const [roleGroups, setRoleGroups] = useState([]);
@@ -120,7 +120,7 @@ function AddNewUser() {
 
   return (
     <>
-      <HeaderTop />
+      <AdminHeaderTop />
       <div id="main-form-container">
         <div id="config-form-document-page">
           <form onSubmit={handleSubmit} style={{}}>
@@ -169,14 +169,11 @@ function AddNewUser() {
               <label htmlFor="gender" style={{ color: "#EFA035" }}>
                 Gender:
               </label>
-              {/* <input
-                type="text"
-                
-              /> */}
               <select
                 name="gender"
                 id="gender"
                 value={formData.gender}
+                defaultValue={formData.gender}
                 onChange={handleInputChange}
               >
                 <option>--select--</option>

@@ -39,10 +39,9 @@ function AdminLogin() {
         localStorage.setItem("admin-token", response.data.token);
       })
       .catch((error) => {
-        toast.error("Invalid Username or Password");
+        toast.error(error.response.data.message);
         console.error(error);
       });
-
   };
   return (
     <>

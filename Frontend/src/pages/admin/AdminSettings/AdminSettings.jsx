@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import HeaderTop from "../../../components/Header/HeaderTop";
 import Sidebar from "../../../components/sidebar/sidebar";
+import AdminHeaderTop from "../../../components/Header/AdminHeader";
 // import "../adminDashboard/";
 
 function AdminSettings() {
@@ -8,7 +8,7 @@ function AdminSettings() {
 
   return (
     <>
-      <HeaderTop />
+      <AdminHeaderTop />
       <div className="admin-dashboard">
         <Sidebar /> {/* Include the Sidebar component */}
         <div className="main-content"></div>

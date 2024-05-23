@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import HeaderTop from "../../../components/Header/HeaderTop";
 import axios from "axios";
 import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
+import AdminHeaderTop from "../../../components/Header/AdminHeader";
 
 function EditUser() {
   const [roleGroups, setRoleGroups] = useState([]);
@@ -123,7 +123,7 @@ function EditUser() {
 
   return (
     <>
-      <HeaderTop />
+      <AdminHeaderTop />
       <div id="main-form-container">
         <div id="config-form-document-page">
           <form onSubmit={handleSubmit} style={{}}>

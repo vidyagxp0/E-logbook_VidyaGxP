@@ -39,7 +39,7 @@ function Login() {
         localStorage.setItem("user-token", response.data.token);
       })
       .catch((error) => {
-        toast.error("Invalid Username or Password");
+        toast.error(error.response.data.message);
         console.error(error);
       });
   };

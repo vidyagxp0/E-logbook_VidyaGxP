@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import HeaderTop from "../../../components/Header/HeaderTop";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Sidebar from "../../../components/sidebar/sidebar";
 import "./AdminDashboard.css";
+import AdminHeaderTop from "../../../components/Header/AdminHeader";
 
 function AdminDashboard() {
   const [allUsers, setAllUsers] = useState([]);
   const navigate = useNavigate();
   const [selectedUser, setSelectedUser] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showPermissionsModal, setShowPermissionsModal] = useState(false);
+  const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
@@ -60,9 +62,35 @@ function AdminDashboard() {
     closeConfirmation();
   };
 
+  const openPermissionsModal = (user) => {
+    const token = localStorage.getItem("admin-token");
+    axios
+      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setPermissions(response.data.message);
+        setSelectedUser(user);
+        setShowPermissionsModal(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Couldn't fetch permissions");
+      });
+  };
+
+  const closePermissionsModal = () => {
+    setShowPermissionsModal(false);
+    setPermissions([]);
+    setSelectedUser(null);
+  };
+
   return (
     <>
-      <HeaderTop />
+      <AdminHeaderTop />
       <div className="admin-dashboard">
         <Sidebar /> {/* Include the Sidebar component */}
         <div className="main-content">
@@ -111,6 +139,17 @@ function AdminDashboard() {
                       Email: {user.email}
                     </div>
                     <div>
+                      <button
+                        style={{
+                          margin: "0 5px",
+                          padding: "5px 10px",
+                          borderRadius: "5px",
+                          border: "1px solid",
+                        }}
+                        onClick={() => openPermissionsModal(user)}
+                      >
+                        View Permissions
+                      </button>
                       <button
                         style={{
                           margin: "0 5px",
@@ -183,6 +222,52 @@ function AdminDashboard() {
               }}
             >
               Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      {showPermissionsModal && (
+        <div
+          style={{
+            position: "fixed",
+            backgroundColor: "#EFA035",
+            color: "white",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.1)",
+            zIndex: "1000",
+            width: "500px", // Fixed width
+            height: "250px", // Fixed height
+            overflowY: "scroll", // Enable vertical scrolling
+          }}
+        >
+          <h2 style={{ textAlign: "center" }}>
+            Permissions for {selectedUser?.name}
+          </h2>
+          <hr style={{margin: '8px'}}></hr>
+          <ul style={{ padding: "0 20px" }}>
+            {permissions?.length > 0 ? (
+              permissions?.map((permission) => (
+                <li key={permission?.id}>{permission.RoleGroup.roleGroup}</li>
+              ))
+            ) : (
+              <li>No permissions found</li>
+            )}
+          </ul>
+          <div style={{ textAlign: "center", alignItems: "center" }}>
+            <button
+              onClick={closePermissionsModal}
+              style={{
+                margin: "10px",
+                padding: "5px 10px",
+                borderRadius: "5px",
+                border: "1px solid",
+              }}
+            >
+              Close
             </button>
           </div>
         </div>
