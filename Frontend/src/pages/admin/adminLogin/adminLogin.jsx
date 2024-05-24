@@ -18,7 +18,7 @@ function AdminLogin() {
       password: password,
     };
     axios
-      .post("http://localhost:1000/user/admin-login", data, {
+      .post("http://192.168.1.22:1000/user/admin-login", data, {
         headers: {
           "Content-Type": "application/json",
         },

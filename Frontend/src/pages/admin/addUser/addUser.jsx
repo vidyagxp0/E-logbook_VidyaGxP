@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import "./AddUser.css";
+import Select from "react-select";
+
 
 function AddNewUser() {
   const [roleGroups, setRoleGroups] = useState([]);
@@ -10,7 +12,6 @@ function AddNewUser() {
   const [error, setError] = useState("");
   const [AgeError, setAgeError] = useState("");
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,7 +26,7 @@ function AddNewUser() {
   }, [selectedOptions]);
 
   useEffect(() => {
-    const url = "http://localhost:1000/user/get-all-rolegroups";
+    const url = "http://192.168.1.22:1000/user/get-all-rolegroups";
     axios
       .get(url)
       .then((response) => {
@@ -36,13 +37,20 @@ function AddNewUser() {
       });
   }, []);
 
-  const options = roleGroups.map((role) => ({
-    label: role.roleGroup,
-    value: role.roleGroup_id,
-  }));
+  const options = [
+    { label: "Select All", value: "all" },
+    ...roleGroups.map((role) => ({
+      label: role.roleGroup,
+      value: role.roleGroup_id,
+    })),
+  ];
 
   const handleChange = (selectedOptions) => {
-    setSelectedOptions(selectedOptions);
+    if (selectedOptions && selectedOptions.length && selectedOptions[selectedOptions.length - 1].value === "all") {
+      setSelectedOptions(options.slice(1)); // Select all options except "Select All"
+    } else {
+      setSelectedOptions(selectedOptions);
+    }
   };
 
   const handleInputChange = (event) => {
@@ -77,7 +85,7 @@ function AddNewUser() {
     };
 
     axios
-      .post("http://localhost:1000/user/add-user", formData, {
+      .post("http://192.168.1.22:1000/user/add-user", formData, {
         headers: myHeaders,
       })
       .then(() => {
@@ -121,14 +129,15 @@ function AddNewUser() {
     <>
       <div>
         <div id="main-form-container">
-          <div id="config-form-document-page">
+          <div id="config-form-document-page" className="shadow-sm md:shadow-md lg:shadow-lg xl:shadow-xl 2xl:shadow-2xl inset-shadow-1 p-6">
             <form onSubmit={handleSubmit} style={{}}>
-              <h2 style={{ textAlign: "center", color: "#EFA035" }}>
-                <strong>Add User</strong>
-              </h2>
+            <h2 style={{ textAlign: "center", }}>
+            <div className="sub-head"> Add User</div>
+             
+            </h2>
               <div className="group-input" style={{ margin: "15px" }}>
                 <label htmlFor="name" style={{ color: "#EFA035" }}>
-                  Name:
+                  Name
                 </label>
                 <input
                   type="text"
@@ -141,7 +150,7 @@ function AddNewUser() {
               </div>
               <div className="group-input" style={{ margin: "15px" }}>
                 <label htmlFor="email" style={{ color: "#EFA035" }}>
-                  Email:
+                  Email
                 </label>
                 <input
                   type="email"
@@ -153,7 +162,7 @@ function AddNewUser() {
                 />
               </div>
               <div className="group-input" style={{ margin: "15px" }}>
-                <label style={{ color: "#EFA035" }}>Age:</label>
+                <label style={{ color: "#EFA035" }}>Age</label>
                 <input
                   type="number"
                   name="age"
@@ -166,7 +175,7 @@ function AddNewUser() {
               </div>
               <div className="group-input" style={{ margin: "15px" }}>
                 <label htmlFor="gender" style={{ color: "#EFA035" }}>
-                  Gender:
+                  Gender
                 </label>
                 <select
                   name="gender"
@@ -183,7 +192,7 @@ function AddNewUser() {
               </div>
               <div className="group-input" style={{ margin: "15px" }}>
                 <label htmlFor="password" style={{ color: "#EFA035" }}>
-                  Password:
+                  Password
                 </label>
                 <input
                   type="password"
@@ -197,18 +206,15 @@ function AddNewUser() {
               </div>
               <div className="" style={{ margin: "15px" }}>
                 <label htmlFor="roles" style={{ color: "#EFA035" }}>
-                  Roles:
+                  Roles
                 </label>
-                {options.length > 0 ? (
-                  <MultiSelect
-                    name="selectedRoles"
-                    onChange={handleChange}
-                    options={options}
-                    value={selectedOptions}
-                  />
-                ) : (
-                  <p>Loading roles...</p>
-                )}
+                <Select
+                  name="selectedRoles"
+                  onChange={handleChange}
+                  options={options}
+                  value={selectedOptions}
+                  isMulti
+                />
               </div>
               <div style={buttonContainerStyle}>
                 <button type="submit" style={buttonStyle}>
