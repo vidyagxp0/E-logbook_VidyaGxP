@@ -4,6 +4,7 @@ import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Desktop.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { MultiSelect } from "react-multi-select-component";
 
 function Desktop() {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ function Desktop() {
     <>
       <HeaderTop />
       <HeaderBottom />
+  
       <div className="desktop-input-table-wrapper">
         <div className="input-wrapper">
           <div className="group-input-2">

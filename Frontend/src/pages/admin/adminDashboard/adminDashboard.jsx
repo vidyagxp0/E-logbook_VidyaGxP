@@ -14,7 +14,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
-    const url = "http://localhost:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://192.168.1.22:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -42,7 +42,7 @@ function AdminDashboard() {
   const handleDelete = () => {
     const config = {
       method: "delete",
-      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
+      url: `http://192.168.1.22:1000/user/delete-user/${selectedUser.user_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       },
@@ -63,7 +63,7 @@ function AdminDashboard() {
   const openPermissionsModal = (user) => {
     const token = localStorage.getItem("admin-token");
     axios
-      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
+      .get(`http://192.168.1.22:1000/user/get-user-permissions/${user.user_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,7 +90,7 @@ function AdminDashboard() {
     <>
       <div className="admin-dashboard">
         <div className="main-content">
-          <div className="Header_Bottom">
+          <div className="Header_Bottom shadow-xl ">
             <div
               className="headerBottomInner"
               style={{ display: "flex", alignItems: "center" }}
@@ -134,10 +134,10 @@ function AdminDashboard() {
               </div>
             </div>
           </div>
-          <div id="body-container" style={{ margin: "20px" }}>
-            <h3 style={{ textAlign: "center" }}>
+          <div id="body-container" className="p-2">
+            {/* <h3 style={{ textAlign: "center" }}>
               <strong>Users</strong>
-            </h3>
+            </h3> */}
             <br></br>
             <hr />
             {allUsers.length === 0 ? (

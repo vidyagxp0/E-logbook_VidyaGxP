@@ -3,6 +3,7 @@ import axios from "axios";
 import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select";
 
 function EditUser() {
   const [roleGroups, setRoleGroups] = useState([]);
@@ -11,43 +12,57 @@ function EditUser() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Initialize form data state
   const [formData, setFormData] = useState({
-    name: userInfo?.name,
-    email: userInfo?.email,
-    age: userInfo?.age,
-    gender: userInfo?.gender,
+    name: "",
+    email: "",
+    age: "",
+    gender: "",
     rolesArray: [],
   });
 
   useEffect(() => {
-    setFormData((prevData) => ({ ...prevData, rolesArray: selectedOptions }));
-  }, [selectedOptions]);
-
-  useEffect(() => {
     axios
-      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
+      .get(`http://192.168.1.22:1000/user/get-a-user/${location.state.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         },
       })
       .then((response) => {
-        setUserInfo(response.data.response);
+        console.log(response.data);
+        setUserInfo(response.data);
+        setSelectedOptions(response.data.roles || []);
+      })
+      .catch((error) => {
+        console.error(error);
       });
+
     axios
-      .get("http://localhost:1000/user/get-all-rolegroups")
+      .get("http://192.168.1.22:1000/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []); // Ensure it's an array
       })
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [location.state.id]); // Added location.state.id as a dependency
+
+  useEffect(() => {
+    // Initialize form data only when userInfo is updated
+    setFormData({
+      name: userInfo.name || "",
+      email: userInfo.email || "",
+      age: userInfo.age || "",
+      gender: userInfo.gender || "",
+      rolesArray: selectedOptions,
+    });
+  }, [userInfo]);
 
   const options = roleGroups.map((role) => ({
     label: role.roleGroup,
     value: role.roleGroup_id,
   }));
-
+  console.log(userInfo);
   function filterObject(obj) {
     const result = {};
 
@@ -82,7 +97,7 @@ function EditUser() {
 
     const config = {
       method: "put",
-      url: `http://localhost:1000/user/edit-user/${location.state.id}`,
+      url: `http://192.168.1.22:1000/user/edit-user/${location.state.id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         "Content-Type": "application/json",
@@ -92,11 +107,11 @@ function EditUser() {
 
     axios(config)
       .then(() => {
-        toast.success("User Details Updated Successfully")
+        toast.success("User Details Updated Successfully");
         navigate(-1);
       })
       .catch(() => {
-        toast.error("Couldn't Update User Details")
+        toast.error("Couldn't Update User Details");
       });
   };
 
@@ -124,14 +139,15 @@ function EditUser() {
     <>
       {/* <AdminHeaderTop /> */}
       <div id="main-form-container">
-        <div id="config-form-document-page">
+        <div id="config-form-document-page "  className=" p-2 shadow-2xl">
           <form onSubmit={handleSubmit} style={{}}>
-            <h2 style={{ textAlign: "center", color: "#EFA035" }}>
-              <strong>Edit User</strong>
+            <h2 style={{ textAlign: "center", }}>
+            <div className="sub-head"> Edit User</div>
+             
             </h2>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="name" style={{ color: "#EFA035" }}>
-                Name:
+                Name
               </label>
               <input
                 type="text"
@@ -139,12 +155,12 @@ function EditUser() {
                 id="name"
                 // value={userInfo.name}
                 onChange={handleInputChange}
-                defaultValue={userInfo.name}
+                value={formData.name}
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="email" style={{ color: "#EFA035" }}>
-                Email:
+                Email
               </label>
               <input
                 type="email"
@@ -152,52 +168,49 @@ function EditUser() {
                 id="email"
                 // value={userInfo.email}
                 onChange={handleInputChange}
-                defaultValue={userInfo.email}
+                value={formData.email}
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
-              <label style={{ color: "#EFA035" }}>Age:</label>
+              <label style={{ color: "#EFA035" }}>Age</label>
               <input
                 type="number"
                 name="age"
                 id="age"
-                // value={userInfo.age}
-                defaultValue={userInfo.age}
                 onChange={handleInputChange}
+                value={formData.age}
                 min={0}
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="gender" style={{ color: "#EFA035" }}>
-                Gender:
+                Gender
               </label>
               <select
                 name="gender"
                 id="gender"
                 // value={userInfo.gender}
                 onChange={handleInputChange}
-                defaultValue={userInfo.gender}
+                value={formData.gender}
               >
                 <option>--select--</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
               </select>
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="roles" style={{ color: "#EFA035" }}>
-                Roles:
+                Roles
               </label>
-              <div style={{ color: "#9b9696", margin: "8px" }}>
-                Selected roles will replace the previous roles.
-              </div>
+
               {options.length > 0 ? (
-                <MultiSelect
+                <Select
                   name="selectedRoles"
                   onChange={handleChange}
                   options={options}
                   value={selectedOptions}
-                  className="multi-select"
+                  isMulti
                 />
               ) : (
                 <p>Loading roles...</p>
