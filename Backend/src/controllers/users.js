@@ -202,23 +202,43 @@ exports.getAllUsers = async (req, res) => {
 
 // get a single user
 exports.getAUser = async (req, res) => {
-  User.findOne({
-    where: {
-      user_id: req.params.id,
-    },
-  })
-    .then((result) => {
-      res.status(200).json({
-        error: false,
-        response: result,
-      });
-    })
-    .catch((e) => {
-      res.status(400).json({
-        error: true,
-        response: e.message,
-      });
+  try {
+    const user = await User.findOne({
+      where: { user_id: req.params.id },
+      include: [
+        {
+          model: UserRole,
+          include: [
+            {
+              model: RoleGroup,
+              attributes: ["roleGroup", "roleGroup_id"], // Select roleGroup and roleGroup_id attributes
+            },
+          ],
+        },
+      ],
     });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const formattedUser = {
+      user_id: user.user_id,
+      name: user.name,
+      email: user.email,
+      age: user.age,
+      gender: user.gender,
+      roles: user.UserRoles.map((userRole) => ({
+        label: userRole.RoleGroup.roleGroup,
+        value: userRole.RoleGroup.roleGroup_id,
+      })),
+    };
+
+    res.status(200).json(formattedUser);
+  } catch (error) {
+    console.error("Error fetching user with role groups:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 exports.getUserPermissions = async (req, res) => {
@@ -267,7 +287,7 @@ exports.Userlogin = async (req, res) => {
   const { email, password } = req.body;
   User.findOne({
     where: {
-      email: email,
+      email: email.toLowerCase(),
     },
     raw: true,
   })
@@ -308,7 +328,7 @@ exports.Userlogin = async (req, res) => {
 
 exports.Adminlogin = async (req, res) => {
   const { email, password } = req.body;
-  if (email !== "admin@vidyagxp.com") {
+  if (email.toLowerCase() !== "admin@vidyagxp.com") {
     res.status(401).json({
       error: false,
       message: "Couldn't find User!",
