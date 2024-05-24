@@ -22,9 +22,10 @@ import ProtectedRoute from "./components/protectedRoutes/protectedUserRoutes.jsx
 import AdminDashboard from "./pages/admin/adminDashboard/adminDashboard.jsx";
 import ProtectedAdminRoute from "./components/protectedRoutes/protectedAdminRoutes.jsx";
 import AddNewUser from "./pages/admin/addUser/addUser.jsx";
-import AdminSettings from "./pages/admin/AdminSettings/AdminSettings.jsx";
+import AdminSites from "./pages/admin/AdminSites/AdminSites.jsx";
 import EditUser from "./pages/admin/EditUser/EditUser.jsx";
 import Wrapper from "./pages/Wrapper.jsx";
+import AdminProcesses from "./pages/admin/AdminProcesses/AdminProcesses.jsx";
 
 function App() {
   return (
@@ -48,8 +49,12 @@ function App() {
                 element={<ProtectedAdminRoute element={<EditUser />} />}
               />
               <Route
-                path="/admin-settings"
-                element={<ProtectedAdminRoute element={<AdminSettings />} />}
+                path="/admin-sites"
+                element={<ProtectedAdminRoute element={<AdminSites />} />}
+              />
+              <Route
+                path="/admin-processes"
+                element={<ProtectedAdminRoute element={<AdminProcesses />} />}
               />
             </Route>
             <Route

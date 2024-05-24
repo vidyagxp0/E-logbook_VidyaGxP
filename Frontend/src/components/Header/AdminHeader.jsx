@@ -13,6 +13,7 @@ export default function AdminHeaderTop() {
     localStorage.removeItem("admin-token");
     localStorage.removeItem("user-token");
     navigate("/");
+    window.location.reload();
   };
 
 

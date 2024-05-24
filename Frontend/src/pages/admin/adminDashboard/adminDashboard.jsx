@@ -119,7 +119,7 @@ function AdminDashboard() {
                   navigate("/admin-add-user");
                 }}
               >
-                <div
+                <button
                   className="themeBtn"
                   style={{
                     backgroundColor: "#EFA035",
@@ -130,7 +130,7 @@ function AdminDashboard() {
                   }}
                 >
                   Add User
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -155,6 +155,14 @@ function AdminDashboard() {
               >
                 <thead>
                   <tr>
+                    <th
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      Sno.
+                    </th>
                     <th
                       style={{
                         padding: "10px",
@@ -190,6 +198,14 @@ function AdminDashboard() {
                           borderBottom: "1px solid #ccc",
                         }}
                       >
+                        {user.user_id}
+                      </td>
+                      <td
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
+                        }}
+                      >
                         {user.name}
                       </td>
                       <td
@@ -210,8 +226,8 @@ function AdminDashboard() {
                           style={{
                             padding: "5px 10px",
                             borderRadius: "5px",
-                            border: "1px solid #EFA035",
-                            backgroundColor: "#EFA035",
+                            // border: "1px solid #EFA035",
+                            backgroundColor: "green",
                             color: "white",
                             cursor: "pointer",
                             marginRight: "5px",
@@ -224,8 +240,8 @@ function AdminDashboard() {
                           style={{
                             padding: "5px 10px",
                             borderRadius: "5px",
-                            border: "1px solid #EFA035",
-                            backgroundColor: "#EFA035",
+                            // border: "1px solid #EFA035",
+                            backgroundColor: "blue",
                             color: "white",
                             cursor: "pointer",
                             marginRight: "5px",
@@ -242,8 +258,8 @@ function AdminDashboard() {
                           style={{
                             padding: "5px 10px",
                             borderRadius: "5px",
-                            border: "1px solid #EFA035",
-                            backgroundColor: "#EFA035",
+                            // border: "1px solid #EFA035",
+                            backgroundColor: "red",
                             color: "white",
                             cursor: "pointer",
                           }}

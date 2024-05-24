@@ -51,6 +51,7 @@ function AdminLogin() {
                 type="text"
                 placeholder="Enter Your User ID"
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -60,6 +61,7 @@ function AdminLogin() {
                 type="password"
                 placeholder="Enter Your Password"
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
