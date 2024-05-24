@@ -34,12 +34,10 @@ function AdminLogin() {
       });
   };
 
-
-
   return (
     <>
       <div id="admin-console-login-page">
-        <div className="login-form-block">
+        <div className="login-form-block" style={{ marginLeft: "13%" }}>
           <div className="top-block">
             <div className="logo">
               <img src="/vidyagxplogo.png" alt="..." />
@@ -64,9 +62,6 @@ function AdminLogin() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-
-            
-            
 
             <div>
               <div className="submit-btn" onClick={handleSubmit}>

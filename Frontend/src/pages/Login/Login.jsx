@@ -44,7 +44,7 @@ function Login() {
   return (
     <>
       <div id="admin-console-login-page">
-        <div className="login-form-block">
+        <div className="login-form-block" style={{ marginLeft: "13%" }}>
           <div className="top-block">
             <div className="logo">
               <img src="/vidyalogo2.png" alt="..." />
