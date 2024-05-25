@@ -3,7 +3,9 @@ const DifferentialPressureRecord = require("../models/differentialPressureRecord
 const Process = require("../models/processes");
 
 // Fill Differential pressure form and insert its records.
-exports.InsertDifferentialPressure = async (req, res) => {};
+exports.InsertDifferentialPressure = async (req, res) => {
+  // DifferentialPressureForm.
+};
 
 exports.getAllProcesses = async (req, res) => {
   Process.findAll()

@@ -2,8 +2,8 @@
     "development" : {
             "PORT": 1000,
             "dbName": "elogbook",
-            "username": "elog",
-            "password": "Elogbook@123",
+            "username": "root",
+            "password": "root",
             "dialect": "mysql",
             "host": "localhost",
             "JWT_SECRET": "NAHKNAHRAF",
