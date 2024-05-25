@@ -28,7 +28,6 @@ function EditUser() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setUserInfo(response.data);
         setSelectedOptions(response.data.roles || []);
       })
@@ -61,7 +60,6 @@ function EditUser() {
     label: role.roleGroup,
     value: role.roleGroup_id,
   }));
-  console.log(userInfo);
   function filterObject(obj) {
     const result = {};
 

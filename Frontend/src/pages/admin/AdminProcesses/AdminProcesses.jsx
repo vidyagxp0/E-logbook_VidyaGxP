@@ -13,7 +13,6 @@ function AdminProcesses() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setProcesses(response.data.message); // Access the response data
       })
       .catch((error) => {
