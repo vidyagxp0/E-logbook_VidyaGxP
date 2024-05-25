@@ -26,7 +26,7 @@ function AddNewUser() {
   }, [selectedOptions]);
 
   useEffect(() => {
-    const url = "http://192.168.1.22:1000/user/get-all-rolegroups";
+    const url = "http://localhost:1000/user/get-all-rolegroups";
     axios
       .get(url)
       .then((response) => {
@@ -85,7 +85,7 @@ function AddNewUser() {
     };
 
     axios
-      .post("http://192.168.1.22:1000/user/add-user", formData, {
+      .post("http://localhost:1000/user/add-user", formData, {
         headers: myHeaders,
       })
       .then(() => {

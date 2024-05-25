@@ -14,7 +14,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
-    const url = "http://192.168.1.22:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://localhost:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -42,7 +42,7 @@ function AdminDashboard() {
   const handleDelete = () => {
     const config = {
       method: "delete",
-      url: `http://192.168.1.22:1000/user/delete-user/${selectedUser.user_id}`,
+      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       },
@@ -63,7 +63,7 @@ function AdminDashboard() {
   const openPermissionsModal = (user) => {
     const token = localStorage.getItem("admin-token");
     axios
-      .get(`http://192.168.1.22:1000/user/get-user-permissions/${user.user_id}`, {
+      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

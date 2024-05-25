@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { MultiSelect } from "react-multi-select-component";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
@@ -23,7 +22,7 @@ function EditUser() {
 
   useEffect(() => {
     axios
-      .get(`http://192.168.1.22:1000/user/get-a-user/${location.state.id}`, {
+      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         },
@@ -38,7 +37,7 @@ function EditUser() {
       });
 
     axios
-      .get("http://192.168.1.22:1000/user/get-all-rolegroups")
+      .get("http://localhost:1000/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []); // Ensure it's an array
       })
@@ -48,7 +47,7 @@ function EditUser() {
   }, [location.state.id]); // Added location.state.id as a dependency
 
   useEffect(() => {
-    // Initialize form data only when userInfo is updated
+    // Initialize form data only when userInfo or selectedOptions is updated
     setFormData({
       name: userInfo.name || "",
       email: userInfo.email || "",
@@ -83,6 +82,8 @@ function EditUser() {
 
   const handleChange = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
+    // Optionally, you can update the formData here as well
+    setFormData((prevData) => ({ ...prevData, rolesArray: selectedOptions }));
   };
 
   const handleInputChange = (event) => {
@@ -93,11 +94,10 @@ function EditUser() {
   const handleSubmit = (event) => {
     event.preventDefault();
     let resultObj = filterObject(formData);
-    console.log(formData, ">>>>>>>>>>>>>", resultObj);
 
     const config = {
       method: "put",
-      url: `http://192.168.1.22:1000/user/edit-user/${location.state.id}`,
+      url: `http://localhost:1000/user/edit-user/${location.state.id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         "Content-Type": "application/json",
