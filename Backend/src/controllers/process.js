@@ -199,7 +199,7 @@ exports.EditDifferentialPressure = async (req, res) => {
 };
 
 exports.GetDifferentialPressureElog = async (req, res) => {
-  const form_id  = req.params.id;
+  const form_id = req.params.id;
 
   if (!form_id) {
     return res
@@ -231,9 +231,7 @@ exports.GetDifferentialPressureElog = async (req, res) => {
     });
 };
 
-
 exports.GetAllDifferentialPressureElog = async (req, res) => {
-
   DifferentialPressureForm.findAll({
     include: [
       {
@@ -253,6 +251,198 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
         message: error.message,
       });
     });
+};
+
+exports.SendDPElogForReview = async (req, res) => {
+  const { form_id, site_id } = req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+  if (!site_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a site ID." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    const form = await DifferentialPressureForm.findOne({
+      where: { form_id: form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 1) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage to be sent for review.",
+      });
+    }
+
+    // Update the form details
+    await form.update(
+      {
+        status: "under review",
+        stage: 2,
+      },
+      { transaction }
+    );
+
+    // Commit the transaction
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "E-log successfully sent for review",
+    });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error during sending E-log for review: ${error.message}`,
+    });
+  }
+};
+
+exports.SendDPElogfromReviewToOpen = async (req, res) => {
+  const { form_id, site_id } = req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+  if (!site_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a site ID." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    const form = await DifferentialPressureForm.findOne({
+      where: { form_id: form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 2) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage.",
+      });
+    }
+
+    // Update the form details
+    await form.update(
+      {
+        status: "initiation",
+        stage: 1,
+      },
+      { transaction }
+    );
+
+    // Commit the transaction
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "E-log status successfully updated to initiation",
+    });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error during changing stage of elog: ${error.message}`,
+    });
+  }
+};
+
+exports.SendDPfromReviewToApproval = async (req, res) => {
+  const { form_id, site_id } = req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+  if (!site_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a site ID." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    const form = await DifferentialPressureForm.findOne({
+      where: { form_id: form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 2) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage to be sent for approval.",
+      });
+    }
+
+    // Update the form details
+    await form.update(
+      {
+        status: "under-approval",
+        stage: 3,
+      },
+      { transaction }
+    );
+
+    // Commit the transaction
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "E-log status successfully updated to under-approval",
+    });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error during sending E-log for approval: ${error.message}`,
+    });
+  }
 };
 
 exports.getAllProcesses = async (req, res) => {
