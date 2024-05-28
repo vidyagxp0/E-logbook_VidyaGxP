@@ -46,6 +46,12 @@ function authorizeUserRole(processId, roleId) {
   return (req, res, next) => {
     const userRoles = req.user.roles;
 
+    if (!req.body.site_id) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Please provide a site ID." });
+    }
+
     if (hasAccess(userRoles, req.body?.site_id, processId, roleId)) {
       next(); // User has access, proceed to the next middleware or route handler
     } else {
@@ -56,16 +62,16 @@ function authorizeUserRole(processId, roleId) {
   };
 }
 
-function hasAccess(userRoles,site_id, processId, roleId) {
-    return userRoles.some(
-        (role) =>
-            (role.role_id === 5 && // Grant access if role_id is 5 (full permissions)
+function hasAccess(userRoles, site_id, processId, roleId) {
+  return userRoles.some(
+    (role) =>
+      (role.role_id === 5 && // Grant access if role_id is 5 (full permissions)
         role.site_id === site_id &&
         role.process_id === processId) ||
       (role.site_id === site_id &&
         role.process_id === processId &&
         role.role_id === roleId)
-    );
+  );
 }
 
 module.exports.checkUserJwtToken = checkUserJwtToken;

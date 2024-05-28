@@ -17,12 +17,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
     FormRecordsArray,
   } = req.body;
 
-  // Check for required fields and provide specific error messages
-  if (!site_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a site ID." });
-  }
   if (!approver_id) {
     return res
       .status(400)
@@ -100,6 +94,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
   }
 };
 
+// edit differential pressure elog details
 exports.EditDifferentialPressure = async (req, res) => {
   const {
     form_id,
@@ -118,11 +113,6 @@ exports.EditDifferentialPressure = async (req, res) => {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!site_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a site ID." });
   }
 
   // Start a transaction
@@ -198,6 +188,7 @@ exports.EditDifferentialPressure = async (req, res) => {
   }
 };
 
+//get a differential pressure elog by id
 exports.GetDifferentialPressureElog = async (req, res) => {
   const form_id = req.params.id;
 
@@ -231,6 +222,7 @@ exports.GetDifferentialPressureElog = async (req, res) => {
     });
 };
 
+//get all the differential pressure elogs
 exports.GetAllDifferentialPressureElog = async (req, res) => {
   DifferentialPressureForm.findAll({
     include: [
@@ -253,19 +245,15 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
     });
 };
 
+//send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, site_id } = req.body;
+  const { form_id } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!site_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a site ID." });
   }
 
   // Start a transaction
@@ -317,19 +305,15 @@ exports.SendDPElogForReview = async (req, res) => {
   }
 };
 
+// change status of differential pressure elog from review to open
 exports.SendDPElogfromReviewToOpen = async (req, res) => {
-  const { form_id, site_id } = req.body;
+  const { form_id } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!site_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a site ID." });
   }
 
   // Start a transaction
@@ -381,8 +365,9 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
   }
 };
 
+// send differential pressure elog from review to approval
 exports.SendDPfromReviewToApproval = async (req, res) => {
-  const { form_id, site_id } = req.body;
+  const { form_id, reviewComment } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -390,10 +375,10 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
-  if (!site_id) {
+  if (!reviewComment) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide a site ID." });
+      .json({ error: true, message: "Please provide a review comment." });
   }
 
   // Start a transaction
@@ -421,8 +406,9 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "under-approval",
+        status: "under approval",
         stage: 3,
+        review_comments: reviewComment
       },
       { transaction }
     );
@@ -444,6 +430,126 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     });
   }
 };
+
+// send differential pressure elog from under approval to open
+exports.SendDPfromApprovalToOpen = async (req, res) => {
+  const { form_id } = req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    const form = await DifferentialPressureForm.findOne({
+      where: { form_id: form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 3) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage.",
+      });
+    }
+
+    // Update the form details
+    await form.update(
+      {
+        status: "initiation",
+        stage: 1,
+      },
+      { transaction }
+    );
+
+    // Commit the transaction
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "E-log status successfully updated to initiation",
+    });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error during changing stage of elog: ${error.message}`,
+    });
+  }
+}
+
+// APPROVE differential pressure elog
+exports.ApproveDPElog = async (req, res) => {
+  const { form_id } = req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    const form = await DifferentialPressureForm.findOne({
+      where: { form_id: form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 3) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage.",
+      });
+    }
+
+    // Update the form details
+    await form.update(
+      {
+        status: "approved",
+        stage: 4,
+      },
+      { transaction }
+    );
+
+    // Commit the transaction
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "E-log successfully approved!!",
+    });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error approving elog: ${error.message}`,
+    });
+  }
+}
 
 exports.getAllProcesses = async (req, res) => {
   Process.findAll()

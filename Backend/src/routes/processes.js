@@ -57,6 +57,22 @@ router.put(
   Process.SendDPfromReviewToApproval
 );
 
+// send differential pressure elog from under-approval to open
+router.put(
+  "/send-DP-elog-from-approval-to-open",
+  Auth.checkUserJwtToken,
+  Auth.authorizeUserRole(1, 3),
+  Process.SendDPfromApprovalToOpen
+);
+
+// APPROVE differential pressure elog
+router.put(
+  "/approve-DP-elog",
+  Auth.checkUserJwtToken,
+  Auth.authorizeUserRole(1, 3),
+  Process.ApproveDPElog
+);
+
 
 router.get("/get-processes", Auth.checkAdminJwtToken, Process.getAllProcesses);
 
