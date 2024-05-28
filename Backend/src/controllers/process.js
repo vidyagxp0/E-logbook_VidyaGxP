@@ -2,19 +2,18 @@ const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
+const User = require("../models/users");
 
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {
   const {
     site_id,
-    initiator_name,
     description,
     department,
     compression_area,
     limit,
-    month,
-    reviewer,
-    approver,
+    reviewer_id,
+    approver_id,
     FormRecordsArray,
   } = req.body;
 
@@ -24,17 +23,12 @@ exports.InsertDifferentialPressure = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a site ID." });
   }
-  if (!initiator_name) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an initiator name." });
-  }
-  if (!approver) {
+  if (!approver_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide an approver." });
   }
-  if (!reviewer) {
+  if (!reviewer_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a reviewer." });
@@ -44,21 +38,27 @@ exports.InsertDifferentialPressure = async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
+
+    const user = await User.findOne({
+      where: {
+        user_id: req.user.userId
+      }
+    });
+
     // Create new Differential Pressure Form
     const newForm = await DifferentialPressureForm.create(
       {
         site_id: site_id,
-        initiator_id: req.user.userId,
-        initiator_name: initiator_name,
+        initiator_id: user.user_id,
+        initiator_name: user.name,
         description: description,
         status: "initiation",
         stage: 1,
         department: department,
         compression_area: compression_area,
         limit: limit,
-        month: month,
-        reviewer: reviewer,
-        approver: approver,
+        reviewer_id: reviewer_id,
+        approver_id: approver_id,
       },
       { transaction }
     );
