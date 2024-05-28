@@ -52,7 +52,7 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     type: DataTypes.STRING,
   },
   limit: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.FLOAT,
   },
   reviewer_id: {
     type: DataTypes.INTEGER,
