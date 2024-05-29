@@ -2,25 +2,24 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import "./HeaderTop.css";
 import { useEffect, useState } from "react";
-import {jwtDecode} from 'jwt-decode';
-import axios from 'axios';
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 function HeaderTop() {
   const navigate = useNavigate();
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [User, setUser] = useState(null);
 
+  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   useEffect(() => {
-    const decodedData = jwtDecode(localStorage.getItem("user-token"));
-    const userId = decodedData.userId;
     const requestOptions = {
-      method: 'GET',
-      url: `http://localhost:1000/user/get-a-user/${userId}`, // Ensure you use the correct URL format including 'http://'
+      method: "GET",
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
-    
+
     axios(requestOptions)
       .then((response) => {
-        setLoggedInUser(response.data);
+        setUser(response.data);
       })
       .catch((error) => {
         console.error(error);
@@ -28,8 +27,8 @@ function HeaderTop() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('user-token');
-    localStorage.removeItem('admin-token');
+    localStorage.removeItem("user-token");
+    localStorage.removeItem("admin-token");
     navigate("/");
   };
 
@@ -86,7 +85,7 @@ function HeaderTop() {
               <div className="drop-list">
                 <div className="image">
                   <img src="amit_guru.jpg" alt="..." />
-                  <div className="manager-name">{loggedInUser?.name}</div>
+                  <div className="manager-name">{User?.name}</div>
                 </div>
                 <Link to="#" className="drop-item">
                   <i className="ri-settings-2-line"></i> Settings

@@ -8,6 +8,7 @@ import areaAndEquipmentReducers from './components/Reducers/areaAndEquipmentRedu
 import DifferentialPressureReducers from './components/Reducers/DifferentialPressureReducer';
 import DPRpanelReducers from './components/Reducers/DPRpanelReducers';
 import TemperatureRecordReducers from './components/Reducers/TemperatureRecordReducers';
+import LoggedInUserReducer from './components/Reducers/LoggedInUserReducer';
 
 const reducer=combineReducers({
     objects:rootReducer,
@@ -16,7 +17,9 @@ const reducer=combineReducers({
     area:areaAndEquipmentReducers,
     tableData:DifferentialPressureReducers,
     dprPanelData:DPRpanelReducers,
-    temperature:TemperatureRecordReducers
+    temperature:TemperatureRecordReducers,
+    loggedInUser:LoggedInUserReducer,
+
 })
 const store = createStore(reducer);
 
