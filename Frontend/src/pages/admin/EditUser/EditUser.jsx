@@ -22,7 +22,7 @@ function EditUser() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
+      .get(`http://192.168.1.29:1000/user/get-a-user/${location.state.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         },
@@ -36,7 +36,7 @@ function EditUser() {
       });
 
     axios
-      .get("http://localhost:1000/user/get-all-rolegroups")
+      .get("http://192.168.1.29:1000/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []); // Ensure it's an array
       })
@@ -95,7 +95,7 @@ function EditUser() {
 
     const config = {
       method: "put",
-      url: `http://localhost:1000/user/edit-user/${location.state.id}`,
+      url: `http://192.168.1.29:1000/user/edit-user/${location.state.id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         "Content-Type": "application/json",

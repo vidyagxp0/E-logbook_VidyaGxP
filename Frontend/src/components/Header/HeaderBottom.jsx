@@ -40,7 +40,7 @@ function HeaderBottom() {
                                 <i className="ri-bank-fill"></i>
                                 <h3>Question Bank</h3>
                             </div>
-                        </Link> */}
+                       </Link> */}
                         {/* <Link to="/manage-quizzes">
                             <div className="navItem">
                                 <i className="ri-speak-fill"></i>
@@ -48,6 +48,7 @@ function HeaderBottom() {
                             </div>
                         </Link> */}
                     </div>
+
                     <div className="headerBottomRgt">
                         <div className="themeBtn" onClick={() => setRecordModal(true)}>Initiate eLog</div>
                     </div>

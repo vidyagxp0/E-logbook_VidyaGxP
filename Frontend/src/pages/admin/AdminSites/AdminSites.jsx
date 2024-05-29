@@ -5,7 +5,7 @@ function AdminSites() {
   const [sites, setSites] = useState([]);
 
   useEffect(() => {
-    const url = "http://localhost:1000/site/get-sites"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://192.168.1.29:1000/site/get-sites"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
