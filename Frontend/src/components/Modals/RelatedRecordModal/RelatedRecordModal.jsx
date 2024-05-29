@@ -26,7 +26,6 @@ function RelatedRecordModal(_props) {
     };
     fetchData();
   }, []);
-  console.log(data);
   function handleRecord(recordNumber) {
     setRecords((prevRecords) => {
       const exists = prevRecords.includes(recordNumber);

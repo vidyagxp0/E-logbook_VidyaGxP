@@ -174,7 +174,7 @@ export default function EquipmentCleaningCheckListPanel() {
       payload: { id: editData.eLogId, editedData: editData },
     });
     toast.success("Data saved successfully!");
-    navigate("/desktop");
+    navigate("/dashboard");
   };
 
   const handleInputChange1 = (e) => {
@@ -540,7 +540,7 @@ export default function EquipmentCleaningCheckListPanel() {
                 )}
                 <button
                   className="themeBtn"
-                  onClick={() => navigate("/desktop")}
+                  onClick={() => navigate("/dashboard")}
                 >
                   Exit
                 </button>

@@ -1,7 +1,6 @@
 import { useReducer, useState, useEffect } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import { tableData } from "./EquipmentCleaningFunction";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
@@ -163,7 +162,7 @@ export default function EquipmentCleaningCheckList() {
     //   window.location.reload();
     // }, 1000);
     createObject(data);
-    navigate("/desktop");
+    navigate("/dashboard");
   };
 
   function getCurrentDateTime() {
@@ -517,7 +516,7 @@ export default function EquipmentCleaningCheckList() {
                 )}
                 <button
                   className="themeBtn"
-                  onClick={() => navigate("/desktop")}
+                  onClick={() => navigate("/dashboard")}
                 >
                   Exit
                 </button>

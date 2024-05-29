@@ -11,41 +11,46 @@ const { sequelize } = require("../config/db");
 
 //register user
 exports.signup = async (req, res) => {
+  const { password, email, name, rolesArray, age, gender } = req.body;
+
+  // Check if required fields are provided
+  if (!password || !email || !name || !rolesArray) {
+    return res.status(400).json({
+      error: true,
+      message: "Please provide proper user details!",
+    });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
   try {
     // Check if user already exists
-    const existingUser = await User.findOne({
-      where: { email: req.body.email },
-    });
+    const existingUser = await User.findOne({ where: { email: email } });
     if (existingUser) {
       return res.status(400).json({
         error: true,
-        message: "User already registered!!",
-      });
-    }
-
-    // Check if password is provided
-    if (!req.body.password) {
-      return res.status(400).json({
-        error: true,
-        message: "Please provide a password!",
+        message: "User already registered!",
       });
     }
 
     // Hash the password
     const salt = await bcrypt.genSalt(10);
-    const hashpass = await bcrypt.hash(req.body.password, salt);
+    const hashpass = await bcrypt.hash(password, salt);
 
     // Create the user
-    const newUser = await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: hashpass,
-      age: req.body.age,
-      gender: req.body.gender,
-    });
+    const newUser = await User.create(
+      {
+        name: name,
+        email: email,
+        password: hashpass,
+        age: age,
+        gender: gender,
+      },
+      { transaction }
+    );
 
     // Process roles array
-    const rolesArray = req.body.rolesArray;
     for (const role of rolesArray) {
       const singleRole = role.label.split("-");
       const roleId = await Role.findOne({ where: { role: singleRole[2] } });
@@ -57,23 +62,30 @@ exports.signup = async (req, res) => {
       });
       const siteId = await Site.findOne({ where: { site: singleRole[0] } });
 
-      await UserRole.create({
-        user_id: newUser.user_id,
-        site_id: siteId.site_id,
-        process_id: processId.process_id,
-        role_id: roleId.role_id,
-        roleGroup_id: roleGroup.roleGroup_id,
-      });
+      await UserRole.create(
+        {
+          user_id: newUser.user_id,
+          site_id: siteId.site_id,
+          process_id: processId.process_id,
+          role_id: roleId.role_id,
+          roleGroup_id: roleGroup.roleGroup_id,
+        },
+        { transaction }
+      );
     }
 
-    // Send success response after all roles are processed
+    // Commit the transaction
+    await transaction.commit();
+
     return res.status(200).json({
       error: false,
       message: "User Registered",
     });
   } catch (error) {
-    // Handle any errors that occur during the process
-    return res.status(400).json({
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
       error: true,
       message: `Error during registration: ${error.message}`,
     });
@@ -82,15 +94,18 @@ exports.signup = async (req, res) => {
 
 //Update user
 exports.editUser = async (req, res) => {
-  try {
-    // Check if request body is empty
-    if (Object.keys(req.body).length === 0) {
-      return res.status(400).json({
-        error: true,
-        message: "Please provide details to update!",
-      });
-    }
+  // Check if request body is empty
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      error: true,
+      message: "Please provide details to update!",
+    });
+  }
 
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
     // Update user details
     const userdetails = {
       name: req.body.name,
@@ -98,49 +113,63 @@ exports.editUser = async (req, res) => {
       age: req.body.age,
       gender: req.body.gender,
     };
+
     await User.update(userdetails, {
       where: { user_id: req.params.id },
+      transaction,
     });
 
     // Delete existing UserRole entries
     await UserRole.destroy({
       where: { user_id: req.params.id },
+      transaction,
     });
 
-    // Process roles array sequentially
+    // Process roles array
     const rolesArray = req.body.rolesArray;
     for (const role of rolesArray) {
       const singleRole = role.label.split("-");
       const roleId = await Role.findOne({
         where: { role: singleRole[2] },
+        transaction,
       });
       const processId = await Process.findOne({
         where: { process: singleRole[1] },
+        transaction,
       });
       const siteId = await Site.findOne({
         where: { site: singleRole[0] },
+        transaction,
       });
       const roleGroup = await RoleGroup.findOne({
         where: { roleGroup: role.label },
+        transaction,
       });
 
-      await UserRole.create({
-        user_id: req.params.id,
-        site_id: siteId.site_id,
-        process_id: processId.process_id,
-        role_id: roleId.role_id,
-        roleGroup_id: roleGroup.roleGroup_id,
-      });
+      await UserRole.create(
+        {
+          user_id: req.params.id,
+          site_id: siteId.site_id,
+          process_id: processId.process_id,
+          role_id: roleId.role_id,
+          roleGroup_id: roleGroup.roleGroup_id,
+        },
+        { transaction }
+      );
     }
 
-    // Send success response after all roles are processed
+    // Commit the transaction
+    await transaction.commit();
+
     return res.status(200).json({
       error: false,
       message: "User Details Updated",
     });
   } catch (error) {
-    // Handle any errors that occur during the process
-    return res.status(400).json({
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
       error: true,
       message: `Error during update: ${error.message}`,
     });
@@ -292,15 +321,20 @@ exports.Userlogin = async (req, res) => {
     raw: true,
   })
     .then((data) => {
-      bcrypt.compare(password, data.password, (_err, result) => {
+      bcrypt.compare(password, data.password, async (_err, result) => {
         if (!result) {
           res.status(400).json({
             error: true,
             message: "Invalid Password!",
           });
         } else {
+          let userRoles = await UserRole.findAll({
+            where: {
+              user_id: data?.user_id,
+            },
+          });
           const token = jwt.sign(
-            { userId: data.user_id },
+            { userId: data.user_id, roles: userRoles },
             config.development.JWT_SECRET,
             { expiresIn: "24h" }
           );

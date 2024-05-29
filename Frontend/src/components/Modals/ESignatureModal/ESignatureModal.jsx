@@ -1,5 +1,4 @@
 import "./ESignatureModal.css";
-import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { saveSignature } from "../../../actions";
 import { useReducer } from "react";
@@ -13,7 +12,6 @@ function ESignatureModal(_props) {
       comment: "",
     }
   );
-  console.log(eSignatureData, "eSignatureData");
   const dispatch = useDispatch();
   function handleSubmit() {
     if (!eSignatureData.username || !eSignatureData.password) {

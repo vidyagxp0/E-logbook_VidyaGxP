@@ -1,12 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import {
-  docFormFile,
-  tableData,
-  time,
-} from "./DifferentialPressureFunction.jsx";
-import Grid from "../../../components/datafields/Grid.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -72,7 +66,7 @@ export default function DiffrentialPressure() {
     }
     toast.success("eLog Saved Successfully!");
     createObject(data);
-    navigate("/desktop");
+    navigate("/dashboard");
   };
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
     (prev, next) => ({
@@ -205,21 +199,6 @@ export default function DiffrentialPressure() {
                         onChange={(e) =>
                           setDifferentialPRecord({
                             dateOfInitiation: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Short Description</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={differentialPRecord.shortDescription}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            shortDescription: e.target.value,
                           })
                         }
                       />
@@ -538,7 +517,7 @@ export default function DiffrentialPressure() {
                   Back
                 </button>
               )}
-              <button className="themeBtn" onClick={() => navigate("/desktop")}>
+              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
                 Exit
               </button>
             </div>

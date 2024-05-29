@@ -9,7 +9,6 @@ function Sidebar() {
     const [openItems, setOpenItems] = useState({});
 
     useEffect(() => {
-        // console.log('Sidebar state changed:', openItems);
     }, [openItems]);
 
     const toggleItem = (id) => {

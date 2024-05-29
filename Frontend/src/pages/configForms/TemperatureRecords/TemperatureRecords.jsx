@@ -1,10 +1,9 @@
-import React, { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import HeaderTop from "../../../components/Header/HeaderTop";
-import { time } from "../DiffrentialPressureRecord/DifferentialPressureFunction";
 import { toast } from "react-toastify";
 
 export default function TemperatureRecords() {
@@ -74,7 +73,7 @@ export default function TemperatureRecords() {
     toast.success("eLog Saved Successfully!");
     // createObject(data);
     TemperatureData(data);
-    navigate("/desktop");
+    navigate("/dashboard");
   };
   const [temperatureRecords, setTemperatureRecords] = useReducer(
     (prev, next) => ({
@@ -539,7 +538,7 @@ export default function TemperatureRecords() {
                   Back
                 </button>
               )}
-              <button className="themeBtn" onClick={() => navigate("/desktop")}>
+              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
                 Exit
               </button>
             </div>

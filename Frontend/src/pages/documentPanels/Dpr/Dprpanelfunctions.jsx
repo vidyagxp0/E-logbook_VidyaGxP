@@ -43,7 +43,6 @@ function generateUniqueID() {
 }
 
 const uniqueID = generateUniqueID();
-console.log(uniqueID);
 
 export const docFormFile = [
   {

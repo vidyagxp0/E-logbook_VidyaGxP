@@ -27,7 +27,7 @@ const DifferentialPressureRecord = sequelize.define(
       allowNull: false,
     },
     differential_pressure: {
-      type: DataTypes.STRING,
+      type: DataTypes.FLOAT,
     },
     remarks: {
       type: DataTypes.STRING,

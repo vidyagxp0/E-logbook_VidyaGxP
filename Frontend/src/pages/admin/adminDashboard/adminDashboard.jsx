@@ -69,7 +69,6 @@ function AdminDashboard() {
         },
       })
       .then((response) => {
-        console.log(response);
         setPermissions(response.data.message);
         setSelectedUser(user);
         setShowPermissionsModal(true);

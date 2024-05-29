@@ -13,7 +13,6 @@ function AdminSites() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setSites(response.data.message); // Access the response data
       })
       .catch((error) => {
