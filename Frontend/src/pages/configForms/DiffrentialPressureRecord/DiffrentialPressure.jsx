@@ -206,21 +206,6 @@ export default function DiffrentialPressure() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Short Description</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={differentialPRecord.shortDescription}
-                        onChange={(e) =>
-                          setDifferentialPRecord({
-                            shortDescription: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div className="group-input">
                     <label className="color-label">Description</label>
                     <div>
                       <input
