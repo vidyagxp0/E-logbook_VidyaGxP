@@ -3,6 +3,8 @@ const DifferentialPressureRecord = require("../models/differentialPressureRecord
 const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
+const UserRole = require("../models/userRoles");
+const { Op } = require('sequelize');
 
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {
@@ -408,7 +410,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       {
         status: "under approval",
         stage: 3,
-        review_comments: reviewComment
+        review_comments: reviewComment,
       },
       { transaction }
     );
@@ -489,7 +491,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       message: `Error during changing stage of elog: ${error.message}`,
     });
   }
-}
+};
 
 // APPROVE differential pressure elog
 exports.ApproveDPElog = async (req, res) => {
@@ -549,7 +551,40 @@ exports.ApproveDPElog = async (req, res) => {
       message: `Error approving elog: ${error.message}`,
     });
   }
-}
+};
+
+// get users based on roles, sites and processes
+exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
+  const { role_id, site_id, process_id } = req.body;
+
+  try {
+    // Fetch users based on role, site, and process
+    const selectedUsers = await UserRole.findAll({
+      where: {
+        [Op.or]: [
+          { role_id: role_id, process_id: process_id, site_id: site_id },
+          { role_id: 5, process_id: process_id, site_id: site_id },
+        ]
+      },
+      include: {
+        model: User,
+      },
+    });
+
+    // Send the response with the fetched users
+    return res.status(200).json({
+      error: false,
+      message: selectedUsers,
+    });
+  } catch (error) {
+    // Catch any errors and send an appropriate response
+    console.error("Error fetching users:", error);
+    return res.status(500).json({
+      error: true,
+      message: `Error fetching users: ${error.message}`,
+    });
+  }
+};
 
 exports.getAllProcesses = async (req, res) => {
   Process.findAll()

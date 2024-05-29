@@ -73,6 +73,9 @@ router.put(
   Process.ApproveDPElog
 );
 
+// get users based on roles, sites and processes
+router.get('/get-user-roleGroups', Auth.checkUserJwtToken, Process.GetUserOnBasisOfRoleGroup);
+
 
 router.get("/get-processes", Auth.checkAdminJwtToken, Process.getAllProcesses);
 
