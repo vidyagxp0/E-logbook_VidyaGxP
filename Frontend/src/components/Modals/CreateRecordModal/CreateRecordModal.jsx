@@ -1,106 +1,54 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../General.css";
 import "./CreateRecordModal.css";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 function CreateRecordModal(_props) {
   const [division, setDivision] = useState("KSA");
+  const [processes, setProcesses] = useState([]);
+  const [sites, setSites] = useState([]);
   const [project, setProject] = useState("");
+  const [processVisible, setProcessVisible] = useState(false);
+  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
+
+  useEffect(() => {
+    const fetchSites = async () => {
+      try {
+        const response = await axios.get("http://192.168.1.29:1000/site/get-sites");
+        setSites(response.data.message);
+      } catch (error) {
+        console.error("Error fetching sites:", error);
+      }
+    };
+
+    fetchSites();
+  }, []);
+
+  useEffect(() => {
+    const fetchProcesses = async () => {
+      try {
+        const response = await axios.get("http://192.168.1.29:1000/process/get-processes");
+        setProcesses(response.data.message);
+      } catch (error) {
+        console.error("Error fetching processes:", error);
+      }
+    };
+
+    if (processVisible) {
+      fetchProcesses();
+    }
+  }, [processVisible]);
+
+  const filteredSites = sites.filter((item) =>
+    loggedInUser.roles.some((role) => role.site_id === 1 || role.site_id === 5)
+  );
+
   const handleSelectProcess = (element) => {
-    setProject(element.name);
-    localStorage.removeItem("site");
-    localStorage.setItem("site", division);
+    setProject(element.process);
   };
-  const divisionList = [
-    {
-      id: 1,
-      name: "India",
-      projects: [
-        {
-          name: "Differential Pressure Record",
-          link: "/differential-pressure-record",
-        },
-        {
-          name: "Area & Equipment Usage Log",
-          link: "/area-and-equiment-usage-log",
-        },
-        {
-          name: "Equipment Cleaning Checklist",
-          link: "/equipment-cleaning-checklist",
-        },
-        {
-          name: "Temperature Records",
-          link: "/temperature-records",
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Malaysia",
-      projects: [
-        {
-          name: "Differential Pressure Record",
-          link: "/differential-pressure-record",
-        },
-        {
-          name: "Area & Equipment Usage Log",
-          link: "/area-and-equiment-usage-log",
-        },
-        {
-          name: "Equipment Cleaning Checklist",
-          link: "/equipment-cleaning-checklist",
-        },
-        {
-          name: "Temperature Records",
-          link: "/temperature-records",
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "EMEA",
-      projects: [
-        {
-          name: "Differential Pressure Record",
-          link: "/differential-pressure-record",
-        },
-        {
-          name: "Area & Equipment Usage Log",
-          link: "/area-and-equiment-usage-log",
-        },
-        {
-          name: "Equipment Cleaning Checklist",
-          link: "/equipment-cleaning-checklist",
-        },
-        {
-          name: "Temperature Records",
-          link: "/temperature-records",
-        },
-      ],
-    },
-    {
-      id: 4,
-      name: "EU",
-      projects: [
-        {
-          name: "Differential Pressure Record",
-          link: "/differential-pressure-record",
-        },
-        {
-          name: "Area & Equipment Usage Log",
-          link: "/area-and-equiment-usage-log",
-        },
-        {
-          name: "Equipment Cleaning Checklist",
-          link: "/equipment-cleaning-checklist",
-        },
-        {
-          name: "Temperature Records",
-          link: "/temperature-records",
-        },
-      ],
-    },
-  ];
+
   return (
     <>
       <div className="custom-modal" id="create-record-modal">
@@ -114,37 +62,44 @@ function CreateRecordModal(_props) {
               <div className="division">
                 <div className="head">Site/Location</div>
                 <div className="select-list division-list">
-                  {divisionList.map((item) => (
+                  {filteredSites.map((item) => (
                     <div
-                      className={division === item.name ? "active" : ""}
+                      className={division === item.site ? "active" : ""}
                       key={item.id}
-                      onClick={() => setDivision(item.name)}
+                      onClick={() => {
+                        setDivision(item.site);
+                        setProcessVisible(true);
+                      }}
                     >
-                      {item.name}
+                      {item.site}
                     </div>
                   ))}
                 </div>
               </div>
               <div className="project">
                 <div className="head">Process</div>
-                {divisionList.map((item) =>
-                  division === item.name ? (
-                    <div className="select-list project-list" key={item.id}>
-                      {item.projects.map((ele, index) => (
-                        <Link
-                          className={project === ele.name ? "active" : ""}
-                          key={index}
-                          to={ele.link}
-                          onClick={() => handleSelectProcess(ele)}
-                        >
-                          {ele.name}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    ""
-                  )
-                )}
+                <div className="select-list division-list">
+                  {processes.map((item, index) => (
+                    <Link
+                      className={project === item.process ? "active" : ""}
+                      key={index}
+                      to={
+                        item.process_id === 1
+                          ? "/differential-pressure-record"
+                          : item.process_id === 2
+                          ? "/area-and-equiment-usage-log"
+                          : item.process_id === 3
+                          ? "/equipment-cleaning-checklist"
+                          : item.process_id === 4
+                          ? "/temperature-records"
+                          : ""
+                      }
+                      onClick={() => handleSelectProcess(item)}
+                    >
+                      {item.process}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

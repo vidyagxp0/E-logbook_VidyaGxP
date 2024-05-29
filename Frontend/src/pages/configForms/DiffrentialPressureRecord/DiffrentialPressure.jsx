@@ -6,12 +6,38 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
+import axios from "axios";
 
 export default function DiffrentialPressure() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('http://192.168.1.29:1000/process/get-user-roleGroups', {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+  //         },
+  //         params: {
+  //           role_id: 2,
+  //           site_id: 1,
+  //           process_id: 1
+  //         }
+  //       });
+  //       console.log(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching user role groups:', error);
+  //     }
+  //   };
+  
+  //   fetchData();
+  // }, []);
+  
+  
+
 
   const dispatch = useDispatch();
   const object = getCurrentDateTime();
@@ -78,7 +104,8 @@ export default function DiffrentialPressure() {
       eLogId: uniqueId + 1,
       initiator: "",
       dateOfInitiation: date,
-      shortDescription: "",
+      reviewer: "",
+      approver: "",
       description: "",
       status: "",
       department: "",
@@ -321,14 +348,39 @@ export default function DiffrentialPressure() {
                       }
                     />
                   </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Month:</label>
-                    <div>
-                      <input type="text" value={currentMonth} readOnly />
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer</label>
+                      <div>
+                        <select
+                          value={differentialPRecord.reviewer}
+                          onChange={(e) => {
+                            setDifferentialPRecord({
+                              reviewer: e.target.value,
+                            });
+                          }}
+                        >
+                          <option></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Approver</label>
+                      <div>
+                        <select
+                          value={differentialPRecord.approver}
+                          onChange={(e) => {
+                            setDifferentialPRecord({
+                              approver: e.target.value,
+                            });
+                          }}
+                        >
+                          <option></option>
+                        </select>
+                      </div>
                     </div>
                   </div>
-
+                          
                   <div>
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
@@ -450,7 +502,7 @@ export default function DiffrentialPressure() {
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart")
+                                    navigate("/chart");
                                   }}
                                 >
                                   Action item
@@ -493,7 +545,7 @@ export default function DiffrentialPressure() {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(differentialPRecord)
+                  handleSave(differentialPRecord);
                 }}
               >
                 Save
@@ -517,7 +569,10 @@ export default function DiffrentialPressure() {
                   Back
                 </button>
               )}
-              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
+              <button
+                className="themeBtn"
+                onClick={() => navigate("/dashboard")}
+              >
                 Exit
               </button>
             </div>
