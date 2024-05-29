@@ -56,7 +56,7 @@ export default function AreaAndEquiment() {
   const handleSave = (data) => {
     toast.success("eLog Saved Successfully!");
     createObject(data);
-    navigate("/desktop");
+    navigate("/dashboard");
   };
 
   return (
@@ -1392,7 +1392,7 @@ export default function AreaAndEquiment() {
                     }}>Back</button>}
                 <button
                   className="themeBtn"
-                  onClick={() => navigate("/desktop")}
+                  onClick={() => navigate("/dashboard")}
                 >
                   Exit
                 </button>

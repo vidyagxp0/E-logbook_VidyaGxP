@@ -76,7 +76,7 @@ export default function AreaAndEquipmentPanel() {
     dispatch({ type: "EDIT-AREAANDEQUIPMENTDATA", payload:  { id: editData.eLogId, editedData: editData } });
     
     toast.success("Data saved successfully!");
-    navigate("/desktop");
+    navigate("/dashboard");
   };
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
@@ -1087,7 +1087,7 @@ export default function AreaAndEquipmentPanel() {
                     }}>Back</button>}
                 <button
                   className="themeBtn"
-                  onClick={() => navigate("/desktop")}
+                  onClick={() => navigate("/dashboard")}
                 >
                   Exit
                 </button>

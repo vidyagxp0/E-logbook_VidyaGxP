@@ -4,7 +4,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/Login/Login.jsx";
 import AdminLogin from "./pages/admin/adminLogin/adminLogin.jsx";
-import Desktop from "./pages/Desktop/Desktop.jsx";
 import DiffrentialPressure from "./pages/configForms/DiffrentialPressureRecord/DiffrentialPressure.jsx";
 import AreaAndEquiment from "./pages/configForms/AreaAndEquipment/AreaAndEquiment.jsx";
 import EquipmentCleaningCheckList from "./pages/configForms/EquipmentCheckList/EquipmentCleaningCheckList.jsx";
@@ -82,10 +81,6 @@ function App() {
             <Route
               path="/area-and-equipment-panel"
               element={<ProtectedRoute element={<AreaAndEquipmentPanel />} />}
-            />
-            <Route
-              path="/desktop"
-              element={<ProtectedRoute element={<Desktop />} />}
             />
             <Route
               path="/dashboard"

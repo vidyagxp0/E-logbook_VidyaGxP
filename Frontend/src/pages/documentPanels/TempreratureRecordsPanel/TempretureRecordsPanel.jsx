@@ -112,7 +112,7 @@ const TempretureRecordsPanel = () => {
     });
 
     toast.success("Data saved successfully!");
-    navigate("/desktop");
+    navigate("/dashboard");
   };
   const [addTemperatureRecord, setAddTemperatureRecord] = useReducer(
     (prev, next) => ({
@@ -560,7 +560,7 @@ const TempretureRecordsPanel = () => {
                   Back
                 </button>
               )}
-              <button className="themeBtn" onClick={() => navigate("/desktop")}>
+              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
                 Exit
               </button>
             </div>

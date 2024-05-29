@@ -1,8 +1,6 @@
-import React from "react";
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../docPanel.css";
-import { docFormFile, tableData, time } from "./Dprpanelfunctions.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -120,7 +118,7 @@ export default function DPRpanel() {
     });
     toast.success("Data saved successfully!");
     setFileData(null);
-    navigate("/desktop");
+    navigate("/dashboard");
   };
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
     (prev, next) => ({
@@ -554,7 +552,7 @@ export default function DPRpanel() {
                   Back
                 </button>
               )}
-              <button className="themeBtn" onClick={() => navigate("/desktop")}>
+              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
                 Exit
               </button>
             </div>

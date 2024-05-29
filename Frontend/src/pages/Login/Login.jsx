@@ -33,7 +33,7 @@ function Login() {
         },
       })
       .then((response) => {
-        navigate("/desktop");
+        navigate("/dashboard");
         toast.success("Login Successful");
         localStorage.setItem("user-token", response.data.token);
       })
