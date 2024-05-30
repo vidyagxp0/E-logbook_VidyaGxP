@@ -4,7 +4,7 @@ const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
 const UserRole = require("../models/userRoles");
-const { Op } = require('sequelize');
+const { Op, ValidationError } = require('sequelize');
 
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {

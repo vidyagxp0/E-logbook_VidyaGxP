@@ -74,9 +74,9 @@ router.put(
 );
 
 // get users based on roles, sites and processes
-router.get('/get-user-roleGroups', Auth.checkUserJwtToken, Process.GetUserOnBasisOfRoleGroup);
+router.post('/get-user-roleGroups', Auth.checkUserJwtToken, Process.GetUserOnBasisOfRoleGroup);
 
 
-router.get("/get-processes", Auth.checkAdminJwtToken, Process.getAllProcesses);
+router.get("/get-processes", Process.getAllProcesses);
 
 module.exports = router;
