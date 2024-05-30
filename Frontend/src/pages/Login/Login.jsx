@@ -28,7 +28,7 @@ function Login() {
       password: password,
     };
     axios
-      .post("http://192.168.1.29:1000/user/user-login", data, {
+      .post("http://localhost:1000/user/user-login", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -37,7 +37,8 @@ function Login() {
         navigate("/dashboard");
         toast.success("Login Successful");
         localStorage.setItem("user-token", response.data.token);
-        const decodedData = jwtDecode(localStorage.getItem("user-token"));
+        const decodedData = jwtDecode(response.data?.token);
+        localStorage.setItem('user-details', JSON.stringify(decodedData));
         dispatch({ type: "LOGGED-IN-USER", payload: decodedData });
       })
       .catch((error) => {

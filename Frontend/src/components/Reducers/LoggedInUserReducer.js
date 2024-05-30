@@ -1,5 +1,5 @@
 const initialState = {
-    loggedInUser: {},
+    loggedInUser: JSON.parse(localStorage.getItem('user-details')) || {},
     };
     
     const LoggedInUserReducer = (state = initialState, action) => {

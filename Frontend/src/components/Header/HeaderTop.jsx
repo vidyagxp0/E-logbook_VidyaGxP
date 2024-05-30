@@ -13,7 +13,7 @@ function HeaderTop() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://192.168.1.29:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 

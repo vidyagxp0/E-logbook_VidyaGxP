@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../General.css";
 import "./CreateRecordModal.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
 function CreateRecordModal(_props) {
-  const [division, setDivision] = useState("KSA");
+  const [division, setDivision] = useState(null);
   const [processes, setProcesses] = useState([]);
   const [sites, setSites] = useState([]);
   const [project, setProject] = useState("");
   const [processVisible, setProcessVisible] = useState(false);
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await axios.get("http://192.168.1.29:1000/site/get-sites");
+        const response = await axios.get(
+          "http://localhost:1000/site/get-sites"
+        );
         setSites(response.data.message);
       } catch (error) {
         console.error("Error fetching sites:", error);
@@ -29,7 +32,9 @@ function CreateRecordModal(_props) {
   useEffect(() => {
     const fetchProcesses = async () => {
       try {
-        const response = await axios.get("http://192.168.1.29:1000/process/get-processes");
+        const response = await axios.get(
+          "http://localhost:1000/process/get-processes"
+        );
         setProcesses(response.data.message);
       } catch (error) {
         console.error("Error fetching processes:", error);
@@ -41,12 +46,36 @@ function CreateRecordModal(_props) {
     }
   }, [processVisible]);
 
-  const filteredSites = sites.filter((item) =>
+  const filteredSites = sites.filter(() =>
     loggedInUser.roles.some((role) => role.site_id === 1 || role.site_id === 5)
   );
 
   const handleSelectProcess = (element) => {
     setProject(element.process);
+    switch (element.process_id) {
+      case 1:
+        navigate("/differential-pressure-record", {
+          state: division,
+        });
+        break;
+      case 2:
+        navigate("/area-and-equipment-usage-log", {
+          state: { site_id: division },
+        });
+        break;
+      case 3:
+        navigate("/equipment-cleaning-checklist", {
+          state: { site_id: division },
+        });
+        break;
+      case 4:
+        navigate("/temperature-records", {
+          state: { site_id: division },
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -67,7 +96,7 @@ function CreateRecordModal(_props) {
                       className={division === item.site ? "active" : ""}
                       key={item.id}
                       onClick={() => {
-                        setDivision(item.site);
+                        setDivision(item);
                         setProcessVisible(true);
                       }}
                     >
@@ -80,24 +109,13 @@ function CreateRecordModal(_props) {
                 <div className="head">Process</div>
                 <div className="select-list division-list">
                   {processes.map((item, index) => (
-                    <Link
+                    <div
                       className={project === item.process ? "active" : ""}
                       key={index}
-                      to={
-                        item.process_id === 1
-                          ? "/differential-pressure-record"
-                          : item.process_id === 2
-                          ? "/area-and-equiment-usage-log"
-                          : item.process_id === 3
-                          ? "/equipment-cleaning-checklist"
-                          : item.process_id === 4
-                          ? "/temperature-records"
-                          : ""
-                      }
                       onClick={() => handleSelectProcess(item)}
                     >
                       {item.process}
-                    </Link>
+                    </div>
                   ))}
                 </div>
               </div>
