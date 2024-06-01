@@ -206,7 +206,7 @@ export default function DiffrentialPressure() {
             </div>
             <div>
               <strong> Initiated By:&nbsp;</strong>
-              Amit Guru
+              {User?.name}
             </div>
           </div>
 
