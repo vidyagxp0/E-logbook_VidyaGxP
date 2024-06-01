@@ -107,7 +107,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    FormRecordsArray,
+    DifferentialPressureRecords,
   } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -146,7 +146,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     );
 
     // Update the Form Records if provided
-    if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
+    if (Array.isArray(DifferentialPressureRecords) && DifferentialPressureRecords.length > 0) {
       // First, delete existing records for the form
       await DifferentialPressureRecord.destroy({
         where: { form_id: form_id },
@@ -154,7 +154,7 @@ exports.EditDifferentialPressure = async (req, res) => {
       });
 
       // Then, create new records
-      const formRecords = FormRecordsArray.map((record) => ({
+      const formRecords = DifferentialPressureRecords.map((record) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
         time: record?.time,
