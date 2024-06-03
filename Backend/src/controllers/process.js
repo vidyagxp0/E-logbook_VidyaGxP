@@ -4,7 +4,8 @@ const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
 const UserRole = require("../models/userRoles");
-const { Op, ValidationError } = require('sequelize');
+const { Op, ValidationError } = require("sequelize");
+const bcrypt = require("bcrypt");
 
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {
@@ -146,7 +147,10 @@ exports.EditDifferentialPressure = async (req, res) => {
     );
 
     // Update the Form Records if provided
-    if (Array.isArray(DifferentialPressureRecords) && DifferentialPressureRecords.length > 0) {
+    if (
+      Array.isArray(DifferentialPressureRecords) &&
+      DifferentialPressureRecords.length > 0
+    ) {
       // First, delete existing records for the form
       await DifferentialPressureRecord.destroy({
         where: { form_id: form_id },
@@ -249,7 +253,7 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
 
 //send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id } = req.body;
+  const { form_id, email, password } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -257,13 +261,41 @@ exports.SendDPElogForReview = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
 
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
     const form = await DifferentialPressureForm.findOne({
-      where: { form_id: form_id },
+      where: { form_id },
       transaction,
     });
 
@@ -309,7 +341,7 @@ exports.SendDPElogForReview = async (req, res) => {
 
 // change status of differential pressure elog from review to open
 exports.SendDPElogfromReviewToOpen = async (req, res) => {
-  const { form_id } = req.body;
+  const { form_id, email, password } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -317,13 +349,41 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
 
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, email },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
     const form = await DifferentialPressureForm.findOne({
-      where: { form_id: form_id },
+      where: { form_id },
       transaction,
     });
 
@@ -369,7 +429,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 
 // send differential pressure elog from review to approval
 exports.SendDPfromReviewToApproval = async (req, res) => {
-  const { form_id, reviewComment } = req.body;
+  const { form_id, reviewComment, email, password } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -382,13 +442,41 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a review comment." });
   }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
 
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, email },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
     const form = await DifferentialPressureForm.findOne({
-      where: { form_id: form_id },
+      where: { form_id },
       transaction,
     });
 
@@ -410,7 +498,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       {
         status: "under approval",
         stage: 3,
-        review_comments: reviewComment,
+        reviewComment: reviewComment,
       },
       { transaction }
     );
@@ -435,7 +523,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 
 // send differential pressure elog from under approval to open
 exports.SendDPfromApprovalToOpen = async (req, res) => {
-  const { form_id } = req.body;
+  const { form_id, email, password } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -443,13 +531,41 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
 
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, email },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
     const form = await DifferentialPressureForm.findOne({
-      where: { form_id: form_id },
+      where: { form_id },
       transaction,
     });
 
@@ -495,7 +611,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
 // APPROVE differential pressure elog
 exports.ApproveDPElog = async (req, res) => {
-  const { form_id } = req.body;
+  const { form_id, approverComment, email, password } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -503,13 +619,46 @@ exports.ApproveDPElog = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
+  if (!approverComment) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an approver comment." });
+  }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
 
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, email },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
     const form = await DifferentialPressureForm.findOne({
-      where: { form_id: form_id },
+      where: { form_id },
       transaction,
     });
 
@@ -531,6 +680,7 @@ exports.ApproveDPElog = async (req, res) => {
       {
         status: "approved",
         stage: 4,
+        approverComment: approverComment,
       },
       { transaction }
     );
@@ -564,7 +714,7 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
         [Op.or]: [
           { role_id: role_id, process_id: process_id, site_id: site_id },
           { role_id: 5, process_id: process_id, site_id: site_id },
-        ]
+        ],
       },
       include: {
         model: User,
