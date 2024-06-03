@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
+import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 
 export default function DPRpanel() {
   // const editedData = useSelector((state) => state.dprPanelData.selectedRow);
@@ -17,43 +18,149 @@ export default function DPRpanel() {
     status: "",
     description: "",
     department: "",
-    reviewComment: "",
     compression_area: "",
     limit: "",
   });
   const navigate = useNavigate();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupAction, setPopupAction] = useState(null);
+
+  const handlePopupClose = () => {
+    setIsPopupOpen(false);
+    setPopupAction(null);
+  };
+
+  const handlePopupSubmit = (credentials) => {
+    const data = {
+      site_id: location.state?.site_id,
+      form_id: location.state?.form_id,
+      email: credentials?.email,
+      password: credentials?.password,
+      reviewComment: editData.reviewComment,
+      approverComment: editData.approverComment,
+    };
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (popupAction === "sendFromOpenToReview") {
+      axios
+        .put(
+          "http://localhost:1000/process/send-DP-elog-for-review",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully sent for review");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message || "Couldn't send elog for review!!"
+          );
+        });
+    } else if (popupAction === "sendFromReviewToApproval") {
+      axios
+        .put(
+          "http://localhost:1000/process/send-DP-from-review-to-approval",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully sent for approval");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message ||
+              "Couldn't send elog for approval!!"
+          );
+        });
+    } else if (popupAction === "sendFromReviewToOpen") {
+      axios
+        .put(
+          "http://localhost:1000/process/send-DP-elog-from-review-to-open",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully opened");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
+    } else if (popupAction === "sendFromApprovalToApproved") {
+      axios
+        .put("http://localhost:1000/process/approve-DP-elog", data, config)
+        .then(() => {
+          toast.success("Elog successfully approved");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message || "Couldn't approve elog!!"
+          );
+        });
+    } else if (popupAction === "sendFromApprovalToOpen") {
+      axios
+        .put(
+          "http://localhost:1000/process/send-DP-elog-for-review",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully opened");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
+    }
+
+    setIsPopupOpen(false);
+    setPopupAction(null);
+  };
 
   useEffect(() => {
     setEditData(location.state);
   }, [location.state]);
 
   const addRow = () => {
-    const currentTime = new Date().toLocaleTimeString();
-    const newRow = {
-      unique_id: generateUniqueId(),
-      time: currentTime,
-      differential_pressure: "",
-      remarks: "",
-      checked_by: location?.state?.initiator_name,
-      supporting_docs: null,
-    };
-    setEditData((prevState) => ({
-      ...prevState,
+    if (location.state?.stage === 1) {
+      const currentTime = new Date().toLocaleTimeString();
+      const newRow = {
+        unique_id: generateUniqueId(),
+        time: currentTime,
+        differential_pressure: "",
+        remarks: "",
+        checked_by: location?.state?.initiator_name,
+        supporting_docs: null,
+      };
+      setEditData((prevState) => ({
+        ...prevState,
 
-      DifferentialPressureRecords: [
-        ...prevState.DifferentialPressureRecords,
-        newRow,
-      ],
-    }));
+        DifferentialPressureRecords: [
+          ...prevState.DifferentialPressureRecords,
+          newRow,
+        ],
+      }));
+    }
   };
 
   const deleteRow = (index) => {
-    const updatedGridData = [...editData.DifferentialPressureRecords];
-    updatedGridData.splice(index, 1);
-    setEditData((prevState) => ({
-      ...prevState,
-      DifferentialPressureRecords: updatedGridData,
-    }));
+    if (location.state?.stage === 1) {
+      const updatedGridData = [...editData.DifferentialPressureRecords];
+      updatedGridData.splice(index, 1);
+      setEditData((prevState) => ({
+        ...prevState,
+        DifferentialPressureRecords: updatedGridData,
+      }));
+    }
   };
 
   const handleInputChange1 = (e) => {
@@ -61,20 +168,22 @@ export default function DPRpanel() {
     setEditData({ ...editData, [name]: value });
   };
 
-  const handleDeleteFile = (index) => {
-    const updatedGridData = editData.DifferentialPressureRecords.map(
-      (item, i) => {
-        if (i === index) {
-          return { ...item, file: null };
-        }
-        return item;
-      }
-    );
-    setEditData((prevState) => ({
-      ...prevState,
-      DifferentialPressureRecords: updatedGridData,
-    }));
-  };
+  // const handleDeleteFile = (index) => {
+  //   if (location.state?.stage === 1) {
+  //     const updatedGridData = editData.DifferentialPressureRecords.map(
+  //       (item, i) => {
+  //         if (i === index) {
+  //           return { ...item, file: null };
+  //         }
+  //         return item;
+  //       }
+  //     );
+  //     setEditData((prevState) => ({
+  //       ...prevState,
+  //       DifferentialPressureRecords: updatedGridData,
+  //     }));
+  //   }
+  // };
 
   // const handleFileChange = (index, file) => {
   //   const updatedGridData = [...editData.gridData];
@@ -136,7 +245,8 @@ export default function DPRpanel() {
                 : "EU"}
             </div>
             <div>
-              <strong> Current Status:&nbsp;</strong>Under Initiation
+              <strong> Current Status:&nbsp;</strong>
+              {location.state?.status}
             </div>
             <div>
               <strong> Initiated By:&nbsp;</strong>
@@ -238,6 +348,7 @@ export default function DPRpanel() {
                         type="text"
                         value={editData.description}
                         onChange={handleInputChange1}
+                        readOnly={location.state?.stage !== 1}
                       />
                     </div>
                   </div>
@@ -267,6 +378,7 @@ export default function DPRpanel() {
                       name="department"
                       value={editData?.department}
                       onChange={handleInputChange1}
+                      disabled={location.state?.stage !== 1}
                     >
                       <option value="">-- Select --</option>
                       <option value="Corporate Quality Assurance">
@@ -307,6 +419,7 @@ export default function DPRpanel() {
                       name="compression_area"
                       value={editData?.compression_area}
                       onChange={handleInputChange1}
+                      disabled={location.state?.stage !== 1}
                     >
                       <option value="Select a value">Select a value</option>
                       <option value="Area 1">Area 1</option>
@@ -333,6 +446,7 @@ export default function DPRpanel() {
                       }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
+                      readOnly={location.state?.stage !== 1}
                     />
                   </div>
 
@@ -386,6 +500,7 @@ export default function DPRpanel() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
+                                readOnly={location.state?.stage !== 1}
                               />
                             </td>
                             <td>
@@ -401,6 +516,7 @@ export default function DPRpanel() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
+                                readOnly={location.state?.stage !== 1}
                               />
                             </td>
                             <td>
@@ -416,6 +532,7 @@ export default function DPRpanel() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
+                                readOnly
                               />
                             </td>
                             {/* <td style={{ width: "250px" }}>
@@ -446,6 +563,7 @@ export default function DPRpanel() {
                                   // }
                                   style={{ display: "none" }}
                                   id={`file-input-${index}`}
+                                  readOnly={location.state?.stage !== 1}
                                 />
                                 <label
                                   htmlFor={`file-input-${index}`}
@@ -456,7 +574,7 @@ export default function DPRpanel() {
                                 {item.file && (
                                   <DeleteIcon
                                     style={{ color: "red" }}
-                                    onClick={() => handleDeleteFile(index)}
+                                    // onClick={() => handleDeleteFile(index)}
                                   />
                                 )}
                               </div>
@@ -492,18 +610,83 @@ export default function DPRpanel() {
                       readOnly={location.state?.stage !== 2}
                     />
                   </div>
+                  <div className="group-input">
+                    <label htmlFor="approverComment">Approver Comments</label>
+                    <input
+                      id="approverComment"
+                      name="approverComment"
+                      value={editData.approverComment || ""}
+                      onChange={handleInputChange1}
+                      readOnly={location.state?.stage !== 3}
+                    />
+                  </div>
                 </>
               ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              <button
-                className="themeBtn"
-                onClick={() => {
-                  handleSave();
-                }}
-              >
-                Save
-              </button>
+              {location.state?.stage === 1 ? (
+                <button
+                  className="themeBtn"
+                  onClick={() => {
+                    setIsPopupOpen(true);
+                    setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
+                  }}
+                >
+                  Send for Review
+                </button>
+              ) : location.state?.stage === 2 ? (
+                <>
+                  <button
+                    className="themeBtn"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
+                    }}
+                  >
+                    Send for Approval
+                  </button>
+                  <button
+                    className="themeBtn"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
+                    }}
+                  >
+                    Open Elog
+                  </button>
+                </>
+              ) : location.state?.stage === 3 ? (
+                <>
+                  <button
+                    className="themeBtn"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
+                    }}
+                  >
+                    Approve elog
+                  </button>
+                  <button
+                    className="themeBtn"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
+                    }}
+                  >
+                    Open Elog
+                  </button>
+                </>
+              ) : null}
+              {location.state?.stage === 1 ? (
+                <button
+                  className="themeBtn"
+                  onClick={() => {
+                    handleSave();
+                  }}
+                >
+                  Save
+                </button>
+              ) : null}
               {isSelectedGeneral === true ? (
                 <button
                   className="themeBtn"
@@ -530,6 +713,12 @@ export default function DPRpanel() {
                 Exit
               </button>
             </div>
+            {isPopupOpen && (
+              <UserVerificationPopUp
+                onClose={handlePopupClose}
+                onSubmit={handlePopupSubmit}
+              />
+            )}
           </div>
         </div>
       </div>

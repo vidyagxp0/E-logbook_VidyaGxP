@@ -514,7 +514,7 @@ export default function TemperatureRecords() {
             <button
               className="themeBtn"
               onClick={() => {
-                handleSave(temperatureRecords), handleTableDataSave;
+                handleSave(temperatureRecords);
               }}
             >
               Save
