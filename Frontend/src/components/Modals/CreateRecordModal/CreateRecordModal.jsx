@@ -59,7 +59,7 @@ function CreateRecordModal(_props) {
         });
         break;
       case 2:
-        navigate("/area-and-equipment-usage-log", {
+        navigate("/area-and-equipment-panel", {
           state: { site_id: division },
         });
         break;

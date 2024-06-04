@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import { hasAccess } from "../../../components/userAuth/userAuth";
 
 export default function DPRpanel() {
   // const editedData = useSelector((state) => state.dprPanelData.selectedRow);
@@ -109,7 +110,7 @@ export default function DPRpanel() {
     } else if (popupAction === "sendFromApprovalToOpen") {
       axios
         .put(
-          "http://localhost:1000/process/send-DP-elog-for-review",
+          "http://localhost:1000/process/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -131,7 +132,10 @@ export default function DPRpanel() {
   }, [location.state]);
 
   const addRow = () => {
-    if (location.state?.stage === 1) {
+    if (
+      location.state?.stage === 1 &&
+      hasAccess(1, location.state?.site_id, location.state?.process_id)
+    ) {
       const currentTime = new Date().toLocaleTimeString();
       const newRow = {
         unique_id: generateUniqueId(),
@@ -153,7 +157,10 @@ export default function DPRpanel() {
   };
 
   const deleteRow = (index) => {
-    if (location.state?.stage === 1) {
+    if (
+      location.state?.stage === 1 &&
+      hasAccess(1, location.state?.site_id, location.state?.process_id)
+    ) {
       const updatedGridData = [...editData.DifferentialPressureRecords];
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
@@ -348,7 +355,14 @@ export default function DPRpanel() {
                         type="text"
                         value={editData.description}
                         onChange={handleInputChange1}
-                        readOnly={location.state?.stage !== 1}
+                        readOnly={
+                          location.state?.stage !== 1 ||
+                          !hasAccess(
+                            1,
+                            location.state?.site_id,
+                            location.state?.process_id
+                          )
+                        }
                       />
                     </div>
                   </div>
@@ -378,7 +392,14 @@ export default function DPRpanel() {
                       name="department"
                       value={editData?.department}
                       onChange={handleInputChange1}
-                      disabled={location.state?.stage !== 1}
+                      disabled={
+                        location.state?.stage !== 1 ||
+                        !hasAccess(
+                          1,
+                          location.state?.site_id,
+                          location.state?.process_id
+                        )
+                      }
                     >
                       <option value="">-- Select --</option>
                       <option value="Corporate Quality Assurance">
@@ -419,7 +440,14 @@ export default function DPRpanel() {
                       name="compression_area"
                       value={editData?.compression_area}
                       onChange={handleInputChange1}
-                      disabled={location.state?.stage !== 1}
+                      disabled={
+                        location.state?.stage !== 1 ||
+                        !hasAccess(
+                          1,
+                          location.state?.site_id,
+                          location.state?.process_id
+                        )
+                      }
                     >
                       <option value="Select a value">Select a value</option>
                       <option value="Area 1">Area 1</option>
@@ -446,7 +474,14 @@ export default function DPRpanel() {
                       }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
-                      readOnly={location.state?.stage !== 1}
+                      readOnly={
+                        location.state?.stage !== 1 ||
+                        !hasAccess(
+                          1,
+                          location.state?.site_id,
+                          location.state?.process_id
+                        )
+                      }
                     />
                   </div>
 
@@ -500,7 +535,14 @@ export default function DPRpanel() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
-                                readOnly={location.state?.stage !== 1}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  !hasAccess(
+                                    1,
+                                    location.state?.site_id,
+                                    location.state?.process_id
+                                  )
+                                }
                               />
                             </td>
                             <td>
@@ -516,7 +558,14 @@ export default function DPRpanel() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
-                                readOnly={location.state?.stage !== 1}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  !hasAccess(
+                                    1,
+                                    location.state?.site_id,
+                                    location.state?.process_id
+                                  )
+                                }
                               />
                             </td>
                             <td>
@@ -563,7 +612,14 @@ export default function DPRpanel() {
                                   // }
                                   style={{ display: "none" }}
                                   id={`file-input-${index}`}
-                                  readOnly={location.state?.stage !== 1}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    !hasAccess(
+                                      1,
+                                      location.state?.site_id,
+                                      location.state?.process_id
+                                    )
+                                  }
                                 />
                                 <label
                                   htmlFor={`file-input-${index}`}
@@ -607,7 +663,14 @@ export default function DPRpanel() {
                       name="reviewComment"
                       value={editData.reviewComment || ""}
                       onChange={handleInputChange1}
-                      readOnly={location.state?.stage !== 2}
+                      readOnly={
+                        location.state?.stage !== 2 ||
+                        !hasAccess(
+                          2,
+                          location.state?.site_id,
+                          location.state?.process_id
+                        )
+                      }
                     />
                   </div>
                   <div className="group-input">
@@ -617,76 +680,107 @@ export default function DPRpanel() {
                       name="approverComment"
                       value={editData.approverComment || ""}
                       onChange={handleInputChange1}
-                      readOnly={location.state?.stage !== 3}
+                      readOnly={
+                        location.state?.stage !== 3 ||
+                        !hasAccess(
+                          3,
+                          location.state?.site_id,
+                          location.state?.process_id
+                        )
+                      }
                     />
                   </div>
                 </>
               ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              {location.state?.stage === 1 ? (
-                <button
-                  className="themeBtn"
-                  onClick={() => {
-                    setIsPopupOpen(true);
-                    setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
-                  }}
-                >
-                  Send for Review
-                </button>
-              ) : location.state?.stage === 2 ? (
-                <>
-                  <button
-                    className="themeBtn"
-                    onClick={() => {
-                      setIsPopupOpen(true);
-                      setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
-                    }}
-                  >
-                    Send for Approval
-                  </button>
-                  <button
-                    className="themeBtn"
-                    onClick={() => {
-                      setIsPopupOpen(true);
-                      setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
-                    }}
-                  >
-                    Open Elog
-                  </button>
-                </>
-              ) : location.state?.stage === 3 ? (
-                <>
-                  <button
-                    className="themeBtn"
-                    onClick={() => {
-                      setIsPopupOpen(true);
-                      setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
-                    }}
-                  >
-                    Approve elog
-                  </button>
-                  <button
-                    className="themeBtn"
-                    onClick={() => {
-                      setIsPopupOpen(true);
-                      setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
-                    }}
-                  >
-                    Open Elog
-                  </button>
-                </>
-              ) : null}
-              {location.state?.stage === 1 ? (
-                <button
-                  className="themeBtn"
-                  onClick={() => {
-                    handleSave();
-                  }}
-                >
-                  Save
-                </button>
-              ) : null}
+              {location.state?.stage === 1
+                ? hasAccess(
+                    1,
+                    location.state?.site_id,
+                    location.state?.process_id
+                  ) && (
+                    <button
+                      className="themeBtn"
+                      onClick={() => {
+                        setIsPopupOpen(true);
+                        setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
+                      }}
+                    >
+                      Send for Review
+                    </button>
+                  )
+                : location.state?.stage === 2
+                ? hasAccess(
+                    2,
+                    location.state?.site_id,
+                    location.state?.process_id
+                  ) && (
+                    <>
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
+                        }}
+                      >
+                        Send for Approval
+                      </button>
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
+                        }}
+                      >
+                        Open Elog
+                      </button>
+                    </>
+                  )
+                : location.state?.stage === 3
+                ? hasAccess(
+                    3,
+                    location.state?.site_id,
+                    location.state?.process_id
+                  ) && (
+                    <>
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
+                        }}
+                      >
+                        Approve elog
+                      </button>
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
+                        }}
+                      >
+                        Open Elog
+                      </button>
+                    </>
+                  )
+                : null}
+              {location.state?.stage === 1
+                ? hasAccess(
+                    1,
+                    location.state?.site_id,
+                    location.state?.process_id
+                  ) && (
+                    <button
+                      className="themeBtn"
+                      onClick={() => {
+                        handleSave();
+                      }}
+                    >
+                      Save
+                    </button>
+                  )
+                : null}
               {isSelectedGeneral === true ? (
                 <button
                   className="themeBtn"

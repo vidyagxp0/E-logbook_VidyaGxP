@@ -14,7 +14,7 @@ const UserVerificationPopUp = ({ onClose, onSubmit }) => {
   return (
     <div className="popup-overlay">
       <div className="popup">
-        <h2>Enter Credentials</h2>
+        <h2>E-signature</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
