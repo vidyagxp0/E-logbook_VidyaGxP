@@ -418,7 +418,14 @@ export default function DiffrentialPressure() {
                           }}
                         >
                           <option value="">Select a reviewer</option>
-                          {reviewers.map((reviewer, index) => (
+                          {[
+                            ...new Map(
+                              reviewers.map((reviewer) => [
+                                reviewer.user_id,
+                                reviewer,
+                              ])
+                            ).values(),
+                          ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
                               {reviewer.User.name}
                             </option>
@@ -438,7 +445,14 @@ export default function DiffrentialPressure() {
                           }}
                         >
                           <option value="">Select an approver</option>
-                          {approvers.map((approver, index) => (
+                          {[
+                            ...new Map(
+                              approvers.map((approver) => [
+                                approver.user_id,
+                                approver,
+                              ])
+                            ).values(),
+                          ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>
                               {approver.User.name}
                             </option>

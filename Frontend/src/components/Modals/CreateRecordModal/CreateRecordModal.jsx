@@ -13,6 +13,7 @@ function CreateRecordModal(_props) {
   const [processVisible, setProcessVisible] = useState(false);
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
+  const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
     const fetchSites = async () => {
@@ -20,7 +21,16 @@ function CreateRecordModal(_props) {
         const response = await axios.get(
           "http://localhost:1000/site/get-sites"
         );
-        setSites(response.data.message);
+        const userSiteIds = userDetails.roles
+          .filter((role) => role.role_id === 1 || role.role_id === 5)
+          .map((role) => role.site_id);
+
+        // Filter sites based on user's roles
+        const filteredSites = response.data.message.filter((site) =>
+          userSiteIds.includes(site.site_id)
+        );
+
+        setSites(filteredSites);
       } catch (error) {
         console.error("Error fetching sites:", error);
       }
@@ -35,7 +45,16 @@ function CreateRecordModal(_props) {
         const response = await axios.get(
           "http://localhost:1000/process/get-processes"
         );
-        setProcesses(response.data.message);
+
+        const userSiteIds = userDetails.roles
+          .filter((role) => role.role_id === 1 || role.role_id === 5)
+          .map((role) => role.site_id);
+
+        // Filter processes based on user's roles
+        const filteredProcesses = response.data.message.filter((process) =>
+          userSiteIds.includes(process.process_id)
+        );
+        setProcesses(filteredProcesses);
       } catch (error) {
         console.error("Error fetching processes:", error);
       }

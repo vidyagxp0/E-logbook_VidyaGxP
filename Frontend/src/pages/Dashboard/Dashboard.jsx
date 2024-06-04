@@ -5,6 +5,7 @@ import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { hasAccess } from "../../components/userAuth/userAuth";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function Dashboard() {
     []
   );
   const dispatch = useDispatch();
+  const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   const equipmentCRecordHistory = useSelector(
     (state) => state.equipment.EquipmentCleaningData
@@ -36,7 +38,17 @@ function Dashboard() {
 
     axios(newConfig)
       .then((response) => {
-        setDifferentialPressureElogs(response.data.message);
+        
+        const allDifferentialPressureElogs = response.data.message;
+        let filteredArray = allDifferentialPressureElogs.filter((elog) => {
+          const userId = userDetails.userId;
+        
+          return (
+            (userId === elog.reviewer_id || userId === elog.initiator_id || userId === elog.approver_id) ||
+            hasAccess(4, elog.site_id, 1)
+          );
+        });
+        setDifferentialPressureElogs(filteredArray);
       })
       .catch((error) => {
         console.error("Error: ", error);

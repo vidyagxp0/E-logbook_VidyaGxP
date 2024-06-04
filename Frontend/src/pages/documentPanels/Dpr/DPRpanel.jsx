@@ -7,13 +7,13 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
-import { hasAccess } from "../../../components/userAuth/userAuth";
 
 export default function DPRpanel() {
   // const editedData = useSelector((state) => state.dprPanelData.selectedRow);
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const location = useLocation();
+  const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -134,7 +134,7 @@ export default function DPRpanel() {
   const addRow = () => {
     if (
       location.state?.stage === 1 &&
-      hasAccess(1, location.state?.site_id, location.state?.process_id)
+      location.state?.initiator_id === userDetails.userId
     ) {
       const currentTime = new Date().toLocaleTimeString();
       const newRow = {
@@ -159,7 +159,7 @@ export default function DPRpanel() {
   const deleteRow = (index) => {
     if (
       location.state?.stage === 1 &&
-      hasAccess(1, location.state?.site_id, location.state?.process_id)
+      location.state?.initiator_id === userDetails.userId
     ) {
       const updatedGridData = [...editData.DifferentialPressureRecords];
       updatedGridData.splice(index, 1);
@@ -357,11 +357,7 @@ export default function DPRpanel() {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          !hasAccess(
-                            1,
-                            location.state?.site_id,
-                            location.state?.process_id
-                          )
+                          location.state?.initiator_id !== userDetails.userId
                         }
                       />
                     </div>
@@ -394,11 +390,7 @@ export default function DPRpanel() {
                       onChange={handleInputChange1}
                       disabled={
                         location.state?.stage !== 1 ||
-                        !hasAccess(
-                          1,
-                          location.state?.site_id,
-                          location.state?.process_id
-                        )
+                        location.state?.initiator_id !== userDetails.userId
                       }
                     >
                       <option value="">-- Select --</option>
@@ -442,11 +434,7 @@ export default function DPRpanel() {
                       onChange={handleInputChange1}
                       disabled={
                         location.state?.stage !== 1 ||
-                        !hasAccess(
-                          1,
-                          location.state?.site_id,
-                          location.state?.process_id
-                        )
+                        location.state?.initiator_id !== userDetails.userId
                       }
                     >
                       <option value="Select a value">Select a value</option>
@@ -476,11 +464,7 @@ export default function DPRpanel() {
                       onChange={handleInputChange1}
                       readOnly={
                         location.state?.stage !== 1 ||
-                        !hasAccess(
-                          1,
-                          location.state?.site_id,
-                          location.state?.process_id
-                        )
+                        location.state?.initiator_id !== userDetails.userId
                       }
                     />
                   </div>
@@ -537,11 +521,7 @@ export default function DPRpanel() {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  !hasAccess(
-                                    1,
-                                    location.state?.site_id,
-                                    location.state?.process_id
-                                  )
+                                  location.state?.initiator_id !== userDetails.userId
                                 }
                               />
                             </td>
@@ -560,11 +540,7 @@ export default function DPRpanel() {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  !hasAccess(
-                                    1,
-                                    location.state?.site_id,
-                                    location.state?.process_id
-                                  )
+                                  location.state?.initiator_id !== userDetails.userId
                                 }
                               />
                             </td>
@@ -614,11 +590,7 @@ export default function DPRpanel() {
                                   id={`file-input-${index}`}
                                   readOnly={
                                     location.state?.stage !== 1 ||
-                                    !hasAccess(
-                                      1,
-                                      location.state?.site_id,
-                                      location.state?.process_id
-                                    )
+                                    location.state?.initiator_id !== userDetails.userId
                                   }
                                 />
                                 <label
@@ -665,11 +637,7 @@ export default function DPRpanel() {
                       onChange={handleInputChange1}
                       readOnly={
                         location.state?.stage !== 2 ||
-                        !hasAccess(
-                          2,
-                          location.state?.site_id,
-                          location.state?.process_id
-                        )
+                        location.state?.reviewer_id !== userDetails.userId
                       }
                     />
                   </div>
@@ -682,11 +650,7 @@ export default function DPRpanel() {
                       onChange={handleInputChange1}
                       readOnly={
                         location.state?.stage !== 3 ||
-                        !hasAccess(
-                          3,
-                          location.state?.site_id,
-                          location.state?.process_id
-                        )
+                        location.state?.approver_id !== userDetails.userId
                       }
                     />
                   </div>
@@ -695,11 +659,7 @@ export default function DPRpanel() {
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {location.state?.stage === 1
-                ? hasAccess(
-                    1,
-                    location.state?.site_id,
-                    location.state?.process_id
-                  ) && (
+                ? location.state?.initiator_id === userDetails.userId && (
                     <button
                       className="themeBtn"
                       onClick={() => {
@@ -711,11 +671,7 @@ export default function DPRpanel() {
                     </button>
                   )
                 : location.state?.stage === 2
-                ? hasAccess(
-                    2,
-                    location.state?.site_id,
-                    location.state?.process_id
-                  ) && (
+                ? location.state?.reviewer_id === userDetails.userId && (
                     <>
                       <button
                         className="themeBtn"
@@ -738,11 +694,7 @@ export default function DPRpanel() {
                     </>
                   )
                 : location.state?.stage === 3
-                ? hasAccess(
-                    3,
-                    location.state?.site_id,
-                    location.state?.process_id
-                  ) && (
+                ? location.state?.approver_id === userDetails.userId && (
                     <>
                       <button
                         className="themeBtn"
@@ -766,11 +718,7 @@ export default function DPRpanel() {
                   )
                 : null}
               {location.state?.stage === 1
-                ? hasAccess(
-                    1,
-                    location.state?.site_id,
-                    location.state?.process_id
-                  ) && (
+                ? userDetails.userId === location.state?.initiator_id && (
                     <button
                       className="themeBtn"
                       onClick={() => {
