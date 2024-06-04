@@ -455,7 +455,7 @@
 
 .table th,
 td {
-  padding: 0px;
+  padding: 3px !important; 
 }
 
 .table thead,

@@ -106,6 +106,7 @@ function Dashboard() {
               <th>Initiator</th>
               <th>Date of initiation</th>
               <th>Short description</th>
+              <th>Status</th>
               <th>Process</th>
             </tr>
           </thead>
@@ -133,6 +134,7 @@ function Dashboard() {
                       <td>{item.initiator_name}</td>
                       <td>{item.date_of_initiation.split("T")[0]}</td>
                       <td>{item.description}</td>
+                      <td>{item.status}</td>
                       <td>Differential Pressure</td>
                     </tr>
                   );
@@ -150,6 +152,7 @@ function Dashboard() {
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
+                      <td>{item.status}</td>
                       <td>{item.process}</td>
                     </tr>
                   );
@@ -167,6 +170,7 @@ function Dashboard() {
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
+                      <td>{item.status}</td>
                       <td>{item.process}</td>
                     </tr>
                   );
@@ -184,6 +188,7 @@ function Dashboard() {
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
+                      <td>{item.status}</td>
                       <td>{item.process}</td>
                     </tr>
                   );
@@ -217,6 +222,7 @@ function Dashboard() {
                     <td>{item.initiator_name}</td>
                     <td>{item.date_of_initiation.split("T")[0]}</td>
                     <td>{item.description}</td>
+                    <td>{item.status}</td>
                     <td>
                       {item.DifferentialPressureRecords
                         ? "Differential Pressure"

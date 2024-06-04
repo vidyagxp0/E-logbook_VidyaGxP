@@ -9,8 +9,6 @@ function HeaderBottom() {
   const closeRecordModal = () => setRecordModal(false);
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
-
-  
   return (
     <>
       <div className="Header_Bottom">
@@ -53,22 +51,15 @@ function HeaderBottom() {
                             </div>
                         </Link> */}
           </div>
-          {loggedInUser.roles?.map((itm) => {
-            return (
-              <>
-                {itm.role_id ===  5 ||itm.role_id===1 ? (
-                  <div className="headerBottomRgt">
-                    <div
-                      className="themeBtn"
-                      onClick={() => setRecordModal(true)}
-                    >
-                      Initiate eLog
-                    </div>
-                  </div>
-                ) : null}
-              </>
-            );
-          })}
+          {loggedInUser.roles?.some(
+            (itm) => itm.role_id === 5 || itm.role_id === 1
+          ) ? (
+            <div className="headerBottomRgt">
+              <div className="themeBtn" onClick={() => setRecordModal(true)}>
+                Initiate eLog
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
