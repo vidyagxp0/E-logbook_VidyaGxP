@@ -23,7 +23,7 @@ function AdminSites() {
   return (
     <>
       <div className="admin-dashboard">
-        <div className="main-content"></div>
+        {/* <div className="main-content"></div> */}
         <div id="body-container" style={{ margin: "20px" }}>
           <h3 style={{ textAlign: "center" }}>
             <strong>Sites</strong>

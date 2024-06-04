@@ -4,7 +4,7 @@ const Site = require("../controllers/sites");
 const Auth = require("../middlewares/authentication")
 
 
-router.get('/get-sites', Auth.checkAdminJwtToken, Site.getAllSites);
+router.get('/get-sites', Site.getAllSites);
 
 
 module.exports = router;

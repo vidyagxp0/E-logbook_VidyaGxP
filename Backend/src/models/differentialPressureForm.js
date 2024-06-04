@@ -70,7 +70,10 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
       key: "user_id",
     },
   },
-  review_comments: {
+  reviewComment: {
+    type: DataTypes.STRING,
+  },
+  approverComment: {
     type: DataTypes.STRING,
   },
 });

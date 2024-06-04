@@ -36,3 +36,8 @@ export const temperatureRecord=(temperature)=>({
 type:"TEMPERATURE_RECORD_DATA",
 payload:temperature
 })
+
+export const loggedInUser=(user)=>({
+type:"LOGGED-IN-USER",
+payload:user
+})

@@ -2,18 +2,85 @@ import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
+import axios from "axios";
 
 export default function DiffrentialPressure() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
+  const [reviewers, setReviewers] = useState([]);
+  const [approvers, setApprovers] = useState([]);
+  const [User, setUser] = useState(null);
+  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    const config = {
+      method: "post",
+      url: "http://localhost:1000/process/get-user-roleGroups",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        site_id: location.state?.site_id,
+        role_id: 2,
+        process_id: 1,
+      },
+    };
+
+    axios(config)
+      .then((response) => {
+        setReviewers(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+    const newConfig = {
+      method: "post",
+      url: "http://localhost:1000/process/get-user-roleGroups",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        site_id: location.state?.site_id,
+        role_id: 3,
+        process_id: 1,
+      },
+    };
+
+    axios(newConfig)
+      .then((response) => {
+        setApprovers(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      headers: {}, // You can add any necessary headers here
+    };
+
+    axios(requestOptions)
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
@@ -30,11 +97,11 @@ export default function DiffrentialPressure() {
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
     const newRow = {
-      date: date,
+      unique_id: generateUniqueId(),
       time: currentTime,
-      limit: "",
-      remark: "",
-      checkedBy: "Amit Guru",
+      differential_pressure: "",
+      remarks: "",
+      checked_by: User?.name,
       file: null,
     };
     setAllTableData([...allTableData, newRow]);
@@ -46,58 +113,75 @@ export default function DiffrentialPressure() {
     setAllTableData(updatedData);
   };
 
-  const uniqueId =
-    "ABC/" +
-    Math.floor(Math.random() * 1000)
-      .toString()
-      .padStart(3, "0") +
-    "/" +
-    Math.floor(Math.random() * 10000)
-      .toString()
-      .padStart(2, "0");
-
-  const currentDate = new Date();
-  const currentMonth = currentDate.toLocaleString("default", { month: "long" });
+  // const currentDate = new Date();
+  // const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
   const handleSave = (data) => {
-    if (parseFloat(data.limit) < 0.6 || parseFloat(data.limit) > 2.6) {
-      toast.error("The limit value must be between 0.6 to 2.6.");
+    if (
+      data.site_id === null ||
+      data.approver_id === null ||
+      data.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
       return;
     }
-    toast.success("eLog Saved Successfully!");
-    createObject(data);
-    navigate("/dashboard");
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .post(
+        "http://localhost:1000/process/post-differential-pressure",
+        differentialPRecord,
+        config
+      )
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
   };
+
+  const generateUniqueId = () => {
+    return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
     }),
     {
-      process: "Diffrential pressure",
-      eLogId: uniqueId + 1,
-      initiator: "",
-      dateOfInitiation: date,
-      shortDescription: "",
+      site_id: location.state?.site_id,
+      reviewer_id: null,
+      approver_id: null,
       description: "",
-      status: "",
       department: "",
-      reviewComment: "",
-      compressionArea: "",
-      limit: "",
+      review_comments: "",
+      compression_area: "",
+      limit: null,
     }
   );
+
   useEffect(() => {
-    setDifferentialPRecord({ gridData: allTableData });
+    setDifferentialPRecord({ FormRecordsArray: allTableData });
   }, [allTableData]);
-  const createObject = (newObject) => {
-    dispatch({ type: "ADD_OBJECT", payload: newObject });
-  };
+
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
     updatedData[index].file = null; // This should remove the file
     setAllTableData(updatedData);
   };
+
   const handleFileChange = (index, file) => {
     const updatedData = [...allTableData];
     updatedData[index].file = file;
@@ -115,14 +199,14 @@ export default function DiffrentialPressure() {
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
-              India
+              {location.state?.site}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>Under Initiation
             </div>
             <div>
               <strong> Initiated By:&nbsp;</strong>
-              Amit Guru
+              {User?.name}
             </div>
           </div>
 
@@ -182,7 +266,7 @@ export default function DiffrentialPressure() {
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.initiator}
+                        value={User?.name}
                         onChange={(e) =>
                           setDifferentialPRecord({ initiator: e.target.value })
                         }
@@ -225,7 +309,7 @@ export default function DiffrentialPressure() {
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.status}
+                        value="Under Initiation"
                         onChange={(e) =>
                           setDifferentialPRecord({ status: e.target.value })
                         }
@@ -286,10 +370,10 @@ export default function DiffrentialPressure() {
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={differentialPRecord.compressionArea}
+                      value={differentialPRecord.compression_area}
                       onChange={(e) =>
                         setDifferentialPRecord({
-                          compressionArea: e.target.value,
+                          compression_area: e.target.value,
                         })
                       }
                     >
@@ -321,11 +405,60 @@ export default function DiffrentialPressure() {
                       }
                     />
                   </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Month:</label>
-                    <div>
-                      <input type="text" value={currentMonth} readOnly />
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer</label>
+                      <div>
+                        <select
+                          value={differentialPRecord.reviewer_id}
+                          onChange={(e) => {
+                            setDifferentialPRecord({
+                              reviewer_id: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="">Select a reviewer</option>
+                          {[
+                            ...new Map(
+                              reviewers.map((reviewer) => [
+                                reviewer.user_id,
+                                reviewer,
+                              ])
+                            ).values(),
+                          ].map((reviewer, index) => (
+                            <option key={index} value={reviewer.user_id}>
+                              {reviewer.User.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Approver</label>
+                      <div>
+                        <select
+                          value={differentialPRecord.approver_id}
+                          onChange={(e) => {
+                            setDifferentialPRecord({
+                              approver_id: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="">Select an approver</option>
+                          {[
+                            ...new Map(
+                              approvers.map((approver) => [
+                                approver.user_id,
+                                approver,
+                              ])
+                            ).values(),
+                          ].map((approver, index) => (
+                            <option key={index} value={approver.user_id}>
+                              {approver.User.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
 
@@ -340,7 +473,6 @@ export default function DiffrentialPressure() {
                       <tr>
                         <th>S no.</th>
                         <th>Unique Id</th>
-                        <th>Date</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
                         <th>Remark</th>
@@ -353,8 +485,8 @@ export default function DiffrentialPressure() {
                       {allTableData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>UID000{index + 1}</td>
-                          <td>
+                          <td>{generateUniqueId()}</td>
+                          {/* <td>
                             <input
                               value={item.date}
                               onChange={(e) => {
@@ -363,7 +495,7 @@ export default function DiffrentialPressure() {
                                 setAllTableData(newData);
                               }}
                             />
-                          </td>
+                          </td> */}
                           <td>
                             <input
                               value={item.time}
@@ -377,37 +509,38 @@ export default function DiffrentialPressure() {
                           <td>
                             <input
                               type="number"
-                              value={item.limit}
+                              value={item.differential_pressure}
                               className={`${
-                                item.limit < 0.6
+                                item.differential_pressure < 0.6
                                   ? "limit"
-                                  : item.limit > 2.6
+                                  : item.differential_pressure > 2.6
                                   ? "limit"
                                   : ""
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].limit = e.target.value;
+                                newData[index].differential_pressure =
+                                  e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
                           </td>
                           <td>
                             <input
-                              value={item.remark}
+                              value={item.remarks}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].remark = e.target.value;
+                                newData[index].remarks = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
                           </td>
                           <td>
                             <input
-                              value={item.checkedBy}
+                              value={item.checked_by}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].checkedBy = e.target.value;
+                                newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
@@ -430,8 +563,9 @@ export default function DiffrentialPressure() {
                           </td>
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" &&
-                              (item.limit < 0.6 || item.limit > 2.6) && (
+                            {item.differential_pressure !== "" &&
+                              (item.differential_pressure < 0.6 ||
+                                item.differential_pressure > 2.6) && (
                                 <button
                                   style={{
                                     cursor: "pointer",
@@ -445,12 +579,13 @@ export default function DiffrentialPressure() {
                                   Deviation
                                 </button>
                               )}
-                            {item.limit !== "" &&
-                              (item.limit < 0.6 || item.limit > 2.6) && (
+                            {item.differential_pressure !== "" &&
+                              (item.differential_pressure < 0.6 ||
+                                item.differential_pressure > 2.6) && (
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart")
+                                    navigate("/chart");
                                   }}
                                 >
                                   Action item
@@ -461,31 +596,6 @@ export default function DiffrentialPressure() {
                       ))}
                     </tbody>
                   </table>
-
-                  {/* <div className="group-input m">
-                    <label> Review By :- </label>
-                  </div> */}
-                  {/* 
-                  <div className="group-input">
-                    <label htmlFor="">Review Comments</label>
-                    <textarea
-                      value={differentialPRecord.reviewComment}
-                      onChange={(e) => {
-                        setDifferentialPRecord({ reviewComment: e.target.value });
-                      }}
-                    />
-                  </div> */}
-
-                  {/* Your JSX content */}
-
-                  {/* <Grid
-                  label={docFormFile[2].label}
-                  coloredLabel={docFormFile[2].coloredLabel}
-                  required={docFormFile[2].required}
-                  instruction={docFormFile[2].instruction}
-                  columnList={docFormFile[2].columnList}
-                  onChange={(data) => setDifferentialPRecord({ gridData: data })}
-                /> */}
                 </>
               ) : null}
             </div>
@@ -493,7 +603,7 @@ export default function DiffrentialPressure() {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(differentialPRecord)
+                  handleSave(differentialPRecord);
                 }}
               >
                 Save
@@ -517,7 +627,10 @@ export default function DiffrentialPressure() {
                   Back
                 </button>
               )}
-              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
+              <button
+                className="themeBtn"
+                onClick={() => navigate("/dashboard")}
+              >
                 Exit
               </button>
             </div>

@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeaderTop from "../../components/Header/HeaderTop";
 import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { hasAccess } from "../../components/userAuth/userAuth";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const differentialPRecordHistory = useSelector(
-    (state) => state.objects.objects
+  const [eLogSelect, setELogSelect] = useState("All_Records");
+  const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
+    []
   );
+  const dispatch = useDispatch();
+  const userDetails = JSON.parse(localStorage.getItem("user-details"));
+
   const equipmentCRecordHistory = useSelector(
     (state) => state.equipment.EquipmentCleaningData
   );
@@ -20,26 +26,66 @@ function Dashboard() {
     (state) => state.temperature.temperatureRecordData
   );
 
-  const [eLogSelect, setELogSelect] = useState("All_Records");
-  // const [getId, setGetId] = useState(null);
-  const dispatch = useDispatch();
+  useEffect(() => {
+    const newConfig = {
+      method: "get",
+      url: "http://localhost:1000/process/get-all-differential-pressure",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios(newConfig)
+      .then((response) => {
+        
+        const allDifferentialPressureElogs = response.data.message;
+        let filteredArray = allDifferentialPressureElogs.filter((elog) => {
+          const userId = userDetails.userId;
+        
+          return (
+            (userId === elog.reviewer_id || userId === elog.initiator_id || userId === elog.approver_id) ||
+            hasAccess(4, elog.site_id, 1)
+          );
+        });
+        setDifferentialPressureElogs(filteredArray);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
 
   const handleRowClick = (row) => {
     dispatch({ type: "SELECT_ROW", payload: row });
   };
 
   const combinedRecords = [
-    ...differentialPRecordHistory,
+    ...differentialPressureElogs,
     ...areaAndERecordHistory,
     ...equipmentCRecordHistory,
     ...temperatureRecordHistory,
   ];
 
+  const handleNavigation = (item) => {
+    handleRowClick(item);
+    if (item.DifferentialPressureRecords) {
+      navigate("/dpr-panel", { state: item });
+    } else if (item.process === "Area and equipment") {
+      navigate("/area-and-equipment-panel", { state: item });
+    } else if (item.process === "Temperature Records") {
+      navigate("/tpr-panel", { state: item });
+    } else if (item.process === "Equipment cleaning checklist") {
+      navigate("/ecc-panel", { state: item });
+    } else {
+      // Handle default or fallback navigation if needed
+    }
+  };
+
   return (
     <>
       <HeaderTop />
       <HeaderBottom />
-  
+
       <div className="desktop-input-table-wrapper">
         <div className="input-wrapper">
           <div className="group-input-2">
@@ -72,22 +118,36 @@ function Dashboard() {
               <th>Initiator</th>
               <th>Date of initiation</th>
               <th>Short description</th>
+              <th>Status</th>
               <th>Process</th>
             </tr>
           </thead>
           <tbody>
             {eLogSelect === "diffrential_pressure"
-              ? differentialPRecordHistory?.map((item, index) => {
+              ? differentialPressureElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td onClick={() => navigate("/dpr-panel")}>
-                        {item.eLogId}
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() => navigate("/dpr-panel", { state: item })}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`DP${item.form_id}`}
                       </td>
-                      <td>{item.initiator}</td>
-                      <td>{item.dateOfInitiation}</td>
-                      <td>{item.shortDescription}</td>
-                      <td>{item.process}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{item.date_of_initiation.split("T")[0]}</td>
+                      <td>{item.description}</td>
+                      <td>{item.status}</td>
+                      <td>Differential Pressure</td>
                     </tr>
                   );
                 })
@@ -98,10 +158,13 @@ function Dashboard() {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td onClick={() => navigate("/area-and-equipment-panel")}>{item.eLogId}</td>
+                      <td onClick={() => navigate("/area-and-equipment-panel")}>
+                        {item.eLogId}
+                      </td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
+                      <td>{item.status}</td>
                       <td>{item.process}</td>
                     </tr>
                   );
@@ -119,6 +182,7 @@ function Dashboard() {
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
+                      <td>{item.status}</td>
                       <td>{item.process}</td>
                     </tr>
                   );
@@ -136,6 +200,7 @@ function Dashboard() {
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
+                      <td>{item.status}</td>
                       <td>{item.process}</td>
                     </tr>
                   );
@@ -153,18 +218,7 @@ function Dashboard() {
                         color: "black",
                       }}
                       onClick={() => {
-                        handleRowClick(item);
-                        navigate(
-                          item.process === "Diffrential pressure"
-                            ? "/dpr-panel"
-                            : item.process === "Area and equipment"
-                            ? "/area-and-equipment-panel"
-                            : item.process === "Temperature Records"
-                            ? "/tpr-panel"
-                            : item.process === "Equipment cleaning checklist"
-                            ? "/ecc-panel"
-                            : ""
-                        );
+                        handleNavigation(item);
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
@@ -173,12 +227,19 @@ function Dashboard() {
                         e.target.style.color = "black";
                       }}
                     >
-                      {item.eLogId}
+                      {item.DifferentialPressureRecords
+                        ? `DP${item.form_id}`
+                        : null}
                     </td>
-                    <td>{item.initiator}</td>
-                    <td>{item.dateOfInitiation}</td>
-                    <td>{item.shortDescription}</td>
-                    <td>{item.process}</td>
+                    <td>{item.initiator_name}</td>
+                    <td>{item.date_of_initiation.split("T")[0]}</td>
+                    <td>{item.description}</td>
+                    <td>{item.status}</td>
+                    <td>
+                      {item.DifferentialPressureRecords
+                        ? "Differential Pressure"
+                        : null}
+                    </td>
                   </tr>
                 );
               })}
