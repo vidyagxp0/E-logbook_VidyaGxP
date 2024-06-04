@@ -332,6 +332,7 @@ exports.Userlogin = async (req, res) => {
             where: {
               user_id: data?.user_id,
             },
+            attributes: { exclude: ["createdAt", "updatedAt"] },
           });
           const token = jwt.sign(
             { userId: data.user_id, roles: userRoles },
