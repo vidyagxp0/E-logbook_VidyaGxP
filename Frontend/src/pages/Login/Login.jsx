@@ -28,7 +28,7 @@ function Login() {
       password: password,
     };
     axios
-      .post("http://195.35.6.197:1001/user/user-login", data, {
+      .post("http://localhost:1000/user/user-login", data, {
         headers: {
           "Content-Type": "application/json",
         },
