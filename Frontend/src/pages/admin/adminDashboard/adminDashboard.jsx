@@ -258,6 +258,7 @@ function AdminDashboard() {
                             padding: "5px 10px",
                             borderRadius: "5px",
                             // border: "1px solid #EFA035",
+                            marginRight: "5px",
                             backgroundColor: "red",
                             color: "white",
                             cursor: "pointer",
@@ -265,6 +266,23 @@ function AdminDashboard() {
                           onClick={() => openConfirmation(user)}
                         >
                           Delete
+                        </button>
+                        <button
+                          style={{
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            // border: "1px solid #EFA035",
+                            backgroundColor: "purple",
+                            color: "white",
+                            cursor: "pointer",
+                          }}
+                          onClick={() =>
+                            navigate(`/duplicate-user`, {
+                              state: { id: user.user_id },
+                            })
+                          }
+                        >
+                          Duplicate
                         </button>
                       </td>
                     </tr>

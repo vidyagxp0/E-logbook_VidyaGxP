@@ -25,6 +25,7 @@ import AdminSites from "./pages/admin/AdminSites/AdminSites.jsx";
 import EditUser from "./pages/admin/EditUser/EditUser.jsx";
 import Wrapper from "./pages/Wrapper.jsx";
 import AdminProcesses from "./pages/admin/AdminProcesses/AdminProcesses.jsx";
+import DuplicateUser from "./pages/admin/DuplicateUser/DuplicateUser.jsx";
 
 function App() {
   return (
@@ -46,6 +47,10 @@ function App() {
               <Route
                 path="/admin-edit-user"
                 element={<ProtectedAdminRoute element={<EditUser />} />}
+              />
+              <Route
+                path="/duplicate-user"
+                element={<ProtectedAdminRoute element={<DuplicateUser />} />}
               />
               <Route
                 path="/admin-sites"
