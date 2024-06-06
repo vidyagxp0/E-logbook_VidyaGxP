@@ -17,6 +17,7 @@ function EditUser() {
     email: "",
     age: "",
     gender: "",
+    profile_pic: "",
     rolesArray: [],
   });
 
@@ -52,6 +53,7 @@ function EditUser() {
       email: userInfo.email || "",
       age: userInfo.age || "",
       gender: userInfo.gender || "",
+      profile_pic: userInfo.profile_pic || "",
       rolesArray: selectedOptions,
     });
   }, [userInfo]);
@@ -84,6 +86,10 @@ function EditUser() {
     setFormData((prevData) => ({ ...prevData, rolesArray: selectedOptions }));
   };
 
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, profile_pic: e.target.files[0] });
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -93,24 +99,23 @@ function EditUser() {
     event.preventDefault();
     let resultObj = filterObject(formData);
 
-    const config = {
-      method: "put",
-      url: `http://localhost:1000/user/edit-user/${location.state.id}`,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
-        "Content-Type": "application/json",
-      },
-      data: resultObj,
+    const myHeaders = {
+      Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+      "Content-Type": "multipart/form-data",
     };
 
-    axios(config)
+    axios
+      .put(`http://localhost:1000/user/edit-user/${location.state.id}`, resultObj, {
+        headers: myHeaders,
+      })
       .then(() => {
         toast.success("User Details Updated Successfully");
         navigate(-1);
       })
-      .catch(() => {
-        toast.error("Couldn't Update User Details");
+      .catch((error) => {
+        toast.error("Couldn't Update User Details " + error.response.data.message);
       });
+
   };
 
   const buttonStyle = {
@@ -137,11 +142,10 @@ function EditUser() {
     <>
       {/* <AdminHeaderTop /> */}
       <div id="main-form-container">
-        <div id="config-form-document-page "  className=" p-2 shadow-2xl">
+        <div id="config-form-document-page " className=" p-2 shadow-2xl">
           <form onSubmit={handleSubmit} style={{}}>
-            <h2 style={{ textAlign: "center", }}>
-            <div className="sub-head"> Edit User</div>
-             
+            <h2 style={{ textAlign: "center" }}>
+              <div className="sub-head"> Edit User</div>
             </h2>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="name" style={{ color: "#EFA035" }}>
@@ -196,6 +200,17 @@ function EditUser() {
                 <option value="female">Female</option>
                 <option value="other">Other</option>
               </select>
+            </div>
+            <div className="group-input" style={{ margin: "15px" }}>
+              <label htmlFor="profilePic" style={{ color: "#EFA035" }}>
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                name="profile_pic"
+                id="profile_pic"
+                onChange={handleFileChange}
+              />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="roles" style={{ color: "#EFA035" }}>
