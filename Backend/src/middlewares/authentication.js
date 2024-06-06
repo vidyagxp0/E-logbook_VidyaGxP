@@ -74,6 +74,13 @@ function hasAccess(userRoles, site_id, processId, roleId) {
   );
 }
 
+const getFileUrl = (file) => {
+  if(file?.filename){
+    return `http://localhost:1000/profile_pics/${file?.filename}`;
+  }
+};
+
+module.exports.getFileUrl = getFileUrl;
 module.exports.checkUserJwtToken = checkUserJwtToken;
 module.exports.checkAdminJwtToken = checkAdminJwtToken;
 module.exports.authorizeUserRole = authorizeUserRole;

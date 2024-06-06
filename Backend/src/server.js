@@ -7,17 +7,21 @@ const userRoutes = require("./routes/users");
 const processRoutes = require("./routes/processes");
 const siteRoutes = require("./routes/sites");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
 app.use("/process", processRoutes);
 app.use("/site", siteRoutes);
+app.use(express.static(path.join(__dirname, 'documents')));
 
 server.listen(config.development.PORT, "0.0.0.0", async () => {
   connectToDB()
