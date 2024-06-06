@@ -1,2 +1,2 @@
 node_modules
-src/documents/profile_pics/*
+./src/documents/profile_pics/*
