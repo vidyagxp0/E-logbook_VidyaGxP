@@ -1,18 +1,86 @@
 import { useEffect, useReducer, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { NoteAdd } from "@mui/icons-material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import HeaderTop from "../../../components/Header/HeaderTop";
+import "../ConfigForms.css";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { NoteAdd } from "@mui/icons-material";
+import axios from "axios";
 
-export default function TemperatureRecords() {
+export default function DiffrentialPressure() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
+  const [reviewers, setReviewers] = useState([]);
+  const [approvers, setApprovers] = useState([]);
+  const [User, setUser] = useState(null);
+  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    const config = {
+      method: "post",
+      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        site_id: location.state?.site_id,
+        role_id: 2,
+        process_id: 4,
+      },
+    };
+
+    axios(config)
+      .then((response) => {
+        setReviewers(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+    const newConfig = {
+      method: "post",
+      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        site_id: location.state?.site_id,
+        role_id: 3,
+        process_id: 4,
+      },
+    };
+
+    axios(newConfig)
+      .then((response) => {
+        setApprovers(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      headers: {}, // You can add any necessary headers here
+    };
+
+    axios(requestOptions)
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
@@ -26,22 +94,15 @@ export default function TemperatureRecords() {
     };
   }
 
-  useEffect(() => {
-    setTemperatureRecords({
-      gridData: allTableData,
-    });
-  }, [allTableData]);
-
-  // Function to add a new row to the table
   const addRow = () => {
     const currentTime = new Date().toLocaleTimeString();
     const newRow = {
-      date: date,
+      unique_id: generateUniqueId(),
       time: currentTime,
-      limit: "",
-      remark: "",
-      checkedBy: "Amit Guru",
-      file: null, // Adding property for file attachment
+      temprature_record: "",
+      remarks: "",
+      checked_by: User?.name,
+      supporting_docs: null,
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -52,63 +113,78 @@ export default function TemperatureRecords() {
     setAllTableData(updatedData);
   };
 
-  const uniqueId =
-    "ABC/" +
-    Math.floor(Math.random() * 1000)
-      .toString()
-      .padStart(3, "0") +
-    "/" +
-    Math.floor(Math.random() * 10000)
-      .toString()
-      .padStart(4, "0");
-
-  const currentDate = new Date();
-  const currentMonth = currentDate.toLocaleString("default", { month: "long" });
+  // const currentDate = new Date();
+  // const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
   const handleSave = (data) => {
-    // if (parseFloat(data.limit) < 0.6 || parseFloat(data.limit) > 2.6) {
-    //   toast.error("The limit value must be between 0.6 and 2.6.");
-    //   return;
-    // }
-    toast.success("eLog Saved Successfully!");
-    // createObject(data);
-    TemperatureData(data);
-    navigate("/dashboard");
+    if (
+      data.site_id === null ||
+      data.approver_id === null ||
+      data.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    axios
+      .post(
+        "http://localhost:1000/temprature-record/post-temprature-record",
+        tempratureRecord,
+        config
+      )
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
   };
-  const [temperatureRecords, setTemperatureRecords] = useReducer(
+
+  const generateUniqueId = () => {
+    return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
+  const [tempratureRecord, setTempratureRecord] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
     }),
     {
-      process: "Temperature Records",
-      eLogId: uniqueId + 1,
-      initiator: "",
-      dateOfInitiation: date,
-      shortDescription: "",
+      site_id: location.state?.site_id,
+      reviewer_id: null,
+      approver_id: null,
       description: "",
-      status: "",
       department: "",
-      reviewComment: "",
-      compressionArea: "",
-      limit: "",
-      month: "february",
+      review_comments: "",
+      compression_area: "",
+      limit: null,
     }
-    
   );
 
+  useEffect(() => {
+    setTempratureRecord({ FormRecordsArray: allTableData });
+  }, [allTableData]);
 
-  const TemperatureData = (data) => {
-    dispatch({ type: "ADD-TEMPERATURETDATA", payload: data });
-  };
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
-    updatedData[index].file = null; // This should remove the file
+    updatedData[index].supporting_docs = null; // This should remove the file
     setAllTableData(updatedData);
   };
+
   const handleFileChange = (index, file) => {
     const updatedData = [...allTableData];
-    updatedData[index].file = file;
+    updatedData[index].supporting_docs = file;
     setAllTableData(updatedData);
   };
 
@@ -119,18 +195,18 @@ export default function TemperatureRecords() {
         <div id="config-form-document-page">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Temperature Records
+              <strong> Record Name:&nbsp;</strong>Temprature Records
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
-              India
+              {location.state?.site}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>Under Initiation
             </div>
             <div>
               <strong> Initiated By:&nbsp;</strong>
-              Amit Guru
+              {User?.name}
             </div>
           </div>
 
@@ -144,7 +220,7 @@ export default function TemperatureRecords() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div>
-              <div className="sub-head-2">Temperature Records</div>
+              <div className="sub-head-2">Temprature Record</div>
 
               <div className="outerDiv5">
                 <div className="btn-forms">
@@ -174,13 +250,13 @@ export default function TemperatureRecords() {
                   </div>
                 </div>
                 {/* <div className="analytics-btn">
-                <button className="btn-print" onClick={() => navigate("/analytics")}>
-                  Analytics
-                </button>
-                <button className="btn-print" onClick={() => {}}>
-                  Print
-                </button>
-              </div> */}
+                  <button className="btn-print" onClick={() => navigate("/analytics")}>
+                    Analytics
+                  </button>
+                  <button className="btn-print" onClick={() => {}}>
+                    Print
+                  </button>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -190,38 +266,23 @@ export default function TemperatureRecords() {
                     <div>
                       <input
                         type="text"
-                        value={temperatureRecords.initiator}
+                        value={User?.name}
                         onChange={(e) =>
-                          setTemperatureRecords({ initiator: e.target.value })
+                          setTempratureRecord({ initiator: e.target.value })
                         }
                       />
                     </div>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Date of Initiator</label>
+                    <label className="color-label">Date of Initiation</label>
                     <div>
                       <input
                         type="text"
                         value={date}
                         onChange={(e) =>
-                          setTemperatureRecords({
+                          setTempratureRecord({
                             dateOfInitiation: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Short Description</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={temperatureRecords.shortDescription}
-                        onChange={(e) =>
-                          setTemperatureRecords({
-                            shortDescription: e.target.value,
                           })
                         }
                       />
@@ -233,9 +294,9 @@ export default function TemperatureRecords() {
                     <div>
                       <input
                         type="text"
-                        value={temperatureRecords.description}
+                        value={tempratureRecord.description}
                         onChange={(e) =>
-                          setTemperatureRecords({
+                          setTempratureRecord({
                             description: e.target.value,
                           })
                         }
@@ -248,9 +309,9 @@ export default function TemperatureRecords() {
                     <div>
                       <input
                         type="text"
-                        value={temperatureRecords.status}
+                        value="Under Initiation"
                         onChange={(e) =>
-                          setTemperatureRecords({ status: e.target.value })
+                          setTempratureRecord({ status: e.target.value })
                         }
                       />
                     </div>
@@ -262,14 +323,13 @@ export default function TemperatureRecords() {
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
-
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={temperatureRecords.department}
+                      value={tempratureRecord.department}
                       onChange={(e) =>
-                        setTemperatureRecords({
+                        setTempratureRecord({
                           department: e.target.value,
                         })
                       }
@@ -306,15 +366,14 @@ export default function TemperatureRecords() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={temperatureRecords.compressionArea}
+                      value={tempratureRecord.compression_area}
                       onChange={(e) =>
-                        setTemperatureRecords({
-                          compressionArea: e.target.value,
+                        setTempratureRecord({
+                          compression_area: e.target.value,
                         })
                       }
                     >
@@ -334,23 +393,72 @@ export default function TemperatureRecords() {
                     <input
                       type="number"
                       className={`${
-                        temperatureRecords.limit < 23
+                        tempratureRecord.limit < 0.6
                           ? "limit"
-                          : temperatureRecords.limit > 27
+                          : tempratureRecord.limit > 2.6
                           ? "limit"
                           : ""
                       }`}
-                      value={temperatureRecords.limit}
+                      value={tempratureRecord.limit}
                       onChange={(e) =>
-                        setTemperatureRecords({ limit: e.target.value })
+                        setTempratureRecord({ limit: e.target.value })
                       }
                     />
                   </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Month:</label>
-                    <div>
-                      <input type="text" value={currentMonth} readOnly />
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer</label>
+                      <div>
+                        <select
+                          value={tempratureRecord.reviewer_id}
+                          onChange={(e) => {
+                            setTempratureRecord({
+                              reviewer_id: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="">Select a reviewer</option>
+                          {[
+                            ...new Map(
+                              reviewers.map((reviewer) => [
+                                reviewer.user_id,
+                                reviewer,
+                              ])
+                            ).values(),
+                          ].map((reviewer, index) => (
+                            <option key={index} value={reviewer.user_id}>
+                              {reviewer.User.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Approver</label>
+                      <div>
+                        <select
+                          value={tempratureRecord.approver_id}
+                          onChange={(e) => {
+                            setTempratureRecord({
+                              approver_id: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="">Select an approver</option>
+                          {[
+                            ...new Map(
+                              approvers.map((approver) => [
+                                approver.user_id,
+                                approver,
+                              ])
+                            ).values(),
+                          ].map((approver, index) => (
+                            <option key={index} value={approver.user_id}>
+                              {approver.User.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
 
@@ -365,21 +473,20 @@ export default function TemperatureRecords() {
                       <tr>
                         <th>S no.</th>
                         <th>Unique Id</th>
-                        <th>Date</th>
                         <th>Time</th>
-                        <th>Temperature Records</th>
+                        <th>Temprature Record</th>
                         <th>Remark</th>
                         <th>Checked By</th>
-                        <th>Supporting Documents</th>
+                        <th style={{ width: "300px" }}>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {allTableData?.map((item, index) => (
+                      {allTableData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>UID000{index + 1}</td>
-                          <td>
+                          <td>{generateUniqueId()}</td>
+                          {/* <td>
                             <input
                               value={item.date}
                               onChange={(e) => {
@@ -388,7 +495,7 @@ export default function TemperatureRecords() {
                                 setAllTableData(newData);
                               }}
                             />
-                          </td>
+                          </td> */}
                           <td>
                             <input
                               value={item.time}
@@ -402,37 +509,39 @@ export default function TemperatureRecords() {
                           <td>
                             <input
                               type="number"
-                              value={item.limit}
+                              value={item.temprature_record}
                               className={`${
-                                item.limit < 23
+                                item.temprature_record < 0.6
                                   ? "limit"
-                                  : item.limit > 27
+                                  : item.temprature_record > 2.6
                                   ? "limit"
                                   : ""
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].limit = e.target.value;
+                                newData[index].temprature_record =
+                                  e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.remarks}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].remarks = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
                           </td>
                           <td>
                             <input
-                              value={item.remark}
+                              value={item.checked_by}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].remark = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.checkedBy}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].checkedBy = e.target.value;
+                                newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
@@ -441,11 +550,12 @@ export default function TemperatureRecords() {
                             <div className="d-flex">
                               <input
                                 type="file"
+                                name="supporting_docs"
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
                               />
-                              {item.file && (
+                              {item.supporting_docs && (
                                 <DeleteIcon
                                   style={{ color: "red" }}
                                   onClick={() => handleDeleteFile(index)}
@@ -455,23 +565,29 @@ export default function TemperatureRecords() {
                           </td>
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" &&
-                              (item.limit < 23 || item.limit > 27) && (
+                            {item.temprature_record !== "" &&
+                              (item.temprature_record < 0.6 ||
+                                item.temprature_record > 2.6) && (
                                 <button
+                                  style={{
+                                    cursor: "pointer",
+                                  }}
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart")
+                                    window.location.href =
+                                      "https://naveen.vidyagxp.com/deviation";
                                   }}
                                 >
                                   Deviation
                                 </button>
                               )}
-                            {item.limit !== "" &&
-                              (item.limit < 23 || item.limit > 27) && (
+                            {item.temprature_record !== "" &&
+                              (item.temprature_record < 0.6 ||
+                                item.temprature_record > 2.6) && (
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
-                                    navigate("/chart")
+                                    navigate("/chart");
                                   }}
                                 >
                                   Action item
@@ -482,44 +598,19 @@ export default function TemperatureRecords() {
                       ))}
                     </tbody>
                   </table>
-
-                  {/* <div className="group-input">
-                  <label> Review By :- </label>
-                </div>
-
-                <div className="group-input">
-                  <label htmlFor="">Review Comments</label>
-                  <input
-                    value={temperatureRecords.reviewComment}
-                    onChange={(e) => {
-                      setTemperatureRecords({ reviewComment: e.target.value });
-                    }}
-                  />
-                </div> */}
-
-                  {/* Your JSX content */}
-
-                  {/* <Grid
-                label={docFormFile[2].label}
-                coloredLabel={docFormFile[2].coloredLabel}
-                required={docFormFile[2].required}
-                instruction={docFormFile[2].instruction}
-                columnList={docFormFile[2].columnList}
-                onChange={(data) => setTemperatureRecords({ gridData: data })}
-              /> */}
-              </>
-            ) : null}
-          </div>
-          <div className="button-block" style={{ width: "100%" }}>
-            <button
-              className="themeBtn"
-              onClick={() => {
-                handleSave(temperatureRecords);
-              }}
-            >
-              Save
-            </button>
-            {isSelectedGeneral === true ? (
+                </>
+              ) : null}
+            </div>
+            <div className="button-block" style={{ width: "100%" }}>
+              <button
+                className="themeBtn"
+                onClick={() => {
+                  handleSave(tempratureRecord);
+                }}
+              >
+                Save
+              </button>
+              {isSelectedGeneral === true ? (
                 <button
                   className="themeBtn"
                   onClick={() => {
@@ -538,7 +629,10 @@ export default function TemperatureRecords() {
                   Back
                 </button>
               )}
-              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
+              <button
+                className="themeBtn"
+                onClick={() => navigate("/dashboard")}
+              >
                 Exit
               </button>
             </div>

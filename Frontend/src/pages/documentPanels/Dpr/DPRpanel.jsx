@@ -51,7 +51,7 @@ export default function DPRpanel() {
     if (popupAction === "sendFromOpenToReview") {
       axios
         .put(
-          "http://localhost:1000/process/send-DP-elog-for-review",
+          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -67,7 +67,7 @@ export default function DPRpanel() {
     } else if (popupAction === "sendFromReviewToApproval") {
       axios
         .put(
-          "http://localhost:1000/process/send-DP-from-review-to-approval",
+          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -84,7 +84,7 @@ export default function DPRpanel() {
     } else if (popupAction === "sendFromReviewToOpen") {
       axios
         .put(
-          "http://localhost:1000/process/send-DP-elog-from-review-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -97,7 +97,7 @@ export default function DPRpanel() {
         });
     } else if (popupAction === "sendFromApprovalToApproved") {
       axios
-        .put("http://localhost:1000/process/approve-DP-elog", data, config)
+        .put("http://localhost:1000/differential-pressure/approve-DP-elog", data, config)
         .then(() => {
           toast.success("Elog successfully approved");
           navigate(-1);
@@ -110,7 +110,7 @@ export default function DPRpanel() {
     } else if (popupAction === "sendFromApprovalToOpen") {
       axios
         .put(
-          "http://localhost:1000/process/send-DP-elog-from-approval-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -218,7 +218,7 @@ export default function DPRpanel() {
       method: "PUT",
       headers: myHeaders,
       data: editData,
-      url: "http://localhost:1000/process/update-differential-pressure",
+      url: "http://localhost:1000/differential-pressure/update-differential-pressure",
     };
 
     axios(requestOptions)

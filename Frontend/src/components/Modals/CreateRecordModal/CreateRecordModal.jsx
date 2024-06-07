@@ -43,16 +43,19 @@ function CreateRecordModal(_props) {
     const fetchProcesses = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1000/process/get-processes"
+          "http://localhost:1000/differential-pressure/get-processes"
         );
 
-        const userSiteIds = userDetails.roles
-          .filter((role) => role.role_id === 1 || role.role_id === 5)
-          .map((role) => role.site_id);
+        const filteredProcessIds = userDetails.roles
+          .filter(
+            (role) =>
+              (role.role_id === 1 || role.role_id === 5) && role.site_id === division.site_id
+          )
+          .map((role) => role.process_id);
 
         // Filter processes based on user's roles
         const filteredProcesses = response.data.message.filter((process) =>
-          userSiteIds.includes(process.process_id)
+          filteredProcessIds.includes(process.process_id)
         );
         setProcesses(filteredProcesses);
       } catch (error) {
@@ -79,17 +82,17 @@ function CreateRecordModal(_props) {
         break;
       case 2:
         navigate("/area-and-equipment-panel", {
-          state: { site_id: division },
+          state: division,
         });
         break;
       case 3:
         navigate("/equipment-cleaning-checklist", {
-          state: { site_id: division },
+          state: division,
         });
         break;
       case 4:
         navigate("/temperature-records", {
-          state: { site_id: division },
+          state: division,
         });
         break;
       default:

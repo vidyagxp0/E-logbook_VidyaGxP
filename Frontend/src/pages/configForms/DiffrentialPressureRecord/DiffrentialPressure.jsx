@@ -22,7 +22,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/process/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -44,7 +44,7 @@ export default function DiffrentialPressure() {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/process/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -137,7 +137,7 @@ export default function DiffrentialPressure() {
 
     axios
       .post(
-        "http://localhost:1000/process/post-differential-pressure",
+        "http://localhost:1000/differential-pressure/post-differential-pressure",
         differentialPRecord,
         config
       )

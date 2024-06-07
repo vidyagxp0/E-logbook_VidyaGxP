@@ -13,6 +13,7 @@ function Dashboard() {
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
     []
   );
+  const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
@@ -22,14 +23,11 @@ function Dashboard() {
   const areaAndERecordHistory = useSelector(
     (state) => state.area.areaAndEquipmentData
   );
-  const temperatureRecordHistory = useSelector(
-    (state) => state.temperature.temperatureRecordData
-  );
 
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "http://localhost:1000/process/get-all-differential-pressure",
+      url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -38,17 +36,46 @@ function Dashboard() {
 
     axios(newConfig)
       .then((response) => {
-        
         const allDifferentialPressureElogs = response.data.message;
         let filteredArray = allDifferentialPressureElogs.filter((elog) => {
           const userId = userDetails.userId;
-        
+
           return (
-            (userId === elog.reviewer_id || userId === elog.initiator_id || userId === elog.approver_id) ||
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
             hasAccess(4, elog.site_id, 1)
           );
         });
         setDifferentialPressureElogs(filteredArray);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+    const newConfigTemp = {
+      method: "get",
+      url: "http://localhost:1000/temprature-record/get-all-temprature-record",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios(newConfigTemp)
+      .then((response) => {
+        const allTempratureRecordElogs = response.data.message;
+        let filteredArray = allTempratureRecordElogs.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 1)
+          );
+        });
+        setTempratureRecordElogs(filteredArray);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -63,7 +90,7 @@ function Dashboard() {
     ...differentialPressureElogs,
     ...areaAndERecordHistory,
     ...equipmentCRecordHistory,
-    ...temperatureRecordHistory,
+    ...tempratureRecordElogs,
   ];
 
   const handleNavigation = (item) => {
@@ -190,18 +217,30 @@ function Dashboard() {
               : null}
 
             {eLogSelect === "temperature_records"
-              ? temperatureRecordHistory?.map((item, index) => {
+              ? tempratureRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td onClick={() => navigate("/tpr-panel")}>
-                        {item.eLogId}
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() => navigate("/tpr-panel", { state: item })}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`TR${item.form_id}`}
                       </td>
-                      <td>{item.initiator}</td>
-                      <td>{item.dateOfInitiation}</td>
-                      <td>{item.shortDescription}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{item.date_of_initiation.split("T")[0]}</td>
+                      <td>{item.description}</td>
                       <td>{item.status}</td>
-                      <td>{item.process}</td>
+                      <td>Differential Pressure</td>
                     </tr>
                   );
                 })
@@ -229,6 +268,8 @@ function Dashboard() {
                     >
                       {item.DifferentialPressureRecords
                         ? `DP${item.form_id}`
+                        : item.TempratureRecords
+                        ? `TR${item.form_id}`
                         : null}
                     </td>
                     <td>{item.initiator_name}</td>
