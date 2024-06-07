@@ -175,31 +175,34 @@ export default function DPRpanel() {
     setEditData({ ...editData, [name]: value });
   };
 
-  // const handleDeleteFile = (index) => {
-  //   if (location.state?.stage === 1) {
-  //     const updatedGridData = editData.DifferentialPressureRecords.map(
-  //       (item, i) => {
-  //         if (i === index) {
-  //           return { ...item, file: null };
-  //         }
-  //         return item;
-  //       }
-  //     );
-  //     setEditData((prevState) => ({
-  //       ...prevState,
-  //       DifferentialPressureRecords: updatedGridData,
-  //     }));
-  //   }
-  // };
+  const handleDeleteFile = (index) => {
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
+      const updatedGridData = editData.DifferentialPressureRecords.map(
+        (item, i) => {
+          if (i === index) {
+            return { ...item, supporting_docs: null };
+          }
+          return item;
+        }
+      );
+      setEditData((prevState) => ({
+        ...prevState,
+        DifferentialPressureRecords: updatedGridData,
+      }));
+    }
+  };
 
-  // const handleFileChange = (index, file) => {
-  //   const updatedGridData = [...editData.gridData];
-  //   updatedGridData[index].file = file;
-  //   setEditData((prevState) => ({
-  //     ...prevState,
-  //     gridData: updatedGridData,
-  //   }));
-  // };
+  const handleFileChange = (index, file) => {
+    const updatedGridData = [...editData.DifferentialPressureRecords];
+    updatedGridData[index].supporting_docs = file;
+    setEditData((prevState) => ({
+      ...prevState,
+      DifferentialPressureRecords: updatedGridData,
+    }));
+  };
 
   const handleSave = () => {
     if (parseFloat(editData.limit) < 0.6 || parseFloat(editData.limit) > 2.6) {
@@ -208,7 +211,7 @@ export default function DPRpanel() {
     }
     const myHeaders = {
       Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     };
 
     const requestOptions = {
@@ -521,7 +524,8 @@ export default function DPRpanel() {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !== userDetails.userId
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
                                 }
                               />
                             </td>
@@ -540,7 +544,8 @@ export default function DPRpanel() {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !== userDetails.userId
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
                                 }
                               />
                             </td>
@@ -560,49 +565,21 @@ export default function DPRpanel() {
                                 readOnly
                               />
                             </td>
-                            {/* <td style={{ width: "250px" }}>
-                            <div className="d-flex">
-                              <input
-                              value= {item.files}
-                                type="file"
-                                onChange={(e) =>
-                                  handleFileChange(index, e.target.files[0])
-                                }
-                              />
-                         
-                              {item.file && (
-                                <DeleteIcon
-                                  style={{ color: "red" }}
-                                  onClick={() => handleDeleteFile(index)}
-                                />
-                              )}
-                            </div>
-                          </td> */}
-
                             <td style={{ width: "250px" }}>
                               <div className="d-flex">
                                 <input
+                                  // value={item.supporting_docs}
                                   type="file"
-                                  // onChange={(e) =>
-                                  //   handleFileChange(index, e.target.files[0])
-                                  // }
-                                  style={{ display: "none" }}
-                                  id={`file-input-${index}`}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !== userDetails.userId
+                                  name='supporting_docs'
+                                  onChange={(e) =>
+                                    handleFileChange(index, e.target.files[0])
                                   }
                                 />
-                                <label
-                                  htmlFor={`file-input-${index}`}
-                                  className="file-label"
-                                >
-                                  {item.file ? item.file.name : "Choose File"}
-                                </label>
-                                {item.file && (
+
+                                {item.supporting_docs && (
                                   <DeleteIcon
                                     style={{ color: "red" }}
-                                    // onClick={() => handleDeleteFile(index)}
+                                    onClick={() => handleDeleteFile(index)}
                                   />
                                 )}
                               </div>

@@ -102,7 +102,7 @@ export default function DiffrentialPressure() {
       differential_pressure: "",
       remarks: "",
       checked_by: User?.name,
-      file: null,
+      supporting_docs: null,
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -131,7 +131,7 @@ export default function DiffrentialPressure() {
     const config = {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     };
 
@@ -178,13 +178,14 @@ export default function DiffrentialPressure() {
 
   const handleDeleteFile = (index) => {
     const updatedData = [...allTableData];
-    updatedData[index].file = null; // This should remove the file
+    updatedData[index].supporting_docs = null; // This should remove the file
     setAllTableData(updatedData);
   };
 
   const handleFileChange = (index, file) => {
+    console.log(file);
     const updatedData = [...allTableData];
-    updatedData[index].file = file;
+    updatedData[index].supporting_docs = file;
     setAllTableData(updatedData);
   };
 
@@ -523,6 +524,7 @@ export default function DiffrentialPressure() {
                                   e.target.value;
                                 setAllTableData(newData);
                               }}
+                              required
                             />
                           </td>
                           <td>
@@ -549,11 +551,12 @@ export default function DiffrentialPressure() {
                             <div className="d-flex">
                               <input
                                 type="file"
+                                name="supporting_docs"
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
                               />
-                              {item.file && (
+                              {item.supporting_docs && (
                                 <DeleteIcon
                                   style={{ color: "red" }}
                                   onClick={() => handleDeleteFile(index)}
