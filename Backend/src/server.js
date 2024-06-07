@@ -4,7 +4,8 @@ const config = require("./config/config.json");
 const helmet = require("helmet");
 const http = require("http");
 const userRoutes = require("./routes/users");
-const processRoutes = require("./routes/processes");
+const differentialPressureRoutes = require("./routes/differentialPressure");
+const tempratureRecordRoutes = require("./routes/tempratureRecords");
 const siteRoutes = require("./routes/sites");
 const cors = require("cors");
 const path = require("path");
@@ -20,7 +21,8 @@ app.use(helmet({
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
-app.use("/process", processRoutes);
+app.use("/differential-pressure", differentialPressureRoutes);
+app.use("/temprature-record", tempratureRecordRoutes);
 app.use("/site", siteRoutes);
 app.use(express.static(path.join(__dirname, 'documents')));
 
