@@ -2,11 +2,29 @@ const express = require("express");
 const router = express.Router();
 const Auth = require("../middlewares/authentication");
 const Process = require("../controllers/process");
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.resolve(__dirname, "../documents/elog_docs/"));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // post differential pressure elog
 router.post(
   "/post-differential-pressure",
   Auth.checkUserJwtToken,
+  upload.any(),
   Auth.authorizeUserRole(1, 1),
   Process.InsertDifferentialPressure
 );
@@ -15,6 +33,7 @@ router.post(
 router.put(
   "/update-differential-pressure",
   Auth.checkUserJwtToken,
+  upload.any(),
   Auth.authorizeUserRole(1, 1),
   Process.EditDifferentialPressure
 );
@@ -74,8 +93,11 @@ router.put(
 );
 
 // get users based on roles, sites and processes
-router.post('/get-user-roleGroups', Auth.checkUserJwtToken, Process.GetUserOnBasisOfRoleGroup);
-
+router.post(
+  "/get-user-roleGroups",
+  Auth.checkUserJwtToken,
+  Process.GetUserOnBasisOfRoleGroup
+);
 
 router.get("/get-processes", Process.getAllProcesses);
 

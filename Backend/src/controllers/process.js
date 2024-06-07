@@ -6,6 +6,7 @@ const User = require("../models/users");
 const UserRole = require("../models/userRoles");
 const { Op, ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
+const { getElogDocsUrl } = require("../middlewares/authentication");
 
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {
@@ -61,14 +62,14 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
     // Check if FormRecordsArray is provided
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-      const formRecords = FormRecordsArray.map((record) => ({
+      const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
         time: record?.time, // Assuming time was meant here instead of unique_id again
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: record?.supporting_docs,
+        supporting_docs: getElogDocsUrl(req?.files[index]),
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
@@ -158,14 +159,14 @@ exports.EditDifferentialPressure = async (req, res) => {
       });
 
       // Then, create new records
-      const formRecords = DifferentialPressureRecords.map((record) => ({
+      const formRecords = DifferentialPressureRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
         time: record?.time,
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: record?.supporting_docs,
+        supporting_docs: getElogDocsUrl(req?.files[index]),
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });

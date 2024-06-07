@@ -15,6 +15,7 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(helmet({
   crossOriginResourcePolicy: false,
+  crossOriginEmbedderPolicy: false,
 }));
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
