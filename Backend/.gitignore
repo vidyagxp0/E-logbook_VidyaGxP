@@ -2,11 +2,8 @@
 #Ignore the node modules folder
 node_modules
 
-# Ignore all files in profile_pics and elog_docs
-src/documents/profile_pics/*
 src/documents/elog_docs/*
-
-# Don't ignore the directories themselves
-!src/documents/profile_pics/
-!src/documents/elog_docs/
+!src/documents/elog_docs/.gitkeep
+src/documents/profile_pics/*
+!src/documents/profile_pics/.gitkeep
 
