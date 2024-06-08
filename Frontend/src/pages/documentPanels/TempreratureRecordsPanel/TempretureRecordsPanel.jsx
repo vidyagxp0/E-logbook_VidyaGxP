@@ -1,170 +1,238 @@
-import React from "react";
-import { useEffect, useReducer, useState } from "react";
-import HeaderTop from "../../../components/Header/HeaderTop.jsx";
+import { useEffect, useState } from "react";
+import HeaderTop from "../../../components/Header/HeaderTop";
 import "../docPanel.css";
-import {
-  docFormFile,
-  tableData,
-  time,
-} from "./TempretureRecordsPanelFunction.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
+import axios from "axios";
+import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 
-const TempretureRecordsPanel = () => {
+export default function TempretureRecordsPanel() {
+  // const editedData = useSelector((state) => state.dprPanelData.selectedRow);
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
-  const [allTableData, setAllTableData] = useState([]);
+  const location = useLocation();
+  const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
-    initiator: "",
-    shortDescription: "",
-    description: "",
+    initiator_name: "",
     status: "",
+    description: "",
     department: "",
-    reviewComment: "",
-    compressionArea: "",
+    compression_area: "",
     limit: "",
-    month: "february",
   });
-  console.log(editData,"editData")
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const object = getCurrentDateTime();
-  let date = object.currentDate;
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupAction, setPopupAction] = useState(null);
 
-  function getCurrentDateTime() {
-    const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
-    const month = (now.getMonth() + 1).toString().padStart(2, "0");
-    const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${day}/${month}/${year}`;
-    return {
-      currentDate: currentDate,
+  const handlePopupClose = () => {
+    setIsPopupOpen(false);
+    setPopupAction(null);
+  };
+
+  const handlePopupSubmit = (credentials) => {
+    const data = {
+      site_id: location.state?.site_id,
+      form_id: location.state?.form_id,
+      email: credentials?.email,
+      password: credentials?.password,
+      reviewComment: editData.reviewComment,
+      approverComment: editData.approverComment,
     };
-  }
 
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("allTableData"));
-    if (storedData) {
-      setAllTableData(storedData);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (popupAction === "sendFromOpenToReview") {
+      axios
+        .put(
+          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully sent for review");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message || "Couldn't send elog for review!!"
+          );
+        });
+    } else if (popupAction === "sendFromReviewToApproval") {
+      axios
+        .put(
+          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully sent for approval");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message ||
+              "Couldn't send elog for approval!!"
+          );
+        });
+    } else if (popupAction === "sendFromReviewToOpen") {
+      axios
+        .put(
+          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully opened");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
+    } else if (popupAction === "sendFromApprovalToApproved") {
+      axios
+        .put("http://localhost:1000/temprature-record/approve-TR-elog", data, config)
+        .then(() => {
+          toast.success("Elog successfully approved");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message || "Couldn't approve elog!!"
+          );
+        });
+    } else if (popupAction === "sendFromApprovalToOpen") {
+      axios
+        .put(
+          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully opened");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
     }
-  }, []);
 
-  const editedData = useSelector((state) => state.dprPanelData.selectedRow);
+    setIsPopupOpen(false);
+    setPopupAction(null);
+  };
 
   useEffect(() => {
-    setEditData(editedData);
-  }, [editedData]);
+    setEditData(location.state);
+  }, [location.state]);
+
+  const addRow = () => {
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
+      const currentTime = new Date().toLocaleTimeString();
+      const newRow = {
+        unique_id: generateUniqueId(),
+        time: currentTime,
+        temprature_record: "",
+        remarks: "",
+        checked_by: location?.state?.initiator_name,
+        supporting_docs: null,
+      };
+      setEditData((prevState) => ({
+        ...prevState,
+
+        TempratureRecords: [
+          ...prevState.TempratureRecords,
+          newRow,
+        ],
+      }));
+    }
+  };
+
+  const deleteRow = (index) => {
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
+      const updatedGridData = [...editData.TempratureRecords];
+      updatedGridData.splice(index, 1);
+      setEditData((prevState) => ({
+        ...prevState,
+        TempratureRecords: updatedGridData,
+      }));
+    }
+  };
 
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
   };
 
-
-  
-
-  const addRow = () => {
-    const currentTime = new Date().toLocaleTimeString();
-    const newRow = {
-      date: date,
-      time: currentTime,
-      limit: "",
-      remark: "",
-      checkedBy: "Amit Guru",
-      file: null,
-    };
-    setEditData((prevState) => ({
-      ...prevState,
-      gridData: [...prevState.gridData, newRow],
-    }));
-  };
-
-  const deleteRow = (index) => {
-    const updatedData = [...allTableData];
-    updatedData.splice(index, 1);
-    setAllTableData(updatedData);
-  };
-
-  const uniqueId =
-    "ABC/" +
-    Math.floor(Math.random() * 1000)
-      .toString()
-      .padStart(3, "0") +
-    "/" +
-    Math.floor(Math.random() * 10000)
-      .toString()
-      .padStart(4, "0");
-
-  const currentDate = new Date();
-  const currentMonth = currentDate.toLocaleString("default", { month: "long" });
-
-  const handleSave = (data) => {
-    if (parseFloat(data.limit) < 0.6 || parseFloat(data.limit) > 2.6) {
-      toast.error("The limit value must be between 0.6 and 2.6.");
-      return;
-    }
-    dispatch({
-      type: "EDIT-TEMPERATURETDATA",
-      payload: { id: editData.eLogId, editedData: editData },
-    });
-
-    toast.success("Data saved successfully!");
-    navigate("/dashboard");
-  };
-  const [addTemperatureRecord, setAddTemperatureRecord] = useReducer(
-    (prev, next) => ({
-      ...prev,
-      ...next,
-    }),
-    {
-      process: "Diffrential pressure",
-      eLogId: uniqueId + 1,
-      initiator: "",
-      dateOfInitiation: date,
-      shortDescription: "",
-      description: "",
-      status: "",
-      department: "",
-      reviewComment: "",
-      compressionArea: "",
-      limit: "",
-      month: "february",
-      gridData: {
-        uniqueId: "",
-        date,
-        time,
-        dPressure: "",
-        remark: "",
-        checkedBy: "Amit Guru",
-      },
-    }
-  );
   const handleDeleteFile = (index) => {
-    const updatedGridData = editData.gridData.map((item, i) => {
-      if (i === index) {
-        return { ...item, file: null };
-      }
-      return item;
-    });
-    setEditData((prevState) => ({
-      ...prevState,
-      gridData: updatedGridData,
-    }));
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
+      const updatedGridData = editData.TempratureRecords.map(
+        (item, i) => {
+          if (i === index) {
+            return { ...item, supporting_docs: null };
+          }
+          return item;
+        }
+      );
+      setEditData((prevState) => ({
+        ...prevState,
+        TempratureRecords: updatedGridData,
+      }));
+    }
   };
 
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.gridData];
-    updatedGridData[index].file = file;
+    const updatedGridData = [...editData.TempratureRecords];
+    updatedGridData[index].supporting_docs = file;
     setEditData((prevState) => ({
       ...prevState,
-      gridData: updatedGridData,
+      TempratureRecords: updatedGridData,
     }));
   };
-  const TableData = (data) => {
-    dispatch({ type: "EDIT-TEMPERATURETDATA", payload: data });
+
+  const handleSave = () => {
+    if (parseFloat(editData.limit) < 0.6 || parseFloat(editData.limit) > 2.6) {
+      toast.error("The limit value must be between 0.6 and 2.6.");
+      return;
+    }
+    const myHeaders = {
+      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+      "Content-Type": "multipart/form-data",
+    };
+
+    const requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      data: editData,
+      url: "http://localhost:1000/temprature-record/update-temprature-record",
+    };
+
+    axios(requestOptions)
+      .then(() => {
+        toast.success("Data saved successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const generateUniqueId = () => {
+    return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
   return (
@@ -174,18 +242,25 @@ const TempretureRecordsPanel = () => {
         <div id="config-form-document-page">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Temperature Records
+              <strong> Record Name:&nbsp;</strong>Temperature Record
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
-              India
+              {location.state?.site_id === 1
+                ? "India"
+                : location.state?.site_id === 2
+                ? "Malaysia"
+                : location.state?.site_id === 3
+                ? "EMEA"
+                : "EU"}
             </div>
             <div>
-              <strong> Current Status:&nbsp;</strong>Under Initiation
+              <strong> Current Status:&nbsp;</strong>
+              {location.state?.status}
             </div>
             <div>
               <strong> Initiated By:&nbsp;</strong>
-              Amit Guru
+              {location.state?.initiator_name}
             </div>
           </div>
 
@@ -199,7 +274,7 @@ const TempretureRecordsPanel = () => {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div>
-              <div className="sub-head-2">Temperature Records</div>
+              <div className="sub-head-2">Temperature Record</div>
 
               <div className="outerDiv5">
                 <div className="btn-forms">
@@ -235,261 +310,273 @@ const TempretureRecordsPanel = () => {
                   >
                     Analytics
                   </button>
-                  <button className="btn-print" onClick={() => {}}>
-                    Print
-                  </button>
+                  {/* <PDFDownloadLink
+                    document={<DynamicPdf elog={editData} />}
+                    fileName="VidyaGxP.pdf"
+                  >
+                    {({ blob, url, loading, error }) =>
+                      loading ? (
+                        <button className="btn-print">Wait</button>
+                      ) : (
+                        <button className="btn-print">Print</button>
+                      )
+                    }
+                  </PDFDownloadLink> */}
                 </div>
               </div>
-              <>
-                {isSelectedGeneral === true ? (
-                  <>
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator}
-                          onChange={handleInputChange1}
-                        />
-                      </div>
-                    </div>
 
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiator</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={date}
-                          onChange={(e) =>
-                            setAddDifferentialPRecord({
-                              dateOfInitiation: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div className="group-input">
-                      <label className="color-label">Short Description</label>
-                      <div>
-                        <input
-                          type="text"
-                          name="shortDescription"
-                          value={editData.shortDescription || ""}
-                          onChange={handleInputChange1}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="group-input">
-                      <label className="color-label">Description</label>
-                      <div>
-                        <input
-                          type="text"
-                          name="description"
-                          value={editData.description || ""}
-                          onChange={handleInputChange1}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="group-input">
-                      <label className="color-label">Status</label>
-                      <div>
-                        <input
-                          type="text"
-                          name="status"
-                          value={editData.status || ""}
-                          onChange={handleInputChange1}
-                        />
-                      </div>
-                    </div>
-                  </>
-                ) : null}
-
-                {isSelectedDetails === true ? (
-                  <>
-                    <div className="group-input">
-                      <label className="color-label">Department</label>
-
-                      <div className="instruction">&nbsp;</div>
-                      <select
-                        className="form-control"
-                        name="department"
-                        value={editData.department || ""}
-                        onChange={handleInputChange1}
-                      >
-                        <option value="">-- Select --</option>
-                        <option value="Corporate Quality Assurance">
-                          Corporate Quality Assurance
-                        </option>
-                        <option value="Quality Assurance Bio-Pharma">
-                          Quality Assurance Bio-Pharma
-                        </option>
-                        <option value="Central Quality Control">
-                          Central Quality Control
-                        </option>
-                        <option value="Manufacturing">Manufacturing</option>
-                        <option value="Plasma Sourcing Grou">
-                          Plasma Sourcing Group
-                        </option>
-                        <option value="Central Stores">Central Stores</option>
-                        <option value="Information Technology Group">
-                          Information Technology Group
-                        </option>
-                        <option value="Molecular Medicine">
-                          Molecular Medicine
-                        </option>
-                        <option value="Central Laboratory">
-                          Central Laboratory
-                        </option>
-                        <option value="Tech team">Tech team</option>
-                      </select>
-                    </div>
-
-                    <div className="group-input">
-                      <label className="color-label">
-                        Compression Area with respect to Corridor
-                      </label>
-
-                      <div className="instruction">&nbsp;</div>
-                      <select
-                        className="form-control"
-                        name="compressionArea"
-                        value={editData.compressionArea || ""}
-                        onChange={handleInputChange1}
-                      >
-                        <option value="Select a value">Select a value</option>
-                        <option value="Area 1">Area 1</option>
-                        <option value="Area 2">Area 2</option>
-                        <option value="Area 3">Area 3</option>
-                        <option value="Area 4">Area 4</option>
-                        <option value="Area 5">Area 5</option>
-                        <option value="Area 6">Area 6</option>```````````````````````````````                                                                                                   `    
-                      </select>
-                    </div>
-
-                    <div className="group-input">
-                      <label className="color-label">Temperature</label>
-                      <div className="instruction"></div>
+              {isSelectedGeneral === true ? (
+                <>
+                  <div className="group-input">
+                    <label className="color-label">Initiator </label>
+                    <div>
                       <input
-                        type="number"
-                        className={`${
-                          editData.limit < 23
-                            ? "limit"
-                            : editData.limit > 27
-                            ? "limit"
-                            : ""
-                        }`}
-                        name="limit"
-                        value={editData.limit || ""}
-                        onChange={handleInputChange1}
+                        type="text"
+                        name="initiator"
+                        value={editData.initiator_name}
+                        readOnly
                       />
                     </div>
+                  </div>
 
-                    <div className="group-input">
-                      <label className="color-label">Month:</label>
-                      <div>
-                        <input type="text" value={currentMonth} readOnly />
-                      </div>
-                    </div>
-
+                  <div className="group-input">
+                    <label className="color-label">Date of Initiation</label>
                     <div>
-                      <div className="AddRows d-flex">
-                        <NoteAdd onClick={addRow} />
-                        <div className="addrowinstruction"></div>
-                      </div>
+                      <input
+                        type="text"
+                        value={editData?.date_of_initiation?.split("T")[0]}
+                        readOnly
+                      />
                     </div>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>S no.</th>
-                          <th>Unique Id</th>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Temperature</th>
-                          <th>Remark</th>
-                          <th>Checked By</th>
-                          <th>Supporting Documents</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {editData.gridData?.map((item, index) => (
+                  </div>
+
+                  <div className="group-input">
+                    <label className="color-label">Description</label>
+                    <div>
+                      <input
+                        name="description"
+                        type="text"
+                        value={editData.description}
+                        onChange={handleInputChange1}
+                        readOnly={
+                          location.state?.stage !== 1 ||
+                          location.state?.initiator_id !== userDetails.userId
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="group-input">
+                    <label className="color-label">Status</label>
+                    <div>
+                      <input
+                        name="status"
+                        type="text"
+                        value={editData?.status}
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : null}
+
+              {isSelectedDetails === true ? (
+                <>
+                  <div className="group-input">
+                    <label className="color-label">Department</label>
+
+                    <div className="instruction">&nbsp;</div>
+                    <select
+                      className="form-control"
+                      name="department"
+                      value={editData?.department}
+                      onChange={handleInputChange1}
+                      disabled={
+                        location.state?.stage !== 1 ||
+                        location.state?.initiator_id !== userDetails.userId
+                      }
+                    >
+                      <option value="">-- Select --</option>
+                      <option value="Corporate Quality Assurance">
+                        Corporate Quality Assurance
+                      </option>
+                      <option value="Quality Assurance Bio-Pharma">
+                        Quality Assurance Bio-Pharma
+                      </option>
+                      <option value="Central Quality Control">
+                        Central Quality Control
+                      </option>
+                      <option value="Manufacturing">Manufacturing</option>
+                      <option value="Plasma Sourcing Grou">
+                        Plasma Sourcing Group
+                      </option>
+                      <option value="Central Stores">Central Stores</option>
+                      <option value="Information Technology Group">
+                        Information Technology Group
+                      </option>
+                      <option value="Molecular Medicine">
+                        Molecular Medicine
+                      </option>
+                      <option value="Central Laboratory">
+                        Central Laboratory
+                      </option>
+                      <option value="Tech team">Tech team</option>
+                    </select>
+                  </div>
+
+                  <div className="group-input">
+                    <label className="color-label">
+                      Compression Area with respect to Corridor
+                    </label>
+
+                    <div className="instruction">&nbsp;</div>
+                    <select
+                      className="form-control"
+                      name="compression_area"
+                      value={editData?.compression_area}
+                      onChange={handleInputChange1}
+                      disabled={
+                        location.state?.stage !== 1 ||
+                        location.state?.initiator_id !== userDetails.userId
+                      }
+                    >
+                      <option value="Select a value">Select a value</option>
+                      <option value="Area 1">Area 1</option>
+                      <option value="Area 2">Area 2</option>
+                      <option value="Area 3">Area 3</option>
+                      <option value="Area 4">Area 4</option>
+                      <option value="Area 5">Area 5</option>
+                      <option value="Area 6">Area 6</option>
+                    </select>
+                  </div>
+
+                  <div className="group-input">
+                    <label className="color-label">Limit</label>
+                    <div className="instruction"></div>
+                    <input
+                      name="limit"
+                      type="number"
+                      className={`${
+                        editData?.limit < 0.6
+                          ? "limit"
+                          : editData?.limit > 2.6
+                          ? "limit"
+                          : ""
+                      }`}
+                      value={editData?.limit}
+                      onChange={handleInputChange1}
+                      readOnly={
+                        location.state?.stage !== 1 ||
+                        location.state?.initiator_id !== userDetails.userId
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <div className="AddRows d-flex">
+                      <NoteAdd onClick={addRow} />
+                      <div className="addrowinstruction"></div>
+                    </div>
+                  </div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>S no.</th>
+                        <th>Unique Id</th>
+                        <th>Time</th>
+                        <th>temperature Record</th>
+                        <th>Remark</th>
+                        <th>Checked By</th>
+                        <th>Supporting Documents</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {editData?.TempratureRecords.map(
+                        (item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>UID000{index + 1}</td>
+                            <td>{item.unique_id}</td>
                             <td>
-                              <input value={item.date} readOnly />
-                            </td>
-                            <td>
-                              <input value={item.time} readOnly/>
+                              <input value={item.time} readOnly />
                             </td>
                             <td>
                               <input
                                 type="number"
-                                value={item.limit}
+                                value={item.temprature_record}
                                 className={`${
-                                  item.limit < 23
+                                  item.temprature_record < 0.6
                                     ? "limit"
-                                    : item.limit > 27
+                                    : item.temprature_record > 2.6
                                     ? "limit"
                                     : ""
                                 }`}
                                 onChange={(e) => {
-                                  const newData = [...editData.gridData];
-                                  newData[index].limit = e.target.value;
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].temprature_record =
+                                    e.target.value;
                                   setEditData({
                                     ...editData,
-                                    gridData: newData,
+                                    TempratureRecords: newData,
                                   });
                                 }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
                               />
                             </td>
                             <td>
                               <input
-                                value={item.remark}
+                                value={item.remarks}
                                 onChange={(e) => {
-                                  const newData = [...editData.gridData];
-                                  newData[index].remark = e.target.value;
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].remarks = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    gridData: newData,
+                                    TempratureRecords: newData,
                                   });
                                 }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
                               />
                             </td>
                             <td>
                               <input
-                                value={item.checkedBy}
+                                value={item.checked_by}
                                 onChange={(e) => {
-                                  const newData = [...editData.gridData];
-                                  newData[index].checkedBy = e.target.value;
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].checked_by = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    gridData: newData,
+                                    TempratureRecords: newData,
                                   });
                                 }}
+                                readOnly
                               />
                             </td>
                             <td style={{ width: "250px" }}>
                               <div className="d-flex">
                                 <input
+                                  // value={item.supporting_docs}
                                   type="file"
+                                  name='supporting_docs'
                                   onChange={(e) =>
                                     handleFileChange(index, e.target.files[0])
                                   }
-                                  style={{ display: "none" }}
-                                  id={`file-input-${index}`}
                                 />
-                                <label
-                                  htmlFor={`file-input-${index}`}
-                                  className="file-label"
-                                >
-                                  {item.file ? item.file.name : "Choose File"}
-                                </label>
-                                {item.file && (
+
+                                {item.supporting_docs && (
                                   <DeleteIcon
                                     style={{ color: "red" }}
                                     onClick={() => handleDeleteFile(index)}
@@ -497,14 +584,15 @@ const TempretureRecordsPanel = () => {
                                 )}
                               </div>
                             </td>
+
                             <td>
                               <DeleteIcon onClick={() => deleteRow(index)} />
                               {item.limit !== "" &&
-                                (item.limit < 23 || item.limit > 27) && (
+                                (item.limit < 0.6 || item.limit > 2.6) && (
                                   <button
                                     className="deviation-btn"
                                     onClick={() => {
-                                      navigate("/chart")
+                                      navigate("/chart");
                                     }}
                                   >
                                     Launch Deviation
@@ -512,35 +600,112 @@ const TempretureRecordsPanel = () => {
                                 )}
                             </td>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        )
+                      )}
+                    </tbody>
+                  </table>
 
-                    <div className="group-input">
-                      <label> Review By :- </label>
-                    </div>
-
-                    <div className="group-input">
-                      <label htmlFor="">Review Comments</label>
-                      <input
-                        name="reviewComment"
-                        value={editData.reviewComment || ""}
-                        onChange={handleInputChange1}
-                      />
-                    </div>
-                  </>
-                ) : null}
-              </>
+                  <div className="group-input">
+                    <label htmlFor="reviewComment">Review Comments</label>
+                    <input
+                      id="reviewComment"
+                      name="reviewComment"
+                      value={editData.reviewComment || ""}
+                      onChange={handleInputChange1}
+                      readOnly={
+                        location.state?.stage !== 2 ||
+                        location.state?.reviewer_id !== userDetails.userId
+                      }
+                    />
+                  </div>
+                  <div className="group-input">
+                    <label htmlFor="approverComment">Approver Comments</label>
+                    <input
+                      id="approverComment"
+                      name="approverComment"
+                      value={editData.approverComment || ""}
+                      onChange={handleInputChange1}
+                      readOnly={
+                        location.state?.stage !== 3 ||
+                        location.state?.approver_id !== userDetails.userId
+                      }
+                    />
+                  </div>
+                </>
+              ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              <button
-                className="themeBtn"
-                onClick={() => {
-                  handleSave(addTemperatureRecord)
-                }}
-              >
-                Save
-              </button>
+              {location.state?.stage === 1
+                ? location.state?.initiator_id === userDetails.userId && (
+                    <button
+                      className="themeBtn"
+                      onClick={() => {
+                        setIsPopupOpen(true);
+                        setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
+                      }}
+                    >
+                      Send for Review
+                    </button>
+                  )
+                : location.state?.stage === 2
+                ? location.state?.reviewer_id === userDetails.userId && (
+                    <>
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
+                        }}
+                      >
+                        Send for Approval
+                      </button>
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
+                        }}
+                      >
+                        Open Elog
+                      </button>
+                    </>
+                  )
+                : location.state?.stage === 3
+                ? location.state?.approver_id === userDetails.userId && (
+                    <>
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
+                        }}
+                      >
+                        Approve elog
+                      </button>
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
+                        }}
+                      >
+                        Open Elog
+                      </button>
+                    </>
+                  )
+                : null}
+              {location.state?.stage === 1
+                ? userDetails.userId === location.state?.initiator_id && (
+                    <button
+                      className="themeBtn"
+                      onClick={() => {
+                        handleSave();
+                      }}
+                    >
+                      Save
+                    </button>
+                  )
+                : null}
               {isSelectedGeneral === true ? (
                 <button
                   className="themeBtn"
@@ -560,15 +725,22 @@ const TempretureRecordsPanel = () => {
                   Back
                 </button>
               )}
-              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
+              <button
+                className="themeBtn"
+                onClick={() => navigate("/dashboard")}
+              >
                 Exit
               </button>
             </div>
+            {isPopupOpen && (
+              <UserVerificationPopUp
+                onClose={handlePopupClose}
+                onSubmit={handlePopupSubmit}
+              />
+            )}
           </div>
         </div>
       </div>
     </>
   );
-};
-
-export default TempretureRecordsPanel;
+}

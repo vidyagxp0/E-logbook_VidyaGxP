@@ -3,26 +3,18 @@ import HeaderTop from "../../components/Header/HeaderTop";
 import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { hasAccess } from "../../components/userAuth/userAuth";
 
 function Dashboard() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
-  const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
-    []
-  );
+  const [differentialPressureElogs, setDifferentialPressureElogs] = useState([]);
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
-  const dispatch = useDispatch();
+  const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
+  const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
-  const equipmentCRecordHistory = useSelector(
-    (state) => state.equipment.EquipmentCleaningData
-  );
-  const areaAndERecordHistory = useSelector(
-    (state) => state.area.areaAndEquipmentData
-  );
 
   useEffect(() => {
     const newConfig = {
@@ -72,7 +64,7 @@ function Dashboard() {
             userId === elog.reviewer_id ||
             userId === elog.initiator_id ||
             userId === elog.approver_id ||
-            hasAccess(4, elog.site_id, 1)
+            hasAccess(4, elog.site_id, 4)
           );
         });
         setTempratureRecordElogs(filteredArray);
@@ -82,24 +74,19 @@ function Dashboard() {
       });
   }, []);
 
-  const handleRowClick = (row) => {
-    dispatch({ type: "SELECT_ROW", payload: row });
-  };
-
   const combinedRecords = [
     ...differentialPressureElogs,
-    ...areaAndERecordHistory,
-    ...equipmentCRecordHistory,
+    ...areaAndERecordElogs,
+    ...equipmentCRecordElogs,
     ...tempratureRecordElogs,
   ];
 
   const handleNavigation = (item) => {
-    handleRowClick(item);
     if (item.DifferentialPressureRecords) {
       navigate("/dpr-panel", { state: item });
     } else if (item.process === "Area and equipment") {
       navigate("/area-and-equipment-panel", { state: item });
-    } else if (item.process === "Temperature Records") {
+    } else if (item.TempratureRecords) {
       navigate("/tpr-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
       navigate("/ecc-panel", { state: item });
@@ -181,7 +168,7 @@ function Dashboard() {
               : null}
 
             {eLogSelect === "area_and_equipment"
-              ? areaAndERecordHistory?.map((item, index) => {
+              ? areaAndERecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -199,7 +186,7 @@ function Dashboard() {
               : null}
 
             {eLogSelect === "equipment_cleaning"
-              ? equipmentCRecordHistory?.map((item, index) => {
+              ? equipmentCRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -240,7 +227,7 @@ function Dashboard() {
                       <td>{item.date_of_initiation.split("T")[0]}</td>
                       <td>{item.description}</td>
                       <td>{item.status}</td>
-                      <td>Differential Pressure</td>
+                      <td>Temperature Record</td>
                     </tr>
                   );
                 })
@@ -279,6 +266,8 @@ function Dashboard() {
                     <td>
                       {item.DifferentialPressureRecords
                         ? "Differential Pressure"
+                        : item.TempratureRecords
+                        ? "Temperature Record"
                         : null}
                     </td>
                   </tr>

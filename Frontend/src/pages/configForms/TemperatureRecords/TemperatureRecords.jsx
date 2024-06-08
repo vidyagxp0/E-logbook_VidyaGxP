@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 
-export default function DiffrentialPressure() {
+export default function TemperatureRecords() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
@@ -195,7 +195,7 @@ export default function DiffrentialPressure() {
         <div id="config-form-document-page">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Temprature Records
+              <strong> Record Name:&nbsp;</strong>Temperature Records
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
