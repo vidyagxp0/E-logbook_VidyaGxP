@@ -34,6 +34,12 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     allowNull: false,
     defaultValue: Sequelize.NOW,
   },
+  date_of_review: {
+    type: DataTypes.DATE,
+  },
+  date_of_approval: {
+    type: DataTypes.DATE,
+  },
   description: {
     type: DataTypes.STRING,
   },
@@ -76,6 +82,28 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   approverComment: {
     type: DataTypes.STRING,
   },
+  initiatorComment: {
+    type: DataTypes.STRING,
+  },
+  initiatorAttachment: {
+    type: DataTypes.STRING,
+  },
+  reviewerAttachment: {
+    type: DataTypes.STRING,
+  },
+  approverAttachment: {
+    type: DataTypes.STRING,
+  },
+  initiatorDeclaration: {
+    type: DataTypes.STRING,
+  },
+  reviewerDeclaration: {
+    type: DataTypes.STRING,
+  },
+  approverDeclaration: {
+    type: DataTypes.STRING,
+  },
+
 });
 
 DifferentialPressureForm.belongsTo(Site, { foreignKey: "site_id" });
@@ -84,10 +112,10 @@ Site.hasMany(DifferentialPressureForm, { foreignKey: "site_id" });
 DifferentialPressureForm.belongsTo(User, { foreignKey: "initiator_id" });
 User.hasMany(DifferentialPressureForm, { foreignKey: "initiator_id" });
 
-DifferentialPressureForm.belongsTo(User, { foreignKey: "reviewer_id" });
-User.hasMany(DifferentialPressureForm, { foreignKey: "reviewer_id" });
+DifferentialPressureForm.belongsTo(User, { foreignKey: "reviewer_id", as: 'reviewer' });
+User.hasMany(DifferentialPressureForm, { foreignKey: "reviewer_id", as: 'reviewer' });
 
-DifferentialPressureForm.belongsTo(User, { foreignKey: "approver_id" });
-User.hasMany(DifferentialPressureForm, { foreignKey: "approver_id" });
+DifferentialPressureForm.belongsTo(User, { foreignKey: "approver_id", as: 'approver' });
+User.hasMany(DifferentialPressureForm, { foreignKey: "approver_id", as: 'approver' });
 
 module.exports = DifferentialPressureForm;

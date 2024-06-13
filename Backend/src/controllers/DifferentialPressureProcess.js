@@ -18,7 +18,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
+    initiatorComment,
+    email,
+    password,
     FormRecordsArray,
+    initiatorDeclaration,
   } = req.body;
 
   if (!approver_id) {
@@ -32,14 +36,60 @@ exports.InsertDifferentialPressure = async (req, res) => {
       .json({ error: true, message: "Please provide a reviewer." });
   }
 
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  if (!initiatorComment) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an initiator comment." });
+  }
+
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
     const user = await User.findOne({
-      where: {
-        user_id: req.user.userId,
-      },
+      where: { user_id: req.user.userId },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    let initiatorAttachment = null;
+    const supportingDocs = {};
+
+    // Process files
+    req.files.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname.startsWith("FormRecordsArray[")) {
+        // Extract the index from the fieldname
+        const match = file.fieldname.match(
+          /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
+        );
+        if (match) {
+          const index = match[1];
+          supportingDocs[index] = file;
+        }
+      }
     });
 
     // Create new Differential Pressure Form
@@ -56,7 +106,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
         limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        initiatorComment: initiatorComment,
+        initiatorDeclaration: initiatorDeclaration,
       },
+
       { transaction }
     );
 
@@ -69,7 +123,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: getElogDocsUrl(req?.files[index]),
+        supporting_docs: getElogDocsUrl(supportingDocs[index]),
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
@@ -110,6 +164,10 @@ exports.EditDifferentialPressure = async (req, res) => {
     reviewer_id,
     approver_id,
     DifferentialPressureRecords,
+    email,
+    password,
+    initiatorComment,
+    initiatorDeclaration,
   } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -119,10 +177,56 @@ exports.EditDifferentialPressure = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }
 
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
+    const user = await User.findOne({
+      where: { user_id: req.user.userId },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    let initiatorAttachment = null;
+    const supportingDocs = {};
+
+    // Process files
+    req.files.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
+        // Extract the index from the fieldname
+        const match = file.fieldname.match(
+          /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
+        );
+        if (match) {
+          const index = match[1];
+          supportingDocs[index] = file;
+        }
+      }
+    });
+
     // Find the form by ID
     const form = await DifferentialPressureForm.findOne({
       where: { form_id: form_id },
@@ -143,6 +247,9 @@ exports.EditDifferentialPressure = async (req, res) => {
         limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        initiatorComment: initiatorComment,
+        initiatorDeclaration: initiatorDeclaration,
       },
       { transaction }
     );
@@ -166,7 +273,7 @@ exports.EditDifferentialPressure = async (req, res) => {
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: getElogDocsUrl(req?.files[index]),
+        supporting_docs: getElogDocsUrl(supportingDocs[index]),
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
@@ -236,6 +343,16 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
       {
         model: DifferentialPressureRecord,
       },
+      {
+        model: User,
+        as: "reviewer", // Use the consistent alias 'reviewer'
+        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+      },
+      {
+        model: User,
+        as: "approver", // Use the consistent alias 'approver'
+        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+      },
     ],
   })
     .then((result) => {
@@ -254,7 +371,7 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
 
 //send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, email, password } = req.body;
+  const { form_id, email, password, initiatorDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -318,6 +435,8 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "under review",
         stage: 2,
+        initiatorDeclaration: initiatorDeclaration,
+        initiatorAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -342,7 +461,7 @@ exports.SendDPElogForReview = async (req, res) => {
 
 // change status of differential pressure elog from review to open
 exports.SendDPElogfromReviewToOpen = async (req, res) => {
-  const { form_id, email, password } = req.body;
+  const { form_id, email, password, reviewerDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -406,6 +525,8 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       {
         status: "initiation",
         stage: 1,
+        reviewerDeclaration: reviewerDeclaration,
+        reviewerAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -430,7 +551,8 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 
 // send differential pressure elog from review to approval
 exports.SendDPfromReviewToApproval = async (req, res) => {
-  const { form_id, reviewComment, email, password } = req.body;
+  const { form_id, reviewComment, email, password, reviewerDeclaration } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -500,6 +622,9 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         status: "under approval",
         stage: 3,
         reviewComment: reviewComment,
+        reviewerDeclaration: reviewerDeclaration,
+        reviewerAttachment: getElogDocsUrl(req?.file),
+        date_of_review: new Date(),
       },
       { transaction }
     );
@@ -524,7 +649,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 
 // send differential pressure elog from under approval to open
 exports.SendDPfromApprovalToOpen = async (req, res) => {
-  const { form_id, email, password } = req.body;
+  const { form_id, email, password, approverDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -588,6 +713,8 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       {
         status: "initiation",
         stage: 1,
+        approverDeclaration: approverDeclaration,
+        approverAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -612,7 +739,8 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
 // APPROVE differential pressure elog
 exports.ApproveDPElog = async (req, res) => {
-  const { form_id, approverComment, email, password } = req.body;
+  const { form_id, approverComment, email, password, approverDeclaration } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -682,6 +810,9 @@ exports.ApproveDPElog = async (req, res) => {
         status: "approved",
         stage: 4,
         approverComment: approverComment,
+        approverDeclaration: approverDeclaration,
+        approverAttachment: getElogDocsUrl(req?.file),
+        date_of_approval: new Date(),
       },
       { transaction }
     );

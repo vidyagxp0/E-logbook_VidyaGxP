@@ -56,6 +56,7 @@ router.get(
 router.put(
   "/send-DP-elog-for-review",
   Auth.checkUserJwtToken,
+  upload.single("initiatorAttachment"),
   Auth.authorizeUserRole(1, 1),
   DifferentialPressureProcess.SendDPElogForReview
 );
@@ -64,6 +65,7 @@ router.put(
 router.put(
   "/send-DP-elog-from-review-to-open",
   Auth.checkUserJwtToken,
+  upload.single("initiatorAttachment"),
   Auth.authorizeUserRole(1, 2),
   DifferentialPressureProcess.SendDPElogfromReviewToOpen
 );
@@ -72,6 +74,7 @@ router.put(
 router.put(
   "/send-DP-from-review-to-approval",
   Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(1, 2),
   DifferentialPressureProcess.SendDPfromReviewToApproval
 );
@@ -80,6 +83,7 @@ router.put(
 router.put(
   "/send-DP-elog-from-approval-to-open",
   Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
   Auth.authorizeUserRole(1, 3),
   DifferentialPressureProcess.SendDPfromApprovalToOpen
 );
@@ -88,6 +92,7 @@ router.put(
 router.put(
   "/approve-DP-elog",
   Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
   Auth.authorizeUserRole(1, 3),
   DifferentialPressureProcess.ApproveDPElog
 );

@@ -14,17 +14,19 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
-app.use(helmet({
-  crossOriginResourcePolicy: false,
-  crossOriginEmbedderPolicy: false,
-}));
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
 app.use("/differential-pressure", differentialPressureRoutes);
 app.use("/temprature-record", tempratureRecordRoutes);
 app.use("/site", siteRoutes);
-app.use(express.static(path.join(__dirname, 'documents')));
+app.use(express.static(path.join(__dirname, "documents")));
 
 server.listen(config.development.PORT, "0.0.0.0", async () => {
   connectToDB()
