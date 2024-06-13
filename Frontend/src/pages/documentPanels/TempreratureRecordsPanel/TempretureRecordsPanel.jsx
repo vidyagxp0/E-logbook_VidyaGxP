@@ -97,7 +97,11 @@ export default function TempretureRecordsPanel() {
         });
     } else if (popupAction === "sendFromApprovalToApproved") {
       axios
-        .put("http://localhost:1000/temprature-record/approve-TR-elog", data, config)
+        .put(
+          "http://localhost:1000/temprature-record/approve-TR-elog",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully approved");
           navigate(-1);
@@ -148,10 +152,7 @@ export default function TempretureRecordsPanel() {
       setEditData((prevState) => ({
         ...prevState,
 
-        TempratureRecords: [
-          ...prevState.TempratureRecords,
-          newRow,
-        ],
+        TempratureRecords: [...prevState.TempratureRecords, newRow],
       }));
     }
   };
@@ -175,25 +176,23 @@ export default function TempretureRecordsPanel() {
     setEditData({ ...editData, [name]: value });
   };
 
-  const handleDeleteFile = (index) => {
-    if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
-      const updatedGridData = editData.TempratureRecords.map(
-        (item, i) => {
-          if (i === index) {
-            return { ...item, supporting_docs: null };
-          }
-          return item;
-        }
-      );
-      setEditData((prevState) => ({
-        ...prevState,
-        TempratureRecords: updatedGridData,
-      }));
-    }
-  };
+  // const handleDeleteFile = (index) => {
+  //   if (
+  //     location.state?.stage === 1 &&
+  //     location.state?.initiator_id === userDetails.userId
+  //   ) {
+  //     const updatedGridData = editData.TempratureRecords.map((item, i) => {
+  //       if (i === index) {
+  //         return { ...item, supporting_docs: null };
+  //       }
+  //       return item;
+  //     });
+  //     setEditData((prevState) => ({
+  //       ...prevState,
+  //       TempratureRecords: updatedGridData,
+  //     }));
+  //   }
+  // };
 
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.TempratureRecords];
@@ -492,116 +491,121 @@ export default function TempretureRecordsPanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords.map(
-                        (item, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.unique_id}</td>
-                            <td>
-                              <input value={item.time} readOnly />
-                            </td>
-                            <td>
+                      {editData?.TempratureRecords.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.unique_id}</td>
+                          <td>
+                            <input value={item.time} readOnly />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.temprature_record}
+                              className={`${
+                                item.temprature_record < 0.6
+                                  ? "limit"
+                                  : item.temprature_record > 2.6
+                                  ? "limit"
+                                  : ""
+                              }`}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].temprature_record =
+                                  e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !==
+                                  userDetails.userId
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.remarks}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].remarks = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !==
+                                  userDetails.userId
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.checked_by}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].checked_by = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly
+                            />
+                          </td>
+                          <td style={{ width: "250px" }}>
+                            <div className="d-flex">
                               <input
-                                type="number"
-                                value={item.temprature_record}
-                                className={`${
-                                  item.temprature_record < 0.6
-                                    ? "limit"
-                                    : item.temprature_record > 2.6
-                                    ? "limit"
-                                    : ""
-                                }`}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.TempratureRecords,
-                                  ];
-                                  newData[index].temprature_record =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    TempratureRecords: newData,
-                                  });
-                                }}
-                                readOnly={
+                                // value={item.supporting_docs}
+                                type="file"
+                                name="supporting_docs"
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
+                                disabled={
                                   location.state?.stage !== 1 ||
                                   location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
-                            </td>
-                            <td>
-                              <input
-                                value={item.remarks}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.TempratureRecords,
-                                  ];
-                                  newData[index].remarks = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    TempratureRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.TempratureRecords,
-                                  ];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    TempratureRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
-                            </td>
-                            <td style={{ width: "250px" }}>
-                              <div className="d-flex">
-                                <input
-                                  // value={item.supporting_docs}
-                                  type="file"
-                                  name='supporting_docs'
-                                  onChange={(e) =>
-                                    handleFileChange(index, e.target.files[0])
-                                  }
-                                />
 
-                                {item.supporting_docs && (
-                                  <DeleteIcon
-                                    style={{ color: "red" }}
-                                    onClick={() => handleDeleteFile(index)}
-                                  />
-                                )}
-                              </div>
-                            </td>
+                              {item.supporting_docs && (
+                                <div>
+                                  <h3>
+                                    Selected File:{" "}
+                                    <a
+                                      href={item.supporting_docs}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      View File
+                                    </a>
+                                  </h3>
+                                </div>
+                              )}
+                            </div>
+                          </td>
 
-                            <td>
-                              <DeleteIcon onClick={() => deleteRow(index)} />
-                              {item.limit !== "" &&
-                                (item.limit < 0.6 || item.limit > 2.6) && (
-                                  <button
-                                    className="deviation-btn"
-                                    onClick={() => {
-                                      navigate("/chart");
-                                    }}
-                                  >
-                                    Launch Deviation
-                                  </button>
-                                )}
-                            </td>
-                          </tr>
-                        )
-                      )}
+                          <td>
+                            <DeleteIcon onClick={() => deleteRow(index)} />
+                            {item.limit !== "" &&
+                              (item.limit < 0.6 || item.limit > 2.6) && (
+                                <button
+                                  className="deviation-btn"
+                                  onClick={() => {
+                                    navigate("/chart");
+                                  }}
+                                >
+                                  Launch Deviation
+                                </button>
+                              )}
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
 

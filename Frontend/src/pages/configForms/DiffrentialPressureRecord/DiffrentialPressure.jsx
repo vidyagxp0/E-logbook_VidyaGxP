@@ -7,14 +7,17 @@ import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
+import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 
 export default function DiffrentialPressure() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
   const [reviewers, setReviewers] = useState([]);
   const [approvers, setApprovers] = useState([]);
   const [User, setUser] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
   const location = useLocation();
@@ -81,6 +84,54 @@ export default function DiffrentialPressure() {
       });
   }, []);
 
+  const handlePopupClose = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handlePopupSubmit = (credentials) => {
+    if (
+      differentialPRecord.site_id === null ||
+      differentialPRecord.approver_id === null ||
+      differentialPRecord.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
+      return;
+    }
+
+    if (differentialPRecord.initiatorComment === "") {
+      toast.error("Please provide an initiator comment!");
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    differentialPRecord.email = credentials?.email;
+    differentialPRecord.password = credentials?.password;
+    differentialPRecord.initiatorDeclaration = credentials?.declaration
+
+    axios
+      .post(
+        "http://localhost:1000/differential-pressure/post-differential-pressure",
+        differentialPRecord,
+        config
+      )
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
+  };
+
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
@@ -116,41 +167,6 @@ export default function DiffrentialPressure() {
   // const currentDate = new Date();
   // const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
-  const handleSave = (data) => {
-    if (
-      data.site_id === null ||
-      data.approver_id === null ||
-      data.reviewer_id === null
-    ) {
-      toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
-      );
-      return;
-    }
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "multipart/form-data",
-      },
-    };
-
-    axios
-      .post(
-        "http://localhost:1000/differential-pressure/post-differential-pressure",
-        differentialPRecord,
-        config
-      )
-      .then(() => {
-        toast.success("eLog Saved Successfully!");
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.error("There was an error creating eLog:", error);
-        toast.error("There was an error creating eLog");
-      });
-  };
-
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
@@ -169,6 +185,9 @@ export default function DiffrentialPressure() {
       review_comments: "",
       compression_area: "",
       limit: null,
+      initiatorComment: "",
+      initiatorAttachment: null,
+      initiatorDeclaration: ""
     }
   );
 
@@ -183,10 +202,16 @@ export default function DiffrentialPressure() {
   };
 
   const handleFileChange = (index, file) => {
-    console.log(file);
     const updatedData = [...allTableData];
     updatedData[index].supporting_docs = file;
     setAllTableData(updatedData);
+  };
+
+  const handleInitiatorFileChange = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      initiatorAttachment: e.target.files[0],
+    });
   };
 
   return (
@@ -232,7 +257,9 @@ export default function DiffrentialPressure() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                      setIsSelectedDetails(false),
+                        setIsSelectedGeneral(true),
+                        setInitiatorRemarks(false);
                     }}
                   >
                     General Information
@@ -244,10 +271,26 @@ export default function DiffrentialPressure() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                      setIsSelectedDetails(true),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false);
                     }}
                   >
                     Details
+                  </div>
+                  <div
+                    className={`${
+                      initiatorRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(true);
+                    }}
+                  >
+                    Initiator Remarks
                   </div>
                 </div>
                 {/* <div className="analytics-btn">
@@ -408,7 +451,8 @@ export default function DiffrentialPressure() {
                   </div>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Reviewer</label>
+                      <label className="color-label">Reviewer
+                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
                       <div>
                         <select
                           value={differentialPRecord.reviewer_id}
@@ -435,7 +479,8 @@ export default function DiffrentialPressure() {
                       </div>
                     </div>
                     <div className="group-input">
-                      <label className="color-label">Approver</label>
+                      <label className="color-label">Approver
+                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
                       <div>
                         <select
                           value={differentialPRecord.approver_id}
@@ -601,35 +646,71 @@ export default function DiffrentialPressure() {
                   </table>
                 </>
               ) : null}
+
+              {initiatorRemarks === true ? (
+                <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator Comment
+                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <div className="instruction"></div>
+                      <input
+                        name="initiatorComment"
+                        onChange={(e) =>
+                          setDifferentialPRecord({
+                            initiatorComment: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                        htmlFor="initiatorAttachment"
+                        className="color-label"
+                        name="initiatorAttachment"
+                      >
+                        Initiator Attachment
+                      </label>
+                      <input
+                        type="file"
+                        name="initiatorAttachment"
+                        id="initiatorAttachment"
+                        onChange={handleInitiatorFileChange}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={User?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input type="text" value={date} readOnly />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSave(differentialPRecord);
+                  setIsPopupOpen(true);
                 }}
               >
                 Save
               </button>
-              {isSelectedGeneral === true ? (
-                <button
-                  className="themeBtn"
-                  onClick={() => {
-                    setIsSelectedDetails(true), setIsSelectedGeneral(false);
-                  }}
-                >
-                  Next
-                </button>
-              ) : (
-                <button
-                  className="themeBtn"
-                  onClick={() => {
-                    setIsSelectedGeneral(true), setIsSelectedDetails(false);
-                  }}
-                >
-                  Back
-                </button>
-              )}
               <button
                 className="themeBtn"
                 onClick={() => navigate("/dashboard")}
@@ -637,6 +718,12 @@ export default function DiffrentialPressure() {
                 Exit
               </button>
             </div>
+            {isPopupOpen && (
+              <UserVerificationPopUp
+                onClose={handlePopupClose}
+                onSubmit={handlePopupSubmit}
+              />
+            )}
           </div>
         </div>
       </div>

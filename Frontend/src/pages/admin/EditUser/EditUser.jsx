@@ -105,18 +105,25 @@ function EditUser() {
     };
 
     axios
-      .put(`http://localhost:1000/user/edit-user/${location.state.id}`, resultObj, {
-        headers: myHeaders,
-      })
+      .put(
+        `http://localhost:1000/user/edit-user/${location.state.id}`,
+        resultObj,
+        {
+          headers: myHeaders,
+        }
+      )
       .then(() => {
         toast.success("User Details Updated Successfully");
         navigate(-1);
       })
       .catch((error) => {
-        toast.error("Couldn't Update User Details " + error.response.data.message);
+        toast.error(
+          "Couldn't Update User Details " + error.response.data.message
+        );
       });
-
   };
+
+  console.log(formData);
 
   const buttonStyle = {
     backgroundColor: "#EFA035",
@@ -211,6 +218,21 @@ function EditUser() {
                 id="profile_pic"
                 onChange={handleFileChange}
               />
+              {formData.profile_pic && (
+                <div>
+                  <h3>
+                    Selected File:{" "}
+                    <a
+                      href={formData.profile_pic}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View File
+                    </a>
+                  </h3>
+                </div>
+              )}
+              {/* {file && <p>Selected File: {file.name}</p>} */}
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="roles" style={{ color: "#EFA035" }}>
