@@ -4,10 +4,11 @@ import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 
-function EditUser() {
+function DuplicateUser() {
   const [roleGroups, setRoleGroups] = useState([]);
   const [userInfo, setUserInfo] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -17,7 +18,7 @@ function EditUser() {
     email: "",
     age: "",
     gender: "",
-    profile_pic: "",
+    password: "",
     rolesArray: [],
   });
 
@@ -49,11 +50,11 @@ function EditUser() {
   useEffect(() => {
     // Initialize form data only when userInfo or selectedOptions is updated
     setFormData({
-      name: userInfo.name || "",
-      email: userInfo.email || "",
+      name: "",
+      email: "",
+      password: "",
       age: userInfo.age || "",
       gender: userInfo.gender || "",
-      profile_pic: userInfo.profile_pic || "",
       rolesArray: selectedOptions,
     });
   }, [userInfo]);
@@ -62,23 +63,6 @@ function EditUser() {
     label: role.roleGroup,
     value: role.roleGroup_id,
   }));
-  function filterObject(obj) {
-    const result = {};
-
-    Object.keys(obj).forEach((key) => {
-      const value = obj[key];
-      if (
-        value !== "" &&
-        value !== null &&
-        value !== undefined &&
-        !(Array.isArray(value) && value.length === 0)
-      ) {
-        result[key] = value;
-      }
-    });
-
-    return result;
-  }
 
   const handleChange = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
@@ -86,44 +70,41 @@ function EditUser() {
     setFormData((prevData) => ({ ...prevData, rolesArray: selectedOptions }));
   };
 
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, profile_pic: e.target.files[0] });
-  };
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+    if (name === "password") {
+      if (value.length < 8 || value.length > 25) {
+        setError("Password must be between 8 and 25 characters long.");
+      } else {
+        setError("");
+      }
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let resultObj = filterObject(formData);
-
+    if (formData.password.length < 8 || formData.password.length > 25) {
+        setError("Password must be between 8 and 25 characters long.");
+        return;
+      }
     const myHeaders = {
-      Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
-      "Content-Type": "multipart/form-data",
-    };
-
-    axios
-      .put(
-        `http://localhost:1000/user/edit-user/${location.state.id}`,
-        resultObj,
-        {
+        Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+        "Content-Type": "application/json",
+      };
+  
+      axios
+        .post("http://localhost:1000/user/add-user", formData, {
           headers: myHeaders,
-        }
-      )
-      .then(() => {
-        toast.success("User Details Updated Successfully");
-        navigate(-1);
-      })
-      .catch((error) => {
-        toast.error(
-          "Couldn't Update User Details " + error.response.data.message
-        );
-      });
+        })
+        .then(() => {
+          toast.success("Dupliacted User successfully!!");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error("Couldn't duplicate user! " + error.response.data.message);
+        });
   };
-
-  console.log(formData);
 
   const buttonStyle = {
     backgroundColor: "#EFA035",
@@ -152,7 +133,7 @@ function EditUser() {
         <div id="config-form-document-page " className=" p-2 shadow-2xl">
           <form onSubmit={handleSubmit} style={{}}>
             <h2 style={{ textAlign: "center" }}>
-              <div className="sub-head"> Edit User</div>
+              <div className="sub-head"> Duplicate User</div>
             </h2>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="name" style={{ color: "#EFA035" }}>
@@ -162,9 +143,9 @@ function EditUser() {
                 type="text"
                 name="name"
                 id="name"
-                // value={userInfo.name}
+                required={true}
                 onChange={handleInputChange}
-                value={formData.name}
+                // value={formData.name}
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
@@ -175,9 +156,9 @@ function EditUser() {
                 type="email"
                 name="email"
                 id="email"
-                // value={userInfo.email}
+                required={true}
                 onChange={handleInputChange}
-                value={formData.email}
+                // value={formData.email}
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
@@ -189,6 +170,7 @@ function EditUser() {
                 onChange={handleInputChange}
                 value={formData.age}
                 min={0}
+                readOnly
               />
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
@@ -201,6 +183,7 @@ function EditUser() {
                 // value={userInfo.gender}
                 onChange={handleInputChange}
                 value={formData.gender}
+                disabled
               >
                 <option>--select--</option>
                 <option value="male">Male</option>
@@ -209,30 +192,18 @@ function EditUser() {
               </select>
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
-              <label htmlFor="profilePic" style={{ color: "#EFA035" }}>
-                Profile Picture
+              <label htmlFor="password" style={{ color: "#EFA035" }}>
+                Password
               </label>
               <input
-                type="file"
-                name="profile_pic"
-                id="profile_pic"
-                onChange={handleFileChange}
+                type="password"
+                name="password"
+                id="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
               />
-              {formData.profile_pic && (
-                <div>
-                  <h3>
-                    Selected File:{" "}
-                    <a
-                      href={formData.profile_pic}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View File
-                    </a>
-                  </h3>
-                </div>
-              )}
-              {/* {file && <p>Selected File: {file.name}</p>} */}
+              {error && <div style={{ color: "red" }}>{error}</div>}
             </div>
             <div className="group-input" style={{ margin: "15px" }}>
               <label htmlFor="roles" style={{ color: "#EFA035" }}>
@@ -246,6 +217,7 @@ function EditUser() {
                   options={options}
                   value={selectedOptions}
                   isMulti
+                  isDisabled={true}
                 />
               ) : (
                 <p>Loading roles...</p>
@@ -253,7 +225,7 @@ function EditUser() {
             </div>
             <div style={buttonContainerStyle}>
               <button type="submit" style={buttonStyle}>
-                Edit User
+                Duplicate User
               </button>
             </div>
           </form>
@@ -263,4 +235,4 @@ function EditUser() {
   );
 }
 
-export default EditUser;
+export default DuplicateUser;

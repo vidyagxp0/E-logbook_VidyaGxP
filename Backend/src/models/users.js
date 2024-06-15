@@ -36,6 +36,9 @@ const User = sequelize.define("User", {
   gender: {
     type: DataTypes.STRING,
   },
+  profile_pic: {
+    type: DataTypes.STRING,
+  },
 });
 
 // User.belongsToMany(Project, { through: UserProject });

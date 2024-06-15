@@ -3,7 +3,6 @@ import "../General.css";
 import "./CreateRecordModal.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useSelector } from "react-redux";
 
 function CreateRecordModal(_props) {
   const [division, setDivision] = useState(null);
@@ -11,7 +10,6 @@ function CreateRecordModal(_props) {
   const [sites, setSites] = useState([]);
   const [project, setProject] = useState("");
   const [processVisible, setProcessVisible] = useState(false);
-  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
@@ -21,15 +19,16 @@ function CreateRecordModal(_props) {
         const response = await axios.get(
           "http://localhost:1000/site/get-sites"
         );
-        const userSiteIds = userDetails.roles
+        const userSiteIds = await userDetails.roles
           .filter((role) => role.role_id === 1 || role.role_id === 5)
           .map((role) => role.site_id);
 
         // Filter sites based on user's roles
-        const filteredSites = response.data.message.filter((site) =>
+        const filteredSites = await response.data.message.filter((site) =>
           userSiteIds.includes(site.site_id)
         );
 
+        
         setSites(filteredSites);
       } catch (error) {
         console.error("Error fetching sites:", error);
@@ -43,16 +42,19 @@ function CreateRecordModal(_props) {
     const fetchProcesses = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1000/process/get-processes"
+          "http://localhost:1000/differential-pressure/get-processes"
         );
 
-        const userSiteIds = userDetails.roles
-          .filter((role) => role.role_id === 1 || role.role_id === 5)
-          .map((role) => role.site_id);
+        const filteredProcessIds = userDetails.roles
+          .filter(
+            (role) =>
+              (role.role_id === 1 || role.role_id === 5) && role.site_id === division.site_id
+          )
+          .map((role) => role.process_id);
 
         // Filter processes based on user's roles
         const filteredProcesses = response.data.message.filter((process) =>
-          userSiteIds.includes(process.process_id)
+          filteredProcessIds.includes(process.process_id)
         );
         setProcesses(filteredProcesses);
       } catch (error) {
@@ -65,10 +67,6 @@ function CreateRecordModal(_props) {
     }
   }, [processVisible]);
 
-  const filteredSites = sites.filter(() =>
-    loggedInUser.roles.some((role) => role.site_id === 1 || role.site_id === 5)
-  );
-
   const handleSelectProcess = (element) => {
     setProject(element.process);
     switch (element.process_id) {
@@ -79,17 +77,17 @@ function CreateRecordModal(_props) {
         break;
       case 2:
         navigate("/area-and-equipment-panel", {
-          state: { site_id: division },
+          state: division,
         });
         break;
       case 3:
         navigate("/equipment-cleaning-checklist", {
-          state: { site_id: division },
+          state: division,
         });
         break;
       case 4:
         navigate("/temperature-records", {
-          state: { site_id: division },
+          state: division,
         });
         break;
       default:
@@ -110,7 +108,7 @@ function CreateRecordModal(_props) {
               <div className="division">
                 <div className="head">Site/Location</div>
                 <div className="select-list division-list">
-                  {filteredSites.map((item) => (
+                  {sites.map((item) => (
                     <div
                       className={division === item.site ? "active" : ""}
                       key={item.id}

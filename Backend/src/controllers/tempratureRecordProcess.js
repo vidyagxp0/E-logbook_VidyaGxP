@@ -1,14 +1,14 @@
-const DifferentialPressureForm = require("../models/differentialPressureForm");
-const DifferentialPressureRecord = require("../models/differentialPressureRecords");
-const Process = require("../models/processes");
+const TempratureProcessForm = require("../models/tempratureProcessForm");
+const TempratureProcessRecord = require("../models/tempratureProcessRecords");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
 const UserRole = require("../models/userRoles");
 const { Op, ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
+const { getElogDocsUrl } = require("../middlewares/authentication");
 
-// Fill Differential pressure form and insert its records.
-exports.InsertDifferentialPressure = async (req, res) => {
+// Fill tempratre record form and insert its records.
+exports.InsertTempratureRecord = async (req, res) => {
   const {
     site_id,
     description,
@@ -17,7 +17,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
+    initiatorComment,
+    email,
+    password,
     FormRecordsArray,
+    initiatorDeclaration,
   } = req.body;
 
   if (!approver_id) {
@@ -31,18 +35,64 @@ exports.InsertDifferentialPressure = async (req, res) => {
       .json({ error: true, message: "Please provide a reviewer." });
   }
 
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  if (!initiatorComment) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an initiator comment." });
+  }
+
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
     const user = await User.findOne({
-      where: {
-        user_id: req.user.userId,
-      },
+      where: { user_id: req.user.userId },
+      transaction,
     });
 
-    // Create new Differential Pressure Form
-    const newForm = await DifferentialPressureForm.create(
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    let initiatorAttachment = null;
+    const supportingDocs = {};
+
+    // Process files
+    req.files.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname.startsWith("FormRecordsArray[")) {
+        // Extract the index from the fieldname
+        const match = file.fieldname.match(
+          /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
+        );
+        if (match) {
+          const index = match[1];
+          supportingDocs[index] = file;
+        }
+      }
+    });
+
+    // Create new temperature record Form
+    const newForm = await TempratureProcessForm.create(
       {
         site_id: site_id,
         initiator_id: user.user_id,
@@ -55,23 +105,29 @@ exports.InsertDifferentialPressure = async (req, res) => {
         limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        initiatorComment: initiatorComment,
+        initiatorDeclaration: initiatorDeclaration,
       },
+
       { transaction }
     );
 
     // Check if FormRecordsArray is provided
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-      const formRecords = FormRecordsArray.map((record) => ({
+      const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
         time: record?.time, // Assuming time was meant here instead of unique_id again
-        differential_pressure: record?.differential_pressure,
+        temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: record?.supporting_docs,
+        supporting_docs: record?.supporting_docs
+          ? record.supporting_docs
+          : getElogDocsUrl(supportingDocs[index]),
       }));
 
-      await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+      await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
     }
 
     // Commit the transaction
@@ -97,8 +153,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
   }
 };
 
-// edit differential pressure elog details
-exports.EditDifferentialPressure = async (req, res) => {
+// edit tempratre record elog details
+exports.EditTempratureRecord = async (req, res) => {
+  
   const {
     form_id,
     site_id,
@@ -108,7 +165,11 @@ exports.EditDifferentialPressure = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    DifferentialPressureRecords,
+    TempratureRecords,
+    email,
+    password,
+    initiatorComment,
+    initiatorDeclaration,
   } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -118,12 +179,58 @@ exports.EditDifferentialPressure = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }
 
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
+    const user = await User.findOne({
+      where: { user_id: req.user.userId },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    let initiatorAttachment = null;
+    const supportingDocs = {};
+
+    // Process files
+    req.files.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname.startsWith("TempratureRecords[")) {
+        // Extract the index from the fieldname
+        const match = file.fieldname.match(
+          /TempratureRecords\[(\d+)\]\[supporting_docs\]/
+        );
+        if (match) {
+          const index = match[1];
+          supportingDocs[index] = file;
+        }
+      }
+    });
+
     // Find the form by ID
-    const form = await DifferentialPressureForm.findOne({
+    const form = await TempratureProcessForm.findOne({
       where: { form_id: form_id },
     });
 
@@ -142,33 +249,35 @@ exports.EditDifferentialPressure = async (req, res) => {
         limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        initiatorComment: initiatorComment,
+        initiatorDeclaration: initiatorDeclaration,
       },
       { transaction }
     );
 
     // Update the Form Records if provided
-    if (
-      Array.isArray(DifferentialPressureRecords) &&
-      DifferentialPressureRecords.length > 0
-    ) {
+    if (Array.isArray(TempratureRecords) && TempratureRecords.length > 0) {
       // First, delete existing records for the form
-      await DifferentialPressureRecord.destroy({
+      await TempratureProcessRecord.destroy({
         where: { form_id: form_id },
         transaction,
       });
 
       // Then, create new records
-      const formRecords = DifferentialPressureRecords.map((record) => ({
+      const formRecords = TempratureRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
         time: record?.time,
-        differential_pressure: record?.differential_pressure,
+        temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: record?.supporting_docs,
+        supporting_docs: record?.supporting_docs
+          ? record?.supporting_docs
+          : getElogDocsUrl(supportingDocs[index]),
       }));
 
-      await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+      await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
     }
 
     // Commit the transaction
@@ -194,8 +303,8 @@ exports.EditDifferentialPressure = async (req, res) => {
   }
 };
 
-//get a differential pressure elog by id
-exports.GetDifferentialPressureElog = async (req, res) => {
+//get a tempratre record elog by id
+exports.GetTempratureRecordElog = async (req, res) => {
   const form_id = req.params.id;
 
   if (!form_id) {
@@ -204,13 +313,13 @@ exports.GetDifferentialPressureElog = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }
 
-  DifferentialPressureForm.findOne({
+  TempratureProcessForm.findOne({
     where: {
       form_id: form_id,
     },
     include: [
       {
-        model: DifferentialPressureRecord,
+        model: TempratureProcessRecord,
       },
     ],
   })
@@ -228,12 +337,22 @@ exports.GetDifferentialPressureElog = async (req, res) => {
     });
 };
 
-//get all the differential pressure elogs
-exports.GetAllDifferentialPressureElog = async (req, res) => {
-  DifferentialPressureForm.findAll({
+//get all the tempratre record elogs
+exports.GetAllTempratureRecordElog = async (req, res) => {
+  TempratureProcessForm.findAll({
     include: [
       {
-        model: DifferentialPressureRecord,
+        model: TempratureProcessRecord,
+      },
+      {
+        model: User,
+        as: "tpreviewer", // Use the consistent alias 'reviewer'
+        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+      },
+      {
+        model: User,
+        as: "tpapprover", // Use the consistent alias 'approver'
+        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
   })
@@ -251,9 +370,9 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
     });
 };
 
-//send differential pressure elog for review
-exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, email, password } = req.body;
+//send tempratre record elog for review
+exports.SendTRElogForReview = async (req, res) => {
+  const { form_id, email, password, initiatorDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -294,7 +413,7 @@ exports.SendDPElogForReview = async (req, res) => {
     }
 
     // Find the form
-    const form = await DifferentialPressureForm.findOne({
+    const form = await TempratureProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -317,6 +436,8 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "under review",
         stage: 2,
+        initiatorDeclaration: initiatorDeclaration,
+        initiatorAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -339,9 +460,9 @@ exports.SendDPElogForReview = async (req, res) => {
   }
 };
 
-// change status of differential pressure elog from review to open
-exports.SendDPElogfromReviewToOpen = async (req, res) => {
-  const { form_id, email, password } = req.body;
+// change status of tempratre record elog from review to open
+exports.SendTRElogfromReviewToOpen = async (req, res) => {
+  const { form_id, email, password, reviewerDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -382,7 +503,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     }
 
     // Find the form
-    const form = await DifferentialPressureForm.findOne({
+    const form = await TempratureProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -405,6 +526,8 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       {
         status: "initiation",
         stage: 1,
+        reviewerDeclaration: reviewerDeclaration,
+        reviewerAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -427,9 +550,10 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
   }
 };
 
-// send differential pressure elog from review to approval
-exports.SendDPfromReviewToApproval = async (req, res) => {
-  const { form_id, reviewComment, email, password } = req.body;
+// send tempratre record elog from review to approval
+exports.SendTRfromReviewToApproval = async (req, res) => {
+  const { form_id, reviewComment, email, password, reviewerDeclaration } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -475,7 +599,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     }
 
     // Find the form
-    const form = await DifferentialPressureForm.findOne({
+    const form = await TempratureProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -499,6 +623,9 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         status: "under approval",
         stage: 3,
         reviewComment: reviewComment,
+        reviewerDeclaration: reviewerDeclaration,
+        reviewerAttachment: getElogDocsUrl(req?.file),
+        date_of_review: new Date(),
       },
       { transaction }
     );
@@ -521,9 +648,9 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
   }
 };
 
-// send differential pressure elog from under approval to open
-exports.SendDPfromApprovalToOpen = async (req, res) => {
-  const { form_id, email, password } = req.body;
+// send tempratre record elog from under approval to open
+exports.SendTRfromApprovalToOpen = async (req, res) => {
+  const { form_id, email, password, approverDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -564,7 +691,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     }
 
     // Find the form
-    const form = await DifferentialPressureForm.findOne({
+    const form = await TempratureProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -587,6 +714,8 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       {
         status: "initiation",
         stage: 1,
+        approverDeclaration: approverDeclaration,
+        approverAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -609,9 +738,10 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
   }
 };
 
-// APPROVE differential pressure elog
-exports.ApproveDPElog = async (req, res) => {
-  const { form_id, approverComment, email, password } = req.body;
+// APPROVE tempratre record elog
+exports.ApproveTRElog = async (req, res) => {
+  const { form_id, approverComment, email, password, approverDeclaration } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -657,7 +787,7 @@ exports.ApproveDPElog = async (req, res) => {
     }
 
     // Find the form
-    const form = await DifferentialPressureForm.findOne({
+    const form = await TempratureProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -681,6 +811,9 @@ exports.ApproveDPElog = async (req, res) => {
         status: "approved",
         stage: 4,
         approverComment: approverComment,
+        approverDeclaration: approverDeclaration,
+        approverAttachment: getElogDocsUrl(req?.file),
+        date_of_approval: new Date(),
       },
       { transaction }
     );
@@ -734,20 +867,4 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
       message: `Error fetching users: ${error.message}`,
     });
   }
-};
-
-exports.getAllProcesses = async (req, res) => {
-  Process.findAll()
-    .then((result) => {
-      res.json({
-        error: false,
-        message: result,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: true,
-        message: "Couldn't find processes " + error,
-      });
-    });
 };

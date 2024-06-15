@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 function HeaderTop() {
   const navigate = useNavigate();
   const [User, setUser] = useState(null);
-////////////helllo
+
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   useEffect(() => {
     const requestOptions = {
@@ -79,12 +79,12 @@ function HeaderTop() {
             <div className="drop-container">
               <div className="drop-btn name-btn">
                 <div className="profile-img">
-                  <img src="amit_guru.jpg" alt="" />
+                  <img src={User?.profile_pic} alt="Profile Picture" />
                 </div>
               </div>
               <div className="drop-list">
                 <div className="image">
-                  <img src="amit_guru.jpg" alt="..." />
+                  <img src={User?.profile_pic} alt="..." />
                   <div className="manager-name">{User?.name}</div>
                 </div>
                 <Link to="#" className="drop-item">

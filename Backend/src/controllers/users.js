@@ -8,6 +8,7 @@ const Process = require("../models/processes");
 const Site = require("../models/sites");
 const RoleGroup = require("../models/roleGroups");
 const { sequelize } = require("../config/db");
+const { getFileUrl } = require("../middlewares/authentication");
 
 //register user
 exports.signup = async (req, res) => {
@@ -46,6 +47,7 @@ exports.signup = async (req, res) => {
         password: hashpass,
         age: age,
         gender: gender,
+        profile_pic: getFileUrl(req?.file),
       },
       { transaction }
     );
@@ -95,7 +97,7 @@ exports.signup = async (req, res) => {
 //Update user
 exports.editUser = async (req, res) => {
   // Check if request body is empty
-  if (Object.keys(req.body).length === 0) {
+  if (!req.body && !req.files) {
     return res.status(400).json({
       error: true,
       message: "Please provide details to update!",
@@ -112,6 +114,7 @@ exports.editUser = async (req, res) => {
       email: req.body.email,
       age: req.body.age,
       gender: req.body.gender,
+      profile_pic: getFileUrl(req?.file),
     };
 
     await User.update(userdetails, {
@@ -257,6 +260,7 @@ exports.getAUser = async (req, res) => {
       email: user.email,
       age: user.age,
       gender: user.gender,
+      profile_pic: user.profile_pic,
       roles: user.UserRoles.map((userRole) => ({
         label: userRole.RoleGroup.roleGroup,
         value: userRole.RoleGroup.roleGroup_id,

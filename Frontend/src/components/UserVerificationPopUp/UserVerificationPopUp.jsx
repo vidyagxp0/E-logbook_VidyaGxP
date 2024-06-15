@@ -1,14 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
-import './UserVerificationPopUp.css';
+import { useState } from "react";
+import "./UserVerificationPopUp.css";
 
 const UserVerificationPopUp = ({ onClose, onSubmit }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [declaration, setDeclaration] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ email, password });
+    onSubmit({ email, password, declaration });
   };
 
   return (
@@ -36,9 +37,22 @@ const UserVerificationPopUp = ({ onClose, onSubmit }) => {
               required
             />
           </div>
+          <div className="form-group">
+            <label htmlFor="declaration">Declaration</label>
+            <input
+              type="string"
+              value={declaration}
+              onChange={(e) => setDeclaration(e.target.value)}
+              required
+            />
+          </div>
           <div className="popup-buttons">
-            <button type="submit" className="btn">Submit</button>
-            <button type="button" className="btn" onClick={onClose}>Close</button>
+            <button type="submit" className="btn">
+              Submit
+            </button>
+            <button type="button" className="btn" onClick={onClose}>
+              Close
+            </button>
           </div>
         </form>
       </div>

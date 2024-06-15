@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import "./AddUser.css";
 import Select from "react-select";
 
-
 function AddNewUser() {
   const [roleGroups, setRoleGroups] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -18,6 +17,7 @@ function AddNewUser() {
     age: "",
     gender: "",
     password: "",
+    profile_pic: "",
     rolesArray: [],
   });
 
@@ -46,11 +46,19 @@ function AddNewUser() {
   ];
 
   const handleChange = (selectedOptions) => {
-    if (selectedOptions && selectedOptions.length && selectedOptions[selectedOptions.length - 1].value === "all") {
+    if (
+      selectedOptions &&
+      selectedOptions.length &&
+      selectedOptions[selectedOptions.length - 1].value === "all"
+    ) {
       setSelectedOptions(options.slice(1)); // Select all options except "Select All"
     } else {
       setSelectedOptions(selectedOptions);
     }
+  };
+
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, profile_pic: e.target.files[0] });
   };
 
   const handleInputChange = (event) => {
@@ -81,7 +89,7 @@ function AddNewUser() {
     }
     const myHeaders = {
       Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     };
 
     axios
@@ -101,6 +109,7 @@ function AddNewUser() {
       age: "",
       gender: "",
       password: "",
+      profile_pic: "",
       rolesArray: [],
     });
   };
@@ -129,12 +138,14 @@ function AddNewUser() {
     <>
       <div>
         <div id="main-form-container">
-          <div id="config-form-document-page" className="shadow-sm md:shadow-md lg:shadow-lg xl:shadow-xl 2xl:shadow-2xl inset-shadow-1 p-6">
+          <div
+            id="config-form-document-page"
+            className="shadow-sm md:shadow-md lg:shadow-lg xl:shadow-xl 2xl:shadow-2xl inset-shadow-1 p-6"
+          >
             <form onSubmit={handleSubmit} style={{}}>
-            <h2 style={{ textAlign: "center", }}>
-            <div className="sub-head"> Add User</div>
-             
-            </h2>
+              <h2 style={{ textAlign: "center" }}>
+                <div className="sub-head"> Add User</div>
+              </h2>
               <div className="group-input" style={{ margin: "15px" }}>
                 <label htmlFor="name" style={{ color: "#EFA035" }}>
                   Name
@@ -203,6 +214,17 @@ function AddNewUser() {
                   required
                 />
                 {error && <div style={{ color: "red" }}>{error}</div>}
+              </div>
+              <div className="group-input" style={{ margin: "15px" }}>
+                <label htmlFor="profilePic" style={{ color: "#EFA035" }}>
+                  Profile Picture
+                </label>
+                <input
+                  type="file"
+                  name="profile_pic"
+                  id="profile_pic"
+                  onChange={handleFileChange}
+                />
               </div>
               <div className="" style={{ margin: "15px" }}>
                 <label htmlFor="roles" style={{ color: "#EFA035" }}>

@@ -52,7 +52,7 @@ function authorizeUserRole(processId, roleId) {
         .json({ error: true, message: "Please provide a site ID." });
     }
 
-    if (hasAccess(userRoles, req.body?.site_id, processId, roleId)) {
+    if (hasAccess(userRoles, Number(req.body?.site_id), processId, roleId)) {
       next(); // User has access, proceed to the next middleware or route handler
     } else {
       res
@@ -74,6 +74,21 @@ function hasAccess(userRoles, site_id, processId, roleId) {
   );
 }
 
+const getFileUrl = (file) => {
+  if (file?.filename) {
+    return `http://localhost:1000/profile_pics/${file?.filename}`;
+  }
+};
+
+const getElogDocsUrl = (file) => {
+  console.log('>>>>>>>>>>>>>>>>>>>>>', file);
+  if (file?.filename) {
+    return `http://localhost:1000/elog_docs/${file?.filename}`;
+  }
+};
+
+module.exports.getFileUrl = getFileUrl;
+module.exports.getElogDocsUrl = getElogDocsUrl;
 module.exports.checkUserJwtToken = checkUserJwtToken;
 module.exports.checkAdminJwtToken = checkAdminJwtToken;
 module.exports.authorizeUserRole = authorizeUserRole;

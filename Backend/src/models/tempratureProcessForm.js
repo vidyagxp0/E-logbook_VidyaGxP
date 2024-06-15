@@ -3,7 +3,7 @@ const { DataTypes, Sequelize } = require("sequelize");
 const Site = require("./sites");
 const User = require("./users");
 
-const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
+const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   form_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -103,19 +103,18 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   approverDeclaration: {
     type: DataTypes.STRING,
   },
-
 });
 
-DifferentialPressureForm.belongsTo(Site, { foreignKey: "site_id" });
-Site.hasMany(DifferentialPressureForm, { foreignKey: "site_id" });
+TempratureProcessForm.belongsTo(Site, { foreignKey: "site_id" });
+Site.hasMany(TempratureProcessForm, { foreignKey: "site_id" });
 
-DifferentialPressureForm.belongsTo(User, { foreignKey: "initiator_id" });
-User.hasMany(DifferentialPressureForm, { foreignKey: "initiator_id" });
+TempratureProcessForm.belongsTo(User, { foreignKey: "initiator_id" });
+User.hasMany(TempratureProcessForm, { foreignKey: "initiator_id" });
 
-DifferentialPressureForm.belongsTo(User, { foreignKey: "reviewer_id", as: 'reviewer' });
-User.hasMany(DifferentialPressureForm, { foreignKey: "reviewer_id", as: 'reviewer' });
+TempratureProcessForm.belongsTo(User, { foreignKey: "reviewer_id", as: 'tpreviewer' });
+User.hasMany(TempratureProcessForm, { foreignKey: "reviewer_id", as: 'tpreviewer' });
 
-DifferentialPressureForm.belongsTo(User, { foreignKey: "approver_id", as: 'approver' });
-User.hasMany(DifferentialPressureForm, { foreignKey: "approver_id", as: 'approver' });
+TempratureProcessForm.belongsTo(User, { foreignKey: "approver_id", as: 'tpapprover' });
+User.hasMany(TempratureProcessForm, { foreignKey: "approver_id", as: 'tpapprover' });
 
-module.exports = DifferentialPressureForm;
+module.exports = TempratureProcessForm;
