@@ -9,12 +9,13 @@ import { hasAccess } from "../../components/userAuth/userAuth";
 function Dashboard() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
-  const [differentialPressureElogs, setDifferentialPressureElogs] = useState([]);
+  const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
+    []
+  );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
-
 
   useEffect(() => {
     const newConfig = {
@@ -133,7 +134,7 @@ function Dashboard() {
               <th>Date of initiation</th>
               <th>Short description</th>
               <th>Status</th>
-              <th>Process</th>
+              <th>Site</th>
             </tr>
           </thead>
           <tbody>
@@ -161,7 +162,15 @@ function Dashboard() {
                       <td>{item.date_of_initiation.split("T")[0]}</td>
                       <td>{item.description}</td>
                       <td>{item.status}</td>
-                      <td>Differential Pressure</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
                     </tr>
                   );
                 })
@@ -227,7 +236,15 @@ function Dashboard() {
                       <td>{item.date_of_initiation.split("T")[0]}</td>
                       <td>{item.description}</td>
                       <td>{item.status}</td>
-                      <td>Temperature Record</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
                     </tr>
                   );
                 })
@@ -264,11 +281,13 @@ function Dashboard() {
                     <td>{item.description}</td>
                     <td>{item.status}</td>
                     <td>
-                      {item.DifferentialPressureRecords
-                        ? "Differential Pressure"
-                        : item.TempratureRecords
-                        ? "Temperature Record"
-                        : null}
+                      {item.site_id === 1
+                        ? "India"
+                        : item.site_id === 2
+                        ? "Malaysia"
+                        : item.site_id === 3
+                        ? "EMEA"
+                        : "EU"}
                     </td>
                   </tr>
                 );

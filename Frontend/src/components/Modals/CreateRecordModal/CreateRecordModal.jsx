@@ -3,7 +3,6 @@ import "../General.css";
 import "./CreateRecordModal.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useSelector } from "react-redux";
 
 function CreateRecordModal(_props) {
   const [division, setDivision] = useState(null);
@@ -11,7 +10,6 @@ function CreateRecordModal(_props) {
   const [sites, setSites] = useState([]);
   const [project, setProject] = useState("");
   const [processVisible, setProcessVisible] = useState(false);
-  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
@@ -21,15 +19,16 @@ function CreateRecordModal(_props) {
         const response = await axios.get(
           "http://localhost:1000/site/get-sites"
         );
-        const userSiteIds = userDetails.roles
+        const userSiteIds = await userDetails.roles
           .filter((role) => role.role_id === 1 || role.role_id === 5)
           .map((role) => role.site_id);
 
         // Filter sites based on user's roles
-        const filteredSites = response.data.message.filter((site) =>
+        const filteredSites = await response.data.message.filter((site) =>
           userSiteIds.includes(site.site_id)
         );
 
+        
         setSites(filteredSites);
       } catch (error) {
         console.error("Error fetching sites:", error);
@@ -67,10 +66,6 @@ function CreateRecordModal(_props) {
       fetchProcesses();
     }
   }, [processVisible]);
-
-  const filteredSites = sites.filter(() =>
-    loggedInUser.roles.some((role) => role.site_id === 1 || role.site_id === 5)
-  );
 
   const handleSelectProcess = (element) => {
     setProject(element.process);
@@ -113,7 +108,7 @@ function CreateRecordModal(_props) {
               <div className="division">
                 <div className="head">Site/Location</div>
                 <div className="select-list division-list">
-                  {filteredSites.map((item) => (
+                  {sites.map((item) => (
                     <div
                       className={division === item.site ? "active" : ""}
                       key={item.id}

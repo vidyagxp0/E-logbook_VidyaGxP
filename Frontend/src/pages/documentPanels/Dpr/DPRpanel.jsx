@@ -89,7 +89,6 @@ export default function DPRpanel() {
     } else if (popupAction === "sendFromReviewToOpen") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
-      console.log(data);
       axios
         .put(
           "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
@@ -655,42 +654,19 @@ export default function DPRpanel() {
                             </td>
                             <td style={{ width: "250px" }}>
                               <div className="d-flex">
-                                <div style={{ position: "relative" }}>
-                                  <input
-                                    type="file"
-                                    name="supporting_docs"
-                                    onChange={(e) =>
-                                      handleFileChange(index, e.target.files[0])
-                                    }
-                                    style={{
-                                      opacity: 0,
-                                      position: "absolute",
-                                      zIndex: -1,
-                                    }}
-                                    disabled={
-                                      location.state?.stage !== 1 ||
-                                      location.state?.initiator_id !==
-                                        userDetails.userId
-                                    }
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      document
-                                        .querySelector(
-                                          `[name="supporting_docs"]`
-                                        )
-                                        .click()
-                                    }
-                                    disabled={
-                                      location.state?.stage !== 1 ||
-                                      location.state?.initiator_id !==
-                                        userDetails.userId
-                                    }
-                                  >
-                                    Choose File
-                                  </button>
-                                </div>
+                                <input
+                                  // value={item.supporting_docs}
+                                  type="file"
+                                  name="supporting_docs"
+                                  onChange={(e) =>
+                                    handleFileChange(index, e.target.files[0])
+                                  }
+                                  disabled={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
 
                                 {item.supporting_docs && (
                                   <div>
@@ -760,40 +736,16 @@ export default function DPRpanel() {
                       <label
                         htmlFor="initiatorAttachment"
                         className="color-label"
+                        name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <input
-                          type="file"
-                          name="initiatorAttachment"
-                          id="initiatorAttachment"
-                          onChange={handleInitiatorFileChange}
-                          style={{
-                            opacity: 0,
-                            position: "absolute",
-                            zIndex: -1,
-                          }}
-                          disabled={
-                            location.state?.stage !== 1 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document
-                              .getElementById("initiatorAttachment")
-                              .click()
-                          }
-                          disabled={
-                            location.state?.stage !== 1 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
-                        >
-                          Choose File
-                        </button>
-                      </div>
+                      <input
+                        type="file"
+                        name="initiatorAttachment"
+                        id="initiatorAttachment"
+                        onChange={handleInitiatorFileChange}
+                      />
                       {editData.initiatorAttachment && (
                         <div>
                           <h3>
@@ -866,40 +818,16 @@ export default function DPRpanel() {
                       <label
                         htmlFor="reviewerAttachment"
                         className="color-label"
+                        name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <input
-                          type="file"
-                          name="reviewerAttachment"
-                          id="reviewerAttachment"
-                          onChange={handleReviewerFileChange}
-                          style={{
-                            opacity: 0,
-                            position: "absolute",
-                            zIndex: -1,
-                          }}
-                          disabled={
-                            location.state?.stage !== 2 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document
-                              .getElementById("reviewerAttachment")
-                              .click()
-                          }
-                          disabled={
-                            location.state?.stage !== 2 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
-                        >
-                          Choose File
-                        </button>
-                      </div>
+                      <input
+                        type="file"
+                        name="reviewerAttachment"
+                        id="reviewerAttachment"
+                        onChange={handleReviewerFileChange}
+                      />
                       {editData.reviewerAttachment && (
                         <div>
                           <h3>
@@ -914,7 +842,6 @@ export default function DPRpanel() {
                           </h3>
                         </div>
                       )}
-                      {/* {file && <p>Selected File: {file.name}</p>} */}
                     </div>
                   </div>
 
@@ -973,40 +900,16 @@ export default function DPRpanel() {
                       <label
                         htmlFor="approverAttachment"
                         className="color-label"
+                        name="aproverAttachment"
                       >
                         Approver Attachment
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <input
-                          type="file"
-                          name="approverAttachment"
-                          id="approverAttachment"
-                          onChange={handleApproverFileChange}
-                          style={{
-                            opacity: 0,
-                            position: "absolute",
-                            zIndex: -1,
-                          }}
-                          disabled={
-                            location.state?.stage !== 3 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document
-                              .getElementById("approverAttachment")
-                              .click()
-                          }
-                          disabled={
-                            location.state?.stage !== 3 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
-                        >
-                          Choose File
-                        </button>
-                      </div>
+                      <input
+                        type="file"
+                        name="approverAttachment"
+                        id="approverAttachment"
+                        onChange={handleApproverFileChange}
+                      />
                       {editData.approverAttachment && (
                         <div>
                           <h3>

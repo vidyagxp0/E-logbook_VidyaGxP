@@ -9,9 +9,11 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 
 export default function TempretureRecordsPanel() {
-  // const editedData = useSelector((state) => state.dprPanelData.selectedRow);
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [initiatorRemarks, setInitiatorRemarks] = useState(false);
+  const [reviewerRemarks, setReviewerRemarks] = useState(false);
+  const [approverRemarks, setApproverRemarks] = useState(false);
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
@@ -44,11 +46,12 @@ export default function TempretureRecordsPanel() {
     const config = {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     };
 
     if (popupAction === "sendFromOpenToReview") {
+      data.initiatorDeclaration = credentials?.declaration;
       axios
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-for-review",
@@ -65,6 +68,8 @@ export default function TempretureRecordsPanel() {
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
+      data.reviewerDeclaration = credentials?.declaration;
+      data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
           "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
@@ -82,6 +87,9 @@ export default function TempretureRecordsPanel() {
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
+      data.reviewerDeclaration = credentials?.declaration;
+      data.reviewerAttachment = editData.reviewerAttachment;
+    
       axios
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
@@ -96,6 +104,8 @@ export default function TempretureRecordsPanel() {
           toast.error(error?.response?.data?.message || "Couldn't open elog!!");
         });
     } else if (popupAction === "sendFromApprovalToApproved") {
+      data.approverDeclaration = credentials?.declaration;
+      data.approverAttachment = editData.approverAttachment;
       axios
         .put(
           "http://localhost:1000/temprature-record/approve-TR-elog",
@@ -112,6 +122,8 @@ export default function TempretureRecordsPanel() {
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
+      data.approverAttachment = editData.approverAttachment;
+      data.approverDeclaration = credentials?.declaration;
       axios
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
@@ -124,6 +136,39 @@ export default function TempretureRecordsPanel() {
         })
         .catch((error) => {
           toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
+    } else if (popupAction === "updateElog") {
+      data.initiatorDeclaration = credentials?.declaration;
+      if (
+        parseFloat(editData.limit) < 0.6 ||
+        parseFloat(editData.limit) > 2.6
+      ) {
+        toast.error("The limit value must be between 0.6 and 2.6.");
+        return;
+      }
+
+      editData.email = credentials.email;
+      editData.password = credentials.password;
+
+      const myHeaders = {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      };
+
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        data: editData,
+        url: "http://localhost:1000/temprature-record/update-temprature-record",
+      };
+
+      axios(requestOptions)
+        .then(() => {
+          toast.success("Data saved successfully!");
+          navigate("/dashboard");
+        })
+        .catch((error) => {
+          console.error(error);
         });
     }
 
@@ -203,31 +248,14 @@ export default function TempretureRecordsPanel() {
     }));
   };
 
-  const handleSave = () => {
-    if (parseFloat(editData.limit) < 0.6 || parseFloat(editData.limit) > 2.6) {
-      toast.error("The limit value must be between 0.6 and 2.6.");
-      return;
-    }
-    const myHeaders = {
-      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-      "Content-Type": "multipart/form-data",
-    };
-
-    const requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      data: editData,
-      url: "http://localhost:1000/temprature-record/update-temprature-record",
-    };
-
-    axios(requestOptions)
-      .then(() => {
-        toast.success("Data saved successfully!");
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const handleInitiatorFileChange = (e) => {
+    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+  };
+  const handleReviewerFileChange = (e) => {
+    setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
+  };
+  const handleApproverFileChange = (e) => {
+    setEditData({ ...editData, approverAttachment: e.target.files[0] });
   };
 
   const generateUniqueId = () => {
@@ -284,7 +312,11 @@ export default function TempretureRecordsPanel() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedGeneral(true), setIsSelectedDetails(false);
+                      setIsSelectedDetails(false),
+                        setIsSelectedGeneral(true),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false);
                     }}
                   >
                     General Information
@@ -296,10 +328,62 @@ export default function TempretureRecordsPanel() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                      setIsSelectedDetails(true),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false);
                     }}
                   >
                     Details
+                  </div>
+                  <div
+                    className={`${
+                      initiatorRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(true),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false);
+                    }}
+                  >
+                    Initiator Remarks
+                  </div>
+                  <div
+                    className={`${
+                      reviewerRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(true),
+                        setApproverRemarks(false);
+                    }}
+                  >
+                    Reviewer Remarks
+                  </div>
+                  <div
+                    className={`${
+                      approverRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(true);
+                    }}
+                  >
+                    Approver Remarks
                   </div>
                 </div>
                 <div className="analytics-btn">
@@ -491,73 +575,80 @@ export default function TempretureRecordsPanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{item.unique_id}</td>
-                          <td>
-                            <input value={item.time} readOnly />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              value={item.temprature_record}
-                              className={`${
-                                item.temprature_record < 0.6
-                                  ? "limit"
-                                  : item.temprature_record > 2.6
-                                  ? "limit"
-                                  : ""
-                              }`}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].temprature_record =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.remarks}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].remarks = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].checked_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
-                          </td>
-                          <td style={{ width: "250px" }}>
+                      {editData?.TempratureRecords.map(
+                        (item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.unique_id}</td>
+                            <td>
+                              <input value={item.time} readOnly />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.temprature_record}
+                                className={`${
+                                  item.temprature_record < 0.6
+                                    ? "limit"
+                                    : item.temprature_record > 2.6
+                                    ? "limit"
+                                    : ""
+                                }`}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].temprature_record =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    TempratureRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.remarks}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].remarks = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    TempratureRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.checked_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].checked_by = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    TempratureRecords: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td style={{ width: "250px" }}>
                             <div className="d-flex">
                               <input
                                 // value={item.supporting_docs}
@@ -590,50 +681,270 @@ export default function TempretureRecordsPanel() {
                             </div>
                           </td>
 
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" &&
-                              (item.limit < 0.6 || item.limit > 2.6) && (
-                                <button
-                                  className="deviation-btn"
-                                  onClick={() => {
-                                    navigate("/chart");
-                                  }}
-                                >
-                                  Launch Deviation
-                                </button>
-                              )}
-                          </td>
-                        </tr>
-                      ))}
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                              {item.limit !== "" &&
+                                (item.limit < 0.6 || item.limit > 2.6) && (
+                                  <button
+                                    className="deviation-btn"
+                                    onClick={() => {
+                                      navigate("/chart");
+                                    }}
+                                  >
+                                    Launch Deviation
+                                  </button>
+                                )}
+                            </td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
+                </>
+              ) : null}
 
-                  <div className="group-input">
-                    <label htmlFor="reviewComment">Review Comments</label>
-                    <input
-                      id="reviewComment"
-                      name="reviewComment"
-                      value={editData.reviewComment || ""}
-                      onChange={handleInputChange1}
-                      readOnly={
-                        location.state?.stage !== 2 ||
-                        location.state?.reviewer_id !== userDetails.userId
-                      }
-                    />
+              {initiatorRemarks === true ? (
+                <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">
+                        Initiator Comment
+                        {location.state?.stage === 1 &&
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
+                          )}
+                      </label>
+                      <div className="instruction"></div>
+                      <input
+                        name="initiatorComment"
+                        value={editData?.initiatorComment}
+                        onChange={handleInputChange1}
+                        readOnly={
+                          location.state?.stage !== 1 ||
+                          location.state?.initiator_id !== userDetails.userId
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                        htmlFor="initiatorAttachment"
+                        className="color-label"
+                        name="initiatorAttachment"
+                      >
+                        Initiator Attachment
+                      </label>
+                      <input
+                        type="file"
+                        name="initiatorAttachment"
+                        id="initiatorAttachment"
+                        onChange={handleInitiatorFileChange}
+                      />
+                      {editData.initiatorAttachment && (
+                        <div>
+                          <h3>
+                            Selected File:{" "}
+                            <a
+                              href={editData.initiatorAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="group-input">
-                    <label htmlFor="approverComment">Approver Comments</label>
-                    <input
-                      id="approverComment"
-                      name="approverComment"
-                      value={editData.approverComment || ""}
-                      onChange={handleInputChange1}
-                      readOnly={
-                        location.state?.stage !== 3 ||
-                        location.state?.approver_id !== userDetails.userId
-                      }
-                    />
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.date_of_initiation?.split("T")[0]}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : null}
+
+              {reviewerRemarks === true ? (
+                <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label" htmlFor="reviewComment">
+                        Review Comment
+                        {location.state?.stage === 2 &&
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
+                          )}
+                      </label>
+                      <input
+                        id="reviewComment"
+                        name="reviewComment"
+                        value={editData.reviewComment || ""}
+                        onChange={handleInputChange1}
+                        readOnly={
+                          location.state?.stage !== 2 ||
+                          location.state?.reviewer_id !== userDetails.userId
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                        htmlFor="reviewerAttachment"
+                        className="color-label"
+                        name="reviewerAttachment"
+                      >
+                        Reviewer Attachment
+                      </label>
+                      <input
+                        type="file"
+                        name="reviewerAttachment"
+                        id="reviewerAttachment"
+                        onChange={handleReviewerFileChange}
+                      />
+                      {editData.reviewerAttachment && (
+                        <div>
+                          <h3>
+                            Selected File:{" "}
+                            <a
+                              href={editData.reviewerAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.tpreviewer?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.date_of_review?.split("T")[0]}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : null}
+
+              {approverRemarks === true ? (
+                <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label" htmlFor="approverComment">
+                        Approver Comment
+                        {location.state?.stage === 3 &&
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
+                          )}
+                      </label>
+                      <input
+                        id="approverComment"
+                        name="approverComment"
+                        value={editData.approverComment || ""}
+                        onChange={handleInputChange1}
+                        readOnly={
+                          location.state?.stage !== 3 ||
+                          location.state?.approver_id !== userDetails.userId
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                        htmlFor="approverAttachment"
+                        className="color-label"
+                        name="approverAttachment"
+                      >
+                        Approver Attachment
+                      </label>
+                      <input
+                        type="file"
+                        name="approverAttachment"
+                        id="approverAttachment"
+                        onChange={handleApproverFileChange}
+                      />
+                      {editData.approverAttachment && (
+                        <div>
+                          <h3>
+                            Selected File:{" "}
+                            <a
+                              href={editData.approverAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.tpapprover?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.date_of_approval?.split("T")[0]}
+                          readOnly
+                        />
+                      </div>
+                    </div>
                   </div>
                 </>
               ) : null}
@@ -703,32 +1014,14 @@ export default function TempretureRecordsPanel() {
                     <button
                       className="themeBtn"
                       onClick={() => {
-                        handleSave();
+                        setIsPopupOpen(true);
+                        setPopupAction("updateElog");
                       }}
                     >
                       Save
                     </button>
                   )
                 : null}
-              {isSelectedGeneral === true ? (
-                <button
-                  className="themeBtn"
-                  onClick={() => {
-                    setIsSelectedDetails(true), setIsSelectedGeneral(false);
-                  }}
-                >
-                  Next
-                </button>
-              ) : (
-                <button
-                  className="themeBtn"
-                  onClick={() => {
-                    setIsSelectedGeneral(true), setIsSelectedDetails(false);
-                  }}
-                >
-                  Back
-                </button>
-              )}
               <button
                 className="themeBtn"
                 onClick={() => navigate("/dashboard")}
