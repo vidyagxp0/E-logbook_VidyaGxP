@@ -81,6 +81,7 @@ const getFileUrl = (file) => {
 };
 
 const getElogDocsUrl = (file) => {
+  console.log('>>>>>>>>>>>>>>>>>>>>>', file);
   if (file?.filename) {
     return `http://localhost:1000/elog_docs/${file?.filename}`;
   }

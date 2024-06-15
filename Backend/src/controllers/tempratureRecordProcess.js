@@ -17,7 +17,11 @@ exports.InsertTempratureRecord = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
+    initiatorComment,
+    email,
+    password,
     FormRecordsArray,
+    initiatorDeclaration,
   } = req.body;
 
   if (!approver_id) {
@@ -31,17 +35,63 @@ exports.InsertTempratureRecord = async (req, res) => {
       .json({ error: true, message: "Please provide a reviewer." });
   }
 
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  if (!initiatorComment) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an initiator comment." });
+  }
+
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
     const user = await User.findOne({
-      where: {
-        user_id: req.user.userId,
-      },
+      where: { user_id: req.user.userId },
+      transaction,
     });
 
-    // Create new temprature_record Form
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    let initiatorAttachment = null;
+    const supportingDocs = {};
+
+    // Process files
+    req.files.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname.startsWith("FormRecordsArray[")) {
+        // Extract the index from the fieldname
+        const match = file.fieldname.match(
+          /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
+        );
+        if (match) {
+          const index = match[1];
+          supportingDocs[index] = file;
+        }
+      }
+    });
+
+    // Create new temperature record Form
     const newForm = await TempratureProcessForm.create(
       {
         site_id: site_id,
@@ -55,7 +105,11 @@ exports.InsertTempratureRecord = async (req, res) => {
         limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        initiatorComment: initiatorComment,
+        initiatorDeclaration: initiatorDeclaration,
       },
+
       { transaction }
     );
 
@@ -68,7 +122,9 @@ exports.InsertTempratureRecord = async (req, res) => {
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: getElogDocsUrl(req?.files[index]),
+        supporting_docs: record?.supporting_docs
+          ? record.supporting_docs
+          : getElogDocsUrl(supportingDocs[index]),
       }));
 
       await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
@@ -99,6 +155,7 @@ exports.InsertTempratureRecord = async (req, res) => {
 
 // edit tempratre record elog details
 exports.EditTempratureRecord = async (req, res) => {
+  
   const {
     form_id,
     site_id,
@@ -108,7 +165,11 @@ exports.EditTempratureRecord = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    TempratureProcessRecords,
+    TempratureRecords,
+    email,
+    password,
+    initiatorComment,
+    initiatorDeclaration,
   } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -118,10 +179,56 @@ exports.EditTempratureRecord = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }
 
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
   // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
+    const user = await User.findOne({
+      where: { user_id: req.user.userId },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    let initiatorAttachment = null;
+    const supportingDocs = {};
+
+    // Process files
+    req.files.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname.startsWith("TempratureRecords[")) {
+        // Extract the index from the fieldname
+        const match = file.fieldname.match(
+          /TempratureRecords\[(\d+)\]\[supporting_docs\]/
+        );
+        if (match) {
+          const index = match[1];
+          supportingDocs[index] = file;
+        }
+      }
+    });
+
     // Find the form by ID
     const form = await TempratureProcessForm.findOne({
       where: { form_id: form_id },
@@ -142,15 +249,15 @@ exports.EditTempratureRecord = async (req, res) => {
         limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        initiatorComment: initiatorComment,
+        initiatorDeclaration: initiatorDeclaration,
       },
       { transaction }
     );
 
     // Update the Form Records if provided
-    if (
-      Array.isArray(TempratureProcessRecords) &&
-      TempratureProcessRecords.length > 0
-    ) {
+    if (Array.isArray(TempratureRecords) && TempratureRecords.length > 0) {
       // First, delete existing records for the form
       await TempratureProcessRecord.destroy({
         where: { form_id: form_id },
@@ -158,14 +265,16 @@ exports.EditTempratureRecord = async (req, res) => {
       });
 
       // Then, create new records
-      const formRecords = TempratureProcessRecords.map((record, index) => ({
+      const formRecords = TempratureRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
         time: record?.time,
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: getElogDocsUrl(req?.files[index]),
+        supporting_docs: record?.supporting_docs
+          ? record?.supporting_docs
+          : getElogDocsUrl(supportingDocs[index]),
       }));
 
       await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
@@ -235,6 +344,16 @@ exports.GetAllTempratureRecordElog = async (req, res) => {
       {
         model: TempratureProcessRecord,
       },
+      {
+        model: User,
+        as: "tpreviewer", // Use the consistent alias 'reviewer'
+        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+      },
+      {
+        model: User,
+        as: "tpapprover", // Use the consistent alias 'approver'
+        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+      },
     ],
   })
     .then((result) => {
@@ -253,7 +372,7 @@ exports.GetAllTempratureRecordElog = async (req, res) => {
 
 //send tempratre record elog for review
 exports.SendTRElogForReview = async (req, res) => {
-  const { form_id, email, password } = req.body;
+  const { form_id, email, password, initiatorDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -317,6 +436,8 @@ exports.SendTRElogForReview = async (req, res) => {
       {
         status: "under review",
         stage: 2,
+        initiatorDeclaration: initiatorDeclaration,
+        initiatorAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -341,7 +462,7 @@ exports.SendTRElogForReview = async (req, res) => {
 
 // change status of tempratre record elog from review to open
 exports.SendTRElogfromReviewToOpen = async (req, res) => {
-  const { form_id, email, password } = req.body;
+  const { form_id, email, password, reviewerDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -405,6 +526,8 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
       {
         status: "initiation",
         stage: 1,
+        reviewerDeclaration: reviewerDeclaration,
+        reviewerAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -429,7 +552,8 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
 
 // send tempratre record elog from review to approval
 exports.SendTRfromReviewToApproval = async (req, res) => {
-  const { form_id, reviewComment, email, password } = req.body;
+  const { form_id, reviewComment, email, password, reviewerDeclaration } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -499,6 +623,9 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
         status: "under approval",
         stage: 3,
         reviewComment: reviewComment,
+        reviewerDeclaration: reviewerDeclaration,
+        reviewerAttachment: getElogDocsUrl(req?.file),
+        date_of_review: new Date(),
       },
       { transaction }
     );
@@ -523,7 +650,7 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
 
 // send tempratre record elog from under approval to open
 exports.SendTRfromApprovalToOpen = async (req, res) => {
-  const { form_id, email, password } = req.body;
+  const { form_id, email, password, approverDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -587,6 +714,8 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
       {
         status: "initiation",
         stage: 1,
+        approverDeclaration: approverDeclaration,
+        approverAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
@@ -611,7 +740,8 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
 
 // APPROVE tempratre record elog
 exports.ApproveTRElog = async (req, res) => {
-  const { form_id, approverComment, email, password } = req.body;
+  const { form_id, approverComment, email, password, approverDeclaration } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -681,6 +811,9 @@ exports.ApproveTRElog = async (req, res) => {
         status: "approved",
         stage: 4,
         approverComment: approverComment,
+        approverDeclaration: approverDeclaration,
+        approverAttachment: getElogDocsUrl(req?.file),
+        date_of_approval: new Date(),
       },
       { transaction }
     );
@@ -735,5 +868,3 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
     });
   }
 };
-
-

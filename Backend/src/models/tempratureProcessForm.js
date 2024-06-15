@@ -34,6 +34,12 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     allowNull: false,
     defaultValue: Sequelize.NOW,
   },
+  date_of_review: {
+    type: DataTypes.DATE,
+  },
+  date_of_approval: {
+    type: DataTypes.DATE,
+  },
   description: {
     type: DataTypes.STRING,
   },
@@ -76,6 +82,27 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   approverComment: {
     type: DataTypes.STRING,
   },
+  initiatorComment: {
+    type: DataTypes.STRING,
+  },
+  initiatorAttachment: {
+    type: DataTypes.STRING,
+  },
+  reviewerAttachment: {
+    type: DataTypes.STRING,
+  },
+  approverAttachment: {
+    type: DataTypes.STRING,
+  },
+  initiatorDeclaration: {
+    type: DataTypes.STRING,
+  },
+  reviewerDeclaration: {
+    type: DataTypes.STRING,
+  },
+  approverDeclaration: {
+    type: DataTypes.STRING,
+  },
 });
 
 TempratureProcessForm.belongsTo(Site, { foreignKey: "site_id" });
@@ -84,10 +111,10 @@ Site.hasMany(TempratureProcessForm, { foreignKey: "site_id" });
 TempratureProcessForm.belongsTo(User, { foreignKey: "initiator_id" });
 User.hasMany(TempratureProcessForm, { foreignKey: "initiator_id" });
 
-TempratureProcessForm.belongsTo(User, { foreignKey: "reviewer_id" });
-User.hasMany(TempratureProcessForm, { foreignKey: "reviewer_id" });
+TempratureProcessForm.belongsTo(User, { foreignKey: "reviewer_id", as: 'tpreviewer' });
+User.hasMany(TempratureProcessForm, { foreignKey: "reviewer_id", as: 'tpreviewer' });
 
-TempratureProcessForm.belongsTo(User, { foreignKey: "approver_id" });
-User.hasMany(TempratureProcessForm, { foreignKey: "approver_id" });
+TempratureProcessForm.belongsTo(User, { foreignKey: "approver_id", as: 'tpapprover' });
+User.hasMany(TempratureProcessForm, { foreignKey: "approver_id", as: 'tpapprover' });
 
 module.exports = TempratureProcessForm;

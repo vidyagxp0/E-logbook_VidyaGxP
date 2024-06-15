@@ -154,6 +154,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
 // edit differential pressure elog details
 exports.EditDifferentialPressure = async (req, res) => {
+  console.log(req.files, "files", req.body);
+
   const {
     form_id,
     site_id,
@@ -273,7 +275,9 @@ exports.EditDifferentialPressure = async (req, res) => {
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
-        supporting_docs: getElogDocsUrl(supportingDocs[index]),
+        supporting_docs: record?.supporting_docs
+          ? record?.supporting_docs
+          : getElogDocsUrl(supportingDocs[index]),
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
