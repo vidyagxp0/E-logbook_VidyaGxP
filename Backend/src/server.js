@@ -8,6 +8,7 @@ const tempratureRecordRoutes = require("./routes/tempratureRecords");
 const siteRoutes = require("./routes/sites");
 const cors = require("cors");
 const path = require("path");
+const helmet = require("helmet");
 
 const app = express();
 const server = http.createServer(app);
