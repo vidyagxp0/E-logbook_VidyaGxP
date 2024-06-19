@@ -20,7 +20,7 @@ function Dashboard() {
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
+      url: "http://195.35.6.197:1000/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ function Dashboard() {
 
     const newConfigTemp = {
       method: "get",
-      url: "http://localhost:1000/temprature-record/get-all-temprature-record",
+      url: "http://195.35.6.197:1000/temprature-record/get-all-temprature-record",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",

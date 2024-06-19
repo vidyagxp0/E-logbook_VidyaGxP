@@ -5,7 +5,7 @@ function AdminProcesses() {
   const [processes, setProcesses] = useState([]);
 
   useEffect(() => {
-    const url = "http://localhost:1000/differential-pressure/get-processes"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://195.35.6.197:1000/differential-pressure/get-processes"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
