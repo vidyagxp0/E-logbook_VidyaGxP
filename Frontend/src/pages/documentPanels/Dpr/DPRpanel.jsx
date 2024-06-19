@@ -54,7 +54,7 @@ export default function DPRpanel() {
       data.initiatorDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://195.35.6.197:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -72,7 +72,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://195.35.6.197:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -91,7 +91,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://195.35.6.197:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -107,7 +107,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://195.35.6.197:1000/differential-pressure/approve-DP-elog",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -125,7 +125,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://195.35.6.197:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -158,7 +158,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://195.35.6.197:1000/differential-pressure/update-differential-pressure",
+        url: "https://elogbookapi.vidyagxp.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)

@@ -25,7 +25,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://195.35.6.197:1000/temprature-record/get-user-roleGroups",
+      url: "https://elogbookapi.vidyagxp.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export default function TemperatureRecords() {
 
     const newConfig = {
       method: "post",
-      url: "http://195.35.6.197:1000/temprature-record/get-user-roleGroups",
+      url: "https://elogbookapi.vidyagxp.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://195.35.6.197:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elogbookapi.vidyagxp.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -118,7 +118,7 @@ export default function TemperatureRecords() {
 
     axios
       .post(
-        "http://195.35.6.197:1000/temprature-record/post-temprature-record",
+        "https://elogbookapi.vidyagxp.com/temprature-record/post-temprature-record",
         tempratureRecord,
         config
       )

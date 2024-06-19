@@ -23,7 +23,7 @@ function EditUser() {
 
   useEffect(() => {
     axios
-      .get(`http://195.35.6.197:1000/user/get-a-user/${location.state.id}`, {
+      .get(`https://elogbookapi.vidyagxp.com/user/get-a-user/${location.state.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         },
@@ -37,7 +37,7 @@ function EditUser() {
       });
 
     axios
-      .get("http://195.35.6.197:1000/user/get-all-rolegroups")
+      .get("https://elogbookapi.vidyagxp.com/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []); // Ensure it's an array
       })
@@ -106,7 +106,7 @@ function EditUser() {
 
     axios
       .put(
-        `http://195.35.6.197:1000/user/edit-user/${location.state.id}`,
+        `https://elogbookapi.vidyagxp.com/user/edit-user/${location.state.id}`,
         resultObj,
         {
           headers: myHeaders,
