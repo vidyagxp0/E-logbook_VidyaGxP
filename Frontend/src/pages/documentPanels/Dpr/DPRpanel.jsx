@@ -52,6 +52,7 @@ export default function DPRpanel() {
 
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
+      data.initiatorAttachment = editData?.initiatorAttachment;
       axios
         .put(
           "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
@@ -148,6 +149,7 @@ export default function DPRpanel() {
 
       editData.email = credentials.email;
       editData.password = credentials.password;
+      editData.initiatorDeclaration = credentials?.declaration;
 
       const myHeaders = {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
@@ -388,6 +390,19 @@ export default function DPRpanel() {
                     }}
                   >
                     Approver Remarks
+                  </div>
+                  <div
+                    className="btn-forms-select"
+                    onClick={() =>
+                      navigate("/audit-trail", {
+                        state: {
+                          formId: location.state?.form_id,
+                          process: "Differential Pressure",
+                        },
+                      })
+                    }
+                  >
+                    Audit Trail
                   </div>
                 </div>
                 <div className="analytics-btn">

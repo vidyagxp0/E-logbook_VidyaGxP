@@ -550,6 +550,7 @@ export default function DiffrentialPressure() {
                                 newData[index].time = e.target.value;
                                 setAllTableData(newData);
                               }}
+                              readOnly
                             />
                           </td>
                           <td>
@@ -590,6 +591,7 @@ export default function DiffrentialPressure() {
                                 newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
+                              readOnly
                             />
                           </td>
                           <td style={{ width: "250px" }}>
