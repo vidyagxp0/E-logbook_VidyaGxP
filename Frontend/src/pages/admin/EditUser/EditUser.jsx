@@ -23,7 +23,7 @@ function EditUser() {
 
   useEffect(() => {
     axios
-      .get(`https://elogbookapi.vidyagxp.com/user/get-a-user/${location.state.id}`, {
+      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         },
@@ -37,7 +37,7 @@ function EditUser() {
       });
 
     axios
-      .get("https://elogbookapi.vidyagxp.com/user/get-all-rolegroups")
+      .get("http://localhost:1000/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []); // Ensure it's an array
       })
@@ -105,21 +105,15 @@ function EditUser() {
     };
 
     axios
-      .put(
-        `https://elogbookapi.vidyagxp.com/user/edit-user/${location.state.id}`,
-        resultObj,
-        {
-          headers: myHeaders,
-        }
-      )
+      .put(`http://localhost:1000/user/edit-user/${location.state.id}`, resultObj, {
+        headers: myHeaders,
+      })
       .then(() => {
         toast.success("User Details Updated Successfully");
         navigate(-1);
       })
       .catch((error) => {
-        toast.error(
-          "Couldn't Update User Details " + error.response.data.message
-        );
+        toast.error("Couldn't Update User Details " + error.response.data.message);
       });
   };
 
@@ -212,21 +206,12 @@ function EditUser() {
               <label htmlFor="profilePic" style={{ color: "#EFA035" }}>
                 Profile Picture
               </label>
-              <input
-                type="file"
-                name="profile_pic"
-                id="profile_pic"
-                onChange={handleFileChange}
-              />
+              <input type="file" name="profile_pic" id="profile_pic" onChange={handleFileChange} />
               {formData.profile_pic && (
                 <div>
                   <h3>
                     Selected File:{" "}
-                    <a
-                      href={formData.profile_pic}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={formData.profile_pic} target="_blank" rel="noopener noreferrer">
                       View File
                     </a>
                   </h3>

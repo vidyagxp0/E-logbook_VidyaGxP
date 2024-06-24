@@ -25,7 +25,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elogbookapi.vidyagxp.com/temprature-record/get-user-roleGroups",
+      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export default function TemperatureRecords() {
 
     const newConfig = {
       method: "post",
-      url: "https://elogbookapi.vidyagxp.com/temprature-record/get-user-roleGroups",
+      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elogbookapi.vidyagxp.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -94,9 +94,7 @@ export default function TemperatureRecords() {
       tempratureRecord.approver_id === null ||
       tempratureRecord.reviewer_id === null
     ) {
-      toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
-      );
+      toast.error("Please select an approver and a reviewer before saving e-log!");
       return;
     }
 
@@ -114,11 +112,11 @@ export default function TemperatureRecords() {
 
     tempratureRecord.email = credentials?.email;
     tempratureRecord.password = credentials?.password;
-    tempratureRecord.initiatorDeclaration = credentials?.declaration
+    tempratureRecord.initiatorDeclaration = credentials?.declaration;
 
     axios
       .post(
-        "https://elogbookapi.vidyagxp.com/temprature-record/post-temprature-record",
+        "http://localhost:1000/temprature-record/post-temprature-record",
         tempratureRecord,
         config
       )
@@ -167,8 +165,6 @@ export default function TemperatureRecords() {
   // const currentDate = new Date();
   // const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
-
-
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
@@ -189,7 +185,7 @@ export default function TemperatureRecords() {
       limit: null,
       initiatorComment: "",
       initiatorAttachment: null,
-      initiatorDeclaration: ""
+      initiatorDeclaration: "",
     }
   );
 
@@ -254,9 +250,7 @@ export default function TemperatureRecords() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      isSelectedGeneral === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -268,9 +262,7 @@ export default function TemperatureRecords() {
                   </div>
                   <div
                     className={`${
-                      isSelectedDetails === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(true),
@@ -282,9 +274,7 @@ export default function TemperatureRecords() {
                   </div>
                   <div
                     className={`${
-                      initiatorRemarks === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      initiatorRemarks === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -313,9 +303,7 @@ export default function TemperatureRecords() {
                       <input
                         type="text"
                         value={User?.name}
-                        onChange={(e) =>
-                          setTempratureRecord({ initiator: e.target.value })
-                        }
+                        onChange={(e) => setTempratureRecord({ initiator: e.target.value })}
                       />
                     </div>
                   </div>
@@ -356,9 +344,7 @@ export default function TemperatureRecords() {
                       <input
                         type="text"
                         value="Under Initiation"
-                        onChange={(e) =>
-                          setTempratureRecord({ status: e.target.value })
-                        }
+                        onChange={(e) => setTempratureRecord({ status: e.target.value })}
                       />
                     </div>
                   </div>
@@ -387,31 +373,21 @@ export default function TemperatureRecords() {
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
                       </option>
-                      <option value="Central Quality Control">
-                        Central Quality Control
-                      </option>
+                      <option value="Central Quality Control">Central Quality Control</option>
                       <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">
-                        Plasma Sourcing Group
-                      </option>
+                      <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
                       <option value="Central Stores">Central Stores</option>
                       <option value="Information Technology Group">
                         Information Technology Group
                       </option>
-                      <option value="Molecular Medicine">
-                        Molecular Medicine
-                      </option>
-                      <option value="Central Laboratory">
-                        Central Laboratory
-                      </option>
+                      <option value="Molecular Medicine">Molecular Medicine</option>
+                      <option value="Central Laboratory">Central Laboratory</option>
                       <option value="Tech team">Tech team</option>
                     </select>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">
-                      Compression Area with respect to Corridor
-                    </label>
+                    <label className="color-label">Compression Area with respect to Corridor</label>
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
@@ -446,9 +422,7 @@ export default function TemperatureRecords() {
                           : ""
                       }`}
                       value={tempratureRecord.limit}
-                      onChange={(e) =>
-                        setTempratureRecord({ limit: e.target.value })
-                      }
+                      onChange={(e) => setTempratureRecord({ limit: e.target.value })}
                     />
                   </div>
                   <div className="form-flex">
@@ -466,10 +440,7 @@ export default function TemperatureRecords() {
                           <option value="">Select a reviewer</option>
                           {[
                             ...new Map(
-                              reviewers.map((reviewer) => [
-                                reviewer.user_id,
-                                reviewer,
-                              ])
+                              reviewers.map((reviewer) => [reviewer.user_id, reviewer])
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -493,10 +464,7 @@ export default function TemperatureRecords() {
                           <option value="">Select an approver</option>
                           {[
                             ...new Map(
-                              approvers.map((approver) => [
-                                approver.user_id,
-                                approver,
-                              ])
+                              approvers.map((approver) => [approver.user_id, approver])
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>
@@ -565,8 +533,7 @@ export default function TemperatureRecords() {
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].temprature_record =
-                                  e.target.value;
+                                newData[index].temprature_record = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -597,9 +564,7 @@ export default function TemperatureRecords() {
                               <input
                                 type="file"
                                 name="supporting_docs"
-                                onChange={(e) =>
-                                  handleFileChange(index, e.target.files[0])
-                                }
+                                onChange={(e) => handleFileChange(index, e.target.files[0])}
                               />
                               {item.supporting_docs && (
                                 <DeleteIcon
@@ -612,24 +577,21 @@ export default function TemperatureRecords() {
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.temprature_record !== "" &&
-                              (item.temprature_record < 0.6 ||
-                                item.temprature_record > 2.6) && (
+                              (item.temprature_record < 0.6 || item.temprature_record > 2.6) && (
                                 <button
                                   style={{
                                     cursor: "pointer",
                                   }}
                                   className="deviation-btn"
                                   onClick={() => {
-                                    window.location.href =
-                                      "https://naveen.vidyagxp.com/deviation";
+                                    window.location.href = "http://naveen.vidyagxp.com/deviation";
                                   }}
                                 >
                                   Deviation
                                 </button>
                               )}
                             {item.temprature_record !== "" &&
-                              (item.temprature_record < 0.6 ||
-                                item.temprature_record > 2.6) && (
+                              (item.temprature_record < 0.6 || item.temprature_record > 2.6) && (
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
@@ -651,8 +613,10 @@ export default function TemperatureRecords() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Initiator Comment
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Initiator Comment
+                        <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+                      </label>
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
@@ -684,12 +648,7 @@ export default function TemperatureRecords() {
                     <div className="group-input">
                       <label className="color-label">Initiator </label>
                       <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={User?.name}
-                          readOnly
-                        />
+                        <input type="text" name="initiator" value={User?.name} readOnly />
                       </div>
                     </div>
                     <div className="group-input">
@@ -711,18 +670,12 @@ export default function TemperatureRecords() {
               >
                 Save
               </button>
-              <button
-                className="themeBtn"
-                onClick={() => navigate("/dashboard")}
-              >
+              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
                 Exit
               </button>
             </div>
             {isPopupOpen && (
-              <UserVerificationPopUp
-                onClose={handlePopupClose}
-                onSubmit={handlePopupSubmit}
-              />
+              <UserVerificationPopUp onClose={handlePopupClose} onSubmit={handlePopupSubmit} />
             )}
           </div>
         </div>

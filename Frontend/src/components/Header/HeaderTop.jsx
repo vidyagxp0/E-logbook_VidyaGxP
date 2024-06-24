@@ -13,7 +13,7 @@ function HeaderTop() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elogbookapi.vidyagxp.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -62,10 +62,7 @@ function HeaderTop() {
               </div>
               <div className="inputInnerRight flex flex-row">
                 <input type="search" />
-                <button
-                  className=""
-                  style={{ width: "30%", marginLeft: "20%", padding: "3%" }}
-                >
+                <button className="" style={{ width: "30%", marginLeft: "20%", padding: "3%" }}>
                   Search
                 </button>
               </div>

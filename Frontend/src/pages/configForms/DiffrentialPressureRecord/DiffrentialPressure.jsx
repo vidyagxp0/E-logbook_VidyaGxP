@@ -25,7 +25,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elogbookapi.vidyagxp.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export default function DiffrentialPressure() {
 
     const newConfig = {
       method: "post",
-      url: "https://elogbookapi.vidyagxp.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elogbookapi.vidyagxp.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -94,9 +94,7 @@ export default function DiffrentialPressure() {
       differentialPRecord.approver_id === null ||
       differentialPRecord.reviewer_id === null
     ) {
-      toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
-      );
+      toast.error("Please select an approver and a reviewer before saving e-log!");
       return;
     }
 
@@ -114,11 +112,11 @@ export default function DiffrentialPressure() {
 
     differentialPRecord.email = credentials?.email;
     differentialPRecord.password = credentials?.password;
-    differentialPRecord.initiatorDeclaration = credentials?.declaration
+    differentialPRecord.initiatorDeclaration = credentials?.declaration;
 
     axios
       .post(
-        "https://elogbookapi.vidyagxp.com/differential-pressure/post-differential-pressure",
+        "http://localhost:1000/differential-pressure/post-differential-pressure",
         differentialPRecord,
         config
       )
@@ -187,7 +185,7 @@ export default function DiffrentialPressure() {
       limit: null,
       initiatorComment: "",
       initiatorAttachment: null,
-      initiatorDeclaration: ""
+      initiatorDeclaration: "",
     }
   );
 
@@ -252,9 +250,7 @@ export default function DiffrentialPressure() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      isSelectedGeneral === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -266,9 +262,7 @@ export default function DiffrentialPressure() {
                   </div>
                   <div
                     className={`${
-                      isSelectedDetails === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(true),
@@ -280,9 +274,7 @@ export default function DiffrentialPressure() {
                   </div>
                   <div
                     className={`${
-                      initiatorRemarks === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      initiatorRemarks === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -311,9 +303,7 @@ export default function DiffrentialPressure() {
                       <input
                         type="text"
                         value={User?.name}
-                        onChange={(e) =>
-                          setDifferentialPRecord({ initiator: e.target.value })
-                        }
+                        onChange={(e) => setDifferentialPRecord({ initiator: e.target.value })}
                       />
                     </div>
                   </div>
@@ -354,9 +344,7 @@ export default function DiffrentialPressure() {
                       <input
                         type="text"
                         value="Under Initiation"
-                        onChange={(e) =>
-                          setDifferentialPRecord({ status: e.target.value })
-                        }
+                        onChange={(e) => setDifferentialPRecord({ status: e.target.value })}
                       />
                     </div>
                   </div>
@@ -385,31 +373,21 @@ export default function DiffrentialPressure() {
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
                       </option>
-                      <option value="Central Quality Control">
-                        Central Quality Control
-                      </option>
+                      <option value="Central Quality Control">Central Quality Control</option>
                       <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">
-                        Plasma Sourcing Group
-                      </option>
+                      <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
                       <option value="Central Stores">Central Stores</option>
                       <option value="Information Technology Group">
                         Information Technology Group
                       </option>
-                      <option value="Molecular Medicine">
-                        Molecular Medicine
-                      </option>
-                      <option value="Central Laboratory">
-                        Central Laboratory
-                      </option>
+                      <option value="Molecular Medicine">Molecular Medicine</option>
+                      <option value="Central Laboratory">Central Laboratory</option>
                       <option value="Tech team">Tech team</option>
                     </select>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">
-                      Compression Area with respect to Corridor
-                    </label>
+                    <label className="color-label">Compression Area with respect to Corridor</label>
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
@@ -444,15 +422,15 @@ export default function DiffrentialPressure() {
                           : ""
                       }`}
                       value={differentialPRecord.limit}
-                      onChange={(e) =>
-                        setDifferentialPRecord({ limit: e.target.value })
-                      }
+                      onChange={(e) => setDifferentialPRecord({ limit: e.target.value })}
                     />
                   </div>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Reviewer
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Reviewer
+                        <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+                      </label>
                       <div>
                         <select
                           value={differentialPRecord.reviewer_id}
@@ -465,10 +443,7 @@ export default function DiffrentialPressure() {
                           <option value="">Select a reviewer</option>
                           {[
                             ...new Map(
-                              reviewers.map((reviewer) => [
-                                reviewer.user_id,
-                                reviewer,
-                              ])
+                              reviewers.map((reviewer) => [reviewer.user_id, reviewer])
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -479,8 +454,10 @@ export default function DiffrentialPressure() {
                       </div>
                     </div>
                     <div className="group-input">
-                      <label className="color-label">Approver
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Approver
+                        <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+                      </label>
                       <div>
                         <select
                           value={differentialPRecord.approver_id}
@@ -493,10 +470,7 @@ export default function DiffrentialPressure() {
                           <option value="">Select an approver</option>
                           {[
                             ...new Map(
-                              approvers.map((approver) => [
-                                approver.user_id,
-                                approver,
-                              ])
+                              approvers.map((approver) => [approver.user_id, approver])
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>
@@ -565,8 +539,7 @@ export default function DiffrentialPressure() {
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].differential_pressure =
-                                  e.target.value;
+                                newData[index].differential_pressure = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -597,9 +570,7 @@ export default function DiffrentialPressure() {
                               <input
                                 type="file"
                                 name="supporting_docs"
-                                onChange={(e) =>
-                                  handleFileChange(index, e.target.files[0])
-                                }
+                                onChange={(e) => handleFileChange(index, e.target.files[0])}
                               />
                               {item.supporting_docs && (
                                 <DeleteIcon
@@ -620,8 +591,7 @@ export default function DiffrentialPressure() {
                                   }}
                                   className="deviation-btn"
                                   onClick={() => {
-                                    window.location.href =
-                                      "https://naveen.vidyagxp.com/deviation";
+                                    window.location.href = "http://naveen.vidyagxp.com/deviation";
                                   }}
                                 >
                                   Deviation
@@ -651,8 +621,10 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Initiator Comment
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Initiator Comment
+                        <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+                      </label>
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
@@ -684,12 +656,7 @@ export default function DiffrentialPressure() {
                     <div className="group-input">
                       <label className="color-label">Initiator </label>
                       <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={User?.name}
-                          readOnly
-                        />
+                        <input type="text" name="initiator" value={User?.name} readOnly />
                       </div>
                     </div>
                     <div className="group-input">
@@ -711,18 +678,12 @@ export default function DiffrentialPressure() {
               >
                 Save
               </button>
-              <button
-                className="themeBtn"
-                onClick={() => navigate("/dashboard")}
-              >
+              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
                 Exit
               </button>
             </div>
             {isPopupOpen && (
-              <UserVerificationPopUp
-                onClose={handlePopupClose}
-                onSubmit={handlePopupSubmit}
-              />
+              <UserVerificationPopUp onClose={handlePopupClose} onSubmit={handlePopupSubmit} />
             )}
           </div>
         </div>

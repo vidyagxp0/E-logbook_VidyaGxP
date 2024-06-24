@@ -10,7 +10,7 @@
 
 // Font.register({
 //   family: "Roboto",
-//   src: "https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf",
+//   src: "http://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf",
 // });
 
 // const styles = StyleSheet.create({
@@ -273,19 +273,11 @@
 // export default DynamicPdf;
 
 import React from "react";
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Font,
-  Image,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font, Image } from "@react-pdf/renderer";
 
 Font.register({
   family: "Roboto",
-  src: "https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf",
+  src: "http://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf",
 });
 
 const styles = StyleSheet.create({
@@ -427,15 +419,13 @@ const DynamicPdf = ({ elog }) => {
 
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldName}>
-              <Text style={styles.label}>Date Of Initiation </Text>:{" "}
-              {elog.dateOfInitiation}
+              <Text style={styles.label}>Date Of Initiation </Text>: {elog.dateOfInitiation}
             </Text>
           </View>
 
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldName}>
-              <Text style={styles.label}>Short Description </Text>:{" "}
-              {elog.shortDescription}
+              <Text style={styles.label}>Short Description </Text>: {elog.shortDescription}
             </Text>
           </View>
 
@@ -464,15 +454,13 @@ const DynamicPdf = ({ elog }) => {
 
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldName}>
-              <Text style={styles.label}>Compression Area</Text>:{" "}
-              {elog.compressionArea}
+              <Text style={styles.label}>Compression Area</Text>: {elog.compressionArea}
             </Text>
           </View>
 
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldName}>
-              <Text style={styles.label}>Diferential Pressure </Text>:
-              {elog.limit}
+              <Text style={styles.label}>Diferential Pressure </Text>:{elog.limit}
             </Text>
           </View>
 
@@ -481,7 +469,7 @@ const DynamicPdf = ({ elog }) => {
               <Text style={styles.label}>Process </Text>: {elog.process}
             </Text>
           </View>
- 
+
           <View style={styles.section}>
             <View style={styles.table}>
               <View style={styles.tableRow}>

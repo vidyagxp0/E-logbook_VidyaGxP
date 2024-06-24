@@ -53,26 +53,20 @@ export default function DPRpanel() {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       axios
-        .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-for-review",
-          data,
-          config
-        )
+        .put("http://localhost:1000/differential-pressure/send-DP-elog-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
         })
         .catch((error) => {
-          toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
-          );
+          toast.error(error?.response?.data?.message || "Couldn't send elog for review!!");
         });
     } else if (popupAction === "sendFromReviewToApproval") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-from-review-to-approval",
+          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -81,17 +75,14 @@ export default function DPRpanel() {
           navigate(-1);
         })
         .catch((error) => {
-          toast.error(
-            error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
-          );
+          toast.error(error?.response?.data?.message || "Couldn't send elog for approval!!");
         });
     } else if (popupAction === "sendFromReviewToOpen") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-from-review-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -106,26 +97,20 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/approve-DP-elog",
-          data,
-          config
-        )
+        .put("http://localhost:1000/differential-pressure/approve-DP-elog", data, config)
         .then(() => {
           toast.success("Elog successfully approved");
           navigate(-1);
         })
         .catch((error) => {
-          toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
-          );
+          toast.error(error?.response?.data?.message || "Couldn't approve elog!!");
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
       data.approverAttachment = editData.approverAttachment;
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-from-approval-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -138,10 +123,7 @@ export default function DPRpanel() {
         });
     } else if (popupAction === "updateElog") {
       data.initiatorDeclaration = credentials?.declaration;
-      if (
-        parseFloat(editData.limit) < 0.6 ||
-        parseFloat(editData.limit) > 2.6
-      ) {
+      if (parseFloat(editData.limit) < 0.6 || parseFloat(editData.limit) > 2.6) {
         toast.error("The limit value must be between 0.6 and 2.6.");
         return;
       }
@@ -158,7 +140,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elogbookapi.vidyagxp.com/differential-pressure/update-differential-pressure",
+        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -180,10 +162,7 @@ export default function DPRpanel() {
   }, [location.state]);
 
   const addRow = () => {
-    if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
+    if (location.state?.stage === 1 && location.state?.initiator_id === userDetails.userId) {
       const currentTime = new Date().toLocaleTimeString();
       const newRow = {
         unique_id: generateUniqueId(),
@@ -196,19 +175,13 @@ export default function DPRpanel() {
       setEditData((prevState) => ({
         ...prevState,
 
-        DifferentialPressureRecords: [
-          ...prevState.DifferentialPressureRecords,
-          newRow,
-        ],
+        DifferentialPressureRecords: [...prevState.DifferentialPressureRecords, newRow],
       }));
     }
   };
 
   const deleteRow = (index) => {
-    if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
+    if (location.state?.stage === 1 && location.state?.initiator_id === userDetails.userId) {
       const updatedGridData = [...editData.DifferentialPressureRecords];
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
@@ -311,9 +284,7 @@ export default function DPRpanel() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      isSelectedGeneral === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -327,9 +298,7 @@ export default function DPRpanel() {
                   </div>
                   <div
                     className={`${
-                      isSelectedDetails === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(true),
@@ -343,9 +312,7 @@ export default function DPRpanel() {
                   </div>
                   <div
                     className={`${
-                      initiatorRemarks === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      initiatorRemarks === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -359,9 +326,7 @@ export default function DPRpanel() {
                   </div>
                   <div
                     className={`${
-                      reviewerRemarks === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      reviewerRemarks === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -375,9 +340,7 @@ export default function DPRpanel() {
                   </div>
                   <div
                     className={`${
-                      approverRemarks === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
+                      approverRemarks === true ? "btn-forms-isSelected" : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -391,10 +354,7 @@ export default function DPRpanel() {
                   </div>
                 </div>
                 <div className="analytics-btn">
-                  <button
-                    className="btn-print"
-                    onClick={() => navigate("/analytics")}
-                  >
+                  <button className="btn-print" onClick={() => navigate("/analytics")}>
                     Analytics
                   </button>
                   {/* <PDFDownloadLink
@@ -456,12 +416,7 @@ export default function DPRpanel() {
                   <div className="group-input">
                     <label className="color-label">Status</label>
                     <div>
-                      <input
-                        name="status"
-                        type="text"
-                        value={editData?.status}
-                        readOnly
-                      />
+                      <input name="status" type="text" value={editData?.status} readOnly />
                     </div>
                   </div>
                 </>
@@ -490,31 +445,21 @@ export default function DPRpanel() {
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
                       </option>
-                      <option value="Central Quality Control">
-                        Central Quality Control
-                      </option>
+                      <option value="Central Quality Control">Central Quality Control</option>
                       <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">
-                        Plasma Sourcing Group
-                      </option>
+                      <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
                       <option value="Central Stores">Central Stores</option>
                       <option value="Information Technology Group">
                         Information Technology Group
                       </option>
-                      <option value="Molecular Medicine">
-                        Molecular Medicine
-                      </option>
-                      <option value="Central Laboratory">
-                        Central Laboratory
-                      </option>
+                      <option value="Molecular Medicine">Molecular Medicine</option>
+                      <option value="Central Laboratory">Central Laboratory</option>
                       <option value="Tech team">Tech team</option>
                     </select>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">
-                      Compression Area with respect to Corridor
-                    </label>
+                    <label className="color-label">Compression Area with respect to Corridor</label>
 
                     <div className="instruction">&nbsp;</div>
                     <select
@@ -544,11 +489,7 @@ export default function DPRpanel() {
                       name="limit"
                       type="number"
                       className={`${
-                        editData?.limit < 0.6
-                          ? "limit"
-                          : editData?.limit > 2.6
-                          ? "limit"
-                          : ""
+                        editData?.limit < 0.6 ? "limit" : editData?.limit > 2.6 ? "limit" : ""
                       }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
@@ -579,129 +520,114 @@ export default function DPRpanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.DifferentialPressureRecords.map(
-                        (item, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.unique_id}</td>
-                            <td>
-                              <input value={item.time} readOnly />
-                            </td>
-                            <td>
+                      {editData?.DifferentialPressureRecords.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.unique_id}</td>
+                          <td>
+                            <input value={item.time} readOnly />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.differential_pressure}
+                              className={`${
+                                item.differential_pressure < 0.6
+                                  ? "limit"
+                                  : item.differential_pressure > 2.6
+                                  ? "limit"
+                                  : ""
+                              }`}
+                              onChange={(e) => {
+                                const newData = [...editData.DifferentialPressureRecords];
+                                newData[index].differential_pressure = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  DifferentialPressureRecords: newData,
+                                });
+                              }}
+                              readOnly={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !== userDetails.userId
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.remarks}
+                              onChange={(e) => {
+                                const newData = [...editData.DifferentialPressureRecords];
+                                newData[index].remarks = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  DifferentialPressureRecords: newData,
+                                });
+                              }}
+                              readOnly={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !== userDetails.userId
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.checked_by}
+                              onChange={(e) => {
+                                const newData = [...editData.DifferentialPressureRecords];
+                                newData[index].checked_by = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  DifferentialPressureRecords: newData,
+                                });
+                              }}
+                              readOnly
+                            />
+                          </td>
+                          <td style={{ width: "250px" }}>
+                            <div className="d-flex">
                               <input
-                                type="number"
-                                value={item.differential_pressure}
-                                className={`${
-                                  item.differential_pressure < 0.6
-                                    ? "limit"
-                                    : item.differential_pressure > 2.6
-                                    ? "limit"
-                                    : ""
-                                }`}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].differential_pressure =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly={
+                                // value={item.supporting_docs}
+                                type="file"
+                                name="supporting_docs"
+                                onChange={(e) => handleFileChange(index, e.target.files[0])}
+                                disabled={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
+                                  location.state?.initiator_id !== userDetails.userId
                                 }
                               />
-                            </td>
-                            <td>
-                              <input
-                                value={item.remarks}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].remarks = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
-                            </td>
-                            <td style={{ width: "250px" }}>
-                              <div className="d-flex">
-                                <input
-                                  // value={item.supporting_docs}
-                                  type="file"
-                                  name="supporting_docs"
-                                  onChange={(e) =>
-                                    handleFileChange(index, e.target.files[0])
-                                  }
-                                  disabled={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
-                                />
 
-                                {item.supporting_docs && (
-                                  <div>
-                                    <h3>
-                                      Selected File:{" "}
-                                      <a
-                                        href={item.supporting_docs}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        View File
-                                      </a>
-                                    </h3>
-                                  </div>
-                                )}
-                              </div>
-                            </td>
+                              {item.supporting_docs && (
+                                <div>
+                                  <h3>
+                                    Selected File:{" "}
+                                    <a
+                                      href={item.supporting_docs}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      View File
+                                    </a>
+                                  </h3>
+                                </div>
+                              )}
+                            </div>
+                          </td>
 
-                            <td>
-                              <DeleteIcon onClick={() => deleteRow(index)} />
-                              {item.limit !== "" &&
-                                (item.limit < 0.6 || item.limit > 2.6) && (
-                                  <button
-                                    className="deviation-btn"
-                                    onClick={() => {
-                                      navigate("/chart");
-                                    }}
-                                  >
-                                    Launch Deviation
-                                  </button>
-                                )}
-                            </td>
-                          </tr>
-                        )
-                      )}
+                          <td>
+                            <DeleteIcon onClick={() => deleteRow(index)} />
+                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
+                              <button
+                                className="deviation-btn"
+                                onClick={() => {
+                                  navigate("/chart");
+                                }}
+                              >
+                                Launch Deviation
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </>
@@ -714,11 +640,8 @@ export default function DPRpanel() {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
+                          location.state?.initiator_id === userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>*</span>
                           )}
                       </label>
                       <div className="instruction"></div>
@@ -796,11 +719,8 @@ export default function DPRpanel() {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
+                          location.state?.initiator_id === userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>*</span>
                           )}
                       </label>
                       <input
@@ -878,11 +798,8 @@ export default function DPRpanel() {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
+                          location.state?.initiator_id === userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>*</span>
                           )}
                       </label>
                       <input
@@ -1026,18 +943,12 @@ export default function DPRpanel() {
                     </button>
                   )
                 : null}
-              <button
-                className="themeBtn"
-                onClick={() => navigate("/dashboard")}
-              >
+              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
                 Exit
               </button>
             </div>
             {isPopupOpen && (
-              <UserVerificationPopUp
-                onClose={handlePopupClose}
-                onSubmit={handlePopupSubmit}
-              />
+              <UserVerificationPopUp onClose={handlePopupClose} onSubmit={handlePopupSubmit} />
             )}
           </div>
         </div>
