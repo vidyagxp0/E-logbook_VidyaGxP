@@ -16,7 +16,9 @@ function CreateRecordModal(_props) {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await axios.get("http://localhost:1000/site/get-sites");
+        const response = await axios.get(
+          "https://elogbookapi.vidyagxp.com/site/get-sites"
+        );
         const userSiteIds = await userDetails.roles
           .filter((role) => role.role_id === 1 || role.role_id === 5)
           .map((role) => role.site_id);
@@ -26,6 +28,7 @@ function CreateRecordModal(_props) {
           userSiteIds.includes(site.site_id)
         );
 
+        
         setSites(filteredSites);
       } catch (error) {
         console.error("Error fetching sites:", error);
@@ -39,7 +42,7 @@ function CreateRecordModal(_props) {
     const fetchProcesses = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1000/differential-pressure/get-processes"
+          "https://elogbookapi.vidyagxp.com/differential-pressure/get-processes"
         );
 
         const filteredProcessIds = userDetails.roles

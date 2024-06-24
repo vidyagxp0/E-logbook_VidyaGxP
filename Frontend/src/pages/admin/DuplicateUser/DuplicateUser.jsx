@@ -24,7 +24,7 @@ function DuplicateUser() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
+      .get(`https://elogbookapi.vidyagxp.com/user/get-a-user/${location.state.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         },
@@ -38,7 +38,7 @@ function DuplicateUser() {
       });
 
     axios
-      .get("http://localhost:1000/user/get-all-rolegroups")
+      .get("https://elogbookapi.vidyagxp.com/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []); // Ensure it's an array
       })
@@ -85,25 +85,25 @@ function DuplicateUser() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (formData.password.length < 8 || formData.password.length > 25) {
-      setError("Password must be between 8 and 25 characters long.");
-      return;
-    }
+        setError("Password must be between 8 and 25 characters long.");
+        return;
+      }
     const myHeaders = {
-      Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
-      "Content-Type": "application/json",
-    };
-
-    axios
-      .post("http://localhost:1000/user/add-user", formData, {
-        headers: myHeaders,
-      })
-      .then(() => {
-        toast.success("Dupliacted User successfully!!");
-        navigate(-1);
-      })
-      .catch((error) => {
-        toast.error("Couldn't duplicate user! " + error.response.data.message);
-      });
+        Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+        "Content-Type": "application/json",
+      };
+  
+      axios
+        .post("https://elogbookapi.vidyagxp.com/user/add-user", formData, {
+          headers: myHeaders,
+        })
+        .then(() => {
+          toast.success("Dupliacted User successfully!!");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error("Couldn't duplicate user! " + error.response.data.message);
+        });
   };
 
   const buttonStyle = {

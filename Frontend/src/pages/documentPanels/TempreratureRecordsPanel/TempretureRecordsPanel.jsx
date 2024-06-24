@@ -53,20 +53,26 @@ export default function TempretureRecordsPanel() {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       axios
-        .put("http://localhost:1000/temprature-record/send-TR-elog-for-review", data, config)
+        .put(
+          "https://elogbookapi.vidyagxp.com/temprature-record/send-TR-elog-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
         })
         .catch((error) => {
-          toast.error(error?.response?.data?.message || "Couldn't send elog for review!!");
+          toast.error(
+            error?.response?.data?.message || "Couldn't send elog for review!!"
+          );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "https://elogbookapi.vidyagxp.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -75,15 +81,18 @@ export default function TempretureRecordsPanel() {
           navigate(-1);
         })
         .catch((error) => {
-          toast.error(error?.response?.data?.message || "Couldn't send elog for approval!!");
+          toast.error(
+            error?.response?.data?.message ||
+              "Couldn't send elog for approval!!"
+          );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
-
+    
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elogbookapi.vidyagxp.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -98,20 +107,26 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/temprature-record/approve-TR-elog", data, config)
+        .put(
+          "https://elogbookapi.vidyagxp.com/temprature-record/approve-TR-elog",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully approved");
           navigate(-1);
         })
         .catch((error) => {
-          toast.error(error?.response?.data?.message || "Couldn't approve elog!!");
+          toast.error(
+            error?.response?.data?.message || "Couldn't approve elog!!"
+          );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
       data.approverAttachment = editData.approverAttachment;
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elogbookapi.vidyagxp.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -124,7 +139,10 @@ export default function TempretureRecordsPanel() {
         });
     } else if (popupAction === "updateElog") {
       data.initiatorDeclaration = credentials?.declaration;
-      if (parseFloat(editData.limit) < 0.6 || parseFloat(editData.limit) > 2.6) {
+      if (
+        parseFloat(editData.limit) < 0.6 ||
+        parseFloat(editData.limit) > 2.6
+      ) {
         toast.error("The limit value must be between 0.6 and 2.6.");
         return;
       }
@@ -141,7 +159,7 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "https://elogbookapi.vidyagxp.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -163,7 +181,10 @@ export default function TempretureRecordsPanel() {
   }, [location.state]);
 
   const addRow = () => {
-    if (location.state?.stage === 1 && location.state?.initiator_id === userDetails.userId) {
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
       const currentTime = new Date().toLocaleTimeString();
       const newRow = {
         unique_id: generateUniqueId(),
@@ -182,7 +203,10 @@ export default function TempretureRecordsPanel() {
   };
 
   const deleteRow = (index) => {
-    if (location.state?.stage === 1 && location.state?.initiator_id === userDetails.userId) {
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
       const updatedGridData = [...editData.TempratureRecords];
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
@@ -283,7 +307,9 @@ export default function TempretureRecordsPanel() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      isSelectedGeneral === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      isSelectedGeneral === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -297,7 +323,9 @@ export default function TempretureRecordsPanel() {
                   </div>
                   <div
                     className={`${
-                      isSelectedDetails === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      isSelectedDetails === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(true),
@@ -311,7 +339,9 @@ export default function TempretureRecordsPanel() {
                   </div>
                   <div
                     className={`${
-                      initiatorRemarks === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      initiatorRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -325,7 +355,9 @@ export default function TempretureRecordsPanel() {
                   </div>
                   <div
                     className={`${
-                      reviewerRemarks === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      reviewerRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -339,7 +371,9 @@ export default function TempretureRecordsPanel() {
                   </div>
                   <div
                     className={`${
-                      approverRemarks === true ? "btn-forms-isSelected" : "btn-forms-select"
+                      approverRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
                     }`}
                     onClick={() => {
                       setIsSelectedDetails(false),
@@ -353,7 +387,10 @@ export default function TempretureRecordsPanel() {
                   </div>
                 </div>
                 <div className="analytics-btn">
-                  <button className="btn-print" onClick={() => navigate("/analytics")}>
+                  <button
+                    className="btn-print"
+                    onClick={() => navigate("/analytics")}
+                  >
                     Analytics
                   </button>
                   {/* <PDFDownloadLink
@@ -415,7 +452,12 @@ export default function TempretureRecordsPanel() {
                   <div className="group-input">
                     <label className="color-label">Status</label>
                     <div>
-                      <input name="status" type="text" value={editData?.status} readOnly />
+                      <input
+                        name="status"
+                        type="text"
+                        value={editData?.status}
+                        readOnly
+                      />
                     </div>
                   </div>
                 </>
@@ -444,21 +486,31 @@ export default function TempretureRecordsPanel() {
                       <option value="Quality Assurance Bio-Pharma">
                         Quality Assurance Bio-Pharma
                       </option>
-                      <option value="Central Quality Control">Central Quality Control</option>
+                      <option value="Central Quality Control">
+                        Central Quality Control
+                      </option>
                       <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">Plasma Sourcing Group</option>
+                      <option value="Plasma Sourcing Grou">
+                        Plasma Sourcing Group
+                      </option>
                       <option value="Central Stores">Central Stores</option>
                       <option value="Information Technology Group">
                         Information Technology Group
                       </option>
-                      <option value="Molecular Medicine">Molecular Medicine</option>
-                      <option value="Central Laboratory">Central Laboratory</option>
+                      <option value="Molecular Medicine">
+                        Molecular Medicine
+                      </option>
+                      <option value="Central Laboratory">
+                        Central Laboratory
+                      </option>
                       <option value="Tech team">Tech team</option>
                     </select>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Compression Area with respect to Corridor</label>
+                    <label className="color-label">
+                      Compression Area with respect to Corridor
+                    </label>
 
                     <div className="instruction">&nbsp;</div>
                     <select
@@ -488,7 +540,11 @@ export default function TempretureRecordsPanel() {
                       name="limit"
                       type="number"
                       className={`${
-                        editData?.limit < 0.6 ? "limit" : editData?.limit > 2.6 ? "limit" : ""
+                        editData?.limit < 0.6
+                          ? "limit"
+                          : editData?.limit > 2.6
+                          ? "limit"
+                          : ""
                       }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
@@ -519,79 +575,92 @@ export default function TempretureRecordsPanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{item.unique_id}</td>
-                          <td>
-                            <input value={item.time} readOnly />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              value={item.temprature_record}
-                              className={`${
-                                item.temprature_record < 0.6
-                                  ? "limit"
-                                  : item.temprature_record > 2.6
-                                  ? "limit"
-                                  : ""
-                              }`}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].temprature_record = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !== userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.remarks}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].remarks = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !== userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].checked_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
-                          </td>
-                          <td style={{ width: "250px" }}>
+                      {editData?.TempratureRecords.map(
+                        (item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.unique_id}</td>
+                            <td>
+                              <input value={item.time} readOnly />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.temprature_record}
+                                className={`${
+                                  item.temprature_record < 0.6
+                                    ? "limit"
+                                    : item.temprature_record > 2.6
+                                    ? "limit"
+                                    : ""
+                                }`}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].temprature_record =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    TempratureRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.remarks}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].remarks = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    TempratureRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.checked_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+                                  newData[index].checked_by = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    TempratureRecords: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td style={{ width: "250px" }}>
                             <div className="d-flex">
                               <input
                                 // value={item.supporting_docs}
                                 type="file"
                                 name="supporting_docs"
-                                onChange={(e) => handleFileChange(index, e.target.files[0])}
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
                                 disabled={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !== userDetails.userId
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
                                 }
                               />
 
@@ -612,21 +681,23 @@ export default function TempretureRecordsPanel() {
                             </div>
                           </td>
 
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" && (item.limit < 0.6 || item.limit > 2.6) && (
-                              <button
-                                className="deviation-btn"
-                                onClick={() => {
-                                  navigate("/chart");
-                                }}
-                              >
-                                Launch Deviation
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                              {item.limit !== "" &&
+                                (item.limit < 0.6 || item.limit > 2.6) && (
+                                  <button
+                                    className="deviation-btn"
+                                    onClick={() => {
+                                      navigate("/chart");
+                                    }}
+                                  >
+                                    Launch Deviation
+                                  </button>
+                                )}
+                            </td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
                 </>
@@ -639,8 +710,11 @@ export default function TempretureRecordsPanel() {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id === userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
                           )}
                       </label>
                       <div className="instruction"></div>
@@ -718,8 +792,11 @@ export default function TempretureRecordsPanel() {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.initiator_id === userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
                           )}
                       </label>
                       <input
@@ -797,8 +874,11 @@ export default function TempretureRecordsPanel() {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.initiator_id === userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
                           )}
                       </label>
                       <input
@@ -942,12 +1022,18 @@ export default function TempretureRecordsPanel() {
                     </button>
                   )
                 : null}
-              <button className="themeBtn" onClick={() => navigate("/dashboard")}>
+              <button
+                className="themeBtn"
+                onClick={() => navigate("/dashboard")}
+              >
                 Exit
               </button>
             </div>
             {isPopupOpen && (
-              <UserVerificationPopUp onClose={handlePopupClose} onSubmit={handlePopupSubmit} />
+              <UserVerificationPopUp
+                onClose={handlePopupClose}
+                onSubmit={handlePopupSubmit}
+              />
             )}
           </div>
         </div>

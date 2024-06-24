@@ -28,7 +28,7 @@ function Login() {
       password: password,
     };
     axios
-      .post("http://localhost:1000/user/user-login", data, {
+      .post("https://elogbookapi.vidyagxp.com/user/user-login", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -38,7 +38,7 @@ function Login() {
         toast.success("Login Successful");
         localStorage.setItem("user-token", response.data.token);
         const decodedData = jwtDecode(response.data?.token);
-        localStorage.setItem("user-details", JSON.stringify(decodedData));
+        localStorage.setItem('user-details', JSON.stringify(decodedData));
         dispatch({ type: "LOGGED-IN-USER", payload: decodedData });
       })
       .catch((error) => {

@@ -14,7 +14,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
-    const url = "http://localhost:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "https://elogbookapi.vidyagxp.com/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -42,7 +42,7 @@ function AdminDashboard() {
   const handleDelete = () => {
     const config = {
       method: "delete",
-      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
+      url: `https://elogbookapi.vidyagxp.com/user/delete-user/${selectedUser.user_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       },
@@ -63,7 +63,7 @@ function AdminDashboard() {
   const openPermissionsModal = (user) => {
     const token = localStorage.getItem("admin-token");
     axios
-      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
+      .get(`https://elogbookapi.vidyagxp.com/user/get-user-permissions/${user.user_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,9 +90,15 @@ function AdminDashboard() {
       <div className="admin-dashboard">
         <div className="main-content">
           <div className="Header_Bottom shadow-xl ">
-            <div className="headerBottomInner" style={{ display: "flex", alignItems: "center" }}>
+            <div
+              className="headerBottomInner"
+              style={{ display: "flex", alignItems: "center" }}
+            >
               <div className="headerBottomLft" style={{ marginRight: "auto" }}>
-                <div className="navItem" style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  className="navItem"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
                   <i
                     className="ri-home-3-fill"
                     style={{
@@ -101,7 +107,9 @@ function AdminDashboard() {
                       color: "#EFA035",
                     }}
                   ></i>
-                  <h3 style={{ margin: "0", color: "#333" }}>User Management</h3>
+                  <h3 style={{ margin: "0", color: "#333" }}>
+                    User Management
+                  </h3>
                 </div>
               </div>
               <div
