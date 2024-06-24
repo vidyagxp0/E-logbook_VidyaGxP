@@ -10,11 +10,11 @@ const storage = multer.diskStorage({
     cb(null, path.resolve(__dirname, "../documents/elog_docs/"));
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    );
+    const uniqueSuffix = Date.now();
+    const originalName = path.basename(file.originalname, path.extname(file.originalname));
+    const sanitizedOriginalName = originalName.replace(/[^a-zA-Z0-9]/g, '_'); // Sanitize the original name if necessary
+    const newFilename = `${uniqueSuffix}-${sanitizedOriginalName}${path.extname(file.originalname)}`;
+    cb(null, newFilename);
   },
 });
 
@@ -65,7 +65,7 @@ router.put(
 router.put(
   "/send-DP-elog-from-review-to-open",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(1, 2),
   DifferentialPressureProcess.SendDPElogfromReviewToOpen
 );
@@ -105,5 +105,11 @@ router.post(
 );
 
 router.get("/get-processes", DifferentialPressureProcess.getAllProcesses);
+
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  DifferentialPressureProcess.getAuditTrailForAnElog
+);
 
 module.exports = router;
