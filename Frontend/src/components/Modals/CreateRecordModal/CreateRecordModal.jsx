@@ -17,7 +17,7 @@ function CreateRecordModal(_props) {
     const fetchSites = async () => {
       try {
         const response = await axios.get(
-          "https://elogbookapi.vidyagxp.com/site/get-sites"
+          "http://localhost:1000/site/get-sites"
         );
         const userSiteIds = await userDetails.roles
           .filter((role) => role.role_id === 1 || role.role_id === 5)
@@ -42,7 +42,7 @@ function CreateRecordModal(_props) {
     const fetchProcesses = async () => {
       try {
         const response = await axios.get(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/get-processes"
+          "http://localhost:1000/differential-pressure/get-processes"
         );
 
         const filteredProcessIds = userDetails.roles

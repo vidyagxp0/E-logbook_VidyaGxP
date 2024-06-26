@@ -55,7 +55,7 @@ export default function DPRpanel() {
       data.initiatorAttachment = editData?.initiatorAttachment;
       axios
         .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-for-review",
+          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -73,7 +73,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-from-review-to-approval",
+          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -92,7 +92,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-from-review-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -108,7 +108,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/approve-DP-elog",
+          "http://localhost:1000/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -126,7 +126,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-from-approval-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -160,7 +160,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elogbookapi.vidyagxp.com/differential-pressure/update-differential-pressure",
+        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -268,6 +268,7 @@ export default function DPRpanel() {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
+  console.log(editData.status,"uidfguifhdgui")
   return (
     <>
       <HeaderTop />
@@ -307,8 +308,55 @@ export default function DPRpanel() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div>
+             
               <div className="sub-head-2">Differential Pressure Record</div>
-
+ <div className="outerDiv4">
+                <div className="btn-forms">
+                  <div
+                    className={`${
+                      location.state?.stage===1
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                   
+                  >
+                    Initiation
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===2
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                    
+                  >
+                    Under Review
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===3
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                    
+                  >
+                    Under Approval
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===4
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                   
+                  >
+                    Approved
+                  </div>
+                  
+                
+                </div>
+               
+              </div>
               <div className="outerDiv5">
                 <div className="btn-forms">
                   <div

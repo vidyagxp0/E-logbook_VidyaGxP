@@ -526,3 +526,27 @@ tr th {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.outerDiv4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btn-forms {
+  display: flex;
+}
+
+
+.btn-forms-isSelecteds {
+  background-color: #f79520;
+  color: white;
+  padding: 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}

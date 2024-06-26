@@ -390,6 +390,23 @@
   border-radius: 28px;
 }
 
+.btn-forms-selects {
+  border: 1px solid rgb(210, 105, 105);
+  padding: 5px 10px;
+  border-radius: 28px;
+}
+
+.btn-forms-selects:hover {
+  cursor: pointer;
+}
+
+.btn-forms-isSelecteds {
+  background-color: rgb(234, 190, 102);
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 28px;
+}
+
 .btn-forms {
   display: flex;
   gap: 10px;
@@ -516,8 +533,4 @@ tr th {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-.outerDiv5 {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
+
