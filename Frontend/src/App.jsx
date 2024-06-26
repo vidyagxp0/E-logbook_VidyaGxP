@@ -26,6 +26,7 @@ import EditUser from "./pages/admin/EditUser/EditUser.jsx";
 import Wrapper from "./pages/Wrapper.jsx";
 import AdminProcesses from "./pages/admin/AdminProcesses/AdminProcesses.jsx";
 import DuplicateUser from "./pages/admin/DuplicateUser/DuplicateUser.jsx";
+import AuditTrail from "./pages/AuditTrail/AuditTrail.jsx";
 
 function App() {
   return (
@@ -68,6 +69,10 @@ function App() {
             <Route
               path="/analytics"
               element={<ProtectedRoute element={<Analytics />} />}
+            />
+            <Route
+              path="/audit-trail"
+              element={<ProtectedRoute element={<AuditTrail />} />}
             />
             <Route
               path="/dpr-panel"

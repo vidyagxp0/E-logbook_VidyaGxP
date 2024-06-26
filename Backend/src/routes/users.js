@@ -9,11 +9,17 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.resolve(__dirname, "../documents/profile_pics/"));
   },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    const originalName = path.basename(
+      file.originalname,
+      path.extname(file.originalname)
     );
+    const sanitizedOriginalName = originalName.replace(/[^a-zA-Z0-9]/g, "_"); // Sanitize the original name if necessary
+    const newFilename = `${uniqueSuffix}-${sanitizedOriginalName}${path.extname(
+      file.originalname
+    )}`;
+    cb(null, newFilename);
   },
 });
 const upload = multer({ storage: storage });

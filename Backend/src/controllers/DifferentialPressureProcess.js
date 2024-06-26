@@ -7,6 +7,7 @@ const UserRole = require("../models/userRoles");
 const { Op, ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
+const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {
@@ -108,13 +109,49 @@ exports.InsertDifferentialPressure = async (req, res) => {
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         initiatorComment: initiatorComment,
-        initiatorDeclaration: initiatorDeclaration,
       },
 
       { transaction }
     );
 
-    // Check if FormRecordsArray is provided
+    const auditTrailEntries = [];
+    const fields = {
+      description,
+      department,
+      compression_area,
+      limit,
+      reviewer_id,
+      approver_id,
+      initiatorComment,
+    };
+    for (const [field, value] of Object.entries(fields)) {
+      if (value !== undefined && value !== null && value !== "") {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: field,
+          previous_value: null,
+          new_value: value,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "initiation",
+          declaration: initiatorDeclaration,
+        });
+      }
+    }
+
+    if (initiatorAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "initiatorAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "initiation",
+        declaration: initiatorDeclaration,
+      });
+    }
+
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
@@ -127,9 +164,77 @@ exports.InsertDifferentialPressure = async (req, res) => {
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+
+      formRecords.forEach((record, index) => {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `UniqueId[${index}]`,
+          previous_value: null,
+          new_value: record.unique_id,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "initiation",
+          declaration: initiatorDeclaration,
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `Time[${index}]`,
+          previous_value: null,
+          new_value: record.time,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "initiation",
+          declaration: initiatorDeclaration,
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `DifferentialPressure[${index}]`,
+          previous_value: null,
+          new_value: record.differential_pressure,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "initiation",
+          declaration: initiatorDeclaration,
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `Remarks[${index}]`,
+          previous_value: null,
+          new_value: record.remarks,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "initiation",
+          declaration: initiatorDeclaration,
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `CheckedBy[${index}]`,
+          previous_value: null,
+          new_value: record.checked_by,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "initiation",
+          declaration: initiatorDeclaration,
+        });
+        if (supportingDocs[index]) {
+          auditTrailEntries.push({
+            form_id: newForm.form_id,
+            field_name: `SupportingDocs[${index}]`,
+            previous_value: null,
+            new_value: getElogDocsUrl(supportingDocs[index]),
+            changed_by: user.user_id,
+            previous_status: "Not Applicable",
+            new_status: "initiation",
+            declaration: initiatorDeclaration,
+          });
+        }
+      });
     }
 
-    // Commit the transaction
+    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
     await transaction.commit();
 
     return res.status(200).json({
@@ -154,8 +259,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
 // edit differential pressure elog details
 exports.EditDifferentialPressure = async (req, res) => {
-  console.log(req.files, "files", req.body);
-
   const {
     form_id,
     site_id,
@@ -172,20 +275,17 @@ exports.EditDifferentialPressure = async (req, res) => {
     initiatorDeclaration,
   } = req.body;
 
-  // Check for required fields and provide specific error messages
   if (!form_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
-
   if (!email || !password) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide email and password." });
   }
 
-  // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
@@ -213,12 +313,10 @@ exports.EditDifferentialPressure = async (req, res) => {
     let initiatorAttachment = null;
     const supportingDocs = {};
 
-    // Process files
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
-        // Extract the index from the fieldname
         const match = file.fieldname.match(
           /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
         );
@@ -229,9 +327,9 @@ exports.EditDifferentialPressure = async (req, res) => {
       }
     });
 
-    // Find the form by ID
     const form = await DifferentialPressureForm.findOne({
       where: { form_id: form_id },
+      transaction,
     });
 
     if (!form) {
@@ -239,19 +337,58 @@ exports.EditDifferentialPressure = async (req, res) => {
       return res.status(404).json({ error: true, message: "Form not found." });
     }
 
+    // Define epsilon for float comparison
+    const EPSILON = 0.000001;
+
+    // Function to compare floats with epsilon
+    const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
+
+    // Track changes for the form
+    const auditTrailEntries = [];
+    const fields = {
+      description,
+      department,
+      compression_area,
+      limit,
+      initiatorComment,
+      initiatorAttachment: initiatorAttachment
+        ? getElogDocsUrl(initiatorAttachment)
+        : form.initiatorAttachment,
+    };
+
+    for (const [field, newValue] of Object.entries(fields)) {
+      const oldValue = form[field];
+      if (
+        newValue !== undefined &&
+        ((typeof newValue === "number" &&
+          !areFloatsEqual(oldValue, newValue)) ||
+          oldValue != newValue)
+      ) {
+        auditTrailEntries.push({
+          form_id: form.form_id,
+          field_name: field,
+          previous_value: oldValue || null,
+          new_value: newValue,
+          changed_by: user.user_id,
+          previous_status: form.status,
+          new_status: "initiation",
+          declaration: initiatorDeclaration,
+        });
+      }
+    }
+
     // Update the form details
     await form.update(
       {
-        site_id: site_id,
-        description: description,
-        department: department,
-        compression_area: compression_area,
-        limit: limit,
-        reviewer_id: reviewer_id,
-        approver_id: approver_id,
+        site_id,
+        description,
+        department,
+        compression_area,
+        limit,
+        reviewer_id,
+        approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
-        initiatorComment: initiatorComment,
-        initiatorDeclaration: initiatorDeclaration,
+        initiatorComment,
       },
       { transaction }
     );
@@ -261,13 +398,93 @@ exports.EditDifferentialPressure = async (req, res) => {
       Array.isArray(DifferentialPressureRecords) &&
       DifferentialPressureRecords.length > 0
     ) {
-      // First, delete existing records for the form
+      const existingRecords = await DifferentialPressureRecord.findAll({
+        where: { form_id: form_id },
+        raw: true,
+        // order: [["record_id", "DESC"]],
+        transaction,
+      });
+
+      // Track changes for existing records
+      existingRecords.forEach((existingRecord, index) => {
+        DifferentialPressureRecords.sort(
+          (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
+        );
+        const newRecord = DifferentialPressureRecords[index];
+        if (newRecord) {
+          const recordFields = {
+            differential_pressure: newRecord.differential_pressure,
+            remarks: newRecord.remarks,
+            supporting_docs:
+              newRecord.supporting_docs ||
+              getElogDocsUrl(supportingDocs[index]),
+          };
+
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            const oldValue = existingRecord[field];
+            if (
+              newValue !== undefined &&
+              ((typeof newValue === "number" &&
+                !areFloatsEqual(oldValue, newValue)) ||
+                oldValue != newValue)
+            ) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${index}]`,
+                previous_value: oldValue || null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "initiation",
+                declaration: initiatorDeclaration,
+              });
+            }
+          }
+        }
+      });
+
+      // Handle new records added
+      if (DifferentialPressureRecords.length > existingRecords.length) {
+        for (
+          let i = existingRecords.length;
+          i < DifferentialPressureRecords.length;
+          i++
+        ) {
+          const newRecord = DifferentialPressureRecords[i];
+          const recordFields = {
+            unique_id: newRecord?.unique_id,
+            time: newRecord?.time,
+            checked_by: newRecord?.checked_by,
+            differential_pressure: newRecord.differential_pressure,
+            remarks: newRecord.remarks,
+            supporting_docs:
+              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+          };
+
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "initiation",
+                declaration: initiatorDeclaration,
+              });
+            }
+          }
+        }
+      }
+
+      // Delete existing records for the form
       await DifferentialPressureRecord.destroy({
         where: { form_id: form_id },
         transaction,
       });
 
-      // Then, create new records
+      // Create new records
       const formRecords = DifferentialPressureRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
@@ -283,7 +500,10 @@ exports.EditDifferentialPressure = async (req, res) => {
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
     }
 
-    // Commit the transaction
+    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
     await transaction.commit();
 
     return res.status(200).json({
@@ -291,7 +511,6 @@ exports.EditDifferentialPressure = async (req, res) => {
       message: "E-log Updated successfully",
     });
   } catch (error) {
-    // Rollback the transaction in case of error
     await transaction.rollback();
 
     let errorMessage = "Error during updating elog";
@@ -358,6 +577,7 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
+	order: [['form_id', 'DESC']],
   })
     .then((result) => {
       res.json({
@@ -434,16 +654,49 @@ exports.SendDPElogForReview = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "initiation",
+        new_value: "under review",
+        changed_by: user.user_id,
+        previous_status: "initiation",
+        new_status: "under review",
+        declaration: initiatorDeclaration,
+      },
+    ];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "initiatorAttachment",
+        previous_value: form.initiatorAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "initiation",
+        new_status: "under review",
+        declaration: initiatorDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
         status: "under review",
         stage: 2,
-        initiatorDeclaration: initiatorDeclaration,
-        initiatorAttachment: getElogDocsUrl(req?.file),
+        initiatorAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.initiatorAttachment,
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -524,16 +777,47 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "under review",
+        new_value: "initiation",
+        changed_by: user.user_id,
+        previous_status: "under review",
+        new_status: "initiation",
+        declaration: reviewerDeclaration,
+      },
+    ];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewerAttachment",
+        previous_value: form.reviewerAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "under review",
+        new_status: "initiation",
+        declaration: reviewerDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
         status: "initiation",
         stage: 1,
-        reviewerDeclaration: reviewerDeclaration,
         reviewerAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -620,18 +904,64 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "under review",
+        new_value: "under approval",
+        changed_by: user.user_id,
+        previous_status: "under review",
+        new_status: "under approval",
+        declaration: reviewerDeclaration,
+      },
+    ];
+
+    if (reviewComment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewComment",
+        previous_value: form.reviewComment || null,
+        new_value: reviewComment,
+        changed_by: user.user_id,
+        previous_status: "under review",
+        new_status: "under approval",
+        declaration: reviewerDeclaration,
+      });
+    }
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewerAttachment",
+        previous_value: form.reviewerAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "under review",
+        new_status: "under approval",
+        declaration: reviewerDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
         status: "under approval",
         stage: 3,
         reviewComment: reviewComment,
-        reviewerDeclaration: reviewerDeclaration,
-        reviewerAttachment: getElogDocsUrl(req?.file),
+        reviewerAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.reviewerAttachment,
         date_of_review: new Date(),
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -712,16 +1042,47 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "under approval",
+        new_value: "initiation",
+        changed_by: user.user_id,
+        previous_status: "under approval",
+        new_status: "initiation",
+        declaration: approverDeclaration,
+      },
+    ];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverAttachment",
+        previous_value: form.approverAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "under approval",
+        new_status: "initiation",
+        declaration: approverDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
         status: "initiation",
         stage: 1,
-        approverDeclaration: approverDeclaration,
         approverAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -808,18 +1169,64 @@ exports.ApproveDPElog = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "under approval",
+        new_value: "approved",
+        changed_by: user.user_id,
+        previous_status: "under approval",
+        new_status: "approved",
+        declaration: approverDeclaration,
+      },
+    ];
+
+    if (approverComment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverComment",
+        previous_value: form.approverComment || null,
+        new_value: approverComment,
+        changed_by: user.user_id,
+        previous_status: "under approval",
+        new_status: "approved",
+        declaration: approverDeclaration,
+      });
+    }
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverAttachment",
+        previous_value: form.approverAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "under approval",
+        new_status: "approved",
+        declaration: approverDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
         status: "approved",
         stage: 4,
         approverComment: approverComment,
-        approverDeclaration: approverDeclaration,
-        approverAttachment: getElogDocsUrl(req?.file),
+        approverAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.approverAttachment,
         date_of_approval: new Date(),
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -886,4 +1293,44 @@ exports.getAllProcesses = async (req, res) => {
         message: "Couldn't find processes " + error,
       });
     });
+};
+
+exports.getAuditTrailForAnElog = async (req, res) => {
+  try {
+    // Extract form_id from request parameters
+    const formId = req.params.id;
+
+    // Check if form_id is provided
+    if (!formId) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Form ID is required." });
+    }
+
+    // Find all audit trail entries for the given form_id
+    const auditTrail = await DifferentialPressureAuditTrail.findAll({
+      where: { form_id: formId },
+      include: {
+        model: User,
+        attributes: ["user_id", "name"],
+      },
+	  order: [['auditTrail_id', 'DESC']],
+    });
+
+    if (!auditTrail || auditTrail.length === 0) {
+      return res
+        .status(404)
+        .json({
+          error: true,
+          message: "No audit trail found for the given form ID.",
+        });
+    }
+
+    return res.status(200).json({ error: false, auditTrail });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: `Error retrieving audit trail: ${error.message}`,
+    });
+  }
 };

@@ -94,16 +94,6 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   approverAttachment: {
     type: DataTypes.STRING,
   },
-  initiatorDeclaration: {
-    type: DataTypes.STRING,
-  },
-  reviewerDeclaration: {
-    type: DataTypes.STRING,
-  },
-  approverDeclaration: {
-    type: DataTypes.STRING,
-  },
-
 });
 
 DifferentialPressureForm.belongsTo(Site, { foreignKey: "site_id" });
