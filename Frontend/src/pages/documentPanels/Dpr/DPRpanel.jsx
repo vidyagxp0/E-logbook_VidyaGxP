@@ -408,7 +408,11 @@ export default function DPRpanel() {
                 <div className="analytics-btn">
                   <button
                     className="btn-print"
-                    onClick={() => navigate("/analytics")}
+                    onClick={() =>
+                      navigate("/analytics", {
+                        state: { records: location.state, processId: 1 },
+                      })
+                    }
                   >
                     Analytics
                   </button>

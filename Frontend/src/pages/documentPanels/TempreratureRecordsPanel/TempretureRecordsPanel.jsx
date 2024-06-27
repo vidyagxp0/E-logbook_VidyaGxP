@@ -89,7 +89,7 @@ export default function TempretureRecordsPanel() {
     } else if (popupAction === "sendFromReviewToOpen") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
-    
+
       axios
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
@@ -389,7 +389,11 @@ export default function TempretureRecordsPanel() {
                 <div className="analytics-btn">
                   <button
                     className="btn-print"
-                    onClick={() => navigate("/analytics")}
+                    onClick={() =>
+                      navigate("/analytics", {
+                        state: { records: location.state, processId: 4 },
+                      })
+                    }
                   >
                     Analytics
                   </button>
@@ -575,80 +579,73 @@ export default function TempretureRecordsPanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords.map(
-                        (item, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.unique_id}</td>
-                            <td>
-                              <input value={item.time} readOnly />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                value={item.temprature_record}
-                                className={`${
-                                  item.temprature_record < 0.6
-                                    ? "limit"
-                                    : item.temprature_record > 2.6
-                                    ? "limit"
-                                    : ""
-                                }`}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.TempratureRecords,
-                                  ];
-                                  newData[index].temprature_record =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    TempratureRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.remarks}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.TempratureRecords,
-                                  ];
-                                  newData[index].remarks = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    TempratureRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.TempratureRecords,
-                                  ];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    TempratureRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
-                            </td>
-                            <td style={{ width: "250px" }}>
+                      {editData?.TempratureRecords.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.unique_id}</td>
+                          <td>
+                            <input value={item.time} readOnly />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.temprature_record}
+                              className={`${
+                                item.temprature_record < 0.6
+                                  ? "limit"
+                                  : item.temprature_record > 2.6
+                                  ? "limit"
+                                  : ""
+                              }`}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].temprature_record =
+                                  e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !==
+                                  userDetails.userId
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.remarks}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].remarks = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !==
+                                  userDetails.userId
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.checked_by}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].checked_by = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly
+                            />
+                          </td>
+                          <td style={{ width: "250px" }}>
                             <div className="d-flex">
                               <input
                                 // value={item.supporting_docs}
@@ -681,23 +678,22 @@ export default function TempretureRecordsPanel() {
                             </div>
                           </td>
 
-                            <td>
-                              <DeleteIcon onClick={() => deleteRow(index)} />
-                              {item.limit !== "" &&
-                                (item.limit < 0.6 || item.limit > 2.6) && (
-                                  <button
-                                    className="deviation-btn"
-                                    onClick={() => {
-                                      navigate("/chart");
-                                    }}
-                                  >
-                                    Launch Deviation
-                                  </button>
-                                )}
-                            </td>
-                          </tr>
-                        )
-                      )}
+                          <td>
+                            <DeleteIcon onClick={() => deleteRow(index)} />
+                            {item.limit !== "" &&
+                              (item.limit < 0.6 || item.limit > 2.6) && (
+                                <button
+                                  className="deviation-btn"
+                                  onClick={() => {
+                                    navigate("/chart");
+                                  }}
+                                >
+                                  Launch Deviation
+                                </button>
+                              )}
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </>
