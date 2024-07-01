@@ -956,7 +956,7 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "under approval",
+        status: "UNDER APPROVAL",
         stage: 3,
         reviewComment: reviewComment,
         reviewerDeclaration: reviewerDeclaration,
