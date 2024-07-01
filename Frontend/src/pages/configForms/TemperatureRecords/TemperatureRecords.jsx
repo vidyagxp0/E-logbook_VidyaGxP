@@ -13,6 +13,8 @@ export default function TemperatureRecords() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
+  const [reviewerRemarks, setReviewerRemarks] = useState(false);
+  const [approverRemarks, setApproverRemarks] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
   const [reviewers, setReviewers] = useState([]);
   const [approvers, setApprovers] = useState([]);
@@ -45,6 +47,8 @@ export default function TemperatureRecords() {
         console.error("Error: ", error);
       });
 
+   
+
     const newConfig = {
       method: "post",
       url: "http://localhost:1000/temprature-record/get-user-roleGroups",
@@ -67,6 +71,18 @@ export default function TemperatureRecords() {
         console.error("Error: ", error);
       });
   }, []);
+
+  const handleInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setDifferentialPRecord({ ...differentialPRecord, [name]: value });
+  };
+
+  const handleReviewerFileChange = (e) => {
+    setDifferentialPRecord({ ...differentialPRecord, reviewerAttachment: e.target.files[0] });
+  };
+  const handleApproverFileChange = (e) => {
+    setDifferentialPRecord({ ...differentialPRecord, approverAttachment: e.target.files[0] });
+  };
 
   useEffect(() => {
     const requestOptions = {
@@ -249,7 +265,6 @@ export default function TemperatureRecords() {
                 </div>
               </div>
               <div className="sub-head-2">Temprature Record</div>
-
               <div className="outerDiv5">
                 <div className="btn-forms">
                   <div
@@ -261,7 +276,9 @@ export default function TemperatureRecords() {
                     onClick={() => {
                       setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
-                        setInitiatorRemarks(false);
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false);
                     }}
                   >
                     General Information
@@ -275,7 +292,9 @@ export default function TemperatureRecords() {
                     onClick={() => {
                       setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
-                        setInitiatorRemarks(false);
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false);
                     }}
                   >
                     Details
@@ -289,20 +308,48 @@ export default function TemperatureRecords() {
                     onClick={() => {
                       setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
-                        setInitiatorRemarks(true);
+                        setInitiatorRemarks(true),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false);
                     }}
                   >
                     Initiator Remarks
                   </div>
+                  <div
+                    className={`${
+                      reviewerRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(true),
+                        setApproverRemarks(false);
+                    }}
+                  >
+                    Reviewer Remarks
+                  </div>
+                  <div
+                    className={`${
+                      approverRemarks === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(true);
+                    }}
+                  >
+                    Approver Remarks
+                  </div>
+             
                 </div>
-                {/* <div className="analytics-btn">
-                  <button className="btn-print" onClick={() => navigate("/analytics")}>
-                    Analytics
-                  </button>
-                  <button className="btn-print" onClick={() => {}}>
-                    Print
-                  </button>
-                </div> */}
+              
               </div>
 
               {isSelectedGeneral === true ? (
@@ -696,6 +743,169 @@ export default function TemperatureRecords() {
                       <label className="color-label">Date of Initiation</label>
                       <div>
                         <input type="text" value={date} readOnly />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : null}
+              {reviewerRemarks === true ? (
+                <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label" htmlFor="reviewComment">
+                        Review Comment
+                        {location.state?.stage === 2 &&
+                          location.state?.initiator_id ===
+                          User.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
+                          )}
+                      </label>
+                      <input
+                        id="reviewComment"
+                        name="reviewComment"
+                        value={User.reviewComment || ""}
+                        onChange={handleInputChange1}
+                        readOnly={
+                          location.state?.stage !== 2 ||
+                          location.state?.reviewer_id !== userDetails.userId
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                        htmlFor="reviewerAttachment"
+                        className="color-label"
+                        name="reviewerAttachment"
+                      >
+                        Reviewer Attachment
+                      </label>
+                      <input
+                        type="file"
+                        name="reviewerAttachment"
+                        id="reviewerAttachment"
+                        onChange={handleReviewerFileChange}
+                      />
+                      {User.reviewerAttachment && (
+                        <div>
+                          <h3>
+                            Selected File:{" "}
+                            <a
+                              href={User.reviewerAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={User?.reviewer?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={User?.date_of_review?.split("T")[0]}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : null}
+
+              {approverRemarks === true ? (
+                <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label" htmlFor="approverComment">
+                        Approver Comment
+                        {location.state?.stage === 3 &&
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
+                          )}
+                      </label>
+                      <input
+                        id="approverComment"
+                        name="approverComment"
+                        value={User.approverComment || ""}
+                        onChange={handleInputChange1}
+                        readOnly={
+                          location.state?.stage !== 3 ||
+                          location.state?.approver_id !== userDetails.userId
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                        htmlFor="approverAttachment"
+                        className="color-label"
+                        name="aproverAttachment"
+                      >
+                        Approver Attachment
+                      </label>
+                      <input
+                        type="file"
+                        name="approverAttachment"
+                        id="approverAttachment"
+                        onChange={handleApproverFileChange}
+                      />
+                      {User.approverAttachment && (
+                        <div>
+                          <h3>
+                            Selected File:{" "}
+                            <a
+                              href={User.approverAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={User?.approver?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={User?.date_of_approval?.split("T")[0]}
+                          readOnly
+                        />
                       </div>
                     </div>
                   </div>

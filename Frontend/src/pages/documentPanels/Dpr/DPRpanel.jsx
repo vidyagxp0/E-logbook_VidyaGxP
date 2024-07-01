@@ -268,6 +268,7 @@ export default function DPRpanel() {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
+  console.log(editData.status,"uidfguifhdgui")
   return (
     <>
       <HeaderTop />
@@ -307,8 +308,55 @@ export default function DPRpanel() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div>
+             
               <div className="sub-head-2">Differential Pressure Record</div>
-
+ <div className="outerDiv4">
+                <div className="btn-forms">
+                  <div
+                    className={`${
+                      location.state?.stage===1
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                   
+                  >
+                    Initiation
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===2
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                    
+                  >
+                    Under Review
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===3
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                    
+                  >
+                    Under Approval
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===4
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                   
+                  >
+                    Approved
+                  </div>
+                  
+                
+                </div>
+               
+              </div>
               <div className="outerDiv5">
                 <div className="btn-forms">
                   <div

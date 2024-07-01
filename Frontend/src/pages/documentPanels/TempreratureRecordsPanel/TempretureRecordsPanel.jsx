@@ -302,7 +302,53 @@ export default function TempretureRecordsPanel() {
                 </div>
               </div>
               <div className="sub-head-2">Temperature Record</div>
-
+              <div className="outerDiv4">
+                <div className="btn-forms">
+                  <div
+                    className={`${
+                      location.state?.stage===1
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                   
+                  >
+                    Initiation
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===2
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                    
+                  >
+                    Under Review
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===3
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                    
+                  >
+                    Under Approval
+                  </div>
+                  <div
+                    className={`${
+                      location.state?.stage===4
+                        ? "btn-forms-isSelecteds"
+                        : "btn-forms-selects"
+                    }`}
+                   
+                  >
+                    Approved
+                  </div>
+                  
+                
+                </div>
+               
+              </div>
               <div className="outerDiv5">
                 <div className="btn-forms">
                   <div
