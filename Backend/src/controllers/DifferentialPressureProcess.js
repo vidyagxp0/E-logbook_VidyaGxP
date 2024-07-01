@@ -113,6 +113,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
       { transaction }
     );
+    const getUserById = async (user_id) => {
+      const user = await User.findOne({ where: { user_id } });
+      return user;
+    };
 
     const auditTrailEntries = [];
     const fields = {
@@ -120,8 +124,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
       department,
       compression_area,
       limit,
-      reviewer_id,
-      approver_id,
+      reviewer: (await getUserById(reviewer_id))?.name, 
+      approver: (await getUserById(approver_id))?.name,
       initiatorComment,
     };
     for (const [field, value] of Object.entries(fields)) {
@@ -577,7 +581,7 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
-	order: [['form_id', 'DESC']],
+    order: [["form_id", "DESC"]],
   })
     .then((result) => {
       res.json({
@@ -1314,16 +1318,14 @@ exports.getAuditTrailForAnElog = async (req, res) => {
         model: User,
         attributes: ["user_id", "name"],
       },
-	  order: [['auditTrail_id', 'DESC']],
+      order: [["auditTrail_id", "DESC"]],
     });
 
     if (!auditTrail || auditTrail.length === 0) {
-      return res
-        .status(404)
-        .json({
-          error: true,
-          message: "No audit trail found for the given form ID.",
-        });
+      return res.status(404).json({
+        error: true,
+        message: "No audit trail found for the given form ID.",
+      });
     }
 
     return res.status(200).json({ error: false, auditTrail });
