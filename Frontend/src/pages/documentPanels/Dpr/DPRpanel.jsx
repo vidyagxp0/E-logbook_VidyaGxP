@@ -268,7 +268,6 @@ export default function DPRpanel() {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
-  console.log(editData.status,"uidfguifhdgui")
   return (
     <>
       <HeaderTop />
