@@ -104,4 +104,10 @@ router.post(
   TempratureProcess.GetUserOnBasisOfRoleGroup
 );
 
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  TempratureProcess.getAuditTrailForAnElog
+);
+
 module.exports = router;

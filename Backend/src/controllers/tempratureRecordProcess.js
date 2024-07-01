@@ -6,6 +6,7 @@ const UserRole = require("../models/userRoles");
 const { Op, ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
+const TemperatureRecordAuditTrail = require("../models/temperatureRecordsAuditTrail");
 
 // Fill tempratre record form and insert its records.
 exports.InsertTempratureRecord = async (req, res) => {
@@ -98,7 +99,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
-        status: "initiation",
+        status: "INITIATION",
         stage: 1,
         department: department,
         compression_area: compression_area,
@@ -107,13 +108,53 @@ exports.InsertTempratureRecord = async (req, res) => {
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         initiatorComment: initiatorComment,
-        initiatorDeclaration: initiatorDeclaration,
       },
 
       { transaction }
     );
+    const getUserById = async (user_id) => {
+      const user = await User.findOne({ where: { user_id } });
+      return user;
+    };
 
-    // Check if FormRecordsArray is provided
+    const auditTrailEntries = [];
+    const fields = {
+      description,
+      department,
+      compression_area,
+      limit,
+      reviewer: (await getUserById(reviewer_id))?.name, 
+      approver: (await getUserById(approver_id))?.name,
+      initiatorComment,
+    };
+    for (const [field, value] of Object.entries(fields)) {
+      if (value !== undefined && value !== null && value !== "") {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: field,
+          previous_value: null,
+          new_value: value,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "INITIATION",
+          declaration: initiatorDeclaration,
+        });
+      }
+    }
+
+    if (initiatorAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "initiatorAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "INITIATION",
+        declaration: initiatorDeclaration,
+      });
+    }
+
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
@@ -128,9 +169,76 @@ exports.InsertTempratureRecord = async (req, res) => {
       }));
 
       await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
+   formRecords.forEach((record, index) => {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `UniqueId[${index}]`,
+          previous_value: null,
+          new_value: record.unique_id,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "INITIATION",
+          declaration: initiatorDeclaration,
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `Time[${index}]`,
+          previous_value: null,
+          new_value: record.time,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "INITIATION",
+          declaration: initiatorDeclaration,
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `TemperatureRecord[${index}]`,
+          previous_value: null,
+          new_value: record.temprature_record,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "INITIATION",
+          declaration: initiatorDeclaration,
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `Remarks[${index}]`,
+          previous_value: null,
+          new_value: record.remarks,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "INITIATION",
+          declaration: initiatorDeclaration,
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `CheckedBy[${index}]`,
+          previous_value: null,
+          new_value: record.checked_by,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "INITIATION",
+          declaration: initiatorDeclaration,
+        });
+        if (supportingDocs[index]) {
+          auditTrailEntries.push({
+            form_id: newForm.form_id,
+            field_name: `SupportingDocs[${index}]`,
+            previous_value: null,
+            new_value: getElogDocsUrl(supportingDocs[index]),
+            changed_by: user.user_id,
+            previous_status: "Not Applicable",
+            new_status: "INITIATION",
+            declaration: initiatorDeclaration,
+          });
+        }
+      });
     }
 
-    // Commit the transaction
+    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
     await transaction.commit();
 
     return res.status(200).json({
@@ -178,14 +286,12 @@ exports.EditTempratureRecord = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
-
   if (!email || !password) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide email and password." });
   }
 
-  // Start a transaction
   const transaction = await sequelize.transaction();
 
   try {
@@ -213,7 +319,6 @@ exports.EditTempratureRecord = async (req, res) => {
     let initiatorAttachment = null;
     const supportingDocs = {};
 
-    // Process files
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
@@ -232,6 +337,7 @@ exports.EditTempratureRecord = async (req, res) => {
     // Find the form by ID
     const form = await TempratureProcessForm.findOne({
       where: { form_id: form_id },
+      transaction,
     });
 
     if (!form) {
@@ -239,32 +345,155 @@ exports.EditTempratureRecord = async (req, res) => {
       return res.status(404).json({ error: true, message: "Form not found." });
     }
 
+    // Define epsilon for float comparison
+    const EPSILON = 0.000001;
+
+    // Function to compare floats with epsilon
+    const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
+
+    // Track changes for the form
+    const auditTrailEntries = [];
+    const fields = {
+      description,
+      department,
+      compression_area,
+      limit,
+      initiatorComment,
+      initiatorAttachment: initiatorAttachment
+        ? getElogDocsUrl(initiatorAttachment)
+        : form.initiatorAttachment,
+    };
+
+    for (const [field, newValue] of Object.entries(fields)) {
+      const oldValue = form[field];
+      if (
+        newValue !== undefined &&
+        ((typeof newValue === "number" &&
+          !areFloatsEqual(oldValue, newValue)) ||
+          oldValue != newValue)
+      ) {
+        auditTrailEntries.push({
+          form_id: form.form_id,
+          field_name: field,
+          previous_value: oldValue || null,
+          new_value: newValue,
+          changed_by: user.user_id,
+          previous_status: form.status,
+          new_status: "INITIATION",
+          declaration: initiatorDeclaration,
+        });
+      }
+    }
+
     // Update the form details
     await form.update(
       {
-        site_id: site_id,
-        description: description,
-        department: department,
-        compression_area: compression_area,
-        limit: limit,
-        reviewer_id: reviewer_id,
-        approver_id: approver_id,
+        site_id,
+        description,
+        department,
+        compression_area,
+        limit,
+        reviewer_id,
+        approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
-        initiatorComment: initiatorComment,
-        initiatorDeclaration: initiatorDeclaration,
+        initiatorComment,
       },
       { transaction }
     );
 
     // Update the Form Records if provided
-    if (Array.isArray(TempratureRecords) && TempratureRecords.length > 0) {
-      // First, delete existing records for the form
+    
+    if (
+      Array.isArray(TempratureRecords) &&
+      TempratureRecords.length > 0
+    ) {
+      const existingRecords = await TempratureProcessRecord.findAll({
+        where: { form_id: form_id },
+        raw: true,
+        // order: [["record_id", "DESC"]],
+        transaction,
+      });
+
+      // Track changes for existing records
+      existingRecords.forEach((existingRecord, index) => {
+        TempratureRecords.sort(
+          (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
+        );
+        const newRecord = TempratureRecords[index];
+        if (newRecord) {
+          const recordFields = {
+            temprature_record: newRecord.temprature_record,
+            remarks: newRecord.remarks,
+            supporting_docs:
+              newRecord.supporting_docs ||
+              getElogDocsUrl(supportingDocs[index]),
+          };
+
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            const oldValue = existingRecord[field];
+            if (
+              newValue !== undefined &&
+              ((typeof newValue === "number" &&
+                !areFloatsEqual(oldValue, newValue)) ||
+                oldValue != newValue)
+            ) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${index}]`,
+                previous_value: oldValue || null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "INITIATION",
+                declaration: initiatorDeclaration,
+              });
+            }
+          }
+        }
+      });
+
+      // Handle new records added
+      if (TempratureRecords.length > existingRecords.length) {
+        for (
+          let i = existingRecords.length;
+          i < TempratureRecords.length;
+          i++
+        ) {
+          const newRecord = TempratureRecords[i];
+          const recordFields = {
+            unique_id: newRecord?.unique_id,
+            time: newRecord?.time,
+            checked_by: newRecord?.checked_by,
+            temprature_record: newRecord.temprature_record,
+            remarks: newRecord.remarks,
+            supporting_docs:
+              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+          };
+
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "INITIATION",
+                declaration: initiatorDeclaration,
+              });
+            }
+          }
+        }
+      }
+
+      // Delete existing records for the form
       await TempratureProcessRecord.destroy({
         where: { form_id: form_id },
         transaction,
       });
 
-      // Then, create new records
+      // Create new records
       const formRecords = TempratureRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
@@ -280,7 +509,10 @@ exports.EditTempratureRecord = async (req, res) => {
       await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
     }
 
-    // Commit the transaction
+    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
     await transaction.commit();
 
     return res.status(200).json({
@@ -288,7 +520,6 @@ exports.EditTempratureRecord = async (req, res) => {
       message: "E-log Updated successfully",
     });
   } catch (error) {
-    // Rollback the transaction in case of error
     await transaction.rollback();
 
     let errorMessage = "Error during updating elog";
@@ -355,6 +586,7 @@ exports.GetAllTempratureRecordElog = async (req, res) => {
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
+    order: [["form_id", "DESC"]],
   })
     .then((result) => {
       res.json({
@@ -431,16 +663,49 @@ exports.SendTRElogForReview = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "INITIATION",
+        new_value: "UNDER REVIEW",
+        changed_by: user.user_id,
+        previous_status: "INITIATION",
+        new_status: "UNDER REVIEW",
+        declaration: initiatorDeclaration,
+      },
+    ];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "initiatorAttachment",
+        previous_value: form.initiatorAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "INITIATION",
+        new_status: "UNDER REVIEW",
+        declaration: initiatorDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
-        status: "under review",
+        status: "UNDER REVIEW",
         stage: 2,
-        initiatorDeclaration: initiatorDeclaration,
-        initiatorAttachment: getElogDocsUrl(req?.file),
+        initiatorAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.initiatorAttachment,
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -521,16 +786,47 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "UNDER REVIEW",
+        new_value: "INITIATION",
+        changed_by: user.user_id,
+        previous_status: "UNDER REVIEW",
+        new_status: "INITIATION",
+        declaration: reviewerDeclaration,
+      },
+    ];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewerAttachment",
+        previous_value: form.reviewerAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "UNDER REVIEW",
+        new_status: "INITIATION",
+        declaration: reviewerDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
-        status: "initiation",
+        status: "INITIATION",
         stage: 1,
-        reviewerDeclaration: reviewerDeclaration,
         reviewerAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -617,6 +913,46 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "UNDER REVIEW",
+        new_value: "UNDER APPROVAL",
+        changed_by: user.user_id,
+        previous_status: "UNDER REVIEW",
+        new_status: "UNDER APPROVAL",
+        declaration: reviewerDeclaration,
+      },
+    ];
+
+    if (reviewComment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewComment",
+        previous_value: form.reviewComment || null,
+        new_value: reviewComment,
+        changed_by: user.user_id,
+        previous_status: "UNDER REVIEW",
+        new_status: "UNDER APPROVAL",
+        declaration: reviewerDeclaration,
+      });
+    }
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewerAttachment",
+        previous_value: form.reviewerAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "UNDER REVIEW",
+        new_status: "UNDER APPROVAL",
+        declaration: reviewerDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
@@ -629,6 +965,11 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -709,16 +1050,47 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "UNDER APPROVAL",
+        new_value: "INITIATION",
+        changed_by: user.user_id,
+        previous_status: "UNDER APPROVAL",
+        new_status: "INITIATION",
+        declaration: approverDeclaration,
+      },
+    ];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverAttachment",
+        previous_value: form.approverAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "UNDER APPROVAL",
+        new_status: "INITIATION",
+        declaration: approverDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
-        status: "initiation",
+        status: "INITIATION",
         stage: 1,
-        approverDeclaration: approverDeclaration,
         approverAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -805,18 +1177,64 @@ exports.ApproveTRElog = async (req, res) => {
       });
     }
 
+    const auditTrailEntries = [
+      {
+        form_id: form.form_id,
+        field_name: "stage Change",
+        previous_value: "UNDER APPROVAL",
+        new_value: "APPROVED",
+        changed_by: user.user_id,
+        previous_status: "UNDER APPROVAL",
+        new_status: "APPROVED",
+        declaration: approverDeclaration,
+      },
+    ];
+
+    if (approverComment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverComment",
+        previous_value: form.approverComment || null,
+        new_value: approverComment,
+        changed_by: user.user_id,
+        previous_status: "UNDER APPROVAL",
+        new_status: "APPROVED",
+        declaration: approverDeclaration,
+      });
+    }
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverAttachment",
+        previous_value: form.approverAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "UNDER APPROVAL",
+        new_status: "APPROVED",
+        declaration: approverDeclaration,
+      });
+    }
+
     // Update the form details
     await form.update(
       {
-        status: "approved",
+        status: "APPROVED",
         stage: 4,
         approverComment: approverComment,
-        approverDeclaration: approverDeclaration,
-        approverAttachment: getElogDocsUrl(req?.file),
+        approverAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.approverAttachment,
         date_of_approval: new Date(),
       },
       { transaction }
     );
+
+    // Insert audit trail entries
+    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     // Commit the transaction
     await transaction.commit();
@@ -865,6 +1283,46 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
     return res.status(500).json({
       error: true,
       message: `Error fetching users: ${error.message}`,
+    });
+  }
+};
+
+
+
+exports.getAuditTrailForAnElog = async (req, res) => {
+  try {
+    // Extract form_id from request parameters
+    const formId = req.params.id;
+
+    // Check if form_id is provided
+    if (!formId) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Form ID is required." });
+    }
+
+    // Find all audit trail entries for the given form_id
+    const auditTrail = await TemperatureRecordAuditTrail.findAll({
+      where: { form_id: formId },
+      include: {
+        model: User,
+        attributes: ["user_id", "name"],
+      },
+      order: [["auditTrail_id", "DESC"]],
+    });
+
+    if (!auditTrail || auditTrail.length === 0) {
+      return res.status(404).json({
+        error: true,
+        message: "No audit trail found for the given form ID.",
+      });
+    }
+
+    return res.status(200).json({ error: false, auditTrail });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: `Error retrieving audit trail: ${error.message}`,
     });
   }
 };
