@@ -319,7 +319,7 @@ export default function DPRpanel() {
                     }`}
                    
                   >
-                    Initiation
+                    INITIATION
                   </div>
                   <div
                     className={`${
@@ -329,7 +329,7 @@ export default function DPRpanel() {
                     }`}
                     
                   >
-                    Under Review
+                    UNDER REVIEW
                   </div>
                   <div
                     className={`${
@@ -339,7 +339,7 @@ export default function DPRpanel() {
                     }`}
                     
                   >
-                    Under Approval
+                    UNDER APPROVAL
                   </div>
                   <div
                     className={`${
@@ -349,7 +349,7 @@ export default function DPRpanel() {
                     }`}
                    
                   >
-                    Approved
+                    APPROVED
                   </div>
                   
                 

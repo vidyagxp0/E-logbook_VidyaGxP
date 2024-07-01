@@ -399,7 +399,7 @@ export default function DiffrentialPressure() {
                     <div>
                       <input
                         type="text"
-                        value="Under Initiation"
+                        value="UNDER INITIATION"
                         onChange={(e) =>
                           setDifferentialPRecord({ status: e.target.value })
                         }
@@ -755,23 +755,13 @@ export default function DiffrentialPressure() {
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
-                        {location.state?.stage === 2 &&
-                          location.state?.initiator_id ===
-                          User.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
-                          )}
                       </label>
                       <input
                         id="reviewComment"
                         name="reviewComment"
                         value={User.reviewComment || ""}
                         onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
-                        }
+                        readOnly
                       />
                     </div>
                     <div className="group-input">
@@ -787,6 +777,7 @@ export default function DiffrentialPressure() {
                         name="reviewerAttachment"
                         id="reviewerAttachment"
                         onChange={handleReviewerFileChange}
+                        disabled
                       />
                       {User.reviewerAttachment && (
                         <div>
@@ -837,23 +828,13 @@ export default function DiffrentialPressure() {
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
-                        {location.state?.stage === 3 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
-                          )}
                       </label>
                       <input
                         id="approverComment"
                         name="approverComment"
                         value={User.approverComment || ""}
                         onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
-                        }
+                        readOnly
                       />
                     </div>
                     <div className="group-input">
@@ -869,6 +850,7 @@ export default function DiffrentialPressure() {
                         name="approverAttachment"
                         id="approverAttachment"
                         onChange={handleApproverFileChange}
+                        disabled
                       />
                       {User.approverAttachment && (
                         <div>
