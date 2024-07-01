@@ -52,6 +52,7 @@ export default function TempretureRecordsPanel() {
 
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
+      data.initiatorAttachment = editData?.initiatorAttachment;
       axios
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-for-review",
@@ -149,6 +150,7 @@ export default function TempretureRecordsPanel() {
 
       editData.email = credentials.email;
       editData.password = credentials.password;
+      editData.initiatorDeclaration = credentials?.declaration;
 
       const myHeaders = {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
@@ -306,50 +308,43 @@ export default function TempretureRecordsPanel() {
                 <div className="btn-forms">
                   <div
                     className={`${
-                      location.state?.stage===1
+                      location.state?.stage === 1
                         ? "btn-forms-isSelecteds"
                         : "btn-forms-selects"
                     }`}
-                   
                   >
-                    Initiation
+                    INITIATION
                   </div>
                   <div
                     className={`${
-                      location.state?.stage===2
+                      location.state?.stage === 2
                         ? "btn-forms-isSelecteds"
                         : "btn-forms-selects"
                     }`}
-                    
                   >
-                    Under Review
+                    UNDER REVIEW
                   </div>
                   <div
                     className={`${
-                      location.state?.stage===3
+                      location.state?.stage === 3
                         ? "btn-forms-isSelecteds"
                         : "btn-forms-selects"
                     }`}
-                    
                   >
-                    Under Approval
+                    UNDER APPROVAL
                   </div>
                   <div
                     className={`${
-                      location.state?.stage===4
+                      location.state?.stage === 4
                         ? "btn-forms-isSelecteds"
                         : "btn-forms-selects"
                     }`}
-                   
                   >
-                    Approved
+                    APPROVED
                   </div>
-                  
-                
                 </div>
-               
               </div>
-              <div className="outerDiv5">
+              <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -430,6 +425,19 @@ export default function TempretureRecordsPanel() {
                     }}
                   >
                     Approver Remarks
+                  </div>
+                  <div
+                    className="btn-forms-select"
+                    onClick={() =>
+                      navigate("/audit-trail", {
+                        state: {
+                          formId: location.state?.form_id,
+                          process: "Temperature Records",
+                        },
+                      })
+                    }
+                  >
+                    Audit Trail
                   </div>
                 </div>
                 <div className="analytics-btn">
@@ -783,6 +791,10 @@ export default function TempretureRecordsPanel() {
                         name="initiatorAttachment"
                         id="initiatorAttachment"
                         onChange={handleInitiatorFileChange}
+                        disabled={
+                          location.state?.stage !== 1 ||
+                          location.state?.initiator_id !== userDetails.userId
+                        }
                       />
                       {editData.initiatorAttachment && (
                         <div>
@@ -865,6 +877,10 @@ export default function TempretureRecordsPanel() {
                         name="reviewerAttachment"
                         id="reviewerAttachment"
                         onChange={handleReviewerFileChange}
+                        disabled={
+                          location.state?.stage !== 2 ||
+                          location.state?.reviewer_id !== userDetails.userId
+                        }
                       />
                       {editData.reviewerAttachment && (
                         <div>
@@ -916,7 +932,7 @@ export default function TempretureRecordsPanel() {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.initiator_id ===
+                          location.state?.approver_id ===
                             userDetails.userId && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
@@ -928,7 +944,7 @@ export default function TempretureRecordsPanel() {
                         name="approverComment"
                         value={editData.approverComment || ""}
                         onChange={handleInputChange1}
-                        readOnly={
+                        disabled={
                           location.state?.stage !== 3 ||
                           location.state?.approver_id !== userDetails.userId
                         }
@@ -947,6 +963,10 @@ export default function TempretureRecordsPanel() {
                         name="approverAttachment"
                         id="approverAttachment"
                         onChange={handleApproverFileChange}
+                        disabled={
+                          location.state?.stage !== 3 ||
+                          location.state?.approver_id !== userDetails.userId
+                        }
                       />
                       {editData.approverAttachment && (
                         <div>

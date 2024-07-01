@@ -9,28 +9,44 @@ function AuditTrail() {
   const location = useLocation();
 
   useEffect(() => {
-    const fetchDifferentialPressureAuditTrails = async () => {
-      const myHeaders = {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-      };
+    const fetchAuditTrail = async () => {
+      if (location.state?.process === "Differential Pressure") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
 
-      try {
-        const response = await axios.get(
-          `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
-          {
-            headers: myHeaders,
-          }
-        );
-        setAuditTrails(response.data.auditTrail);
-      } catch (error) {
-        console.error(error);
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (location.state?.process === "Temperature Records") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
 
-    if (location.state?.process === "Differential Pressure") {
-      fetchDifferentialPressureAuditTrails();
-    }
-  }, []);
+    fetchAuditTrail();
+  }, [location.state?.formId, location.state?.process]);
 
   return (
     <>
@@ -167,7 +183,9 @@ function AuditTrail() {
                           width: "10%",
                         }}
                       >
-                        {auditTrail.previous_value ? auditTrail.previous_value : 'null'}
+                        {auditTrail.previous_value
+                          ? auditTrail.previous_value
+                          : "null"}
                       </td>
                       <td
                         style={{

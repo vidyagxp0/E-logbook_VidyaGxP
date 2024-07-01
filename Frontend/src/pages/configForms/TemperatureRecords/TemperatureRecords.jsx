@@ -47,8 +47,6 @@ export default function TemperatureRecords() {
         console.error("Error: ", error);
       });
 
-   
-
     const newConfig = {
       method: "post",
       url: "http://localhost:1000/temprature-record/get-user-roleGroups",
@@ -78,10 +76,16 @@ export default function TemperatureRecords() {
   };
 
   const handleReviewerFileChange = (e) => {
-    setDifferentialPRecord({ ...differentialPRecord, reviewerAttachment: e.target.files[0] });
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      reviewerAttachment: e.target.files[0],
+    });
   };
   const handleApproverFileChange = (e) => {
-    setDifferentialPRecord({ ...differentialPRecord, approverAttachment: e.target.files[0] });
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      approverAttachment: e.target.files[0],
+    });
   };
 
   useEffect(() => {
@@ -130,7 +134,7 @@ export default function TemperatureRecords() {
 
     tempratureRecord.email = credentials?.email;
     tempratureRecord.password = credentials?.password;
-    tempratureRecord.initiatorDeclaration = credentials?.declaration
+    tempratureRecord.initiatorDeclaration = credentials?.declaration;
 
     axios
       .post(
@@ -183,8 +187,6 @@ export default function TemperatureRecords() {
   // const currentDate = new Date();
   // const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
-
-
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
@@ -205,7 +207,7 @@ export default function TemperatureRecords() {
       limit: null,
       initiatorComment: "",
       initiatorAttachment: null,
-      initiatorDeclaration: ""
+      initiatorDeclaration: "",
     }
   );
 
@@ -265,7 +267,7 @@ export default function TemperatureRecords() {
                 </div>
               </div>
               <div className="sub-head-2">Temprature Record</div>
-              <div className="outerDiv5">
+              <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -347,9 +349,7 @@ export default function TemperatureRecords() {
                   >
                     Approver Remarks
                   </div>
-             
                 </div>
-              
               </div>
 
               {isSelectedGeneral === true ? (
@@ -500,7 +500,12 @@ export default function TemperatureRecords() {
                   </div>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Reviewer</label>
+                      <label className="color-label">
+                        Reviewer
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div>
                         <select
                           value={tempratureRecord.reviewer_id}
@@ -527,7 +532,12 @@ export default function TemperatureRecords() {
                       </div>
                     </div>
                     <div className="group-input">
-                      <label className="color-label">Approver</label>
+                      <label className="color-label">
+                        Approver
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div>
                         <select
                           value={tempratureRecord.approver_id}
@@ -597,6 +607,7 @@ export default function TemperatureRecords() {
                                 newData[index].time = e.target.value;
                                 setAllTableData(newData);
                               }}
+                              readOnly
                             />
                           </td>
                           <td>
@@ -637,6 +648,7 @@ export default function TemperatureRecords() {
                                 newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
+                              readOnly
                             />
                           </td>
                           <td style={{ width: "250px" }}>
@@ -698,8 +710,12 @@ export default function TemperatureRecords() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Initiator Comment
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Initiator Comment
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
@@ -754,23 +770,13 @@ export default function TemperatureRecords() {
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
-                        {location.state?.stage === 2 &&
-                          location.state?.initiator_id ===
-                          User.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
-                          )}
                       </label>
                       <input
                         id="reviewComment"
                         name="reviewComment"
                         value={User.reviewComment || ""}
                         onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
-                        }
+                        readOnly
                       />
                     </div>
                     <div className="group-input">
@@ -786,6 +792,7 @@ export default function TemperatureRecords() {
                         name="reviewerAttachment"
                         id="reviewerAttachment"
                         onChange={handleReviewerFileChange}
+                        disabled
                       />
                       {User.reviewerAttachment && (
                         <div>
@@ -836,23 +843,13 @@ export default function TemperatureRecords() {
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
-                        {location.state?.stage === 3 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
-                          )}
                       </label>
                       <input
                         id="approverComment"
                         name="approverComment"
                         value={User.approverComment || ""}
                         onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
-                        }
+                        readOnly
                       />
                     </div>
                     <div className="group-input">
@@ -868,6 +865,7 @@ export default function TemperatureRecords() {
                         name="approverAttachment"
                         id="approverAttachment"
                         onChange={handleApproverFileChange}
+                        disabled
                       />
                       {User.approverAttachment && (
                         <div>

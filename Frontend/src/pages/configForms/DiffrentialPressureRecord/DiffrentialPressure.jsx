@@ -262,7 +262,7 @@ export default function DiffrentialPressure() {
               </div>
               <div className="sub-head-2">Differential Pressure Record</div>
 
-            <div className="outerDiv5">
+            <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${

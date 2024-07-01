@@ -307,56 +307,49 @@ export default function DPRpanel() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div>
-             
+
               <div className="sub-head-2">Differential Pressure Record</div>
- <div className="outerDiv4">
+              <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
-                      location.state?.stage===1
+                      location.state?.stage === 1
                         ? "btn-forms-isSelecteds"
                         : "btn-forms-selects"
                     }`}
-                   
                   >
                     INITIATION
                   </div>
                   <div
                     className={`${
-                      location.state?.stage===2
+                      location.state?.stage === 2
                         ? "btn-forms-isSelecteds"
                         : "btn-forms-selects"
                     }`}
-                    
                   >
                     UNDER REVIEW
                   </div>
                   <div
                     className={`${
-                      location.state?.stage===3
+                      location.state?.stage === 3
                         ? "btn-forms-isSelecteds"
                         : "btn-forms-selects"
                     }`}
-                    
                   >
                     UNDER APPROVAL
                   </div>
                   <div
                     className={`${
-                      location.state?.stage===4
+                      location.state?.stage === 4
                         ? "btn-forms-isSelecteds"
                         : "btn-forms-selects"
                     }`}
-                   
                   >
                     APPROVED
                   </div>
-                  
-                
                 </div>
-               
               </div>
-              <div className="outerDiv5">
+              <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -974,7 +967,7 @@ export default function DPRpanel() {
                       <label
                         htmlFor="approverAttachment"
                         className="color-label"
-                        name="aproverAttachment"
+                        name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
