@@ -764,6 +764,10 @@ export default function DPRpanel() {
                         name="initiatorAttachment"
                         id="initiatorAttachment"
                         onChange={handleInitiatorFileChange}
+                        disabled={
+                          location.state?.stage !== 1 ||
+                          location.state?.initiator_id !== userDetails.userId
+                        }
                       />
                       {editData.initiatorAttachment && (
                         <div>
@@ -815,7 +819,7 @@ export default function DPRpanel() {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.initiator_id ===
+                          location.state?.reviewer_id ===
                             userDetails.userId && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
@@ -846,6 +850,10 @@ export default function DPRpanel() {
                         name="reviewerAttachment"
                         id="reviewerAttachment"
                         onChange={handleReviewerFileChange}
+                        disabled={
+                          location.state?.stage !== 2 ||
+                          location.state?.reviewer_id !== userDetails.userId
+                        }
                       />
                       {editData.reviewerAttachment && (
                         <div>
@@ -897,7 +905,7 @@ export default function DPRpanel() {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.initiator_id ===
+                          location.state?.approver_id ===
                             userDetails.userId && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
@@ -909,7 +917,7 @@ export default function DPRpanel() {
                         name="approverComment"
                         value={editData.approverComment || ""}
                         onChange={handleInputChange1}
-                        readOnly={
+                        disabled={
                           location.state?.stage !== 3 ||
                           location.state?.approver_id !== userDetails.userId
                         }
@@ -928,6 +936,10 @@ export default function DPRpanel() {
                         name="approverAttachment"
                         id="approverAttachment"
                         onChange={handleApproverFileChange}
+                        disabled={
+                          location.state?.stage !== 3 ||
+                          location.state?.approver_id !== userDetails.userId
+                        }
                       />
                       {editData.approverAttachment && (
                         <div>
