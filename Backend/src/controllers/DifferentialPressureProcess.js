@@ -8,6 +8,12 @@ const { Op, ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
+const Mailer = require("../middlewares/mailer");
+
+const getUserById = async (user_id) => {
+  const user = await User.findOne({ where: { user_id } });
+  return user;
+};
 
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {
@@ -113,10 +119,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
       { transaction }
     );
-    const getUserById = async (user_id) => {
-      const user = await User.findOne({ where: { user_id } });
-      return user;
-    };
 
     const auditTrailEntries = [];
     const fields = {
@@ -124,7 +126,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       department,
       compression_area,
       limit,
-      reviewer: (await getUserById(reviewer_id))?.name, 
+      reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
     };
@@ -241,10 +243,45 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
     await transaction.commit();
 
-    return res.status(200).json({
-      error: false,
-      message: "E-log Created successfully",
-    });
+    const elogData = {
+      initiator: user.name,
+      dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
+      description,
+      status: "INITIATION",
+      reviewerName: (await getUserById(reviewer_id)).name,
+      approverName: (await getUserById(approver_id)).name,
+      reviewerEmail: (await getUserById(reviewer_id)).email,
+      approverEmail: (await getUserById(approver_id)).email,
+      recipients: [
+        (await getUserById(reviewer_id)).email,
+        (await getUserById(approver_id)).email,
+      ].join(","),
+    };
+
+    try {
+      // Send emails
+      await Mailer.sendEmail("assignReviewer", {
+        ...elogData,
+        recipients: elogData.reviewerEmail,
+      });
+
+      await Mailer.sendEmail("assignApprover", {
+        ...elogData,
+        recipients: elogData.approverEmail,
+      });
+
+      return res.status(200).json({
+        error: false,
+        message: "E-log Created successfully",
+      });
+    } catch (emailError) {
+      console.error("Failed to send emails:", emailError.message);
+      return res.json({
+        error: true,
+        message: "E-log Created but failed to send emails.",
+      });
+    }
+
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -705,10 +742,29 @@ exports.SendDPElogForReview = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    return res.status(200).json({
-      error: false,
-      message: "E-log successfully sent for review",
-    });
+    try {
+      const reviewer = await getUserById(form.reviewer_id);
+      // Send emails
+      await Mailer.sendEmail("reminderReviewer", {
+        reviewerName: reviewer.name,
+        initiator: user.name,
+        dateOfInitiation: new Date().toISOString().split("T")[0],
+        description: form.description,
+        status: "UNDER REVIEW",
+        recipients: reviewer.email,
+      });
+
+      return res.status(200).json({
+        error: false,
+        message: "E-log successfully sent for review",
+      });
+    } catch (emailError) {
+      console.error("Failed to send emails:", emailError.message);
+      return res.json({
+        error: true,
+        message: "E-log Created but failed to send emails.",
+      });
+    }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -826,10 +882,28 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    return res.status(200).json({
-      error: false,
-      message: "E-log status successfully updated to initiation",
-    });
+    try {
+      const initiator = await getUserById(form.initiator_id);
+      // Send emails
+      await Mailer.sendEmail("reminderInitiator", {
+        initiatorName: initiator.name,
+        dateOfInitiation: new Date().toISOString().split("T")[0],
+        description: form.description,
+        status: "INITIATION",
+        recipients: initiator.email,
+      });
+
+      return res.status(200).json({
+        error: false,
+        message: "E-log status successfully changed from review to initiation",
+      });
+    } catch (emailError) {
+      console.error("Failed to send emails:", emailError.message);
+      return res.json({
+        error: true,
+        message: "E-log Created but failed to send emails.",
+      });
+    }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -970,10 +1044,29 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    return res.status(200).json({
-      error: false,
-      message: "E-log status successfully updated to under-approval",
-    });
+    try {
+      const approver = await getUserById(form.approver_id);
+      // Send emails
+      await Mailer.sendEmail("reminderApprover", {
+        approverName: approver.name,
+        dateOfInitiation: new Date().toISOString().split("T")[0],
+        description: form.description,
+        reviewer: user.name,
+        status: "UNDER APPROVAL",
+        recipients: approver.email,
+      });
+
+      return res.status(200).json({
+        error: false,
+        message: "E-log status successfully changed from review to under-approval",
+      });
+    } catch (emailError) {
+      console.error("Failed to send emails:", emailError.message);
+      return res.json({
+        error: true,
+        message: "E-log Created but failed to send emails.",
+      });
+    }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1091,10 +1184,29 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    return res.status(200).json({
-      error: false,
-      message: "E-log status successfully updated to initiation",
-    });
+    try {
+      const initiator = await getUserById(form.initiator_id);
+      // Send emails
+      await Mailer.sendEmail("reminderInitiator", {
+        initiatorName: initiator.name,
+        dateOfInitiation: new Date().toISOString().split("T")[0],
+        description: form.description,
+        status: "INITIATION",
+        recipients: initiator.email,
+      });
+
+      return res.status(200).json({
+        error: false,
+        message:
+          "E-log status successfully changed from under-approval to initiation",
+      });
+    } catch (emailError) {
+      console.error("Failed to send emails:", emailError.message);
+      return res.json({
+        error: true,
+        message: "E-log Created but failed to send emails.",
+      });
+    }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
