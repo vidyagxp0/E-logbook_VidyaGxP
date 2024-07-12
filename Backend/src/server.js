@@ -27,6 +27,8 @@ app.use("/differential-pressure", differentialPressureRoutes);
 app.use("/temprature-record", tempratureRecordRoutes);
 app.use("/site", siteRoutes);
 app.use(express.static(path.join(__dirname, "documents")));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 server.listen(config.development.PORT, "0.0.0.0", async () => {
   connectToDB()

@@ -9,6 +9,8 @@ const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 const Mailer = require("../middlewares/mailer");
+const puppeteer = require("puppeteer-core");
+const findChrome = require("chrome-finder");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id } });
@@ -281,7 +283,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
         message: "E-log Created but failed to send emails.",
       });
     }
-
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1058,7 +1059,8 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 
       return res.status(200).json({
         error: false,
-        message: "E-log status successfully changed from review to under-approval",
+        message:
+          "E-log status successfully changed from review to under-approval",
       });
     } catch (emailError) {
       console.error("Failed to send emails:", emailError.message);
@@ -1446,5 +1448,78 @@ exports.getAuditTrailForAnElog = async (req, res) => {
       error: true,
       message: `Error retrieving audit trail: ${error.message}`,
     });
+  }
+};
+
+exports.generateReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      res.render("report", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    // Find Chrome executable path
+    const executablePath = findChrome();
+
+    const browser = await puppeteer.launch({
+      executablePath: executablePath,
+      headless: true,
+      timeout: 120000, // 2 minutes
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: `
+        <style>
+          .header { width: 100%; text-align: center; font-size: 10px; }
+        </style>
+        <div class="header">
+          <span>Company Logo | Differential Pressure | DP${reportData.form_id}</span>
+        </div>
+      `,
+      footerTemplate: `
+        <style>
+          .footer { width: 100%; text-align: center; font-size: 10px; }
+          .pageNumber { float: right; }
+          .totalPages { float: left; }
+        </style>
+        <div class="footer">
+          <span class="totalPages">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+          <span class="printedBy">Printed by: ${
+            await getUserById(req.user.userId)?.name
+          }</span>
+        </div>
+      `,
+      margin: {
+        top: "50px",
+        bottom: "50px",
+        right: "30px",
+        left: "30px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    // Set response headers and send PDF
+    res.set("Content-Type", "application/pdf");
+    res.send(pdf);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    res.status(500).send("Error generating PDF");
   }
 };

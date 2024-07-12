@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .header,
+      .footer {
+        width: 100%;
+        text-align: center;
+      }
+      .content {
+        margin-top: 50px;
+        margin-bottom: 50px;
+      }
+      .heading {
+        color: blue;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .listItem {
+        margin-bottom: 10px;
+      }
+      .footer {
+        position: fixed;
+        bottom: 0;
+      }
+      .remarks {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <h2 class="heading">General Information</h2>
+      <p>Site: <%= reportData?.site %></p>
+      <p>Status: <%= reportData?.status %></p>
+      <p>Initiator: <%= reportData?.initiator_name %></p>
+      <p>Date of Initiation: <%= reportData?.date_of_initiation %></p>
+      <p>Description: <%= reportData?.description %></p>
+      <hr />
+
+      <h2 class="heading">Differential Pressure Records</h2>
+      <% reportData.DifferentialPressureRecords.forEach(record => { %>
+      <div class="listItem">
+        <p>Unique Id: <%= record?.unique_id %></p>
+        <p>Time: <%= record?.time %></p>
+        <p>Differential Pressure: <%= record?.differential_pressure %></p>
+        <p>Remark: <%= record?.remarks %></p>
+        <p>Checked By: <%= record?.checked_by %></p>
+        <p>
+          Supporting Documents:
+          <a href="<%= record?.supporting_docs %>" target="_blank">View File</a>
+        </p>
+      </div>
+      <hr />
+      <% }) %>
+
+      <div class="remarks">
+        <h2 class="heading">Initiator Remarks</h2>
+        <p>Initiator: <%= reportData?.initiator_name %></p>
+        <p>Comment: <%= reportData?.initiatorComment %></p>
+        <p>
+          Attachment:
+          <a href="<%= reportData?.initiatorAttachment %>" target="_blank"
+            >View File</a
+          >
+        </p>
+        <p>Date of Initiation: <%= reportData?.date_of_initiation %></p>
+      </div>
+      <hr />
+
+      <div class="remarks">
+        <h2 class="heading">Reviewer Remarks</h2>
+        <p>Reviewer: <%= reportData?.reviewer?.name %></p>
+        <p>Comment: <%= reportData?.reviewerComment %></p>
+        <p>
+          Attachment:
+          <a href="<%= reportData?.reviewerAttachment %>" target="_blank"
+            >View File</a
+          >
+        </p>
+        <p>Date of Review: <%= reportData?.date_of_review %></p>
+      </div>
+      <hr />
+
+      <div class="remarks">
+        <h2 class="heading">Approver Remarks</h2>
+        <p>Approver: <%= reportData?.approver?.name %></p>
+        <p>Comment: <%= reportData?.approverComment %></p>
+        <p>
+          Attachment:
+          <a href="<%= reportData?.approverAttachment %>" target="_blank"
+            >View File</a
+          >
+        </p>
+        <p>Date of Approval: <%= reportData?.date_of_approval %></p>
+      </div>
+      <hr />
+    </div>
+  </body>
+</html>
