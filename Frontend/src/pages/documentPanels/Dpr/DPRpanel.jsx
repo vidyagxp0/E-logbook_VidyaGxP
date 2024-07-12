@@ -22,6 +22,7 @@ export default function DPRpanel() {
     description: "",
     department: "",
     compression_area: "",
+    DifferentialPressureRecords: [],
     limit: "",
   });
   const navigate = useNavigate();
@@ -268,6 +269,48 @@ export default function DPRpanel() {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
+  const reportData = {
+    site:
+      location.state.site_id === 1
+        ? "India"
+        : location.state.site_id === 2
+        ? "Malaysia"
+        : location.state.site_id === 3
+        ? "EMEA"
+        : "EU",
+    status: location.state.status,
+    initiator_name: location.state.initiator_name,
+    ...editData,
+  };
+
+  async function generateReport() {
+    try {
+      const response = await axios({
+        url: "http://localhost:1000/differential-pressure/generate-pdf",
+        method: "POST",
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          "Content-Type": "application/json",
+        },
+        data: {
+          reportData: reportData,
+        },
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = `DP${reportData.form_id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
   return (
     <>
       <HeaderTop />
@@ -445,6 +488,9 @@ export default function DPRpanel() {
                     Audit Trail
                   </div>
                 </div>
+                <button className="btn-forms-select" onClick={generateReport}>
+                  Generate Report
+                </button>
                 <div className="analytics-btn">
                   <button
                     className="btn-print"
@@ -456,18 +502,6 @@ export default function DPRpanel() {
                   >
                     Analytics
                   </button>
-                  {/* <PDFDownloadLink
-                    document={<DynamicPdf elog={editData} />}
-                    fileName="VidyaGxP.pdf"
-                  >
-                    {({ blob, url, loading, error }) =>
-                      loading ? (
-                        <button className="btn-print">Wait</button>
-                      ) : (
-                        <button className="btn-print">Print</button>
-                      )
-                    }
-                  </PDFDownloadLink> */}
                 </div>
               </div>
 
