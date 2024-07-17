@@ -11,6 +11,8 @@ const DifferentialPressureAuditTrail = require("../models/differentialPressureAu
 const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer-core");
 const findChrome = require("chrome-finder");
+const fs = require("fs");
+const path = require("path");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id } });
@@ -1474,6 +1476,11 @@ exports.generateReport = async (req, res) => {
     });
 
     const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
 
     // Set HTML content
     await page.setContent(html, { waitUntil: "networkidle0" });
@@ -1485,28 +1492,59 @@ exports.generateReport = async (req, res) => {
       displayHeaderFooter: true,
       headerTemplate: `
         <style>
-          .header { width: 100%; text-align: center; font-size: 10px; }
+          .header {
+            width: 100%;
+            text-align: center;
+            font-size: 13px;
+            padding: 5px 0;
+            margin-bottom: 20px;
+          }
+          .header img {
+            width: 200px;
+            height: 120px;
+            vertical-align: middle;
+          }
+          .header span {
+            vertical-align: middle;
+            margin-left: 10px;
+          }
         </style>
         <div class="header">
-          <span>Company Logo | Differential Pressure | DP${reportData.form_id}</span>
+          <span><img src="${logoDataUri}" /> | Differential Pressure | DP${reportData.form_id}</span>
         </div>
       `,
       footerTemplate: `
         <style>
-          .footer { width: 100%; text-align: center; font-size: 10px; }
-          .pageNumber { float: right; }
-          .totalPages { float: left; }
+          .footer {
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            padding: 5px 0;
+          }
+          .pageNumber {
+            display: inline-block;
+            margin-left: 5px;
+          }
+          .totalPages {
+            display: inline-block;
+            margin-left: 5px;
+          }
+          .printedBy {
+            display: inline-block;
+            float: right;
+            margin-right: 30px;
+          }
         </style>
         <div class="footer">
-          <span class="totalPages">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-          <span class="printedBy">Printed by: ${
-            await getUserById(req.user.userId)?.name
-          }</span>
+          <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+           <span class="printedBy">Printed by: ${
+             user ? user.name : "Unknown"
+           }</span>
         </div>
       `,
       margin: {
-        top: "50px",
-        bottom: "50px",
+        top: "120px", // Increased top margin to avoid header overlap
+        bottom: "60px",
         right: "30px",
         left: "30px",
       },

@@ -48,4 +48,10 @@ router.get(
 router.get("/get-all-rolegroups", User.getAllRoleGroups);
 router.post("/user-login", User.Userlogin);
 
+router.post(
+  "/reset-password",
+  Auth.checkAdminJwtToken,
+  User.resetPassword
+);
+
 module.exports = router;

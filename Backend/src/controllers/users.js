@@ -400,3 +400,51 @@ exports.Adminlogin = async (req, res) => {
     }
   }
 };
+
+exports.resetPassword = async (req, res) => {
+  let { user_id, current_password, new_password, confirm_new_password } =
+    req.body;
+
+  // Validate input data
+  if (!user_id || !current_password || !new_password || !confirm_new_password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  if (new_password !== confirm_new_password) {
+    return res
+      .status(400)
+      .json({ message: "New password and confirm new password do not match" });
+  }
+
+  try {
+    // Find the user by ID
+    const user = await User.findOne({
+      where: { user_id: user_id },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify the current password
+    const isMatch = await bcrypt.compare(current_password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(new_password, salt);
+
+    // Update the user's password
+    await User.update(
+      { password: hashedPassword },
+      { where: { user_id: user_id } }
+    );
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
