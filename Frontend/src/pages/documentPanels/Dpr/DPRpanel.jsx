@@ -187,7 +187,14 @@ export default function DPRpanel() {
       location.state?.stage === 1 &&
       location.state?.initiator_id === userDetails.userId
     ) {
-      const currentTime = new Date().toLocaleTimeString();
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      };
+
+      const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: generateUniqueId(),
         time: currentTime,

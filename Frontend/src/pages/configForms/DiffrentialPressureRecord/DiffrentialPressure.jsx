@@ -116,7 +116,7 @@ export default function DiffrentialPressure() {
 
     differentialPRecord.email = credentials?.email;
     differentialPRecord.password = credentials?.password;
-    differentialPRecord.initiatorDeclaration = credentials?.declaration
+    differentialPRecord.initiatorDeclaration = credentials?.declaration;
 
     axios
       .post(
@@ -148,7 +148,14 @@ export default function DiffrentialPressure() {
   }
 
   const addRow = () => {
-    const currentTime = new Date().toLocaleTimeString();
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Use 24-hour format
+    };
+
+    const currentTime = new Date().toLocaleTimeString("en-US", options);
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
@@ -189,7 +196,7 @@ export default function DiffrentialPressure() {
       limit: null,
       initiatorComment: "",
       initiatorAttachment: null,
-      initiatorDeclaration: ""
+      initiatorDeclaration: "",
     }
   );
   const handleInputChange1 = (e) => {
@@ -198,12 +205,17 @@ export default function DiffrentialPressure() {
   };
 
   const handleReviewerFileChange = (e) => {
-    setDifferentialPRecord({ ...differentialPRecord, reviewerAttachment: e.target.files[0] });
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      reviewerAttachment: e.target.files[0],
+    });
   };
   const handleApproverFileChange = (e) => {
-    setDifferentialPRecord({ ...differentialPRecord, approverAttachment: e.target.files[0] });
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      approverAttachment: e.target.files[0],
+    });
   };
-  
 
   useEffect(() => {
     setDifferentialPRecord({ FormRecordsArray: allTableData });
@@ -262,7 +274,7 @@ export default function DiffrentialPressure() {
               </div>
               <div className="sub-head-2">Differential Pressure Record</div>
 
-            <div className="outerDiv4">
+              <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -344,9 +356,7 @@ export default function DiffrentialPressure() {
                   >
                     Approver Remarks
                   </div>
-             
                 </div>
-              
               </div>
 
               {isSelectedGeneral === true ? (
@@ -497,8 +507,12 @@ export default function DiffrentialPressure() {
                   </div>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Reviewer
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Reviewer
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div>
                         <select
                           value={differentialPRecord.reviewer_id}
@@ -525,8 +539,12 @@ export default function DiffrentialPressure() {
                       </div>
                     </div>
                     <div className="group-input">
-                      <label className="color-label">Approver
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Approver
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div>
                         <select
                           value={differentialPRecord.approver_id}
@@ -699,8 +717,12 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Initiator Comment
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Initiator Comment
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
