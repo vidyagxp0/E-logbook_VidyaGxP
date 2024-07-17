@@ -195,12 +195,15 @@ exports.deleteUser = async (req, res) => {
       });
     }
 
-    await UserRole.destroy(
-      { where: { user_id: req.params.id } },
-      { transaction }
+    await User.update(
+      { isActive: false },
+      {
+        where: {
+          user_id: req.params.id,
+        },
+      }
     );
 
-    await User.destroy({ where: { user_id: req.params.id } }, { transaction });
     await transaction.commit();
     res.json({
       error: false,
@@ -217,7 +220,11 @@ exports.deleteUser = async (req, res) => {
 
 //get all users
 exports.getAllUsers = async (req, res) => {
-  User.findAll()
+  User.findAll({
+    where: {
+      isActive: true,
+    },
+  })
     .then((result) => {
       res.status(200).json({
         error: false,
@@ -236,7 +243,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getAUser = async (req, res) => {
   try {
     const user = await User.findOne({
-      where: { user_id: req.params.id },
+      where: { user_id: req.params.id, isActive: true },
       include: [
         {
           model: UserRole,

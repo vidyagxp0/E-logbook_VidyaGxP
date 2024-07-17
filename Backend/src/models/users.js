@@ -39,6 +39,10 @@ const User = sequelize.define("User", {
   profile_pic: {
     type: DataTypes.STRING,
   },
+  isActive: {
+    type: DataTypes.STRING,
+    defaultValue: true
+  },
 });
 
 // User.belongsToMany(Project, { through: UserProject });
