@@ -146,9 +146,14 @@ export default function DiffrentialPressure() {
       currentDate: currentDate,
     };
   }
-
   const addRow = () => {
-    const currentTime = new Date().toLocaleTimeString();
+    let options= {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }
+    const currentTime = new Date().toLocaleTimeString('en-us',options);
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
