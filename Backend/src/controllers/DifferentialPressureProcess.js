@@ -1490,64 +1490,102 @@ exports.generateReport = async (req, res) => {
       format: "A4",
       printBackground: true,
       displayHeaderFooter: true,
+
+
       headerTemplate: `
-        <style>
-          .header {
-            width: 100%;
-            text-align: center;
-            font-size: 13px;
-            padding: 5px 0;
-            margin-bottom: 20px;
-          }
-          .header img {
-            width: 200px;
-            height: 120px;
-            vertical-align: middle;
-          }
-          .header span {
-            vertical-align: middle;
-            margin-left: 10px;
-          }
-        </style>
-        <div class="header">
-          <span><img src="${logoDataUri}" /> | Differential Pressure | DP${reportData.form_id}</span>
-        </div>
-      `,
-      footerTemplate: `
-        <style>
-          .footer {
-            width: 100%;
-            text-align: center;
-            font-size: 10px;
-            padding: 5px 0;
-          }
-          .pageNumber {
-            display: inline-block;
-            margin-left: 5px;
-          }
-          .totalPages {
-            display: inline-block;
-            margin-left: 5px;
-          }
-          .printedBy {
-            display: inline-block;
-            float: right;
-            margin-right: 30px;
-          }
-        </style>
-        <div class="footer">
-          <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-           <span class="printedBy">Printed by: ${
-             user ? user.name : "Unknown"
-           }</span>
-        </div>
-      `,
-      margin: {
-        top: "120px", // Increased top margin to avoid header overlap
-        bottom: "60px",
-        right: "30px",
-        left: "30px",
-      },
+  <div class="header-container">
+  <table class="header-table">
+    <tr>
+      <th colspan="2" class="header-title">External Audit Single Report</th>
+      <th rowspan="2" class="header-logo">
+        <img src="${logoDataUri}" alt="Logo" style="max-width: 100px; height: auto;" />
+      </th>
+    </tr>
+    <tr>
+      <td class="header-info">External Audit No.: Corporate/24/0141</td>
+      <td class="header-info">Record No.: 0141</td>
+    </tr>
+  </table>
+</div>
+
+<style>
+ 
+  .header-table {
+
+    width: 100%;
+    border-collapse: collapse; /* Collapse borders */
+    text-align: left;
+    font-size: 14px; /* Adjust font size */
+    table-layout: fixed; /* Prevents table from expanding beyond container */
+   
+  }
+
+  .header-table th, .header-table td {
+    border: 1px solid #000; /* Add border to table cells */
+    padding: 8px; /* Adjusted padding */
+  }
+
+  .header-table th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+  }
+
+  .header-logo {
+    text-align: center;
+    width: 100px; /* Adjust width for logo */
+  }
+
+  .header-title {
+    text-align: center;
+    font-size: 18px; /* Adjusted font size */
+    margin: 10px 0; /* Increased margin for more spacing */
+  }
+
+  .header-info {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+`,
+    
+    footerTemplate: `
+    <style>
+      .footer {
+        width: 100%;
+        text-align: center;
+        font-size: 10px;
+        padding: 5px 0;
+      }
+      .pageNumber {
+        display: inline-block;
+        margin-left: 5px;
+      }
+      .totalPages {
+        display: inline-block;
+        margin-left: 5px;
+      }
+      .printedBy {
+        display: inline-block;
+        float: right;
+        margin-right: 30px;
+      }
+    </style>
+    <div class="footer">
+      <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+      <span class="printedBy">Printed by: ${
+        user ? user.name : "Unknown"
+      }</span>
+    </div>
+  `,
+  
+
+      
+margin: {
+  top: "120px", // Increased top margin to avoid header overlap
+  bottom: "60px",
+  right: "30px",
+  left: "30px",
+},
     });
 
     // Close the browser

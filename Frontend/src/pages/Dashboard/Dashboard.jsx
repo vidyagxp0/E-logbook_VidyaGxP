@@ -122,7 +122,7 @@ function Dashboard() {
               <option value="temperature_records">Temperature Records</option>
             </select>
           </div>
-          <button className="btn">Print</button>
+          {/* <button className="btn">Print</button> */}
         </div>
 
         <table>
