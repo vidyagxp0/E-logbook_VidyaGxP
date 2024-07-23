@@ -1,0 +1,108 @@
+/* Main container styling */
+#main-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #e0e5ec;
+    min-height: 100vh;
+  }
+  
+  #config-form-document-page {
+    max-width: 500px;
+    width: 100%;
+    background-color: #e0e5ec;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 7px 7px 14px #a3b1c6, -7px -7px 14px #ffffff;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #207ec;
+    text-align: center;
+  }
+  
+  /* Group input styling */
+  .group-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    background-color: #e0e5ec;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff;
+  }
+  
+  .group-input label {
+    margin-bottom: 5px;
+    color: #207ec;
+  }
+  
+  .group-input input,
+  .group-input select {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0e5ec;
+    box-shadow: inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff;
+    outline: none;
+    font-size: 14px;
+  }
+  
+  .group-input input[type="file"] {
+    padding: 3px;
+  }
+  
+  .group-input .error {
+    color: red;
+    font-size: 12px;
+  }
+  
+  button {
+    background-color: #207ec;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    box-shadow: 3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff;
+  }
+  
+  @media (max-width: 768px) {
+    #config-form-document-page {
+      padding: 15px;
+    }
+  
+    h2 {
+      font-size: 20px;
+    }
+  
+    button {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #config-form-document-page {
+      padding: 10px;
+    }
+  
+    h2 {
+      font-size: 18px;
+    }
+  
+    button {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+  }
+  
