@@ -176,7 +176,7 @@ tr:nth-child(2n) textarea {
   touch-action: manipulation;
   white-space: nowrap;
   will-change: box-shadow, transform;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: bold;
 }
 
