@@ -223,10 +223,9 @@
   text-align: center;
   background: #35dcef;
   padding: 10px 20px;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: #ffffff;
   border-radius: 40px;
-  font-weight:600;
 }
 
 #config-form-document-page .group-input .file-attachment-field {

@@ -226,7 +226,7 @@
   font-size: 1.6rem;
   color: #ffffff;
   border-radius: 40px;
-  font-weight:600;
+  font-weight:bold;
 }
 
 #config-form-document-page .group-input .file-attachment-field {
