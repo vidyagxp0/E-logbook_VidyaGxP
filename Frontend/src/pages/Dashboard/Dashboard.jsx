@@ -114,7 +114,7 @@ function Dashboard() {
       <div className="desktop-input-table-wrapper">
         <div className="input-wrapper">
           <div className="group-input-2">
-            <label>eLog</label>
+            <label>ELog</label>
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
@@ -181,7 +181,7 @@ function Dashboard() {
           </tbody>
         </table>
 
-        <div className="pagination">
+        {/* <div className="pagination">
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
@@ -191,7 +191,7 @@ function Dashboard() {
               {index + 1}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
     </>
   );
