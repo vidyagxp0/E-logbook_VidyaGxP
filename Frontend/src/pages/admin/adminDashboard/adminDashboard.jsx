@@ -347,9 +347,9 @@ function AdminDashboard() {
                 borderRadius: "5px",
                 border: "1px solid #42e9ff",
                fontWeight:"bold",
-                color: "black",
+                color: "white",
                 cursor: "pointer",
-                background:"#42e9ff"
+                background:"#35decf"
               }}
             >
               Cancel
@@ -432,8 +432,8 @@ function AdminDashboard() {
                 padding: "10px 20px",
                 borderRadius: "5px",
                 border: "1px solid #42e9ff",
-                backgroundColor: "#42e9ff",
-                color: "black",
+                backgroundColor: "#35dcef",
+                color: "white",
                 cursor: "pointer",
                 fontWeight:"bold" 
               }}
