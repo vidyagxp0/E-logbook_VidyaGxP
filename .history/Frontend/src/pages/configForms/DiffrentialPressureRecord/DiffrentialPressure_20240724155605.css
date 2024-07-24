@@ -97,7 +97,7 @@
   }
   
   #config-form-document-pages .button-block {
-    padding: 8px 20px;
+    padding: 19px 20px;
     background: white;
     display: flex;
     justify-content: flex-end;
@@ -254,12 +254,4 @@
   
   #config-form-document-pages .activity-log-field:nth-last-child(1) {
     margin-bottom: 0;
-  }
-  .outerDiv5 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    margin-bottom: 15px;
-    box-shadow:2px 1px 8px 1px var(--themeColor);
   }

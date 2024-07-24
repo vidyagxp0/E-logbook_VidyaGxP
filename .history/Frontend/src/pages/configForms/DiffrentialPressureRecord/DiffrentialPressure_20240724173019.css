@@ -261,5 +261,5 @@
     align-items: center;
     margin-top: 20px;
     margin-bottom: 15px;
-    box-shadow:2px 1px 8px 1px var(--themeColor);
+    box-shadow:2px 3px 4px 4px var(--themeColor);
   }

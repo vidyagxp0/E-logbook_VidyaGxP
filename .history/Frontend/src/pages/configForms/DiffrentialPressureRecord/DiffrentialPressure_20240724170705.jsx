@@ -462,7 +462,7 @@ export default function DiffrentialPressure() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-                    {/* <div className="instruction">&nbsp;</div> */}
+                    <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"

@@ -1,4 +1,4 @@
-/*! ===================================================================== */
+
 /*! DOCUMENT CSS */
 /*! ===================================================================== */
 #main-form-container .aside-container {
@@ -181,6 +181,10 @@
   font-size: 1.2rem;
 }
 
+.main-head {
+  padding-right: 130px;
+}
+
 #config-form-document-page
   .document-form
   .sop-type-header
@@ -207,8 +211,8 @@
 }
 
 #config-form-document-page .details-form-data .sub-head {
-  color: #101010;
-  /* border-bottom: 2px solid #0d0d0d; */
+  color: #4274da;
+  border-bottom: 2px solid #4274da;
   padding-bottom: 5px;
   margin-bottom: 20px;
   font-weight: bold;
@@ -219,9 +223,10 @@
   text-align: center;
   background: #35dcef;
   padding: 10px 20px;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: #ffffff;
   border-radius: 40px;
+  font-weight:600;
 }
 
 #config-form-document-page .group-input .file-attachment-field {
@@ -386,6 +391,23 @@
   border-radius: 28px;
 }
 
+.btn-forms-selects {
+  border: 2px solid #35dcef;
+  padding: 5px 10px;
+  border-radius: 28px;
+}
+
+.btn-forms-selects:hover {
+  cursor: pointer;
+}
+
+.btn-forms-isSelecteds {
+  background-color: #35dcef;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 28px;
+}
+
 .btn-forms {
   display: flex;
   gap: 10px;
@@ -449,19 +471,19 @@
   width: 100%;
 }
 
-/* .table-select {
+.table-select {
   font-size: 18px;
 }
 
 .table th,
 td {
-  padding: 3px !important; 
+  padding: 0px;
 }
 
 .table thead,
 tr th {
   padding: 6px;
-} */
+}
 
 .full-column {
   display: grid;
@@ -488,9 +510,10 @@ tr th {
 .deviation-btn {
   border-radius: 80px;
   background-color: #2769ed;
-  padding: 5px 10px;
+  padding: 2px 10px;
   color: white;
   margin: 2px;
+  font-size: 12px;
 }
 
 .analytics-btn {
@@ -511,42 +534,4 @@ tr th {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-.outerDiv5 {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-.rotate-270 {
-  transform: rotate(270deg);
-}
 
-.truncate {
-  max-width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.outerDiv4 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.btn-forms {
-  display: flex;
-}
-
-
-.btn-forms-isSelecteds {
-  background-color: #35dcef;
-  color: white;
-  padding: 10px;
-  margin: 0 5px;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}

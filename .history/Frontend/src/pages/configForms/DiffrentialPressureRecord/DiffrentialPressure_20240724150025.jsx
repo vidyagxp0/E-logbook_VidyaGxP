@@ -1,7 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import "./DiffrentialPressure.css"
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -238,8 +237,8 @@ export default function DiffrentialPressure() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-pages">
-          <div className="top-blocks">
+        <div id="config-form-document-page">
+          <div className="top-block">
             <div>
               <strong> Record Name:&nbsp;</strong>Differential Pressure
             </div>
@@ -268,7 +267,7 @@ export default function DiffrentialPressure() {
               </div> */}
               <div className="sub-head-2">Differential Pressure Record</div>
 
-            <div className="outerDiv5">
+            <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -419,7 +418,7 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
-                    {/* <div className="instruction">&nbsp;</div> */}
+                    <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"
@@ -462,7 +461,7 @@ export default function DiffrentialPressure() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-                    {/* <div className="instruction">&nbsp;</div> */}
+                    <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"

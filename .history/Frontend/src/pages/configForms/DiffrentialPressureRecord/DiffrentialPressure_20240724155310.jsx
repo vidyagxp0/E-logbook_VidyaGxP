@@ -256,7 +256,7 @@ export default function DiffrentialPressure() {
             </div>
           </div>
 
-          <div className="document-form">
+          <div className="document-forms">
             <div className="details-form-data">
               {/* <div className="sop-type-header">
                 <div className="logo">
@@ -268,7 +268,7 @@ export default function DiffrentialPressure() {
               </div> */}
               <div className="sub-head-2">Differential Pressure Record</div>
 
-            <div className="outerDiv5">
+            <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -419,7 +419,7 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
-                    {/* <div className="instruction">&nbsp;</div> */}
+                    <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"
@@ -462,7 +462,7 @@ export default function DiffrentialPressure() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-                    {/* <div className="instruction">&nbsp;</div> */}
+                    <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"
