@@ -112,7 +112,7 @@ function Dashboard() {
       <HeaderBottom />
 
       <div className="desktop-input-table-wrapper">
-        {/* <div className="input-wrapper">
+        <div className="input-wrapper">
           <div className="group-input-2">
             <label>ELog</label>
             <select
@@ -126,7 +126,7 @@ function Dashboard() {
               <option value="temperature_records">Temperature Records</option>
             </select>
           </div>
-        </div> */}
+        </div>
 
         <table>
           <thead>

@@ -13,7 +13,6 @@ function HeaderBottom() {
   return (
     <>
       <div className="Header_Bottom">
-      <div className="headerBottomInner">
       <div className="input-wrapper">
           <div className="group-input-2">
             <label>ELog</label>
@@ -29,7 +28,7 @@ function HeaderBottom() {
             </select>
           </div>
         </div>
-        
+        <div className="headerBottomInner">
           {loggedInUser.roles?.some(
             (itm) => itm.role_id === 5 || itm.role_id === 1
           ) ? (
