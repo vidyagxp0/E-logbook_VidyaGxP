@@ -152,13 +152,13 @@ tr:nth-child(2n) textarea {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-color: var(--themeColor);
+  background-color: #fcfcfd;
   border-radius: 4px;
   border-width: 0;
   box-shadow: rgba(45, 35, 66, 0.2) 0 2px 4px,
     rgba(45, 35, 66, 0.15) 0 7px 13px -3px, #d6d6e7 0 -3px 0 inset;
   box-sizing: border-box;
-  color: white;
+  color: var(--themeColor);
   cursor: pointer;
   display: inline-flex;
   justify-content: center;
@@ -176,8 +176,7 @@ tr:nth-child(2n) textarea {
   touch-action: manipulation;
   white-space: nowrap;
   will-change: box-shadow, transform;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 0.9rem;
 }
 
 .themeBtn:hover {
