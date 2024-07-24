@@ -1,0 +1,99 @@
+/* AdminDashboard.css */
+
+.admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  /* background-color: #e0e0e0; */
+}
+
+.main-content {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.Header_Bottom {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 9px 9px 16px #bebebe, -9px -9px 16px #ffffff;
+}
+
+.neumorphism-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f0f0f0;
+  color: #0e0d0d;
+  border-radius: 12px;
+  box-shadow: 9px 9px 16px #bebebe, -9px -9px 16px #ffffff;
+}
+
+.neumorphism-table th,
+.neumorphism-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+.neumorphism-table th {
+  background-color: #1de5e5;
+}
+
+.neumorphism-button {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  background-color: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+  margin: 5px;
+}
+
+.neumorphism-button:hover {
+  box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+}
+
+.neumorphism-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 9px 9px 16px #bebebe, -9px -9px 16px #ffffff;
+  z-index: 1000;
+  width: 500px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.neumorphism-content {
+  overflow-y: auto;
+  max-height: calc(70vh - 100px);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.confirmation-modal h2,
+.permissions-modal h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.confirmation-modal p,
+.permissions-modal p {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}

@@ -63,7 +63,7 @@ textarea:focus-visible {
 }
 
 .group-input label {
-    font-size: 0.9rem;
+    font-size: 18px;
     margin-bottom: 5px;
     display: block;
     width: 100%;
@@ -71,6 +71,7 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     gap: 10px;
+    padding: 10px;
 }
 
 .group-input .instruction {
@@ -186,49 +187,51 @@ table {
     width: 100%;
 }
 
-th,
+/* th,
 td {
     padding: 6px;
     font-size: 0.85rem;
-}
-
+} */
+/* 
 table,
 td,
 th {
-    border: 1px solid #808080;
+    border: 0.1px solid #b5b2b2;
     border-collapse: collapse;
     text-align: left;
 }
 
 th {
-    background-color: var(--themeColor);
+    background-color: rgb(27, 228, 235);
     color: white;
-}
+} */
 
-td .action {
+/* td .action {
     display: flex;
     align-items: center;
     gap: 10px;
-}
+} */
 
 td .action>* {
     cursor: pointer;
 }
 
-table tbody .serial {
+/* table tbody .serial {
     width: 80px;
-}
+} */
 
 table tbody tr:nth-child(2n) {
-    background: #fcd6a1;
+    background: #b6faf7;
 }
 .sub-head {
     color: #35dcef;
     border-bottom: 2px solid #fcd6a1;
+    color: #0d0d0e;
+    border-bottom: 2px solid #1f2024;
     padding-bottom: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 2rem;
     padding: 10px 20px;
   
   }

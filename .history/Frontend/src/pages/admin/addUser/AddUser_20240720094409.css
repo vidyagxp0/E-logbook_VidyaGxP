@@ -1,0 +1,96 @@
+/* Main container styling */
+#main-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  #config-form-document-page {
+    max-width: 500px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #207ec;
+  }
+  
+  /* Group input styling */
+  .group-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+  
+  .group-input label {
+    margin-bottom: 5px;
+    color: #207ec;
+  }
+  
+  .group-input input,
+  .group-input select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .group-input input[type="file"] {
+    padding: 3px;
+  }
+  
+  .group-input .error {
+    color: red;
+    font-size: 12px;
+  }
+  
+  button {
+    background-color: #207ec;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    #config-form-document-page {
+      padding: 15px;
+    }
+  
+    h2 {
+      font-size: 20px;
+    }
+  
+    button {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #config-form-document-page {
+      padding: 10px;
+    }
+  
+    h2 {
+      font-size: 18px;
+    }
+  
+    button {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+  }
+  
