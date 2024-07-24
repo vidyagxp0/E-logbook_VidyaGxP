@@ -1,27 +1,37 @@
-/*! ============================================================================= */
-/*! SIDEBAR CSS */
-/*! ============================================================================= */
+/* Base styles for the sidebar */
 aside {
-  width: 300px;
+  width: 300px; /* Default width */
   position: fixed;
   top: 64px; /* Adjust this value to match the height of the header */
   left: 0;
-  width: 16rem; /* 64 in Tailwind CSS rem units */
   height: calc(100vh - 64px); /* Full height minus the header height */
   background-color: white;
   overflow-y: auto;
   border-right: 1px solid #e5e7eb;
+  transition: width 0.3s ease; /* Smooth transition for width */
 }
 
-.admin-console{
-  /* border-right: 1px dashed #808080; */
+/* Styles when the sidebar is collapsed */
+aside.collapsed {
+  width: 80px; /* Adjust based on your design */
 }
+
+/* Inner block content */
 aside .inner-block {
   display: grid;
   gap: 20px;
   align-items: start;
+  padding: 1rem; /* Adjust as necessary */
+  transition: opacity 0.3s ease; /* Smooth transition for visibility */
 }
 
+/* Hide inner-block content when sidebar is collapsed */
+aside.collapsed .inner-block {
+  opacity: 0; /* Hide content with opacity */
+  pointer-events: none; /* Prevent interaction */
+}
+
+/* Styling for each link head */
 aside .inner-block .sidebar-link .link-head {
   padding: 10px 15px;
   display: flex;
@@ -34,48 +44,46 @@ aside .inner-block .sidebar-link .link-head {
   box-shadow: rgba(65, 226, 247, 0.3) 0px 1px 2px 0px, rgba(10, 170, 170, 0.15) 0px 2px 6px 2px;
 }
 
+/* Styling when collapsed and expanded */
+aside.collapsed .sidebar-link .link-head {
+  padding: 10px 5px; /* Adjust padding for collapsed state */
+  justify-content: center; /* Center content */
+}
+
+/* Hover and active states */
 aside .inner-block .sidebar-link .link-head:hover,
 aside .inner-block .sidebar-link .link-head.active {
   background: var(--themeColor);
-  color:rgb(8, 8, 8);
+  color: rgb(8, 8, 8);
   box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
 }
 
-aside .inner-block .sidebar-link .link-head>div:nth-child(1) {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-}
-
+/* Adjustments for child items */
 aside .inner-block .sidebar-link .sidebar-subList {
   padding: 15px 0 10px 10px;
   display: grid;
-  align-items:center;
+  align-items: center;
   gap: 10px;
   font-weight: 800;
   position: relative;
 }
 
-
+/* Styling for sub-links */
 aside .inner-block .sidebar-link .sidebar-subList>* {
   transition: all 0.3s linear;
   cursor: pointer;
   position: relative;
   font-size: 0.8rem;
-  color:rgb(4, 63, 255);
+  color: rgb(4, 63, 255);
 }
 
-
+/* Hover and active states for sub-links */
 aside .inner-block .sidebar-link .sidebar-subList>*:hover,
 aside .inner-block .sidebar-link .sidebar-subList .active {
   color: #043efc;
 }
 
-.inner-block {
-  padding: 1rem; /* Adjust as necessary */
-}
-
+/* Additional styling for link and sub-link states */
 .sidebar-link {
   margin-bottom: 0.5rem; /* Space between links */
 }
@@ -110,4 +118,3 @@ aside .inner-block .sidebar-link .sidebar-subList .active {
 .sidebar-subLink:hover {
   background-color: #f9fafb; /* Tailwind gray-100 */
 }
-
