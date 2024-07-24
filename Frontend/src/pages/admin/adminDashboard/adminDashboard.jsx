@@ -119,8 +119,8 @@ function AdminDashboard() {
                 <button
                   className="themeBtn"
                   style={{
-                    backgroundColor: "var(--themeColor)",
-                    color: "black",
+                    backgroundColor: "#35dcef",
+                    color: "white",
                     padding: "10px 20px",
                     borderRadius: "5px",
                     cursor: "pointer",
@@ -236,7 +236,7 @@ function AdminDashboard() {
                             padding: "5px 10px",
                             borderRadius: "5px",
                             // border: "1px solid #EFA035",
-                            backgroundColor: "blue",
+                            backgroundColor: "orange",
                             color: "white",
                             cursor: "pointer",
                             marginRight: "5px",
@@ -269,7 +269,7 @@ function AdminDashboard() {
                             padding: "5px 10px",
                             borderRadius: "5px",
                             // border: "1px solid #EFA035",
-                            backgroundColor: "purple",
+                            backgroundColor: "blue",
                             color: "white",
                             cursor: "pointer",
                           }}

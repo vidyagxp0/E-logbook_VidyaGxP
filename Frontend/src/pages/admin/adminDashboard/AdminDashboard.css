@@ -353,12 +353,12 @@ button {
 }
 
 .view-btn {
-  background-color: #4CAF50;
+  background-color: lightgreen;
   color: white;
 }
 
 .edit-btn {
-  background-color: #2196F3;
+  background-color: yellow;
   color: white;
 }
 
@@ -368,7 +368,7 @@ button {
 }
 
 .duplicate-btn {
-  background-color: #9C27B0;
+  background-color: #007bff;
   color: white;
 }
 
