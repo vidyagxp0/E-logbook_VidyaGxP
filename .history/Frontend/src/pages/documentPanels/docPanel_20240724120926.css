@@ -226,7 +226,7 @@
   font-size: 1.6rem;
   color: #ffffff;
   border-radius: 40px;
-  font-weight:600;
+  font-weight:500;
 }
 
 #config-form-document-page .group-input .file-attachment-field {
@@ -392,7 +392,7 @@
 }
 
 .btn-forms-selects {
-  border: 2px solid #35dcef;
+  border: 1px solid rgb(210, 105, 105);
   padding: 5px 10px;
   border-radius: 28px;
 }
@@ -402,7 +402,7 @@
 }
 
 .btn-forms-isSelecteds {
-  background-color: #35dcef;
+  background-color: rgb(234, 190, 102);
   color: #ffffff;
   padding: 5px 10px;
   border-radius: 28px;
