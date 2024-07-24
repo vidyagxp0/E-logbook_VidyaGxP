@@ -283,8 +283,8 @@
   border: none; /* Remove the outer border */
 }
 .bg-black  {
-  background-color: #42e9ff; /* Add your desired color here */
-  color: white; /* Optional: change text color if needed */
+  background-color: var(--themeColor); /* Add your desired color here */
+  color: rgb(18, 18, 18); /* Optional: change text color if needed */
 }
 .modern-table , .modern-table td {
   padding: 15px;
@@ -319,16 +319,17 @@ td {
 table,
 td
  {
-  border: 1px solid #bababa;
+  border: 1px solid #acabab;
   border-collapse: collapse;
   /* text-align: center; */
   font-weight:bold;
   font-size: 15px;
+  padding-left: 7px;
 }
 
 th {
   
-  border: 1px solid #bababa;
+  border: 1px solid #7e7d7d;
   background-color: var(--themeColor);
   color: rgb(25, 24, 24);
   border-collapse: collapse;
@@ -345,7 +346,7 @@ th {
 button {
   padding: 8px 15px;
   border-radius: 5px;
-  margin-right: 5px;
+  /* margin-right: 5px; */
   cursor: pointer;
   border: none;
   transition: background-color 0.3s, transform 0.3s;

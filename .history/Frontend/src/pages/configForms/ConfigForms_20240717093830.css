@@ -166,7 +166,7 @@
   gap: 0 20px;
 }
 
-#config-form-document-page .document-form .sop-type-header {
+/* #config-form-document-page .document-form .sop-type-header {
   display: grid;
   grid-template-columns: 135px 1fr;
   border: 2px solid #000000;
@@ -179,7 +179,7 @@
   place-items: center;
   align-content: center;
   font-size: 1.2rem;
-}
+} */
 
 #config-form-document-page
   .document-form
