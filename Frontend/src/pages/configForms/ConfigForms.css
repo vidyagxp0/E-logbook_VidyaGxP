@@ -217,7 +217,7 @@
 
 #config-form-document-page .details-form-data .sub-head-2 {
   text-align: center;
-  background: #efa035;
+  background: #35dcef;
   padding: 10px 20px;
   font-size: 1.5rem;
   color: #ffffff;
@@ -274,7 +274,7 @@
 }
 
 #config-form-document-page .group-input .file-attachment-field .add-btn div {
-  background: #efa035;
+  background: #35dcef;
   color: white;
   border-radius: 5px;
   text-align: center;
@@ -504,7 +504,7 @@ tr th {
 
 .btn-print {
   padding: 5%;
-  background-color: #efa035;
+  background-color: #35dcef;
   border-radius: 50px;
   cursor: pointer;
   color: white;
@@ -540,7 +540,7 @@ tr th {
 
 
 .btn-forms-isSelecteds {
-  background-color: #f79520;
+  background-color: #35dcef;
   color: white;
   padding: 10px;
   margin: 0 5px;
