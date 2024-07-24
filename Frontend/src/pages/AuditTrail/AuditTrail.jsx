@@ -50,25 +50,54 @@ function AuditTrail() {
 
   return (
     <>
+      <style>
+        {`
+          .scrollable-container {
+            max-height: 800px; /* Adjust this height as needed */
+            overflow-y: auto;
+            margin: 0 auto;
+            width: 100%; /* Adjust the width as needed */
+          }
+
+          .scrollable-container::-webkit-scrollbar {
+            width: 16px; /* Increased width of the scrollbar */
+          }
+
+          .scrollable-container::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Track color */
+          }
+
+          .scrollable-container::-webkit-scrollbar-thumb {
+            background: #888; /* Scrollbar color */
+            border-radius: 8px; /* More rounded corners for scrollbar */
+          }
+
+          .scrollable-container::-webkit-scrollbar-thumb:hover {
+            background: #555; /* Darker scrollbar on hover */
+          }
+
+          .back-button-container {
+            text-align: center;
+            margin-top: 20px;
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+          }
+        `}
+      </style>
+
       <div className="admin-dashboard">
         <HeaderTop />
         <div id="body-container" style={{ margin: "20px" }}>
-          <h3 style={{ textAlign: "center" }}>
-            <strong>Audit Trail</strong>
-          </h3>
-          <br></br>
+        <h3 style={{ textAlign: "center", fontSize: "2em" }}>
+        <strong>Audit Trail</strong>
+       </h3>
+          <br />
           <hr />
           {auditTrails?.length === 0 ? (
             <>No audit trails Available</>
           ) : (
-            <div
-              style={{
-                maxHeight: "500px", // Adjust this height as needed
-                overflowY: "auto",
-                margin: "0 auto",
-                width: "100%", // Adjust the width as needed
-              }}
-            >
+            <div className="scrollable-container">
               <table
                 style={{
                   width: "100%",
@@ -238,7 +267,7 @@ function AuditTrail() {
               </table>
             </div>
           )}
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <div className="back-button-container">
             <button
               className="themeBtn"
               onClick={() => navigate(-1)}
