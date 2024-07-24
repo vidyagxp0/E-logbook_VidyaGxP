@@ -1492,6 +1492,8 @@ exports.generateReport = async (req, res) => {
       displayHeaderFooter: true,
 
 
+
+
       headerTemplate: `
   <div class="header-container">
   <table class="header-table">
@@ -1548,6 +1550,8 @@ exports.generateReport = async (req, res) => {
 </style>
 `,
     
+
+
     footerTemplate: `
     <style>
       .footer {
