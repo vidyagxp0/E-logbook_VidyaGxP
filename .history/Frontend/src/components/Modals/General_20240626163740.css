@@ -19,22 +19,20 @@
     border-radius: 5px;
     cursor: pointer;
     display: block;
-    color:white;
-    font-weight: bold;
     transition: all 0.3s linear;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
 }
 
 .custom-modal .modal-container .btn-1 {
-    background: var(--themeColor);
+    background: #006fc057;
 }
 
 .custom-modal .modal-container .btn-2 {
-    background: var(--themeColor);
+    background: #80808030;
 }
 
 .custom-modal .modal-container .btn-3 {
-    background: var(--themeColor);
+    background: #ff000030;
 }
 
 .custom-modal .modal-container .modal-btn:hover {

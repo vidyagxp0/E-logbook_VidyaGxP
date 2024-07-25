@@ -1,7 +1,6 @@
 import { useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import "../DiffrentialPressureRecord/DiffrentialPressure.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";

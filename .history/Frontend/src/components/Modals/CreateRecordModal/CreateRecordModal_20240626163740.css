@@ -36,10 +36,10 @@
 
 #create-record-modal .division-list>*:hover,
 #create-record-modal .division-list>*.active {
-    background: #b6faf7;
+    background: #006fc057;
 }
 
 #create-record-modal .project-list>*:hover,
 #create-record-modal .project-list>*.active {
-    background: #b6faf7;
+    background: #80808030;
 }

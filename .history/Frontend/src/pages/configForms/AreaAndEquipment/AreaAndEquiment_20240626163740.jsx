@@ -1,7 +1,6 @@
 import { useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import "../DiffrentialPressureRecord/DiffrentialPressure.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -64,8 +63,8 @@ export default function AreaAndEquiment() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-pages">
-          <div className="top-blocks">
+        <div id="config-form-document-page">
+          <div className="top-block">
             <div>
               <strong> Record Name:&nbsp;</strong>Document
             </div>

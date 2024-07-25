@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
-import DifferentialPressureReducers from './../../../components/Reducers/DifferentialPressureReducer';
 
 export default function TempretureRecordsPanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -269,8 +268,8 @@ export default function TempretureRecordsPanel() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-page">
-          <div className="top-block">
+        <div id="config-form-document-pages">
+          <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Temperature Record
             </div>

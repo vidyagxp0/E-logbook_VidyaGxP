@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
-import "./DiffrentialPressure.css";
+import "../DiffrentialPressure.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 
-export default function DiffrentialPressure() {
+export default function TemperatureRecords() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
@@ -28,7 +28,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export default function DiffrentialPressure() {
       data: {
         site_id: location.state?.site_id,
         role_id: 2,
-        process_id: 1,
+        process_id: 4,
       },
     };
 
@@ -50,7 +50,7 @@ export default function DiffrentialPressure() {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export default function DiffrentialPressure() {
       data: {
         site_id: location.state?.site_id,
         role_id: 3,
-        process_id: 1,
+        process_id: 4,
       },
     };
 
@@ -70,6 +70,24 @@ export default function DiffrentialPressure() {
         console.error("Error: ", error);
       });
   }, []);
+
+  const handleInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setDifferentialPRecord({ ...differentialPRecord, [name]: value });
+  };
+
+  const handleReviewerFileChange = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      reviewerAttachment: e.target.files[0],
+    });
+  };
+  const handleApproverFileChange = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      approverAttachment: e.target.files[0],
+    });
+  };
 
   useEffect(() => {
     const requestOptions = {
@@ -93,9 +111,9 @@ export default function DiffrentialPressure() {
 
   const handlePopupSubmit = (credentials) => {
     if (
-      differentialPRecord.site_id === null ||
-      differentialPRecord.approver_id === null ||
-      differentialPRecord.reviewer_id === null
+      tempratureRecord.site_id === null ||
+      tempratureRecord.approver_id === null ||
+      tempratureRecord.reviewer_id === null
     ) {
       toast.error(
         "Please select an approver and a reviewer before saving e-log!"
@@ -103,7 +121,7 @@ export default function DiffrentialPressure() {
       return;
     }
 
-    if (differentialPRecord.initiatorComment === "") {
+    if (tempratureRecord.initiatorComment === "") {
       toast.error("Please provide an initiator comment!");
       return;
     }
@@ -115,14 +133,14 @@ export default function DiffrentialPressure() {
       },
     };
 
-    differentialPRecord.email = credentials?.email;
-    differentialPRecord.password = credentials?.password;
-    differentialPRecord.initiatorDeclaration = credentials?.declaration
+    tempratureRecord.email = credentials?.email;
+    tempratureRecord.password = credentials?.password;
+    tempratureRecord.initiatorDeclaration = credentials?.declaration;
 
     axios
       .post(
-        "http://localhost:1000/differential-pressure/post-differential-pressure",
-        differentialPRecord,
+        "http://localhost:1000/temprature-record/post-temprature-record",
+        tempratureRecord,
         config
       )
       .then(() => {
@@ -147,18 +165,13 @@ export default function DiffrentialPressure() {
       currentDate: currentDate,
     };
   }
+
   const addRow = () => {
-    let options= {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }
-    const currentTime = new Date().toLocaleTimeString('en-us',options);
+    const currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
-      differential_pressure: "",
+      temprature_record: "",
       remarks: "",
       checked_by: User?.name,
       supporting_docs: null,
@@ -179,7 +192,7 @@ export default function DiffrentialPressure() {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
-  const [differentialPRecord, setDifferentialPRecord] = useReducer(
+  const [tempratureRecord, setTempratureRecord] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
@@ -195,24 +208,12 @@ export default function DiffrentialPressure() {
       limit: null,
       initiatorComment: "",
       initiatorAttachment: null,
-      initiatorDeclaration: ""
+      initiatorDeclaration: "",
     }
   );
-  const handleInputChange1 = (e) => {
-    const { name, value } = e.target;
-    setDifferentialPRecord({ ...differentialPRecord, [name]: value });
-  };
-
-  const handleReviewerFileChange = (e) => {
-    setDifferentialPRecord({ ...differentialPRecord, reviewerAttachment: e.target.files[0] });
-  };
-  const handleApproverFileChange = (e) => {
-    setDifferentialPRecord({ ...differentialPRecord, approverAttachment: e.target.files[0] });
-  };
-  
 
   useEffect(() => {
-    setDifferentialPRecord({ FormRecordsArray: allTableData });
+    setTempratureRecord({ FormRecordsArray: allTableData });
   }, [allTableData]);
 
   const handleDeleteFile = (index) => {
@@ -228,8 +229,8 @@ export default function DiffrentialPressure() {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setDifferentialPRecord({
-      ...differentialPRecord,
+    setTempratureRecord({
+      ...tempratureRecord,
       initiatorAttachment: e.target.files[0],
     });
   };
@@ -238,10 +239,10 @@ export default function DiffrentialPressure() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-pages">
-          <div className="top-blocks">
+        <div id="config-form-document-page">
+          <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Differential Pressure
+              <strong> Record Name:&nbsp;</strong>Temperature Records
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
@@ -266,9 +267,8 @@ export default function DiffrentialPressure() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div> */}
-              <div className="sub-head-2">Differential Pressure Record</div>
-
-            <div className="outerDiv5">
+              <div className="sub-head-2">Temprature Record</div>
+              <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -350,9 +350,7 @@ export default function DiffrentialPressure() {
                   >
                     Approver Remarks
                   </div>
-             
                 </div>
-              
               </div>
 
               {isSelectedGeneral === true ? (
@@ -364,7 +362,7 @@ export default function DiffrentialPressure() {
                         type="text"
                         value={User?.name}
                         onChange={(e) =>
-                          setDifferentialPRecord({ initiator: e.target.value })
+                          setTempratureRecord({ initiator: e.target.value })
                         }
                       />
                     </div>
@@ -377,7 +375,7 @@ export default function DiffrentialPressure() {
                         type="text"
                         value={date}
                         onChange={(e) =>
-                          setDifferentialPRecord({
+                          setTempratureRecord({
                             dateOfInitiation: e.target.value,
                           })
                         }
@@ -390,9 +388,9 @@ export default function DiffrentialPressure() {
                     <div>
                       <input
                         type="text"
-                        value={differentialPRecord.description}
+                        value={tempratureRecord.description}
                         onChange={(e) =>
-                          setDifferentialPRecord({
+                          setTempratureRecord({
                             description: e.target.value,
                           })
                         }
@@ -405,9 +403,9 @@ export default function DiffrentialPressure() {
                     <div>
                       <input
                         type="text"
-                        value="UNDER INITIATION"
+                        value="Under Initiation"
                         onChange={(e) =>
-                          setDifferentialPRecord({ status: e.target.value })
+                          setTempratureRecord({ status: e.target.value })
                         }
                       />
                     </div>
@@ -419,13 +417,13 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
-                    {/* <div className="instruction">&nbsp;</div> */}
+                    <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={differentialPRecord.department}
+                      value={tempratureRecord.department}
                       onChange={(e) =>
-                        setDifferentialPRecord({
+                        setTempratureRecord({
                           department: e.target.value,
                         })
                       }
@@ -462,13 +460,13 @@ export default function DiffrentialPressure() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-                    {/* <div className="instruction">&nbsp;</div> */}
+                    <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={differentialPRecord.compression_area}
+                      value={tempratureRecord.compression_area}
                       onChange={(e) =>
-                        setDifferentialPRecord({
+                        setTempratureRecord({
                           compression_area: e.target.value,
                         })
                       }
@@ -489,27 +487,31 @@ export default function DiffrentialPressure() {
                     <input
                       type="number"
                       className={`${
-                        differentialPRecord.limit < 0.6
+                        tempratureRecord.limit < 0.6
                           ? "limit"
-                          : differentialPRecord.limit > 2.6
+                          : tempratureRecord.limit > 2.6
                           ? "limit"
                           : ""
                       }`}
-                      value={differentialPRecord.limit}
+                      value={tempratureRecord.limit}
                       onChange={(e) =>
-                        setDifferentialPRecord({ limit: e.target.value })
+                        setTempratureRecord({ limit: e.target.value })
                       }
                     />
                   </div>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Reviewer
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Reviewer
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div>
                         <select
-                          value={differentialPRecord.reviewer_id}
+                          value={tempratureRecord.reviewer_id}
                           onChange={(e) => {
-                            setDifferentialPRecord({
+                            setTempratureRecord({
                               reviewer_id: e.target.value,
                             });
                           }}
@@ -531,13 +533,17 @@ export default function DiffrentialPressure() {
                       </div>
                     </div>
                     <div className="group-input">
-                      <label className="color-label">Approver
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Approver
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div>
                         <select
-                          value={differentialPRecord.approver_id}
+                          value={tempratureRecord.approver_id}
                           onChange={(e) => {
-                            setDifferentialPRecord({
+                            setTempratureRecord({
                               approver_id: e.target.value,
                             });
                           }}
@@ -572,7 +578,7 @@ export default function DiffrentialPressure() {
                         <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
-                        <th>Differential Pressure</th>
+                        <th>Temprature Record</th>
                         <th>Remark</th>
                         <th>Checked By</th>
                         <th style={{ width: "300px" }}>Supporting Documents</th>
@@ -608,17 +614,17 @@ export default function DiffrentialPressure() {
                           <td>
                             <input
                               type="number"
-                              value={item.differential_pressure}
+                              value={item.temprature_record}
                               className={`${
-                                item.differential_pressure < 0.6
+                                item.temprature_record < 0.6
                                   ? "limit"
-                                  : item.differential_pressure > 2.6
+                                  : item.temprature_record > 2.6
                                   ? "limit"
                                   : ""
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].differential_pressure =
+                                newData[index].temprature_record =
                                   e.target.value;
                                 setAllTableData(newData);
                               }}
@@ -665,9 +671,9 @@ export default function DiffrentialPressure() {
                           </td>
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.differential_pressure !== "" &&
-                              (item.differential_pressure < 0.6 ||
-                                item.differential_pressure > 2.6) && (
+                            {item.temprature_record !== "" &&
+                              (item.temprature_record < 0.6 ||
+                                item.temprature_record > 2.6) && (
                                 <button
                                   style={{
                                     cursor: "pointer",
@@ -681,9 +687,9 @@ export default function DiffrentialPressure() {
                                   Deviation
                                 </button>
                               )}
-                            {item.differential_pressure !== "" &&
-                              (item.differential_pressure < 0.6 ||
-                                item.differential_pressure > 2.6) && (
+                            {item.temprature_record !== "" &&
+                              (item.temprature_record < 0.6 ||
+                                item.temprature_record > 2.6) && (
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
@@ -705,13 +711,17 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Initiator Comment
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Initiator Comment
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
                         onChange={(e) =>
-                          setDifferentialPRecord({
+                          setTempratureRecord({
                             initiatorComment: e.target.value,
                           })
                         }
