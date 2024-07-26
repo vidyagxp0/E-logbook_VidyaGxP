@@ -8,6 +8,10 @@ const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
 const TemperatureRecordAuditTrail = require("../models/temperatureRecordsAuditTrail");
 const Mailer = require("../middlewares/mailer");
+const puppeteer = require("puppeteer-core");
+const findChrome = require("chrome-finder");
+const fs = require("fs");
+const path = require("path");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -105,7 +109,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
-        status: "INITIATION",
+        status: "Initiation",
         stage: 1,
         department: department,
         compression_area: compression_area,
@@ -138,7 +142,7 @@ exports.InsertTempratureRecord = async (req, res) => {
           new_value: value,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
       }
@@ -152,7 +156,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
-        new_status: "INITIATION",
+        new_status: "Initiation",
         declaration: initiatorDeclaration,
       });
     }
@@ -179,7 +183,7 @@ exports.InsertTempratureRecord = async (req, res) => {
           new_value: record.unique_id,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         auditTrailEntries.push({
@@ -189,7 +193,7 @@ exports.InsertTempratureRecord = async (req, res) => {
           new_value: record.time,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         auditTrailEntries.push({
@@ -199,7 +203,7 @@ exports.InsertTempratureRecord = async (req, res) => {
           new_value: record.temprature_record,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         auditTrailEntries.push({
@@ -209,7 +213,7 @@ exports.InsertTempratureRecord = async (req, res) => {
           new_value: record.remarks,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         auditTrailEntries.push({
@@ -219,7 +223,7 @@ exports.InsertTempratureRecord = async (req, res) => {
           new_value: record.checked_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         if (supportingDocs[index]) {
@@ -230,7 +234,7 @@ exports.InsertTempratureRecord = async (req, res) => {
             new_value: getElogDocsUrl(supportingDocs[index]),
             changed_by: user.user_id,
             previous_status: "Not Applicable",
-            new_status: "INITIATION",
+            new_status: "Initiation",
             declaration: initiatorDeclaration,
           });
         }
@@ -247,7 +251,7 @@ exports.InsertTempratureRecord = async (req, res) => {
       initiator: user.name,
       dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
       description,
-      status: "INITIATION",
+      status: "Initiation",
       reviewerName: (await getUserById(reviewer_id)).name,
       approverName: (await getUserById(approver_id)).name,
       reviewerEmail: (await getUserById(reviewer_id)).email,
@@ -414,7 +418,7 @@ exports.EditTempratureRecord = async (req, res) => {
           new_value: newValue,
           changed_by: user.user_id,
           previous_status: form.status,
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
       }
@@ -476,7 +480,7 @@ exports.EditTempratureRecord = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "INITIATION",
+                new_status: "Initiation",
                 declaration: initiatorDeclaration,
               });
             }
@@ -511,7 +515,7 @@ exports.EditTempratureRecord = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "INITIATION",
+                new_status: "Initiation",
                 declaration: initiatorDeclaration,
               });
             }
@@ -699,11 +703,11 @@ exports.SendTRElogForReview = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "INITIATION",
-        new_value: "UNDER REVIEW",
+        previous_value: "Initiation",
+        new_value: "Under Review",
         changed_by: user.user_id,
-        previous_status: "INITIATION",
-        new_status: "UNDER REVIEW",
+        previous_status: "Initiation",
+        new_status: "Under Review",
         declaration: initiatorDeclaration,
       },
     ];
@@ -716,8 +720,8 @@ exports.SendTRElogForReview = async (req, res) => {
         previous_value: form.initiatorAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "INITIATION",
-        new_status: "UNDER REVIEW",
+        previous_status: "Initiation",
+        new_status: "Under Review",
         declaration: initiatorDeclaration,
       });
     }
@@ -725,7 +729,7 @@ exports.SendTRElogForReview = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "UNDER REVIEW",
+        status: "Under Review",
         stage: 2,
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
@@ -750,7 +754,7 @@ exports.SendTRElogForReview = async (req, res) => {
         initiator: user.name,
         dateOfInitiation: new Date().toISOString().split("T")[0],
         description: form.description,
-        status: "UNDER REVIEW",
+        status: "Under Review",
         recipients: reviewer.email,
       });
 
@@ -841,11 +845,11 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "UNDER REVIEW",
-        new_value: "INITIATION",
+        previous_value: "Under Review",
+        new_value: "Initiation",
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "INITIATION",
+        previous_status: "Under Review",
+        new_status: "Initiation",
         declaration: reviewerDeclaration,
       },
     ];
@@ -858,8 +862,8 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "INITIATION",
+        previous_status: "Under Review",
+        new_status: "Initiation",
         declaration: reviewerDeclaration,
       });
     }
@@ -867,7 +871,7 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "INITIATION",
+        status: "Initiation",
         stage: 1,
         reviewerAttachment: getElogDocsUrl(req?.file),
       },
@@ -889,7 +893,7 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
         initiatorName: initiator.name,
         dateOfInitiation: new Date().toISOString().split("T")[0],
         description: form.description,
-        status: "INITIATION",
+        status: "Initiation",
         recipients: initiator.email,
       });
 
@@ -986,11 +990,11 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "UNDER REVIEW",
-        new_value: "UNDER APPROVAL",
+        previous_value: "Under Review",
+        new_value: "Under Approval",
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "UNDER APPROVAL",
+        previous_status: "Under Review",
+        new_status: "Under Approval",
         declaration: reviewerDeclaration,
       },
     ];
@@ -1002,8 +1006,8 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
         previous_value: form.reviewComment || null,
         new_value: reviewComment,
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "UNDER APPROVAL",
+        previous_status: "Under Review",
+        new_status: "Under Approval",
         declaration: reviewerDeclaration,
       });
     }
@@ -1016,8 +1020,8 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "UNDER APPROVAL",
+        previous_status: "Under Review",
+        new_status: "Under Approval",
         declaration: reviewerDeclaration,
       });
     }
@@ -1025,7 +1029,7 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "UNDER APPROVAL",
+        status: "Under Approval",
         stage: 3,
         reviewComment: reviewComment,
         reviewerDeclaration: reviewerDeclaration,
@@ -1051,7 +1055,7 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
         dateOfInitiation: new Date().toISOString().split("T")[0],
         description: form.description,
         reviewer: user.name,
-        status: "UNDER APPROVAL",
+        status: "Under Approval",
         recipients: approver.email,
       });
 
@@ -1143,11 +1147,11 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "UNDER APPROVAL",
-        new_value: "INITIATION",
+        previous_value: "Under Approval",
+        new_value: "Initiation",
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "INITIATION",
+        previous_status: "Under Approval",
+        new_status: "Initiation",
         declaration: approverDeclaration,
       },
     ];
@@ -1160,8 +1164,8 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "INITIATION",
+        previous_status: "Under Approval",
+        new_status: "Initiation",
         declaration: approverDeclaration,
       });
     }
@@ -1169,7 +1173,7 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "INITIATION",
+        status: "Initiation",
         stage: 1,
         approverAttachment: getElogDocsUrl(req?.file),
       },
@@ -1191,7 +1195,7 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
         initiatorName: initiator.name,
         dateOfInitiation: new Date().toISOString().split("T")[0],
         description: form.description,
-        status: "INITIATION",
+        status: "Initiation",
         recipients: initiator.email,
       });
 
@@ -1289,11 +1293,11 @@ exports.ApproveTRElog = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "UNDER APPROVAL",
-        new_value: "APPROVED",
+        previous_value: "Under Approval",
+        new_value: "Approved",
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "APPROVED",
+        previous_status: "Under Approval",
+        new_status: "Approved",
         declaration: approverDeclaration,
       },
     ];
@@ -1305,8 +1309,8 @@ exports.ApproveTRElog = async (req, res) => {
         previous_value: form.approverComment || null,
         new_value: approverComment,
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "APPROVED",
+        previous_status: "Under Approval",
+        new_status: "Approved",
         declaration: approverDeclaration,
       });
     }
@@ -1319,8 +1323,8 @@ exports.ApproveTRElog = async (req, res) => {
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "APPROVED",
+        previous_status: "Under Approval",
+        new_status: "Approved",
         declaration: approverDeclaration,
       });
     }
@@ -1328,7 +1332,7 @@ exports.ApproveTRElog = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "APPROVED",
+        status: "Approved",
         stage: 4,
         approverComment: approverComment,
         approverAttachment: req?.file
@@ -1430,5 +1434,147 @@ exports.getAuditTrailForAnElog = async (req, res) => {
       error: true,
       message: `Error retrieving audit trail: ${error.message}`,
     });
+  }
+};
+
+exports.generateReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      res.render("tp_report", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    // Find Chrome executable path
+    const executablePath = findChrome();
+
+    const browser = await puppeteer.launch({
+      executablePath: executablePath,
+      headless: true,
+      timeout: 120000, // 2 minutes
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+
+      headerTemplate: `
+  <div class="header-container">
+  <table class="header-table">
+    <tr>
+      <th colspan="2" class="header-title">External Audit Single Report</th>
+      <th rowspan="2" class="header-logo">
+        <img src="${logoDataUri}" alt="Logo" style="max-width: 100px; height: auto;" />
+      </th>
+    </tr>
+    <tr>
+      <td class="header-info">External Audit No.: Corporate/24/0141</td>
+      <td class="header-info">Record No.: 0141</td>
+    </tr>
+  </table>
+</div>
+
+<style>
+ 
+  .header-table {
+
+    width: 100%;
+    border-collapse: collapse; /* Collapse borders */
+    text-align: left;
+    font-size: 14px; /* Adjust font size */
+    table-layout: fixed; /* Prevents table from expanding beyond container */
+   
+  }
+
+  .header-table th, .header-table td {
+    border: 1px solid #000; /* Add border to table cells */
+    padding: 8px; /* Adjusted padding */
+  }
+
+  .header-table th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+  }
+
+  .header-logo {
+    text-align: center;
+    width: 100px; /* Adjust width for logo */
+  }
+
+  .header-title {
+    text-align: center;
+    font-size: 18px; /* Adjusted font size */
+    margin: 10px 0; /* Increased margin for more spacing */
+  }
+
+  .header-info {
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+`,
+
+      footerTemplate: `
+    <style>
+      .footer {
+        width: 100%;
+        text-align: center;
+        font-size: 10px;
+        padding: 5px 0;
+      }
+      .pageNumber {
+        display: inline-block;
+        margin-left: 5px;
+      }
+      .totalPages {
+        display: inline-block;
+        margin-left: 5px;
+      }
+      .printedBy {
+        display: inline-block;
+        float: right;
+        margin-right: 30px;
+      }
+    </style>
+    <div class="footer">
+      <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+      <span class="printedBy">Printed by: ${user ? user.name : "Unknown"}</span>
+    </div>
+  `,
+
+      margin: {
+        top: "120px", // Increased top margin to avoid header overlap
+        bottom: "60px",
+        right: "30px",
+        left: "30px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    // Set response headers and send PDF
+    res.set("Content-Type", "application/pdf");
+    res.send(pdf);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    res.status(500).send("Error generating PDF");
   }
 };

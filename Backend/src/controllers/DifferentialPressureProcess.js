@@ -110,7 +110,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
-        status: "INITIATION",
+        status: "Initiation",
         stage: 1,
         department: department,
         compression_area: compression_area,
@@ -143,7 +143,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: value,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
       }
@@ -157,7 +157,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
-        new_status: "INITIATION",
+        new_status: "Initiation",
         declaration: initiatorDeclaration,
       });
     }
@@ -183,7 +183,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.unique_id,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         auditTrailEntries.push({
@@ -193,7 +193,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.time,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         auditTrailEntries.push({
@@ -203,7 +203,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.differential_pressure,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         auditTrailEntries.push({
@@ -213,7 +213,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.remarks,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         auditTrailEntries.push({
@@ -223,7 +223,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.checked_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
         if (supportingDocs[index]) {
@@ -234,7 +234,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
             new_value: getElogDocsUrl(supportingDocs[index]),
             changed_by: user.user_id,
             previous_status: "Not Applicable",
-            new_status: "INITIATION",
+            new_status: "Initiation",
             declaration: initiatorDeclaration,
           });
         }
@@ -251,7 +251,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       initiator: user.name,
       dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
       description,
-      status: "INITIATION",
+      status: "Initiation",
       reviewerName: (await getUserById(reviewer_id)).name,
       approverName: (await getUserById(approver_id)).name,
       reviewerEmail: (await getUserById(reviewer_id)).email,
@@ -415,7 +415,7 @@ exports.EditDifferentialPressure = async (req, res) => {
           new_value: newValue,
           changed_by: user.user_id,
           previous_status: form.status,
-          new_status: "INITIATION",
+          new_status: "Initiation",
           declaration: initiatorDeclaration,
         });
       }
@@ -479,7 +479,7 @@ exports.EditDifferentialPressure = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "INITIATION",
+                new_status: "Initiation",
                 declaration: initiatorDeclaration,
               });
             }
@@ -514,7 +514,7 @@ exports.EditDifferentialPressure = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "INITIATION",
+                new_status: "Initiation",
                 declaration: initiatorDeclaration,
               });
             }
@@ -702,11 +702,11 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "INITIATION",
-        new_value: "UNDER REVIEW",
+        previous_value: "Initiation",
+        new_value: "Under Review",
         changed_by: user.user_id,
-        previous_status: "INITIATION",
-        new_status: "UNDER REVIEW",
+        previous_status: "Initiation",
+        new_status: "Under Review",
         declaration: initiatorDeclaration,
       },
     ];
@@ -719,8 +719,8 @@ exports.SendDPElogForReview = async (req, res) => {
         previous_value: form.initiatorAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "INITIATION",
-        new_status: "UNDER REVIEW",
+        previous_status: "Initiation",
+        new_status: "Under Review",
         declaration: initiatorDeclaration,
       });
     }
@@ -728,7 +728,7 @@ exports.SendDPElogForReview = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "UNDER REVIEW",
+        status: "Under Review",
         stage: 2,
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
@@ -753,7 +753,7 @@ exports.SendDPElogForReview = async (req, res) => {
         initiator: user.name,
         dateOfInitiation: new Date().toISOString().split("T")[0],
         description: form.description,
-        status: "UNDER REVIEW",
+        status: "Under Review",
         recipients: reviewer.email,
       });
 
@@ -844,11 +844,11 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "UNDER REVIEW",
-        new_value: "INITIATION",
+        previous_value: "Under Review",
+        new_value: "Initiation",
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "INITIATION",
+        previous_status: "Under Review",
+        new_status: "Initiation",
         declaration: reviewerDeclaration,
       },
     ];
@@ -861,8 +861,8 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "INITIATION",
+        previous_status: "Under Review",
+        new_status: "Initiation",
         declaration: reviewerDeclaration,
       });
     }
@@ -870,7 +870,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "INITIATION",
+        status: "Initiation",
         stage: 1,
         reviewerAttachment: getElogDocsUrl(req?.file),
       },
@@ -892,7 +892,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
         initiatorName: initiator.name,
         dateOfInitiation: new Date().toISOString().split("T")[0],
         description: form.description,
-        status: "INITIATION",
+        status: "Initiation",
         recipients: initiator.email,
       });
 
@@ -989,11 +989,11 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "UNDER REVIEW",
-        new_value: "UNDER APPROVAL",
+        previous_value: "Under Review",
+        new_value: "Under Approval",
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "UNDER APPROVAL",
+        previous_status: "Under Review",
+        new_status: "Under Approval",
         declaration: reviewerDeclaration,
       },
     ];
@@ -1005,8 +1005,8 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         previous_value: form.reviewComment || null,
         new_value: reviewComment,
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "UNDER APPROVAL",
+        previous_status: "Under Review",
+        new_status: "Under Approval",
         declaration: reviewerDeclaration,
       });
     }
@@ -1019,8 +1019,8 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "UNDER REVIEW",
-        new_status: "UNDER APPROVAL",
+        previous_status: "Under Review",
+        new_status: "Under Approval",
         declaration: reviewerDeclaration,
       });
     }
@@ -1028,7 +1028,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "UNDER APPROVAL",
+        status: "Under Approval",
         stage: 3,
         reviewComment: reviewComment,
         reviewerAttachment: req?.file
@@ -1055,7 +1055,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         dateOfInitiation: new Date().toISOString().split("T")[0],
         description: form.description,
         reviewer: user.name,
-        status: "UNDER APPROVAL",
+        status: "Under Approval",
         recipients: approver.email,
       });
 
@@ -1147,11 +1147,11 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "UNDER APPROVAL",
-        new_value: "INITIATION",
+        previous_value: "Under Approval",
+        new_value: "Initiation",
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "INITIATION",
+        previous_status: "Under Approval",
+        new_status: "Initiation",
         declaration: approverDeclaration,
       },
     ];
@@ -1164,8 +1164,8 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "INITIATION",
+        previous_status: "Under Approval",
+        new_status: "Initiation",
         declaration: approverDeclaration,
       });
     }
@@ -1173,7 +1173,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "INITIATION",
+        status: "Initiation",
         stage: 1,
         approverAttachment: getElogDocsUrl(req?.file),
       },
@@ -1195,7 +1195,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
         initiatorName: initiator.name,
         dateOfInitiation: new Date().toISOString().split("T")[0],
         description: form.description,
-        status: "INITIATION",
+        status: "Initiation",
         recipients: initiator.email,
       });
 
@@ -1293,11 +1293,11 @@ exports.ApproveDPElog = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "UNDER APPROVAL",
-        new_value: "APPROVED",
+        previous_value: "Under Approval",
+        new_value: "Approved",
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "APPROVED",
+        previous_status: "Under Approval",
+        new_status: "Approved",
         declaration: approverDeclaration,
       },
     ];
@@ -1309,8 +1309,8 @@ exports.ApproveDPElog = async (req, res) => {
         previous_value: form.approverComment || null,
         new_value: approverComment,
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "APPROVED",
+        previous_status: "Under Approval",
+        new_status: "Approved",
         declaration: approverDeclaration,
       });
     }
@@ -1323,8 +1323,8 @@ exports.ApproveDPElog = async (req, res) => {
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "UNDER APPROVAL",
-        new_status: "APPROVED",
+        previous_status: "Under Approval",
+        new_status: "Approved",
         declaration: approverDeclaration,
       });
     }
@@ -1332,7 +1332,7 @@ exports.ApproveDPElog = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "APPROVED",
+        status: "Approved",
         stage: 4,
         approverComment: approverComment,
         approverAttachment: req?.file
