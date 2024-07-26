@@ -242,17 +242,17 @@ export default function TemperatureRecords() {
         <div id="config-form-document-pages">
           <div className="top-blocks">
             <div>
-              <strong> Record Name:&nbsp;</strong>Temperature Records
+              <strong> Record Name:&nbsp;&nbsp;</strong>Temperature Records
             </div>
             <div>
-              <strong> Site:&nbsp;</strong>
+              <strong> Site:&nbsp;&nbsp;</strong>
               {location.state?.site}
             </div>
             <div>
-              <strong> Current Status:&nbsp;</strong>Under Initiation
+              <strong> Current Status:&nbsp;&nbsp;</strong>Under Initiation
             </div>
             <div>
-              <strong> Initiated By:&nbsp;</strong>
+              <strong> Initiated By:&nbsp;&nbsp;</strong>
               {User?.name}
             </div>
           </div>
