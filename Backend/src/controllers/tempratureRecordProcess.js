@@ -10,7 +10,7 @@ const TemperatureRecordAuditTrail = require("../models/temperatureRecordsAuditTr
 const Mailer = require("../middlewares/mailer");
 
 const getUserById = async (user_id) => {
-  const user = await User.findOne({ where: { user_id } });
+  const user = await User.findOne({ where: { user_id, isActive: true } });
   return user;
 };
 
@@ -59,7 +59,7 @@ exports.InsertTempratureRecord = async (req, res) => {
 
   try {
     const user = await User.findOne({
-      where: { user_id: req.user.userId },
+      where: { user_id: req.user.userId, isActive: true },
       transaction,
     });
 
@@ -331,7 +331,7 @@ exports.EditTempratureRecord = async (req, res) => {
 
   try {
     const user = await User.findOne({
-      where: { user_id: req.user.userId },
+      where: { user_id: req.user.userId, isActive: true },
       transaction,
     });
 
@@ -656,7 +656,7 @@ exports.SendTRElogForReview = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId },
+      where: { user_id: req.user.userId, isActive: true },
       transaction,
     });
 
@@ -798,7 +798,7 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId, email },
+      where: { user_id: req.user.userId, email, isActive: true},
       transaction,
     });
 
@@ -943,7 +943,7 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId, email },
+      where: { user_id: req.user.userId, email, isActive: true },
       transaction,
     });
 
@@ -1100,7 +1100,7 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId, email },
+      where: { user_id: req.user.userId, email, isActive: true },
       transaction,
     });
 
@@ -1246,7 +1246,7 @@ exports.ApproveTRElog = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId, email },
+      where: { user_id: req.user.userId, email, isActive: true },
       transaction,
     });
 

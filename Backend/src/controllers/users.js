@@ -27,7 +27,7 @@ exports.signup = async (req, res) => {
 
   try {
     // Check if user already exists
-    const existingUser = await User.findOne({ where: { email: email } });
+    const existingUser = await User.findOne({ where: { email: email, isActive: true } });
     if (existingUser) {
       return res.status(400).json({
         error: true,
@@ -185,7 +185,7 @@ exports.deleteUser = async (req, res) => {
 
   try {
     const user = await User.findOne(
-      { where: { user_id: req.params.id } },
+      { where: { user_id: req.params.id, isActive: true } },
       { transaction }
     );
     if (!user) {
@@ -328,6 +328,7 @@ exports.Userlogin = async (req, res) => {
   User.findOne({
     where: {
       email: email.toLowerCase(),
+      isActive: true
     },
     raw: true,
   })
@@ -426,7 +427,7 @@ exports.resetPassword = async (req, res) => {
   try {
     // Find the user by ID
     const user = await User.findOne({
-      where: { user_id: user_id },
+      where: { user_id: user_id, isActive: true },
     });
 
     if (!user) {

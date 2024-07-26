@@ -15,7 +15,7 @@ const fs = require("fs");
 const path = require("path");
 
 const getUserById = async (user_id) => {
-  const user = await User.findOne({ where: { user_id } });
+  const user = await User.findOne({ where: { user_id, isActive: true } });
   return user;
 };
 
@@ -64,7 +64,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
   try {
     const user = await User.findOne({
-      where: { user_id: req.user.userId },
+      where: { user_id: req.user.userId, isActive: true },
       transaction,
     });
 
@@ -334,7 +334,7 @@ exports.EditDifferentialPressure = async (req, res) => {
 
   try {
     const user = await User.findOne({
-      where: { user_id: req.user.userId },
+      where: { user_id: req.user.userId, isActive: true },
       transaction,
     });
 
@@ -659,7 +659,7 @@ exports.SendDPElogForReview = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId },
+      where: { user_id: req.user.userId, isActive: true },
       transaction,
     });
 
@@ -801,7 +801,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId, email },
+      where: { user_id: req.user.userId, email, isActive: true },
       transaction,
     });
 
@@ -946,7 +946,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId, email },
+      where: { user_id: req.user.userId, email, isActive: true },
       transaction,
     });
 
@@ -1104,7 +1104,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId, email },
+      where: { user_id: req.user.userId, email, isActive: true },
       transaction,
     });
 
@@ -1250,7 +1250,7 @@ exports.ApproveDPElog = async (req, res) => {
   try {
     // Verify user credentials
     const user = await User.findOne({
-      where: { user_id: req.user.userId, email },
+      where: { user_id: req.user.userId, email, isActive: true },
       transaction,
     });
 
@@ -1491,9 +1491,6 @@ exports.generateReport = async (req, res) => {
       printBackground: true,
       displayHeaderFooter: true,
 
-
-
-
       headerTemplate: `
   <div class="header-container">
   <table class="header-table">
@@ -1549,10 +1546,8 @@ exports.generateReport = async (req, res) => {
   }
 </style>
 `,
-    
 
-
-    footerTemplate: `
+      footerTemplate: `
     <style>
       .footer {
         width: 100%;
@@ -1576,20 +1571,16 @@ exports.generateReport = async (req, res) => {
     </style>
     <div class="footer">
       <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-      <span class="printedBy">Printed by: ${
-        user ? user.name : "Unknown"
-      }</span>
+      <span class="printedBy">Printed by: ${user ? user.name : "Unknown"}</span>
     </div>
   `,
-  
 
-      
-margin: {
-  top: "120px", // Increased top margin to avoid header overlap
-  bottom: "60px",
-  right: "30px",
-  left: "30px",
-},
+      margin: {
+        top: "120px", // Increased top margin to avoid header overlap
+        bottom: "60px",
+        right: "30px",
+        left: "30px",
+      },
     });
 
     // Close the browser
