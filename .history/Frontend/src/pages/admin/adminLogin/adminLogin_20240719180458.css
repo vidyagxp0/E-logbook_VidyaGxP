@@ -1,0 +1,111 @@
+/*! ============================================================================= */
+/*! LOGIN CSS */
+/*! ============================================================================= */
+#admin-console-login-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-image: url('../../../../public/bg1.jpg');
+}
+
+#admin-console-login-page .login-form-block {
+  width: 500px;
+  background: white;
+  background-size: cover;
+  background-position: center;
+  background-image: url('../../../../public/bg1 - Copy.jpg');
+  
+}
+
+.login-form-block{
+  border-radius: 5px;
+  /* box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; */
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+#admin-console-login-page .login-form-block .top-block {
+  padding: 50px 20px 15px;
+  border-bottom: 2px solid black;
+}
+
+#admin-console-login-page .login-form-block .logo {
+  width: 250px;
+  margin: 0 auto 30px;
+}
+
+#admin-console-login-page .login-form-block .logo img {
+
+  width: 250px;
+}
+
+#admin-console-login-page .login-form-block .head {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  color: black;
+}
+
+#admin-console-login-page .login-form-block form {
+  padding: 30px;
+}
+
+#admin-console-login-page .login-form-block form ::placeholder {
+  color: black;
+}
+
+#admin-console-login-page .group-input {
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  border: 2px solid black;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+#admin-console-login-page label {
+  color: black;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+
+#admin-console-login-page input,
+#admin-console-login-page select {
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: black
+}
+
+#admin-console-login-page .submit-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background:black;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+}
+#admin-console-login-page .submit-btn:hover {
+  background:#006aeb;
+  
+}
+
+.otpbtn{
+  background-color: black;
+  color: white;
+}
+
+.otpbtn:hover{
+  background-color: #0010eb;
+}

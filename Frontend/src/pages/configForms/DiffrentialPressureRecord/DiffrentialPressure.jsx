@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
+import "./DiffrentialPressure.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -146,7 +147,6 @@ export default function DiffrentialPressure() {
       currentDate: currentDate,
     };
   }
-
   const addRow = () => {
     const options = {
       hour: "2-digit",
@@ -155,7 +155,7 @@ export default function DiffrentialPressure() {
       hour12: false, // Use 24-hour format
     };
 
-    const currentTime = new Date().toLocaleTimeString("en-US", options);
+    const currentTime = new Date().toLocaleTimeString("en-us", options);
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
@@ -244,8 +244,8 @@ export default function DiffrentialPressure() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-page">
-          <div className="top-block">
+        <div id="config-form-document-pages">
+          <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Differential Pressure
             </div>
@@ -264,14 +264,14 @@ export default function DiffrentialPressure() {
 
           <div className="document-form">
             <div className="details-form-data">
-              <div className="sop-type-header">
+              {/* <div className="sop-type-header">
                 <div className="logo">
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
                 </div>
-              </div>
+              </div> */}
               <div className="sub-head-2">Differential Pressure Record</div>
 
               <div className="outerDiv4">
@@ -423,7 +423,7 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
-                    <div className="instruction">&nbsp;</div>
+                    {/* <div className="instruction">&nbsp;</div> */}
                     <select
                       className="form-control"
                       name="assign_to"
@@ -466,7 +466,7 @@ export default function DiffrentialPressure() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-                    <div className="instruction">&nbsp;</div>
+                    {/* <div className="instruction">&nbsp;</div> */}
                     <select
                       className="form-control"
                       name="assign_to"
