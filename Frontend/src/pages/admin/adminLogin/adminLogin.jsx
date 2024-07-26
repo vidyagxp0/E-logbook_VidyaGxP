@@ -6,10 +6,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function adminLogin() {
+function AdminLogin() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -44,7 +44,7 @@ function adminLogin() {
             </div>
             <div className="head">Welcome to Admin Console</div>
           </div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="group-input">
               <label>{Envelope(20, "#EB7F00")}</label>
               <input
@@ -55,7 +55,7 @@ function adminLogin() {
               />
             </div>
 
-            <div className="group-input ">
+            <div className="group-input">
               <label>{PasswordLock(20, "#EB7F00")}</label>
               <input
                 type="password"
@@ -66,9 +66,9 @@ function adminLogin() {
             </div>
 
             <div>
-              <div className="submit-btn" onClick={handleSubmit}>
+              <button type="submit" className="submit-btn">
                 Login
-              </div>
+              </button>
             </div>
           </form>
         </div>
@@ -77,4 +77,4 @@ function adminLogin() {
   );
 }
 
-export default adminLogin;
+export default AdminLogin;

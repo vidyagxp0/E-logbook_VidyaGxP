@@ -15,7 +15,7 @@ function HeaderBottom() {
       <div className="Header_Bottom">
       <div className="headerBottomInner">
       <div className="input-wrapper w-full">
-          <div className="group-input-2">
+          {/* <div className="group-input-2">
             <div className="text-2xl font-extrabold">ELog</div>
             <select 
               value={eLogSelect}
@@ -27,7 +27,7 @@ function HeaderBottom() {
               <option value="equipment_cleaning">Equipment Cleaning Checklist</option>
               <option value="temperature_records">Temperature Records</option>
             </select>
-          </div>
+          </div> */}
         </div>
         
           {loggedInUser.roles?.some(

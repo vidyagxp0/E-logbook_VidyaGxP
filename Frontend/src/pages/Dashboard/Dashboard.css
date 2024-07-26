@@ -51,3 +51,12 @@
     color: white;
   }
   
+  .group-input-dashboard {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    /* border-bottom: 1px solid #808080; */
+    overflow: hidden;
+    background: white;
+    align-items: start;
+    padding-bottom: 8px;
+}

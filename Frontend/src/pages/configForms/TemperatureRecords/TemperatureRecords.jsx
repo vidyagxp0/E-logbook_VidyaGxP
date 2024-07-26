@@ -267,7 +267,7 @@ export default function TemperatureRecords() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div> */}
-              <div className="sub-head-2">Temprature Record</div>
+              <div className="sub-head-2">Temperature Record</div>
               <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
@@ -578,7 +578,7 @@ export default function TemperatureRecords() {
                         <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
-                        <th>Temprature Record</th>
+                        <th>Temperature Record</th>
                         <th>Remark</th>
                         <th>Checked By</th>
                         <th style={{ width: "300px" }}>Supporting Documents</th>

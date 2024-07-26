@@ -3,6 +3,20 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./AdminDashboard.css";
+const modalStyles = {
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: "#fff",
+  padding: "20px",
+  borderRadius: "10px",
+  boxShadow: "0 0 10px 2px rgba(0, 0, 0, 0.1)",
+  zIndex: 1000,
+  width: "400px", // Adjust width as needed
+  maxHeight: "70vh",
+  overflowY: "auto",
+};
 
 function AdminDashboard() {
   const [allUsers, setAllUsers] = useState([]);
@@ -11,6 +25,57 @@ function AdminDashboard() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
   const [permissions, setPermissions] = useState([]);
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const [passwords, setPasswords] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+
+  const openResetPasswordModal = () => {
+    setShowResetPasswordModal(true);
+  };
+
+  const closeResetPasswordModal = () => {
+    setShowResetPasswordModal(false);
+    setPasswords({
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    });
+  };
+
+  const handlePasswordChange = (event) => {
+    const { name, value } = event.target;
+    setPasswords((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const resetPassword = () => {
+    const { currentPassword, newPassword, confirmNewPassword } = passwords;
+    axios
+      .post(
+        "http://localhost:1000/user/reset-password",
+        {
+          user_id: JSON.parse(localStorage.getItem("user-details"))?.userId,
+          current_password: currentPassword,
+          new_password: newPassword,
+          confirm_new_password: confirmNewPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        toast.success("Password reset successfully");
+        closeResetPasswordModal();
+      })
+      .catch((error) => {
+        toast.error("Failed to reset password");
+        console.error("Error resetting password:", error);
+      });
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
@@ -268,6 +333,7 @@ function AdminDashboard() {
                           style={{
                             padding: "5px 10px",
                             borderRadius: "5px",
+                            marginRight: "5px",
                             // border: "1px solid #EFA035",
                             backgroundColor: "blue",
                             color: "white",
@@ -281,6 +347,18 @@ function AdminDashboard() {
                         >
                           Duplicate
                         </button>
+                        <button
+                          style={{
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            backgroundColor: "black",
+                            color: "white",
+                            cursor: "pointer",
+                          }}
+                          onClick={openResetPasswordModal}
+                        >
+                          Reset Password
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -290,6 +368,43 @@ function AdminDashboard() {
           </div>
         </div>
       </div>
+      {showResetPasswordModal && (
+        <div style={{ ...modalStyles, width: "400px" }}>
+          <h2 style={{ textAlign: "center" }}>Reset Password</h2>
+          <input
+            type="password"
+            name="currentPassword"
+            placeholder="Current Password"
+            value={passwords.currentPassword}
+            onChange={handlePasswordChange}
+            style={{ display: "block", margin: "10px auto" }}
+          />
+          <input
+            type="password"
+            name="newPassword"
+            placeholder="New Password"
+            value={passwords.newPassword}
+            onChange={handlePasswordChange}
+            style={{ display: "block", margin: "10px auto" }}
+          />
+          <input
+            type="password"
+            name="confirmNewPassword"
+            placeholder="Confirm New Password"
+            value={passwords.confirmNewPassword}
+            onChange={handlePasswordChange}
+            style={{ display: "block", margin: "10px auto" }}
+          />
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <button onClick={resetPassword} style={{}}>
+              Reset
+            </button>
+            <button onClick={closeResetPasswordModal} style={{}}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
       {showConfirmation && (
         <div
           style={{
