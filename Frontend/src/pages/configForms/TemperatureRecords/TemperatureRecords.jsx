@@ -126,6 +126,11 @@ export default function TemperatureRecords() {
       return;
     }
 
+    if (tempratureRecord.description === "") {
+      toast.error("Please provide a short description!");
+      return;
+    }
+
     const config = {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
@@ -384,7 +389,9 @@ export default function TemperatureRecords() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Description</label>
+                  <label className="color-label">
+                      Description <span className="required-asterisk text-red-500">*</span>
+                    </label>
                     <div>
                       <input
                         type="text"
@@ -394,6 +401,7 @@ export default function TemperatureRecords() {
                             description: e.target.value,
                           })
                         }
+                        required
                       />
                     </div>
                   </div>

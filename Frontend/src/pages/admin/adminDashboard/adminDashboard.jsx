@@ -114,13 +114,13 @@ function AdminDashboard() {
     };
     axios(config)
       .then(() => {
-        toast.success("User Delete Successfully");
+        toast.success("User Disabled Successfully");
         setAllUsers((prevUsers) =>
           prevUsers.filter((user) => user.user_id !== selectedUser.user_id)
         );
       })
       .catch(() => {
-        toast.error("Couldn't delete User");
+        toast.error("Couldn't disable User");
       });
     closeConfirmation();
   };
@@ -250,7 +250,7 @@ function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {allUsers.map((user) => (
+                  {allUsers.map((user, index) => (
                     <tr className="h-11" key={user.id}>
                       <td
                         style={{
@@ -258,7 +258,7 @@ function AdminDashboard() {
                           borderBottom: "1px solid #ccc",
                         }}
                       >
-                        {user.user_id}
+                        {index + 1}
                       </td>
                       <td
                         style={{
@@ -327,7 +327,7 @@ function AdminDashboard() {
                           }}
                           onClick={() => openConfirmation(user)}
                         >
-                          Delete
+                          Disable
                         </button>
                         <button
                           style={{

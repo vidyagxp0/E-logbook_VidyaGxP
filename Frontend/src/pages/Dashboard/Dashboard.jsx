@@ -135,6 +135,7 @@ function Dashboard() {
               <th>Short description</th>
               <th>Status</th>
               <th>Site</th>
+              <th>Process</th>
             </tr>
           </thead>
           <tbody>
@@ -171,6 +172,7 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
+                      <td>Differential Pressure</td>
                     </tr>
                   );
                 })
@@ -245,6 +247,7 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
+                      <td>Temperature Records</td>
                     </tr>
                   );
                 })
@@ -289,6 +292,11 @@ function Dashboard() {
                         ? "EMEA"
                         : "EU"}
                     </td>
+                    <td>{item.DifferentialPressureRecords
+                        ? `Differential Pressure`
+                        : item.TempratureRecords
+                        ? `Temperature Records`
+                        : null}</td>
                   </tr>
                 );
               })}
