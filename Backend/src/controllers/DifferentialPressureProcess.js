@@ -145,6 +145,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           previous_status: "Not Applicable",
           new_status: "Initiation",
           declaration: initiatorDeclaration,
+          action: "Initiate",
         });
       }
     }
@@ -159,6 +160,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         previous_status: "Not Applicable",
         new_status: "Initiation",
         declaration: initiatorDeclaration,
+        action: "Initiate",
       });
     }
 
@@ -185,6 +187,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           previous_status: "Not Applicable",
           new_status: "Initiation",
           declaration: initiatorDeclaration,
+          action: "Initiate",
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -195,6 +198,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           previous_status: "Not Applicable",
           new_status: "Initiation",
           declaration: initiatorDeclaration,
+          action: "Initiate",
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -205,6 +209,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           previous_status: "Not Applicable",
           new_status: "Initiation",
           declaration: initiatorDeclaration,
+          action: "Initiate",
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -215,6 +220,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           previous_status: "Not Applicable",
           new_status: "Initiation",
           declaration: initiatorDeclaration,
+          action: "Initiate",
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -225,6 +231,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           previous_status: "Not Applicable",
           new_status: "Initiation",
           declaration: initiatorDeclaration,
+          action: "Initiate",
         });
         if (supportingDocs[index]) {
           auditTrailEntries.push({
@@ -236,6 +243,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
             previous_status: "Not Applicable",
             new_status: "Initiation",
             declaration: initiatorDeclaration,
+            action: "Initiate",
           });
         }
       });
@@ -417,6 +425,7 @@ exports.EditDifferentialPressure = async (req, res) => {
           previous_status: form.status,
           new_status: "Initiation",
           declaration: initiatorDeclaration,
+          action: "Update Elog",
         });
       }
     }
@@ -481,6 +490,7 @@ exports.EditDifferentialPressure = async (req, res) => {
                 previous_status: form.status,
                 new_status: "Initiation",
                 declaration: initiatorDeclaration,
+                action: "Update Elog",
               });
             }
           }
@@ -516,6 +526,7 @@ exports.EditDifferentialPressure = async (req, res) => {
                 previous_status: form.status,
                 new_status: "Initiation",
                 declaration: initiatorDeclaration,
+                action: "Update Elog",
               });
             }
           }
@@ -702,12 +713,13 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "Initiation",
-        new_value: "Under Review",
+        previous_value: "Not Applicable",
+        new_value: "Not Applicable",
         changed_by: user.user_id,
         previous_status: "Initiation",
         new_status: "Under Review",
         declaration: initiatorDeclaration,
+        action: "Send For Review",
       },
     ];
 
@@ -722,6 +734,7 @@ exports.SendDPElogForReview = async (req, res) => {
         previous_status: "Initiation",
         new_status: "Under Review",
         declaration: initiatorDeclaration,
+        action: "Send For Review",
       });
     }
 
@@ -844,12 +857,13 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "Under Review",
-        new_value: "Initiation",
+        previous_value: "Not Applicable",
+        new_value: "Not Applicable",
         changed_by: user.user_id,
         previous_status: "Under Review",
         new_status: "Initiation",
         declaration: reviewerDeclaration,
+        action: "Send From Review To Open",
       },
     ];
 
@@ -864,6 +878,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
         previous_status: "Under Review",
         new_status: "Initiation",
         declaration: reviewerDeclaration,
+        action: "Send From Review To Open",
       });
     }
 
@@ -989,12 +1004,13 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "Under Review",
-        new_value: "Under Approval",
+        previous_value: "Not Applicable",
+        new_value: "Not Applicable",
         changed_by: user.user_id,
         previous_status: "Under Review",
         new_status: "Under Approval",
         declaration: reviewerDeclaration,
+        action: "Send From Review To Approval",
       },
     ];
 
@@ -1008,6 +1024,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         previous_status: "Under Review",
         new_status: "Under Approval",
         declaration: reviewerDeclaration,
+        action: "Send From Review To Approval",
       });
     }
 
@@ -1022,6 +1039,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         previous_status: "Under Review",
         new_status: "Under Approval",
         declaration: reviewerDeclaration,
+        action: "Send From Review To Approval",
       });
     }
 
@@ -1147,12 +1165,13 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "Under Approval",
-        new_value: "Initiation",
+        previous_value: "Not Applicable",
+        new_value: "Not Applicable",
         changed_by: user.user_id,
         previous_status: "Under Approval",
         new_status: "Initiation",
         declaration: approverDeclaration,
+        action: "Send From Approval To Open",
       },
     ];
 
@@ -1167,6 +1186,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
         previous_status: "Under Approval",
         new_status: "Initiation",
         declaration: approverDeclaration,
+        action: "Send From Approval To Open",
       });
     }
 
@@ -1293,12 +1313,13 @@ exports.ApproveDPElog = async (req, res) => {
       {
         form_id: form.form_id,
         field_name: "stage Change",
-        previous_value: "Under Approval",
-        new_value: "Approved",
+        previous_value: "Not Applicable",
+        new_value: "Not Applicable",
         changed_by: user.user_id,
         previous_status: "Under Approval",
         new_status: "Approved",
         declaration: approverDeclaration,
+        action: "Approved",
       },
     ];
 
@@ -1312,6 +1333,7 @@ exports.ApproveDPElog = async (req, res) => {
         previous_status: "Under Approval",
         new_status: "Approved",
         declaration: approverDeclaration,
+        action: "Approved",
       });
     }
 
@@ -1326,6 +1348,7 @@ exports.ApproveDPElog = async (req, res) => {
         previous_status: "Under Approval",
         new_status: "Approved",
         declaration: approverDeclaration,
+        action: "Approved",
       });
     }
 
@@ -1381,6 +1404,7 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
       },
       include: {
         model: User,
+        where: { isActive: true },
       },
     });
 
