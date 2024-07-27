@@ -1,11 +1,12 @@
 
 #config-form-document-pages {
     padding: 0 0 76px;
+    width: 100%;
     /* border-left: 1px solid #808080; */
   }
   
   #config-form-document-pages .top-blocks {
-    background: var(--themeColor);
+    background: #32cfe1;
     color: white;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -14,7 +15,7 @@
   #config-form-document-pages .top-blocks div {
     padding: 10px 20px;
     border-right: 1px dashed #ffffff;
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
   
   #config-form-document-pages .top-blocks div:nth-last-child(1) {
@@ -50,7 +51,7 @@
   }
   
   #config-form-document-pages .document-tabs div.active {
-    background: var(--themeColor);
+    background: #32cfe1;
     color: white;
     font-weight: 400;
   }
@@ -123,7 +124,7 @@
   
   #config-form-document-pages .details-form-data .sub-head-2 {
     text-align: center;
-    background: #35dcef;
+    background:  #32cfe1;
     padding: 10px 20px;
     font-size: 1.5rem;
     color: #ffffff;
@@ -180,7 +181,7 @@
   }
   
   #config-form-document-pages .group-input .file-attachment-field .add-btn div {
-    background: #35dcef;
+    background:  #32cfe1;
     color: white;
     border-radius: 5px;
     text-align: center;

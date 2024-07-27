@@ -434,13 +434,13 @@ export default function TempretureRecordsPanel() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-page">
-          <div className="top-block">
+        <div id="config-form-document-pages">
+          <div className="top-blocks">
             <div>
-              <strong> Record Name:&nbsp;</strong>Temperature Record
+              <strong> Record Name:&nbsp;&nbsp;</strong>Temperature Record
             </div>
             <div>
-              <strong> Site:&nbsp;</strong>
+              <strong> Site:&nbsp;&nbsp;</strong>
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
@@ -450,11 +450,11 @@ export default function TempretureRecordsPanel() {
                 : "EU"}
             </div>
             <div>
-              <strong> Current Status:&nbsp;</strong>
+              <strong> Current Status:&nbsp;&nbsp;</strong>
               {location.state?.status}
             </div>
             <div>
-              <strong> Initiated By:&nbsp;</strong>
+              <strong> Initiated By:&nbsp;&nbsp;</strong>
               {location.state?.initiator_name}
             </div>
           </div>

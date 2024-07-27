@@ -67,33 +67,33 @@ export default function AreaAndEquiment() {
         <div id="config-form-document-pages">
           <div className="top-blocks">
             <div>
-              <strong> Record Name:&nbsp;</strong>Document
+              <strong> Record Name:&nbsp;&nbsp;</strong>Document
             </div>
             <div>
-              <strong> Site:&nbsp;</strong>
+              <strong> Site:&nbsp;&nbsp;</strong>
               India
             </div>
             <div>
-              <strong> Current Status:&nbsp;</strong>Under Initiation
+              <strong> Current Status:&nbsp;&nbsp;</strong>Under Initiation
             </div>
             <div>
-              <strong> Initiated By:&nbsp;</strong>
+              <strong> Initiated By:&nbsp;&nbsp;</strong>
               Amit Guru
             </div>
           </div>
 
           <div className="document-form">
             <div className="details-form-data">
-              <div className="sop-type-header">
+              {/* <div className="sop-type-header">
                 <div className="logo">
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited </div>
                 </div>
-              </div>
+              </div> */}
               <div className="sub-head-2">Area and Equipment Usage Log</div>
-              <div className="btn-forms">
+              <div className="btn-forms pt-4">
                 <div
                   className={`${
                     isSelectedGeneral === true
