@@ -1,6 +1,6 @@
 import { Envelope, PasswordLock } from "../../../components/Icons/Icons";
 import "../../../default.css";
-import "./AdminLogin.css";
+import "./adminLogin.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 
 function AdminLogin() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -44,7 +44,7 @@ function AdminLogin() {
             </div>
             <div className="head">Welcome to Admin Console</div>
           </div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="group-input">
               <label>{Envelope(20, "#EB7F00")}</label>
               <input
@@ -55,7 +55,7 @@ function AdminLogin() {
               />
             </div>
 
-            <div className="group-input ">
+            <div className="group-input">
               <label>{PasswordLock(20, "#EB7F00")}</label>
               <input
                 type="password"
@@ -66,9 +66,9 @@ function AdminLogin() {
             </div>
 
             <div>
-              <div className="submit-btn" onClick={handleSubmit}>
+              <button type="submit" className="submit-btn">
                 Login
-              </div>
+              </button>
             </div>
           </form>
         </div>

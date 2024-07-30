@@ -18,7 +18,9 @@ const UserVerificationPopUp = ({ onClose, onSubmit }) => {
         <h2>E-signature</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label className="color-label">
+              Email <span className="required-asterisk text-red-500">*</span>
+            </label>
             <input
               type="email"
               id="email"
@@ -28,7 +30,9 @@ const UserVerificationPopUp = ({ onClose, onSubmit }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label className="color-label">
+              Password <span className="required-asterisk text-red-500">*</span>
+            </label>
             <input
               type="password"
               id="password"
@@ -38,7 +42,10 @@ const UserVerificationPopUp = ({ onClose, onSubmit }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="declaration">Declaration</label>
+            <label className="color-label">
+              Declaration{" "}
+              <span className="required-asterisk text-red-500">*</span>
+            </label>
             <input
               type="string"
               value={declaration}

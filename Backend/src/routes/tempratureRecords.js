@@ -110,4 +110,10 @@ router.get(
   TempratureProcess.getAuditTrailForAnElog
 );
 
+router.post(
+  "/generate-pdf",
+  Auth.checkUserJwtToken,
+  TempratureProcess.generateReport
+);
+
 module.exports = router;

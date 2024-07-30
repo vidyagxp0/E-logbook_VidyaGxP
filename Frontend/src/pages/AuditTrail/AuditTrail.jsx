@@ -50,25 +50,54 @@ function AuditTrail() {
 
   return (
     <>
+      <style>
+        {`
+          .scrollable-container {
+            max-height: 800px; /* Adjust this height as needed */
+            overflow-y: auto;
+            margin: 0 auto;
+            width: 100%; /* Adjust the width as needed */
+          }
+
+          .scrollable-container::-webkit-scrollbar {
+            width: 16px; /* Increased width of the scrollbar */
+          }
+
+          .scrollable-container::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Track color */
+          }
+
+          .scrollable-container::-webkit-scrollbar-thumb {
+            background: #888; /* Scrollbar color */
+            border-radius: 8px; /* More rounded corners for scrollbar */
+          }
+
+          .scrollable-container::-webkit-scrollbar-thumb:hover {
+            background: #555; /* Darker scrollbar on hover */
+          }
+
+          .back-button-container {
+            text-align: center;
+            margin-top: 20px;
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+          }
+        `}
+      </style>
+
       <div className="admin-dashboard">
         <HeaderTop />
         <div id="body-container" style={{ margin: "20px" }}>
-          <h3 style={{ textAlign: "center" }}>
+          <h3 style={{ textAlign: "center", fontSize: "2em" }}>
             <strong>Audit Trail</strong>
           </h3>
-          <br></br>
+          <br />
           <hr />
           {auditTrails?.length === 0 ? (
             <>No audit trails Available</>
           ) : (
-            <div
-              style={{
-                maxHeight: "500px", // Adjust this height as needed
-                overflowY: "auto",
-                margin: "0 auto",
-                width: "100%", // Adjust the width as needed
-              }}
-            >
+            <div className="scrollable-container">
               <table
                 style={{
                   width: "100%",
@@ -153,6 +182,15 @@ function AuditTrail() {
                     >
                       Date & Time
                     </th>
+                    <th
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                        width: "15%",
+                      }}
+                    >
+                      Action
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,7 +232,16 @@ function AuditTrail() {
                           width: "10%",
                         }}
                       >
-                        {auditTrail.new_value}
+                        {
+                          // Check if the value is a URL
+                          /^https?:\/\/.*\//.test(auditTrail.new_value)
+                            ? // Extract the file name after the last hyphen
+                              auditTrail.new_value.substring(
+                                auditTrail.new_value.lastIndexOf("-") + 1
+                              )
+                            : // If not a URL, display the original value
+                              auditTrail.new_value
+                        }
                       </td>
                       <td
                         style={{
@@ -232,13 +279,22 @@ function AuditTrail() {
                       >
                         {new Date(auditTrail.createdAt).toLocaleString()}
                       </td>
+                      <td
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
+                          width: "15%",
+                        }}
+                      >
+                        {auditTrail.action}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           )}
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <div className="back-button-container">
             <button
               className="themeBtn"
               onClick={() => navigate(-1)}

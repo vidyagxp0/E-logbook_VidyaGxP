@@ -13,11 +13,13 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+
   const handleChange = (e) => {
-    if (e.target.name === "username") {
-      setUsername(e.target.value);
-    } else if (e.target.name === "password") {
-      setPassword(e.target.value);
+    const { name, value } = e.target;
+    if (name === "username") {
+      setUsername(value);
+    } else if (name === "password") {
+      setPassword(value);
     }
   };
 
@@ -27,6 +29,7 @@ function Login() {
       email: username,
       password: password,
     };
+
     axios
       .post("http://localhost:1000/user/user-login", data, {
         headers: {
@@ -37,15 +40,23 @@ function Login() {
         navigate("/dashboard");
         toast.success("Login Successful");
         localStorage.setItem("user-token", response.data.token);
-        const decodedData = jwtDecode(response.data?.token);
-        localStorage.setItem('user-details', JSON.stringify(decodedData));
+        const decodedData = jwtDecode(response.data.token);
+        localStorage.setItem("user-details", JSON.stringify(decodedData));
         dispatch({ type: "LOGGED-IN-USER", payload: decodedData });
       })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        toast.error(error.response?.data?.message || "Login failed");
         console.error(error);
       });
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default form submission behavior
+      handleSubmit(e);
+    }
+  };
+
   return (
     <>
       <div id="admin-console-login-page">
@@ -83,6 +94,33 @@ function Login() {
             </div>
           </form>
         </div>
+        <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
+          <div className="group-input">
+            <label>{Envelope(20, "#EB7F00")}</label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Enter Your Username"
+              value={username}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="group-input">
+            <label>{PasswordLock(20, "#EB7F00")}</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter Your Password"
+              value={password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <input type="submit" value="Login" className="submit-btn" />
+          </div>
+        </form>
       </div>
     </>
   );

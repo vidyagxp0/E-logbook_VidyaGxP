@@ -24,7 +24,7 @@ Process.addHook('afterSync', async () => {
                 { process: 'Differential Pressure Record' },
                 { process: 'Area and Equipment Usage Log' },
                 { process: 'Equipment Cleaning Checklist' },
-                { process: 'Temprature Records' },
+                { process: 'Temperature Records' },
             ]);
             console.log('Processes created');
         } else {

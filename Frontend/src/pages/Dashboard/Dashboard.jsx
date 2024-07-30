@@ -102,9 +102,9 @@ function Dashboard() {
       <HeaderBottom />
 
       <div className="desktop-input-table-wrapper">
-        <div className="input-wrapper">
-          <div className="group-input-2">
-            <label>eLog</label>
+        <div className="input-wrapper" style={{display: 'flex', justifyContent: 'center'}}>
+          <div className="group-input-2" style={{width: '70%', display:"flex", justifyContent:"center"}}>
+            {/* <label>eLog</label> */}
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
@@ -122,7 +122,7 @@ function Dashboard() {
               <option value="temperature_records">Temperature Records</option>
             </select>
           </div>
-          <button className="btn">Print</button>
+          {/* <button className="btn">Print</button> */}
         </div>
 
         <table>
@@ -135,6 +135,7 @@ function Dashboard() {
               <th>Short description</th>
               <th>Status</th>
               <th>Site</th>
+              <th>Process</th>
             </tr>
           </thead>
           <tbody>
@@ -171,6 +172,7 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
+                      <td>Differential Pressure</td>
                     </tr>
                   );
                 })
@@ -245,6 +247,7 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
+                      <td>Temperature Records</td>
                     </tr>
                   );
                 })
@@ -289,6 +292,11 @@ function Dashboard() {
                         ? "EMEA"
                         : "EU"}
                     </td>
+                    <td>{item.DifferentialPressureRecords
+                        ? `Differential Pressure`
+                        : item.TempratureRecords
+                        ? `Temperature Records`
+                        : null}</td>
                   </tr>
                 );
               })}

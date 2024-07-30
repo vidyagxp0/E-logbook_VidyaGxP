@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
+import "./DiffrentialPressure.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -106,6 +107,10 @@ export default function DiffrentialPressure() {
       toast.error("Please provide an initiator comment!");
       return;
     }
+    if (differentialPRecord.description === "") {
+      toast.error("Please provide a short description!");
+      return;
+    }
 
     const config = {
       headers: {
@@ -146,7 +151,6 @@ export default function DiffrentialPressure() {
       currentDate: currentDate,
     };
   }
-
   const addRow = () => {
     const options = {
       hour: "2-digit",
@@ -155,7 +159,7 @@ export default function DiffrentialPressure() {
       hour12: false, // Use 24-hour format
     };
 
-    const currentTime = new Date().toLocaleTimeString("en-US", options);
+    const currentTime = new Date().toLocaleTimeString("en-us", options);
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
@@ -244,8 +248,8 @@ export default function DiffrentialPressure() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-page">
-          <div className="top-block">
+        <div id="config-form-document-pages">
+          <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Differential Pressure
             </div>
@@ -264,14 +268,14 @@ export default function DiffrentialPressure() {
 
           <div className="document-form">
             <div className="details-form-data">
-              <div className="sop-type-header">
+              {/* <div className="sop-type-header">
                 <div className="logo">
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
                 </div>
-              </div>
+              </div> */}
               <div className="sub-head-2">Differential Pressure Record</div>
 
               <div className="outerDiv4">
@@ -362,7 +366,7 @@ export default function DiffrentialPressure() {
               {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
-                    <label className="color-label">Initiator </label>
+                    <label className="color-label">Initiator</label>
                     <div>
                       <input
                         type="text"
@@ -370,6 +374,9 @@ export default function DiffrentialPressure() {
                         onChange={(e) =>
                           setDifferentialPRecord({ initiator: e.target.value })
                         }
+                        disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
                       />
                     </div>
                   </div>
@@ -385,12 +392,18 @@ export default function DiffrentialPressure() {
                             dateOfInitiation: e.target.value,
                           })
                         }
+                        disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
                       />
                     </div>
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Description</label>
+                    <label className="color-label">
+                      Description{" "}
+                      <span className="required-asterisk text-red-500">*</span>
+                    </label>
                     <div>
                       <input
                         type="text"
@@ -400,6 +413,7 @@ export default function DiffrentialPressure() {
                             description: e.target.value,
                           })
                         }
+                        required // HTML5 attribute to enforce field requirement
                       />
                     </div>
                   </div>
@@ -413,6 +427,9 @@ export default function DiffrentialPressure() {
                         onChange={(e) =>
                           setDifferentialPRecord({ status: e.target.value })
                         }
+                        disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
                       />
                     </div>
                   </div>
@@ -423,7 +440,7 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
-                    <div className="instruction">&nbsp;</div>
+                    {/* <div className="instruction">&nbsp;</div> */}
                     <select
                       className="form-control"
                       name="assign_to"
@@ -466,7 +483,7 @@ export default function DiffrentialPressure() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-                    <div className="instruction">&nbsp;</div>
+                    {/* <div className="instruction">&nbsp;</div> */}
                     <select
                       className="form-control"
                       name="assign_to"
@@ -758,14 +775,22 @@ export default function DiffrentialPressure() {
                           type="text"
                           name="initiator"
                           value={User?.name}
-                          readOnly
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
                         />
                       </div>
                     </div>
                     <div className="group-input">
                       <label className="color-label">Date of Initiation</label>
                       <div>
-                        <input type="text" value={date} readOnly />
+                        <input
+                          type="text"
+                          value={date}
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
                       </div>
                     </div>
                   </div>
@@ -783,7 +808,9 @@ export default function DiffrentialPressure() {
                         name="reviewComment"
                         value={User.reviewComment || ""}
                         onChange={handleInputChange1}
-                        readOnly
+                        disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
                       />
                     </div>
                     <div className="group-input">
@@ -800,6 +827,8 @@ export default function DiffrentialPressure() {
                         id="reviewerAttachment"
                         onChange={handleReviewerFileChange}
                         disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
                       />
                       {User.reviewerAttachment && (
                         <div>
@@ -826,7 +855,9 @@ export default function DiffrentialPressure() {
                           type="text"
                           name="reviewer"
                           value={User?.reviewer?.name}
-                          readOnly
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
                         />
                       </div>
                     </div>
@@ -836,7 +867,9 @@ export default function DiffrentialPressure() {
                         <input
                           type="text"
                           value={User?.date_of_review?.split("T")[0]}
-                          readOnly
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
                         />
                       </div>
                     </div>
@@ -856,7 +889,9 @@ export default function DiffrentialPressure() {
                         name="approverComment"
                         value={User.approverComment || ""}
                         onChange={handleInputChange1}
-                        readOnly
+                        disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
                       />
                     </div>
                     <div className="group-input">
@@ -873,6 +908,8 @@ export default function DiffrentialPressure() {
                         id="approverAttachment"
                         onChange={handleApproverFileChange}
                         disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
                       />
                       {User.approverAttachment && (
                         <div>
@@ -899,7 +936,9 @@ export default function DiffrentialPressure() {
                           type="text"
                           name="approver"
                           value={User?.approver?.name}
-                          readOnly
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
                         />
                       </div>
                     </div>
@@ -909,7 +948,9 @@ export default function DiffrentialPressure() {
                         <input
                           type="text"
                           value={User?.date_of_approval?.split("T")[0]}
-                          readOnly
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
                         />
                       </div>
                     </div>

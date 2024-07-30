@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 import "../ConfigForms.css";
+import "../DiffrentialPressureRecord/DiffrentialPressure.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -125,6 +126,11 @@ export default function TemperatureRecords() {
       return;
     }
 
+    if (tempratureRecord.description === "") {
+      toast.error("Please provide a short description!");
+      return;
+    }
+
     const config = {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
@@ -166,7 +172,7 @@ export default function TemperatureRecords() {
   }
 
   const addRow = () => {
-    const currentTime = new Date().toLocaleTimeString();
+    const currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
@@ -238,8 +244,8 @@ export default function TemperatureRecords() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-page">
-          <div className="top-block">
+        <div id="config-form-document-pages">
+          <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Temperature Records
             </div>
@@ -258,15 +264,15 @@ export default function TemperatureRecords() {
 
           <div className="document-form">
             <div className="details-form-data">
-              <div className="sop-type-header">
+              {/* <div className="sop-type-header">
                 <div className="logo">
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
                 </div>
-              </div>
-              <div className="sub-head-2">Temprature Record</div>
+              </div> */}
+              <div className="sub-head-2">Temperature Record</div>
               <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
@@ -383,7 +389,9 @@ export default function TemperatureRecords() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Description</label>
+                  <label className="color-label">
+                      Description <span className="required-asterisk text-red-500">*</span>
+                    </label>
                     <div>
                       <input
                         type="text"
@@ -393,6 +401,7 @@ export default function TemperatureRecords() {
                             description: e.target.value,
                           })
                         }
+                        required
                       />
                     </div>
                   </div>
@@ -577,7 +586,7 @@ export default function TemperatureRecords() {
                         <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
-                        <th>Temprature Record</th>
+                        <th>Temperature Record</th>
                         <th>Remark</th>
                         <th>Checked By</th>
                         <th style={{ width: "300px" }}>Supporting Documents</th>

@@ -1,0 +1,57 @@
+/* AdminDashboard.css */
+
+.admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #e0e0e0;
+}
+
+.main-content {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.Header_Bottom {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 9px 9px 16px #bebebe, -9px -9px 16px #ffffff;
+}
+
+.neumorphism-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 12px;
+  box-shadow: 9px 9px 16px #bebebe, -9px -9px 16px #ffffff;
+}
+
+.neumorphism-table th,
+.neumorphism-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+.neumorphism-table th {
+  background-color: #e0e0e0;
+}
+
+.neumorphism-button {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  background-color: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+  margin: 5px;
+}
+
+.neumorphism-button:hover {
+  box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px
