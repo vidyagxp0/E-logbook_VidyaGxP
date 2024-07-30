@@ -40,7 +40,7 @@ function AdminLogin() {
         <div className="login-form-block" style={{ marginLeft: "13%" }}>
           <div className="top-block">
             <div className="logo">
-              <img src="/vidyagxplogo.png" alt="..." />
+              <img src="https://connexo.io/assets/img/logo/logo.png" alt="..." />
             </div>
             <div className="head">Welcome to Admin Console</div>
           </div>

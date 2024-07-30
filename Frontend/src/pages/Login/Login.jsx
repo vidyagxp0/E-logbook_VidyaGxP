@@ -7,7 +7,7 @@ import axios from "axios";
 import { Envelope, PasswordLock } from "../../components/Icons/Icons";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -52,7 +52,7 @@ function Login() {
         <div className="login-form-block" style={{ marginLeft: "13%" }}>
           <div className="top-block">
             <div className="logo">
-              <img src="/vidyalogo2.png" alt="..." />
+              <img src="https://connexo.io/assets/img/logo/logo.png" alt="..." />
             </div>
             <div className="head">Welcome to eLogBook</div>
           </div>
@@ -70,13 +70,14 @@ function Login() {
             <div className="group-input">
               <label>{PasswordLock(20, "#EB7F00")}</label>
               <input
-                type="password"
+                 type="password"
                 name="password"
                 placeholder="Enter Your Password"
                 onChange={handleChange}
                 required
               />
             </div>
+          
             <div>
               <input type="submit" value="Login" className="submit-btn" />
             </div>

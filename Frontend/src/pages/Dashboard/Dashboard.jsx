@@ -89,7 +89,7 @@ function Dashboard() {
       navigate("/area-and-equipment-panel", { state: item });
     } else if (item.TempratureRecords) {
       navigate("/tpr-panel", { state: item });
-    } else if (item.process === "Equipment cleaning checklist") {
+    } else if (item.process === "Equipment cleaning checklist") { 
       navigate("/ecc-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
