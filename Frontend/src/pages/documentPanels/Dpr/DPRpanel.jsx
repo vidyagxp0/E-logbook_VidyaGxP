@@ -56,7 +56,7 @@ export default function DPRpanel() {
       data.initiatorAttachment = editData?.initiatorAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -74,7 +74,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -93,7 +93,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -109,7 +109,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -127,7 +127,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elogbookapi.vidyagxp.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -165,7 +165,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elogbookapi.vidyagxp.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -363,7 +363,7 @@ export default function DPRpanel() {
 
         // Make API request to generate PDF
         const response = await axios({
-          url: "http://localhost:1000/differential-pressure/generate-pdf",
+          url: "https://elogbookapi.vidyagxp.com/differential-pressure/generate-pdf",
           method: "POST",
           responseType: "blob",
           headers: {

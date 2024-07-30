@@ -23,7 +23,7 @@ function DuplicateUser() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
+      .get(`https://elogbookapi.vidyagxp.com/user/get-a-user/${location.state.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
         },
@@ -37,7 +37,7 @@ function DuplicateUser() {
       });
 
     axios
-      .get("http://localhost:1000/user/get-all-rolegroups")
+      .get("https://elogbookapi.vidyagxp.com/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []);
       })
@@ -91,7 +91,7 @@ function DuplicateUser() {
     };
 
     axios
-      .post("http://localhost:1000/user/add-user", formData, {
+      .post("https://elogbookapi.vidyagxp.com/user/add-user", formData, {
         headers: myHeaders,
       })
       .then(() => {

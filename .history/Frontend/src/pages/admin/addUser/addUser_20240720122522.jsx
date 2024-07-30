@@ -26,7 +26,7 @@ function AddNewUser() {
   }, [selectedOptions]);
 
   useEffect(() => {
-    const url = "http://localhost:1000/user/get-all-rolegroups";
+    const url = "https://elogbookapi.vidyagxp.com/user/get-all-rolegroups";
     axios
       .get(url)
       .then((response) => {
@@ -93,7 +93,7 @@ function AddNewUser() {
     };
 
     axios
-      .post("http://localhost:1000/user/add-user", formData, {
+      .post("https://elogbookapi.vidyagxp.com/user/add-user", formData, {
         headers: myHeaders,
       })
       .then(() => {

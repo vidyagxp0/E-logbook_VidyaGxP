@@ -13,7 +13,7 @@ function HeaderTop() {
   
   useEffect(() => {
     if (loggedInUser?.userId) {
-      axios.get(`http://localhost:1000/user/get-a-user/${loggedInUser.userId}`)
+      axios.get(`https://elogbookapi.vidyagxp.com/user/get-a-user/${loggedInUser.userId}`)
         .then(response => {
           setUser(response.data);
         })
