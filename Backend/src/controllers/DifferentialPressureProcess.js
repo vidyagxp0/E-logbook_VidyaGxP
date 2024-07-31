@@ -709,19 +709,7 @@ exports.SendDPElogForReview = async (req, res) => {
       });
     }
 
-    const auditTrailEntries = [
-      {
-        form_id: form.form_id,
-        field_name: "stage Change",
-        previous_value: "Not Applicable",
-        new_value: "Not Applicable",
-        changed_by: user.user_id,
-        previous_status: "Initiation",
-        new_status: "Under Review",
-        declaration: initiatorDeclaration,
-        action: "Send For Review",
-      },
-    ];
+    const auditTrailEntries = [];
 
     // Add audit trail entry for the attachment if it exists
     if (req?.file) {
@@ -737,6 +725,18 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Initiation",
+      new_status: "Under Review",
+      declaration: initiatorDeclaration,
+      action: "Send For Review",
+    });
 
     // Update the form details
     await form.update(
@@ -853,19 +853,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       });
     }
 
-    const auditTrailEntries = [
-      {
-        form_id: form.form_id,
-        field_name: "stage Change",
-        previous_value: "Not Applicable",
-        new_value: "Not Applicable",
-        changed_by: user.user_id,
-        previous_status: "Under Review",
-        new_status: "Initiation",
-        declaration: reviewerDeclaration,
-        action: "Send From Review To Open",
-      },
-    ];
+    const auditTrailEntries = [];
 
     // Add audit trail entry for the attachment if it exists
     if (req?.file) {
@@ -878,9 +866,21 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
         previous_status: "Under Review",
         new_status: "Initiation",
         declaration: reviewerDeclaration,
-        action: "Send From Review To Open",
+        action: "Open Elog",
       });
     }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Under Review",
+      new_status: "Initiation",
+      declaration: reviewerDeclaration,
+      action: "Open Elog",
+    });
 
     // Update the form details
     await form.update(
@@ -1000,19 +1000,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       });
     }
 
-    const auditTrailEntries = [
-      {
-        form_id: form.form_id,
-        field_name: "stage Change",
-        previous_value: "Not Applicable",
-        new_value: "Not Applicable",
-        changed_by: user.user_id,
-        previous_status: "Under Review",
-        new_status: "Under Approval",
-        declaration: reviewerDeclaration,
-        action: "Send From Review To Approval",
-      },
-    ];
+    const auditTrailEntries = [];
 
     if (reviewComment) {
       auditTrailEntries.push({
@@ -1024,7 +1012,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         previous_status: "Under Review",
         new_status: "Under Approval",
         declaration: reviewerDeclaration,
-        action: "Send From Review To Approval",
+        action: "Send For Approval",
       });
     }
 
@@ -1039,9 +1027,21 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         previous_status: "Under Review",
         new_status: "Under Approval",
         declaration: reviewerDeclaration,
-        action: "Send From Review To Approval",
+        action: "Send For Approval",
       });
     }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Under Review",
+      new_status: "Under Approval",
+      declaration: reviewerDeclaration,
+      action: "Send For Approval",
+    });
 
     // Update the form details
     await form.update(
@@ -1161,19 +1161,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       });
     }
 
-    const auditTrailEntries = [
-      {
-        form_id: form.form_id,
-        field_name: "stage Change",
-        previous_value: "Not Applicable",
-        new_value: "Not Applicable",
-        changed_by: user.user_id,
-        previous_status: "Under Approval",
-        new_status: "Initiation",
-        declaration: approverDeclaration,
-        action: "Send From Approval To Open",
-      },
-    ];
+    const auditTrailEntries = [];
 
     // Add audit trail entry for the attachment if it exists
     if (req?.file) {
@@ -1186,9 +1174,21 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
         previous_status: "Under Approval",
         new_status: "Initiation",
         declaration: approverDeclaration,
-        action: "Send From Approval To Open",
+        action: "Open Elog",
       });
     }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Under Approval",
+      new_status: "Initiation",
+      declaration: approverDeclaration,
+      action: "Open Elog",
+    });
 
     // Update the form details
     await form.update(
@@ -1309,19 +1309,7 @@ exports.ApproveDPElog = async (req, res) => {
       });
     }
 
-    const auditTrailEntries = [
-      {
-        form_id: form.form_id,
-        field_name: "stage Change",
-        previous_value: "Not Applicable",
-        new_value: "Not Applicable",
-        changed_by: user.user_id,
-        previous_status: "Under Approval",
-        new_status: "Approved",
-        declaration: approverDeclaration,
-        action: "Approved",
-      },
-    ];
+    const auditTrailEntries = [];
 
     if (approverComment) {
       auditTrailEntries.push({
@@ -1351,6 +1339,18 @@ exports.ApproveDPElog = async (req, res) => {
         action: "Approved",
       });
     }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Under Approval",
+      new_status: "Approved",
+      declaration: approverDeclaration,
+      action: "Approved",
+    });
 
     // Update the form details
     await form.update(
