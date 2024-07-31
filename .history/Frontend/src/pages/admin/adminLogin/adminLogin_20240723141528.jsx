@@ -18,7 +18,7 @@ function adminLogin() {
       password: password,
     };
     axios
-      .post("http://localhost:1000/user/admin-login", data, {
+      .post("https://elogbookapi.vidyagxp.com/user/admin-login", data, {
         headers: {
           "Content-Type": "application/json",
         },

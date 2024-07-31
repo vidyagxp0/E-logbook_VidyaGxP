@@ -7,7 +7,7 @@ import axios from "axios";
 import { Envelope, PasswordLock } from "../../components/Icons/Icons";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -31,7 +31,7 @@ function Login() {
     };
 
     axios
-      .post("http://localhost:1000/user/user-login", data, {
+      .post("https://elogbookapi.vidyagxp.com/user/user-login", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -62,7 +62,7 @@ function Login() {
       <div className="login-form-block" style={{ marginLeft: "13%" }}>
         <div className="top-block">
           <div className="logo">
-            <img src="/vidyalogo2.png" alt="Logo" />
+            <img src="https://connexo.io/assets/img/logo/logo.png" alt="Logo" />
           </div>
           <div className="head">Welcome to eLogBook</div>
         </div>

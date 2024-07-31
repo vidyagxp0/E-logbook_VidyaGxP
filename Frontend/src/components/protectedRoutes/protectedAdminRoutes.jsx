@@ -8,3 +8,4 @@ const ProtectedAdminRoute = ({ element: Component }) => {
 };
 
 export default ProtectedAdminRoute;
+        
