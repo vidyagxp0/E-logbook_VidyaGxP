@@ -273,18 +273,21 @@ function Dashboard() {
               : null}
 
             {eLogSelect === "All_Records" &&
-              combinedRecords?.map((item, index) => {
-                return (
+              combinedRecords
+                ?.sort(
+                  (a, b) =>
+                    new Date(b.date_of_initiation) -
+                    new Date(a.date_of_initiation)
+                ) // Sorting in descending order
+                .map((item, index) => (
                   <tr key={item.eLogId}>
-                    <td> {index + 1}</td>
+                    <td>{index + 1}</td>
                     <td
                       style={{
                         cursor: "pointer",
                         color: "black",
                       }}
-                      onClick={() => {
-                        handleNavigation(item);
-                      }}
+                      onClick={() => handleNavigation(item)}
                       onMouseEnter={(e) => {
                         e.target.style.color = "blue";
                       }}
@@ -313,14 +316,13 @@ function Dashboard() {
                     </td>
                     <td>
                       {item.DifferentialPressureRecords
-                        ? `Differential Pressure`
+                        ? "Differential Pressure"
                         : item.TempratureRecords
-                        ? `Temperature Records`
+                        ? "Temperature Records"
                         : null}
                     </td>
                   </tr>
-                );
-              })}
+                ))}
           </tbody>
         </table>
       </div>

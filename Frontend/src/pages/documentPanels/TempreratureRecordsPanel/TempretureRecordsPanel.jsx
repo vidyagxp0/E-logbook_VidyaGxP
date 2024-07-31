@@ -148,7 +148,7 @@ export default function TempretureRecordsPanel() {
         return;
       }
 
-      if (data.description === "" || data.description === undefined) {
+      if (editData.description === "") {
         toast.error("description is required");
         return;
       }
@@ -416,6 +416,53 @@ export default function TempretureRecordsPanel() {
         cancelMessage.remove();
       }, 3000);
     });
+  }
+
+  function deepEqual(object1, object2) {
+    // First, check if they are the same object (reference equality)
+    if (object1 === object2) {
+      return true;
+    }
+
+    // Ensure both are objects and neither is null
+    if (
+      typeof object1 !== "object" ||
+      object1 === null ||
+      typeof object2 !== "object" ||
+      object2 === null
+    ) {
+      return false;
+    }
+
+    // Compare their own properties
+    const keys1 = Object.keys(object1);
+    const keys2 = Object.keys(object2);
+
+    // Check if they have the same number of properties
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    // Check each property in object1 to see if it exists and equals the one in object2
+    for (const key of keys1) {
+      const val1 = object1[key];
+      const val2 = object2[key];
+      const areObjects = isObject(val1) && isObject(val2);
+
+      // Recursively evaluate objects, or check primitive values for equality
+      if (
+        (areObjects && !deepEqual(val1, val2)) ||
+        (!areObjects && val1 !== val2)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function isObject(object) {
+    return object != null && typeof object === "object";
   }
 
   const formatDate = (dateString) => {
@@ -1282,7 +1329,13 @@ export default function TempretureRecordsPanel() {
                 : null}
               <button
                 className="themeBtn"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => {
+                  if (!deepEqual(location.state, editData)) {
+                    alert("Please save data before exiting");
+                  } else {
+                    navigate(-1);
+                  }
+                }}
               >
                 Exit
               </button>
