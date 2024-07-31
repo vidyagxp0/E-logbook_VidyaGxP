@@ -50,6 +50,10 @@ const TemperatureRecordsAuditTrail = sequelize.define(
     declaration: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    action: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }
 );
