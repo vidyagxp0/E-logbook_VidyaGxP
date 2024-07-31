@@ -257,6 +257,19 @@ export default function DPRpanel() {
   //   }
   // };
 
+  const formatDate = (dateString) => {
+    const utcDate = new Date(dateString);
+    return utcDate.toLocaleString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  };
+
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.DifferentialPressureRecords];
     updatedGridData[index].supporting_docs = file;
@@ -679,7 +692,7 @@ export default function DPRpanel() {
                     <div>
                       <input
                         type="text"
-                        value={editData?.date_of_initiation?.split("T")[0]}
+                        value={formatDate(editData.date_of_initiation)}
                         readOnly
                       />
                     </div>
@@ -1035,7 +1048,7 @@ export default function DPRpanel() {
                       <div>
                         <input
                           type="text"
-                          value={editData?.date_of_initiation?.split("T")[0]}
+                          value={formatDate(editData.date_of_initiation)}
                           readOnly
                         />
                       </div>
@@ -1121,7 +1134,7 @@ export default function DPRpanel() {
                       <div>
                         <input
                           type="text"
-                          value={editData?.date_of_review?.split("T")[0]}
+                          value={formatDate(editData.date_of_review)}
                           readOnly
                         />
                       </div>
@@ -1207,7 +1220,7 @@ export default function DPRpanel() {
                       <div>
                         <input
                           type="text"
-                          value={editData?.date_of_approval?.split("T")[0]}
+                          value={formatDate(editData.date_of_approval)}
                           readOnly
                         />
                       </div>

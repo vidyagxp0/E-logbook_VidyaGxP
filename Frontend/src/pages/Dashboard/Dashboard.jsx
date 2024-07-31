@@ -89,11 +89,24 @@ function Dashboard() {
       navigate("/area-and-equipment-panel", { state: item });
     } else if (item.TempratureRecords) {
       navigate("/tpr-panel", { state: item });
-    } else if (item.process === "Equipment cleaning checklist") { 
+    } else if (item.process === "Equipment cleaning checklist") {
       navigate("/ecc-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
+  };
+
+  const formatDate = (dateString) => {
+    const utcDate = new Date(dateString);
+    return utcDate.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
   };
 
   return (
@@ -102,8 +115,14 @@ function Dashboard() {
       <HeaderBottom />
 
       <div className="desktop-input-table-wrapper">
-        <div className="input-wrapper" style={{display: 'flex', justifyContent: 'center'}}>
-          <div className="group-input-2" style={{width: '70%', display:"flex", justifyContent:"center"}}>
+        <div
+          className="input-wrapper"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <div
+            className="group-input-2"
+            style={{ width: "70%", display: "flex", justifyContent: "center" }}
+          >
             {/* <label>eLog</label> */}
             <select
               value={eLogSelect}
@@ -160,7 +179,7 @@ function Dashboard() {
                         {`DP${item.form_id}`}
                       </td>
                       <td>{item.initiator_name}</td>
-                      <td>{item.date_of_initiation.split("T")[0]}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.description}</td>
                       <td>{item.status}</td>
                       <td>
@@ -235,7 +254,7 @@ function Dashboard() {
                         {`TR${item.form_id}`}
                       </td>
                       <td>{item.initiator_name}</td>
-                      <td>{item.date_of_initiation.split("T")[0]}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.description}</td>
                       <td>{item.status}</td>
                       <td>
@@ -280,7 +299,7 @@ function Dashboard() {
                         : null}
                     </td>
                     <td>{item.initiator_name}</td>
-                    <td>{item.date_of_initiation.split("T")[0]}</td>
+                    <td>{formatDate(item.date_of_initiation)}</td>
                     <td>{item.description}</td>
                     <td>{item.status}</td>
                     <td>
@@ -292,11 +311,13 @@ function Dashboard() {
                         ? "EMEA"
                         : "EU"}
                     </td>
-                    <td>{item.DifferentialPressureRecords
+                    <td>
+                      {item.DifferentialPressureRecords
                         ? `Differential Pressure`
                         : item.TempratureRecords
                         ? `Temperature Records`
-                        : null}</td>
+                        : null}
+                    </td>
                   </tr>
                 );
               })}
