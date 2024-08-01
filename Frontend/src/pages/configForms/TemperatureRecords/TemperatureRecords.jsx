@@ -172,7 +172,9 @@ export default function TemperatureRecords() {
   }
 
   const addRow = () => {
-    const currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    const currentTime = new Date().toLocaleTimeString("en-GB", {
+      hour12: false,
+    });
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
@@ -389,8 +391,9 @@ export default function TemperatureRecords() {
                   </div>
 
                   <div className="group-input">
-                  <label className="color-label">
-                      Description <span className="required-asterisk text-red-500">*</span>
+                    <label className="color-label">
+                      Description{" "}
+                      <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
                       <input
@@ -661,20 +664,45 @@ export default function TemperatureRecords() {
                             />
                           </td>
                           <td style={{ width: "250px" }}>
-                            <div className="d-flex">
+                            <div className="d-flex align-items-center">
+                              <button
+                                type="button"
+                                className="btn-upload"
+                                onClick={() =>
+                                  document
+                                    .getElementsByName("supporting_docs")
+                                    [index].click()
+                                }
+                                style={{ marginRight: "10px" }}
+                              >
+                                {item.supporting_docs
+                                  ? "Change File"
+                                  : "Select File"}
+                              </button>
+                              {item.supporting_docs && (
+                                <div>
+                                  <a
+                                    href={item.supporting_docs}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ marginRight: "10px" }}
+                                  >
+                                    View File
+                                  </a>
+                                  <DeleteIcon
+                                    style={{ color: "red", cursor: "pointer" }}
+                                    onClick={() => handleDeleteFile(index)}
+                                  />
+                                </div>
+                              )}
                               <input
                                 type="file"
                                 name="supporting_docs"
+                                style={{ display: "none" }}
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
                               />
-                              {item.supporting_docs && (
-                                <DeleteIcon
-                                  style={{ color: "red" }}
-                                  onClick={() => handleDeleteFile(index)}
-                                />
-                              )}
                             </div>
                           </td>
                           <td>

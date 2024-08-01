@@ -423,7 +423,7 @@ export default function DiffrentialPressure() {
                     <div>
                       <input
                         type="text"
-                        value="UNDER INITIATION"
+                        value="Under Initiation"
                         onChange={(e) =>
                           setDifferentialPRecord({ status: e.target.value })
                         }
@@ -676,20 +676,45 @@ export default function DiffrentialPressure() {
                             />
                           </td>
                           <td style={{ width: "250px" }}>
-                            <div className="d-flex">
+                            <div className="d-flex align-items-center">
+                              <button
+                                type="button"
+                                className="btn-upload"
+                                onClick={() =>
+                                  document
+                                    .getElementsByName("supporting_docs")
+                                    [index].click()
+                                }
+                                style={{ marginRight: "10px" }}
+                              >
+                                {item.supporting_docs
+                                  ? "Change File"
+                                  : "Select File"}
+                              </button>
+                              {item.supporting_docs && (
+                                <div>
+                                  <a
+                                    href={item.supporting_docs}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ marginRight: "10px" }}
+                                  >
+                                    View File
+                                  </a>
+                                  <DeleteIcon
+                                    style={{ color: "red", cursor: "pointer" }}
+                                    onClick={() => handleDeleteFile(index)}
+                                  />
+                                </div>
+                              )}
                               <input
                                 type="file"
                                 name="supporting_docs"
+                                style={{ display: "none" }}
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
                               />
-                              {item.supporting_docs && (
-                                <DeleteIcon
-                                  style={{ color: "red" }}
-                                  onClick={() => handleDeleteFile(index)}
-                                />
-                              )}
                             </div>
                           </td>
                           <td>

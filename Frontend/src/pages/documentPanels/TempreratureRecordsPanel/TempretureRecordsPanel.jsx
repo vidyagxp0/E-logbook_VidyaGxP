@@ -466,7 +466,14 @@ export default function TempretureRecordsPanel() {
   }
 
   const formatDate = (dateString) => {
+    if (!dateString) return ""; // Return empty if the input is falsy
+
     const utcDate = new Date(dateString);
+    // Check if the date is valid
+    if (isNaN(utcDate.getTime())) {
+      return "";
+    }
+
     return utcDate.toLocaleString("en-GB", {
       day: "2-digit",
       month: "2-digit",
@@ -943,21 +950,26 @@ export default function TempretureRecordsPanel() {
                             />
                           </td>
                           <td style={{ width: "250px" }}>
-                            <div className="d-flex">
-                              <input
-                                // value={item.supporting_docs}
-                                type="file"
-                                name="supporting_docs"
-                                onChange={(e) =>
-                                  handleFileChange(index, e.target.files[0])
+                            <div className="d-flex align-items-center">
+                              <button
+                                type="button"
+                                className="btn-upload"
+                                onClick={() =>
+                                  document
+                                    .getElementsByName("supporting_docs")
+                                    [index].click()
                                 }
+                                style={{ marginRight: "10px" }}
                                 disabled={
                                   location.state?.stage !== 1 ||
                                   location.state?.initiator_id !==
                                     userDetails.userId
                                 }
-                              />
-
+                              >
+                                {item.supporting_docs
+                                  ? "Change File"
+                                  : "Select File"}
+                              </button>
                               {item.supporting_docs && (
                                 <div>
                                   <h3>
@@ -972,6 +984,19 @@ export default function TempretureRecordsPanel() {
                                   </h3>
                                 </div>
                               )}
+                              <input
+                                type="file"
+                                name="supporting_docs"
+                                style={{ display: "none" }}
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
+                                disabled={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
                             </div>
                           </td>
 
@@ -1025,34 +1050,53 @@ export default function TempretureRecordsPanel() {
                       <label
                         htmlFor="initiatorAttachment"
                         className="color-label"
-                        name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
-                      <input
-                        type="file"
-                        name="initiatorAttachment"
-                        id="initiatorAttachment"
-                        onChange={handleInitiatorFileChange}
-                        disabled={
-                          location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
-                        }
-                      />
-                      {editData.initiatorAttachment && (
-                        <div>
-                          <h3>
-                            Selected File:{" "}
-                            <a
-                              href={editData.initiatorAttachment}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              View File
-                            </a>
-                          </h3>
-                        </div>
-                      )}
+                      <div>
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("initiatorAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 1 ||
+                            location.state?.initiator_id !== userDetails.userId
+                          }
+                        >
+                          {editData.initiatorAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.initiatorAttachment && (
+                          <div>
+                            <h3>
+                              Selected File:{" "}
+                              <a
+                                href={editData.initiatorAttachment}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View File
+                              </a>
+                            </h3>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          name="initiatorAttachment"
+                          id="initiatorAttachment"
+                          onChange={handleInitiatorFileChange}
+                          style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 1 ||
+                            location.state?.initiator_id !== userDetails.userId
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -1111,34 +1155,53 @@ export default function TempretureRecordsPanel() {
                       <label
                         htmlFor="reviewerAttachment"
                         className="color-label"
-                        name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
-                      <input
-                        type="file"
-                        name="reviewerAttachment"
-                        id="reviewerAttachment"
-                        onChange={handleReviewerFileChange}
-                        disabled={
-                          location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
-                        }
-                      />
-                      {editData.reviewerAttachment && (
-                        <div>
-                          <h3>
-                            Selected File:{" "}
-                            <a
-                              href={editData.reviewerAttachment}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              View File
-                            </a>
-                          </h3>
-                        </div>
-                      )}
+                      <div>
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("reviewerAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 2 ||
+                            location.state?.reviewer_id !== userDetails.userId
+                          }
+                        >
+                          {editData.reviewerAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.reviewerAttachment && (
+                          <div>
+                            <h3>
+                              Selected File:{" "}
+                              <a
+                                href={editData.reviewerAttachment}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View File
+                              </a>
+                            </h3>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          name="reviewerAttachment"
+                          id="reviewerAttachment"
+                          onChange={handleReviewerFileChange}
+                          style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 2 ||
+                            location.state?.reviewer_id !== userDetails.userId
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -1197,34 +1260,53 @@ export default function TempretureRecordsPanel() {
                       <label
                         htmlFor="approverAttachment"
                         className="color-label"
-                        name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
-                      <input
-                        type="file"
-                        name="approverAttachment"
-                        id="approverAttachment"
-                        onChange={handleApproverFileChange}
-                        disabled={
-                          location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
-                        }
-                      />
-                      {editData.approverAttachment && (
-                        <div>
-                          <h3>
-                            Selected File:{" "}
-                            <a
-                              href={editData.approverAttachment}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              View File
-                            </a>
-                          </h3>
-                        </div>
-                      )}
+                      <div>
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("approverAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 3 ||
+                            location.state?.approver_id !== userDetails.userId
+                          }
+                        >
+                          {editData.approverAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.approverAttachment && (
+                          <div>
+                            <h3>
+                              Selected File:{" "}
+                              <a
+                                href={editData.approverAttachment}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View File
+                              </a>
+                            </h3>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          name="approverAttachment"
+                          id="approverAttachment"
+                          onChange={handleApproverFileChange}
+                          style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 3 ||
+                            location.state?.approver_id !== userDetails.userId
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
 
