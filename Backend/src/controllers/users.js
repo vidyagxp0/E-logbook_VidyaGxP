@@ -27,7 +27,9 @@ exports.signup = async (req, res) => {
 
   try {
     // Check if user already exists
-    const existingUser = await User.findOne({ where: { email: email, isActive: true } });
+    const existingUser = await User.findOne({
+      where: { email: email, isActive: true },
+    });
     if (existingUser) {
       return res.status(400).json({
         error: true,
@@ -305,6 +307,26 @@ exports.getUserPermissions = async (req, res) => {
       });
     });
 };
+exports.getUserRoles = async (req, res) => {
+  UserRole.findAll({
+    where: {
+      user_id: req.params.id,
+    },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  })
+    .then((result) => {
+      res.json({
+        error: false,
+        message: result,
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: true,
+        message: error.message,
+      });
+    });
+};
 
 exports.getAllRoleGroups = async (req, res) => {
   RoleGroup.findAll()
@@ -328,7 +350,7 @@ exports.Userlogin = async (req, res) => {
   User.findOne({
     where: {
       email: email.toLowerCase(),
-      isActive: true
+      isActive: true,
     },
     raw: true,
   })
@@ -340,14 +362,8 @@ exports.Userlogin = async (req, res) => {
             message: "Invalid Password!",
           });
         } else {
-          let userRoles = await UserRole.findAll({
-            where: {
-              user_id: data?.user_id,
-            },
-            attributes: { exclude: ["createdAt", "updatedAt"] },
-          });
           const token = jwt.sign(
-            { userId: data.user_id, roles: userRoles },
+            { userId: data.user_id },
             config.development.JWT_SECRET,
             { expiresIn: "24h" }
           );

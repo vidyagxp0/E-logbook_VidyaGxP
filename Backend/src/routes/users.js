@@ -45,6 +45,10 @@ router.get(
   Auth.checkAdminJwtToken,
   User.getUserPermissions
 );
+router.get(
+  "/get-user-roles/:id",
+  User.getUserRoles
+);
 router.get("/get-all-rolegroups", User.getAllRoleGroups);
 router.post("/user-login", User.Userlogin);
 
