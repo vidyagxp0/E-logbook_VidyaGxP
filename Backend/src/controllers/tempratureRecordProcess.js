@@ -1465,6 +1465,19 @@ exports.generateReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
 
+    const getCurrentDateTime = () => {
+      const now = new Date();
+      return now.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Specify using 24-hour format
+      });
+    };
+
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
       res.render("tp_report", { reportData }, (err, html) => {
@@ -1503,14 +1516,14 @@ exports.generateReport = async (req, res) => {
   <div class="header-container">
   <table class="header-table">
     <tr>
-      <th colspan="2" class="header-title">External Audit Single Report</th>
+      <th colspan="2" class="header-title">Temperature Records</th>
       <th rowspan="2" class="header-logo">
         <img src="${logoDataUri}" alt="Logo" style="max-width: 100px; height: auto;" />
       </th>
     </tr>
     <tr>
-      <td class="header-info">External Audit No.: Corporate/24/0141</td>
-      <td class="header-info">Record No.: 0141</td>
+      <td class="header-info">DP${reportData.form_id}.pdf</td>
+      <td class="header-info">Date: ${getCurrentDateTime()}</td>
     </tr>
   </table>
 </div>
