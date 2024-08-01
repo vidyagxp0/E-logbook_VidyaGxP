@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/config.json");
+const UserRole = require("../models/userRoles");
 
 function checkAdminJwtToken(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
@@ -43,8 +44,13 @@ function checkUserJwtToken(req, res, next) {
 }
 
 function authorizeUserRole(processId, roleId) {
-  return (req, res, next) => {
-    const userRoles = req.user.roles;
+  return async (req, res, next) => {
+    const userRoles = await UserRole.findAll({
+      where: {
+        user_id: req.user.userId,
+      },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
 
     if (!req.body.site_id) {
       return res
