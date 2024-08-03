@@ -4,7 +4,7 @@ import HeaderBottom from "../../components/Header/HeaderBottom";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Chart } from "react-chartjs-2";
 import "./Analytics.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Analytics() {
   const [selectedOption, setSelectedOption] = useState("hourly");
@@ -12,6 +12,7 @@ export default function Analytics() {
   const [chartCategories, setChartCategories] = useState([]);
   const [chartType, setChartType] = useState("bar");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
@@ -22,14 +23,21 @@ export default function Analytics() {
   };
 
   useEffect(() => {
-    const records = location.state?.records?.DifferentialPressureRecords || location.state?.records?.TempratureRecords;
-    const sortedRecords = [...records].sort((a, b) => new Date(`1970-01-01T${a.time}`) - new Date(`1970-01-01T${b.time}`));
+    const records =
+      location.state?.records?.DifferentialPressureRecords ||
+      location.state?.records?.TempratureRecords;
+    const sortedRecords = [...records].sort(
+      (a, b) =>
+        new Date(`1970-01-01T${a.time}`) - new Date(`1970-01-01T${b.time}`)
+    );
 
     let data = [];
     let categories = [];
 
     if (selectedOption === "hourly") {
-      data = sortedRecords.map((record) => record.differential_pressure || record.temprature_record);
+      data = sortedRecords.map(
+        (record) => record.differential_pressure || record.temprature_record
+      );
       categories = sortedRecords.map((record) => record.time);
     } else if (selectedOption === "day") {
       const dayData = {};
@@ -38,7 +46,9 @@ export default function Analytics() {
         if (!dayData[day]) {
           dayData[day] = [];
         }
-        dayData[day].push(record.differential_pressure || record.temprature_record);
+        dayData[day].push(
+          record.differential_pressure || record.temprature_record
+        );
       });
       data = Object.keys(dayData).map(
         (day) => dayData[day].reduce((a, b) => a + b, 0) / dayData[day].length
@@ -53,7 +63,9 @@ export default function Analytics() {
         if (!monthData[month]) {
           monthData[month] = [];
         }
-        monthData[month].push(record.differential_pressure || record.temprature_record);
+        monthData[month].push(
+          record.differential_pressure || record.temprature_record
+        );
       });
       data = Object.keys(monthData).map(
         (month) =>
@@ -189,6 +201,22 @@ export default function Analytics() {
               },
             }}
           />
+          <div className="back-button-container">
+            <button
+              className="themeBtn"
+              onClick={() => navigate(-1)}
+              style={{
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginLeft: "52%",
+                marginTop: "12px",
+              }}
+            >
+              Back
+            </button>
+          </div>
         </div>
         <div className="chart-data" style={{ width: "200px" }}>
           {/* <div className="group-input">

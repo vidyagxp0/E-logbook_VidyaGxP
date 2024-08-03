@@ -149,12 +149,12 @@ function Dashboard() {
             <tr>
               <th>S no</th>
               <th>E.Log no</th>
+              <th>Process</th>
+              <th>Site</th>
+              <th>Short description</th>
               <th>Initiator</th>
               <th>Date of initiation</th>
-              <th>Short description</th>
               <th>Status</th>
-              <th>Site</th>
-              <th>Process</th>
             </tr>
           </thead>
           <tbody>
@@ -178,10 +178,7 @@ function Dashboard() {
                       >
                         {`DP${item.form_id}`}
                       </td>
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.description}</td>
-                      <td>{item.status}</td>
+                      <td>Differential Pressure</td>
                       <td>
                         {item.site_id === 1
                           ? "India"
@@ -191,7 +188,10 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>Differential Pressure</td>
+                      <td>{item.description}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -205,11 +205,11 @@ function Dashboard() {
                       <td onClick={() => navigate("/area-and-equipment-panel")}>
                         {item.eLogId}
                       </td>
+                      <td>{item.process}</td>
+                      <td>{item.shortDescription}</td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
-                      <td>{item.shortDescription}</td>
                       <td>{item.status}</td>
-                      <td>{item.process}</td>
                     </tr>
                   );
                 })
@@ -223,11 +223,11 @@ function Dashboard() {
                       <td onClick={() => navigate("/ecc-panel")}>
                         {item.eLogId}
                       </td>
+                      <td>{item.process}</td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
                       <td>{item.shortDescription}</td>
                       <td>{item.status}</td>
-                      <td>{item.process}</td>
                     </tr>
                   );
                 })
@@ -253,10 +253,7 @@ function Dashboard() {
                       >
                         {`TR${item.form_id}`}
                       </td>
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.description}</td>
-                      <td>{item.status}</td>
+                      <td>Temperature Records</td>
                       <td>
                         {item.site_id === 1
                           ? "India"
@@ -266,7 +263,10 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>Temperature Records</td>
+                      <td>{item.description}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -301,10 +301,13 @@ function Dashboard() {
                         ? `TR${item.form_id}`
                         : null}
                     </td>
-                    <td>{item.initiator_name}</td>
-                    <td>{formatDate(item.date_of_initiation)}</td>
-                    <td>{item.description}</td>
-                    <td>{item.status}</td>
+                    <td>
+                      {item.DifferentialPressureRecords
+                        ? "Differential Pressure"
+                        : item.TempratureRecords
+                        ? "Temperature Records"
+                        : null}
+                    </td>
                     <td>
                       {item.site_id === 1
                         ? "India"
@@ -314,13 +317,10 @@ function Dashboard() {
                         ? "EMEA"
                         : "EU"}
                     </td>
-                    <td>
-                      {item.DifferentialPressureRecords
-                        ? "Differential Pressure"
-                        : item.TempratureRecords
-                        ? "Temperature Records"
-                        : null}
-                    </td>
+                    <td>{item.description}</td>
+                    <td>{item.initiator_name}</td>
+                    <td>{formatDate(item.date_of_initiation)}</td>
+                    <td>{item.status}</td>
                   </tr>
                 ))}
           </tbody>

@@ -140,15 +140,19 @@ export default function DPRpanel() {
         });
     } else if (popupAction === "updateElog") {
       data.initiatorDeclaration = credentials?.declaration;
-      if (
-        parseFloat(editData.limit) < 0.6 ||
-        parseFloat(editData.limit) > 2.6
-      ) {
-        toast.error("The limit value must be between 0.6 and 2.6.");
-        return;
-      }
+      // if (
+      //   parseFloat(editData.limit) < 0.6 ||
+      //   parseFloat(editData.limit) > 2.6
+      // ) {
+      //   toast.error("The limit value must be between 0.6 and 2.6.");
+      //   return;
+      // }
       if (editData.description === "") {
         toast.error("description is required");
+        return;
+      }
+      if (editData?.DifferentialPressureRecords?.some(record => record.differential_pressure === "" || record.remarks === "")) {
+        toast.error("Please provide grid details!");
         return;
       }
 

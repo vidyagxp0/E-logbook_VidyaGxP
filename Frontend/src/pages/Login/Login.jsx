@@ -7,7 +7,6 @@ import axios from "axios";
 import { Envelope, PasswordLock } from "../../components/Icons/Icons";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -22,7 +21,6 @@ function Login() {
       setPassword(value);
     }
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = {
@@ -37,12 +35,30 @@ function Login() {
         },
       })
       .then((response) => {
-        navigate("/dashboard");
-        toast.success("Login Successful");
         localStorage.setItem("user-token", response.data.token);
         const decodedData = jwtDecode(response.data.token);
         localStorage.setItem("user-details", JSON.stringify(decodedData));
         dispatch({ type: "LOGGED-IN-USER", payload: decodedData });
+
+        // Now fetch the permissions using the user ID from decodedData
+        return axios.get(
+          `http://localhost:1000/user/get-user-roles/${decodedData.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${response.data.token}`,
+            },
+          }
+        );
+      })
+      .then((permissionsResponse) => {
+        // Assuming permissionsResponse.data.message contains the permissions array
+        const userDetails = JSON.parse(localStorage.getItem("user-details"));
+        if (userDetails) {
+          userDetails.roles = permissionsResponse.data.message;
+          localStorage.setItem("user-details", JSON.stringify(userDetails));
+        }
+        navigate("/dashboard");
+        toast.success("Login Successful");
       })
       .catch((error) => {
         toast.error(error.response?.data?.message || "Login failed");

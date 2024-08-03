@@ -130,6 +130,10 @@ export default function TemperatureRecords() {
       toast.error("Please provide a short description!");
       return;
     }
+    if (tempratureRecord?.FormRecordsArray?.some(record => record.temprature_record === "" || record.remarks === "")) {
+      toast.error("Please provide grid details!");
+      return;
+    }
 
     const config = {
       headers: {

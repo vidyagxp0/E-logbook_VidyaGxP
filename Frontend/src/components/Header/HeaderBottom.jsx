@@ -8,7 +8,7 @@ function HeaderBottom() {
   const [eLogSelect, setELogSelect] = useState("All_Records");
   const [recordModal, setRecordModal] = useState(false);
   const closeRecordModal = () => setRecordModal(false);
-  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
+  const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   return (
     <>
@@ -30,7 +30,7 @@ function HeaderBottom() {
           </div> */}
         </div>
         
-          {loggedInUser.roles?.some(
+          {userDetails.roles?.some(
             (itm) => itm.role_id === 5 || itm.role_id === 1
           ) ? (
             <div className="headerBottomRgt">

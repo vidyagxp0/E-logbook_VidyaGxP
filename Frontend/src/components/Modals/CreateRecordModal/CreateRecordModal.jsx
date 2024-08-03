@@ -13,6 +13,8 @@ function CreateRecordModal(_props) {
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
+  console.log(division);
+
   useEffect(() => {
     const fetchSites = async () => {
       try {
@@ -28,7 +30,6 @@ function CreateRecordModal(_props) {
           userSiteIds.includes(site.site_id)
         );
 
-        
         setSites(filteredSites);
       } catch (error) {
         console.error("Error fetching sites:", error);
@@ -38,30 +39,35 @@ function CreateRecordModal(_props) {
     fetchSites();
   }, []);
 
+  const fetchProcesses = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:1000/differential-pressure/get-processes"
+      );
+
+      const filteredProcessIds = userDetails.roles
+        .filter(
+          (role) =>
+            (role.role_id === 1 || role.role_id === 5) &&
+            role.site_id === division.site_id
+        )
+        .map((role) => role.process_id);
+
+      // Filter processes based on user's roles
+      const filteredProcesses = response.data.message.filter((process) =>
+        filteredProcessIds.includes(process.process_id)
+      );
+      setProcesses(filteredProcesses);
+    } catch (error) {
+      console.error("Error fetching processes:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchProcesses = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:1000/differential-pressure/get-processes"
-        );
+    fetchProcesses();
+  }, [division])
 
-        const filteredProcessIds = userDetails.roles
-          .filter(
-            (role) =>
-              (role.role_id === 1 || role.role_id === 5) && role.site_id === division.site_id
-          )
-          .map((role) => role.process_id);
-
-        // Filter processes based on user's roles
-        const filteredProcesses = response.data.message.filter((process) =>
-          filteredProcessIds.includes(process.process_id)
-        );
-        setProcesses(filteredProcesses);
-      } catch (error) {
-        console.error("Error fetching processes:", error);
-      }
-    };
-
+  useEffect(() => {
     if (processVisible) {
       fetchProcesses();
     }

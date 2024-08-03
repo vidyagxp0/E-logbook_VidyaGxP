@@ -111,6 +111,10 @@ export default function DiffrentialPressure() {
       toast.error("Please provide a short description!");
       return;
     }
+    if (differentialPRecord?.FormRecordsArray?.some(record => record.differential_pressure === "" || record.remarks === "")) {
+      toast.error("Please provide grid details!");
+      return;
+    }
 
     const config = {
       headers: {
