@@ -8,8 +8,7 @@ const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
 const TemperatureRecordAuditTrail = require("../models/temperatureRecordsAuditTrail");
 const Mailer = require("../middlewares/mailer");
-const puppeteer = require("puppeteer-core");
-const findChrome = require("chrome-finder");
+const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
 
@@ -1486,11 +1485,7 @@ exports.generateReport = async (req, res) => {
       });
     });
 
-    // Find Chrome executable path
-    const executablePath = findChrome();
-
     const browser = await puppeteer.launch({
-      executablePath: executablePath,
       headless: true,
       timeout: 120000, // 2 minutes
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -1511,9 +1506,8 @@ exports.generateReport = async (req, res) => {
       format: "A4",
       printBackground: true,
       displayHeaderFooter: true,
-
       headerTemplate: `
-  <div class="header-container">
+<div class="header-container">
   <table class="header-table">
     <tr>
       <th colspan="2" class="header-title">Temperature Records</th>
@@ -1529,38 +1523,41 @@ exports.generateReport = async (req, res) => {
 </div>
 
 <style>
- 
-  .header-table {
-
+  .header-container {
     width: 100%;
-    border-collapse: collapse; /* Collapse borders */
+    padding: 0 50px; /* Increased margin from left and right */
+    box-sizing: border-box;
+  }
+  
+  .header-table {
+    width: 100%;
+    border-collapse: collapse;
     text-align: left;
-    font-size: 14px; /* Adjust font size */
-    table-layout: fixed; /* Prevents table from expanding beyond container */
-   
+    font-size: 14px;
+    table-layout: fixed;
   }
-
+  
   .header-table th, .header-table td {
-    border: 1px solid #000; /* Add border to table cells */
-    padding: 8px; /* Adjusted padding */
+    border: 1px solid #000;
+    padding: 8px;
   }
-
+  
   .header-table th {
     background-color: #f8f8f8;
     font-weight: bold;
   }
-
+  
   .header-logo {
     text-align: center;
-    width: 100px; /* Adjust width for logo */
+    width: 100px;
   }
-
+  
   .header-title {
     text-align: center;
-    font-size: 18px; /* Adjusted font size */
-    margin: 10px 0; /* Increased margin for more spacing */
+    font-size: 18px;
+    margin: 10px 0;
   }
-
+  
   .header-info {
     font-size: 12px;
     text-align: center;
@@ -1569,35 +1566,34 @@ exports.generateReport = async (req, res) => {
 `,
 
       footerTemplate: `
-    <style>
-      .footer {
-        width: 100%;
-        text-align: center;
-        font-size: 10px;
-        padding: 5px 0;
-      }
-      .pageNumber {
-        display: inline-block;
-        margin-left: 5px;
-      }
-      .totalPages {
-        display: inline-block;
-        margin-left: 5px;
-      }
-      .printedBy {
-        display: inline-block;
-        float: right;
-        margin-right: 30px;
-      }
-    </style>
-    <div class="footer">
-      <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-      <span class="printedBy">Printed by: ${user ? user.name : "Unknown"}</span>
-    </div>
-  `,
-
+<style>
+  .footer {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    padding: 5px 0;
+  }
+  .pageNumber {
+    display: inline-block;
+    margin-left: 5px;
+  }
+  .totalPages {
+    display: inline-block;
+    margin-left: 5px;
+  }
+  .printedBy {
+    display: inline-block;
+    float: right;
+    margin-right: 30px;
+  }
+</style>
+<div class="footer">
+  <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+  <span class="printedBy">Printed by: ${user ? user.name : "Unknown"}</span>
+</div>
+`,
       margin: {
-        top: "120px", // Increased top margin to avoid header overlap
+        top: "120px",
         bottom: "60px",
         right: "30px",
         left: "30px",
