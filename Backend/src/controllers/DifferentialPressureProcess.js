@@ -1531,8 +1531,8 @@ exports.generateReport = async (req, res) => {
       </th>
     </tr>
     <tr>
-      <td class="header-info">DP${reportData.form_id}.pdf</td>
-      <td class="header-info">Date: ${getCurrentDateTime()}</td>
+      <td class="header-info">DP${reportData.form_id}</td>
+      <td class="header-info">Status: ${reportData?.status}</td>
     </tr>
   </table>
 </div>
@@ -1583,28 +1583,33 @@ exports.generateReport = async (req, res) => {
       footerTemplate: `
 <style>
   .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
-    text-align: center;
     font-size: 10px;
     padding: 5px 0;
   }
-  .pageNumber {
+  .leftContent, .centerContent, .rightContent {
     display: inline-block;
-    margin-left: 5px;
   }
-  .totalPages {
-    display: inline-block;
-    margin-left: 5px;
+  .centerContent {
+    flex-grow: 1;
+    text-align: center;
   }
-  .printedBy {
-    display: inline-block;
-    float: right;
-    margin-right: 30px;
+  .leftContent {
+    flex-grow: 0;
+    padding-left: 20px;  /* Added padding to the left content */
+  }
+  .rightContent {
+    flex-grow: 0;
+    padding-right: 20px; /* Added padding to the right content */
   }
 </style>
 <div class="footer">
-  <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-  <span class="printedBy">Printed by: ${user ? user.name : "Unknown"}</span>
+  <span class="leftContent">Printed on: ${getCurrentDateTime()}</span>
+  <span class="centerContent">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+  <span class="rightContent">Printed by: ${user ? user.name : "Unknown"}</span>
 </div>
 `,
       margin: {
