@@ -5,6 +5,7 @@ const http = require("http");
 const userRoutes = require("./routes/users");
 const differentialPressureRoutes = require("./routes/differentialPressure");
 const tempratureRecordRoutes = require("./routes/tempratureRecords");
+const vidyagxpFeedback = require('./config/vidyagxp_feedback');
 const siteRoutes = require("./routes/sites");
 const cors = require("cors");
 const path = require("path");
@@ -23,6 +24,7 @@ app.use(
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
+app.use("/feedback", vidyagxpFeedback);
 app.use("/differential-pressure", differentialPressureRoutes);
 app.use("/temprature-record", tempratureRecordRoutes);
 app.use("/site", siteRoutes);
