@@ -119,7 +119,7 @@ function AdminDashboard() {
                 <button
                   className="themeBtn"
                   style={{
-                    backgroundColor: "#35dcef",
+                    backgroundColor: "#efa035",
                     color: "white",
                     padding: "10px 20px",
                     borderRadius: "5px",

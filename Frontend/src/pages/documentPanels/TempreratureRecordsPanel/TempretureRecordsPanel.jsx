@@ -152,7 +152,11 @@ export default function TempretureRecordsPanel() {
         toast.error("description is required");
         return;
       }
-      if (editData?.TempratureRecords?.some(record => record.temprature_record === "" || record.remarks === "")) {
+      if (
+        editData?.TempratureRecords?.some(
+          (record) => record.temprature_record === "" || record.remarks === ""
+        )
+      ) {
         toast.error("Please provide grid details!");
         return;
       }
@@ -553,42 +557,46 @@ export default function TempretureRecordsPanel() {
               </div>
               <div className="sub-head-2">Temperature Record</div>
               <div className="outerDiv4">
-                <div className="btn-forms">
-                  <div
-                    className={`${
-                      location.state?.stage === 1
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
-                    }`}
-                  >
-                    INITIATION
-                  </div>
-                  <div
-                    className={`${
-                      location.state?.stage === 2
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
-                    }`}
-                  >
-                    UNDER REVIEW
-                  </div>
-                  <div
-                    className={`${
-                      location.state?.stage === 3
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
-                    }`}
-                  >
-                    UNDER APPROVAL
-                  </div>
-                  <div
-                    className={`${
-                      location.state?.stage === 4
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
-                    }`}
-                  >
-                    APPROVED
+                <div className="status-container">
+                 
+                  <div className="btn-forms-tpr">
+                  <div className="status-heading" >Status :</div>
+                    <div
+                      className={`${
+                        location.state?.stage === 1
+                          ? "btn-forms-isSelectedsTpr"
+                          : "btn-forms-selectsTpr"
+                      }`}
+                    >
+                      Initiation
+                    </div>
+                    <div
+                      className={`${
+                        location.state?.stage === 2
+                          ? "btn-forms-isSelectedsTpr"
+                          : "btn-forms-selectsTpr"
+                      }`}
+                    >
+                      Under Review
+                    </div>
+                    <div
+                      className={`${
+                        location.state?.stage === 3
+                          ? "btn-forms-isSelectedsTpr"
+                          : "btn-forms-selectsTpr"
+                      }`}
+                    >
+                      Under Approval
+                    </div>
+                    <div
+                      className={`${
+                        location.state?.stage === 4
+                          ? "btn-forms-isSelectedsTpr"
+                          : "btn-forms-selectsTpr"
+                      }`}
+                    >
+                      Approved
+                    </div>
                   </div>
                 </div>
               </div>
@@ -674,47 +682,9 @@ export default function TempretureRecordsPanel() {
                   >
                     Approver Remarks
                   </div>
-                  <div
-                    className="btn-forms-select"
-                    onClick={() =>
-                      navigate("/audit-trail", {
-                        state: {
-                          formId: location.state?.form_id,
-                          process: "Temperature Records",
-                        },
-                      })
-                    }
-                  >
-                    Audit Trail
-                  </div>
+                 
                 </div>
-                <button className="btn-forms-select" onClick={generateReport}>
-                  Generate Report
-                </button>
-                <div className="analytics-btn">
-                  <button
-                    className="btn-print"
-                    onClick={() =>
-                      navigate("/analytics", {
-                        state: { records: location.state, processId: 4 },
-                      })
-                    }
-                  >
-                    Analytics
-                  </button>
-                  {/* <PDFDownloadLink
-                    document={<DynamicPdf elog={editData} />}
-                    fileName="VidyaGxP.pdf"
-                  >
-                    {({ blob, url, loading, error }) =>
-                      loading ? (
-                        <button className="btn-print">Wait</button>
-                      ) : (
-                        <button className="btn-print">Print</button>
-                      )
-                    }
-                  </PDFDownloadLink> */}
-                </div>
+               
               </div>
 
               {isSelectedGeneral === true ? (
@@ -1434,6 +1404,37 @@ export default function TempretureRecordsPanel() {
             )}
           </div>
         </div>
+      </div>
+      <div className="btn-formate">
+      <div
+                    className="btn-forms-select"
+                    onClick={() =>
+                      navigate("/audit-trail", {
+                        state: {
+                          formId: location.state?.form_id,
+                          process: "Temperature Records",
+                        },
+                      })
+                    }
+                  >
+                    Audit Trail
+                  </div>
+                <button className="btn-forms-select" onClick={generateReport}>
+                  Generate Report
+                </button>
+                <div className="analytics-btn">
+                  <button
+                    className="btn-print"
+                    onClick={() =>
+                      navigate("/analytics", {
+                        state: { records: location.state, processId: 4 },
+                      })
+                    }
+                  >
+                    Analytics
+                  </button>
+                 
+                </div>
       </div>
     </>
   );

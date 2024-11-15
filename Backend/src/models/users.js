@@ -44,6 +44,27 @@ const User = sequelize.define("User", {
   },
 });
 
+
+User.addHook("afterSync", async () => {
+  try {
+    const processesCount = await User.count();
+    const salt = await bcrypt.genSalt(10);
+    const hashpass = await bcrypt.hash("Amit@121", salt);
+    if (processesCount === 0) {
+      await User.bulkCreate([
+        { name: "Admin", email: "admin@vidyagxp.com", password: hashpass },
+      ]);
+      console.log("Admin User created");
+    } else {
+      console.log("Admin User already exist");
+    }
+  } catch (error) {
+    console.error("Error creating Admin User:", error);
+  }
+});
+
+
+
 // User.belongsToMany(Project, { through: UserProject });
 // Project.belongsToMany(User, { through: UserProject });
 

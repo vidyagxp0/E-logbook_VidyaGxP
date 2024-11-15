@@ -96,6 +96,26 @@ function CreateRecordModal(_props) {
           state: division,
         });
         break;
+      case 5:
+        navigate("/loaded-quantity", {
+          state: division,
+        });
+        break;
+      case 6:
+        navigate("/operations-of-sterilizer", {
+          state: division,
+        });
+        break;
+      case 7:
+        navigate("/media-record", {
+          state: division,
+        });
+        break;
+      case 8:
+        navigate("/dispensing-of-material", {
+          state: division,
+        });
+        break;
       default:
         break;
     }

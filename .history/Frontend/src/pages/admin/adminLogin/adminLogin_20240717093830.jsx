@@ -46,7 +46,7 @@ function AdminLogin() {
           </div>
           <form>
             <div className="group-input">
-              <label>{Envelope(20, "#EB7F00")}</label>
+              <label>{Envelope(20, "#efa035")}</label>
               <input
                 type="text"
                 placeholder="Enter Your User ID"
@@ -56,7 +56,7 @@ function AdminLogin() {
             </div>
 
             <div className="group-input ">
-              <label>{PasswordLock(20, "#EB7F00")}</label>
+              <label>{PasswordLock(20, "#efa035")}</label>
               <input
                 type="password"
                 placeholder="Enter Your Password"

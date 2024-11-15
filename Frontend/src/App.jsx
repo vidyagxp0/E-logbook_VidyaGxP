@@ -27,6 +27,10 @@ import Wrapper from "./pages/Wrapper.jsx";
 import AdminProcesses from "./pages/admin/AdminProcesses/AdminProcesses.jsx";
 import DuplicateUser from "./pages/admin/DuplicateUser/DuplicateUser.jsx";
 import AuditTrail from "./pages/AuditTrail/AuditTrail.jsx";
+import LoadedQuantity from "./pages/configForms/LoadedQuantity/LoadedQuantity.jsx";
+import OperationOfSterilizer from "./pages/configForms/OperationOfSterilizer/OperationOfSterilizer.jsx";
+import MediaRecord from "./pages/configForms/MediaRecord/MediaRecord.jsx";
+import DispensingOfMaterials from "./pages/configForms/DispensingOfMaterials/DispensingOfMaterials.jsx";
 
 function App() {
   return (
@@ -113,6 +117,22 @@ function App() {
             <Route
               path="/temperature-records"
               element={<ProtectedRoute element={<TemperatureRecords />} />}
+            />
+            <Route
+              path="/loaded-quantity"
+              element={<ProtectedRoute element={<LoadedQuantity />} />}
+            />
+            <Route
+              path="/operations-of-sterilizer"
+              element={<ProtectedRoute element={<OperationOfSterilizer />} />}
+            />
+            <Route
+              path="/media-record"
+              element={<ProtectedRoute element={<MediaRecord />} />}
+            />
+            <Route
+              path="/dispensing-of-material"
+              element={<ProtectedRoute element={<DispensingOfMaterials />} />}
             />
           </Routes>
         </BrowserRouter>

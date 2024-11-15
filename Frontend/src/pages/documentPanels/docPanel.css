@@ -221,7 +221,7 @@
 
 #config-form-document-page .details-form-data .sub-head-2 {
   text-align: center;
-  background: #35dcef;
+  background: #efa035;
   padding: 10px 20px;
   font-size: 1.6rem;
   color: #ffffff;
@@ -279,7 +279,7 @@
 }
 
 #config-form-document-page .group-input .file-attachment-field .add-btn div {
-  background: #35dcef;
+  background: #efa035;
   color: white;
   border-radius: 5px;
   text-align: center;
@@ -385,16 +385,21 @@
 }
 
 .btn-forms-isSelected {
-  background-color: grey;
+  background-color: rgb(255, 210, 120);
   color: #ffffff;
   padding: 5px 10px;
   border-radius: 28px;
 }
 
 .btn-forms-selects {
-  border: 2px solid #35dcef;
+  border: 2px solid #efa035;
   padding: 5px 10px;
   border-radius: 28px;
+}
+
+.btn-forms-selectsTpr {
+  border: 2px solid gray;
+  padding: 5px 10px;
 }
 
 .btn-forms-selects:hover {
@@ -402,16 +407,38 @@
 }
 
 .btn-forms-isSelecteds {
-  background-color: #35dcef;
+  background-color: #efa035;
   color: #ffffff;
   padding: 5px 10px;
   border-radius: 28px;
+}
+
+.btn-forms-isSelectedsTpr {
+  background-color: #efa035;
+  color: #ffffff;
+  padding: 5px 10px;
 }
 
 .btn-forms {
   display: flex;
   gap: 10px;
   margin: 10px;
+}
+
+.btn-forms-tpr {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  /* border-bottom: 2px solid #ddd; */
+}
+
+.btn-forms-tpr > div {
+  flex: 1;
+  text-align: center;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .limit {
@@ -517,21 +544,67 @@ tr th {
 }
 
 .analytics-btn {
-  display: flex;
-  margin: 10px;
-  flex-direction: row;
-  justify-content: space-between;
   gap: 5%;
-  width: 130px;
 }
 
 .btn-print {
+  display:flex;
+  justify-content: flex-end;
   padding: 5%;
-  background-color: #35dcef;
+  background-color: #efa035;
   border-radius: 50px;
   cursor: pointer;
   color: white;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
+.status-heading {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  border:2px solid gray ;
+  padding: 5px 10px;
+  font-weight: bold;
+  text-align: left;
+  font-size: 18px;
+  width: 100%;
+  border-left: 2px solid #ddd;
+}
 
+.status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.outerDiv4 {
+  width: 100%;
+}
+
+
+.btn-forms-isSelectedsTpr {
+  background-color: #eba42a;
+  font-weight: bold;
+}
+
+.btn-forms-selectsTpr {
+  background-color: white;
+}
+
+.btn-forms-prevStages {
+  background-color: #28a745; /* Green for previous stages */
+  color: white;
+}
+
+
+.btn-formate {
+  position: fixed;
+  right: 0; /* Stick the buttons to the far right */
+  top: 50%;
+  transform: translateY(-50%); /* Vertically center the buttons */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Right-align the buttons */
+  gap: 10px; /* Space between the buttons */
+}

@@ -184,7 +184,7 @@ function AdminDashboard() {
                 <button
                   className="themeBtn"
                   style={{
-                    backgroundColor: "#35dcef",
+                    backgroundColor: "#efa035",
                     color: "white",
                     padding: "10px 20px",
                     borderRadius: "5px",
@@ -547,7 +547,7 @@ function AdminDashboard() {
                 padding: "10px 20px",
                 borderRadius: "5px",
                 border: "1px solid #42e9ff",
-                backgroundColor: "#35dcef",
+                backgroundColor: "#efa035",
                 color: "white",
                 cursor: "pointer",
                 fontWeight: "bold",

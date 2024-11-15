@@ -97,7 +97,7 @@
   text-align: center;
 }
 #admin-console-login-page .submit-btn:hover {
-  background:#EB7F00;
+  background:#efa035;
   
 }
 
@@ -107,5 +107,5 @@
 }
 
 .otpbtn:hover{
-  background-color: #EB7F00;
+  background-color: #efa035;
 }

@@ -25,6 +25,10 @@ Process.addHook('afterSync', async () => {
                 { process: 'Area and Equipment Usage Log' },
                 { process: 'Equipment Cleaning Checklist' },
                 { process: 'Temperature Records' },
+                { process: 'Loaded Quantity' },
+                { process: 'Operation Of Sterilizer' },
+                { process: 'Media Record' },
+                { process: 'Dispensing Of Materials' },
             ]);
             console.log('Processes created');
         } else {

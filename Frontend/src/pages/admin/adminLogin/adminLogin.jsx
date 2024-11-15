@@ -40,13 +40,14 @@ function AdminLogin() {
         <div className="login-form-block" style={{ marginLeft: "13%" }}>
           <div className="top-block">
             <div className="logo">
-              <img src="https://connexo.io/assets/img/logo/logo.png" alt="..." />
+            <img src="vidyalogo2.png" alt="Logo" />
+              {/* <img src="https://connexo.io/assets/img/logo/logo.png" alt="..." /> */}
             </div>
             <div className="head">Welcome to Admin Console</div>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="group-input">
-              <label>{Envelope(20, "#EB7F00")}</label>
+              <label>{Envelope(20, "#efa035")}</label>
               <input
                 type="text"
                 placeholder="Enter Your User ID"
@@ -56,7 +57,7 @@ function AdminLogin() {
             </div>
 
             <div className="group-input">
-              <label>{PasswordLock(20, "#EB7F00")}</label>
+              <label>{PasswordLock(20, "#efa035")}</label>
               <input
                 type="password"
                 placeholder="Enter Your Password"

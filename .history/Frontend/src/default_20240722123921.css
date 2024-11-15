@@ -8,7 +8,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Noto Sans', sans-serif;
-    --themeColor: #35dcef;
+    --themeColor: #efa035;
 }
 
 img {
@@ -221,7 +221,7 @@ td .action>* {
 } */
 
 table tbody tr:nth-child(2n) {
-    background: #b6faf7;
+    background: #efa035;
 }
 .sub-head {
     color: #0d0d0e;

@@ -78,13 +78,14 @@ function Login() {
       <div className="login-form-block" style={{ marginLeft: "13%" }}>
         <div className="top-block">
           <div className="logo">
-            <img src="https://connexo.io/assets/img/logo/logo.png" alt="Logo" />
+            {/* <img src="https://connexo.io/assets/img/logo/logo.png" alt="Logo" /> */}
+            <img src="vidyalogo2.png" alt="Logo" />
           </div>
           <div className="head">Welcome to eLogBook</div>
         </div>
         <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
           <div className="group-input">
-            <label>{Envelope(20, "#EB7F00")}</label>
+            <label>{Envelope(20, "#efa035")}</label>
             <input
               type="text"
               name="username"
@@ -95,7 +96,7 @@ function Login() {
             />
           </div>
           <div className="group-input">
-            <label>{PasswordLock(20, "#EB7F00")}</label>
+            <label>{PasswordLock(20, "#efa035")}</label>
             <input
               type="password"
               name="password"
