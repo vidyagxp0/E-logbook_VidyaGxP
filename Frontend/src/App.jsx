@@ -31,6 +31,10 @@ import LoadedQuantity from "./pages/configForms/LoadedQuantity/LoadedQuantity.js
 import OperationOfSterilizer from "./pages/configForms/OperationOfSterilizer/OperationOfSterilizer.jsx";
 import MediaRecord from "./pages/configForms/MediaRecord/MediaRecord.jsx";
 import DispensingOfMaterials from "./pages/configForms/DispensingOfMaterials/DispensingOfMaterials.jsx";
+import LoadedQuantityPanels from "./pages/documentPanels/LoadedQuantityPanels/LoadedQuantityPanels.jsx";
+import MediaRecordPanel from "./pages/documentPanels/MediaRecordPanel/MediaRecordPanel.jsx";
+import OperationOfSterilizerPanel from "./pages/documentPanels/OperationOfSterilizerPanel/OperationOfSterilizerPanel.jsx";
+import DispensingOfMaterialsPanel from "./pages/documentPanels/DispensingOfMaterialsPanel/DispensingOfMaterialsPanel.jsx";
 
 function App() {
   return (
@@ -95,6 +99,22 @@ function App() {
             <Route
               path="/area-and-equipment-panel"
               element={<ProtectedRoute element={<AreaAndEquipmentPanel />} />}
+            />
+            <Route
+              path="/loaded-quantity-panel"
+              element={<ProtectedRoute element={<LoadedQuantityPanels />} />}
+            />
+            <Route
+              path="/media-record-panel"
+              element={<ProtectedRoute element={<MediaRecordPanel />} />}
+            />
+            <Route
+              path="/operation-of-sterilizer-panel"
+              element={<ProtectedRoute element={<OperationOfSterilizerPanel />} />}
+            />
+            <Route
+              path="/dispensing-of-material-panel"
+              element={<ProtectedRoute element={<DispensingOfMaterialsPanel />} />}
             />
             <Route
               path="/dashboard"

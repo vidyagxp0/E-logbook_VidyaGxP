@@ -15,6 +15,10 @@ function Dashboard() {
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
+  const [loadedQuantityElogs , setLoadedQuantityElogs] = useState([]);
+  const [mediaRecordElogs , setMediaRecordElogs] = useState([]);
+  const [dispensingOfMaterialsElogs , setDispensingOfMaterialsElogs] = useState([]);
+  const [operationOfSterilizerElogs , setOperationOfSterilizerElogs] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -80,6 +84,10 @@ function Dashboard() {
     ...areaAndERecordElogs,
     ...equipmentCRecordElogs,
     ...tempratureRecordElogs,
+    ...loadedQuantityElogs,
+    ...mediaRecordElogs,
+    ...dispensingOfMaterialsElogs,
+    ...operationOfSterilizerElogs,
   ];
 
   const handleNavigation = (item) => {
@@ -91,7 +99,16 @@ function Dashboard() {
       navigate("/tpr-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
       navigate("/ecc-panel", { state: item });
-    } else {
+    } else if (item.process === "Loaded Quantity") {
+      navigate("/loaded-quantity-panel", { state: item });
+    }else if (item.process === "Media Record") {
+      navigate("/media-record-panel", { state: item });
+    }else if (item.process === "Operation Of Sterilizer") {
+      navigate("/operation-of-sterilizer-panel", { state: item });
+    }else if (item.process === "Dispensing Of Materials") {
+      navigate("/dispensing-of-material-panel", { state: item });
+    }
+    else {
       // Handle default or fallback navigation if needed
     }
   };
@@ -139,6 +156,10 @@ function Dashboard() {
                 Equipment Cleaning Checklist
               </option>
               <option value="temperature_records">Temperature Records</option>
+              <option value="loaded_quantity">Loaded Quantity</option>
+              <option value="media_record">Media Record</option>
+              <option value="operation_of_sterilizer">Operation Of Sterilizer</option>
+              <option value="dispensing_of_material">Dispensing Of Materials</option>
             </select>
           </div>
           {/* <button className="btn">Print</button> */}
@@ -254,6 +275,161 @@ function Dashboard() {
                         {`TR${item.form_id}`}
                       </td>
                       <td>Temperature Records</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td>{item.description}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+               {eLogSelect === "loaded_quantity"
+              ? loadedQuantityElogs?.map((item, index) => {
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() => navigate("/loaded-quantity-panel", { state: item })}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`LQ${item.form_id}`}
+                      </td>
+                      <td>Loaded Quantity</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td>{item.description}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+
+{eLogSelect === "operation_of_sterilizer "
+              ? operationOfSterilizerElogs?.map((item, index) => {
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() => navigate("/operation-of-sterilizer-panel", { state: item })}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`OOF${item.form_id}`}
+                      </td>
+                      <td>Operation of sterilizer</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td>{item.description}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+
+{eLogSelect === "media_record"
+              ? mediaRecordElogs?.map((item, index) => {
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() => navigate("/media-record-panel", { state: item })}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`MR${item.form_id}`}
+                      </td>
+                      <td>Media Record</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td>{item.description}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+
+{eLogSelect === "dispensing_of_material"
+              ? dispensingOfMaterialsElogs?.map((item, index) => {
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() => navigate("/dispensing-of-material-panel", { state: item })}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`DM${item.form_id}`}
+                      </td>
+                      <td>Dispensing of Material </td>
                       <td>
                         {item.site_id === 1
                           ? "India"
