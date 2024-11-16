@@ -6,6 +6,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 const DispensingOfMaterials = () => {
   const [User, setUser] = useState(null);
@@ -14,23 +15,23 @@ const DispensingOfMaterials = () => {
   const [allTableData, setAllTableData] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const location = useLocation();
-  const [operationOfSterilizer, setOperationOfSterilizer] = useReducer(
+  const [dispensingOfMaterials, setDispensingOfMaterials] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: null,
-      approver_id: null,
+      reviewer_id: 2,
+      approver_id: 2,
       description: "",
-      department: "",
-      review_comments: "",
-      compression_area: "",
-      limit: null,
-      initiatorComment: "",
-      initiatorAttachment: null,
-      initiatorDeclaration: "",
+      department: 1,
+      review_comments: "dfsdfds",
+      compression_area: "sdfsdfdsf",
+      limit: 1,
+      initiatorComment: "dsssdas",
+      // initiatorAttachment: null,
+      // initiatorDeclaration: "",
     }
   );
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -53,13 +54,69 @@ const DispensingOfMaterials = () => {
       });
   }, []);
 
+  const handlePopupSubmit = (credentials) => {
+    if (
+      dispensingOfMaterials.site_id === null ||
+      dispensingOfMaterials.approver_id === null ||
+      dispensingOfMaterials.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
+      return;
+    }
+
+    if (dispensingOfMaterials.initiatorComment === "") {
+      toast.error("Please provide an initiator comment!");
+      return;
+    }
+    if (dispensingOfMaterials.description === "") {
+      toast.error("Please provide a short description!");
+      return;
+    }
+    // if (
+    //   loadedQuantity?.FormRecordsArray?.some(
+    //     (record) => record.differential_pressure === "" || record.remarks === ""
+    //   )
+    // ) {
+    //   toast.error("Please provide grid details!");
+    //   return;
+    // }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    dispensingOfMaterials.email = credentials?.email;
+    dispensingOfMaterials.password = credentials?.password;
+    dispensingOfMaterials.initiatorDeclaration = credentials?.declaration;
+
+    axios
+      .post(
+        "http://localhost:1000/dispensing-material/post",
+        dispensingOfMaterials,
+        config
+      )
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
+  };
+
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
-    setOperationOfSterilizer({ ...operationOfSterilizer, [name]: value });
+    setDispensingOfMaterials({ ...dispensingOfMaterials, [name]: value });
   };
 
   useEffect(() => {
-    setOperationOfSterilizer({ FormRecordsArray: allTableData });
+    setDispensingOfMaterials({ FormRecordsArray: allTableData });
   }, [allTableData]);
   const object = getCurrentDateTime();
   let date = object.currentDate;
@@ -85,10 +142,25 @@ const DispensingOfMaterials = () => {
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
-      differential_pressure: "",
-      remarks: "",
+      date:"",
+      on_time_auh: "",
+      on_time_laf: "",
+      on_time_uv_light:"",
+      on_time_done_by:"",
+      name_of_material:"",
+      control_no:"",
+      dispensed_quantity:"",
+      dispensed_by_qa:"",
+      dispensed_by_store:"",
+      off_time_auh:"",
+      off_time_laf:"",
+      off_time_uv_light:"",
+      uv_burning:"",
+      off_time_done_by:"",
+      cleaning_done_by:"",
+      weighing_balance_id:"",
       checked_by: User?.name,
-      supporting_docs: null,
+      remark:""
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -180,7 +252,7 @@ const DispensingOfMaterials = () => {
                         type="text"
                         value={User?.name}
                         onChange={(e) =>
-                          setOperationOfSterilizer({
+                          setDispensingOfMaterials({
                             initiator: e.target.value,
                           })
                         }
@@ -198,7 +270,7 @@ const DispensingOfMaterials = () => {
                         type="text"
                         value={date}
                         onChange={(e) =>
-                          setOperationOfSterilizer({
+                          setDispensingOfMaterials({
                             dateOfInitiation: e.target.value,
                           })
                         }
@@ -217,9 +289,9 @@ const DispensingOfMaterials = () => {
                     <div>
                       <input
                         type="text"
-                        value={operationOfSterilizer.description}
+                        value={dispensingOfMaterials.description}
                         onChange={(e) =>
-                          setOperationOfSterilizer({
+                          setDispensingOfMaterials({
                             description: e.target.value,
                           })
                         }
@@ -235,7 +307,7 @@ const DispensingOfMaterials = () => {
                         type="text"
                         value="Under Initiation"
                         onChange={(e) =>
-                          setOperationOfSterilizer({ status: e.target.value })
+                          setDispensingOfMaterials({ status: e.target.value })
                         }
                         disabled
                         style={{ backgroundColor: "#fafafa" }}
@@ -297,7 +369,7 @@ const DispensingOfMaterials = () => {
                       {allTableData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{generateUniqueId()}</td>
+                          <td>{item.unique_id}</td>
                           {/* <td>
                           <input
                             value={item.date}
@@ -314,7 +386,7 @@ const DispensingOfMaterials = () => {
                               value={item.date}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].differential_pressure =
+                                newData[index].date =
                                   e.target.value;
                                 setAllTableData(newData);
                               }}
@@ -324,10 +396,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.airPressure}
+                              value={item.on_time_auh}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].airPressure = e.target.value;
+                                newData[index].on_time_auh = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -336,10 +408,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.steamPressure}
+                              value={item.on_time_laf}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].steamPressure = e.target.value;
+                                newData[index].on_time_laf   = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -348,10 +420,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.printerOkOrNot}
+                              value={item.on_time_uv_light}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].printerOkOrNot = e.target.value;
+                                newData[index].on_time_uv_light = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -360,10 +432,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.productName}
+                              value={item.on_time_done_by}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].productName = e.target.value;
+                                newData[index].on_time_done_by = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -372,10 +444,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.containerSize}
+                              value={item.name_of_material}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].containerSize = e.target.value;
+                                newData[index].name_of_material = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -384,10 +456,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.loadedTime}
+                              value={item.control_no}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].loadedTime = e.target.value;
+                                newData[index].control_no = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -396,10 +468,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.dwellPeriod}
+                              value={item.dispensed_quantity}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].dwellPeriod = e.target.value;
+                                newData[index].dispensed_quantity = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -408,10 +480,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.dwellPeriod}
+                              value={item.dispensed_by_qa}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].dwellPeriod = e.target.value;
+                                newData[index].dispensed_by_qa = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -420,10 +492,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.unloadingTime}
+                              value={item.dispensed_by_store}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].unloadingTime = e.target.value;
+                                newData[index].dispensed_by_store = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -432,10 +504,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.cleaningTime}
+                              value={item.off_time_auh}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].cleaningTime = e.target.value;
+                                newData[index].off_time_auh = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -444,10 +516,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.cleaningTime}
+                              value={item.off_time_laf}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].cleaningTime = e.target.value;
+                                newData[index].off_time_laf = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -456,10 +528,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.cleaningDoneBy}
+                              value={item.off_time_uv_light}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].cleaningDoneBy = e.target.value;
+                                newData[index].off_time_uv_light = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -468,10 +540,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.checkedBy}
+                              value={item.uv_burning}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].checkedBy = e.target.value;
+                                newData[index].uv_burning = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -480,10 +552,10 @@ const DispensingOfMaterials = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.printerOkOrNot}
+                              value={item.off_time_done_by}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].yeild = e.target.value;
+                                newData[index].off_time_done_by = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -491,40 +563,40 @@ const DispensingOfMaterials = () => {
                           </td>
                           <td>
                             <input
-                              value={item.remarks}
+                              value={item.cleaning_done_by}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].remarks = e.target.value;
+                                newData[index].cleaning_done_by = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
                           </td>
                           <td>
                             <input
-                              value={item.remarks}
+                              value={item.checked_by}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].remarks = e.target.value;
+                                newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
                           </td>
                           <td>
                             <input
-                              value={item.remarks}
+                              value={item.weighing_balance_id}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].remarks = e.target.value;
+                                newData[index].weighing_balance_id = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
                           </td>
                           <td>
                             <input
-                              value={item.remarks}
+                              value={item.remark}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].remarks = e.target.value;
+                                newData[index].remark = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
@@ -601,7 +673,7 @@ const DispensingOfMaterials = () => {
             {isPopupOpen && (
               <UserVerificationPopUp
                 onClose={handlePopupClose}
-                // onSubmit={handlePopupSubmit}
+                onSubmit={handlePopupSubmit}
               />
             )}
           </div>

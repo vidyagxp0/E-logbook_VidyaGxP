@@ -362,7 +362,7 @@ const LoadedQuantity = () => {
                               required
                             />
                           </td>
-                          <td>{generateUniqueId()}</td>
+                          <td>{item.unique_id}</td>
 
                           <td>
                             <input

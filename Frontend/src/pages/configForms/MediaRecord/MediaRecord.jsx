@@ -6,6 +6,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 const MediaRecord = () => {
     const [User, setUser] = useState(null);
@@ -21,16 +22,16 @@ const MediaRecord = () => {
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: null,
-      approver_id: null,
+      reviewer_id: 2,
+      approver_id: 2,
       description: "",
-      department: "",
-      review_comments: "",
-      compression_area: "",
-      limit: null,
-      initiatorComment: "",
-      initiatorAttachment: null,
-      initiatorDeclaration: "",
+      department: 1,
+      review_comments: "dfsdfds",
+      compression_area: "sdfsdfdsf",
+      limit: 1,
+      initiatorComment: "dsssdas",
+      // initiatorAttachment: null,
+      // initiatorDeclaration: "",
     }
   );
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -52,6 +53,62 @@ const MediaRecord = () => {
         console.error(error);
       });
   }, []);
+
+  const handlePopupSubmit = (credentials) => {
+    if (
+      mediaRecords.site_id === null ||
+      mediaRecords.approver_id === null ||
+      mediaRecords.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
+      return;
+    }
+
+    if (mediaRecords.initiatorComment === "") {
+      toast.error("Please provide an initiator comment!");
+      return;
+    }
+    if (mediaRecords.description === "") {
+      toast.error("Please provide a short description!");
+      return;
+    }
+    // if (
+    //   loadedQuantity?.FormRecordsArray?.some(
+    //     (record) => record.differential_pressure === "" || record.remarks === ""
+    //   )
+    // ) {
+    //   toast.error("Please provide grid details!");
+    //   return;
+    // }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    mediaRecords.email = credentials?.email;
+    mediaRecords.password = credentials?.password;
+    mediaRecords.initiatorDeclaration = credentials?.declaration;
+
+    axios
+      .post(
+        "http://localhost:1000/media-record/post",
+        mediaRecords,
+        config
+      )
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
+  };
 
   useEffect(() => {
     setMediaRecords({ FormRecordsArray: allTableData });
@@ -80,10 +137,17 @@ const MediaRecord = () => {
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
-      differential_pressure: "",
-      remarks: "",
-      checked_by: User?.name,
-      supporting_docs: null,
+      date: "",
+      name_medium: "",
+      date_of_preparation: "",
+      date_of_use: "",
+      lot_no: "",
+      no_of_plate_prepared:"",
+      no_of_plate_used:"",
+      used_for:"",
+      balance_no_plate:"",
+      signature:"",
+      checked_by: "",
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -274,9 +338,10 @@ const MediaRecord = () => {
                     {allTableData.map((item, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{generateUniqueId()}</td>
-                        {/* <td>
+                        <td>{item.unique_id}</td>
+                        <td>
                           <input
+                          type="date"
                             value={item.date}
                             onChange={(e) => {
                               const newData = [...allTableData];
@@ -284,8 +349,8 @@ const MediaRecord = () => {
                               setAllTableData(newData);
                             }}
                           />
-                        </td> */}
-                        <td>
+                        </td>
+                        {/* <td>
                           <input
                             type="date"
                             value={item.date}
@@ -297,14 +362,14 @@ const MediaRecord = () => {
                             }}
                             required
                           />
-                        </td>
+                        </td> */}
                         <td>
                           <input
                             type="text"
-                            value={item.airPressure}
+                            value={item.name_medium}
                             onChange={(e) => {
                               const newData = [...allTableData];
-                              newData[index].airPressure = e.target.value;
+                              newData[index].name_medium = e.target.value;
                               setAllTableData(newData);
                             }}
                             required
@@ -312,11 +377,11 @@ const MediaRecord = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
-                            value={item.steamPressure}
+                            type="date"
+                            value={item.date_of_preparation}
                             onChange={(e) => {
                               const newData = [...allTableData];
-                              newData[index].steamPressure = e.target.value;
+                              newData[index].date_of_preparation = e.target.value;
                               setAllTableData(newData);
                             }}
                             required
@@ -324,11 +389,11 @@ const MediaRecord = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
-                            value={item.printerOkOrNot}
+                            type="date"
+                            value={item.date_of_use}
                             onChange={(e) => {
                               const newData = [...allTableData];
-                              newData[index].printerOkOrNot = e.target.value;
+                              newData[index].date_of_use = e.target.value;
                               setAllTableData(newData);
                             }}
                             required
@@ -336,11 +401,11 @@ const MediaRecord = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
-                           value={item.productName}
+                            type="number"
+                            value={item.lot_no}
                             onChange={(e) => {
                               const newData = [...allTableData];
-                              newData[index].productName = e.target.value;
+                              newData[index].lot_no = e.target.value;
                               setAllTableData(newData);
                             }}
                             required
@@ -348,11 +413,23 @@ const MediaRecord = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
-                           value={item.containerSize}
+                            type="number"
+                           value={item.no_of_plate_prepared}
                             onChange={(e) => {
                               const newData = [...allTableData];
-                              newData[index].containerSize =
+                              newData[index].no_of_plate_prepared = e.target.value;
+                              setAllTableData(newData);
+                            }}
+                            required
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                           value={item.no_of_plate_used}
+                            onChange={(e) => {
+                              const newData = [...allTableData];
+                              newData[index].no_of_plate_used =
                                 e.target.value;
                               setAllTableData(newData);
                             }}
@@ -362,10 +439,10 @@ const MediaRecord = () => {
                         <td>
                           <input
                             type="text"
-                           value={item.loadedTime}
+                           value={item.used_for}
                             onChange={(e) => {
                               const newData = [...allTableData];
-                              newData[index].loadedTime =
+                              newData[index].used_for =
                                 e.target.value;
                               setAllTableData(newData);
                             }}
@@ -374,11 +451,11 @@ const MediaRecord = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
-                           value={item.dwellPeriod}
+                            type="number"
+                           value={item.balance_no_plate}
                             onChange={(e) => {
                               const newData = [...allTableData];
-                              newData[index].dwellPeriod = e.target.value;
+                              newData[index].balance_no_plate = e.target.value;
                               setAllTableData(newData);
                             }}
                             required
@@ -387,16 +464,16 @@ const MediaRecord = () => {
                         <td>
                           <input
                             type="text"
-                           value={item.dwellPeriod}
+                           value={item.signature}
                             onChange={(e) => {
                               const newData = [...allTableData];
-                              newData[index].dwellPeriod = e.target.value;
+                              newData[index].signature = e.target.value;
                               setAllTableData(newData);
                             }}
                             required
                           />
                         </td>
-                        <td>
+                        {/* <td>
                           <input
                             type="text"
                            value={item.unloadingTime}
@@ -407,7 +484,7 @@ const MediaRecord = () => {
                             }}
                             required
                           />
-                        </td>
+                        </td> */}
 
                         {/* <td style={{ width: "250px" }}>
                           <div className="d-flex align-items-center">
@@ -480,7 +557,7 @@ const MediaRecord = () => {
           {isPopupOpen && (
             <UserVerificationPopUp
               onClose={handlePopupClose}
-              // onSubmit={handlePopupSubmit}
+              onSubmit={handlePopupSubmit}
             />
           )}
         </div>
