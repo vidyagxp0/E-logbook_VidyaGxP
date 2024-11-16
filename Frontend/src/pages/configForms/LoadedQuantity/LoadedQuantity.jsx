@@ -6,6 +6,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 const LoadedQuantity = () => {
   const [User, setUser] = useState(null);
@@ -21,14 +22,14 @@ const LoadedQuantity = () => {
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: null,
-      approver_id: null,
+      reviewer_id: 2,
+      approver_id: 2,
       description: "",
-      department: "",
-      review_comments: "",
-      compression_area: "",
-      limit: null,
-      initiatorComment: "",
+      department: 1,
+      review_comments: "dfsdfds",
+      compression_area: "sdfsdfdsf",
+      limit: 1,
+      initiatorComment: "dsssdas",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }
@@ -52,6 +53,62 @@ const LoadedQuantity = () => {
         console.error(error);
       });
   }, []);
+
+  const handlePopupSubmit = (credentials) => {
+    if (
+      loadedQuantity.site_id === null ||
+      loadedQuantity.approver_id === null ||
+      loadedQuantity.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
+      return;
+    }
+
+    if (loadedQuantity.initiatorComment === "") {
+      toast.error("Please provide an initiator comment!");
+      return;
+    }
+    if (loadedQuantity.description === "") {
+      toast.error("Please provide a short description!");
+      return;
+    }
+    // if (
+    //   loadedQuantity?.FormRecordsArray?.some(
+    //     (record) => record.differential_pressure === "" || record.remarks === ""
+    //   )
+    // ) {
+    //   toast.error("Please provide grid details!");
+    //   return;
+    // }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    loadedQuantity.email = credentials?.email;
+    loadedQuantity.password = credentials?.password;
+    loadedQuantity.initiatorDeclaration = credentials?.declaration;
+
+    axios
+      .post(
+        "http://localhost:1000/loaded-quantity/post",
+        loadedQuantity,
+        config
+      )
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
+  };
 
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
@@ -84,11 +141,17 @@ const LoadedQuantity = () => {
     const currentTime = new Date().toLocaleTimeString("en-us", options);
     const newRow = {
       unique_id: generateUniqueId(),
+      date: "",
       time: currentTime,
-      differential_pressure: "",
+      product_name: "",
+      batch_no: "",
+      container_size: "",
+      batch_size: "",
+      theoretical_production: "",
+      loaded_quantity: "",
+      yield: "",
       remarks: "",
-      checked_by: User?.name,
-      supporting_docs: null,
+      checked_by: "",
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -105,7 +168,6 @@ const LoadedQuantity = () => {
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
-
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
@@ -152,8 +214,7 @@ const LoadedQuantity = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsSelectedGeneral(true);
+                      setIsSelectedDetails(false), setIsSelectedGeneral(true);
                     }}
                   >
                     General Information
@@ -165,8 +226,7 @@ const LoadedQuantity = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
-                        setIsSelectedGeneral(false);
+                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
                     }}
                   >
                     Details
@@ -249,7 +309,6 @@ const LoadedQuantity = () => {
 
               {isSelectedDetails === true ? (
                 <>
-
                   <div>
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
@@ -260,6 +319,8 @@ const LoadedQuantity = () => {
                     <thead>
                       <tr>
                         <th>S no.</th>
+                        <th>Date</th>
+                        <th>Unique ID</th>
                         <th>Product Name</th>
                         <th>Batch No.</th>
                         <th>Container Size (ml)</th>
@@ -268,7 +329,6 @@ const LoadedQuantity = () => {
                         <th>Loaded Quantity</th>
                         <th>Checked By</th>
                         <th>% Yield</th>
-                        {/* <th>Date</th> */}
                         {/* <th>Product Name</th> */}
                         <th>Remark</th>
                         {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
@@ -279,7 +339,6 @@ const LoadedQuantity = () => {
                       {allTableData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{item.unique_id}</td>
                           {/* <td>
                             <input
                               value={item.date}
@@ -296,7 +355,69 @@ const LoadedQuantity = () => {
                               value={item.date}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].differential_pressure =
+                                newData[index].date = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>{item.unique_id}</td>
+
+                          <td>
+                            <input
+                              type="text"
+                              value={item.product_name}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].product_name = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={item.batch_no}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].batch_no = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={item.container_size}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].container_size = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={item.batch_size}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].batch_size = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={item.theoretical_production}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].theoretical_production =
                                   e.target.value;
                                 setAllTableData(newData);
                               }}
@@ -306,11 +427,10 @@ const LoadedQuantity = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.productName}
+                              value={item.loaded_quantity}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].productName =
-                                  e.target.value;
+                                newData[index].loaded_quantity = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -319,11 +439,10 @@ const LoadedQuantity = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.batchNo}
+                              value={item.checked_by}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].batchNo =
-                                  e.target.value;
+                                newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -332,76 +451,10 @@ const LoadedQuantity = () => {
                           <td>
                             <input
                               type="text"
-                              value={""}
+                              value={item.yield}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].containerSize =
-                                  e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={""}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].batchSize =
-                                  e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={""}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].theoreticalProduction =
-                                  e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={""}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].loadedQuantity =
-                                  e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={""}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].checkedBy =
-                                  e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={""}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].yeild =
-                                  e.target.value;
+                                newData[index].yield = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -417,7 +470,7 @@ const LoadedQuantity = () => {
                               }}
                             />
                           </td>
-                         
+
                           {/* <td style={{ width: "250px" }}>
                             <div className="d-flex align-items-center">
                               <button
@@ -462,7 +515,6 @@ const LoadedQuantity = () => {
                           </td> */}
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
-                           
                           </td>
                         </tr>
                       ))}
@@ -489,8 +541,8 @@ const LoadedQuantity = () => {
             </div>
             {isPopupOpen && (
               <UserVerificationPopUp
-              onClose={handlePopupClose}
-              // onSubmit={handlePopupSubmit}
+                onClose={handlePopupClose}
+                onSubmit={handlePopupSubmit}
               />
             )}
           </div>
