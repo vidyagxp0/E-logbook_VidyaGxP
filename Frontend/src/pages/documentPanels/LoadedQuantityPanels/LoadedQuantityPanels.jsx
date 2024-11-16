@@ -8,539 +8,543 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 
-
 const LoadedQuantityPanels = () => {
-    const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-    const [isSelectedDetails, setIsSelectedDetails] = useState(false);
-    const [initiatorRemarks, setInitiatorRemarks] = useState(false);
-    const [reviewerRemarks, setReviewerRemarks] = useState(false);
-    const [approverRemarks, setApproverRemarks] = useState(false);
-    const location = useLocation();
-    const userDetails = JSON.parse(localStorage.getItem("user-details"));
-    const [editData, setEditData] = useState({
-      initiator_name: "",
-      status: "",
-      description: "",
-      department: "",
-      compression_area: "",
-      DifferentialPressureRecords: [],
-      limit: "",
-    });
-    const navigate = useNavigate();
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [popupAction, setPopupAction] = useState(null);
+  const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [initiatorRemarks, setInitiatorRemarks] = useState(false);
+  const [reviewerRemarks, setReviewerRemarks] = useState(false);
+  const [approverRemarks, setApproverRemarks] = useState(false);
+  const location = useLocation();
+  const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const [editData, setEditData] = useState({
+    initiator_name: "",
+    status: "",
+    description: "",
+    department: "",
+    compression_area: "",
+    DifferentialPressureRecords: [],
+    limit: "",
+  });
+  const navigate = useNavigate();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupAction, setPopupAction] = useState(null);
 
-    const handlePopupSubmit = (credentials) => {
-        const data = {
-          site_id: location.state?.site_id,
-          form_id: location.state?.form_id,
-          email: credentials?.email,
-          password: credentials?.password,
-          reviewComment: editData.reviewComment,
-          approverComment: editData.approverComment,
-        };
-    
-        const config = {
+  const handlePopupSubmit = (credentials) => {
+    const data = {
+      site_id: location.state?.site_id,
+      form_id: location.state?.form_id,
+      email: credentials?.email,
+      password: credentials?.password,
+      reviewComment: editData.reviewComment,
+      approverComment: editData.approverComment,
+    };
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    if (popupAction === "sendFromOpenToReview") {
+      data.initiatorDeclaration = credentials?.declaration;
+      data.initiatorAttachment = editData?.initiatorAttachment;
+      axios
+        .put(
+          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully sent for review");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message || "Couldn't send elog for review!!"
+          );
+        });
+    } else if (popupAction === "sendFromReviewToApproval") {
+      data.reviewerDeclaration = credentials?.declaration;
+      data.reviewerAttachment = editData.reviewerAttachment;
+      axios
+        .put(
+          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully sent for approval");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message ||
+              "Couldn't send elog for approval!!"
+          );
+        });
+    } else if (popupAction === "sendFromReviewToOpen") {
+      data.reviewerDeclaration = credentials?.declaration;
+      data.reviewerAttachment = editData.reviewerAttachment;
+      axios
+        .put(
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully opened");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
+    } else if (popupAction === "sendFromApprovalToApproved") {
+      data.approverDeclaration = credentials?.declaration;
+      data.approverAttachment = editData.approverAttachment;
+      axios
+        .put(
+          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully approved");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message || "Couldn't approve elog!!"
+          );
+        });
+    } else if (popupAction === "sendFromApprovalToOpen") {
+      data.approverAttachment = editData.approverAttachment;
+      data.approverDeclaration = credentials?.declaration;
+      axios
+        .put(
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully opened");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
+    } else if (popupAction === "updateElog") {
+      data.initiatorDeclaration = credentials?.declaration;
+      // if (
+      //   parseFloat(editData.limit) < 0.6 ||
+      //   parseFloat(editData.limit) > 2.6
+      // ) {
+      //   toast.error("The limit value must be between 0.6 and 2.6.");
+      //   return;
+      // }
+      if (editData.description === "") {
+        toast.error("description is required");
+        return;
+      }
+      if (
+        editData?.DifferentialPressureRecords?.some(
+          (record) =>
+            record.differential_pressure === "" || record.remarks === ""
+        )
+      ) {
+        toast.error("Please provide grid details!");
+        return;
+      }
+
+      editData.email = credentials.email;
+      editData.password = credentials.password;
+      editData.initiatorDeclaration = credentials?.declaration;
+
+      const myHeaders = {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      };
+
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        data: editData,
+        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+      };
+
+      axios(requestOptions)
+        .then(() => {
+          toast.success("Data saved successfully!");
+          navigate("/dashboard");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+    setIsPopupOpen(false);
+    setPopupAction(null);
+  };
+
+  useEffect(() => {
+    setEditData(location.state);
+  }, [location.state]);
+
+  const addRow = () => {
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      };
+
+      const currentTime = new Date().toLocaleTimeString("en-US", options);
+      const newRow = {
+        unique_id: generateUniqueId(),
+        time: currentTime,
+        differential_pressure: "",
+        remarks: "",
+        checked_by: location?.state?.initiator_name,
+        supporting_docs: null,
+      };
+      setEditData((prevState) => ({
+        ...prevState,
+
+        DifferentialPressureRecords: [
+          ...prevState.DifferentialPressureRecords,
+          newRow,
+        ],
+      }));
+    }
+  };
+
+  function deepEqual(object1, object2) {
+    // First, check if they are the same object (reference equality)
+    if (object1 === object2) {
+      return true;
+    }
+
+    // Ensure both are objects and neither is null
+    if (
+      typeof object1 !== "object" ||
+      object1 === null ||
+      typeof object2 !== "object" ||
+      object2 === null
+    ) {
+      return false;
+    }
+
+    // Compare their own properties
+    const keys1 = Object.keys(object1);
+    const keys2 = Object.keys(object2);
+
+    // Check if they have the same number of properties
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    // Check each property in object1 to see if it exists and equals the one in object2
+    for (const key of keys1) {
+      const val1 = object1[key];
+      const val2 = object2[key];
+      const areObjects = isObject(val1) && isObject(val2);
+
+      // Recursively evaluate objects, or check primitive values for equality
+      if (
+        (areObjects && !deepEqual(val1, val2)) ||
+        (!areObjects && val1 !== val2)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function isObject(object) {
+    return object != null && typeof object === "object";
+  }
+
+  const deleteRow = (index) => {
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
+      const updatedGridData = [...editData.DifferentialPressureRecords];
+      updatedGridData.splice(index, 1);
+      setEditData((prevState) => ({
+        ...prevState,
+        DifferentialPressureRecords: updatedGridData,
+      }));
+    }
+  };
+
+  const handleInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
+  };
+
+  // const handleDeleteFile = (index) => {
+  //   if (
+  //     location.state?.stage === 1 &&
+  //     location.state?.initiator_id === userDetails.userId
+  //   ) {
+  //     const updatedGridData = editData.DifferentialPressureRecords.map(
+  //       (item, i) => {
+  //         if (i === index) {
+  //           return { ...item, supporting_docs: null };
+  //         }
+  //         return item;
+  //       }
+  //     );
+  //     setEditData((prevState) => ({
+  //       ...prevState,
+  //       DifferentialPressureRecords: updatedGridData,
+  //     }));
+  //   }
+  // };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return ""; // Return empty if the input is falsy
+
+    const utcDate = new Date(dateString);
+    // Check if the date is valid
+    if (isNaN(utcDate.getTime())) {
+      return "";
+    }
+
+    return utcDate.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+  };
+
+  const handleFileChange = (index, file) => {
+    const updatedGridData = [...editData.DifferentialPressureRecords];
+    updatedGridData[index].supporting_docs = file;
+    setEditData((prevState) => ({
+      ...prevState,
+      DifferentialPressureRecords: updatedGridData,
+    }));
+  };
+
+  const handleInitiatorFileChange = (e) => {
+    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+  };
+  const handleReviewerFileChange = (e) => {
+    setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
+  };
+  const handleApproverFileChange = (e) => {
+    setEditData({ ...editData, approverAttachment: e.target.files[0] });
+  };
+
+  const generateUniqueId = () => {
+    return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
+  //   const reportData = {
+  //     site:
+  //       location.state.site_id === 1
+  //         ? "India"
+  //         : location.state.site_id === 2
+  //         ? "Malaysia"
+  //         : location.state.site_id === 3
+  //         ? "EMEA"
+  //         : "EU",
+  //     status: location.state.status,
+  //     initiator_name: location.state.initiator_name,
+  //     ...editData,
+  //   };
+
+  async function generateReport() {
+    // Create the confirmation popup container
+    const confirmationContainer = document.createElement("div");
+    confirmationContainer.style.position = "fixed";
+    confirmationContainer.style.top = "20px"; // Adjusted top position
+    confirmationContainer.style.left = "50%";
+    confirmationContainer.style.transform = "translate(-50%, 0)";
+    confirmationContainer.style.backgroundColor = "#ffffff";
+    confirmationContainer.style.border = "1px solid #ccc";
+    confirmationContainer.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
+    confirmationContainer.style.padding = "20px";
+    confirmationContainer.style.borderRadius = "5px";
+    confirmationContainer.style.zIndex = "1000";
+    confirmationContainer.style.width = "300px";
+
+    // Create the confirmation message
+    const confirmationMessage = document.createElement("div");
+    confirmationMessage.textContent =
+      "Are you sure you want to generate the PDF?";
+    confirmationMessage.style.fontSize = "16px";
+    confirmationMessage.style.marginBottom = "15px";
+
+    // Create the buttons container
+    const buttonsContainer = document.createElement("div");
+    buttonsContainer.style.textAlign = "center";
+
+    // Create the confirm button
+    const confirmButton = document.createElement("button");
+    confirmButton.textContent = "Confirm";
+    confirmButton.style.padding = "10px 20px";
+    confirmButton.style.margin = "0 10px";
+    confirmButton.style.cursor = "pointer";
+    confirmButton.style.border = "none";
+    confirmButton.style.borderRadius = "5px";
+    confirmButton.style.backgroundColor = "#4CAF50";
+    confirmButton.style.color = "white";
+    confirmButton.style.fontSize = "14px";
+
+    // Create the cancel button
+    const cancelButton = document.createElement("button");
+    cancelButton.textContent = "Cancel";
+    cancelButton.style.padding = "10px 20px";
+    cancelButton.style.margin = "0 10px";
+    cancelButton.style.cursor = "pointer";
+    cancelButton.style.border = "none";
+    cancelButton.style.borderRadius = "5px";
+    cancelButton.style.backgroundColor = "#f44336";
+    cancelButton.style.color = "white";
+    cancelButton.style.fontSize = "14px";
+
+    // Append buttons to the buttons container
+    buttonsContainer.appendChild(confirmButton);
+    buttonsContainer.appendChild(cancelButton);
+
+    // Append message and buttons to the confirmation container
+    confirmationContainer.appendChild(confirmationMessage);
+    confirmationContainer.appendChild(buttonsContainer);
+
+    // Append the confirmation container to the document body
+    document.body.appendChild(confirmationContainer);
+
+    // Add event listener to the confirm button
+    confirmButton.addEventListener("click", async () => {
+      try {
+        // Close the confirmation popup
+        confirmationContainer.remove();
+
+        // Make API request to generate PDF
+        const response = await axios({
+          url: "http://localhost:1000/differential-pressure/generate-pdf",
+          method: "POST",
+          responseType: "blob",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
-        };
-    
-        if (popupAction === "sendFromOpenToReview") {
-          data.initiatorDeclaration = credentials?.declaration;
-          data.initiatorAttachment = editData?.initiatorAttachment;
-          axios
-            .put(
-              "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
-              data,
-              config
-            )
-            .then(() => {
-              toast.success("Elog successfully sent for review");
-              navigate(-1);
-            })
-            .catch((error) => {
-              toast.error(
-                error?.response?.data?.message || "Couldn't send elog for review!!"
-              );
-            });
-        } else if (popupAction === "sendFromReviewToApproval") {
-          data.reviewerDeclaration = credentials?.declaration;
-          data.reviewerAttachment = editData.reviewerAttachment;
-          axios
-            .put(
-              "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
-              data,
-              config
-            )
-            .then(() => {
-              toast.success("Elog successfully sent for approval");
-              navigate(-1);
-            })
-            .catch((error) => {
-              toast.error(
-                error?.response?.data?.message ||
-                  "Couldn't send elog for approval!!"
-              );
-            });
-        } else if (popupAction === "sendFromReviewToOpen") {
-          data.reviewerDeclaration = credentials?.declaration;
-          data.reviewerAttachment = editData.reviewerAttachment;
-          axios
-            .put(
-              "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
-              data,
-              config
-            )
-            .then(() => {
-              toast.success("Elog successfully opened");
-              navigate(-1);
-            })
-            .catch((error) => {
-              toast.error(error?.response?.data?.message || "Couldn't open elog!!");
-            });
-        } else if (popupAction === "sendFromApprovalToApproved") {
-          data.approverDeclaration = credentials?.declaration;
-          data.approverAttachment = editData.approverAttachment;
-          axios
-            .put(
-              "http://localhost:1000/differential-pressure/approve-DP-elog",
-              data,
-              config
-            )
-            .then(() => {
-              toast.success("Elog successfully approved");
-              navigate(-1);
-            })
-            .catch((error) => {
-              toast.error(
-                error?.response?.data?.message || "Couldn't approve elog!!"
-              );
-            });
-        } else if (popupAction === "sendFromApprovalToOpen") {
-          data.approverAttachment = editData.approverAttachment;
-          data.approverDeclaration = credentials?.declaration;
-          axios
-            .put(
-              "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
-              data,
-              config
-            )
-            .then(() => {
-              toast.success("Elog successfully opened");
-              navigate(-1);
-            })
-            .catch((error) => {
-              toast.error(error?.response?.data?.message || "Couldn't open elog!!");
-            });
-        } else if (popupAction === "updateElog") {
-          data.initiatorDeclaration = credentials?.declaration;
-          // if (
-          //   parseFloat(editData.limit) < 0.6 ||
-          //   parseFloat(editData.limit) > 2.6
-          // ) {
-          //   toast.error("The limit value must be between 0.6 and 2.6.");
-          //   return;
-          // }
-          if (editData.description === "") {
-            toast.error("description is required");
-            return;
-          }
-          if (editData?.DifferentialPressureRecords?.some(record => record.differential_pressure === "" || record.remarks === "")) {
-            toast.error("Please provide grid details!");
-            return;
-          }
-    
-          editData.email = credentials.email;
-          editData.password = credentials.password;
-          editData.initiatorDeclaration = credentials?.declaration;
-    
-          const myHeaders = {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-            "Content-Type": "multipart/form-data",
-          };
-    
-          const requestOptions = {
-            method: "PUT",
-            headers: myHeaders,
-            data: editData,
-            url: "http://localhost:1000/differential-pressure/update-differential-pressure",
-          };
-    
-          axios(requestOptions)
-            .then(() => {
-              toast.success("Data saved successfully!");
-              navigate("/dashboard");
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-    
-        setIsPopupOpen(false);
-        setPopupAction(null);
-      };
-    
-      useEffect(() => {
-        setEditData(location.state);
-      }, [location.state]);
-    
-      const addRow = () => {
-        if (
-          location.state?.stage === 1 &&
-          location.state?.initiator_id === userDetails.userId
-        ) {
-          const options = {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false, // Use 24-hour format
-          };
-    
-          const currentTime = new Date().toLocaleTimeString("en-US", options);
-          const newRow = {
-            unique_id: generateUniqueId(),
-            time: currentTime,
-            differential_pressure: "",
-            remarks: "",
-            checked_by: location?.state?.initiator_name,
-            supporting_docs: null,
-          };
-          setEditData((prevState) => ({
-            ...prevState,
-    
-            DifferentialPressureRecords: [
-              ...prevState.DifferentialPressureRecords,
-              newRow,
-            ],
-          }));
-        }
-      };
-    
-      function deepEqual(object1, object2) {
-        // First, check if they are the same object (reference equality)
-        if (object1 === object2) {
-          return true;
-        }
-    
-        // Ensure both are objects and neither is null
-        if (
-          typeof object1 !== "object" ||
-          object1 === null ||
-          typeof object2 !== "object" ||
-          object2 === null
-        ) {
-          return false;
-        }
-    
-        // Compare their own properties
-        const keys1 = Object.keys(object1);
-        const keys2 = Object.keys(object2);
-    
-        // Check if they have the same number of properties
-        if (keys1.length !== keys2.length) {
-          return false;
-        }
-    
-        // Check each property in object1 to see if it exists and equals the one in object2
-        for (const key of keys1) {
-          const val1 = object1[key];
-          const val2 = object2[key];
-          const areObjects = isObject(val1) && isObject(val2);
-    
-          // Recursively evaluate objects, or check primitive values for equality
-          if (
-            (areObjects && !deepEqual(val1, val2)) ||
-            (!areObjects && val1 !== val2)
-          ) {
-            return false;
-          }
-        }
-    
-        return true;
-      }
-    
-      function isObject(object) {
-        return object != null && typeof object === "object";
-      }
-    
-      const deleteRow = (index) => {
-        if (
-          location.state?.stage === 1 &&
-          location.state?.initiator_id === userDetails.userId
-        ) {
-          const updatedGridData = [...editData.DifferentialPressureRecords];
-          updatedGridData.splice(index, 1);
-          setEditData((prevState) => ({
-            ...prevState,
-            DifferentialPressureRecords: updatedGridData,
-          }));
-        }
-      };
-    
-      const handleInputChange1 = (e) => {
-        const { name, value } = e.target;
-        setEditData({ ...editData, [name]: value });
-      };
-    
-      // const handleDeleteFile = (index) => {
-      //   if (
-      //     location.state?.stage === 1 &&
-      //     location.state?.initiator_id === userDetails.userId
-      //   ) {
-      //     const updatedGridData = editData.DifferentialPressureRecords.map(
-      //       (item, i) => {
-      //         if (i === index) {
-      //           return { ...item, supporting_docs: null };
-      //         }
-      //         return item;
-      //       }
-      //     );
-      //     setEditData((prevState) => ({
-      //       ...prevState,
-      //       DifferentialPressureRecords: updatedGridData,
-      //     }));
-      //   }
-      // };
-    
-      const formatDate = (dateString) => {
-        if (!dateString) return ""; // Return empty if the input is falsy
-    
-        const utcDate = new Date(dateString);
-        // Check if the date is valid
-        if (isNaN(utcDate.getTime())) {
-          return "";
-        }
-    
-        return utcDate.toLocaleString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
+          data: {
+            reportData: reportData,
+          },
         });
-      };
-    
-      const handleFileChange = (index, file) => {
-        const updatedGridData = [...editData.DifferentialPressureRecords];
-        updatedGridData[index].supporting_docs = file;
-        setEditData((prevState) => ({
-          ...prevState,
-          DifferentialPressureRecords: updatedGridData,
-        }));
-      };
-    
-      const handleInitiatorFileChange = (e) => {
-        setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
-      };
-      const handleReviewerFileChange = (e) => {
-        setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
-      };
-      const handleApproverFileChange = (e) => {
-        setEditData({ ...editData, approverAttachment: e.target.files[0] });
-      };
-    
-      const generateUniqueId = () => {
-        return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
-      };
-    
-    //   const reportData = {
-    //     site:
-    //       location.state.site_id === 1
-    //         ? "India"
-    //         : location.state.site_id === 2
-    //         ? "Malaysia"
-    //         : location.state.site_id === 3
-    //         ? "EMEA"
-    //         : "EU",
-    //     status: location.state.status,
-    //     initiator_name: location.state.initiator_name,
-    //     ...editData,
-    //   };
-    
-      async function generateReport() {
-        // Create the confirmation popup container
-        const confirmationContainer = document.createElement("div");
-        confirmationContainer.style.position = "fixed";
-        confirmationContainer.style.top = "20px"; // Adjusted top position
-        confirmationContainer.style.left = "50%";
-        confirmationContainer.style.transform = "translate(-50%, 0)";
-        confirmationContainer.style.backgroundColor = "#ffffff";
-        confirmationContainer.style.border = "1px solid #ccc";
-        confirmationContainer.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
-        confirmationContainer.style.padding = "20px";
-        confirmationContainer.style.borderRadius = "5px";
-        confirmationContainer.style.zIndex = "1000";
-        confirmationContainer.style.width = "300px";
-    
-        // Create the confirmation message
-        const confirmationMessage = document.createElement("div");
-        confirmationMessage.textContent =
-          "Are you sure you want to generate the PDF?";
-        confirmationMessage.style.fontSize = "16px";
-        confirmationMessage.style.marginBottom = "15px";
-    
-        // Create the buttons container
-        const buttonsContainer = document.createElement("div");
-        buttonsContainer.style.textAlign = "center";
-    
-        // Create the confirm button
-        const confirmButton = document.createElement("button");
-        confirmButton.textContent = "Confirm";
-        confirmButton.style.padding = "10px 20px";
-        confirmButton.style.margin = "0 10px";
-        confirmButton.style.cursor = "pointer";
-        confirmButton.style.border = "none";
-        confirmButton.style.borderRadius = "5px";
-        confirmButton.style.backgroundColor = "#4CAF50";
-        confirmButton.style.color = "white";
-        confirmButton.style.fontSize = "14px";
-    
-        // Create the cancel button
-        const cancelButton = document.createElement("button");
-        cancelButton.textContent = "Cancel";
-        cancelButton.style.padding = "10px 20px";
-        cancelButton.style.margin = "0 10px";
-        cancelButton.style.cursor = "pointer";
-        cancelButton.style.border = "none";
-        cancelButton.style.borderRadius = "5px";
-        cancelButton.style.backgroundColor = "#f44336";
-        cancelButton.style.color = "white";
-        cancelButton.style.fontSize = "14px";
-    
-        // Append buttons to the buttons container
-        buttonsContainer.appendChild(confirmButton);
-        buttonsContainer.appendChild(cancelButton);
-    
-        // Append message and buttons to the confirmation container
-        confirmationContainer.appendChild(confirmationMessage);
-        confirmationContainer.appendChild(buttonsContainer);
-    
-        // Append the confirmation container to the document body
-        document.body.appendChild(confirmationContainer);
-    
-        // Add event listener to the confirm button
-        confirmButton.addEventListener("click", async () => {
-          try {
-            // Close the confirmation popup
-            confirmationContainer.remove();
-    
-            // Make API request to generate PDF
-            const response = await axios({
-              url: "http://localhost:1000/differential-pressure/generate-pdf",
-              method: "POST",
-              responseType: "blob",
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-                "Content-Type": "application/json",
-              },
-              data: {
-                reportData: reportData,
-              },
-            });
-    
-            // Create a blob URL for the PDF content
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-    
-            // Create an anchor element to trigger the download
-            const a = document.createElement("a");
-            a.style.display = "none";
-            a.href = url;
-            a.download = `DP${reportData.form_id}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-    
-            // Clean up the blob URL
-            window.URL.revokeObjectURL(url);
-    
-            // Display success message as styled popup
-            const successMessage = document.createElement("div");
-            successMessage.textContent = "PDF generated successfully!";
-            successMessage.style.position = "fixed";
-            successMessage.style.top = "20px";
-            successMessage.style.left = "50%";
-            successMessage.style.transform = "translateX(-50%)";
-            successMessage.style.backgroundColor =
-              "rgba(76, 175, 80, 0.8)"; /* Green for success */
-            successMessage.style.color = "white";
-            successMessage.style.padding = "15px";
-            successMessage.style.borderRadius = "5px";
-            successMessage.style.zIndex = "1000";
-            successMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
-            successMessage.style.fontSize = "14px";
-            document.body.appendChild(successMessage);
-    
-            // Remove the success message after 3 seconds
-            setTimeout(() => {
-              successMessage.remove();
-            }, 3000);
-          } catch (error) {
-            console.error("Error:", error);
-            // Display error message as styled popup
-            const errorMessage = document.createElement("div");
-            errorMessage.textContent =
-              "Failed to generate PDF. Please try again later.";
-            errorMessage.style.position = "fixed";
-            errorMessage.style.top = "20px";
-            errorMessage.style.left = "50%";
-            errorMessage.style.transform = "translateX(-50%)";
-            errorMessage.style.backgroundColor =
-              "rgba(244, 67, 54, 0.8)"; /* Red for error */
-            errorMessage.style.color = "white";
-            errorMessage.style.padding = "15px";
-            errorMessage.style.borderRadius = "5px";
-            errorMessage.style.zIndex = "1000";
-            errorMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
-            errorMessage.style.fontSize = "14px";
-            document.body.appendChild(errorMessage);
-    
-            // Remove the error message after 3 seconds
-            setTimeout(() => {
-              errorMessage.remove();
-            }, 3000);
-          }
-        });
-    
-        // Add event listener to the cancel button
-        cancelButton.addEventListener("click", () => {
-          // Close the confirmation popup
-          confirmationContainer.remove();
-    
-          // Display cancel message as styled popup
-          const cancelMessage = document.createElement("div");
-          cancelMessage.textContent = "PDF generation canceled.";
-          cancelMessage.style.position = "fixed";
-          cancelMessage.style.top = "20px";
-          cancelMessage.style.left = "50%";
-          cancelMessage.style.transform = "translateX(-50%)";
-          cancelMessage.style.backgroundColor =
-            "rgba(183, 28, 28, 0.8)"; /* Dark red for cancel */
-          cancelMessage.style.color = "white";
-          cancelMessage.style.padding = "15px";
-          cancelMessage.style.borderRadius = "5px";
-          cancelMessage.style.zIndex = "1000";
-          cancelMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
-          cancelMessage.style.fontSize = "14px";
-          document.body.appendChild(cancelMessage);
-    
-          // Remove the cancel message after 3 seconds
-          setTimeout(() => {
-            cancelMessage.remove();
-          }, 3000);
-        });
+
+        // Create a blob URL for the PDF content
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        // Create an anchor element to trigger the download
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `DP${reportData.form_id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+
+        // Clean up the blob URL
+        window.URL.revokeObjectURL(url);
+
+        // Display success message as styled popup
+        const successMessage = document.createElement("div");
+        successMessage.textContent = "PDF generated successfully!";
+        successMessage.style.position = "fixed";
+        successMessage.style.top = "20px";
+        successMessage.style.left = "50%";
+        successMessage.style.transform = "translateX(-50%)";
+        successMessage.style.backgroundColor =
+          "rgba(76, 175, 80, 0.8)"; /* Green for success */
+        successMessage.style.color = "white";
+        successMessage.style.padding = "15px";
+        successMessage.style.borderRadius = "5px";
+        successMessage.style.zIndex = "1000";
+        successMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
+        successMessage.style.fontSize = "14px";
+        document.body.appendChild(successMessage);
+
+        // Remove the success message after 3 seconds
+        setTimeout(() => {
+          successMessage.remove();
+        }, 3000);
+      } catch (error) {
+        console.error("Error:", error);
+        // Display error message as styled popup
+        const errorMessage = document.createElement("div");
+        errorMessage.textContent =
+          "Failed to generate PDF. Please try again later.";
+        errorMessage.style.position = "fixed";
+        errorMessage.style.top = "20px";
+        errorMessage.style.left = "50%";
+        errorMessage.style.transform = "translateX(-50%)";
+        errorMessage.style.backgroundColor =
+          "rgba(244, 67, 54, 0.8)"; /* Red for error */
+        errorMessage.style.color = "white";
+        errorMessage.style.padding = "15px";
+        errorMessage.style.borderRadius = "5px";
+        errorMessage.style.zIndex = "1000";
+        errorMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
+        errorMessage.style.fontSize = "14px";
+        document.body.appendChild(errorMessage);
+
+        // Remove the error message after 3 seconds
+        setTimeout(() => {
+          errorMessage.remove();
+        }, 3000);
       }
+    });
+
+    // Add event listener to the cancel button
+    cancelButton.addEventListener("click", () => {
+      // Close the confirmation popup
+      confirmationContainer.remove();
+
+      // Display cancel message as styled popup
+      const cancelMessage = document.createElement("div");
+      cancelMessage.textContent = "PDF generation canceled.";
+      cancelMessage.style.position = "fixed";
+      cancelMessage.style.top = "20px";
+      cancelMessage.style.left = "50%";
+      cancelMessage.style.transform = "translateX(-50%)";
+      cancelMessage.style.backgroundColor =
+        "rgba(183, 28, 28, 0.8)"; /* Dark red for cancel */
+      cancelMessage.style.color = "white";
+      cancelMessage.style.padding = "15px";
+      cancelMessage.style.borderRadius = "5px";
+      cancelMessage.style.zIndex = "1000";
+      cancelMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
+      cancelMessage.style.fontSize = "14px";
+      document.body.appendChild(cancelMessage);
+
+      // Remove the cancel message after 3 seconds
+      setTimeout(() => {
+        cancelMessage.remove();
+      }, 3000);
+    });
+  }
 
   return (
     <div>
-         <HeaderTop />
+      <HeaderTop />
       <div id="main-form-container">
         <div id="config-form-document-page">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Loaded Quanty
+              <strong> Record Name:&nbsp;</strong>Loaded Quantity
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
@@ -573,8 +577,8 @@ const LoadedQuantityPanels = () => {
                 </div>
               </div> */}
 
-              <div className="sub-head-2">Loaded Quanty</div>
-              <div className="outerDiv4">
+              <div className="sub-head-2">Loaded Quantity</div>
+              {/* <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -613,7 +617,7 @@ const LoadedQuantityPanels = () => {
                     APPROVED
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
@@ -648,7 +652,7 @@ const LoadedQuantityPanels = () => {
                   >
                     Details
                   </div>
-                  <div
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -708,12 +712,12 @@ const LoadedQuantityPanels = () => {
                     }
                   >
                     Audit Trail
-                  </div>
+                  </div> */}
                 </div>
-                <button className="btn-forms-select" onClick={generateReport}>
+                {/* <button className="btn-forms-select" onClick={generateReport}>
                   Generate Report
-                </button>
-                <div className="analytics-btn">
+                </button> */}
+                {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -724,7 +728,7 @@ const LoadedQuantityPanels = () => {
                   >
                     Analytics
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -1508,7 +1512,7 @@ const LoadedQuantityPanels = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoadedQuantityPanels
+export default LoadedQuantityPanels;
