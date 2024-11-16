@@ -437,7 +437,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
 
     // Track changes for the form
-    // const auditTrailEntries = [];
+    const auditTrailEntries = [];
     // const fields = {
     //   description,
     //   department,

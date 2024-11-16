@@ -195,7 +195,7 @@ function Dashboard() {
       navigate("/media-record-panel", { state: item });
     } else if (item.OperationOfSterilizer === "Operation Of Sterilizer") {
       navigate("/operation-of-sterilizer-panel", { state: item });
-    } else if (item.DispenseOfMaterials      === "Dispensing Of Materials") {
+    } else if (item.DispenseOfMaterials) {
       navigate("/dispensing-of-material-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
