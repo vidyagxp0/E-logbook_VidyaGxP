@@ -14,7 +14,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
-    const url = "https://elogbookapi.vidyagxp.com/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://localhost:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -42,7 +42,7 @@ function AdminDashboard() {
   const handleDelete = () => {
     const config = {
       method: "delete",
-      url: `https://elogbookapi.vidyagxp.com/user/delete-user/${selectedUser.user_id}`,
+      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       },
@@ -63,7 +63,7 @@ function AdminDashboard() {
   const openPermissionsModal = (user) => {
     const token = localStorage.getItem("admin-token");
     axios
-      .get(`https://elogbookapi.vidyagxp.com/user/get-user-permissions/${user.user_id}`, {
+      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -133,166 +133,165 @@ function AdminDashboard() {
             </div>
           </div>
           <div id="body-container" className="p-2">
-  <br />
-  <hr />
-  {allUsers.length === 0 ? (
-    <>No Registered Users</>
-  ) : (
-    <div style={{ overflowX: "auto" }}>
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          backgroundColor: "#fff",
-          color: "#333",
-          borderRadius: "10px",
-          boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <thead>
-          <tr>
-            <th
-              style={{
-                padding: "10px",
-                borderBottom: "1px solid #ccc",
-              }}
-            >
-              Sno.
-            </th>
-            <th
-              style={{
-                padding: "10px",
-                borderBottom: "1px solid #ccc",
-              }}
-            >
-              Name
-            </th>
-            <th
-              style={{
-                padding: "10px",
-                borderBottom: "1px solid #ccc",
-              }}
-            >
-              Email
-            </th>
-            <th
-              style={{
-                padding: "10px",
-                borderBottom: "1px solid #ccc",
-              }}
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {allUsers.map((user) => (
-            <tr key={user.id}>
-              <td
-                style={{
-                  padding: "10px",
-                  borderBottom: "1px solid #ccc",
-                }}
-              >
-                {user.user_id}
-              </td>
-              <td
-                style={{
-                  padding: "10px",
-                  borderBottom: "1px solid #ccc",
-                }}
-              >
-                {user.name}
-              </td>
-              <td
-                style={{
-                  padding: "10px",
-                  borderBottom: "1px solid #ccc",
-                }}
-              >
-                {user.email}
-              </td>
-              <td
-                style={{
-                  padding: "10px",
-                  borderBottom: "1px solid #ccc",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
-                <button
+            <br />
+            <hr />
+            {allUsers.length === 0 ? (
+              <>No Registered Users</>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table
                   style={{
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    backgroundColor: "green",
-                    color: "white",
-                    cursor: "pointer",
-                    marginBottom: "5px",
                     width: "100%",
+                    borderCollapse: "collapse",
+                    backgroundColor: "#fff",
+                    color: "#333",
+                    borderRadius: "10px",
+                    boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.1)",
                   }}
-                  onClick={() => openPermissionsModal(user)}
                 >
-                  View Permissions
-                </button>
-                <button
-                  style={{
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    backgroundColor: "blue",
-                    color: "white",
-                    cursor: "pointer",
-                    marginBottom: "5px",
-                    width: "100%",
-                  }}
-                  onClick={() =>
-                    navigate(`/admin-edit-user`, {
-                      state: { id: user.user_id },
-                    })
-                  }
-                >
-                  Edit
-                </button>
-                <button
-                  style={{
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    backgroundColor: "red",
-                    color: "white",
-                    cursor: "pointer",
-                    marginBottom: "5px",
-                    width: "100%",
-                  }}
-                  onClick={() => openConfirmation(user)}
-                >
-                  Delete
-                </button>
-                <button
-                  style={{
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    backgroundColor: "purple",
-                    color: "white",
-                    cursor: "pointer",
-                    width: "100%",
-                  }}
-                  onClick={() =>
-                    navigate(`/duplicate-user`, {
-                      state: { id: user.user_id },
-                    })
-                  }
-                >
-                  Duplicate
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )}
-</div>
-
+                  <thead>
+                    <tr>
+                      <th
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
+                        }}
+                      >
+                        Sno.
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
+                        }}
+                      >
+                        Name
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
+                        }}
+                      >
+                        Email
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
+                        }}
+                      >
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allUsers.map((user) => (
+                      <tr key={user.id}>
+                        <td
+                          style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #ccc",
+                          }}
+                        >
+                          {user.user_id}
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #ccc",
+                          }}
+                        >
+                          {user.name}
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #ccc",
+                          }}
+                        >
+                          {user.email}
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #ccc",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <button
+                            style={{
+                              padding: "5px 10px",
+                              borderRadius: "5px",
+                              backgroundColor: "green",
+                              color: "white",
+                              cursor: "pointer",
+                              marginBottom: "5px",
+                              width: "100%",
+                            }}
+                            onClick={() => openPermissionsModal(user)}
+                          >
+                            View Permissions
+                          </button>
+                          <button
+                            style={{
+                              padding: "5px 10px",
+                              borderRadius: "5px",
+                              backgroundColor: "blue",
+                              color: "white",
+                              cursor: "pointer",
+                              marginBottom: "5px",
+                              width: "100%",
+                            }}
+                            onClick={() =>
+                              navigate(`/admin-edit-user`, {
+                                state: { id: user.user_id },
+                              })
+                            }
+                          >
+                            Edit
+                          </button>
+                          <button
+                            style={{
+                              padding: "5px 10px",
+                              borderRadius: "5px",
+                              backgroundColor: "red",
+                              color: "white",
+                              cursor: "pointer",
+                              marginBottom: "5px",
+                              width: "100%",
+                            }}
+                            onClick={() => openConfirmation(user)}
+                          >
+                            Delete
+                          </button>
+                          <button
+                            style={{
+                              padding: "5px 10px",
+                              borderRadius: "5px",
+                              backgroundColor: "purple",
+                              color: "white",
+                              cursor: "pointer",
+                              width: "100%",
+                            }}
+                            onClick={() =>
+                              navigate(`/duplicate-user`, {
+                                state: { id: user.user_id },
+                              })
+                            }
+                          >
+                            Duplicate
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       {showConfirmation && (

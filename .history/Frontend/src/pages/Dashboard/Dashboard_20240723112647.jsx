@@ -9,8 +9,10 @@ import { hasAccess } from "../../components/userAuth/userAuth";
 function Dashboard() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
-  
-  const [differentialPressureElogs, setDifferentialPressureElogs] = useState([]);
+
+  const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
+    []
+  );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
@@ -24,7 +26,7 @@ function Dashboard() {
       try {
         const newConfig = {
           method: "get",
-          url: "https://elogbookapi.vidyagxp.com/differential-pressure/get-all-differential-pressure",
+          url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
@@ -46,7 +48,7 @@ function Dashboard() {
 
         const newConfigTemp = {
           method: "get",
-          url: "https://elogbookapi.vidyagxp.com/temprature-record/get-all-temprature-record",
+          url: "http://localhost:1000/temprature-record/get-all-temprature-record",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
@@ -120,9 +122,15 @@ function Dashboard() {
               onChange={(e) => setELogSelect(e.target.value)}
             >
               <option value="All_Records">All Records</option>
-              <option value="diffrential_pressure">Diffrential Pressure Record</option>
-              <option value="area_and_equipment">Area & Equipment Usage Log</option>
-              <option value="equipment_cleaning">Equipment Cleaning Checklist</option>
+              <option value="diffrential_pressure">
+                Diffrential Pressure Record
+              </option>
+              <option value="area_and_equipment">
+                Area & Equipment Usage Log
+              </option>
+              <option value="equipment_cleaning">
+                Equipment Cleaning Checklist
+              </option>
               <option value="temperature_records">Temperature Records</option>
             </select>
           </div>

@@ -174,129 +174,129 @@ exports.InsertLoadedQuantity = async (req, res) => {
 
       await LoadedQuantityRecord.bulkCreate(formRecords, { transaction });
 
-    //   formRecords.forEach((record, index) => {
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: `UniqueId[${index}]`,
-    //       previous_value: null,
-    //       new_value: record.unique_id,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Initiation",
-    //       declaration: initiatorDeclaration,
-    //       action: "Initiate",
-    //     });
-    //     auditTrailEntries.push({
-    //       form_id: newForm.date,
-    //       field_name: `Date[${index}]`,
-    //       previous_value: null,
-    //       new_value: record.date,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Initiation",
-    //       declaration: initiatorDeclaration,
-    //       action: "Initiate",
-    //     });
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: `ProductName[${index}]`,
-    //       previous_value: null,
-    //       new_value: record.product_name,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Initiation",
-    //       declaration: initiatorDeclaration,
-    //       action: "Initiate",
-    //     });
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: `Remarks[${index}]`,
-    //       previous_value: null,
-    //       new_value: record.remarks,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Initiation",
-    //       declaration: initiatorDeclaration,
-    //       action: "Initiate",
-    //     });
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: `CheckedBy[${index}]`,
-    //       previous_value: null,
-    //       new_value: record.checked_by,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Initiation",
-    //       declaration: initiatorDeclaration,
-    //       action: "Initiate",
-    //     });
-    //       auditTrailEntries.push({
-    //         form_id: newForm.form_id,
-    //         field_name: `BatchNo[${index}]`,
-    //         previous_value: null,
-    //         new_value: record.batch_no,
-    //         changed_by: user.user_id,
-    //         previous_status: "Not Applicable",
-    //         new_status: "Initiation",
-    //         declaration: initiatorDeclaration,
-    //         action: "Initiate",
-    //       });
-    //       auditTrailEntries.push({
-    //         form_id: newForm.form_id,
-    //         field_name: `ContainerSize[${index}]`,
-    //         previous_value: null,
-    //         new_value: record.container_size,
-    //         changed_by: user.user_id,
-    //         previous_status: "Not Applicable",
-    //         new_status: "Initiation",
-    //         declaration: initiatorDeclaration,
-    //         action: "Initiate",
-    //       });
-    //       auditTrailEntries.push({
-    //         form_id: newForm.form_id,
-    //         field_name: `BatchSize[${index}]`,
-    //         previous_value: null,
-    //         new_value: record.batch_size,
-    //         changed_by: user.user_id,
-    //         previous_status: "Not Applicable",
-    //         new_status: "Initiation",
-    //         declaration: initiatorDeclaration,
-    //         action: "Initiate",
-    //       });
-    //       auditTrailEntries.push({
-    //         form_id: newForm.form_id,
-    //         field_name: `TheoreticalProduction[${index}]`,
-    //         previous_value: null,
-    //         new_value: record.theoretical_production,
-    //         changed_by: user.user_id,
-    //         previous_status: "Not Applicable",
-    //         new_status: "Initiation",
-    //         declaration: initiatorDeclaration,
-    //         action: "Initiate",
-    //       });
-    //       auditTrailEntries.push({
-    //         form_id: newForm.form_id,
-    //         field_name: `LoadedQuantity[${index}]`,
-    //         previous_value: null,
-    //         new_value: record.loaded_quantity,
-    //         changed_by: user.user_id,
-    //         previous_status: "Not Applicable",
-    //         new_status: "Initiation",
-    //         declaration: initiatorDeclaration,
-    //         action: "Initiate",
-    //       });
-    //       auditTrailEntries.push({
-    //         form_id: newForm.form_id,
-    //         field_name: `Yield[${index}]`,
-    //         previous_value: null,
-    //         new_value: record.yield,
-    //         changed_by: user.user_id,
-    //         previous_status: "Not Applicable",
-    //         new_status: "Initiation",
-    //         declaration: initiatorDeclaration,
-    //         action: "Initiate",
-    //       });
-    //   });
+      //   formRecords.forEach((record, index) => {
+      //     auditTrailEntries.push({
+      //       form_id: newForm.form_id,
+      //       field_name: `UniqueId[${index}]`,
+      //       previous_value: null,
+      //       new_value: record.unique_id,
+      //       changed_by: user.user_id,
+      //       previous_status: "Not Applicable",
+      //       new_status: "Initiation",
+      //       declaration: initiatorDeclaration,
+      //       action: "Initiate",
+      //     });
+      //     auditTrailEntries.push({
+      //       form_id: newForm.date,
+      //       field_name: `Date[${index}]`,
+      //       previous_value: null,
+      //       new_value: record.date,
+      //       changed_by: user.user_id,
+      //       previous_status: "Not Applicable",
+      //       new_status: "Initiation",
+      //       declaration: initiatorDeclaration,
+      //       action: "Initiate",
+      //     });
+      //     auditTrailEntries.push({
+      //       form_id: newForm.form_id,
+      //       field_name: `ProductName[${index}]`,
+      //       previous_value: null,
+      //       new_value: record.product_name,
+      //       changed_by: user.user_id,
+      //       previous_status: "Not Applicable",
+      //       new_status: "Initiation",
+      //       declaration: initiatorDeclaration,
+      //       action: "Initiate",
+      //     });
+      //     auditTrailEntries.push({
+      //       form_id: newForm.form_id,
+      //       field_name: `Remarks[${index}]`,
+      //       previous_value: null,
+      //       new_value: record.remarks,
+      //       changed_by: user.user_id,
+      //       previous_status: "Not Applicable",
+      //       new_status: "Initiation",
+      //       declaration: initiatorDeclaration,
+      //       action: "Initiate",
+      //     });
+      //     auditTrailEntries.push({
+      //       form_id: newForm.form_id,
+      //       field_name: `CheckedBy[${index}]`,
+      //       previous_value: null,
+      //       new_value: record.checked_by,
+      //       changed_by: user.user_id,
+      //       previous_status: "Not Applicable",
+      //       new_status: "Initiation",
+      //       declaration: initiatorDeclaration,
+      //       action: "Initiate",
+      //     });
+      //       auditTrailEntries.push({
+      //         form_id: newForm.form_id,
+      //         field_name: `BatchNo[${index}]`,
+      //         previous_value: null,
+      //         new_value: record.batch_no,
+      //         changed_by: user.user_id,
+      //         previous_status: "Not Applicable",
+      //         new_status: "Initiation",
+      //         declaration: initiatorDeclaration,
+      //         action: "Initiate",
+      //       });
+      //       auditTrailEntries.push({
+      //         form_id: newForm.form_id,
+      //         field_name: `ContainerSize[${index}]`,
+      //         previous_value: null,
+      //         new_value: record.container_size,
+      //         changed_by: user.user_id,
+      //         previous_status: "Not Applicable",
+      //         new_status: "Initiation",
+      //         declaration: initiatorDeclaration,
+      //         action: "Initiate",
+      //       });
+      //       auditTrailEntries.push({
+      //         form_id: newForm.form_id,
+      //         field_name: `BatchSize[${index}]`,
+      //         previous_value: null,
+      //         new_value: record.batch_size,
+      //         changed_by: user.user_id,
+      //         previous_status: "Not Applicable",
+      //         new_status: "Initiation",
+      //         declaration: initiatorDeclaration,
+      //         action: "Initiate",
+      //       });
+      //       auditTrailEntries.push({
+      //         form_id: newForm.form_id,
+      //         field_name: `TheoreticalProduction[${index}]`,
+      //         previous_value: null,
+      //         new_value: record.theoretical_production,
+      //         changed_by: user.user_id,
+      //         previous_status: "Not Applicable",
+      //         new_status: "Initiation",
+      //         declaration: initiatorDeclaration,
+      //         action: "Initiate",
+      //       });
+      //       auditTrailEntries.push({
+      //         form_id: newForm.form_id,
+      //         field_name: `LoadedQuantity[${index}]`,
+      //         previous_value: null,
+      //         new_value: record.loaded_quantity,
+      //         changed_by: user.user_id,
+      //         previous_status: "Not Applicable",
+      //         new_status: "Initiation",
+      //         declaration: initiatorDeclaration,
+      //         action: "Initiate",
+      //       });
+      //       auditTrailEntries.push({
+      //         form_id: newForm.form_id,
+      //         field_name: `Yield[${index}]`,
+      //         previous_value: null,
+      //         new_value: record.yield,
+      //         changed_by: user.user_id,
+      //         previous_status: "Not Applicable",
+      //         new_status: "Initiation",
+      //         declaration: initiatorDeclaration,
+      //         action: "Initiate",
+      //       });
+      //   });
     }
 
     // await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
@@ -376,7 +376,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     initiatorComment,
     initiatorDeclaration,
   } = req.body;
-
+  console.log(email, password, "wwwww");
   if (!form_id) {
     return res
       .status(400)
@@ -417,7 +417,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     req?.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
-      } 
+      }
     });
 
     const form = await LoadedQuantityProcessForm.findOne({
@@ -437,7 +437,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
 
     // Track changes for the form
-    // const auditTrailEntries = [];
+    const auditTrailEntries = [];
     // const fields = {
     //   description,
     //   department,
@@ -514,8 +514,7 @@ exports.EditLoadedQuantity = async (req, res) => {
             theoretical_production: newRecord?.theoretical_production,
             loaded_quantity: newRecord?.loaded_quantity,
             remarks: newRecord?.remarks,
-            yield:
-              newRecord?.yield,
+            yield: newRecord?.yield,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -590,7 +589,10 @@ exports.EditLoadedQuantity = async (req, res) => {
       const formRecords = LoadedQuantityRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
-        date: record?.date && !isNaN(new Date(record?.date)) ? new Date(record?.date).toISOString() : null,
+        date:
+          record?.date && !isNaN(new Date(record?.date))
+            ? new Date(record?.date).toISOString()
+            : null,
         product_name: record?.product_name,
         batch_no: record?.batch_no,
         container_size: record?.container_size,
@@ -1593,7 +1595,7 @@ exports.GetAlltLoadedQuantity = async (req, res) => {
 //     padding: 0 50px; /* Increased margin from left and right */
 //     box-sizing: border-box;
 //   }
-  
+
 //   .header-table {
 //     width: 100%;
 //     border-collapse: collapse;
@@ -1601,28 +1603,28 @@ exports.GetAlltLoadedQuantity = async (req, res) => {
 //     font-size: 14px;
 //     table-layout: fixed;
 //   }
-  
+
 //   .header-table th, .header-table td {
 //     border: 1px solid #000;
 //     padding: 8px;
 //   }
-  
+
 //   .header-table th {
 //     background-color: #f8f8f8;
 //     font-weight: bold;
 //   }
-  
+
 //   .header-logo {
 //     text-align: center;
 //     width: 100px;
 //   }
-  
+
 //   .header-title {
 //     text-align: center;
 //     font-size: 18px;
 //     margin: 10px 0;
 //   }
-  
+
 //   .header-info {
 //     font-size: 12px;
 //     text-align: center;

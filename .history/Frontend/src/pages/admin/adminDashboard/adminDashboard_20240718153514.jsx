@@ -14,7 +14,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
-    const url = "https://elogbookapi.vidyagxp.com/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://localhost:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -42,7 +42,7 @@ function AdminDashboard() {
   const handleDelete = () => {
     const config = {
       method: "delete",
-      url: `https://elogbookapi.vidyagxp.com/user/delete-user/${selectedUser.user_id}`,
+      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       },
@@ -63,7 +63,7 @@ function AdminDashboard() {
   const openPermissionsModal = (user) => {
     const token = localStorage.getItem("admin-token");
     axios
-      .get(`https://elogbookapi.vidyagxp.com/user/get-user-permissions/${user.user_id}`, {
+      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -107,9 +107,7 @@ function AdminDashboard() {
                       // color: "#EFA035",
                     }}
                   ></i>
-                  <h3 className="text-gray-800 font-bold">
-                    User Management
-                  </h3>
+                  <h3 className="text-gray-800 font-bold">User Management</h3>
                 </div>
               </div>
               <div
@@ -126,7 +124,7 @@ function AdminDashboard() {
                     padding: "10px 20px",
                     borderRadius: "5px",
                     cursor: "pointer",
-                    fontWeight:"bold",
+                    fontWeight: "bold",
                   }}
                 >
                   Add User

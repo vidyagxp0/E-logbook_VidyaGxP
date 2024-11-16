@@ -27,7 +27,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elogbookapi.vidyagxp.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export default function DiffrentialPressure() {
 
     const newConfig = {
       method: "post",
-      url: "https://elogbookapi.vidyagxp.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elogbookapi.vidyagxp.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -116,11 +116,11 @@ export default function DiffrentialPressure() {
 
     differentialPRecord.email = credentials?.email;
     differentialPRecord.password = credentials?.password;
-    differentialPRecord.initiatorDeclaration = credentials?.declaration
+    differentialPRecord.initiatorDeclaration = credentials?.declaration;
 
     axios
       .post(
-        "https://elogbookapi.vidyagxp.com/differential-pressure/post-differential-pressure",
+        "http://localhost:1000/differential-pressure/post-differential-pressure",
         differentialPRecord,
         config
       )
@@ -147,13 +147,13 @@ export default function DiffrentialPressure() {
     };
   }
   const addRow = () => {
-    let options= {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }
-    const currentTime = new Date().toLocaleTimeString('en-us',options);
+    let options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    const currentTime = new Date().toLocaleTimeString("en-us", options);
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
@@ -194,7 +194,7 @@ export default function DiffrentialPressure() {
       limit: null,
       initiatorComment: "",
       initiatorAttachment: null,
-      initiatorDeclaration: ""
+      initiatorDeclaration: "",
     }
   );
   const handleInputChange1 = (e) => {
@@ -203,12 +203,17 @@ export default function DiffrentialPressure() {
   };
 
   const handleReviewerFileChange = (e) => {
-    setDifferentialPRecord({ ...differentialPRecord, reviewerAttachment: e.target.files[0] });
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      reviewerAttachment: e.target.files[0],
+    });
   };
   const handleApproverFileChange = (e) => {
-    setDifferentialPRecord({ ...differentialPRecord, approverAttachment: e.target.files[0] });
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      approverAttachment: e.target.files[0],
+    });
   };
-  
 
   useEffect(() => {
     setDifferentialPRecord({ FormRecordsArray: allTableData });
@@ -267,7 +272,7 @@ export default function DiffrentialPressure() {
               </div>
               <div className="sub-head-2">Differential Pressure Record</div>
 
-            <div className="outerDiv4">
+              <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -349,9 +354,7 @@ export default function DiffrentialPressure() {
                   >
                     Approver Remarks
                   </div>
-             
                 </div>
-              
               </div>
 
               {isSelectedGeneral === true ? (
@@ -502,8 +505,12 @@ export default function DiffrentialPressure() {
                   </div>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Reviewer
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Reviewer
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div>
                         <select
                           value={differentialPRecord.reviewer_id}
@@ -530,8 +537,12 @@ export default function DiffrentialPressure() {
                       </div>
                     </div>
                     <div className="group-input">
-                      <label className="color-label">Approver
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Approver
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div>
                         <select
                           value={differentialPRecord.approver_id}
@@ -704,8 +715,12 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Initiator Comment
-                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span></label>
+                      <label className="color-label">
+                        Initiator Comment
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
