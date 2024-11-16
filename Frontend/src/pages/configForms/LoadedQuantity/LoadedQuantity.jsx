@@ -279,7 +279,7 @@ const LoadedQuantity = () => {
                       {allTableData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{generateUniqueId()}</td>
+                          <td>{item.unique_id}</td>
                           {/* <td>
                             <input
                               value={item.date}
