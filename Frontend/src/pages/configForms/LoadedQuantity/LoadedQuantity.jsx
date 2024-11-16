@@ -89,6 +89,7 @@ const LoadedQuantity = () => {
         "Content-Type": "multipart/form-data",
       },
     };
+    console.log(config,"config")
 
     loadedQuantity.email = credentials?.email;
     loadedQuantity.password = credentials?.password;

@@ -16,7 +16,7 @@ function Dashboard() {
   const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
   const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
-  // console.log(loadedQuantityElogs, "loadedQuantityElogs");
+  console.log(loadedQuantityElogs, "loadedQuantityElogs");
   const [mediaRecordElogs, setMediaRecordElogs] = useState([]);
   const [dispensingOfMaterialsElogs, setDispensingOfMaterialsElogs] = useState(
     []
@@ -24,6 +24,7 @@ function Dashboard() {
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
   );
+  console.log(operationOfSterilizerElogs, "operationOfSterilizerElogs");
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -39,6 +40,10 @@ function Dashboard() {
     axios(newConfig)
       .then((response) => {
         const allDifferentialPressureElogs = response.data.message;
+        console.log(
+          allDifferentialPressureElogs,
+          "allDifferentialPressureElogs"
+        );
         let filteredArray = allDifferentialPressureElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -167,6 +172,32 @@ function Dashboard() {
           .catch((error) => {
             console.error("Error: ", error);
           });
+    const newOperationSterelizer = {
+      method: "get",
+      url: "http://localhost:1000/operation-sterlizer/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newOperationSterelizer)
+      .then((response) => {
+        const allOperationOfSterelizer = response.data.message;
+        let filteredArray = allOperationOfSterelizer.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setOperationOfSterilizerElogs(filteredArray);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const combinedRecords = [
@@ -429,42 +460,44 @@ function Dashboard() {
             {eLogSelect === "operation_of_sterilizer "
               ? operationOfSterilizerElogs?.map((item, index) => {
                   return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/operation-of-sterilizer-panel", {
-                            state: item,
-                          })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`OF${item.form_id}`}
-                      </td>
-                      <td>Operation of sterilizer</td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : "EU"}
-                      </td>
-                      <td>{item.description}</td>
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
+                    <>
+                      <tr key={item.index}>
+                        <td> {index + 1}</td>
+                        <td
+                          style={{
+                            cursor: "pointer",
+                            color: "black",
+                          }}
+                          onClick={() =>
+                            navigate("/operation-of-sterilizer-panel", {
+                              state: item,
+                            })
+                          }
+                          onMouseEnter={(e) => {
+                            e.target.style.color = "blue";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.color = "black";
+                          }}
+                        >
+                          {`OF${item.form_id}`}
+                        </td>
+                        <td>Operation of sterilizer</td>
+                        <td>
+                          {item.site_id === 1
+                            ? "India"
+                            : item.site_id === 2
+                            ? "Malaysia"
+                            : item.site_id === 3
+                            ? "EMEA"
+                            : "EU"}
+                        </td>
+                        <td>{item.description}</td>
+                        <td>{item.initiator_name}</td>
+                        <td>{formatDate(item.date_of_initiation)}</td>
+                        <td>{item.status}</td>
+                      </tr>
+                    </>
                   );
                 })
               : null}
@@ -562,7 +595,7 @@ function Dashboard() {
                 ) // Sorting in descending order
                 .map((item, index) => (
                   <>
-                    {console.log(item, "item")}
+                    {/* {console.log(item, "item")} */}
                     <tr key={item.eLogId}>
                       <td>{index + 1}</td>
                       <td
@@ -584,7 +617,7 @@ function Dashboard() {
                           ? `TR${item.form_id}`
                           : item.LoadedQuantityRecords
                           ? `LQ${item.form_id}`
-                          : item.OperationOfSterilizer
+                          : item.OperationOfSterilizerRecords
                           ? `OF${item.form_id}`
                           : item.MediaRecords
                           ? `MR${item.form_id}`
@@ -599,7 +632,7 @@ function Dashboard() {
                           ? "Temperature Records"
                           : item.LoadedQuantityRecords
                           ? "Loaded Quantity"
-                          : item.OperationOfSterilizer
+                          : item.OperationOfSterilizerRecords
                           ? "Operation of Sterilizer"
                           : item.MediaRecords
                           ? "Media Record"
@@ -607,6 +640,7 @@ function Dashboard() {
                           ? "Dispensing of Material"
                           : null}
                       </td>
+
                       <td>
                         {item.site_id === 1
                           ? "India"

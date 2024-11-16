@@ -14,7 +14,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
-    const url = "https://elogbookapi.vidyagxp.com/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://localhost:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -42,7 +42,7 @@ function AdminDashboard() {
   const handleDelete = () => {
     const config = {
       method: "delete",
-      url: `https://elogbookapi.vidyagxp.com/user/delete-user/${selectedUser.user_id}`,
+      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       },
@@ -63,7 +63,7 @@ function AdminDashboard() {
   const openPermissionsModal = (user) => {
     const token = localStorage.getItem("admin-token");
     axios
-      .get(`https://elogbookapi.vidyagxp.com/user/get-user-permissions/${user.user_id}`, {
+      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -313,8 +313,8 @@ function AdminDashboard() {
               style={{
                 textAlign: "center",
                 color: "black",
-                fontSize:"22px",
-                fontWeight:"bold",
+                fontSize: "22px",
+                fontWeight: "bold",
                 marginBottom: "20px",
               }}
             >
@@ -344,7 +344,7 @@ function AdminDashboard() {
                 padding: "10px 20px",
                 borderRadius: "5px",
                 border: "1px solid #42e9ff",
-               
+
                 color: "black",
                 cursor: "pointer",
               }}
@@ -378,8 +378,8 @@ function AdminDashboard() {
               style={{
                 textAlign: "center",
                 color: "black",
-               fontSize:"22px" ,
-               fontWeight:"bold" ,
+                fontSize: "22px",
+                fontWeight: "bold",
                 marginBottom: "20px",
               }}
             >
@@ -395,8 +395,8 @@ function AdminDashboard() {
                         borderBottom: "1px solid #ddd",
                         textAlign: "center",
                         backgroundColor: "#42e9ff",
-                        fontSize:"19px",
-                        fontWeight:"bold" 
+                        fontSize: "19px",
+                        fontWeight: "bold",
                       }}
                     >
                       {permissions.length > 1 ? "Permissions" : "Permission"}
@@ -432,7 +432,7 @@ function AdminDashboard() {
                 backgroundColor: "#42e9ff",
                 color: "black",
                 cursor: "pointer",
-                fontWeight:"bold" 
+                fontWeight: "bold",
               }}
             >
               Close

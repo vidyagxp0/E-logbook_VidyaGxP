@@ -6,6 +6,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 const OperationOfSterilizer = () => {
   const [User, setUser] = useState(null);
@@ -21,18 +22,19 @@ const OperationOfSterilizer = () => {
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: null,
-      approver_id: null,
+      reviewer_id: 2,
+      approver_id: 2,
       description: "",
-      department: "",
-      review_comments: "",
-      compression_area: "",
-      limit: null,
-      initiatorComment: "",
+      department: "kjhg",
+      review_comments: "dfsdfds",
+      compression_area: "sdfsdfdsf",
+      limit: 1,
+      initiatorComment: "dsssdas",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }
   );
+  console.log(operationOfSterilizer,"operationOfSterilizer")
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
   const navigate = useNavigate();
@@ -52,6 +54,62 @@ const OperationOfSterilizer = () => {
         console.error(error);
       });
   }, []);
+
+  const handlePopupSubmit = (credentials) => {
+    if (
+      operationOfSterilizer.site_id === null ||
+      operationOfSterilizer.approver_id === null ||
+      operationOfSterilizer.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
+      return;
+    }
+
+    if (operationOfSterilizer.initiatorComment === "") {
+      toast.error("Please provide an initiator comment!");
+      return;
+    }
+    if (operationOfSterilizer.description === "") {
+      toast.error("Please provide a short description!");
+      return;
+    }
+    // if (
+    //   operationOfSterilizer?.FormRecordsArray?.some(
+    //     (record) => record.differential_pressure === "" || record.remarks === ""
+    //   )
+    // ) {
+    //   toast.error("Please provide grid details!");
+    //   return;
+    // }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    operationOfSterilizer.email = credentials?.email;
+    operationOfSterilizer.password = credentials?.password;
+    operationOfSterilizer.initiatorDeclaration = credentials?.declaration;
+
+    axios
+      .post(
+        "http://localhost:1000/operation-sterlizer/post",
+        operationOfSterilizer,
+        config
+      )
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
+  };
 
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
@@ -85,9 +143,22 @@ const OperationOfSterilizer = () => {
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
-      differential_pressure: "",
-      remarks: "",
-      checked_by: User?.name,
+      date: "",
+      air_pressure: "",
+      steam_pressure: "",
+      printer_ok: "",
+      product_name: "",
+      container_size: "",
+      loaded_quantity: "",
+      batch_no_lot_no: "",
+      loading_time: "",
+      d_well_period_start: "",
+      d_well_period_end: "",
+      unloading_time: "",
+      cleaning_time_start: "",
+      cleaning_time_end: "",
+      cleaning_done_by: "",
+      checked_by: "",
       supporting_docs: null,
     };
     setAllTableData([...allTableData, newRow]);
@@ -289,7 +360,7 @@ const OperationOfSterilizer = () => {
                       {allTableData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{generateUniqueId()}</td>
+                          <td>{item.unique_id}</td>
                           {/* <td>
                             <input
                               value={item.date}
@@ -306,7 +377,7 @@ const OperationOfSterilizer = () => {
                               value={item.date}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].differential_pressure =
+                                newData[index].date =
                                   e.target.value;
                                 setAllTableData(newData);
                               }}
@@ -316,10 +387,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.airPressure}
+                              value={item.air_pressure}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].airPressure = e.target.value;
+                                newData[index].air_pressure = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -328,10 +399,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.steamPressure}
+                              value={item.steam_pressure}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].steamPressure = e.target.value;
+                                newData[index].steam_pressure = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -340,10 +411,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                              value={item.printerOkOrNot}
+                              value={item.printer_ok}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].printerOkOrNot = e.target.value;
+                                newData[index].printer_ok = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -352,10 +423,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.productName}
+                             value={item.product_name}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].productName = e.target.value;
+                                newData[index].product_name = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -364,10 +435,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.containerSize}
+                             value={item.container_size}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].containerSize =
+                                newData[index].container_size =
                                   e.target.value;
                                 setAllTableData(newData);
                               }}
@@ -377,10 +448,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.loadedTime}
+                             value={item.loaded_quantity}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].loadedTime =
+                                newData[index].loaded_quantity =
                                   e.target.value;
                                 setAllTableData(newData);
                               }}
@@ -390,10 +461,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.dwellPeriod}
+                             value={item.batch_no_lot_no}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].dwellPeriod = e.target.value;
+                                newData[index].batch_no_lot_no = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -402,10 +473,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.dwellPeriod}
+                             value={item.loading_time}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].dwellPeriod = e.target.value;
+                                newData[index].loading_time = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -414,10 +485,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.unloadingTime}
+                             value={item.d_well_period_start}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].unloadingTime = e.target.value;
+                                newData[index].d_well_period_start = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -426,10 +497,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.cleaningTime}
+                             value={item.d_well_period_end}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].cleaningTime = e.target.value;
+                                newData[index].d_well_period_end = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -438,10 +509,10 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.cleaningTime}
+                             value={item.unloading_time}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].cleaningTime = e.target.value;
+                                newData[index].unloading_time = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -450,10 +521,34 @@ const OperationOfSterilizer = () => {
                           <td>
                             <input
                               type="text"
-                             value={item.cleaningDoneBy}
+                             value={item.cleaning_time_start}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].cleaningDoneBy = e.target.value;
+                                newData[index].cleaning_time_start = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                             value={item.cleaning_time_end}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].cleaning_time_end = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                             value={item.cleaning_done_by}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].cleaning_done_by = e.target.value;
                                 setAllTableData(newData);
                               }}
                               required
@@ -471,19 +566,8 @@ const OperationOfSterilizer = () => {
                               required
                             />
                           </td>
-                          <td>
-                            <input
-                              type="text"
-                             value={item.printerOkOrNot}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].yeild = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
+                         
+                          {/* <td>
                             <input
                               value={item.remarks}
                               onChange={(e) => {
@@ -492,7 +576,7 @@ const OperationOfSterilizer = () => {
                                 setAllTableData(newData);
                               }}
                             />
-                          </td>
+                          </td> */}
 
                           {/* <td style={{ width: "250px" }}>
                             <div className="d-flex align-items-center">
@@ -565,7 +649,7 @@ const OperationOfSterilizer = () => {
             {isPopupOpen && (
               <UserVerificationPopUp
                 onClose={handlePopupClose}
-                // onSubmit={handlePopupSubmit}
+                onSubmit={handlePopupSubmit}
               />
             )}
           </div>

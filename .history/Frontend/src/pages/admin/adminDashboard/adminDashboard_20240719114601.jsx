@@ -14,7 +14,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
-    const url = "https://elogbookapi.vidyagxp.com/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://localhost:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -42,7 +42,7 @@ function AdminDashboard() {
   const handleDelete = () => {
     const config = {
       method: "delete",
-      url: `https://elogbookapi.vidyagxp.com/user/delete-user/${selectedUser.user_id}`,
+      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       },
@@ -63,7 +63,7 @@ function AdminDashboard() {
   const openPermissionsModal = (user) => {
     const token = localStorage.getItem("admin-token");
     axios
-      .get(`https://elogbookapi.vidyagxp.com/user/get-user-permissions/${user.user_id}`, {
+      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -133,47 +133,66 @@ function AdminDashboard() {
             </div>
           </div>
           <div id="body-container" className="p-2">
-  <br />
-  <hr />
-  {allUsers.length === 0 ? (
-    <>No Registered Users</>
-  ) : (
-    <table className="modern-table no-border">
-      <thead className="bg-black">
-        <tr>
-          <th>Sno.</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {allUsers.map((user) => (
-          <tr key={user.id}>
-            <td>{user.user_id}</td>
-            <td>{user.name}</td>
-            <td>{user.email}</td>
-            <td>
-              <button className="view-btn" onClick={() => openPermissionsModal(user)}>
-                View Permissions
-              </button>
-              <button className="edit-btn" onClick={() => navigate(`/admin-edit-user`, { state: { id: user.user_id } })}>
-                Edit
-              </button>
-              <button className="delete-btn" onClick={() => openConfirmation(user)}>
-                Delete
-              </button>
-              <button className="duplicate-btn" onClick={() => navigate(`/duplicate-user`, { state: { id: user.user_id } })}>
-                Duplicate
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )}
-</div>
-
+            <br />
+            <hr />
+            {allUsers.length === 0 ? (
+              <>No Registered Users</>
+            ) : (
+              <table className="modern-table no-border">
+                <thead className="bg-black">
+                  <tr>
+                    <th>Sno.</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allUsers.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.user_id}</td>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        <button
+                          className="view-btn"
+                          onClick={() => openPermissionsModal(user)}
+                        >
+                          View Permissions
+                        </button>
+                        <button
+                          className="edit-btn"
+                          onClick={() =>
+                            navigate(`/admin-edit-user`, {
+                              state: { id: user.user_id },
+                            })
+                          }
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="delete-btn"
+                          onClick={() => openConfirmation(user)}
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="duplicate-btn"
+                          onClick={() =>
+                            navigate(`/duplicate-user`, {
+                              state: { id: user.user_id },
+                            })
+                          }
+                        >
+                          Duplicate
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
       {showConfirmation && (

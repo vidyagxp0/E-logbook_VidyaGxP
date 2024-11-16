@@ -10,14 +10,15 @@ function HeaderTop() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
-  
+
   useEffect(() => {
     if (loggedInUser?.userId) {
-      axios.get(`https://elogbookapi.vidyagxp.com/user/get-a-user/${loggedInUser.userId}`)
-        .then(response => {
+      axios
+        .get(`http://localhost:1000/user/get-a-user/${loggedInUser.userId}`)
+        .then((response) => {
           setUser(response.data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
         });
     }
@@ -65,7 +66,10 @@ function HeaderTop() {
             <i className="ri-notification-3-fill"></i>
           </div>
           <div className="profile-dropdown">
-            <div className="profile-img" onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <div
+              className="profile-img"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
               <img src={user?.profile_pic} alt="Profile" />
             </div>
             <div className={`dropdown-menu ${dropdownOpen ? "active" : ""}`}>
@@ -83,7 +87,8 @@ function HeaderTop() {
                 <i className="ri-hand-heart-line"></i> Help
               </Link>
               <Link to="#" className="dropdown-item">
-                <i className="ri-customer-service-2-line"></i> Helpdesk Personnel
+                <i className="ri-customer-service-2-line"></i> Helpdesk
+                Personnel
               </Link>
               <Link to="/" className="dropdown-item" onClick={handleLogout}>
                 <i className="ri-logout-circle-line"></i> Logout
