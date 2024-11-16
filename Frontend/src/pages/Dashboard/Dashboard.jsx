@@ -110,6 +110,63 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error: ", error);
       });
+
+
+      const newConfigMedia = {
+        method: "get",
+        url: "http://localhost:1000/media-record/get-all",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          "Content-Type": "application/json",
+        },
+      };
+  
+      axios(newConfigMedia)
+        .then((response) => {
+          const allMediaRecordElogs = response.data.message;
+          let filteredArray = allMediaRecordElogs.filter((elog) => {
+            const userId = userDetails.userId;
+  
+            return (
+              userId === elog.reviewer_id ||
+              userId === elog.initiator_id ||
+              userId === elog.approver_id ||
+              hasAccess(4, elog.site_id, 4)
+            );
+          });
+          setMediaRecordElogs(filteredArray);
+        })
+        .catch((error) => {
+          console.error("Error: ", error);
+        });
+
+        const newConfigDispensing = {
+          method: "get",
+          url: "http://localhost:1000/dispensing-material/get-all",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        };
+    
+        axios(newConfigDispensing)
+          .then((response) => {
+            const allDispensingMaterialElogs = response.data.message;
+            let filteredArray = allDispensingMaterialElogs.filter((elog) => {
+              const userId = userDetails.userId;
+    
+              return (
+                userId === elog.reviewer_id ||
+                userId === elog.initiator_id ||
+                userId === elog.approver_id ||
+                hasAccess(4, elog.site_id, 4)
+              );
+            });
+            setDispensingOfMaterialsElogs(filteredArray);
+          })
+          .catch((error) => {
+            console.error("Error: ", error);
+          });
   }, []);
 
   const combinedRecords = [
@@ -138,7 +195,7 @@ function Dashboard() {
       navigate("/media-record-panel", { state: item });
     } else if (item.OperationOfSterilizer === "Operation Of Sterilizer") {
       navigate("/operation-of-sterilizer-panel", { state: item });
-    } else if (item.DispensingOfMaterials === "Dispensing Of Materials") {
+    } else if (item.DispenseOfMaterials      === "Dispensing Of Materials") {
       navigate("/dispensing-of-material-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
@@ -531,7 +588,7 @@ function Dashboard() {
                           ? `OF${item.form_id}`
                           : item.MediaRecords
                           ? `MR${item.form_id}`
-                          : item.DispensingOfMaterials
+                          : item.DispenseOfMaterials
                           ? `DM${item.form_id}`
                           : null}
                       </td>
@@ -546,7 +603,7 @@ function Dashboard() {
                           ? "Operation of Sterilizer"
                           : item.MediaRecords
                           ? "Media Record"
-                          : item.DispensingOfMaterials
+                          : item.DispenseOfMaterials
                           ? "Dispensing of Material"
                           : null}
                       </td>
