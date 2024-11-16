@@ -15,10 +15,15 @@ function Dashboard() {
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
-  const [loadedQuantityElogs , setLoadedQuantityElogs] = useState([]);
-  const [mediaRecordElogs , setMediaRecordElogs] = useState([]);
-  const [dispensingOfMaterialsElogs , setDispensingOfMaterialsElogs] = useState([]);
-  const [operationOfSterilizerElogs , setOperationOfSterilizerElogs] = useState([]);
+  const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
+  // console.log(loadedQuantityElogs, "loadedQuantityElogs");
+  const [mediaRecordElogs, setMediaRecordElogs] = useState([]);
+  const [dispensingOfMaterialsElogs, setDispensingOfMaterialsElogs] = useState(
+    []
+  );
+  const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
+    []
+  );
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -77,6 +82,34 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error: ", error);
       });
+
+    const newConfigloaded = {
+      method: "get",
+      url: "http://localhost:1000/loaded-quantity/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios(newConfigloaded)
+      .then((response) => {
+        const allLoadedQuantityElogs = response.data.message;
+        let filteredArray = allLoadedQuantityElogs.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setLoadedQuantityElogs(filteredArray);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const combinedRecords = [
@@ -99,16 +132,15 @@ function Dashboard() {
       navigate("/tpr-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
       navigate("/ecc-panel", { state: item });
-    } else if (item.process === "Loaded Quantity") {
+    } else if (item.LoadedQuantityRecords) {
       navigate("/loaded-quantity-panel", { state: item });
-    }else if (item.process === "Media Record") {
+    } else if (item.MediaRecords === "Media Record") {
       navigate("/media-record-panel", { state: item });
-    }else if (item.process === "Operation Of Sterilizer") {
+    } else if (item.OperationOfSterilizer === "Operation Of Sterilizer") {
       navigate("/operation-of-sterilizer-panel", { state: item });
-    }else if (item.process === "Dispensing Of Materials") {
+    } else if (item.DispensingOfMaterials === "Dispensing Of Materials") {
       navigate("/dispensing-of-material-panel", { state: item });
-    }
-    else {
+    } else {
       // Handle default or fallback navigation if needed
     }
   };
@@ -158,8 +190,12 @@ function Dashboard() {
               <option value="temperature_records">Temperature Records</option>
               <option value="loaded_quantity">Loaded Quantity</option>
               <option value="media_record">Media Record</option>
-              <option value="operation_of_sterilizer">Operation Of Sterilizer</option>
-              <option value="dispensing_of_material">Dispensing Of Materials</option>
+              <option value="operation_of_sterilizer">
+                Operation Of Sterilizer
+              </option>
+              <option value="dispensing_of_material">
+                Dispensing Of Materials
+              </option>
             </select>
           </div>
           {/* <button className="btn">Print</button> */}
@@ -292,7 +328,7 @@ function Dashboard() {
                   );
                 })
               : null}
-               {eLogSelect === "loaded_quantity"
+            {eLogSelect === "loaded_quantity"
               ? loadedQuantityElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -302,7 +338,9 @@ function Dashboard() {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/loaded-quantity-panel", { state: item })}
+                        onClick={() =>
+                          navigate("/loaded-quantity-panel", { state: item })
+                        }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -310,7 +348,7 @@ function Dashboard() {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`LQ${item.form_id}`}
+                        {`LQ${item?.form_id}`}
                       </td>
                       <td>Loaded Quantity</td>
                       <td>
@@ -331,7 +369,7 @@ function Dashboard() {
                 })
               : null}
 
-{eLogSelect === "operation_of_sterilizer "
+            {eLogSelect === "operation_of_sterilizer "
               ? operationOfSterilizerElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -341,7 +379,11 @@ function Dashboard() {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/operation-of-sterilizer-panel", { state: item })}
+                        onClick={() =>
+                          navigate("/operation-of-sterilizer-panel", {
+                            state: item,
+                          })
+                        }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -349,7 +391,7 @@ function Dashboard() {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`OOF${item.form_id}`}
+                        {`OF${item.form_id}`}
                       </td>
                       <td>Operation of sterilizer</td>
                       <td>
@@ -370,7 +412,7 @@ function Dashboard() {
                 })
               : null}
 
-{eLogSelect === "media_record"
+            {eLogSelect === "media_record"
               ? mediaRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -380,7 +422,9 @@ function Dashboard() {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/media-record-panel", { state: item })}
+                        onClick={() =>
+                          navigate("/media-record-panel", { state: item })
+                        }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -409,7 +453,7 @@ function Dashboard() {
                 })
               : null}
 
-{eLogSelect === "dispensing_of_material"
+            {eLogSelect === "dispensing_of_material"
               ? dispensingOfMaterialsElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -419,7 +463,11 @@ function Dashboard() {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/dispensing-of-material-panel", { state: item })}
+                        onClick={() =>
+                          navigate("/dispensing-of-material-panel", {
+                            state: item,
+                          })
+                        }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -456,48 +504,67 @@ function Dashboard() {
                     new Date(a.date_of_initiation)
                 ) // Sorting in descending order
                 .map((item, index) => (
-                  <tr key={item.eLogId}>
-                    <td>{index + 1}</td>
-                    <td
-                      style={{
-                        cursor: "pointer",
-                        color: "black",
-                      }}
-                      onClick={() => handleNavigation(item)}
-                      onMouseEnter={(e) => {
-                        e.target.style.color = "blue";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.color = "black";
-                      }}
-                    >
-                      {item.DifferentialPressureRecords
-                        ? `DP${item.form_id}`
-                        : item.TempratureRecords
-                        ? `TR${item.form_id}`
-                        : null}
-                    </td>
-                    <td>
-                      {item.DifferentialPressureRecords
-                        ? "Differential Pressure"
-                        : item.TempratureRecords
-                        ? "Temperature Records"
-                        : null}
-                    </td>
-                    <td>
-                      {item.site_id === 1
-                        ? "India"
-                        : item.site_id === 2
-                        ? "Malaysia"
-                        : item.site_id === 3
-                        ? "EMEA"
-                        : "EU"}
-                    </td>
-                    <td>{item.description}</td>
-                    <td>{item.initiator_name}</td>
-                    <td>{formatDate(item.date_of_initiation)}</td>
-                    <td>{item.status}</td>
-                  </tr>
+                  <>
+                    {console.log(item, "item")}
+                    <tr key={item.eLogId}>
+                      <td>{index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() => handleNavigation(item)}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {item.DifferentialPressureRecords
+                          ? `DP${item.form_id}`
+                          : item.TempratureRecords
+                          ? `TR${item.form_id}`
+                          : item.LoadedQuantityRecords
+                          ? `LQ${item.form_id}`
+                          : item.OperationOfSterilizer
+                          ? `OF${item.form_id}`
+                          : item.MediaRecords
+                          ? `MR${item.form_id}`
+                          : item.DispensingOfMaterials
+                          ? `DM${item.form_id}`
+                          : null}
+                      </td>
+                      <td>
+                        {item.DifferentialPressureRecords
+                          ? "Differential Pressure"
+                          : item.TempratureRecords
+                          ? "Temperature Records"
+                          : item.LoadedQuantityRecords
+                          ? "Loaded Quantity"
+                          : item.OperationOfSterilizer
+                          ? "Operation of Sterilizer"
+                          : item.MediaRecords
+                          ? "Media Record"
+                          : item.DispensingOfMaterials
+                          ? "Dispensing of Material"
+                          : null}
+                      </td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td>{item.description}</td>
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  </>
                 ))}
           </tbody>
         </table>
