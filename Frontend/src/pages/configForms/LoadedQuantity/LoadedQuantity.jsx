@@ -260,8 +260,6 @@ const LoadedQuantity = () => {
                     <thead>
                       <tr>
                         <th>S no.</th>
-                        <th>Unique Id</th>
-                        <th>Date</th>
                         <th>Product Name</th>
                         <th>Batch No.</th>
                         <th>Container Size (ml)</th>
@@ -270,6 +268,8 @@ const LoadedQuantity = () => {
                         <th>Loaded Quantity</th>
                         <th>Checked By</th>
                         <th>% Yield</th>
+                        {/* <th>Date</th> */}
+                        {/* <th>Product Name</th> */}
                         <th>Remark</th>
                         {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
                         <th>Actions</th>
