@@ -37,8 +37,8 @@ const MediaRecordPanel = () => {
       form_id: location.state?.form_id,
       email: credentials?.email,
       password: credentials?.password,
-      // reviewComment: editData.reviewComment,
-      // approverComment: editData.approverComment,
+      reviewComment: editData.reviewComment,
+      approverComment: editData.approverComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -48,17 +48,168 @@ const MediaRecordPanel = () => {
     //   toast.error("The limit value must be between 0.6 and 2.6.");
     //   return;
     // }
+
+
+
+    // editData.email = credentials.email;
+    // editData.password = credentials.password;
+    // editData.initiatorDeclaration = credentials?.declaration;
+    // console.log(data, "datatatatatata");
+
+    // const requestOptions = {
+    //   method: "PUT",
+    //   headers: {
+    //     Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    //   data: editData,
+    //   url: "http://localhost:1000/media-record/update",
+    // };
+
+    // axios(requestOptions)
+    //   .then(() => {
+    //     toast.success("Data saved successfully!");
+    //     navigate("/dashboard");
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+  
+  console.log(editData, "editDataMedia");
+
+  // useEffect(() => {
+  //   setEditData(location.state);
+  // }, [location.state]);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+      "Content-Type": "multipart/form-data",
+    },
+  };
+
+  if (popupAction === "sendFromOpenToReview") {
+    data.initiatorDeclaration = credentials?.declaration;
+    data.initiatorAttachment = editData?.initiatorAttachment;
+    axios
+      .put(
+        "http://localhost:1000/media-record/send-for-review",
+        data,
+        config
+      )
+      .then(() => {
+        toast.success("Elog successfully sent for review");
+        navigate(-1);
+      })
+      .catch((error) => {
+        toast.error(
+          error?.response?.data?.message || "Couldn't send elog for review!!"
+        );
+      });
+  } else if (popupAction === "sendFromReviewToApproval") {
+    data.reviewerDeclaration = credentials?.declaration;
+    data.reviewerAttachment = editData.reviewerAttachment;
+    axios
+      .put(
+        "http://localhost:1000/media-record/send-review-to-approval",
+        data,
+        config
+      )
+      .then(() => {
+        toast.success("Elog successfully sent for approval");
+        navigate(-1);
+      })
+      .catch((error) => {
+        toast.error(
+          error?.response?.data?.message ||
+            "Couldn't send elog for approval!!"
+        );
+      });
+  } else if (popupAction === "sendFromReviewToOpen") {
+    data.reviewerDeclaration = credentials?.declaration;
+    data.reviewerAttachment = editData.reviewerAttachment;
+    axios
+      .put(
+        "http://localhost:1000/media-record/send-review-to-open",
+        data,
+        config
+      )
+      .then(() => {
+        toast.success("Elog successfully opened");
+        navigate(-1);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+      });
+  } else if (popupAction === "sendFromApprovalToApproved") {
+    data.approverDeclaration = credentials?.declaration;
+    data.approverAttachment = editData.approverAttachment;
+    axios
+      .put(
+        "http://localhost:1000/media-record/approve",
+        data,
+        config
+      )
+      .then(() => {
+        toast.success("Elog successfully approved");
+        navigate(-1);
+      })
+      .catch((error) => {
+        toast.error(
+          error?.response?.data?.message || "Couldn't approve elog!!"
+        );
+      });
+  } else if (popupAction === "sendFromApprovalToOpen") {
+    data.approverAttachment = editData.approverAttachment;
+    data.approverDeclaration = credentials?.declaration;
+    axios
+      .put(
+        "http://localhost:1000/media-record/send-approval-to-open",
+        data,
+        config
+      )
+      .then(() => {
+        toast.success("Elog successfully opened");
+        navigate(-1);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+      });
+  } else if (popupAction === "updateElog") {
+    data.initiatorDeclaration = credentials?.declaration;
+    // if (
+    //   parseFloat(editData.limit) < 0.6 ||
+    //   parseFloat(editData.limit) > 2.6
+    // ) {
+    //   toast.error("The limit value must be between 0.6 and 2.6.");
+    //   return;
+    // }
+    if (editData.description === "") {
+      toast.error("description is required");
+      return;
+    }
+    if (
+      editData?.MediaRecords?.some(
+        (record) =>
+          record.differential_pressure === "" || record.remarks === ""
+      )
+    ) {
+      toast.error("Please provide grid details!");
+      return;
+    }
+
     editData.email = credentials.email;
     editData.password = credentials.password;
     editData.initiatorDeclaration = credentials?.declaration;
-    console.log(data, "datatatatatata");
+
+    const myHeaders = {
+      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+      "Content-Type": "multipart/form-data",
+    };
 
     const requestOptions = {
       method: "PUT",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "multipart/form-data",
-      },
+      headers: myHeaders,
       data: editData,
       url: "http://localhost:1000/media-record/update",
     };
@@ -71,153 +222,17 @@ const MediaRecordPanel = () => {
       .catch((error) => {
         console.error(error);
       });
-  };
-  console.log(editData, "editDataMedia");
+  }
 
+    setIsPopupOpen(false);
+    setPopupAction(null);
+  };
   useEffect(() => {
     setEditData(location.state);
   }, [location.state]);
 
-  // if (popupAction === "sendFromOpenToReview") {
-  //   data.initiatorDeclaration = credentials?.declaration;
-  //   data.initiatorAttachment = editData?.initiatorAttachment;
-  //   axios
-  //     .put(
-  //       "http://localhost:1000/loaded-quantity/send-DP-elog-for-review",
-  //       data,
-  //       config
-  //     )
-  //     .then(() => {
-  //       toast.success("Elog successfully sent for review");
-  //       navigate(-1);
-  //     })
-  //     .catch((error) => {
-  //       toast.error(
-  //         error?.response?.data?.message || "Couldn't send elog for review!!"
-  //       );
-  //     });
-  // } else if (popupAction === "sendFromReviewToApproval") {
-  //   data.reviewerDeclaration = credentials?.declaration;
-  //   data.reviewerAttachment = editData.reviewerAttachment;
-  //   axios
-  //     .put(
-  //       "http://localhost:1000/loaded-quantity/send-DP-from-review-to-approval",
-  //       data,
-  //       config
-  //     )
-  //     .then(() => {
-  //       toast.success("Elog successfully sent for approval");
-  //       navigate(-1);
-  //     })
-  //     .catch((error) => {
-  //       toast.error(
-  //         error?.response?.data?.message ||
-  //           "Couldn't send elog for approval!!"
-  //       );
-  //     });
-  // } else if (popupAction === "sendFromReviewToOpen") {
-  //   data.reviewerDeclaration = credentials?.declaration;
-  //   data.reviewerAttachment = editData.reviewerAttachment;
-  //   axios
-  //     .put(
-  //       "http://localhost:1000/loaded-quantity/send-DP-elog-from-review-to-open",
-  //       data,
-  //       config
-  //     )
-  //     .then(() => {
-  //       toast.success("Elog successfully opened");
-  //       navigate(-1);
-  //     })
-  //     .catch((error) => {
-  //       toast.error(error?.response?.data?.message || "Couldn't open elog!!");
-  //     });
-  // } else if (popupAction === "sendFromApprovalToApproved") {
-  //   data.approverDeclaration = credentials?.declaration;
-  //   data.approverAttachment = editData.approverAttachment;
-  //   axios
-  //     .put(
-  //       "http://localhost:1000/loaded-quantity/approve-DP-elog",
-  //       data,
-  //       config
-  //     )
-  //     .then(() => {
-  //       toast.success("Elog successfully approved");
-  //       navigate(-1);
-  //     })
-  //     .catch((error) => {
-  //       toast.error(
-  //         error?.response?.data?.message || "Couldn't approve elog!!"
-  //       );
-  //     });
-  // } else if (popupAction === "sendFromApprovalToOpen") {
-  //   data.approverAttachment = editData.approverAttachment;
-  //   data.approverDeclaration = credentials?.declaration;
-  //   axios
-  //     .put(
-  //       "http://localhost:1000/loaded-quantity/send-DP-elog-from-approval-to-open",
-  //       data,
-  //       config
-  //     )
-  //     .then(() => {
-  //       toast.success("Elog successfully opened");
-  //       navigate(-1);
-  //     })
-  //     .catch((error) => {
-  //       toast.error(error?.response?.data?.message || "Couldn't open elog!!");
-  //     });
-  // } else if (popupAction === "updateElog") {
-  //   data.initiatorDeclaration = credentials?.declaration;
-  //   // if (
-  //   //   parseFloat(editData.limit) < 0.6 ||
-  //   //   parseFloat(editData.limit) > 2.6
-  //   // ) {
-  //   //   toast.error("The limit value must be between 0.6 and 2.6.");
-  //   //   return;
-  //   // }
-  //   if (editData.description === "") {
-  //     toast.error("description is required");
-  //     return;
-  //   }
-  //   if (
-  //     editData?.DifferentialPressureRecords?.some(
-  //       (record) =>
-  //         record.differential_pressure === "" || record.remarks === ""
-  //     )
-  //   ) {
-  //     toast.error("Please provide grid details!");
-  //     return;
-  //   }
-
-  //   editData.email = credentials.email;
-  //   editData.password = credentials.password;
-  //   editData.initiatorDeclaration = credentials?.declaration;
-
-  //   const myHeaders = {
-  //     Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-  //     "Content-Type": "multipart/form-data",
-  //   };
-
-  //   const requestOptions = {
-  //     method: "PUT",
-  //     headers: myHeaders,
-  //     data: editData,
-  //     url: "http://localhost:1000/loaded-quantity/update-loaded-quantity",
-  //   };
-
-  //   axios(requestOptions)
-  //     .then(() => {
-  //       toast.success("Data saved successfully!");
-  //       navigate("/dashboard");
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }
-
-  //   setIsPopupOpen(false);
-  //   setPopupAction(null);
-  // };
-
+  console.log(location.state.stage===2);
+  
   const addRow = () => {
     if (
       location.state?.stage === 1 &&
@@ -325,7 +340,7 @@ const MediaRecordPanel = () => {
   //     location.state?.stage === 1 &&
   //     location.state?.initiator_id === userDetails.userId
   //   ) {
-  //     const updatedGridData = editData.DifferentialPressureRecords.map(
+  //     const updatedGridData = editData.MediaRecords.map(
   //       (item, i) => {
   //         if (i === index) {
   //           return { ...item, supporting_docs: null };
@@ -335,7 +350,7 @@ const MediaRecordPanel = () => {
   //     );
   //     setEditData((prevState) => ({
   //       ...prevState,
-  //       DifferentialPressureRecords: updatedGridData,
+  //       MediaRecords: updatedGridData,
   //     }));
   //   }
   // };
@@ -610,7 +625,7 @@ const MediaRecordPanel = () => {
               </div> */}
 
               <div className="sub-head-2">Media Records</div>
-              {/* <div className="outerDiv4">
+              <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
                     className={`${
@@ -649,7 +664,7 @@ const MediaRecordPanel = () => {
                     APPROVED
                   </div>
                 </div>
-              </div> */}
+              </div>
               <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
@@ -684,7 +699,7 @@ const MediaRecordPanel = () => {
                   >
                     Details
                   </div>
-                  {/* <div
+                  <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -744,12 +759,12 @@ const MediaRecordPanel = () => {
                     }
                   >
                     Audit Trail
-                  </div> */}
+                  </div>
                 </div>
-                {/* <button className="btn-forms-select" onClick={generateReport}>
+                <button className="btn-forms-select" onClick={""}>
                   Generate Report
-                </button> */}
-                {/* <div className="analytics-btn">
+                </button>
+                <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -760,7 +775,7 @@ const MediaRecordPanel = () => {
                   >
                     Analytics
                   </button>
-                </div> */}
+                </div>
               </div>
 
               {isSelectedGeneral === true ? (
@@ -1051,7 +1066,7 @@ const MediaRecordPanel = () => {
                 </>
               ) : null}
 
-              {/* {initiatorRemarks === true ? (
+              {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1403,10 +1418,10 @@ const MediaRecordPanel = () => {
                     </div>
                   </div>
                 </>
-              ) : null} */}
+              ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              {/* {location.state?.stage === 1
+              {location.state?.stage === 1
                 ? location.state?.initiator_id === userDetails.userId && (
                     <button
                       className="themeBtn"
@@ -1464,7 +1479,7 @@ const MediaRecordPanel = () => {
                       </button>
                     </>
                   )
-                : null} */}
+                : null}
               {location.state?.stage === 1
                 ? userDetails.userId === location.state?.initiator_id && (
                     <button
