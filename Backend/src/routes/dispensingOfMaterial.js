@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// post differential pressure elog
+// post DispenseOfMaterial elog
 router.post(
   "/post",
   Auth.checkUserJwtToken,
@@ -34,7 +34,7 @@ router.post(
   DispenseOfMaterial.InsertDispenseOfMaterialRecord
 );
 
-// edit differential pressure elog details
+// edit DispenseOfMaterial elog details
 router.put(
   "/update",
   Auth.checkUserJwtToken,
@@ -43,10 +43,69 @@ router.put(
   DispenseOfMaterial.EditDispenseOfMaterialRecord
 );
 
-// //get a differential pressure elog by id
+// //get a DispenseOfMaterial elog by id
 router.get("/get/:id", Auth.checkUserJwtToken, DispenseOfMaterial.GetDispenseOfMaterialRecord);
 
-// //get all the differential pressure elogs
+// //get all the DispenseOfMaterial elogs
 router.get("/get-all", Auth.checkUserJwtToken, DispenseOfMaterial.GetAllDispenseOfMaterialRecord);
 
+//send DispenseOfMaterial elog for review
+router.put(
+  "/send-for-review",
+  Auth.checkUserJwtToken,
+  upload.single("initiatorAttachment"),
+  Auth.authorizeUserRole(1, 1),
+  DispenseOfMaterial.SendDPElogForReview
+);
+
+// change status of DispenseOfMaterial elog from review to open
+router.put(
+  "/send-review-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(1, 2),
+  DispenseOfMaterial.SendDPElogfromReviewToOpen
+);
+
+// send DispenseOfMaterial elog from review to approval
+router.put(
+  "/send-review-to-approval",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(1, 2),
+  DispenseOfMaterial.SendDPfromReviewToApproval
+);
+
+// send DispenseOfMaterial elog from under-approval to open
+router.put(
+  "/send-approval-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(1, 3),
+  DispenseOfMaterial.SendDPfromApprovalToOpen
+);
+
+// APPROVE DispenseOfMaterial elog
+router.put(
+  "/approve",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(1, 3),
+  DispenseOfMaterial.ApproveDPElog
+);
+
+// get users based on roles, sites and processes
+// router.post(
+//   "/get-user-roleGroups",
+//   Auth.checkUserJwtToken,
+//   DispenseOfMaterial.GetUserOnBasisOfRoleGroup
+// );
+
+// router.get("/get-processes", DispenseOfMaterial.getAllProcesses);
+
+// router.get(
+//   "/get-audit-trail-for-elog/:id",
+//   Auth.checkUserJwtToken,
+//   DispenseOfMaterial.getAuditTrailForAnElog
+// );
 module.exports = router;

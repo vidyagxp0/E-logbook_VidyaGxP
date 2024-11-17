@@ -60,12 +60,10 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:1000/operation-sterlizer/update",
-							"protocol": "http",
+							"raw": "{{local}}/operation-sterlizer/update",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"operation-sterlizer",
 								"update"
@@ -99,12 +97,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1000/operation-sterlizer/post",
-							"protocol": "http",
+							"raw": "{{local}}/operation-sterlizer/post",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"operation-sterlizer",
 								"post"
@@ -129,12 +125,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1000/operation-sterlizer/get/1",
-							"protocol": "http",
+							"raw": "{{local}}/operation-sterlizer/get/1",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"operation-sterlizer",
 								"get",
@@ -160,15 +154,333 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1000/operation-sterlizer/get-all",
-							"protocol": "http",
+							"raw": "{{local}}/operation-sterlizer/get-all",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"operation-sterlizer",
 								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "operation-sterlizer/send-for-review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "initiatorAttachment",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json"
+								},
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "initiatorDeclaration",
+									"value": "dispen",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/operation-sterlizer/send-for-review",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"operation-sterlizer",
+								"send-for-review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "operation-sterlizer/send-review-to-open",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "initiatorDeclaration",
+									"value": "dispen",
+									"type": "text"
+								},
+								{
+									"key": "reviewerAttachment",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/operation-sterlizer/send-review-to-open",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"operation-sterlizer",
+								"send-review-to-open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "operation-sterlizer/send-review-to-approval",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "reviewerDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "reviewComment",
+									"value": "dispenCom",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "reviewerAttachment",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/operation-sterlizer/send-review-to-approval",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"operation-sterlizer",
+								"send-review-to-approval"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "operation-sterlizer/send-approval-to-open",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "approverDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "approverAttachment",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/operation-sterlizer/send-approval-to-open",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"operation-sterlizer",
+								"send-approval-to-open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "operation-sterlizer/approve",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "approverDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "approverComment",
+									"value": "appc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/operation-sterlizer/approve",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"operation-sterlizer",
+								"approve"
 							]
 						}
 					},
@@ -196,7 +508,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"site_id\": 1,\r\n  \"description\": \"description\",\r\n  \"department\": 1,\r\n  \"compression_area\": \"q\",\r\n  \"limit\": 1,\r\n  \"reviewer_id\": 2,\r\n  \"approver_id\": 2,\r\n  \"initiatorComment\": \"e\",\r\n  \"email\": \"swapnil@vidyagxp.com\",\r\n  \"password\": \"00000000\",\r\n  \"FormRecordsArray\": [\r\n    {\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"product_name\",\r\n      \"batch_no\": \"batch_no\",\r\n      \"container_size\": \"container_size\",\r\n      \"batch_size\": \"batch_size\",\r\n      \"theoretical_production\": \"theoretical_production\",\r\n      \"loaded_quantity\": \"loaded_quantity\",\r\n      \"yield\": \"yield\",\r\n      \"remarks\": \"remarks\",\r\n      \"checked_by\": \"checked_by\"\r\n    }\r\n  ],\r\n  \"initiatorDeclaration\": \"a\"\r\n}\r\n",
+							"raw": "{\r\n  \"site_id\": 1,\r\n  \"description\": \"description\",\r\n  \"department\": 1,\r\n  \"compression_area\": \"q\",\r\n  \"limit\": 1,\r\n  \"reviewer_id\": 2,\r\n  \"approver_id\": 2,\r\n  \"initiatorComment\": \"e\",\r\n  \"email\": \"swapnil@vidyagxp.com\",\r\n  \"password\": \"00000000\",\r\n  \"LoadedQuantityRecords\": [\r\n    {\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"product_name\",\r\n      \"batch_no\": \"batch_no\",\r\n      \"container_size\": \"container_size\",\r\n      \"batch_size\": \"batch_size\",\r\n      \"theoretical_production\": \"theoretical_production\",\r\n      \"loaded_quantity\": \"loaded_quantity\",\r\n      \"yield\": \"yield\",\r\n      \"remarks\": \"remarks\",\r\n      \"checked_by\": \"checked_by\"\r\n    }\r\n  ],\r\n  \"initiatorDeclaration\": \"a\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -204,12 +516,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1000/loaded-quantity/post",
-							"protocol": "http",
+							"raw": "{{local}}/loaded-quantity/post",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"loaded-quantity",
 								"post"
@@ -234,47 +544,19 @@
 						"method": "PUT",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "description",
-									"value": "rrrrrr",
-									"type": "text"
-								},
-								{
-									"key": "site_id",
-									"value": "1",
-									"type": "text"
-								},
-								{
-									"key": "form_id",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "email",
-									"value": "swapnil@vidyagxp.com",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "00000000",
-									"type": "text"
-								},
-								{
-									"key": "initiatorDeclaration",
-									"value": "aaaa",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n\"site_id\":1,\r\n\"email\":\"swapnil@vidyagxp.com\",\r\n\"password\":\"00000000\",\r\n\"initiatorDeclaration\":\"aaaa\",\r\n\"form_id\": \"16\",\r\n  \"LoadedQuantityRecords\": [\r\n    {\r\n      \"unique_id\": \"rec1\",\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"pppppppp\",\r\n      \"batch_no\": \"2222\",\r\n      \"loaded_quantity\": 300\r\n    },\r\n    {\r\n      \"unique_id\": \"rec3\",\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"Another New Product\",\r\n      \"batch_no\": \"B003\",\r\n      \"loaded_quantity\": 250\r\n    }\r\n  ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
-							"raw": "http://localhost:1000/loaded-quantity/update",
-							"protocol": "http",
+							"raw": "{{local}}/loaded-quantity/update",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"loaded-quantity",
 								"update"
@@ -299,12 +581,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1000/loaded-quantity/get/2",
-							"protocol": "http",
+							"raw": "{{local}}/loaded-quantity/get/2",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"loaded-quantity",
 								"get",
@@ -330,15 +610,333 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1000/loaded-quantity/get-all-loaded-quantity",
-							"protocol": "http",
+							"raw": "{{local}}/loaded-quantity/get-all",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"loaded-quantity",
-								"get-all-loaded-quantity"
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loaded-quantity/send-for-review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "initiatorAttachment",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json"
+								},
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "initiatorDeclaration",
+									"value": "dispen",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/loaded-quantity/send-for-review",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"loaded-quantity",
+								"send-for-review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loaded-quantity/send-review-to-open",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "initiatorDeclaration",
+									"value": "dispen",
+									"type": "text"
+								},
+								{
+									"key": "reviewerAttachment",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/loaded-quantity/send-review-to-open",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"loaded-quantity",
+								"send-review-to-open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loaded-quantity/send-review-to-approval",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "reviewerDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "reviewComment",
+									"value": "dispenCom",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "reviewerAttachment",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/loaded-quantity/send-review-to-approval",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"loaded-quantity",
+								"send-review-to-approval"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loaded-quantity/send-approval-to-open",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "approverDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "approverAttachment",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/loaded-quantity/send-approval-to-open",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"loaded-quantity",
+								"send-approval-to-open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loaded-quantity/approve",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "approverDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "approverComment",
+									"value": "appc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/loaded-quantity/approve",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"loaded-quantity",
+								"approve"
 							]
 						}
 					},
@@ -374,12 +972,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1000/media-record/post",
-							"protocol": "http",
+							"raw": "{{local}}/media-record/post",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"media-record",
 								"post"
@@ -439,12 +1035,10 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:1000/media-record/update",
-							"protocol": "http",
+							"raw": "{{local}}/media-record/update",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"media-record",
 								"update"
@@ -469,12 +1063,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1000/media-record/get/1",
-							"protocol": "http",
+							"raw": "{{local}}/media-record/get/1",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"media-record",
 								"get",
@@ -500,15 +1092,333 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1000/media-record/get-all",
-							"protocol": "http",
+							"raw": "{{local}}/media-record/get-all",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"media-record",
 								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "media-record/send-for-review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "initiatorAttachment",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json"
+								},
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "initiatorDeclaration",
+									"value": "dispen",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/media-record/send-for-review",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"media-record",
+								"send-for-review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "media-record/send-review-to-open",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "initiatorDeclaration",
+									"value": "dispen",
+									"type": "text"
+								},
+								{
+									"key": "reviewerAttachment",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/media-record/send-review-to-open",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"media-record",
+								"send-review-to-open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "media-record/send-review-to-approval",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "reviewerDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "reviewComment",
+									"value": "dispenCom",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "reviewerAttachment",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/media-record/send-review-to-approval",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"media-record",
+								"send-review-to-approval"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "media-record/send-approval-to-open",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "approverDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "approverAttachment",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/media-record/send-approval-to-open",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"media-record",
+								"send-approval-to-open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "media-record/approve",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "approverDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "approverComment",
+									"value": "appc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/media-record/approve",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"media-record",
+								"approve"
 							]
 						}
 					},
@@ -527,7 +1437,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -544,12 +1454,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1000/dispensing-material/post",
-							"protocol": "http",
+							"raw": "{{local}}/dispensing-material/post",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"dispensing-material",
 								"post"
@@ -560,26 +1468,31 @@
 				},
 				{
 					"name": "dispensing-material/get/1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
 						"url": {
-							"raw": "http://localhost:1000/dispensing-material/get/1",
-							"protocol": "http",
+							"raw": "{{local}}/dispensing-material/get/1",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"dispensing-material",
 								"get",
@@ -605,15 +1518,370 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1000/dispensing-material/get-all",
-							"protocol": "http",
+							"raw": "{{local}}/dispensing-material/get-all",
 							"host": [
-								"localhost"
+								"{{local}}"
 							],
-							"port": "1000",
 							"path": [
 								"dispensing-material",
 								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dispensing-material/update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"dddd\",\r\n\"site_id\":1,\r\n\"form_id\":1,\r\n\"email\":\"swapnil@vidyagxp.com\",\r\n\"password\":\"00000000\",\r\n\"initiatorDeclaration\":\"aaaa\",\r\n\"DispenseOfMaterialRecords\":[{\r\n    \"on_time_auh\":\"ffgggag\",\r\n    \"date\": \"2024-12-22\",\r\n    \"unique_id\": 1232\r\n\r\n}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/dispensing-material/update",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"dispensing-material",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dispensing-material/send-for-review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "initiatorAttachment",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json"
+								},
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "initiatorDeclaration",
+									"value": "dispen",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/dispensing-material/send-for-review",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"dispensing-material",
+								"send-for-review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dispensing-material/send-review-to-open",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "initiatorDeclaration",
+									"value": "dispen",
+									"type": "text"
+								},
+								{
+									"key": "reviewerAttachment",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/dispensing-material/send-review-to-open",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"dispensing-material",
+								"send-review-to-open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dispensing-material/send-review-to-approval",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "reviewerDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "reviewComment",
+									"value": "dispenCom",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "reviewerAttachment",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/dispensing-material/send-review-to-approval",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"dispensing-material",
+								"send-review-to-approval"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dispensing-material/send-approval-to-open",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "approverDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "approverAttachment",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/dispensing-material/send-approval-to-open",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"dispensing-material",
+								"send-approval-to-open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dispensing-material/approve",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "form_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "swapnil@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "00000000",
+									"type": "text"
+								},
+								{
+									"key": "approverDeclaration",
+									"value": "dispenDec",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "approverComment",
+									"value": "appc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/dispensing-material/approve",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"dispensing-material",
+								"approve"
 							]
 						}
 					},
@@ -656,7 +1924,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:1000/user/user-login",
+			"name": "user-login",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -685,6 +1953,54 @@
 					"path": [
 						"user",
 						"user-login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "differential-pressure/get-user-roleGroups",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTc2MDI4OSwiZXhwIjoxNzMxODQ2Njg5fQ.-YTxrRjWe2T-ja5pmuSyoP4uHBkS_sq6Xll04KyDJzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "role_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "site_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "process_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{local}}/differential-pressure/get-user-roleGroups",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"differential-pressure",
+						"get-user-roleGroups"
 					]
 				}
 			},

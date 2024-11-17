@@ -113,45 +113,45 @@ exports.InsertLoadedQuantity = async (req, res) => {
       { transaction }
     );
 
-    // const auditTrailEntries = [];
-    // const fields = {
-    //   description,
-    //   department,
-    //   compression_area,
-    //   limit,
-    //   reviewer: (await getUserById(reviewer_id))?.name,
-    //   approver: (await getUserById(approver_id))?.name,
-    //   initiatorComment,
-    // };
-    // for (const [field, value] of Object.entries(fields)) {
-    //   if (value !== undefined && value !== null && value !== "") {
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: field,
-    //       previous_value: null,
-    //       new_value: value,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Initiation",
-    //       declaration: initiatorDeclaration,
-    //       action: "Initiate",
-    //     });
-    //   }
-    // }
+    const auditTrailEntries = [];
+    const fields = {
+      description,
+      department,
+      compression_area,
+      limit,
+      reviewer: (await getUserById(reviewer_id))?.name,
+      approver: (await getUserById(approver_id))?.name,
+      initiatorComment,
+    };
+    for (const [field, value] of Object.entries(fields)) {
+      if (value !== undefined && value !== null && value !== "") {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: field,
+          previous_value: null,
+          new_value: value,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Initiation",
+          declaration: initiatorDeclaration,
+          action: "Initiate",
+        });
+      }
+    }
 
-    // if (initiatorAttachment) {
-    //   auditTrailEntries.push({
-    //     form_id: newForm.form_id,
-    //     field_name: "initiatorAttachment",
-    //     previous_value: null,
-    //     new_value: getElogDocsUrl(initiatorAttachment),
-    //     changed_by: user.user_id,
-    //     previous_status: "Not Applicable",
-    //     new_status: "Initiation",
-    //     declaration: initiatorDeclaration,
-    //     action: "Initiate",
-    //   });
-    // }
+    if (initiatorAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "initiatorAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "Initiation",
+        declaration: initiatorDeclaration,
+        action: "Initiate",
+      });
+    }
 
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
@@ -698,747 +698,673 @@ exports.GetAlltLoadedQuantity = async (req, res) => {
 };
 
 //send differential pressure elog for review
-// exports.SendDPElogForReview = async (req, res) => {
-//   const { form_id, email, password, initiatorDeclaration } = req.body;
-
-//   // Check for required fields and provide specific error messages
-//   if (!form_id) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide a form ID." });
-//   }
-//   if (!email || !password) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide email and password." });
-//   }
-
-//   // Start a transaction
-//   const transaction = await sequelize.transaction();
-
-//   try {
-//     // Verify user credentials
-//     const user = await User.findOne({
-//       where: { user_id: req.user.userId, isActive: true },
-//       transaction,
-//     });
-
-//     if (!user) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//     if (!isPasswordValid) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     // Find the form
-//     const form = await LoadedQuantityProcessForm.findOne({
-//       where: { form_id },
-//       transaction,
-//     });
-
-//     if (!form) {
-//       await transaction.rollback();
-//       return res.status(404).json({ error: true, message: "Elog not found." });
-//     }
-
-//     if (form.stage !== 1) {
-//       await transaction.rollback();
-//       return res.status(400).json({
-//         error: true,
-//         message: "Elog is not in a valid stage to be sent for review.",
-//       });
-//     }
-
-//     const auditTrailEntries = [];
-
-//     // Add audit trail entry for the attachment if it exists
-//     if (req?.file) {
-//       auditTrailEntries.push({
-//         form_id: form.form_id,
-//         field_name: "initiatorAttachment",
-//         previous_value: form.initiatorAttachment || null,
-//         new_value: getElogDocsUrl(req.file),
-//         changed_by: user.user_id,
-//         previous_status: "Initiation",
-//         new_status: "Under Review",
-//         declaration: initiatorDeclaration,
-//         action: "Send For Review",
-//       });
-//     }
-
-//     auditTrailEntries.push({
-//       form_id: form.form_id,
-//       field_name: "stage Change",
-//       previous_value: "Not Applicable",
-//       new_value: "Not Applicable",
-//       changed_by: user.user_id,
-//       previous_status: "Initiation",
-//       new_status: "Under Review",
-//       declaration: initiatorDeclaration,
-//       action: "Send For Review",
-//     });
-
-//     // Update the form details
-//     await form.update(
-//       {
-//         status: "Under Review",
-//         stage: 2,
-//         initiatorAttachment: req?.file
-//           ? getElogDocsUrl(req.file)
-//           : form.initiatorAttachment,
-//       },
-//       { transaction }
-//     );
-
-//     // Insert audit trail entries
-//     await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
-//       transaction,
-//     });
-
-//     // Commit the transaction
-//     await transaction.commit();
-
-//     try {
-//       const reviewer = await getUserById(form.reviewer_id);
-//       // Send emails
-//       await Mailer.sendEmail("reminderReviewer", {
-//         reviewerName: reviewer.name,
-//         initiator: user.name,
-//         dateOfInitiation: new Date().toISOString().split("T")[0],
-//         description: form.description,
-//         status: "Under Review",
-//         recipients: reviewer.email,
-//       });
-
-//       return res.status(200).json({
-//         error: false,
-//         message: "E-log successfully sent for review",
-//       });
-//     } catch (emailError) {
-//       console.error("Failed to send emails:", emailError.message);
-//       return res.json({
-//         error: true,
-//         message: "E-log Created but failed to send emails.",
-//       });
-//     }
-//   } catch (error) {
-//     // Rollback the transaction in case of error
-//     await transaction.rollback();
-
-//     return res.status(500).json({
-//       error: true,
-//       message: `Error during sending E-log for review: ${error.message}`,
-//     });
-//   }
-// };
-
-// // change status of differential pressure elog from review to open
-// exports.SendDPElogfromReviewToOpen = async (req, res) => {
-//   const { form_id, email, password, reviewerDeclaration } = req.body;
-
-//   // Check for required fields and provide specific error messages
-//   if (!form_id) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide a form ID." });
-//   }
-//   if (!email || !password) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide email and password." });
-//   }
-
-//   // Start a transaction
-//   const transaction = await sequelize.transaction();
-
-//   try {
-//     // Verify user credentials
-//     const user = await User.findOne({
-//       where: { user_id: req.user.userId, email, isActive: true },
-//       transaction,
-//     });
-
-//     if (!user) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//     if (!isPasswordValid) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     // Find the form
-//     const form = await LoadedQuantityProcessForm.findOne({
-//       where: { form_id },
-//       transaction,
-//     });
-
-//     if (!form) {
-//       await transaction.rollback();
-//       return res.status(404).json({ error: true, message: "Elog not found." });
-//     }
-
-//     if (form.stage !== 2) {
-//       await transaction.rollback();
-//       return res.status(400).json({
-//         error: true,
-//         message: "Elog is not in a valid stage.",
-//       });
-//     }
-
-//     const auditTrailEntries = [];
-
-//     // Add audit trail entry for the attachment if it exists
-//     if (req?.file) {
-//       auditTrailEntries.push({
-//         form_id: form.form_id,
-//         field_name: "reviewerAttachment",
-//         previous_value: form.reviewerAttachment || null,
-//         new_value: getElogDocsUrl(req.file),
-//         changed_by: user.user_id,
-//         previous_status: "Under Review",
-//         new_status: "Initiation",
-//         declaration: reviewerDeclaration,
-//         action: "Open Elog",
-//       });
-//     }
-
-//     auditTrailEntries.push({
-//       form_id: form.form_id,
-//       field_name: "stage Change",
-//       previous_value: "Not Applicable",
-//       new_value: "Not Applicable",
-//       changed_by: user.user_id,
-//       previous_status: "Under Review",
-//       new_status: "Initiation",
-//       declaration: reviewerDeclaration,
-//       action: "Open Elog",
-//     });
-
-//     // Update the form details
-//     await form.update(
-//       {
-//         status: "Initiation",
-//         stage: 1,
-//         reviewerAttachment: getElogDocsUrl(req?.file),
-//       },
-//       { transaction }
-//     );
-
-//     // Insert audit trail entries
-//     await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
-//       transaction,
-//     });
-
-//     // Commit the transaction
-//     await transaction.commit();
-
-//     try {
-//       const initiator = await getUserById(form.initiator_id);
-//       // Send emails
-//       await Mailer.sendEmail("reminderInitiator", {
-//         initiatorName: initiator.name,
-//         dateOfInitiation: new Date().toISOString().split("T")[0],
-//         description: form.description,
-//         status: "Initiation",
-//         recipients: initiator.email,
-//       });
-
-//       return res.status(200).json({
-//         error: false,
-//         message: "E-log status successfully changed from review to initiation",
-//       });
-//     } catch (emailError) {
-//       console.error("Failed to send emails:", emailError.message);
-//       return res.json({
-//         error: true,
-//         message: "E-log Created but failed to send emails.",
-//       });
-//     }
-//   } catch (error) {
-//     // Rollback the transaction in case of error
-//     await transaction.rollback();
-
-//     return res.status(500).json({
-//       error: true,
-//       message: `Error during changing stage of elog: ${error.message}`,
-//     });
-//   }
-// };
-
-// // send differential pressure elog from review to approval
-// exports.SendDPfromReviewToApproval = async (req, res) => {
-//   const { form_id, reviewComment, email, password, reviewerDeclaration } =
-//     req.body;
-
-//   // Check for required fields and provide specific error messages
-//   if (!form_id) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide a form ID." });
-//   }
-//   if (!reviewComment) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide a review comment." });
-//   }
-//   if (!email || !password) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide email and password." });
-//   }
-
-//   // Start a transaction
-//   const transaction = await sequelize.transaction();
-
-//   try {
-//     // Verify user credentials
-//     const user = await User.findOne({
-//       where: { user_id: req.user.userId, email, isActive: true },
-//       transaction,
-//     });
-
-//     if (!user) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//     if (!isPasswordValid) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     // Find the form
-//     const form = await LoadedQuantityProcessForm.findOne({
-//       where: { form_id },
-//       transaction,
-//     });
-
-//     if (!form) {
-//       await transaction.rollback();
-//       return res.status(404).json({ error: true, message: "Elog not found." });
-//     }
-
-//     if (form.stage !== 2) {
-//       await transaction.rollback();
-//       return res.status(400).json({
-//         error: true,
-//         message: "Elog is not in a valid stage to be sent for approval.",
-//       });
-//     }
-
-//     const auditTrailEntries = [];
-
-//     if (reviewComment) {
-//       auditTrailEntries.push({
-//         form_id: form.form_id,
-//         field_name: "reviewComment",
-//         previous_value: form.reviewComment || null,
-//         new_value: reviewComment,
-//         changed_by: user.user_id,
-//         previous_status: "Under Review",
-//         new_status: "Under Approval",
-//         declaration: reviewerDeclaration,
-//         action: "Send For Approval",
-//       });
-//     }
-
-//     // Add audit trail entry for the attachment if it exists
-//     if (req?.file) {
-//       auditTrailEntries.push({
-//         form_id: form.form_id,
-//         field_name: "reviewerAttachment",
-//         previous_value: form.reviewerAttachment || null,
-//         new_value: getElogDocsUrl(req.file),
-//         changed_by: user.user_id,
-//         previous_status: "Under Review",
-//         new_status: "Under Approval",
-//         declaration: reviewerDeclaration,
-//         action: "Send For Approval",
-//       });
-//     }
-
-//     auditTrailEntries.push({
-//       form_id: form.form_id,
-//       field_name: "stage Change",
-//       previous_value: "Not Applicable",
-//       new_value: "Not Applicable",
-//       changed_by: user.user_id,
-//       previous_status: "Under Review",
-//       new_status: "Under Approval",
-//       declaration: reviewerDeclaration,
-//       action: "Send For Approval",
-//     });
-
-//     // Update the form details
-//     await form.update(
-//       {
-//         status: "Under Approval",
-//         stage: 3,
-//         reviewComment: reviewComment,
-//         reviewerAttachment: req?.file
-//           ? getElogDocsUrl(req.file)
-//           : form.reviewerAttachment,
-//         date_of_review: new Date(),
-//       },
-//       { transaction }
-//     );
-
-//     // Insert audit trail entries
-//     await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
-//       transaction,
-//     });
-
-//     // Commit the transaction
-//     await transaction.commit();
-
-//     try {
-//       const approver = await getUserById(form.approver_id);
-//       // Send emails
-//       await Mailer.sendEmail("reminderApprover", {
-//         approverName: approver.name,
-//         dateOfInitiation: new Date().toISOString().split("T")[0],
-//         description: form.description,
-//         reviewer: user.name,
-//         status: "Under Approval",
-//         recipients: approver.email,
-//       });
-
-//       return res.status(200).json({
-//         error: false,
-//         message:
-//           "E-log status successfully changed from review to under-approval",
-//       });
-//     } catch (emailError) {
-//       console.error("Failed to send emails:", emailError.message);
-//       return res.json({
-//         error: true,
-//         message: "E-log Created but failed to send emails.",
-//       });
-//     }
-//   } catch (error) {
-//     // Rollback the transaction in case of error
-//     await transaction.rollback();
-
-//     return res.status(500).json({
-//       error: true,
-//       message: `Error during sending E-log for approval: ${error.message}`,
-//     });
-//   }
-// };
-
-// // send differential pressure elog from under approval to open
-// exports.SendDPfromApprovalToOpen = async (req, res) => {
-//   const { form_id, email, password, approverDeclaration } = req.body;
-
-//   // Check for required fields and provide specific error messages
-//   if (!form_id) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide a form ID." });
-//   }
-//   if (!email || !password) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide email and password." });
-//   }
-
-//   // Start a transaction
-//   const transaction = await sequelize.transaction();
-
-//   try {
-//     // Verify user credentials
-//     const user = await User.findOne({
-//       where: { user_id: req.user.userId, email, isActive: true },
-//       transaction,
-//     });
-
-//     if (!user) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//     if (!isPasswordValid) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     // Find the form
-//     const form = await LoadedQuantityProcessForm.findOne({
-//       where: { form_id },
-//       transaction,
-//     });
-
-//     if (!form) {
-//       await transaction.rollback();
-//       return res.status(404).json({ error: true, message: "Elog not found." });
-//     }
-
-//     if (form.stage !== 3) {
-//       await transaction.rollback();
-//       return res.status(400).json({
-//         error: true,
-//         message: "Elog is not in a valid stage.",
-//       });
-//     }
-
-//     const auditTrailEntries = [];
-
-//     // Add audit trail entry for the attachment if it exists
-//     if (req?.file) {
-//       auditTrailEntries.push({
-//         form_id: form.form_id,
-//         field_name: "approverAttachment",
-//         previous_value: form.approverAttachment || null,
-//         new_value: getElogDocsUrl(req.file),
-//         changed_by: user.user_id,
-//         previous_status: "Under Approval",
-//         new_status: "Initiation",
-//         declaration: approverDeclaration,
-//         action: "Open Elog",
-//       });
-//     }
-
-//     auditTrailEntries.push({
-//       form_id: form.form_id,
-//       field_name: "stage Change",
-//       previous_value: "Not Applicable",
-//       new_value: "Not Applicable",
-//       changed_by: user.user_id,
-//       previous_status: "Under Approval",
-//       new_status: "Initiation",
-//       declaration: approverDeclaration,
-//       action: "Open Elog",
-//     });
-
-//     // Update the form details
-//     await form.update(
-//       {
-//         status: "Initiation",
-//         stage: 1,
-//         approverAttachment: getElogDocsUrl(req?.file),
-//       },
-//       { transaction }
-//     );
-
-//     // Insert audit trail entries
-//     await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
-//       transaction,
-//     });
-
-//     // Commit the transaction
-//     await transaction.commit();
-
-//     try {
-//       const initiator = await getUserById(form.initiator_id);
-//       // Send emails
-//       await Mailer.sendEmail("reminderInitiator", {
-//         initiatorName: initiator.name,
-//         dateOfInitiation: new Date().toISOString().split("T")[0],
-//         description: form.description,
-//         status: "Initiation",
-//         recipients: initiator.email,
-//       });
-
-//       return res.status(200).json({
-//         error: false,
-//         message:
-//           "E-log status successfully changed from under-approval to initiation",
-//       });
-//     } catch (emailError) {
-//       console.error("Failed to send emails:", emailError.message);
-//       return res.json({
-//         error: true,
-//         message: "E-log Created but failed to send emails.",
-//       });
-//     }
-//   } catch (error) {
-//     // Rollback the transaction in case of error
-//     await transaction.rollback();
-
-//     return res.status(500).json({
-//       error: true,
-//       message: `Error during changing stage of elog: ${error.message}`,
-//     });
-//   }
-// };
-
-// // APPROVE differential pressure elog
-// exports.ApproveDPElog = async (req, res) => {
-//   const { form_id, approverComment, email, password, approverDeclaration } =
-//     req.body;
-
-//   // Check for required fields and provide specific error messages
-//   if (!form_id) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide a form ID." });
-//   }
-//   if (!approverComment) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide an approver comment." });
-//   }
-//   if (!email || !password) {
-//     return res
-//       .status(400)
-//       .json({ error: true, message: "Please provide email and password." });
-//   }
-
-//   // Start a transaction
-//   const transaction = await sequelize.transaction();
-
-//   try {
-//     // Verify user credentials
-//     const user = await User.findOne({
-//       where: { user_id: req.user.userId, email, isActive: true },
-//       transaction,
-//     });
-
-//     if (!user) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//     if (!isPasswordValid) {
-//       await transaction.rollback();
-//       return res
-//         .status(401)
-//         .json({ error: true, message: "Invalid email or password." });
-//     }
-
-//     // Find the form
-//     const form = await LoadedQuantityProcessForm.findOne({
-//       where: { form_id },
-//       transaction,
-//     });
-
-//     if (!form) {
-//       await transaction.rollback();
-//       return res.status(404).json({ error: true, message: "Elog not found." });
-//     }
-
-//     if (form.stage !== 3) {
-//       await transaction.rollback();
-//       return res.status(400).json({
-//         error: true,
-//         message: "Elog is not in a valid stage.",
-//       });
-//     }
-
-//     const auditTrailEntries = [];
-
-//     if (approverComment) {
-//       auditTrailEntries.push({
-//         form_id: form.form_id,
-//         field_name: "approverComment",
-//         previous_value: form.approverComment || null,
-//         new_value: approverComment,
-//         changed_by: user.user_id,
-//         previous_status: "Under Approval",
-//         new_status: "Approved",
-//         declaration: approverDeclaration,
-//         action: "Approved",
-//       });
-//     }
-
-//     // Add audit trail entry for the attachment if it exists
-//     if (req?.file) {
-//       auditTrailEntries.push({
-//         form_id: form.form_id,
-//         field_name: "approverAttachment",
-//         previous_value: form.approverAttachment || null,
-//         new_value: getElogDocsUrl(req.file),
-//         changed_by: user.user_id,
-//         previous_status: "Under Approval",
-//         new_status: "Approved",
-//         declaration: approverDeclaration,
-//         action: "Approved",
-//       });
-//     }
-
-//     auditTrailEntries.push({
-//       form_id: form.form_id,
-//       field_name: "stage Change",
-//       previous_value: "Not Applicable",
-//       new_value: "Not Applicable",
-//       changed_by: user.user_id,
-//       previous_status: "Under Approval",
-//       new_status: "Approved",
-//       declaration: approverDeclaration,
-//       action: "Approved",
-//     });
-
-//     // Update the form details
-//     await form.update(
-//       {
-//         status: "Approved",
-//         stage: 4,
-//         approverComment: approverComment,
-//         approverAttachment: req?.file
-//           ? getElogDocsUrl(req.file)
-//           : form.approverAttachment,
-//         date_of_approval: new Date(),
-//       },
-//       { transaction }
-//     );
-
-//     // Insert audit trail entries
-//     await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
-//       transaction,
-//     });
-
-//     // Commit the transaction
-//     await transaction.commit();
-
-//     return res.status(200).json({
-//       error: false,
-//       message: "E-log successfully approved!!",
-//     });
-//   } catch (error) {
-//     // Rollback the transaction in case of error
-//     await transaction.rollback();
-
-//     return res.status(500).json({
-//       error: true,
-//       message: `Error approving elog: ${error.message}`,
-//     });
-//   }
-// };
-
-// // get users based on roles, sites and processes
+exports.SendDPElogForReview = async (req, res) => {
+  const { form_id, email, password, initiatorDeclaration } = req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, isActive: true },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
+    const form = await LoadedQuantityProcessForm.findOne({
+      where: { form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 1) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage to be sent for review.",
+      });
+    }
+
+    const auditTrailEntries = [];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "initiatorAttachment",
+        previous_value: form.initiatorAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Initiation",
+        new_status: "Under Review",
+        declaration: initiatorDeclaration,
+        action: "Send For Review",
+      });
+    }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Initiation",
+      new_status: "Under Review",
+      declaration: initiatorDeclaration,
+      action: "Send For Review",
+    });
+
+    // Update the form details
+    await form.update(
+      {
+        status: "Under Review",
+        stage: 2,
+        initiatorAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.initiatorAttachment,
+      },
+      { transaction }
+    );
+
+    // Insert audit trail entries
+    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
+    // Commit the transaction
+    await transaction.commit();
+
+      return res.status(200).json({
+        error: false,
+        message: "E-log successfully sent for review",
+      });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error during sending E-log for review: ${error.message}`,
+    });
+  }
+};
+
+// change status of differential pressure elog from review to open
+exports.SendDPElogfromReviewToOpen = async (req, res) => {
+  const { form_id, email, password, reviewerDeclaration } = req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, email, isActive: true },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
+    const form = await LoadedQuantityProcessForm.findOne({
+      where: { form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 2) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage.",
+      });
+    }
+
+    const auditTrailEntries = [];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewerAttachment",
+        previous_value: form.reviewerAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Under Review",
+        new_status: "Initiation",
+        declaration: reviewerDeclaration,
+        action: "Open Elog",
+      });
+    }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Under Review",
+      new_status: "Initiation",
+      declaration: reviewerDeclaration,
+      action: "Open Elog",
+    });
+
+    // Update the form details
+    await form.update(
+      {
+        status: "Initiation",
+        stage: 1,
+        reviewerAttachment: getElogDocsUrl(req?.file),
+      },
+      { transaction }
+    );
+
+    // Insert audit trail entries
+    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
+    // Commit the transaction
+    await transaction.commit();
+
+      return res.status(200).json({
+        error: false,
+        message: "E-log status successfully changed from review to initiation",
+      });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error during changing stage of elog: ${error.message}`,
+    });
+  }
+};
+
+// send differential pressure elog from review to approval
+exports.SendDPfromReviewToApproval = async (req, res) => {
+  const { form_id, reviewComment, email, password, reviewerDeclaration } =
+    req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+  if (!reviewComment) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a review comment." });
+  }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, email, isActive: true },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
+    const form = await LoadedQuantityProcessForm.findOne({
+      where: { form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 2) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage to be sent for approval.",
+      });
+    }
+
+    const auditTrailEntries = [];
+
+    if (reviewComment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewComment",
+        previous_value: form.reviewComment || null,
+        new_value: reviewComment,
+        changed_by: user.user_id,
+        previous_status: "Under Review",
+        new_status: "Under Approval",
+        declaration: reviewerDeclaration,
+        action: "Send For Approval",
+      });
+    }
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewerAttachment",
+        previous_value: form.reviewerAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Under Review",
+        new_status: "Under Approval",
+        declaration: reviewerDeclaration,
+        action: "Send For Approval",
+      });
+    }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Under Review",
+      new_status: "Under Approval",
+      declaration: reviewerDeclaration,
+      action: "Send For Approval",
+    });
+
+    // Update the form details
+    await form.update(
+      {
+        status: "Under Approval",
+        stage: 3,
+        reviewComment: reviewComment,
+        reviewerAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.reviewerAttachment,
+        date_of_review: new Date(),
+      },
+      { transaction }
+    );
+
+    // Insert audit trail entries
+    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
+    // Commit the transaction
+    await transaction.commit();
+
+      return res.status(200).json({
+        error: false,
+        message:
+          "E-log status successfully changed from review to under-approval",
+      });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error during sending E-log for approval: ${error.message}`,
+    });
+  }
+};
+
+// send differential pressure elog from under approval to open
+exports.SendDPfromApprovalToOpen = async (req, res) => {
+  const { form_id, email, password, approverDeclaration } = req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, email, isActive: true },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
+    const form = await LoadedQuantityProcessForm.findOne({
+      where: { form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 3) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage.",
+      });
+    }
+
+    const auditTrailEntries = [];
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverAttachment",
+        previous_value: form.approverAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Under Approval",
+        new_status: "Initiation",
+        declaration: approverDeclaration,
+        action: "Open Elog",
+      });
+    }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Under Approval",
+      new_status: "Initiation",
+      declaration: approverDeclaration,
+      action: "Open Elog",
+    });
+
+    // Update the form details
+    await form.update(
+      {
+        status: "Initiation",
+        stage: 1,
+        approverAttachment: getElogDocsUrl(req?.file),
+      },
+      { transaction }
+    );
+
+    // Insert audit trail entries
+    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
+    // Commit the transaction
+    await transaction.commit();
+
+      return res.status(200).json({
+        error: false,
+        message:
+          "E-log status successfully changed from under-approval to initiation",
+      });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error during changing stage of elog: ${error.message}`,
+    });
+  }
+};
+
+// APPROVE differential pressure elog
+exports.ApproveDPElog = async (req, res) => {
+  const { form_id, approverComment, email, password, approverDeclaration } =
+    req.body;
+
+  // Check for required fields and provide specific error messages
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+  if (!approverComment) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an approver comment." });
+  }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  // Start a transaction
+  const transaction = await sequelize.transaction();
+
+  try {
+    // Verify user credentials
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, email, isActive: true },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid email or password." });
+    }
+
+    // Find the form
+    const form = await LoadedQuantityProcessForm.findOne({
+      where: { form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Elog not found." });
+    }
+
+    if (form.stage !== 3) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Elog is not in a valid stage.",
+      });
+    }
+
+    const auditTrailEntries = [];
+
+    if (approverComment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverComment",
+        previous_value: form.approverComment || null,
+        new_value: approverComment,
+        changed_by: user.user_id,
+        previous_status: "Under Approval",
+        new_status: "Approved",
+        declaration: approverDeclaration,
+        action: "Approved",
+      });
+    }
+
+    // Add audit trail entry for the attachment if it exists
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approverAttachment",
+        previous_value: form.approverAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Under Approval",
+        new_status: "Approved",
+        declaration: approverDeclaration,
+        action: "Approved",
+      });
+    }
+
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "stage Change",
+      previous_value: "Not Applicable",
+      new_value: "Not Applicable",
+      changed_by: user.user_id,
+      previous_status: "Under Approval",
+      new_status: "Approved",
+      declaration: approverDeclaration,
+      action: "Approved",
+    });
+
+    // Update the form details
+    await form.update(
+      {
+        status: "Approved",
+        stage: 4,
+        approverComment: approverComment,
+        approverAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.approverAttachment,
+        date_of_approval: new Date(),
+      },
+      { transaction }
+    );
+
+    // Insert audit trail entries
+    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
+    // Commit the transaction
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "E-log successfully approved!!",
+    });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await transaction.rollback();
+
+    return res.status(500).json({
+      error: true,
+      message: `Error approving elog: ${error.message}`,
+    });
+  }
+};
+
+// get users based on roles, sites and processes
 // exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
 //   const { role_id, site_id, process_id } = req.body;
 

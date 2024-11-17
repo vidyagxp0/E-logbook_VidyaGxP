@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// post differential pressure elog
+// post LoadedQuantityRecordProcess elog
 router.post(
   "/post",
   Auth.checkUserJwtToken,
@@ -34,7 +34,7 @@ router.post(
   LoadedQuantityRecordProcess.InsertLoadedQuantity
 );
 
-// edit differential pressure elog details
+// edit LoadedQuantityRecordProcess elog details
 router.put(
   "/update",
   Auth.checkUserJwtToken,
@@ -43,18 +43,78 @@ router.put(
   LoadedQuantityRecordProcess.EditLoadedQuantity
 );
 
-// //get a differential pressure elog by id
+// //get a LoadedQuantityRecordProcess elog by id
 router.get(
   "/get/:id",
   Auth.checkUserJwtToken,
   LoadedQuantityRecordProcess.GettLoadedQuantity
 );
 
-// //get all the differential pressure elogs
+// //get all the LoadedQuantityRecordProcess elogs
 router.get(
   "/get-all",
   Auth.checkUserJwtToken,
   LoadedQuantityRecordProcess.GetAlltLoadedQuantity
 );
+
+//send LoadedQuantityRecordProcess elog for review
+router.put(
+  "/send-for-review",
+  Auth.checkUserJwtToken,
+  upload.single("initiatorAttachment"),
+  Auth.authorizeUserRole(1, 1),
+  LoadedQuantityRecordProcess.SendDPElogForReview
+);
+
+// change status of LoadedQuantityRecordProcess elog from review to open
+router.put(
+  "/send-review-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(1, 2),
+  LoadedQuantityRecordProcess.SendDPElogfromReviewToOpen
+);
+
+// send LoadedQuantityRecordProcess elog from review to approval
+router.put(
+  "/send-review-to-approval",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(1, 2),
+  LoadedQuantityRecordProcess.SendDPfromReviewToApproval
+);
+
+// send LoadedQuantityRecordProcess elog from under-approval to open
+router.put(
+  "/send-approval-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(1, 3),
+  LoadedQuantityRecordProcess.SendDPfromApprovalToOpen
+);
+
+// APPROVE LoadedQuantityRecordProcess elog
+router.put(
+  "/approve",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(1, 3),
+  LoadedQuantityRecordProcess.ApproveDPElog
+);
+
+// // get users based on roles, sites and processes
+// router.post(
+//   "/get-user-roleGroups",
+//   Auth.checkUserJwtToken,
+//   LoadedQuantityRecordProcess.GetUserOnBasisOfRoleGroup
+// );
+
+// router.get("/get-processes", LoadedQuantityRecordProcess.getAllProcesses);
+
+// router.get(
+//   "/get-audit-trail-for-elog/:id",
+//   Auth.checkUserJwtToken,
+//   LoadedQuantityRecordProcess.getAuditTrailForAnElog
+// );
 
 module.exports = router;
