@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// post differential pressure elog
+// post OperationOfSterilizer elog
 router.post(
   "/post",
   Auth.checkUserJwtToken,
@@ -34,7 +34,7 @@ router.post(
   OperationOfSterilizer.InsertOperationOfSterilizerForm
 );
 
-// edit differential pressure elog details
+// edit OperationOfSterilizer elog details
 router.put(
   "/update",
   Auth.checkUserJwtToken,
@@ -43,18 +43,77 @@ router.put(
   OperationOfSterilizer.EditOperationOfSterilizerForm
 );
 
-// //get a differential pressure elog by id
+// //get a OperationOfSterilizer elog by id
 router.get(
   "/get/:id",
   Auth.checkUserJwtToken,
   OperationOfSterilizer.GettOperationOfSterilizerForm
 );
 
-// //get all the differential pressure elogs
+// //get all the OperationOfSterilizer elogs
 router.get(
   "/get-all",
   Auth.checkUserJwtToken,
   OperationOfSterilizer.GetAlltOperationOfSterilizerForm
 );
+//send OperationOfSterilizer elog for review
+router.put(
+  "/send-for-review",
+  Auth.checkUserJwtToken,
+  upload.single("initiatorAttachment"),
+  Auth.authorizeUserRole(1, 1),
+  OperationOfSterilizer.SendDPElogForReview
+);
+
+// change status of OperationOfSterilizer elog from review to open
+router.put(
+  "/send-review-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(1, 2),
+  OperationOfSterilizer.SendDPElogfromReviewToOpen
+);
+
+// send OperationOfSterilizer elog from review to approval
+router.put(
+  "/send-review-to-approval",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(1, 2),
+  OperationOfSterilizer.SendDPfromReviewToApproval
+);
+
+// send OperationOfSterilizer elog from under-approval to open
+router.put(
+  "/send-approval-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(1, 3),
+  OperationOfSterilizer.SendDPfromApprovalToOpen
+);
+
+// APPROVE OperationOfSterilizer elog
+router.put(
+  "/approve",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(1, 3),
+  OperationOfSterilizer.ApproveDPElog
+);
+
+// get users based on roles, sites and processes
+// router.post(
+//   "/get-user-roleGroups",
+//   Auth.checkUserJwtToken,
+//   OperationOfSterilizer.GetUserOnBasisOfRoleGroup
+// );
+
+// router.get("/get-processes", OperationOfSterilizer.getAllProcesses);
+
+// router.get(
+//   "/get-audit-trail-for-elog/:id",
+//   Auth.checkUserJwtToken,
+//   OperationOfSterilizer.getAuditTrailForAnElog
+// );
 
 module.exports = router;

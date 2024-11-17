@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// post differential pressure elog
+// post MediaRecord elog
 router.post(
   "/post",
   Auth.checkUserJwtToken,
@@ -34,7 +34,7 @@ router.post(
   MediaRecord.InsertMediaRecord
 );
 
-// edit differential pressure elog details
+// edit MediaRecord elog details
 router.put(
   "/update",
   Auth.checkUserJwtToken,
@@ -43,18 +43,77 @@ router.put(
   MediaRecord.EditMediaRecord
 );
 
-// //get a differential pressure elog by id
+// //get a MediaRecord elog by id
 router.get(
   "/get/:id",
   Auth.checkUserJwtToken,
   MediaRecord.GetMediaRecord
 );
 
-// //get all the differential pressure elogs
+// //get all the MediaRecord elogs
 router.get(
   "/get-all",
   Auth.checkUserJwtToken,
   MediaRecord.GetAllMediaRecord
 );
 
+//send MediaRecord elog for review
+router.put(
+  "/send-for-review",
+  Auth.checkUserJwtToken,
+  upload.single("initiatorAttachment"),
+  Auth.authorizeUserRole(1, 1),
+  MediaRecord.SendDPElogForReview
+);
+
+// change status of MediaRecord elog from review to open
+router.put(
+  "/send-review-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(1, 2),
+  MediaRecord.SendDPElogfromReviewToOpen
+);
+
+// send MediaRecord elog from review to approval
+router.put(
+  "/send-review-to-approval",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(1, 2),
+  MediaRecord.SendDPfromReviewToApproval
+);
+
+// send MediaRecord elog from under-approval to open
+router.put(
+  "/send-approval-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(1, 3),
+  MediaRecord.SendDPfromApprovalToOpen
+);
+
+// APPROVE MediaRecord elog
+router.put(
+  "/approve",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(1, 3),
+  MediaRecord.ApproveDPElog
+);
+
+// get users based on roles, sites and processes
+// router.post(
+//   "/get-user-roleGroups",
+//   Auth.checkUserJwtToken,
+//   MediaRecord.GetUserOnBasisOfRoleGroup
+// );
+
+// router.get("/get-processes", MediaRecord.getAllProcesses);
+
+// router.get(
+//   "/get-audit-trail-for-elog/:id",
+//   Auth.checkUserJwtToken,
+//   MediaRecord.getAuditTrailForAnElog
+// );
 module.exports = router;
