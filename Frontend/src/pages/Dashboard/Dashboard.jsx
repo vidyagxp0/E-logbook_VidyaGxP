@@ -116,32 +116,6 @@ function Dashboard() {
         console.error("Error: ", error);
       });
 
-    const newOperationSterelizer = {
-      method: "get",
-      url: "http://localhost:1000/operation-sterlizer/get-all",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "application/json",
-      },
-    };
-    axios(newOperationSterelizer)
-      .then((response) => {
-        const allOperationOfSterelizer = response.data.message;
-        let filteredArray = allOperationOfSterelizer.filter((elog) => {
-          const userId = userDetails.userId;
-
-          return (
-            userId === elog.reviewer_id ||
-            userId === elog.initiator_id ||
-            userId === elog.approver_id ||
-            hasAccess(4, elog.site_id, 4)
-          );
-        });
-        setOperationOfSterilizerElogs(filteredArray);
-      })
-      .catch((error) => {
-        console.error("Error: ", error);
-      });
 
       const newConfigMedia = {
         method: "get",
@@ -198,6 +172,32 @@ function Dashboard() {
           .catch((error) => {
             console.error("Error: ", error);
           });
+    const newOperationSterelizer = {
+      method: "get",
+      url: "http://localhost:1000/operation-sterlizer/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newOperationSterelizer)
+      .then((response) => {
+        const allOperationOfSterelizer = response.data.message;
+        let filteredArray = allOperationOfSterelizer.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setOperationOfSterilizerElogs(filteredArray);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const combinedRecords = [
@@ -222,11 +222,11 @@ function Dashboard() {
       navigate("/ecc-panel", { state: item });
     } else if (item.LoadedQuantityRecords) {
       navigate("/loaded-quantity-panel", { state: item });
-    } else if (item.MediaRecords === "Media Record") {
+    } else if (item.MediaRecords) {
       navigate("/media-record-panel", { state: item });
-    } else if (item.OperationOfSterilizer === "Operation Of Sterilizer") {
+    } else if (item.OperationOfSterilizerRecords) {
       navigate("/operation-of-sterilizer-panel", { state: item });
-    } else if (item.DispenseOfMaterials      === "Dispensing Of Materials") {
+    } else if (item.DispenseOfMaterials) {
       navigate("/dispensing-of-material-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
@@ -457,7 +457,7 @@ function Dashboard() {
                 })
               : null}
 
-            {eLogSelect === "operation_of_sterilizer "
+            {eLogSelect === "operation_of_sterilizer"
               ? operationOfSterilizerElogs?.map((item, index) => {
                   return (
                     <>

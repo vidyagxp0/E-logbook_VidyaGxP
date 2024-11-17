@@ -113,7 +113,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
       { transaction }
     );
 
-    // const auditTrailEntries = [];
+    const auditTrailEntries = [];
     // const fields = {
     //   description,
     //   department,
