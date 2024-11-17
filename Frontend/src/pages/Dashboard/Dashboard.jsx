@@ -222,9 +222,9 @@ function Dashboard() {
       navigate("/ecc-panel", { state: item });
     } else if (item.LoadedQuantityRecords) {
       navigate("/loaded-quantity-panel", { state: item });
-    } else if (item.MediaRecords === "Media Record") {
+    } else if (item.MediaRecords) {
       navigate("/media-record-panel", { state: item });
-    } else if (item.OperationOfSterilizer === "Operation Of Sterilizer") {
+    } else if (item.OperationOfSterilizerRecords) {
       navigate("/operation-of-sterilizer-panel", { state: item });
     } else if (item.DispenseOfMaterials) {
       navigate("/dispensing-of-material-panel", { state: item });
@@ -457,7 +457,7 @@ function Dashboard() {
                 })
               : null}
 
-            {eLogSelect === "operation_of_sterilizer "
+            {eLogSelect === "operation_of_sterilizer"
               ? operationOfSterilizerElogs?.map((item, index) => {
                   return (
                     <>

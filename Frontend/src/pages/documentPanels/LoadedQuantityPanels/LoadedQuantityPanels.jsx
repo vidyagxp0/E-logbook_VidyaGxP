@@ -72,6 +72,7 @@ const LoadedQuantityPanels = () => {
         console.error(error);
       });
   };
+  console.log(editData, "editDataLoaded");
 
   useEffect(() => {
     setEditData(location.state);
