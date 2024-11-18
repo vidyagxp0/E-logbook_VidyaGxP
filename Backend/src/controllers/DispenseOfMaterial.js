@@ -381,7 +381,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    DispenseOfMaterialRecords,
+    DispenseOfMaterials,
     email,
     password,
     initiatorComment,
@@ -500,8 +500,8 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
 
     // Update the Form Records if provided
     if (
-      Array.isArray(DispenseOfMaterialRecords) &&
-      DispenseOfMaterialRecords.length > 0
+      Array.isArray(DispenseOfMaterials) &&
+      DispenseOfMaterials.length > 0
     ) {
       const existingRecords = await DispenseOfMaterialRecord.findAll({
         where: { form_id: form_id },
@@ -512,10 +512,10 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
 
       // Track changes for existing records
       existingRecords.forEach((existingRecord, index) => {
-        DispenseOfMaterialRecords.sort(
+        DispenseOfMaterials.sort(
           (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
         );
-        const newRecord = DispenseOfMaterialRecords[index];
+        const newRecord = DispenseOfMaterials[index];
         if (newRecord) {
           const recordFields = {
             unique_id: newRecord?.unique_id,
@@ -546,67 +546,67 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
           for (const [field, newValue] of Object.entries(recordFields)) {
             const oldValue = existingRecord[field];
 
-            // {
-            //   auditTrailEntries.push({
-            //     form_id: form.form_id,
-            //     field_name: `${field}[${index}]`,
-            //     previous_value: oldValue || null,
-            //     new_value: newValue,
-            //     changed_by: user.user_id,
-            //     previous_status: form.status,
-            //     new_status: "Initiation",
-            //     declaration: initiatorDeclaration,
-            //     action: "Update Elog",
-            //   });
-            // }
+            {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${index}]`,
+                previous_value: oldValue || null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Initiation",
+                declaration: initiatorDeclaration,
+                action: "Update Elog",
+              });
+            }
           }
         }
       });
 
       // Handle new records added
-      if (DispenseOfMaterialRecords.length > existingRecords.length) {
+      if (DispenseOfMaterials.length > existingRecords.length) {
         for (
           let i = existingRecords.length;
-          i < DispenseOfMaterialRecords.length;
+          i < DispenseOfMaterials.length;
           i++
         ) {
-          const newRecord = DispenseOfMaterialRecords[i];
-          // const recordFields = {
-          //   on_time_auh: newRecord.on_time_auh,
-          //   on_time_laf: newRecord.on_time_laf,
-          //   on_time_uv_light: newRecord.on_time_uv_light,
-          //   on_time_done_by: newRecord.on_time_done_by,
-          //   name_of_material: newRecord.name_of_material,
-          //   control_no: newRecord.control_no,
-          //   dispensed_quantity: newRecord.dispensed_quantity,
-          //   dispensed_by_qa: newRecord.dispensed_by_qa,
-          //   dispensed_by_store: newRecord.dispensed_by_store,
-          //   off_time_auh: newRecord.off_time_auh,
-          //   off_time_laf: newRecord.off_time_laf,
-          //   off_time_uv_light: newRecord.off_time_uv_light,
-          //   uv_burning: newRecord.uv_burning,
-          //   off_time_done_by: newRecord.off_time_done_by,
-          //   cleaning_done_by: newRecord.cleaning_done_by,
-          //   checked_by: newRecord.checked_by,
-          //   weighing_balance_id: newRecord.weighing_balance_id,
-          //   remark: newRecord.remark,
-          // };
+          const newRecord = DispenseOfMaterials[i];
+          const recordFields = {
+            on_time_auh: newRecord.on_time_auh,
+            on_time_laf: newRecord.on_time_laf,
+            on_time_uv_light: newRecord.on_time_uv_light,
+            on_time_done_by: newRecord.on_time_done_by,
+            name_of_material: newRecord.name_of_material,
+            control_no: newRecord.control_no,
+            dispensed_quantity: newRecord.dispensed_quantity,
+            dispensed_by_qa: newRecord.dispensed_by_qa,
+            dispensed_by_store: newRecord.dispensed_by_store,
+            off_time_auh: newRecord.off_time_auh,
+            off_time_laf: newRecord.off_time_laf,
+            off_time_uv_light: newRecord.off_time_uv_light,
+            uv_burning: newRecord.uv_burning,
+            off_time_done_by: newRecord.off_time_done_by,
+            cleaning_done_by: newRecord.cleaning_done_by,
+            checked_by: newRecord.checked_by,
+            weighing_balance_id: newRecord.weighing_balance_id,
+            remark: newRecord.remark,
+          };
 
-          //   for (const [field, newValue] of Object.entries(recordFields)) {
-          //     if (newValue !== undefined) {
-          //       auditTrailEntries.push({
-          //         form_id: form.form_id,
-          //         field_name: `${field}[${i}]`,
-          //         previous_value: null,
-          //         new_value: newValue,
-          //         changed_by: user.user_id,
-          //         previous_status: form.status,
-          //         new_status: "Initiation",
-          //         declaration: initiatorDeclaration,
-          //         action: "Update Elog",
-          //       });
-          //     }
-          //   }
+            for (const [field, newValue] of Object.entries(recordFields)) {
+              if (newValue !== undefined) {
+                auditTrailEntries.push({
+                  form_id: form.form_id,
+                  field_name: `${field}[${i}]`,
+                  previous_value: null,
+                  new_value: newValue,
+                  changed_by: user.user_id,
+                  previous_status: form.status,
+                  new_status: "Initiation",
+                  declaration: initiatorDeclaration,
+                  action: "Update Elog",
+                });
+              }
+            }
         }
       }
 
@@ -617,7 +617,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
       });
 
       // Create new records
-      const formRecords = DispenseOfMaterialRecords.map((record, index) => ({
+      const formRecords = DispenseOfMaterials.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
         date:
@@ -646,9 +646,9 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
       });
     }
 
-    // await DispenseOfMatrialAuditTrail.bulkCreate(auditTrailEntries, {
-    //   transaction,
-    // });
+    await DispenseOfMatrialAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     await transaction.commit();
 
