@@ -1461,7 +1461,6 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 exports.generateReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
-    console.log(reportData, "r2");
 
     const date = new Date();
     const formattedDate = date.toLocaleDateString("en-US", {
@@ -1497,7 +1496,6 @@ exports.generateReport = async (req, res) => {
     // Set HTML content
     await page.setContent(html, { waitUntil: "networkidle0" });
 
-    console.log(reportData, "r2");
     // Generate PDF
     const pdf = await page.pdf({
       format: "A4",

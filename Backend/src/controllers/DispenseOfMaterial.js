@@ -1537,7 +1537,6 @@ exports.generateReport = async (req, res) => {
     // Set HTML content
     await page.setContent(html, { waitUntil: "networkidle0" });
 
-    console.log(reportData,"r2");
     // Generate PDF
     const pdf = await page.pdf({
       format: "A4",
