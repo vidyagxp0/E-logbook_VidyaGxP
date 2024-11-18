@@ -26,6 +26,8 @@ const MediaRecordPanel = () => {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
+  console.log(editData,"edit data od media");
+  
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
@@ -1260,7 +1262,8 @@ const MediaRecordPanel = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer?.name}
+                          value={editData?.reviewer3
+                            ?.name}
                           readOnly
                         />
                       </div>
@@ -1378,7 +1381,7 @@ const MediaRecordPanel = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver?.name}
+                          value={editData?.approver3?.name}
                           readOnly
                         />
                       </div>

@@ -27,6 +27,8 @@ const DispensingOfMaterialsPanel = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
 
+  console.log(editData, "editData of DISPENSING");
+
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -38,8 +40,8 @@ const DispensingOfMaterialsPanel = () => {
       form_id: location.state?.form_id,
       email: credentials?.email,
       password: credentials?.password,
-      // reviewComment: editData.reviewComment,
-      // approverComment: editData.approverComment,
+      reviewComment: editData.reviewComment,
+      approverComment: editData.approverComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -58,6 +60,12 @@ const DispensingOfMaterialsPanel = () => {
   console.log(editData, "editData");
 
  
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+      "Content-Type": "multipart/form-data",
+    },
+  };
 
   if (popupAction === "sendFromOpenToReview") {
     data.initiatorDeclaration = credentials?.declaration;
@@ -82,7 +90,7 @@ const DispensingOfMaterialsPanel = () => {
     data.reviewerAttachment = editData.reviewerAttachment;
     axios
       .put(
-        "http://localhost:1000/loaded-quantity/send-DP-from-review-to-approval",
+        "http://localhost:1000/dispensing-material/send-review-to-approval",
         data,
         config
       )
@@ -101,7 +109,7 @@ const DispensingOfMaterialsPanel = () => {
     data.reviewerAttachment = editData.reviewerAttachment;
     axios
       .put(
-        "http://localhost:1000/loaded-quantity/send-DP-elog-from-review-to-open",
+        "http://localhost:1000/dispensing-material/send-review-to-open",
         data,
         config
       )
@@ -117,7 +125,7 @@ const DispensingOfMaterialsPanel = () => {
     data.approverAttachment = editData.approverAttachment;
     axios
       .put(
-        "http://localhost:1000/loaded-quantity/approve-DP-elog",
+        "http://localhost:1000/dispensing-material/approve",
         data,
         config
       )
@@ -135,7 +143,7 @@ const DispensingOfMaterialsPanel = () => {
     data.approverDeclaration = credentials?.declaration;
     axios
       .put(
-        "http://localhost:1000/loaded-quantity/send-DP-elog-from-approval-to-open",
+        "http://localhost:1000/dispensing-material/send-approval-to-open",
         data,
         config
       )
@@ -1460,7 +1468,7 @@ const DispensingOfMaterialsPanel = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer?.name}
+                          value={editData?.reviewer4?.name}
                           readOnly
                         />
                       </div>
@@ -1578,7 +1586,7 @@ const DispensingOfMaterialsPanel = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver?.name}
+                          value={editData?.approver4?.name}
                           readOnly
                         />
                       </div>

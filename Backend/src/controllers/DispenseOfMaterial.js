@@ -1110,7 +1110,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       {
         status: "Under Approval",
         stage: 3,
-        reviewComment: reviewComment,
+        reviewComment: reviewComment || "Na",
         reviewerAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.reviewerAttachment,

@@ -14,6 +14,9 @@ const DispensingOfMaterials = () => {
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [approvers, setApprovers] = useState([]);
+  const [reviewers, setReviewers] = useState([]);
+
   const location = useLocation();
   const [dispensingOfMaterials, setDispensingOfMaterials] = useReducer(
     (prev, next) => ({
@@ -37,6 +40,70 @@ const DispensingOfMaterials = () => {
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const config = {
+      method: "post",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        site_id: location.state?.site_id,
+        role_id: 2,
+        process_id: 1,
+      },
+    };
+
+    axios(config)
+      .then((response) => {
+        setReviewers(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+    const newConfig = {
+      method: "post",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        site_id: location.state?.site_id,
+        role_id: 3,
+        process_id: 1,
+      },
+    };
+
+    axios(newConfig)
+      .then((response) => {
+        setApprovers(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
+
+
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      headers: {}, // You can add any necessary headers here
+    };
+
+    axios(requestOptions)
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   useEffect(() => {
     const requestOptions = {
@@ -320,6 +387,72 @@ const DispensingOfMaterials = () => {
 
               {isSelectedDetails === true ? (
                 <>
+                 <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">
+                        Reviewer
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
+                      <div>
+                        <select
+                          value={dispensingOfMaterials.reviewer_id}
+                          onChange={(e) => {
+                            setDispensingOfMaterials({
+                              reviewer_id: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="">Select a reviewer</option>
+                          {[
+                            ...new Map(
+                              reviewers.map((reviewer) => [
+                                reviewer.user_id,
+                                reviewer,
+                              ])
+                            ).values(),
+                          ].map((reviewer, index) => (
+                            <option key={index} value={reviewer.user_id}>
+                              {reviewer.User.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">
+                        Approver
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
+                      <div>
+                        <select
+                          value={dispensingOfMaterials.approver_id}
+                          onChange={(e) => {
+                            setDispensingOfMaterials({
+                              approver_id: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="">Select an approver</option>
+                          {[
+                            ...new Map(
+                              approvers.map((approver) => [
+                                approver.user_id,
+                                approver,
+                              ])
+                            ).values(),
+                          ].map((approver, index) => (
+                            <option key={index} value={approver.user_id}>
+                              {approver.User.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div>
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
@@ -579,6 +712,7 @@ const DispensingOfMaterials = () => {
                                 newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
+                              readOnly
                             />
                           </td>
                           <td>
