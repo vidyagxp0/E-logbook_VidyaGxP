@@ -161,7 +161,7 @@ export default function DiffrentialPressure() {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false, // Use 24-hour format
+      hour12: true, // Use 24-hour format
     };
 
     const currentTime = new Date().toLocaleTimeString("en-us", options);
@@ -254,7 +254,7 @@ export default function DiffrentialPressure() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-pages">
+        <div id="config-form-document-pages" className="min-w-full">
           <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Differential Pressure

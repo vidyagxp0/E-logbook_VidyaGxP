@@ -234,7 +234,7 @@ const OperationOfSterilizer = () => {
     <div>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-pages">
+        <div id="config-form-document-pages" className="min-w-full">
           <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Operation Of Sterilizer
@@ -441,6 +441,7 @@ const OperationOfSterilizer = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -747,6 +748,7 @@ const OperationOfSterilizer = () => {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </>
               ) : null}
             </div>

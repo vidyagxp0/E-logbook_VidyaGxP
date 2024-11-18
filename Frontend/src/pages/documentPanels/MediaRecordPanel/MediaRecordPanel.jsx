@@ -839,6 +839,7 @@ const MediaRecordPanel = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -1070,6 +1071,7 @@ const MediaRecordPanel = () => {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </>
               ) : null}
 

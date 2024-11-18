@@ -207,7 +207,7 @@ export default function DPRpanel() {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-        hour12: false, // Use 24-hour format
+        hour12: true, // Use 24-hour format
       };
 
       const currentTime = new Date().toLocaleTimeString("en-US", options);
@@ -554,7 +554,7 @@ export default function DPRpanel() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-page">
+        <div id="config-form-document-page"  className="min-w-full">
           <div className="top-block">
             <div>
               <strong> Record Name:&nbsp;</strong>Differential Pressure

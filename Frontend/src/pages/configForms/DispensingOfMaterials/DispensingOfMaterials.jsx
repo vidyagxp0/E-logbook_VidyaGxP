@@ -252,7 +252,7 @@ const DispensingOfMaterials = () => {
     <div>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-pages">
+        <div id="config-form-document-pages" className="min-w-full">
           <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Dispensing Of Materials
@@ -459,6 +459,7 @@ const DispensingOfMaterials = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -784,6 +785,7 @@ const DispensingOfMaterials = () => {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </>
               ) : null}
             </div>

@@ -603,7 +603,7 @@ const OperationOfSterilizerPanel = () => {
       <HeaderTop />
       <LaunchQMS />
       <div id="main-form-container">
-        <div id="config-form-document-page">
+        <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
               <strong> Record Name:&nbsp;</strong>Operation Of Sterilizer
@@ -859,6 +859,7 @@ const OperationOfSterilizerPanel = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -1227,6 +1228,7 @@ const OperationOfSterilizerPanel = () => {
                       )}
                     </tbody>
                   </table>
+                  </div>
                 </>
               ) : null}
 
