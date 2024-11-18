@@ -29,8 +29,8 @@ export default function DPRpanel() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
 
-  console.log(editData.DifferentialPressureRecords, "editData of DPR");
-  
+  console.log(editData, "editData of DRP");
+
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -153,7 +153,12 @@ export default function DPRpanel() {
         toast.error("description is required");
         return;
       }
-      if (editData?.DifferentialPressureRecords?.some(record => record.differential_pressure === "" || record.remarks === "")) {
+      if (
+        editData?.DifferentialPressureRecords?.some(
+          (record) =>
+            record.differential_pressure === "" || record.remarks === ""
+        )
+      ) {
         toast.error("Please provide grid details!");
         return;
       }
@@ -187,6 +192,7 @@ export default function DPRpanel() {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
+  
 
   useEffect(() => {
     setEditData(location.state);

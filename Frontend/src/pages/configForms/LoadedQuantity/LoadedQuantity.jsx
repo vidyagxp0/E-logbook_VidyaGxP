@@ -171,14 +171,16 @@ const LoadedQuantity = () => {
   let date = object.currentDate;
   function getCurrentDateTime() {
     const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
+    const year = now.getFullYear().toString().slice();
     const month = (now.getMonth() + 1).toString().padStart(2, "0");
     const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${day}/${month}/${year}`;
+    const currentDate = `${year}/${month}/${day}`;
     return {
       currentDate: currentDate,
     };
   }
+  console.log(allTableData, "allTableData loaded");
+
   const addRow = () => {
     const options = {
       hour: "2-digit",
@@ -190,7 +192,7 @@ const LoadedQuantity = () => {
     const currentTime = new Date().toLocaleTimeString("en-us", options);
     const newRow = {
       unique_id: generateUniqueId(),
-      date: "",
+      date: date,
       time: currentTime,
       product_name: "",
       batch_no: "",
@@ -200,7 +202,7 @@ const LoadedQuantity = () => {
       loaded_quantity: "",
       yield: "",
       remarks: "",
-      checked_by: "",
+      checked_by: User?.name,
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -466,14 +468,13 @@ const LoadedQuantity = () => {
                           </td> */}
                           <td>
                             <input
-                              type="date"
                               value={item.date}
                               onChange={(e) => {
                                 const newData = [...allTableData];
                                 newData[index].date = e.target.value;
                                 setAllTableData(newData);
                               }}
-                              required
+                              readOnly
                             />
                           </td>
                           <td>{item.unique_id}</td>
@@ -560,7 +561,7 @@ const LoadedQuantity = () => {
                                 newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
-                              required
+                              readOnly
                             />
                           </td>
                           <td>
