@@ -588,7 +588,7 @@ exports.EditMediaRecord = async (req, res) => {
 
       // Create new records
       const formRecords = MediaRecords.map((record, index) => ({
-        form_id: newForm?.form_id,
+        form_id: record?.form_id,
         unique_id: record?.unique_id,
         date:
           record?.date && !isNaN(new Date(record?.date))
