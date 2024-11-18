@@ -448,7 +448,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
     const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
 
     // Track changes for the form
-    // const auditTrailEntries = [];
+    const auditTrailEntries = [];
     // const fields = {
     //   description,
     //   department,
@@ -543,23 +543,23 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
             remark: newRecord?.remark,
           };
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            const oldValue = existingRecord[field];
+          // for (const [field, newValue] of Object.entries(recordFields)) {
+          //   const oldValue = existingRecord[field];
 
-            {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${index}]`,
-                previous_value: oldValue || null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Initiation",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
+          //   {
+          //     auditTrailEntries.push({
+          //       form_id: form.form_id,
+          //       field_name: `${field}[${index}]`,
+          //       previous_value: oldValue || null,
+          //       new_value: newValue,
+          //       changed_by: user.user_id,
+          //       previous_status: form.status,
+          //       new_status: "Initiation",
+          //       declaration: initiatorDeclaration,
+          //       action: "Update Elog",
+          //     });
+          //   }
+          // }
         }
       });
 
@@ -572,41 +572,46 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
         ) {
           const newRecord = DispenseOfMaterials[i];
           const recordFields = {
-            on_time_auh: newRecord.on_time_auh,
-            on_time_laf: newRecord.on_time_laf,
-            on_time_uv_light: newRecord.on_time_uv_light,
-            on_time_done_by: newRecord.on_time_done_by,
-            name_of_material: newRecord.name_of_material,
-            control_no: newRecord.control_no,
-            dispensed_quantity: newRecord.dispensed_quantity,
-            dispensed_by_qa: newRecord.dispensed_by_qa,
-            dispensed_by_store: newRecord.dispensed_by_store,
-            off_time_auh: newRecord.off_time_auh,
-            off_time_laf: newRecord.off_time_laf,
-            off_time_uv_light: newRecord.off_time_uv_light,
-            uv_burning: newRecord.uv_burning,
-            off_time_done_by: newRecord.off_time_done_by,
-            cleaning_done_by: newRecord.cleaning_done_by,
-            checked_by: newRecord.checked_by,
-            weighing_balance_id: newRecord.weighing_balance_id,
-            remark: newRecord.remark,
+            unique_id: newRecord?.unique_id,
+            date:
+              newRecord?.date && !isNaN(new Date(newRecord?.date))
+                ? new Date(newRecord?.date).toISOString()
+                : null,
+            on_time_auh: newRecord?.on_time_auh,
+            on_time_laf: newRecord?.on_time_laf,
+            on_time_uv_light: newRecord?.on_time_uv_light,
+            on_time_done_by: newRecord?.on_time_done_by,
+            name_of_material: newRecord?.name_of_material,
+            control_no: newRecord?.control_no,
+            dispensed_quantity: newRecord?.dispensed_quantity,
+            dispensed_by_qa: newRecord?.dispensed_by_qa,
+            dispensed_by_store: newRecord?.dispensed_by_store,
+            off_time_auh: newRecord?.off_time_auh,
+            off_time_laf: newRecord?.off_time_laf,
+            off_time_uv_light: newRecord?.off_time_uv_light,
+            uv_burning: newRecord?.uv_burning,
+            off_time_done_by: newRecord?.off_time_done_by,
+            cleaning_done_by: newRecord?.cleaning_done_by,
+            checked_by: newRecord?.checked_by,
+            weighing_balance_id: newRecord?.weighing_balance_id,
+            remark: newRecord?.remark,
           };
 
-            for (const [field, newValue] of Object.entries(recordFields)) {
-              if (newValue !== undefined) {
-                auditTrailEntries.push({
-                  form_id: form.form_id,
-                  field_name: `${field}[${i}]`,
-                  previous_value: null,
-                  new_value: newValue,
-                  changed_by: user.user_id,
-                  previous_status: form.status,
-                  new_status: "Initiation",
-                  declaration: initiatorDeclaration,
-                  action: "Update Elog",
-                });
-              }
-            }
+            // for (const [field, newValue] of Object.entries(recordFields)) {
+            //   if (newValue !== undefined) {
+            //     auditTrailEntries.push({
+            //       form_id: form.form_id,
+            //       field_name: `${field}[${i}]`,
+            //       previous_value: null,
+            //       new_value: newValue,
+            //       changed_by: user.user_id,
+            //       previous_status: form.status,
+            //       new_status: "Initiation",
+            //       declaration: initiatorDeclaration,
+            //       action: "Update Elog",
+            //     });
+            //   }
+            // }
         }
       }
 
@@ -624,21 +629,24 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
           record?.date && !isNaN(new Date(record?.date))
             ? new Date(record?.date).toISOString()
             : null,
-        air_pressure: record?.air_pressure,
-        steam_pressure: record?.steam_pressure,
-        printer_ok: record?.printer_ok,
-        product_name: record?.product_name,
-        container_size: record?.container_size,
-        loaded_quantity: record?.loaded_quantity,
-        batch_no_lot_no: record?.batch_no_lot_no,
-        loading_time: record?.loading_time,
-        d_well_period_start: record?.d_well_period_start,
-        d_well_period_end: record?.d_well_period_end,
-        unloading_time: record?.unloading_time,
-        cleaning_time_start: record?.cleaning_time_start,
-        cleaning_time_end: record?.cleaning_time_end,
+        on_time_auh: record?.on_time_auh,
+        on_time_laf: record?.on_time_laf,
+        on_time_uv_light: record?.on_time_uv_light,
+        on_time_done_by: record?.on_time_done_by,
+        name_of_material: record?.name_of_material,
+        control_no: record?.control_no,
+        dispensed_quantity: record?.dispensed_quantity,
+        dispensed_by_qa: record?.dispensed_by_qa,
+        dispensed_by_store: record?.dispensed_by_store,
+        off_time_auh: record?.off_time_auh,
+        off_time_laf: record?.off_time_laf,
+        off_time_uv_light: record?.off_time_uv_light,
+        uv_burning: record?.uv_burning,
+        off_time_done_by: record?.off_time_done_by,
         cleaning_done_by: record?.cleaning_done_by,
         checked_by: record?.checked_by,
+        weighing_balance_id: record?.weighing_balance_id,
+        remark: record?.remark,
       }));
 
       await DispenseOfMaterialRecord.bulkCreate(formRecords, {
