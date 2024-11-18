@@ -29,6 +29,9 @@ export default function DPRpanel() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
 
+  console.log(editData, "editData of DRP");
+  
+
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
