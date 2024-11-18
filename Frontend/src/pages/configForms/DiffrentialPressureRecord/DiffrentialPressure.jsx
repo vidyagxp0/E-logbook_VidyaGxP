@@ -147,10 +147,10 @@ export default function DiffrentialPressure() {
   let date = object.currentDate;
   function getCurrentDateTime() {
     const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
+    const year = now.getFullYear().toString().slice(0);
     const month = (now.getMonth() + 1).toString().padStart(2, "0");
     const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${day}/${month}/${year}`;
+    const currentDate = `${year}/${month}/${day}`;
     return {
       currentDate: currentDate,
     };
@@ -166,6 +166,7 @@ export default function DiffrentialPressure() {
     const currentTime = new Date().toLocaleTimeString("en-us", options);
     const newRow = {
       unique_id: generateUniqueId(),
+      date:date,
       time: currentTime,
       differential_pressure: "",
       remarks: "",
@@ -604,6 +605,7 @@ export default function DiffrentialPressure() {
                       <tr>
                         <th>S no.</th>
                         <th>Unique Id</th>
+                        <th>Date</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
                         <th>Remark</th>
@@ -616,8 +618,8 @@ export default function DiffrentialPressure() {
                       {allTableData.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{generateUniqueId()}</td>
-                          {/* <td>
+                          <td>{item.unique_id}</td>
+                          <td>
                             <input
                               value={item.date}
                               onChange={(e) => {
@@ -626,7 +628,7 @@ export default function DiffrentialPressure() {
                                 setAllTableData(newData);
                               }}
                             />
-                          </td> */}
+                          </td>
                           <td>
                             <input
                               value={item.time}

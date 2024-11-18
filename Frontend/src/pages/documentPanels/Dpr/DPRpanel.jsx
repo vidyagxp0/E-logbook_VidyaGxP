@@ -29,9 +29,8 @@ export default function DPRpanel() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
 
-  console.log(editData, "editData of DRP");
+  console.log(editData.DifferentialPressureRecords, "editData of DPR");
   
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -368,6 +367,8 @@ export default function DPRpanel() {
     ...editData,
   };
 
+
+
   async function generateReport() {
     // Create the confirmation popup container
     const confirmationContainer = document.createElement("div");
@@ -427,6 +428,7 @@ export default function DPRpanel() {
     confirmationContainer.appendChild(buttonsContainer);
 
     // Append the confirmation container to the document body
+    console.log(reportData,"REPORTDATA");
     document.body.appendChild(confirmationContainer);
 
     // Add event listener to the confirm button
@@ -447,7 +449,9 @@ export default function DPRpanel() {
           data: {
             reportData: reportData,
           },
+
         });
+      
 
         // Create a blob URL for the PDF content
         const url = window.URL.createObjectURL(new Blob([response.data]));
