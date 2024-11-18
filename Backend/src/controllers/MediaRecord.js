@@ -307,44 +307,44 @@ exports.InsertMediaRecord = async (req, res) => {
 
     await transaction.commit();
 
-    const elogData = {
-      initiator: user.name,
-      dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
-      description,
-      status: "Initiation",
-      reviewerName: (await getUserById(reviewer_id)).name,
-      approverName: (await getUserById(approver_id)).name,
-      reviewerEmail: (await getUserById(reviewer_id)).email,
-      approverEmail: (await getUserById(approver_id)).email,
-      recipients: [
-        (await getUserById(reviewer_id)).email,
-        (await getUserById(approver_id)).email,
-      ].join(","),
-    };
+    // const elogData = {
+    //   initiator: user.name,
+    //   dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
+    //   description,
+    //   status: "Initiation",
+    //   reviewerName: (await getUserById(reviewer_id)).name,
+    //   approverName: (await getUserById(approver_id)).name,
+    //   reviewerEmail: (await getUserById(reviewer_id)).email,
+    //   approverEmail: (await getUserById(approver_id)).email,
+    //   recipients: [
+    //     (await getUserById(reviewer_id)).email,
+    //     (await getUserById(approver_id)).email,
+    //   ].join(","),
+    // };
 
-    try {
-      // Send emails
-      await Mailer.sendEmail("assignReviewer", {
-        ...elogData,
-        recipients: elogData.reviewerEmail,
-      });
+    // try {
+    //   // Send emails
+    //   await Mailer.sendEmail("assignReviewer", {
+    //     ...elogData,
+    //     recipients: elogData.reviewerEmail,
+    //   });
 
-      await Mailer.sendEmail("assignApprover", {
-        ...elogData,
-        recipients: elogData.approverEmail,
-      });
+    //   await Mailer.sendEmail("assignApprover", {
+    //     ...elogData,
+    //     recipients: elogData.approverEmail,
+    //   });
 
       return res.status(200).json({
         error: false,
         message: "E-log Created successfully",
       });
-    } catch (emailError) {
-      console.error("Failed to send emails:", emailError.message);
-      return res.json({
-        error: true,
-        message: "E-log Created but failed to send emails.",
-      });
-    }
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
