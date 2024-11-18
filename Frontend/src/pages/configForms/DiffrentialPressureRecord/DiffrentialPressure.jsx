@@ -155,6 +155,7 @@ export default function DiffrentialPressure() {
       currentDate: currentDate,
     };
   }
+  console.log(allTableData, "allTableData");
   const addRow = () => {
     const options = {
       hour: "2-digit",

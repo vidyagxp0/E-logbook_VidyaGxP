@@ -31,7 +31,7 @@ const LoadedQuantityPanels = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
-  console.log(editData, "editttt");
+  console.log(editData.LoadedQuantityRecords, "editttt");
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -243,7 +243,7 @@ const LoadedQuantityPanels = () => {
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: generateUniqueId(),
-        date: "",
+        date: date,
         time: currentTime,
         product_name: "",
         batch_no: "",
@@ -581,7 +581,7 @@ const LoadedQuantityPanels = () => {
   return (
     <div>
       <HeaderTop />
-      <LaunchQMS/>
+      <LaunchQMS />
       <div id="main-form-container">
         <div id="config-form-document-page">
           <div className="top-block">

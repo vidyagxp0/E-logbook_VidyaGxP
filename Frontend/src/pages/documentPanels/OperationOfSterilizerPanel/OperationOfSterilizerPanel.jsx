@@ -31,7 +31,6 @@ const OperationOfSterilizerPanel = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
- 
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -591,7 +590,7 @@ const OperationOfSterilizerPanel = () => {
   return (
     <div>
       <HeaderTop />
-      <LaunchQMS/>
+      <LaunchQMS />
       <div id="main-form-container">
         <div id="config-form-document-page">
           <div className="top-block">
@@ -1187,12 +1186,12 @@ const OperationOfSterilizerPanel = () => {
                             </td>
                             <td>
                               <input
-                                value={item.checkedBy}
+                                value={item.checked_by}
                                 onChange={(e) => {
                                   const newData = [
                                     ...editData.OperationOfSterilizerRecords,
                                   ];
-                                  newData[index].checkedBy = e.target.value;
+                                  newData[index].checked_by = e.target.value;
                                   setEditData({
                                     ...editData,
                                     OperationOfSterilizerRecords: newData,
