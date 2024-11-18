@@ -803,7 +803,7 @@ exports.SendDPElogForReview = async (req, res) => {
     await form.update(
       {
         status: "Under Review",
-        stage: 3,
+        stage: 2,
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
