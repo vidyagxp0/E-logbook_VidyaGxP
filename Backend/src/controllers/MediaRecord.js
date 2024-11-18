@@ -439,7 +439,7 @@ exports.EditMediaRecord = async (req, res) => {
     const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
 
     // Track changes for the form
-    // const auditTrailEntries = [];
+    const auditTrailEntries = [];
     // const fields = {
     //   description,
     //   department,
@@ -588,27 +588,21 @@ exports.EditMediaRecord = async (req, res) => {
 
       // Create new records
       const formRecords = MediaRecords.map((record, index) => ({
-        form_id: form_id,
+        form_id: record?.form_id,
         unique_id: record?.unique_id,
         date:
           record?.date && !isNaN(new Date(record?.date))
             ? new Date(record?.date).toISOString()
             : null,
-        air_pressure: record?.air_pressure,
-        steam_pressure: record?.steam_pressure,
-        printer_ok: record?.printer_ok,
-        product_name: record?.product_name,
-        container_size: record?.container_size,
-        loaded_quantity: record?.loaded_quantity,
-        batch_no_lot_no: record?.batch_no_lot_no,
-        loading_time: record?.loading_time,
-        d_well_period_start: record?.d_well_period_start,
-        d_well_period_end: record?.d_well_period_end,
-        unloading_time: record?.unloading_time,
-        cleaning_time_start: record?.cleaning_time_start,
-        cleaning_time_end: record?.cleaning_time_end,
-        cleaning_done_by: record?.cleaning_done_by,
-        checked_by: record?.checked_by,
+        name_medium: record?.name_medium,
+        date_of_preparation: record?.date_of_preparation,
+        date_of_use: record?.date_of_use,
+        lot_no: record?.lot_no,
+        no_of_plate_prepared: record?.no_of_plate_prepared,
+        no_of_plate_used: record?.no_of_plate_used,
+        used_for: record?.used_for,
+        balance_no_plate: record?.balance_no_plate,
+        signature: record?.signature,
       }));
 
       await MediaRecord.bulkCreate(formRecords, {
