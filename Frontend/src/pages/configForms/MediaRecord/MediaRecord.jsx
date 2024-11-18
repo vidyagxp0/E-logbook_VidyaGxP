@@ -166,14 +166,15 @@ const MediaRecord = () => {
   useEffect(() => {
     setMediaRecords({ FormRecordsArray: allTableData });
   }, [allTableData]);
+ 
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
     const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
+    const year = now.getFullYear().toString().slice(0);
     const month = (now.getMonth() + 1).toString().padStart(2, "0");
     const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${day}/${month}/${year}`;
+    const currentDate = `${year}/${month}/${day}`;
     return {
       currentDate: currentDate,
     };
@@ -190,7 +191,7 @@ const MediaRecord = () => {
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
-      date: "",
+      date: date,
       name_medium: "",
       date_of_preparation: "",
       date_of_use: "",
@@ -200,7 +201,7 @@ const MediaRecord = () => {
       used_for:"",
       balance_no_plate:"",
       signature:"",
-      checked_by: "",
+      checked_by: User?.name,
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -226,7 +227,7 @@ const MediaRecord = () => {
     <div>
     <HeaderTop />
     <div id="main-form-container">
-      <div id="config-form-document-pages">
+      <div id="config-form-document-pages" className="min-w-full">
         <div className="top-blocks">
           <div>
             <strong> Record Name:&nbsp;</strong>Media Records
@@ -433,6 +434,7 @@ const MediaRecord = () => {
                     <div className="addrowinstruction"></div>
                   </div>
                 </div>
+                <div className="overflow-x-auto">
                 <table>
                   <thead>
                     <tr>
@@ -447,6 +449,8 @@ const MediaRecord = () => {
                       <th  >No. of Plates used</th>
                       <th  >Used for</th>
                       <th  >Balance No. of Plates</th>
+                      <th>Checked By</th>
+
                       <th > Signature</th>
                       {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
                       <th >Actions</th>
@@ -460,13 +464,13 @@ const MediaRecord = () => {
                         <td>{item.unique_id}</td>
                         <td>
                           <input
-                          type="date"
                             value={item.date}
                             onChange={(e) => {
                               const newData = [...allTableData];
                               newData[index].date = e.target.value;
                               setAllTableData(newData);
                             }}
+                            readOnly
                           />
                         </td>
                         {/* <td>
@@ -581,6 +585,17 @@ const MediaRecord = () => {
                           />
                         </td>
                         <td>
+                        <input
+                              value={item.checked_by}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].checked_by = e.target.value;
+                                setAllTableData(newData);
+                              }} 
+                                readOnly
+                              />
+                            </td>
+                        <td>
                           <input
                             type="text"
                            value={item.signature}
@@ -654,6 +669,7 @@ const MediaRecord = () => {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </>
             ) : null}
           </div>

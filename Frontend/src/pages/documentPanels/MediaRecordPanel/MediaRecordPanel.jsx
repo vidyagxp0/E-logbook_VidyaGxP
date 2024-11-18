@@ -26,7 +26,7 @@ const MediaRecordPanel = () => {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-  console.log(editData,"edit data od media");
+  console.log(editData.MediaRecords,"edit data od media");
   
 
   const handlePopupClose = () => {
@@ -242,7 +242,7 @@ const MediaRecordPanel = () => {
       const newRow = {
         unique_id: generateUniqueId(),
         time: currentTime,
-        date: "",
+        date: date,
         name_medium: "",
         date_of_preparation: "",
         date_of_use: "",
@@ -759,7 +759,7 @@ const MediaRecordPanel = () => {
                 <button className="btn-forms-select" onClick={""}>
                   Generate Report
                 </button>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -770,7 +770,7 @@ const MediaRecordPanel = () => {
                   >
                     Analytics
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -839,6 +839,7 @@ const MediaRecordPanel = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -853,6 +854,7 @@ const MediaRecordPanel = () => {
                         <th>No. of Plates used</th>
                         <th>Used for</th>
                         <th>Balance No. of Plates</th>
+                        <th>Checked By</th>
                         <th> Signature</th>
                         {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
                         <th>Actions</th>
@@ -864,7 +866,18 @@ const MediaRecordPanel = () => {
                           <td>{index + 1}</td>
                           <td>{item.unique_id}</td>
                           <td>
-                            <input value={item.date} readOnly />
+                            <input
+                              value={item.date}
+                              onChange={(e) => {
+                                const newData = [...editData.MediaRecords];
+                                newData[index].date = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  MediaRecords: newData,
+                                });
+                              }}
+                              readOnly
+                            />
                           </td>
                           <td>
                             <input
@@ -1017,6 +1030,22 @@ const MediaRecordPanel = () => {
                             />
                           </td>
                           <td>
+                              <input
+                                value={item.checked_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.MediaRecords,
+                                  ];
+                                  newData[index].checked_by = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+                          <td>
                             <input
                               value={item.signature}
                               onChange={(e) => {
@@ -1042,6 +1071,7 @@ const MediaRecordPanel = () => {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </>
               ) : null}
 

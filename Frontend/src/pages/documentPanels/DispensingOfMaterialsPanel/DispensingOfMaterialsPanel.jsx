@@ -755,7 +755,7 @@ const DispensingOfMaterialsPanel = () => {
                 <button className="btn-forms-select" onClick={""}>
                   Generate Report
                 </button>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -766,7 +766,7 @@ const DispensingOfMaterialsPanel = () => {
                   >
                     Analytics
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (

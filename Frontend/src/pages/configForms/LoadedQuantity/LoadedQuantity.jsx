@@ -171,14 +171,16 @@ const LoadedQuantity = () => {
   let date = object.currentDate;
   function getCurrentDateTime() {
     const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
+    const year = now.getFullYear().toString().slice();
     const month = (now.getMonth() + 1).toString().padStart(2, "0");
     const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${day}/${month}/${year}`;
+    const currentDate = `${year}/${month}/${day}`;
     return {
       currentDate: currentDate,
     };
   }
+  console.log(allTableData, "allTableData loaded");
+
   const addRow = () => {
     const options = {
       hour: "2-digit",
@@ -190,7 +192,7 @@ const LoadedQuantity = () => {
     const currentTime = new Date().toLocaleTimeString("en-us", options);
     const newRow = {
       unique_id: generateUniqueId(),
-      date: "",
+      date: date,
       time: currentTime,
       product_name: "",
       batch_no: "",
@@ -200,7 +202,7 @@ const LoadedQuantity = () => {
       loaded_quantity: "",
       yield: "",
       remarks: "",
-      checked_by: "",
+      checked_by: User?.name,
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -225,7 +227,7 @@ const LoadedQuantity = () => {
     <div>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-pages">
+        <div id="config-form-document-pages" className="min-w-full">
           <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Loaded Quantity
@@ -256,6 +258,14 @@ const LoadedQuantity = () => {
 
               <div className="outerDiv4">
                 <div className="btn-forms">
+                  {/* <div className="flex justify-center items-center">
+                    <input
+                      className="shadow-md h-10 px-4 w-80 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 pl-2"
+                      type="text"
+                      placeholder="Search..."
+                    />
+                  </div> */}
+
                   <div
                     className={`${
                       isSelectedGeneral === true
@@ -430,31 +440,32 @@ const LoadedQuantity = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>S no.</th>
-                        <th>Date</th>
-                        <th>Unique ID</th>
-                        <th>Product Name</th>
-                        <th>Batch No.</th>
-                        <th>Container Size (ml)</th>
-                        <th>Batch Size (Ltr)</th>
-                        <th>Theoretical Production</th>
-                        <th>Loaded Quantity</th>
-                        <th>Checked By</th>
-                        <th>% Yield</th>
-                        {/* <th>Product Name</th> */}
-                        <th>Remark</th>
-                        {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {allTableData.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          {/* <td>
+                  <div className="overflow-x-auto">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>S no.</th>
+                          <th>Date</th>
+                          <th>Unique ID</th>
+                          <th>Product Name</th>
+                          <th>Batch No.</th>
+                          <th>Container Size (ml)</th>
+                          <th>Batch Size (Ltr)</th>
+                          <th>Theoretical Production</th>
+                          <th>Loaded Quantity</th>
+                          <th>Checked By</th>
+                          <th>% Yield</th>
+                          {/* <th>Product Name</th> */}
+                          <th>Remark</th>
+                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allTableData.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            {/* <td>
                             <input
                               value={item.date}
                               onChange={(e) => {
@@ -464,129 +475,130 @@ const LoadedQuantity = () => {
                               }}
                             />
                           </td> */}
-                          <td>
-                            <input
-                              type="date"
-                              value={item.date}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].date = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>{item.unique_id}</td>
+                            <td>
+                              <input
+                                value={item.date}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].date = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>{item.unique_id}</td>
 
-                          <td>
-                            <input
-                              type="text"
-                              value={item.product_name}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].product_name = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.batch_no}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].batch_no = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.container_size}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].container_size = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.batch_size}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].batch_size = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.theoretical_production}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].theoretical_production =
-                                  e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.loaded_quantity}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].loaded_quantity = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].checked_by = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.yield}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].yield = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.remarks}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].remarks = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.product_name}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].product_name = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.batch_no}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].batch_no = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.container_size}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].container_size =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.batch_size}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].batch_size = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.theoretical_production}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].theoretical_production =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.loaded_quantity}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].loaded_quantity =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.checked_by}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].checked_by = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.yield}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].yield = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.remarks}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].remarks = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                              />
+                            </td>
 
-                          {/* <td style={{ width: "250px" }}>
+                            {/* <td style={{ width: "250px" }}>
                             <div className="d-flex align-items-center">
                               <button
                                 type="button"
@@ -628,13 +640,14 @@ const LoadedQuantity = () => {
                               />
                             </div>
                           </td> */}
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </>
               ) : null}
             </div>

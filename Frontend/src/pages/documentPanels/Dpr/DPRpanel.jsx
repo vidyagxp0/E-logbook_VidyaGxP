@@ -30,7 +30,6 @@ export default function DPRpanel() {
   const [popupAction, setPopupAction] = useState(null);
 
   console.log(editData, "editData of DRP");
-  
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
@@ -154,7 +153,12 @@ export default function DPRpanel() {
         toast.error("description is required");
         return;
       }
-      if (editData?.DifferentialPressureRecords?.some(record => record.differential_pressure === "" || record.remarks === "")) {
+      if (
+        editData?.DifferentialPressureRecords?.some(
+          (record) =>
+            record.differential_pressure === "" || record.remarks === ""
+        )
+      ) {
         toast.error("Please provide grid details!");
         return;
       }
@@ -188,6 +192,7 @@ export default function DPRpanel() {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
+  
 
   useEffect(() => {
     setEditData(location.state);
@@ -202,7 +207,7 @@ export default function DPRpanel() {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-        hour12: false, // Use 24-hour format
+        hour12: true, // Use 24-hour format
       };
 
       const currentTime = new Date().toLocaleTimeString("en-US", options);
@@ -368,6 +373,8 @@ export default function DPRpanel() {
     ...editData,
   };
 
+
+
   async function generateReport() {
     // Create the confirmation popup container
     const confirmationContainer = document.createElement("div");
@@ -427,6 +434,7 @@ export default function DPRpanel() {
     confirmationContainer.appendChild(buttonsContainer);
 
     // Append the confirmation container to the document body
+    console.log(reportData,"REPORTDATA");
     document.body.appendChild(confirmationContainer);
 
     // Add event listener to the confirm button
@@ -447,7 +455,9 @@ export default function DPRpanel() {
           data: {
             reportData: reportData,
           },
+
         });
+      
 
         // Create a blob URL for the PDF content
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -544,7 +554,7 @@ export default function DPRpanel() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-page">
+        <div id="config-form-document-page"  className="min-w-full">
           <div className="top-block">
             <div>
               <strong> Record Name:&nbsp;</strong>Differential Pressure

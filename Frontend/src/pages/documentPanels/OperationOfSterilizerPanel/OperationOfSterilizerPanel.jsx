@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
 const OperationOfSterilizerPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -30,7 +31,6 @@ const OperationOfSterilizerPanel = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
- 
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -226,7 +226,18 @@ const OperationOfSterilizerPanel = () => {
   }, [location.state]);
 
   console.log(location.state.stage === 2);
-
+  const object = getCurrentDateTime();
+  let date = object.currentDate;
+  function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(0);
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${year}/${month}/${day}`;
+    return {
+      currentDate: currentDate,
+    };
+  }
   const addRow = () => {
     if (
       location.state?.stage === 1 &&
@@ -243,7 +254,7 @@ const OperationOfSterilizerPanel = () => {
       const newRow = {
         unique_id: generateUniqueId(),
         time: currentTime,
-        date: "",
+        date: date,
         air_pressure: "",
         steam_pressure: "",
         printer_ok: "",
@@ -590,8 +601,9 @@ const OperationOfSterilizerPanel = () => {
   return (
     <div>
       <HeaderTop />
+      <LaunchQMS />
       <div id="main-form-container">
-        <div id="config-form-document-page">
+        <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
               <strong> Record Name:&nbsp;</strong>Operation Of Sterilizer
@@ -767,7 +779,7 @@ const OperationOfSterilizerPanel = () => {
                 <button className="btn-forms-select" onClick={generateReport}>
                   Generate Report
                 </button>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -778,7 +790,7 @@ const OperationOfSterilizerPanel = () => {
                   >
                     Analytics
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -847,6 +859,7 @@ const OperationOfSterilizerPanel = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -889,8 +902,16 @@ const OperationOfSterilizerPanel = () => {
                             <td>{index + 1}</td>
                             <td>{item.unique_id}</td>
                             <td>
-                              <input value={item.date} readOnly />
-                            </td>
+                            <input
+                              value={item.date}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].date = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              readOnly
+                            />
+                          </td>
                             <td>
                               <input
                                 value={item.air_pressure}
@@ -1185,22 +1206,18 @@ const OperationOfSterilizerPanel = () => {
                             </td>
                             <td>
                               <input
-                                value={item.checkedBy}
+                                value={item.checked_by}
                                 onChange={(e) => {
                                   const newData = [
                                     ...editData.OperationOfSterilizerRecords,
                                   ];
-                                  newData[index].checkedBy = e.target.value;
+                                  newData[index].checked_by = e.target.value;
                                   setEditData({
                                     ...editData,
                                     OperationOfSterilizerRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly
                               />
                             </td>
                             <td>
@@ -1211,6 +1228,7 @@ const OperationOfSterilizerPanel = () => {
                       )}
                     </tbody>
                   </table>
+                  </div>
                 </>
               ) : null}
 
