@@ -511,21 +511,15 @@ exports.EditMediaRecord = async (req, res) => {
               newRecord?.date && !isNaN(new Date(newRecord?.date))
                 ? new Date(newRecord?.date).toISOString()
                 : null,
-            air_pressure: newRecord?.air_pressure,
-            steam_pressure: newRecord?.steam_pressure,
-            printer_ok: newRecord?.printer_ok,
-            product_name: newRecord?.product_name,
-            container_size: newRecord?.container_size,
-            loaded_quantity: newRecord?.loaded_quantity,
-            batch_no_lot_no: newRecord?.batch_no_lot_no,
-            loading_time: newRecord?.loading_time,
-            d_well_period_start: newRecord?.d_well_period_start,
-            d_well_period_end: newRecord?.d_well_period_end,
-            unloading_time: newRecord?.unloading_time,
-            cleaning_time_start: newRecord?.cleaning_time_start,
-            cleaning_time_end: newRecord?.cleaning_time_end,
-            cleaning_done_by: newRecord?.cleaning_done_by,
-            checked_by: newRecord?.checked_by,
+            name_medium: newRecord?.name_medium,
+            date_of_preparation: newRecord?.date_of_preparation,
+            date_of_use: newRecord?.date_of_use,
+            lot_no: newRecord?.lot_no,
+            no_of_plate_prepared: newRecord?.no_of_plate_prepared,
+            no_of_plate_used: newRecord?.no_of_plate_used,
+            used_for: newRecord?.used_for,
+            balance_no_plate: newRecord?.balance_no_plate,
+            signature: newRecord?.signature,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
