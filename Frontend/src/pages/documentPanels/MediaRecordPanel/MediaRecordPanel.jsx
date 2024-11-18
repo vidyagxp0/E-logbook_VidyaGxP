@@ -759,7 +759,7 @@ const MediaRecordPanel = () => {
                 <button className="btn-forms-select" onClick={""}>
                   Generate Report
                 </button>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -770,7 +770,7 @@ const MediaRecordPanel = () => {
                   >
                     Analytics
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -868,9 +868,12 @@ const MediaRecordPanel = () => {
                             <input
                               value={item.date}
                               onChange={(e) => {
-                                const newData = [...allTableData];
+                                const newData = [...editData.MediaRecords];
                                 newData[index].date = e.target.value;
-                                setAllTableData(newData);
+                                setEditData({
+                                  ...editData,
+                                  MediaRecords: newData,
+                                });
                               }}
                               readOnly
                             />

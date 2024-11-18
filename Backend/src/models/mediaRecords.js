@@ -53,6 +53,9 @@ const MediaRecord = sequelize.define(
     signature: {
       type: DataTypes.STRING,
     },
+    checked_by: {
+      type: DataTypes.STRING,
+    },
   }
 );
 

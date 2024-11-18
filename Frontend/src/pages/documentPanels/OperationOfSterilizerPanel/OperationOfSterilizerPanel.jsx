@@ -226,7 +226,18 @@ const OperationOfSterilizerPanel = () => {
   }, [location.state]);
 
   console.log(location.state.stage === 2);
-
+  const object = getCurrentDateTime();
+  let date = object.currentDate;
+  function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(0);
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${year}/${month}/${day}`;
+    return {
+      currentDate: currentDate,
+    };
+  }
   const addRow = () => {
     if (
       location.state?.stage === 1 &&
@@ -243,7 +254,7 @@ const OperationOfSterilizerPanel = () => {
       const newRow = {
         unique_id: generateUniqueId(),
         time: currentTime,
-        date: "",
+        date: date,
         air_pressure: "",
         steam_pressure: "",
         printer_ok: "",
@@ -768,7 +779,7 @@ const OperationOfSterilizerPanel = () => {
                 <button className="btn-forms-select" onClick={generateReport}>
                   Generate Report
                 </button>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -779,7 +790,7 @@ const OperationOfSterilizerPanel = () => {
                   >
                     Analytics
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -890,8 +901,16 @@ const OperationOfSterilizerPanel = () => {
                             <td>{index + 1}</td>
                             <td>{item.unique_id}</td>
                             <td>
-                              <input value={item.date} readOnly />
-                            </td>
+                            <input
+                              value={item.date}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].date = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              readOnly
+                            />
+                          </td>
                             <td>
                               <input
                                 value={item.air_pressure}
@@ -1197,11 +1216,7 @@ const OperationOfSterilizerPanel = () => {
                                     OperationOfSterilizerRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly
                               />
                             </td>
                             <td>

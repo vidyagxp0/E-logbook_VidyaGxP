@@ -759,7 +759,7 @@ const LoadedQuantityPanels = () => {
                 <button className="btn-forms-select" onClick={generateReport}>
                   Generate Report
                 </button>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -770,7 +770,7 @@ const LoadedQuantityPanels = () => {
                   >
                     Analytics
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (

@@ -189,10 +189,10 @@ const DispensingOfMaterials = () => {
   let date = object.currentDate;
   function getCurrentDateTime() {
     const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
+    const year = now.getFullYear().toString().slice(0);
     const month = (now.getMonth() + 1).toString().padStart(2, "0");
     const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${day}/${month}/${year}`;
+    const currentDate = `${year}/${month}/${day}`;
     return {
       currentDate: currentDate,
     };
@@ -209,7 +209,7 @@ const DispensingOfMaterials = () => {
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
-      date:"",
+      date:date,
       on_time_auh: "",
       on_time_laf: "",
       on_time_uv_light:"",
@@ -515,7 +515,6 @@ const DispensingOfMaterials = () => {
                         </td> */}
                           <td>
                             <input
-                              type="date"
                               value={item.date}
                               onChange={(e) => {
                                 const newData = [...allTableData];
@@ -523,7 +522,7 @@ const DispensingOfMaterials = () => {
                                   e.target.value;
                                 setAllTableData(newData);
                               }}
-                              required
+                              readOnly
                             />
                           </td>
                           <td>

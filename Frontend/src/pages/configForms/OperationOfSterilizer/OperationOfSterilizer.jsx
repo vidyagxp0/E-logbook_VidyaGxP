@@ -499,7 +499,7 @@ const OperationOfSterilizer = () => {
                                 newData[index].date = e.target.value;
                                 setAllTableData(newData);
                               }}
-                              required
+                              readOnly
                             />
                           </td>
                           <td>
