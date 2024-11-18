@@ -107,9 +107,9 @@
         </table>
         <hr />
 
-        <h2 class="heading">Loaded Quantity Records</h2>
-        <% if (reportData?.LoadedQuantityRecords && reportData?.LoadedQuantityRecords.length> 0) { %>
-            <% reportData?.LoadedQuantityRecords.forEach(record=> { %>
+        <h2 class="heading">Dispensng Of Material</h2>
+        <% if (reportData?.DispensngOfMaterialRecords && reportData?.DispensngOfMaterialRecords.length> 0) { %>
+            <% reportData?.DispensngOfMaterialRecords.forEach(record=> { %>
                 <div class="listItem">
                     <table>
                         <tr>
@@ -117,60 +117,126 @@
                             <td>
                                 <%= record?.unique_id || "Not Applicable" %>
                             </td>
-                            <th>date</th>
+                            <th>Date</th>
                             <td>
                                 <%= record?.date || "Not Applicable" %>
                             </td>
                         </tr>
+
                         <tr>
-                            <th>Product Name</th>
+                            <th>On Time AUH</th>
                             <td>
-                                <%= record?.product_name || "Not Applicable" %>
+                                <%= record?.on_time_auh || "Not Applicable" %>
+                            </td>
+                            <th>On Time LAF</th>
+                            <td>
+                                <%= record?.on_time_laf || "Not Applicable" %>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>On Time UV Light</th>
+                            <td>
+                                <%= record?.on_time_uv_light || "Not Applicable" %>
+                            </td>
+                            <th>On Time Done By</th>
+                            <td>
+                                <%= record?.on_time_done_by || "Not Applicable" %>
                             </td>
 
-                            <th>Batch Number</th>
-                            <td>
-                                <%= record?.batch_no || "Not Applicable" %>
-                            </td>
                         </tr>
-                        <tr>
 
-                            <th>Batch Size</th>
+                        <tr>
+                            <th>Name_Of_Material</th>
                             <td>
-                                <%= record?.batch_size || "Not Applicable" %>
+                                <%= record?.name_of_material || "Not Applicable" %>
                             </td>
-                            <th>Container Size</th>
+                            <th>Control No</th>
                             <td>
-                                <%= record?.container_size || "Not Applicable" %>
+                                <%= record?.control_no || "Not Applicable" %>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Dispensed Quantity</th>
+                            <td>
+                                <%= record?.dispensed_quantity || "Not Applicable" %>
+                            </td>
+                            <th>Dispensed By Qa</th>
+                            <td>
+                                <%= record?.dispensed_by_qa || "Not Applicable" %>
                             </td>
 
                         </tr>
+
                         <tr>
-                            <th>Theoretical Production</th>
+                            <th>Dispensed By Store</th>
                             <td>
-                                <%= record?.theoretical_production || "Not Applicable" %>
+                                <%= record?.dispensed_by_store || "Not Applicable" %>
                             </td>
-                            <th>Loaded Quantity</th>
+                            <th>Off Time AUH</th>
                             <td>
-                                <%= record?.loaded_quantity || "Not Applicable" %>
+                                <%= record?.off_time_auh || "Not Applicable" %>
                             </td>
+
                         </tr>
+
                         <tr>
-                            <th>Yield</th>
+                            <th>Off Time LAF</th>
                             <td>
-                                <%= record?.yield || "Not Applicable" %>
+                                <%= record?.off_time_laf || "Not Applicable" %>
                             </td>
-                            <th>Remarks</th>
+                            <th>Off Time UV Light</th>
                             <td>
-                                <%= record?.remarks || "Not Applicable" %>
+                                <%= record?.off_time_uv_light || "Not Applicable" %>
                             </td>
+
                         </tr>
+
                         <tr>
+                            <th>UV Burning</th>
+                            <td>
+                                <%= record?.uv_burning || "Not Applicable" %>
+                            </td>
+                            <th>Off Time Done By</th>
+                            <td>
+                                <%= record?.off_time_done_by || "Not Applicable" %>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <th>Cleaning Done By</th>
+                            <td>
+                                <%= record?.cleaning_done_by || "Not Applicable" %>
+                            </td>
                             <th>Checked By</th>
                             <td>
                                 <%= record?.checked_by || "Not Applicable" %>
                             </td>
+
                         </tr>
+
+                        <tr>
+                            <th>Weighing Balance Id</th>
+                            <td>
+                                <%= record?.weighing_balance_id || "Not Applicable" %>
+                            </td>
+                            <th>Remark</th>
+                            <td>
+                                <%= record?.remark || "Not Applicable" %>
+                            </td>
+                        </tr>
+
+                        </tr>
+                        <!-- <tr>
+                        <td>
+                            <% if (record?.supporting_docs) { %>
+                                <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
+                            <% } else { %>
+                                Not Applicable
+                            <% } %>
+                        </td> -->
                     </table>
                 </div>
                 <hr />

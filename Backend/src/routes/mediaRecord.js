@@ -116,4 +116,10 @@ router.put(
 //   Auth.checkUserJwtToken,
 //   MediaRecord.getAuditTrailForAnElog
 // );
+
+router.post(
+  "/generate-pdf",
+  Auth.checkUserJwtToken,
+  MediaRecord.generateReport
+);
 module.exports = router;

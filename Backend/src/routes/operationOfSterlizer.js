@@ -116,4 +116,9 @@ router.put(
 //   OperationOfSterilizer.getAuditTrailForAnElog
 // );
 
+router.post(
+  "/generate-pdf",
+  Auth.checkUserJwtToken,
+  OperationOfSterilizer.generateReport
+);
 module.exports = router;
