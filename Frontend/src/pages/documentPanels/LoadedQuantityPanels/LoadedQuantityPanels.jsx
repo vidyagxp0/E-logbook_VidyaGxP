@@ -30,6 +30,7 @@ const LoadedQuantityPanels = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
+  console.log(editData, "editttt");
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -37,8 +38,8 @@ const LoadedQuantityPanels = () => {
       form_id: location.state?.form_id,
       email: credentials?.email,
       password: credentials?.password,
-      // reviewComment: editData.reviewComment,
-      // approverComment: editData.approverComment,
+      reviewComment: editData.reviewComment,
+      approverComment: editData.approverComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -90,7 +91,7 @@ const LoadedQuantityPanels = () => {
       data.initiatorAttachment = editData?.initiatorAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-DP-elog-for-review",
+          "http://localhost:1000/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -108,7 +109,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-DP-from-review-to-approval",
+          "http://localhost:1000/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -127,7 +128,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-DP-elog-from-review-to-open",
+          "http://localhost:1000/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -142,11 +143,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "http://localhost:1000/loaded-quantity/approve-DP-elog",
-          data,
-          config
-        )
+        .put("http://localhost:1000/loaded-quantity/approve", data, config)
         .then(() => {
           toast.success("Elog successfully approved");
           navigate(-1);
@@ -161,7 +158,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-DP-elog-from-approval-to-open",
+          "http://localhost:1000/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -208,7 +205,7 @@ const LoadedQuantityPanels = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update-loaded-quantity",
+        url: "http://localhost:1000/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -1265,7 +1262,7 @@ const LoadedQuantityPanels = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer?.name}
+                          value={editData?.reviewer1?.name}
                           readOnly
                         />
                       </div>
@@ -1383,7 +1380,7 @@ const LoadedQuantityPanels = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver?.name}
+                          value={editData?.approver1?.name}
                           readOnly
                         />
                       </div>
