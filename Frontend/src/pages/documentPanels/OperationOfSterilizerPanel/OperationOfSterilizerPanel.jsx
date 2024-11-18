@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
 const OperationOfSterilizerPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -590,6 +591,7 @@ const OperationOfSterilizerPanel = () => {
   return (
     <div>
       <HeaderTop />
+      <LaunchQMS/>
       <div id="main-form-container">
         <div id="config-form-document-page">
           <div className="top-block">
