@@ -138,13 +138,13 @@ const MediaRecordPanel = () => {
         .catch((error) => {
           toast.error(error?.response?.data?.message || "Couldn't open elog!!");
         });
-    } else if (popupAction === "sendFromApprovalToApproved") {
+    } else if (popupAction === "sendFromApprovalToClosedDone") {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
         .put("http://localhost:1000/media-record/approve", data, config)
         .then(() => {
-          toast.success("Elog successfully approved");
+          toast.success("Elog successfully Closed Done");
           navigate(-1);
         })
         .catch((error) => {
@@ -630,7 +630,7 @@ const MediaRecordPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    INITIATION
+                    OPENED
                   </div>
                   <div
                     className={`${
@@ -657,7 +657,7 @@ const MediaRecordPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    APPROVED
+                    CLOSED DONE
                   </div>
                 </div>
               </div>
@@ -1454,7 +1454,7 @@ const MediaRecordPanel = () => {
                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
                         }}
                       >
-                        Send for Approval
+                        Review Completed
                       </button>
                       <button
                         className="themeBtn"
@@ -1463,7 +1463,7 @@ const MediaRecordPanel = () => {
                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )
@@ -1474,7 +1474,7 @@ const MediaRecordPanel = () => {
                         className="themeBtn"
                         onClick={() => {
                           setIsPopupOpen(true);
-                          setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
+                          setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
                         }}
                       >
                         Approve elog
@@ -1486,7 +1486,7 @@ const MediaRecordPanel = () => {
                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )

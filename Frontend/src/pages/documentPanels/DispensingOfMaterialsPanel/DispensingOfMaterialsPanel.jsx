@@ -120,7 +120,7 @@ const DispensingOfMaterialsPanel = () => {
       .catch((error) => {
         toast.error(error?.response?.data?.message || "Couldn't open elog!!");
       });
-  } else if (popupAction === "sendFromApprovalToApproved") {
+  } else if (popupAction === "sendFromApprovalToClosedDone") {
     data.approverDeclaration = credentials?.declaration;
     data.approverAttachment = editData.approverAttachment;
     axios
@@ -130,7 +130,7 @@ const DispensingOfMaterialsPanel = () => {
         config
       )
       .then(() => {
-        toast.success("Elog successfully approved");
+        toast.success("Elog successfully Closed Done");
         navigate(-1);
       })
       .catch((error) => {
@@ -625,7 +625,7 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    INITIATION
+                    OPENED
                   </div>
                   <div
                     className={`${
@@ -652,7 +652,7 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    APPROVED
+                    CLOSED DONE
                   </div>
                 </div>
               </div>
@@ -1628,7 +1628,7 @@ const DispensingOfMaterialsPanel = () => {
                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
                         }}
                       >
-                        Send for Approval
+                        Revie Completed
                       </button>
                       <button
                         className="themeBtn"
@@ -1637,7 +1637,7 @@ const DispensingOfMaterialsPanel = () => {
                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        MOre Info Required
                       </button>
                     </>
                   )
@@ -1648,7 +1648,7 @@ const DispensingOfMaterialsPanel = () => {
                         className="themeBtn"
                         onClick={() => {
                           setIsPopupOpen(true);
-                          setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
+                          setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
                         }}
                       >
                         Approve elog
@@ -1660,7 +1660,7 @@ const DispensingOfMaterialsPanel = () => {
                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        MOre Info Required
                       </button>
                     </>
                   )
