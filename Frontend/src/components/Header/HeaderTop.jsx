@@ -81,7 +81,7 @@ function HeaderTop() {
               <div className="drop-btn">
                 <div className="">
                   {/* <img src={User?.profile_pic} alt="Profile Picture" /> */}
-                  <FaUserCircle size={36} className="text-[#EFA035]"/>
+                  <FaUserCircle size={36} className="text-[#EFA035]" />
                 </div>
               </div>
               <div className="drop-list">
