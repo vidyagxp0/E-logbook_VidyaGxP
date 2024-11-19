@@ -163,6 +163,12 @@
                             </td>
                         </tr>
                         <tr>
+                            <th>Checked By</th>
+                            <td>
+                                <%= record?.checked_by || "Not Applicable" %>
+                            </td>
+                        </tr>
+                        <tr>
                             <th>Signature</th>
                             <td>
                                 <%= record?.signature || "Not Applicable" %>
@@ -222,7 +228,7 @@
                                     <tr>
                                         <th>Reviewer</th>
                                         <td>
-                                            <%= reportData?.reviewer?.name || "Not Applicable" %>
+                                            <%= reportData?.reviewer3?.name || "Not Applicable" %>
                                         </td>
                                     </tr>
                                     <tr>
@@ -261,7 +267,7 @@
                                     <tr>
                                         <th>Approver</th>
                                         <td>
-                                            <%= reportData?.approver?.name || "Not Applicable" %>
+                                            <%= reportData?.approver3?.name || "Not Applicable" %>
                                         </td>
                                     </tr>
                                     <tr>
