@@ -108,8 +108,8 @@
         <hr />
 
         <h2 class="heading">Dispensng Of Material</h2>
-        <% if (reportData?.DispensngOfMaterialRecords && reportData?.DispensngOfMaterialRecords.length> 0) { %>
-            <% reportData?.DispensngOfMaterialRecords.forEach(record=> { %>
+        <% if (reportData?.DispenseOfMaterials && reportData?.DispenseOfMaterials.length> 0) { %>
+            <% reportData?.DispenseOfMaterials.forEach(record=> { %>
                 <div class="listItem">
                     <table>
                         <tr>
@@ -291,7 +291,7 @@
                                     <tr>
                                         <th>Reviewer</th>
                                         <td>
-                                            <%= reportData?.reviewer?.name || "Not Applicable" %>
+                                            <%= reportData?.reviewer4?.name || "Not Applicable" %>
                                         </td>
                                     </tr>
                                     <tr>
@@ -330,7 +330,7 @@
                                     <tr>
                                         <th>Approver</th>
                                         <td>
-                                            <%= reportData?.approver?.name || "Not Applicable" %>
+                                            <%= reportData?.approver4?.name || "Not Applicable" %>
                                         </td>
                                     </tr>
                                     <tr>

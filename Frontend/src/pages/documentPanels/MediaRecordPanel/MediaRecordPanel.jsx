@@ -494,7 +494,7 @@ const MediaRecordPanel = () => {
         const a = document.createElement("a");
         a.style.display = "none";
         a.href = url;
-        a.download = `DP${reportData.form_id}.pdf`;
+        a.download = `MR${reportData.form_id}.pdf`;
         document.body.appendChild(a);
         a.click();
 

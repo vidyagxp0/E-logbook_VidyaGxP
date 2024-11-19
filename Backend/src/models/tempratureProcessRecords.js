@@ -23,7 +23,7 @@ const TempraturePressureRecord = sequelize.define(
       allowNull: false,
     },
     time: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     temprature_record: {

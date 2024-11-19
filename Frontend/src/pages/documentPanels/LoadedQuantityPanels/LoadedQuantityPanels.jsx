@@ -403,6 +403,7 @@ const LoadedQuantityPanels = () => {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title:"Loaded Quantity",
     ...editData,
   };
 

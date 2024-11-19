@@ -423,6 +423,7 @@ const OperationOfSterilizerPanel = () => {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title:"Operation Of Sterilizer",
     ...editData,
   };
 
@@ -514,7 +515,7 @@ const OperationOfSterilizerPanel = () => {
         const a = document.createElement("a");
         a.style.display = "none";
         a.href = url;
-        a.download = `DP${reportData.form_id}.pdf`;
+        a.download = `OS${reportData.form_id}.pdf`;
         document.body.appendChild(a);
         a.click();
 
