@@ -838,7 +838,7 @@ export default function DiffrentialPressure() {
                       <input
                         id="reviewComment"
                         name="reviewComment"
-                        value={User.reviewComment || ""}
+                        value={User?.reviewComment || ""}
                         onChange={handleInputChange1}
                         disabled
                         style={{ backgroundColor: "#fafafa" }}
@@ -862,7 +862,7 @@ export default function DiffrentialPressure() {
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
                       />
-                      {User.reviewerAttachment && (
+                      {User?.reviewerAttachment && (
                         <div>
                           <h3>
                             Selected File:{" "}
@@ -919,7 +919,7 @@ export default function DiffrentialPressure() {
                       <input
                         id="approverComment"
                         name="approverComment"
-                        value={User.approverComment || ""}
+                        value={User?.approverComment || ""}
                         onChange={handleInputChange1}
                         disabled
                         style={{ backgroundColor: "#fafafa" }}
@@ -943,7 +943,7 @@ export default function DiffrentialPressure() {
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
                       />
-                      {User.approverAttachment && (
+                      {User?.approverAttachment && (
                         <div>
                           <h3>
                             Selected File:{" "}
