@@ -13,9 +13,9 @@ function HeaderBottom() {
   return (
     <>
       <div className="Header_Bottom">
-      <div className="headerBottomInner">
-      <div className="input-wrapper w-full">
-          {/* <div className="group-input-2">
+        <div className="headerBottomInner">
+          <div className="input-wrapper ">
+            {/* <div className="group-input-2">
             <div className="text-2xl font-extrabold">ELog</div>
             <select 
               value={eLogSelect}
@@ -28,8 +28,30 @@ function HeaderBottom() {
               <option value="temperature_records">Temperature Records</option>
             </select>
           </div> */}
-        </div>
-        
+            <div className="tabs flex items-center justify-center space-x-6">
+              <Link
+                to="/dashboard"
+                className={`tab py-2 px-4 rounded-md  ${
+                  window.location.pathname === "/dashboard"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-blue-500 border border-blue-500"
+                } hover:bg-blue-600 transition duration-300`}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/dashboard"
+                className={`tab py-2 px-4 rounded-md  ${
+                  window.location.pathname === "/dashboard2"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-blue-500 border border-blue-500"
+                } hover:bg-blue-600 transition duration-300`}
+              >
+                Analytics
+              </Link>
+            </div>
+          </div>
+
           {userDetails.roles?.some(
             (itm) => itm.role_id === 5 || itm.role_id === 1
           ) ? (
