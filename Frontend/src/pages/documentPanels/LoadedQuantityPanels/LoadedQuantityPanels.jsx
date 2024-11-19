@@ -619,7 +619,113 @@ const LoadedQuantityPanels = () => {
                 </div>
               </div>
 
-              <div className="sub-head-2">Loaded Quantity</div>
+              <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
+                <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
+                  Loaded Quantity
+                </span>
+
+                <div className="flex flex-wrap gap-3 items-center justify-center">
+                  {/* Audit Trail Button */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() =>
+                      navigate("/audit-trail", {
+                        state: {
+                          formId: location.state?.form_id,
+                          process: "Differential Pressure",
+                        },
+                      })
+                    }
+                  >
+                    Audit Trail
+                  </button>
+
+                  {/* Generate Report Button */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={generateReport}
+                  >
+                    Generate Report
+                  </button>
+
+                  {/* Conditional Buttons Based on Stages */}
+                  {location.state?.stage === 1 &&
+                    location.state?.initiator_id === userDetails.userId && (
+                      <button
+                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromOpenToReview");
+                        }}
+                      >
+                        Send for Review
+                      </button>
+                    )}
+
+                  {location.state?.stage === 2 &&
+                    location.state?.reviewer_id === userDetails.userId && (
+                      <>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromReviewToApproval");
+                          }}
+                        >
+                          Review Completed
+                        </button>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromReviewToOpen");
+                          }}
+                        >
+                          More Info Required
+                        </button>
+                      </>
+                    )}
+
+                  {location.state?.stage === 3 &&
+                    location.state?.approver_id === userDetails.userId && (
+                      <>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromApprovalToClosedDone");
+                          }}
+                        >
+                          Approve elog
+                        </button>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromApprovalToOpen");
+                          }}
+                        >
+                          More Info Required
+                        </button>
+                      </>
+                    )}
+
+                  {/* Save Button */}
+                  {location.state?.stage === 1 &&
+                    userDetails.userId === location.state?.initiator_id && (
+                      <button
+                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("updateElog");
+                        }}
+                      >
+                        Save
+                      </button>
+                    )}
+                </div>
+              </div>
+
               <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
@@ -742,23 +848,8 @@ const LoadedQuantityPanels = () => {
                   >
                     Approver Remarks
                   </div>
-                  <div
-                    className="btn-forms-select"
-                    onClick={() =>
-                      navigate("/audit-trail", {
-                        state: {
-                          formId: location.state?.form_id,
-                          process: "Differential Pressure",
-                        },
-                      })
-                    }
-                  >
-                    Audit Trail
-                  </div>
                 </div>
-                <button className="btn-forms-select" onClick={generateReport}>
-                  Generate Report
-                </button>
+
                 {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
@@ -839,212 +930,214 @@ const LoadedQuantityPanels = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
-                  <div className="overflow-x-auto">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>S no.</th>
-                        <th>Unique Id</th>
-                        <th>Date</th>
-                        <th>Product Name</th>
-                        <th>Batch No.</th>
-                        <th>Container Size (ml)</th>
-                        <th>Batch Size (Ltr)</th>
-                        <th>Theoretical Production</th>
-                        <th>Loaded Quantity</th>
-                        <th>Checked By</th>
-                        <th>% Yield</th>
-                        <th>Remarks</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {editData?.LoadedQuantityRecords.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{item.unique_id}</td>
-                          <td>
-                            <input value={item.date} readOnly />
-                          </td>
-                          <td>
-                            <input
-                              value={item.product_name}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].product_name = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.batch_no}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].batch_no = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-
-                          <td>
-                            <input
-                              value={item.container_size}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].container_size = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.batch_size}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].batch_size = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.theoretical_production}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].theoretical_production =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.loaded_quantity}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].loaded_quantity = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-
-                          <td>
-                            <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].checked_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.yield}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].yield = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.remarks}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.LoadedQuantityRecords,
-                                ];
-                                newData[index].remarks = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  LoadedQuantityRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
-                          </td>
-
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                          </td>
+                  <div className="overflow-x-auto text-black ">
+                    <table>
+                      <thead className=" text-white">
+                        <tr>
+                          <th>S no.</th>
+                          <th>Unique Id</th>
+                          <th>Date</th>
+                          <th>Product Name</th>
+                          <th>Batch No.</th>
+                          <th>Container Size (ml)</th>
+                          <th>Batch Size (Ltr)</th>
+                          <th>Theoretical Production</th>
+                          <th>Loaded Quantity</th>
+                          <th>Checked By</th>
+                          <th>% Yield</th>
+                          <th>Remarks</th>
+                          <th>Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {editData?.LoadedQuantityRecords.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.unique_id}</td>
+                            <td>
+                              <input value={item.date} readOnly />
+                            </td>
+                            <td>
+                              <input
+                                value={item.product_name}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].product_name = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.batch_no}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].batch_no = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.container_size}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].container_size =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.batch_size}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].batch_size = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.theoretical_production}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].theoretical_production =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.loaded_quantity}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].loaded_quantity =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.checked_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].checked_by = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.yield}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].yield = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.remarks}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].remarks = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </>
               ) : null}
@@ -1404,7 +1497,7 @@ const LoadedQuantityPanels = () => {
               ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              {location.state?.stage === 1
+              {/* {location.state?.stage === 1
                 ? location.state?.initiator_id === userDetails.userId && (
                     <button
                       className="themeBtn"
@@ -1475,7 +1568,7 @@ const LoadedQuantityPanels = () => {
                       Save
                     </button>
                   )
-                : null}
+                : null} */}
               <button
                 className="themeBtn"
                 onClick={() => {

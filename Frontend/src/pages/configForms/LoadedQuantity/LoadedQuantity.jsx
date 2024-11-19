@@ -254,7 +254,7 @@ const LoadedQuantity = () => {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div> */}
-              <div className="sub-head-2">Loaded Quantity</div>
+              <div className="sub-head-2 bg-[#0c5fc6]">Loaded Quantity</div>
 
               <div className="outerDiv4">
                 <div className="btn-forms">
