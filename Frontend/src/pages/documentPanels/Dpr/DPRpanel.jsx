@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS"
 
 export default function DPRpanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -553,6 +554,7 @@ export default function DPRpanel() {
   return (
     <>
       <HeaderTop />
+      <LaunchQMS/>
       <div id="main-form-container">
         <div id="config-form-document-page"  className="min-w-full">
           <div className="top-block">
