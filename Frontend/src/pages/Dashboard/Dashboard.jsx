@@ -29,7 +29,7 @@ function Dashboard() {
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -61,7 +61,7 @@ function Dashboard() {
 
     const newConfigTemp = {
       method: "get",
-      url: "http://localhost:1000/temprature-record/get-all-temprature-record",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-all-temprature-record",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -89,7 +89,7 @@ function Dashboard() {
 
     const newConfigloaded = {
       method: "get",
-      url: "http://localhost:1000/loaded-quantity/get-all",
+      url: "https://elog-backend.mydemosoftware.com/loaded-quantity/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -115,65 +115,64 @@ function Dashboard() {
         console.error("Error: ", error);
       });
 
+    const newConfigMedia = {
+      method: "get",
+      url: "https://elog-backend.mydemosoftware.com/media-record/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
 
-      const newConfigMedia = {
-        method: "get",
-        url: "http://localhost:1000/media-record/get-all",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-      };
-  
-      axios(newConfigMedia)
-        .then((response) => {
-          const allMediaRecordElogs = response.data.message;
-          let filteredArray = allMediaRecordElogs.filter((elog) => {
-            const userId = userDetails.userId;
-  
-            return (
-              userId === elog.reviewer_id ||
-              userId === elog.initiator_id ||
-              userId === elog.approver_id ||
-              hasAccess(4, elog.site_id, 4)
-            );
-          });
-          setMediaRecordElogs(filteredArray);
-        })
-        .catch((error) => {
-          console.error("Error: ", error);
+    axios(newConfigMedia)
+      .then((response) => {
+        const allMediaRecordElogs = response.data.message;
+        let filteredArray = allMediaRecordElogs.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
         });
+        setMediaRecordElogs(filteredArray);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
 
-        const newConfigDispensing = {
-          method: "get",
-          url: "http://localhost:1000/dispensing-material/get-all",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-            "Content-Type": "application/json",
-          },
-        };
-    
-        axios(newConfigDispensing)
-          .then((response) => {
-            const allDispensingMaterialElogs = response.data.message;
-            let filteredArray = allDispensingMaterialElogs.filter((elog) => {
-              const userId = userDetails.userId;
-    
-              return (
-                userId === elog.reviewer_id ||
-                userId === elog.initiator_id ||
-                userId === elog.approver_id ||
-                hasAccess(4, elog.site_id, 4)
-              );
-            });
-            setDispensingOfMaterialsElogs(filteredArray);
-          })
-          .catch((error) => {
-            console.error("Error: ", error);
-          });
+    const newConfigDispensing = {
+      method: "get",
+      url: "https://elog-backend.mydemosoftware.com/dispensing-material/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios(newConfigDispensing)
+      .then((response) => {
+        const allDispensingMaterialElogs = response.data.message;
+        let filteredArray = allDispensingMaterialElogs.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setDispensingOfMaterialsElogs(filteredArray);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
     const newOperationSterelizer = {
       method: "get",
-      url: "http://localhost:1000/operation-sterlizer/get-all",
+      url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -213,8 +212,8 @@ function Dashboard() {
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
       navigate("/dpr-panel", { state: item });
-    // } else if (item.process === "Area and equipment") {
-    //   navigate("/area-and-equipment-panel", { state: item });
+      // } else if (item.process === "Area and equipment") {
+      //   navigate("/area-and-equipment-panel", { state: item });
     } else if (item.TempratureRecords) {
       navigate("/tpr-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
@@ -263,6 +262,7 @@ function Dashboard() {
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
+              style={{ height: "40px" }}
             >
               <option value="All_Records">All Records</option>
               <option value="diffrential_pressure">

@@ -9,7 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 
 const MediaRecord = () => {
-    const [User, setUser] = useState(null);
+  const [User, setUser] = useState(null);
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [allTableData, setAllTableData] = useState([]);
@@ -17,10 +17,8 @@ const MediaRecord = () => {
   const [approvers, setApprovers] = useState([]);
   const [reviewers, setReviewers] = useState([]);
 
-
   const location = useLocation();
-  const [mediaRecords, setMediaRecords] = useReducer
-  (
+  const [mediaRecords, setMediaRecords] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
@@ -43,11 +41,10 @@ const MediaRecord = () => {
 
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -69,7 +66,7 @@ const MediaRecord = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -90,11 +87,10 @@ const MediaRecord = () => {
       });
   }, []);
 
-
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -149,7 +145,7 @@ const MediaRecord = () => {
 
     axios
       .post(
-        "http://localhost:1000/media-record/post",
+        "https://elog-backend.mydemosoftware.com/media-record/post",
         mediaRecords,
         config
       )
@@ -166,7 +162,7 @@ const MediaRecord = () => {
   useEffect(() => {
     setMediaRecords({ FormRecordsArray: allTableData });
   }, [allTableData]);
- 
+
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
@@ -196,11 +192,11 @@ const MediaRecord = () => {
       date_of_preparation: "",
       date_of_use: "",
       lot_no: "",
-      no_of_plate_prepared:"",
-      no_of_plate_used:"",
-      used_for:"",
-      balance_no_plate:"",
-      signature:"",
+      no_of_plate_prepared: "",
+      no_of_plate_used: "",
+      used_for: "",
+      balance_no_plate: "",
+      signature: "",
       checked_by: User?.name,
     };
     setAllTableData([...allTableData, newRow]);
@@ -225,144 +221,144 @@ const MediaRecord = () => {
 
   return (
     <div>
-    <HeaderTop />
-    <div id="main-form-container">
-      <div id="config-form-document-pages" className="min-w-full">
-        <div className="top-blocks">
-          <div>
-            <strong> Record Name:&nbsp;</strong>Media Records
-          </div>
-          <div>
-            <strong> Site:&nbsp;</strong>
-            {location.state?.site}
-          </div>
-          <div>
-            <strong> Current Status:&nbsp;</strong>Under Initiation
-          </div>
-          <div>
-            <strong> Initiated By:&nbsp;</strong>
-            {User?.name}
-          </div>
-        </div>
-        <div className="document-form">
-          <div className="details-form-data">
-            {/* <div className="sop-type-header">
-              <div className="logo">
-                <img src="/vidyalogo2.png" alt="..." />
-              </div>
-              <div className="main-head">
-                <div>VidyaGxP Private Limited</div>
-              </div>
-            </div> */}
-            <div className="sub-head-2">Media Records</div>
-
-            <div className="outerDiv4">
-              <div className="btn-forms">
-                <div
-                  className={`${
-                    isSelectedGeneral === true
-                      ? "btn-forms-isSelected"
-                      : "btn-forms-select"
-                  }`}
-                  onClick={() => {
-                    setIsSelectedDetails(false), setIsSelectedGeneral(true);
-                  }}
-                >
-                  General Information
-                </div>
-                <div
-                  className={`${
-                    isSelectedDetails === true
-                      ? "btn-forms-isSelected"
-                      : "btn-forms-select"
-                  }`}
-                  onClick={() => {
-                    setIsSelectedDetails(true), setIsSelectedGeneral(false);
-                  }}
-                >
-                  Details
-                </div>
-              </div>
+      <HeaderTop />
+      <div id="main-form-container">
+        <div id="config-form-document-pages" className="min-w-full">
+          <div className="top-blocks">
+            <div>
+              <strong> Record Name:&nbsp;</strong>Media Records
             </div>
+            <div>
+              <strong> Site:&nbsp;</strong>
+              {location.state?.site}
+            </div>
+            <div>
+              <strong> Current Status:&nbsp;</strong>Under Initiation
+            </div>
+            <div>
+              <strong> Initiated By:&nbsp;</strong>
+              {User?.name}
+            </div>
+          </div>
+          <div className="document-form">
+            <div className="details-form-data">
+              <div className="sop-type-header">
+                <div className="logo">
+                  <img src="/vidyalogo2.png" alt="..." />
+                </div>
+                <div className="main-head">
+                  <div>VidyaGxP Private Limited</div>
+                </div>
+              </div>
+              <div className="sub-head-2">Media Records</div>
 
-            {isSelectedGeneral === true ? (
-              <>
-                <div className="group-input">
-                  <label className="color-label">Initiator</label>
-                  <div>
-                    <input
-                      type="text"
-                      value={User?.name}
-                      onChange={(e) =>
-                        setMediaRecords({
-                          initiator: e.target.value,
-                        })
-                      }
-                      disabled
-                      style={{ backgroundColor: "#fafafa" }}
-                      className="shadow-xl"
-                    />
+              <div className="outerDiv4">
+                <div className="btn-forms">
+                  <div
+                    className={`${
+                      isSelectedGeneral === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false), setIsSelectedGeneral(true);
+                    }}
+                  >
+                    General Information
+                  </div>
+                  <div
+                    className={`${
+                      isSelectedDetails === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                    }}
+                  >
+                    Details
                   </div>
                 </div>
+              </div>
 
-                <div className="group-input">
-                  <label className="color-label">Date of Initiation</label>
-                  <div>
-                    <input
-                      type="text"
-                      value={date}
-                      onChange={(e) =>
-                        setMediaRecords({
-                          dateOfInitiation: e.target.value,
-                        })
-                      }
-                      disabled
-                      style={{ backgroundColor: "#fafafa" }}
-                      className="shadow-xl"
-                    />
+              {isSelectedGeneral === true ? (
+                <>
+                  <div className="group-input">
+                    <label className="color-label">Initiator</label>
+                    <div>
+                      <input
+                        type="text"
+                        value={User?.name}
+                        onChange={(e) =>
+                          setMediaRecords({
+                            initiator: e.target.value,
+                          })
+                        }
+                        disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="group-input">
-                  <label className="color-label">
-                    Description{" "}
-                    <span className="required-asterisk text-red-500">*</span>
-                  </label>
-                  <div>
-                    <input
-                      type="text"
-                      value={mediaRecords.description}
-                      onChange={(e) =>
-                        setMediaRecords({
-                          description: e.target.value,
-                        })
-                      }
-                      required // HTML5 attribute to enforce field requirement
-                    />
+                  <div className="group-input">
+                    <label className="color-label">Date of Initiation</label>
+                    <div>
+                      <input
+                        type="text"
+                        value={date}
+                        onChange={(e) =>
+                          setMediaRecords({
+                            dateOfInitiation: e.target.value,
+                          })
+                        }
+                        disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="group-input">
-                  <label className="color-label">Status</label>
-                  <div>
-                    <input
-                      type="text"
-                      value="Under Initiation"
-                      onChange={(e) =>
-                        setMediaRecords({ status: e.target.value })
-                      }
-                      disabled
-                      style={{ backgroundColor: "#fafafa" }}
-                      className="shadow-xl"
-                    />
+                  <div className="group-input">
+                    <label className="color-label">
+                      Description{" "}
+                      <span className="required-asterisk text-red-500">*</span>
+                    </label>
+                    <div>
+                      <input
+                        type="text"
+                        value={mediaRecords.description}
+                        onChange={(e) =>
+                          setMediaRecords({
+                            description: e.target.value,
+                          })
+                        }
+                        required // HTML5 attribute to enforce field requirement
+                      />
+                    </div>
                   </div>
-                </div>
-              </>
-            ) : null}
 
-            {isSelectedDetails === true ? (
-              <>
-               <div className="form-flex">
+                  <div className="group-input">
+                    <label className="color-label">Status</label>
+                    <div>
+                      <input
+                        type="text"
+                        value="Under Initiation"
+                        onChange={(e) =>
+                          setMediaRecords({ status: e.target.value })
+                        }
+                        disabled
+                        style={{ backgroundColor: "#fafafa" }}
+                        className="shadow-xl"
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : null}
+
+              {isSelectedDetails === true ? (
+                <>
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
                         Reviewer
@@ -428,52 +424,51 @@ const MediaRecord = () => {
                       </div>
                     </div>
                   </div>
-                <div>
-                  <div className="AddRows d-flex">
-                    <NoteAdd onClick={addRow} />
-                    <div className="addrowinstruction"></div>
+                  <div>
+                    <div className="AddRows d-flex">
+                      <NoteAdd onClick={addRow} />
+                      <div className="addrowinstruction"></div>
+                    </div>
                   </div>
-                </div>
-                <div className="overflow-x-auto">
-                <table>
-                  <thead>
-                    <tr>
-                      <th  >S no.</th>
-                      <th  >Unique Id</th>
-                      <th  >Date</th>
-                      <th  >Name of the Medium</th>
-                      <th  >Date of Preparation</th>
-                      <th  >Date of Use</th>
-                      <th  >Lot No.</th>
-                      <th  >No. of Plates Prepared</th>
-                      <th  >No. of Plates used</th>
-                      <th  >Used for</th>
-                      <th  >Balance No. of Plates</th>
-                      <th>Checked By</th>
+                  <div className="overflow-x-auto">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>S no.</th>
+                          <th>Unique Id</th>
+                          <th>Date</th>
+                          <th>Name of the Medium</th>
+                          <th>Date of Preparation</th>
+                          <th>Date of Use</th>
+                          <th>Lot No.</th>
+                          <th>No. of Plates Prepared</th>
+                          <th>No. of Plates used</th>
+                          <th>Used for</th>
+                          <th>Balance No. of Plates</th>
+                          <th>Checked By</th>
 
-                      <th > Signature</th>
-                      {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
-                      <th >Actions</th>
-                    </tr>
-                   
-                  </thead>
-                  <tbody>
-                    {allTableData.map((item, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{item.unique_id}</td>
-                        <td>
-                          <input
-                            value={item.date}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].date = e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            readOnly
-                          />
-                        </td>
-                        {/* <td>
+                          <th> Signature</th>
+                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allTableData.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.unique_id}</td>
+                            <td>
+                              <input
+                                value={item.date}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].date = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            {/* <td>
                           <input
                             type="date"
                             value={item.date}
@@ -486,128 +481,130 @@ const MediaRecord = () => {
                             required
                           />
                         </td> */}
-                        <td>
-                          <input
-                            type="text"
-                            value={item.name_medium}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].name_medium = e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="date"
-                            value={item.date_of_preparation}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].date_of_preparation = e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="date"
-                            value={item.date_of_use}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].date_of_use = e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            value={item.lot_no}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].lot_no = e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                           value={item.no_of_plate_prepared}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].no_of_plate_prepared = e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                           value={item.no_of_plate_used}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].no_of_plate_used =
-                                e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                           value={item.used_for}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].used_for =
-                                e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                           value={item.balance_no_plate}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].balance_no_plate = e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        <td>
-                        <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].checked_by = e.target.value;
-                                setAllTableData(newData);
-                              }} 
+                            <td>
+                              <input
+                                type="text"
+                                value={item.name_medium}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].name_medium = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="date"
+                                value={item.date_of_preparation}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].date_of_preparation =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="date"
+                                value={item.date_of_use}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].date_of_use = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.lot_no}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].lot_no = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.no_of_plate_prepared}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].no_of_plate_prepared =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.no_of_plate_used}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].no_of_plate_used =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.used_for}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].used_for = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={item.balance_no_plate}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].balance_no_plate =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.checked_by}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].checked_by = e.target.value;
+                                  setAllTableData(newData);
+                                }}
                                 readOnly
                               />
                             </td>
-                        <td>
-                          <input
-                            type="text"
-                           value={item.signature}
-                            onChange={(e) => {
-                              const newData = [...allTableData];
-                              newData[index].signature = e.target.value;
-                              setAllTableData(newData);
-                            }}
-                            required
-                          />
-                        </td>
-                        {/* <td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.signature}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].signature = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            {/* <td>
                           <input
                             type="text"
                            value={item.unloadingTime}
@@ -620,7 +617,7 @@ const MediaRecord = () => {
                           />
                         </td> */}
 
-                        {/* <td style={{ width: "250px" }}>
+                            {/* <td style={{ width: "250px" }}>
                           <div className="d-flex align-items-center">
                             <button
                               type="button"
@@ -662,44 +659,44 @@ const MediaRecord = () => {
                             />
                           </div>
                         </td> */}
-                        <td>
-                          <DeleteIcon onClick={() => deleteRow(index)} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                </div>
-              </>
-            ) : null}
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              ) : null}
+            </div>
+            <div className="button-block" style={{ width: "100%" }}>
+              <button
+                className="themeBtn"
+                onClick={() => {
+                  setIsPopupOpen(true);
+                }}
+              >
+                Save
+              </button>
+              <button
+                className="themeBtn"
+                onClick={() => navigate("/dashboard")}
+              >
+                Exit
+              </button>
+            </div>
+            {isPopupOpen && (
+              <UserVerificationPopUp
+                onClose={handlePopupClose}
+                onSubmit={handlePopupSubmit}
+              />
+            )}
           </div>
-          <div className="button-block" style={{ width: "100%" }}>
-            <button
-              className="themeBtn"
-              onClick={() => {
-                setIsPopupOpen(true);
-              }}
-            >
-              Save
-            </button>
-            <button
-              className="themeBtn"
-              onClick={() => navigate("/dashboard")}
-            >
-              Exit
-            </button>
-          </div>
-          {isPopupOpen && (
-            <UserVerificationPopUp
-              onClose={handlePopupClose}
-              onSubmit={handlePopupSubmit}
-            />
-          )}
         </div>
       </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
-export default MediaRecord
+export default MediaRecord;
