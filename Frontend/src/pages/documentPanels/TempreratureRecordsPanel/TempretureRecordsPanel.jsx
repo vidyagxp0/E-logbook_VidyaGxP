@@ -520,7 +520,7 @@ export default function TempretureRecordsPanel() {
     <>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-page">
+        <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
               <strong> Record Name:&nbsp;</strong>Temperature Record
