@@ -184,7 +184,7 @@ function AdminDashboard() {
                 <button
                   className="themeBtn"
                   style={{
-                    backgroundColor: "#efa035",
+                    backgroundColor: "#0c5fc6",
                     color: "white",
                     padding: "10px 20px",
                     borderRadius: "5px",
@@ -287,7 +287,7 @@ function AdminDashboard() {
                             padding: "5px 10px",
                             borderRadius: "5px",
                             // border: "1px solid #EFA035",
-                            backgroundColor: "green",
+                            backgroundColor: "#0c5fc6",
                             color: "white",
                             cursor: "pointer",
                             marginRight: "5px",
@@ -301,7 +301,7 @@ function AdminDashboard() {
                             padding: "5px 10px",
                             borderRadius: "5px",
                             // border: "1px solid #EFA035",
-                            backgroundColor: "orange",
+                            backgroundColor: "#0c5fc6",
                             color: "white",
                             cursor: "pointer",
                             marginRight: "5px",
@@ -314,28 +314,14 @@ function AdminDashboard() {
                         >
                           Edit
                         </button>
-                        <button
-                          style={{
-                            padding: "5px 10px",
-                            borderRadius: "5px",
-                            // border: "1px solid #EFA035",
-
-                            marginRight: "5px",
-                            backgroundColor: "red",
-                            color: "white",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => openConfirmation(user)}
-                        >
-                          Disable
-                        </button>
+                      
                         <button
                           style={{
                             padding: "5px 10px",
                             borderRadius: "5px",
                             marginRight: "5px",
                             // border: "1px solid #EFA035",
-                            backgroundColor: "blue",
+                            backgroundColor: "#0c5fc6",
                             color: "white",
                             cursor: "pointer",
                           }}
@@ -351,13 +337,29 @@ function AdminDashboard() {
                           style={{
                             padding: "5px 10px",
                             borderRadius: "5px",
-                            backgroundColor: "black",
+                            marginRight: "5px",
+                            backgroundColor: "#0c5fc6",
                             color: "white",
                             cursor: "pointer",
                           }}
                           onClick={openResetPasswordModal}
                         >
                           Reset Password
+                        </button>
+                        <button
+                          style={{
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            // border: "1px solid #EFA035",
+
+                            marginRight: "5px",
+                            backgroundColor: "red",
+                            color: "white",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => openConfirmation(user)}
+                        >
+                          Disable
                         </button>
                       </td>
                     </tr>

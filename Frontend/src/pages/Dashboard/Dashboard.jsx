@@ -16,7 +16,6 @@ function Dashboard() {
   // const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
   const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
-  console.log(loadedQuantityElogs, "loadedQuantityElogs");
   const [mediaRecordElogs, setMediaRecordElogs] = useState([]);
   const [dispensingOfMaterialsElogs, setDispensingOfMaterialsElogs] = useState(
     []

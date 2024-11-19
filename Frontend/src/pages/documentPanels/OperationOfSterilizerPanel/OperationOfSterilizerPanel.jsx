@@ -640,7 +640,113 @@ const OperationOfSterilizerPanel = () => {
                 </div>
               </div>
 
-              <div className="sub-head-2">Operation Of Sterilizer</div>
+              <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
+                <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
+                Operation Of Sterilizer
+
+                </span>
+
+                <div className="flex flex-wrap gap-3 items-center justify-center">
+                  {/* Audit Trail Button */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() =>
+                      navigate("/audit-trail", {
+                        state: {
+                          formId: location.state?.form_id,
+                          process: "Differential Pressure",
+                        },
+                      })
+                    }
+                  >
+                    Audit Trail
+                  </button>
+
+                  {/* Generate Report Button */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={generateReport}
+                  >
+                    Generate Report
+                  </button>
+
+                  {/* Conditional Buttons Based on Stages */}
+                  {location.state?.stage === 1 &&
+                    location.state?.initiator_id === userDetails.userId && (
+                      <button
+                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromOpenToReview");
+                        }}
+                      >
+                        Send for Review
+                      </button>
+                    )}
+
+                  {location.state?.stage === 2 &&
+                    location.state?.reviewer_id === userDetails.userId && (
+                      <>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromReviewToApproval");
+                          }}
+                        >
+                          Review Completed
+                        </button>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromReviewToOpen");
+                          }}
+                        >
+                          More Info Required
+                        </button>
+                      </>
+                    )}
+
+                  {location.state?.stage === 3 &&
+                    location.state?.approver_id === userDetails.userId && (
+                      <>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromApprovalToClosedDone");
+                          }}
+                        >
+                          Approve elog
+                        </button>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromApprovalToOpen");
+                          }}
+                        >
+                          More Info Required
+                        </button>
+                      </>
+                    )}
+
+                  {/* Save Button */}
+                  {location.state?.stage === 1 &&
+                    userDetails.userId === location.state?.initiator_id && (
+                      <button
+                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("updateElog");
+                        }}
+                      >
+                        Save
+                      </button>
+                    )}
+                </div>
+              </div>
               <div className="outerDiv4 bg-slate-300 py-4">
               <div className="flex gap-3 ">
                   <div
@@ -1600,7 +1706,7 @@ const OperationOfSterilizerPanel = () => {
               ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              {location.state?.stage === 1
+              {/* {location.state?.stage === 1
                 ? location.state?.initiator_id === userDetails.userId && (
                     <button
                       className="themeBtn"
@@ -1671,7 +1777,7 @@ const OperationOfSterilizerPanel = () => {
                       Save
                     </button>
                   )
-                : null}
+                : null} */}
               <button
                 className="themeBtn"
                 onClick={() => {
