@@ -37,7 +37,7 @@
 
 #create-record-modal .division-list > *:hover,
 #create-record-modal .division-list > * {
-  transition: background 0.1s ease;
+  transition: background 0s ease;
 }
 
 #create-record-modal .division-list > *:hover,
