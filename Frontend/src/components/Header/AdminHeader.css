@@ -186,7 +186,7 @@ header .drop-block .drop-list>*:hover {
 
 .drop-container .drop-list .drop-item:hover {
   background: var(--themeColor);
-  color: #000;
+  color: white;
 }
 
 .drop-container:hover .drop-list {
