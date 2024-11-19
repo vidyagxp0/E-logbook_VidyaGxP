@@ -781,13 +781,13 @@ exports.SendDPElogForReview = async (req, res) => {
       return res.status(404).json({ error: true, message: "Elog not found." });
     }
 
-    if (form.stage !== 1) {
-      await transaction.rollback();
-      return res.status(400).json({
-        error: true,
-        message: "Elog is not in a valid stage to be sent for review.",
-      });
-    }
+    // if (form.stage !== 1) {
+    //   await transaction.rollback();
+    //   return res.status(400).json({
+    //     error: true,
+    //     message: "Elog is not in a valid stage to be sent for review.",
+    //   });
+    // }
 
     const auditTrailEntries = [];
 
@@ -1215,7 +1215,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
         previous_status: "Under Approval",
-        new_status: "Opened",
+        new_status: "Under Review",
         declaration: approverDeclaration,
         action: "Open Elog",
       });
@@ -1228,7 +1228,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       new_value: "Not Applicable",
       changed_by: user.user_id,
       previous_status: "Under Approval",
-      new_status: "Opened",
+      new_status: "Under Review",
       declaration: approverDeclaration,
       action: "Open Elog",
     });
@@ -1236,8 +1236,8 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "Opened",
-        stage: 1,
+        status: "Under Review",
+        stage: 2,
         approverAttachment: getElogDocsUrl(req?.file),
       },
       { transaction }
@@ -1254,7 +1254,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     return res.status(200).json({
       error: false,
       message:
-        "E-log status successfully changed from under-approval to Opened",
+        "E-log status successfully changed from under-approval to under-review",
     });
   } catch (error) {
     // Rollback the transaction in case of error
