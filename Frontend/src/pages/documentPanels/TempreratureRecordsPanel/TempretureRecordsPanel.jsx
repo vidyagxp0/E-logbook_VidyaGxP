@@ -556,48 +556,59 @@ export default function TempretureRecordsPanel() {
                 </div>
               </div>
               <div className="sub-head-2">Temperature Record</div>
-              <div className="outerDiv4">
+              <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="status-container">
                  
-                  <div className="btn-forms-tpr">
-                  <div className="status-heading" >Status :</div>
-                    <div
-                      className={`${
-                        location.state?.stage === 1
-                          ? "btn-forms-isSelectedsTpr"
-                          : "btn-forms-selectsTpr"
-                      }`}
-                    >
-                      OPENED
-                    </div>
-                    <div
-                      className={`${
-                        location.state?.stage === 2
-                          ? "btn-forms-isSelectedsTpr"
-                          : "btn-forms-selectsTpr"
-                      }`}
-                    >
-                      Under Review
-                    </div>
-                    <div
-                      className={`${
-                        location.state?.stage === 3
-                          ? "btn-forms-isSelectedsTpr"
-                          : "btn-forms-selectsTpr"
-                      }`}
-                    >
-                      Under Approval
-                    </div>
-                    <div
-                      className={`${
-                        location.state?.stage === 4
-                          ? "btn-forms-isSelectedsTpr"
-                          : "btn-forms-selectsTpr"
-                      }`}
-                    >
-                      CLOSED DONE
-                    </div>
+                <div className="flex gap-3 ">
+                  <div
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 1
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 1
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    OPENED
                   </div>
+
+                  <div
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 2
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 2
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    UNDER REVIEW
+                  </div>
+
+                  <div
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 3
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 3
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    UNDER APPROVAL
+                  </div>
+
+                  {/* Button 4: CLOSED DONE */}
+                  <div
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 4
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 4
+                        ? "bg-red-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    CLOSED DONE
+                  </div>
+                </div>
                 </div>
               </div>
               <div className="outerDiv4">
