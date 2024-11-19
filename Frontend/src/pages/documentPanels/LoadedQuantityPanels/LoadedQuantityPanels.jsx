@@ -727,7 +727,7 @@ const LoadedQuantityPanels = () => {
                 </div>
               </div>
 
-              <div className="outerDiv4">
+              <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
@@ -1172,7 +1172,7 @@ const LoadedQuantityPanels = () => {
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
-                        value={editData?.initiatorComment}
+                        value={editData?.initiatorDeclaration}
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
