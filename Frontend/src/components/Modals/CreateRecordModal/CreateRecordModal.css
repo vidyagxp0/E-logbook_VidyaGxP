@@ -43,6 +43,7 @@
 #create-record-modal .division-list > *:hover,
 #create-record-modal .division-list > *.active {
   background: #0c5fc6;
+  color: white;
 }
 
 #create-record-modal .project-list > *:hover,
