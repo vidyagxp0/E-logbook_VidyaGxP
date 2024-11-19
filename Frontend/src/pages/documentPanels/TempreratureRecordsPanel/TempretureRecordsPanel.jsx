@@ -104,7 +104,7 @@ export default function TempretureRecordsPanel() {
         .catch((error) => {
           toast.error(error?.response?.data?.message || "Couldn't open elog!!");
         });
-    } else if (popupAction === "sendFromApprovalToApproved") {
+    } else if (popupAction === "sendFromApprovalToClosedDone") {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
@@ -114,7 +114,7 @@ export default function TempretureRecordsPanel() {
           config
         )
         .then(() => {
-          toast.success("Elog successfully approved");
+          toast.success("Elog successfully Closed Done");
           navigate(-1);
         })
         .catch((error) => {
@@ -1353,7 +1353,7 @@ export default function TempretureRecordsPanel() {
                         className="themeBtn"
                         onClick={() => {
                           setIsPopupOpen(true);
-                          setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
+                          setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
                         }}
                       >
                         Approve elog

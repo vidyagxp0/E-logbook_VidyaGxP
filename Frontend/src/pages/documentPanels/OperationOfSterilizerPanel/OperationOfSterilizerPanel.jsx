@@ -139,13 +139,13 @@ const OperationOfSterilizerPanel = () => {
         .catch((error) => {
           toast.error(error?.response?.data?.message || "Couldn't open elog!!");
         });
-    } else if (popupAction === "sendFromApprovalToApproved") {
+    } else if (popupAction === "sendFromApprovalToClosedDone") {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
         .put("http://localhost:1000/operation-sterlizer/approve", data, config)
         .then(() => {
-          toast.success("Elog successfully approved");
+          toast.success("Elog successfully Closed Done");
           navigate(-1);
         })
         .catch((error) => {
@@ -1629,7 +1629,7 @@ const OperationOfSterilizerPanel = () => {
                         className="themeBtn"
                         onClick={() => {
                           setIsPopupOpen(true);
-                          setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
+                          setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
                         }}
                       >
                         Approve elog
