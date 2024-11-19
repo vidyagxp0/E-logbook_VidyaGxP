@@ -111,7 +111,11 @@ export default function DiffrentialPressure() {
       toast.error("Please provide a short description!");
       return;
     }
-    if (differentialPRecord?.FormRecordsArray?.some(record => record.differential_pressure === "" || record.remarks === "")) {
+    if (
+      differentialPRecord?.FormRecordsArray?.some(
+        (record) => record.differential_pressure === "" || record.remarks === ""
+      )
+    ) {
       toast.error("Please provide grid details!");
       return;
     }
@@ -167,7 +171,7 @@ export default function DiffrentialPressure() {
     const currentTime = new Date().toLocaleTimeString("en-us", options);
     const newRow = {
       unique_id: generateUniqueId(),
-      date:date,
+      date: date,
       time: currentTime,
       differential_pressure: "",
       remarks: "",
@@ -204,7 +208,7 @@ export default function DiffrentialPressure() {
       review_comments: "",
       compression_area: "",
       limit: null,
-      initiatorComment: "",
+      initiatorComment: " ",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }

@@ -34,7 +34,7 @@ const MediaRecord = () => {
       review_comments: "",
       compression_area: "",
       limit: 1,
-      initiatorComment: "",
+      initiatorComment: " ",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
     }
