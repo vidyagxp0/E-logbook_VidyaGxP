@@ -600,7 +600,7 @@ export default function DPRpanel() {
                         : "btn-forms-selects"
                     }`}
                   >
-                    INITIATION
+                    OPENED
                   </div>
                   <div
                     className={`${
@@ -627,7 +627,7 @@ export default function DPRpanel() {
                         : "btn-forms-selects"
                     }`}
                   >
-                    APPROVED
+                    CLOSED DONE
                   </div>
                 </div>
               </div>
@@ -1452,7 +1452,7 @@ export default function DPRpanel() {
                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
                         }}
                       >
-                        Send for Approval
+                        Review Completed
                       </button>
                       <button
                         className="themeBtn"
@@ -1461,7 +1461,7 @@ export default function DPRpanel() {
                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )
@@ -1484,7 +1484,7 @@ export default function DPRpanel() {
                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )

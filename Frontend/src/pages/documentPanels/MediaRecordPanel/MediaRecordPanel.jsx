@@ -629,7 +629,7 @@ const MediaRecordPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    INITIATION
+                    OPENED
                   </div>
                   <div
                     className={`${
@@ -656,7 +656,7 @@ const MediaRecordPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    APPROVED
+                    CLOSED DONE
                   </div>
                 </div>
               </div>
@@ -1453,7 +1453,7 @@ const MediaRecordPanel = () => {
                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
                         }}
                       >
-                        Send for Approval
+                        Review Completed
                       </button>
                       <button
                         className="themeBtn"
@@ -1462,7 +1462,7 @@ const MediaRecordPanel = () => {
                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )
@@ -1485,7 +1485,7 @@ const MediaRecordPanel = () => {
                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )

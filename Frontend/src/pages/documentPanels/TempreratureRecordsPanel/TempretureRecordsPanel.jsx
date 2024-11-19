@@ -568,7 +568,7 @@ export default function TempretureRecordsPanel() {
                           : "btn-forms-selectsTpr"
                       }`}
                     >
-                      Initiation
+                      OPENED
                     </div>
                     <div
                       className={`${
@@ -595,7 +595,7 @@ export default function TempretureRecordsPanel() {
                           : "btn-forms-selectsTpr"
                       }`}
                     >
-                      Approved
+                      CLOSED DONE
                     </div>
                   </div>
                 </div>
@@ -1333,7 +1333,7 @@ export default function TempretureRecordsPanel() {
                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
                         }}
                       >
-                        Send for Approval
+                        Review Completed
                       </button>
                       <button
                         className="themeBtn"
@@ -1342,7 +1342,7 @@ export default function TempretureRecordsPanel() {
                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )
@@ -1365,7 +1365,7 @@ export default function TempretureRecordsPanel() {
                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )

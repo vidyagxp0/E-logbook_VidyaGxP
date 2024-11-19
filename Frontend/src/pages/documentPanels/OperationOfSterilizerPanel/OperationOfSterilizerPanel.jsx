@@ -649,7 +649,7 @@ const OperationOfSterilizerPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    INITIATION
+                    OPENED
                   </div>
                   <div
                     className={`${
@@ -676,7 +676,7 @@ const OperationOfSterilizerPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    APPROVED
+                    CLOSED DONE
                   </div>
                 </div>
               </div>
@@ -1609,7 +1609,7 @@ const OperationOfSterilizerPanel = () => {
                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
                         }}
                       >
-                        Send for Approval
+                        Review Completed
                       </button>
                       <button
                         className="themeBtn"
@@ -1618,7 +1618,7 @@ const OperationOfSterilizerPanel = () => {
                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )
@@ -1641,7 +1641,7 @@ const OperationOfSterilizerPanel = () => {
                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )

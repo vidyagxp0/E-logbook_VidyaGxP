@@ -625,7 +625,7 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    INITIATION
+                    OPENED
                   </div>
                   <div
                     className={`${
@@ -652,7 +652,7 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-selects"
                     }`}
                   >
-                    APPROVED
+                    CLOSED DONE
                   </div>
                 </div>
               </div>
@@ -1628,7 +1628,7 @@ const DispensingOfMaterialsPanel = () => {
                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
                         }}
                       >
-                        Send for Approval
+                        Revie Completed
                       </button>
                       <button
                         className="themeBtn"
@@ -1637,7 +1637,7 @@ const DispensingOfMaterialsPanel = () => {
                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        MOre Info Required
                       </button>
                     </>
                   )
@@ -1660,7 +1660,7 @@ const DispensingOfMaterialsPanel = () => {
                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        MOre Info Required
                       </button>
                     </>
                   )
