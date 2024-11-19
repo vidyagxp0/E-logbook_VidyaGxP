@@ -593,7 +593,7 @@ export default function DPRpanel() {
               </div> */}
 
               <div className="sub-head-2">Differential Pressure Record</div>
-              <div className="outerDiv4">
+              <div className="outerDiv4 bg-slate-300 py-4">
               <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
