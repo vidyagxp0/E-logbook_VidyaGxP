@@ -172,14 +172,15 @@ const OperationOfSterilizer = () => {
   let date = object.currentDate;
   function getCurrentDateTime() {
     const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
+    const year = now.getFullYear().toString().slice(0);
     const month = (now.getMonth() + 1).toString().padStart(2, "0");
     const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${day}/${month}/${year}`;
+    const currentDate = `${year}/${month}/${day}`;
     return {
       currentDate: currentDate,
     };
   }
+  console.log(allTableData, "allTableData loaded");
   const addRow = () => {
     const options = {
       hour: "2-digit",
@@ -192,7 +193,7 @@ const OperationOfSterilizer = () => {
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
-      date: "",
+      date: date,
       air_pressure: "",
       steam_pressure: "",
       printer_ok: "",
@@ -207,7 +208,7 @@ const OperationOfSterilizer = () => {
       cleaning_time_start: "",
       cleaning_time_end: "",
       cleaning_done_by: "",
-      checked_by: "",
+      checked_by: User?.name,
       supporting_docs: null,
     };
     setAllTableData([...allTableData, newRow]);
@@ -233,7 +234,7 @@ const OperationOfSterilizer = () => {
     <div>
       <HeaderTop />
       <div id="main-form-container">
-        <div id="config-form-document-pages">
+        <div id="config-form-document-pages" className="min-w-full">
           <div className="top-blocks">
             <div>
               <strong> Record Name:&nbsp;</strong>Operation Of Sterilizer
@@ -440,6 +441,7 @@ const OperationOfSterilizer = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -492,14 +494,13 @@ const OperationOfSterilizer = () => {
                           </td> */}
                           <td>
                             <input
-                              type="date"
                               value={item.date}
                               onChange={(e) => {
                                 const newData = [...allTableData];
                                 newData[index].date = e.target.value;
                                 setAllTableData(newData);
                               }}
-                              required
+                              readOnly
                             />
                           </td>
                           <td>
@@ -677,14 +678,13 @@ const OperationOfSterilizer = () => {
                           </td>
                           <td>
                             <input
-                              type="text"
-                              value={item.checkedBy}
+                              value={item.checked_by}
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].checkedBy = e.target.value;
+                                newData[index].checked_by = e.target.value;
                                 setAllTableData(newData);
                               }}
-                              required
+                              readOnly
                             />
                           </td>
 
@@ -748,6 +748,7 @@ const OperationOfSterilizer = () => {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </>
               ) : null}
             </div>

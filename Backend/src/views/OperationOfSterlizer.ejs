@@ -108,8 +108,11 @@
         <hr />
 
         <h2 class="heading">Operation Of Sterlizer</h2>
-        <% if (reportData?.OperationOfSterlizer && reportData?.OperationOfSterlizer.length> 0) { %>
-            <% reportData?.OperationOfSterlizer.forEach(record=> { %>
+        <% if (reportData?.OperationOfSterilizerRecords
+        && reportData?.OperationOfSterilizerRecords
+        .length> 0) { %>
+            <% reportData?.OperationOfSterilizerRecords
+            .forEach(record=> { %>
                 <div class="listItem">
                     <table>
                         <tr>
@@ -253,7 +256,7 @@
                                     <tr>
                                         <th>Reviewer</th>
                                         <td>
-                                            <%= reportData?.reviewer?.name || "Not Applicable" %>
+                                            <%= reportData?.reviewer2?.name || "Not Applicable" %>
                                         </td>
                                     </tr>
                                     <tr>
@@ -292,7 +295,7 @@
                                     <tr>
                                         <th>Approver</th>
                                         <td>
-                                            <%= reportData?.approver?.name || "Not Applicable" %>
+                                            <%= reportData?.approver2?.name || "Not Applicable" %>
                                         </td>
                                     </tr>
                                     <tr>

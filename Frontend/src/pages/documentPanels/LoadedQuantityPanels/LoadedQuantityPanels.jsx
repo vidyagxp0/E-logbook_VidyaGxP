@@ -31,7 +31,7 @@ const LoadedQuantityPanels = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
-  console.log(editData, "editttt");
+  console.log(editData.LoadedQuantityRecords, "editttt");
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -243,7 +243,7 @@ const LoadedQuantityPanels = () => {
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: generateUniqueId(),
-        date: "",
+        date: date,
         time: currentTime,
         product_name: "",
         batch_no: "",
@@ -403,6 +403,7 @@ const LoadedQuantityPanels = () => {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title:"Loaded Quantity",
     ...editData,
   };
 
@@ -581,9 +582,9 @@ const LoadedQuantityPanels = () => {
   return (
     <div>
       <HeaderTop />
-      <LaunchQMS/>
+      <LaunchQMS />
       <div id="main-form-container">
-        <div id="config-form-document-page">
+        <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
               <strong> Record Name:&nbsp;</strong>Loaded Quantity
@@ -759,7 +760,7 @@ const LoadedQuantityPanels = () => {
                 <button className="btn-forms-select" onClick={generateReport}>
                   Generate Report
                 </button>
-                <div className="analytics-btn">
+                {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
                     onClick={() =>
@@ -770,7 +771,7 @@ const LoadedQuantityPanels = () => {
                   >
                     Analytics
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -839,6 +840,7 @@ const LoadedQuantityPanels = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -1044,6 +1046,7 @@ const LoadedQuantityPanels = () => {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </>
               ) : null}
 

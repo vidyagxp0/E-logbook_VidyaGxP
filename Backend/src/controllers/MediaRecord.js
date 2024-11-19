@@ -170,6 +170,7 @@ exports.InsertMediaRecord = async (req, res) => {
         used_for: record?.used_for,
         balance_no_plate: record?.balance_no_plate,
         signature: record?.signature,
+        checked_by: record?.checked_by,
       }));
 
       await MediaRecord.bulkCreate(formRecords, {

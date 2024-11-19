@@ -13,7 +13,7 @@ function Dashboard() {
     []
   );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
-  const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
+  // const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
   const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
   console.log(loadedQuantityElogs, "loadedQuantityElogs");
@@ -202,7 +202,7 @@ function Dashboard() {
 
   const combinedRecords = [
     ...differentialPressureElogs,
-    ...areaAndERecordElogs,
+    // ...areaAndERecordElogs,
     ...equipmentCRecordElogs,
     ...tempratureRecordElogs,
     ...loadedQuantityElogs,
@@ -214,8 +214,8 @@ function Dashboard() {
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
       navigate("/dpr-panel", { state: item });
-    } else if (item.process === "Area and equipment") {
-      navigate("/area-and-equipment-panel", { state: item });
+    // } else if (item.process === "Area and equipment") {
+    //   navigate("/area-and-equipment-panel", { state: item });
     } else if (item.TempratureRecords) {
       navigate("/tpr-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
@@ -269,9 +269,9 @@ function Dashboard() {
               <option value="diffrential_pressure">
                 Diffrential Pressure Record
               </option>
-              <option value="area_and_equipment">
+              {/* <option value="area_and_equipment">
                 Area & Equipment Usage Log
-              </option>
+              </option> */}
               <option value="equipment_cleaning">
                 Equipment Cleaning Checklist
               </option>
@@ -342,7 +342,7 @@ function Dashboard() {
                 })
               : null}
 
-            {eLogSelect === "area_and_equipment"
+            {/* {eLogSelect === "area_and_equipment"
               ? areaAndERecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -358,7 +358,7 @@ function Dashboard() {
                     </tr>
                   );
                 })
-              : null}
+              : null} */}
 
             {eLogSelect === "equipment_cleaning"
               ? equipmentCRecordElogs?.map((item, index) => {
