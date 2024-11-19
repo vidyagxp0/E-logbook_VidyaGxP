@@ -274,8 +274,6 @@
   text-decoration: underline;
 }
 
-
-
 #config-form-document-page .group-input .file-attachment-field .add-btn {
   position: relative;
 }
@@ -387,7 +385,7 @@
 }
 
 .btn-forms-isSelected {
-  background-color: rgb(255, 210, 120);
+  background-color: #0c5fc6;
   color: #ffffff;
   padding: 5px 10px;
   border-radius: 28px;
