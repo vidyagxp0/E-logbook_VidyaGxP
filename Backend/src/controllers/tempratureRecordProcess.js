@@ -1516,8 +1516,8 @@ exports.generateReport = async (req, res) => {
       </th>
     </tr>
     <tr>
-      <td class="header-info">DP${reportData.form_id}</td>
-      <td class="header-info">Status: ${reportData?.status}</td>
+      <td class="header-info"><span style="font-weight: 600;">Form ID:</span>${reportData.form_id}</td>
+      <td class="header-info"><span style="font-weight: 600;">Status:</span>${reportData?.status}</td>
     </tr>
   </table>
 </div>
