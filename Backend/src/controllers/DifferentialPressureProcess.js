@@ -109,7 +109,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
-        status: "Initiation",
+        status: "Opened",
         stage: 1,
         department: department,
         compression_area: compression_area,
@@ -142,9 +142,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: value,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "Initiation",
+          new_status: "Opened",
           declaration: initiatorDeclaration,
-          action: "Initiate",
+          action: "Opened",
         });
       }
     }
@@ -157,9 +157,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
-        new_status: "Initiation",
+        new_status: "Opened",
         declaration: initiatorDeclaration,
-        action: "Initiate",
+        action: "Opened",
       });
     }
 
@@ -184,9 +184,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.unique_id,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "Initiation",
+          new_status: "Opened",
           declaration: initiatorDeclaration,
-          action: "Initiate",
+          action: "Opened",
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -195,9 +195,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.time,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "Initiation",
+          new_status: "Opened",
           declaration: initiatorDeclaration,
-          action: "Initiate",
+          action: "Opened",
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -206,9 +206,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.differential_pressure,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "Initiation",
+          new_status: "Opened",
           declaration: initiatorDeclaration,
-          action: "Initiate",
+          action: "Opened",
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -217,9 +217,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.remarks,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "Initiation",
+          new_status: "Opened",
           declaration: initiatorDeclaration,
-          action: "Initiate",
+          action: "Opened",
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -228,9 +228,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
           new_value: record.checked_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "Initiation",
+          new_status: "Opened",
           declaration: initiatorDeclaration,
-          action: "Initiate",
+          action: "Opened",
         });
         if (supportingDocs[index]) {
           auditTrailEntries.push({
@@ -240,9 +240,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
             new_value: getElogDocsUrl(supportingDocs[index]),
             changed_by: user.user_id,
             previous_status: "Not Applicable",
-            new_status: "Initiation",
+            new_status: "Opened",
             declaration: initiatorDeclaration,
-            action: "Initiate",
+            action: "Opened",
           });
         }
       });
@@ -258,7 +258,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       initiator: user.name,
       dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
       description,
-      status: "Initiation",
+      status: "Opened",
       reviewerName: (await getUserById(reviewer_id)).name,
       approverName: (await getUserById(approver_id)).name,
       reviewerEmail: (await getUserById(reviewer_id)).email,
@@ -269,29 +269,29 @@ exports.InsertDifferentialPressure = async (req, res) => {
       ].join(","),
     };
 
-    try {
-      // Send emails
-      await Mailer.sendEmail("assignReviewer", {
-        ...elogData,
-        recipients: elogData.reviewerEmail,
-      });
+    // try {
+    //   // Send emails
+    //   await Mailer.sendEmail("assignReviewer", {
+    //     ...elogData,
+    //     recipients: elogData.reviewerEmail,
+    //   });
 
-      await Mailer.sendEmail("assignApprover", {
-        ...elogData,
-        recipients: elogData.approverEmail,
-      });
+    //   await Mailer.sendEmail("assignApprover", {
+    //     ...elogData,
+    //     recipients: elogData.approverEmail,
+    //   });
 
       return res.status(200).json({
         error: false,
         message: "E-log Created successfully",
       });
-    } catch (emailError) {
-      console.error("Failed to send emails:", emailError.message);
-      return res.json({
-        error: true,
-        message: "E-log Created but failed to send emails.",
-      });
-    }
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -422,7 +422,7 @@ exports.EditDifferentialPressure = async (req, res) => {
           new_value: newValue,
           changed_by: user.user_id,
           previous_status: form.status,
-          new_status: "Initiation",
+          new_status: "Opened",
           declaration: initiatorDeclaration,
           action: "Update Elog",
         });
@@ -487,7 +487,7 @@ exports.EditDifferentialPressure = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "Initiation",
+                new_status: "Opened",
                 declaration: initiatorDeclaration,
                 action: "Update Elog",
               });
@@ -523,7 +523,7 @@ exports.EditDifferentialPressure = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "Initiation",
+                new_status: "Opened",
                 declaration: initiatorDeclaration,
                 action: "Update Elog",
               });
@@ -718,7 +718,7 @@ exports.SendDPElogForReview = async (req, res) => {
         previous_value: form.initiatorAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "Initiation",
+        previous_status: "Opened",
         new_status: "Under Review",
         declaration: initiatorDeclaration,
         action: "Send For Review",
@@ -731,7 +731,7 @@ exports.SendDPElogForReview = async (req, res) => {
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
-      previous_status: "Initiation",
+      previous_status: "Opened",
       new_status: "Under Review",
       declaration: initiatorDeclaration,
       action: "Send For Review",
@@ -757,29 +757,29 @@ exports.SendDPElogForReview = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    try {
-      const reviewer = await getUserById(form.reviewer_id);
-      // Send emails
-      await Mailer.sendEmail("reminderReviewer", {
-        reviewerName: reviewer.name,
-        initiator: user.name,
-        dateOfInitiation: new Date().toISOString().split("T")[0],
-        description: form.description,
-        status: "Under Review",
-        recipients: reviewer.email,
-      });
+    // try {
+    //   const reviewer = await getUserById(form.reviewer_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderReviewer", {
+    //     reviewerName: reviewer.name,
+    //     initiator: user.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Under Review",
+    //     recipients: reviewer.email,
+    //   });
 
       return res.status(200).json({
         error: false,
         message: "E-log successfully sent for review",
       });
-    } catch (emailError) {
-      console.error("Failed to send emails:", emailError.message);
-      return res.json({
-        error: true,
-        message: "E-log Created but failed to send emails.",
-      });
-    }
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -863,7 +863,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
         previous_status: "Under Review",
-        new_status: "Initiation",
+        new_status: "Opened",
         declaration: reviewerDeclaration,
         action: "Open Elog",
       });
@@ -876,7 +876,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       new_value: "Not Applicable",
       changed_by: user.user_id,
       previous_status: "Under Review",
-      new_status: "Initiation",
+      new_status: "Opened",
       declaration: reviewerDeclaration,
       action: "Open Elog",
     });
@@ -884,7 +884,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "Initiation",
+        status: "Opened",
         stage: 1,
         reviewerAttachment: getElogDocsUrl(req?.file),
       },
@@ -899,28 +899,28 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    try {
-      const initiator = await getUserById(form.initiator_id);
-      // Send emails
-      await Mailer.sendEmail("reminderInitiator", {
-        initiatorName: initiator.name,
-        dateOfInitiation: new Date().toISOString().split("T")[0],
-        description: form.description,
-        status: "Initiation",
-        recipients: initiator.email,
-      });
+    // try {
+    //   const initiator = await getUserById(form.initiator_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderInitiator", {
+    //     initiatorName: initiator.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Opened",
+    //     recipients: initiator.email,
+    //   });
 
       return res.status(200).json({
         error: false,
-        message: "E-log status successfully changed from review to initiation",
+        message: "E-log status successfully changed from review to Opened",
       });
-    } catch (emailError) {
-      console.error("Failed to send emails:", emailError.message);
-      return res.json({
-        error: true,
-        message: "E-log Created but failed to send emails.",
-      });
-    }
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1064,30 +1064,30 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    try {
-      const approver = await getUserById(form.approver_id);
-      // Send emails
-      await Mailer.sendEmail("reminderApprover", {
-        approverName: approver.name,
-        dateOfInitiation: new Date().toISOString().split("T")[0],
-        description: form.description,
-        reviewer: user.name,
-        status: "Under Approval",
-        recipients: approver.email,
-      });
+    // try {
+    //   const approver = await getUserById(form.approver_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderApprover", {
+    //     approverName: approver.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     reviewer: user.name,
+    //     status: "Under Approval",
+    //     recipients: approver.email,
+    //   });
 
       return res.status(200).json({
         error: false,
         message:
           "E-log status successfully changed from review to under-approval",
       });
-    } catch (emailError) {
-      console.error("Failed to send emails:", emailError.message);
-      return res.json({
-        error: true,
-        message: "E-log Created but failed to send emails.",
-      });
-    }
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1171,7 +1171,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
         previous_status: "Under Approval",
-        new_status: "Initiation",
+        new_status: "Opened",
         declaration: approverDeclaration,
         action: "Open Elog",
       });
@@ -1184,7 +1184,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       new_value: "Not Applicable",
       changed_by: user.user_id,
       previous_status: "Under Approval",
-      new_status: "Initiation",
+      new_status: "Opened",
       declaration: approverDeclaration,
       action: "Open Elog",
     });
@@ -1192,7 +1192,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "Initiation",
+        status: "Opened",
         stage: 1,
         approverAttachment: getElogDocsUrl(req?.file),
       },
@@ -1207,29 +1207,29 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    try {
-      const initiator = await getUserById(form.initiator_id);
-      // Send emails
-      await Mailer.sendEmail("reminderInitiator", {
-        initiatorName: initiator.name,
-        dateOfInitiation: new Date().toISOString().split("T")[0],
-        description: form.description,
-        status: "Initiation",
-        recipients: initiator.email,
-      });
+    // try {
+    //   const initiator = await getUserById(form.initiator_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderInitiator", {
+    //     initiatorName: initiator.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Opened",
+    //     recipients: initiator.email,
+    //   });
 
       return res.status(200).json({
         error: false,
         message:
-          "E-log status successfully changed from under-approval to initiation",
+          "E-log status successfully changed from under-approval to Opened",
       });
-    } catch (emailError) {
-      console.error("Failed to send emails:", emailError.message);
-      return res.json({
-        error: true,
-        message: "E-log Created but failed to send emails.",
-      });
-    }
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1318,9 +1318,9 @@ exports.ApproveDPElog = async (req, res) => {
         new_value: approverComment,
         changed_by: user.user_id,
         previous_status: "Under Approval",
-        new_status: "Approved",
+        new_status: "Closed",
         declaration: approverDeclaration,
-        action: "Approved",
+        action: "Closed",
       });
     }
 
@@ -1333,9 +1333,9 @@ exports.ApproveDPElog = async (req, res) => {
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
         previous_status: "Under Approval",
-        new_status: "Approved",
+        new_status: "Closed",
         declaration: approverDeclaration,
-        action: "Approved",
+        action: "Closed",
       });
     }
 
@@ -1346,15 +1346,15 @@ exports.ApproveDPElog = async (req, res) => {
       new_value: "Not Applicable",
       changed_by: user.user_id,
       previous_status: "Under Approval",
-      new_status: "Approved",
+      new_status: "Closed",
       declaration: approverDeclaration,
-      action: "Approved",
+      action: "Closed",
     });
 
     // Update the form details
     await form.update(
       {
-        status: "Approved",
+        status: "Closed",
         stage: 4,
         approverComment: approverComment,
         approverAttachment: req?.file
@@ -1375,7 +1375,7 @@ exports.ApproveDPElog = async (req, res) => {
 
     return res.status(200).json({
       error: false,
-      message: "E-log successfully approved!!",
+      message: "E-log successfully closed",
     });
   } catch (error) {
     // Rollback the transaction in case of error
