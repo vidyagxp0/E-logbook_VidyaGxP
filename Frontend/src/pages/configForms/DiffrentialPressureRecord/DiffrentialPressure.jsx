@@ -286,6 +286,14 @@ export default function DiffrentialPressure() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div> */}
+              <div className="sop-type-header">
+                <div className="logo">
+                  <img src="/vidyalogo2.png" alt="..." />
+                </div>
+                <div className="main-head">
+                  <div>VidyaGxP Private Limited</div>
+                </div>
+              </div>
               <div className="sub-head-2">Differential Pressure Record</div>
 
               <div className="outerDiv4">
