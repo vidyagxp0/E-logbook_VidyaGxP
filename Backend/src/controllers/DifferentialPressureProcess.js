@@ -52,12 +52,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
       .json({ error: true, message: "Please provide email and password." });
   }
 
-  if (!initiatorComment) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an initiator comment." });
-  }
-
   // Start a transaction
   const transaction = await sequelize.transaction();
 
@@ -281,10 +275,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
     //     recipients: elogData.approverEmail,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log Created successfully",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log Created successfully",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -649,7 +643,8 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
 
 //send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, email, password, initiatorDeclaration } = req.body;
+  const { form_id, email, password, initiatorDeclaration, initiatorComment } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -745,6 +740,7 @@ exports.SendDPElogForReview = async (req, res) => {
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
+        initiatorComment: initiatorComment,
       },
       { transaction }
     );
@@ -769,10 +765,10 @@ exports.SendDPElogForReview = async (req, res) => {
     //     recipients: reviewer.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log successfully sent for review",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log successfully sent for review",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -910,10 +906,10 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     //     recipients: initiator.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log status successfully changed from review to Opened",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log status successfully changed from review to Opened",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -1076,11 +1072,11 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     //     recipients: approver.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message:
-          "E-log status successfully changed from review to under-approval",
-      });
+    return res.status(200).json({
+      error: false,
+      message:
+        "E-log status successfully changed from review to under-approval",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -1218,11 +1214,11 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     //     recipients: initiator.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message:
-          "E-log status successfully changed from under-approval to under-review",
-      });
+    return res.status(200).json({
+      error: false,
+      message:
+        "E-log status successfully changed from under-approval to under-review",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({

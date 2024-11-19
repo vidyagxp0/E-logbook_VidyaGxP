@@ -46,6 +46,7 @@ export default function DPRpanel() {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
+      initiatorComment:editData.initiatorComment,
     };
 
     const config = {
@@ -58,6 +59,11 @@ export default function DPRpanel() {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
+
+      if(data.initiatorComment===""){
+        toast.error("Please provide an initiator comment!");
+        return;
+      }
       axios
         .put(
           "http://localhost:1000/differential-pressure/send-DP-elog-for-review",

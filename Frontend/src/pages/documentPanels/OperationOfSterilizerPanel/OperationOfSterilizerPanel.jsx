@@ -41,6 +41,7 @@ const OperationOfSterilizerPanel = () => {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
+      initiatorComment:editData.initiatorComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -90,6 +91,12 @@ const OperationOfSterilizerPanel = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
+      console.log(data.initiatorComment,"INININI");
+      
+      if(data.initiatorComment===""){
+        toast.error("Please provide an initiator comment!");
+        return;
+      }
       axios
         .put(
           "http://localhost:1000/operation-sterlizer/send-for-review",

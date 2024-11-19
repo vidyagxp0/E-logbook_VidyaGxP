@@ -69,6 +69,10 @@ const DispensingOfMaterialsPanel = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
+      if(data.initiatorComment===""){
+        toast.error("Please provide an initiator comment!");
+        return;
+      }
       axios
         .put(
           "http://localhost:1000/dispensing-material/send-for-review",
