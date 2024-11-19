@@ -5,7 +5,7 @@ function AdminSites() {
   const [sites, setSites] = useState([]);
 
   useEffect(() => {
-    const url = "http://localhost:1000/site/get-sites"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "https://elog-backend.mydemosoftware.com/site/get-sites"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -35,7 +35,7 @@ function AdminSites() {
           ) : (
             <table
               style={{
-                marginLeft: '150px',
+                marginLeft: "150px",
                 width: "60%",
                 borderCollapse: "collapse",
                 backgroundColor: "#fff",

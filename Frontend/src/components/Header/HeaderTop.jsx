@@ -14,7 +14,7 @@ function HeaderTop() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -65,7 +65,12 @@ function HeaderTop() {
                 <input type="search" />
                 <button
                   className=""
-                  style={{ width: "30%", marginLeft: "20%", padding: "3%" ,background:"#0c5fc6"}}
+                  style={{
+                    width: "30%",
+                    marginLeft: "20%",
+                    padding: "3%",
+                    background: "#0c5fc6",
+                  }}
                 >
                   Search
                 </button>
@@ -81,7 +86,7 @@ function HeaderTop() {
               <div className="drop-btn">
                 <div className="">
                   {/* <img src={User?.profile_pic} alt="Profile Picture" /> */}
-                  <FaUserCircle size={36} className="text-[#0c5fc6]"/>
+                  <FaUserCircle size={36} className="text-[#0c5fc6]" />
                 </div>
               </div>
               <div className="drop-list">
