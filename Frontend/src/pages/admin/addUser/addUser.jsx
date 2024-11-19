@@ -26,7 +26,8 @@ function AddNewUser() {
   }, [selectedOptions]);
 
   useEffect(() => {
-    const url = "http://localhost:1000/user/get-all-rolegroups";
+    const url =
+      "https://elog-backend.mydemosoftware.com/user/get-all-rolegroups";
     axios
       .get(url)
       .then((response) => {
@@ -93,7 +94,7 @@ function AddNewUser() {
     };
 
     axios
-      .post("http://localhost:1000/user/add-user", formData, {
+      .post("https://elog-backend.mydemosoftware.com/user/add-user", formData, {
         headers: myHeaders,
       })
       .then(() => {
@@ -199,7 +200,9 @@ function AddNewUser() {
               isMulti
             />
           </div>
-          <button className="submit-button" type="submit">Add User</button>
+          <button className="submit-button" type="submit">
+            Add User
+          </button>
         </form>
       </div>
     </div>

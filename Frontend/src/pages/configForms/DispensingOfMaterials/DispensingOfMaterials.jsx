@@ -44,7 +44,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const DispensingOfMaterials = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -90,7 +90,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -106,7 +106,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -161,7 +161,7 @@ const DispensingOfMaterials = () => {
 
     axios
       .post(
-        "http://localhost:1000/dispensing-material/post",
+        "https://elog-backend.mydemosoftware.com/dispensing-material/post",
         dispensingOfMaterials,
         config
       )
@@ -270,13 +270,13 @@ const DispensingOfMaterials = () => {
           <div className="document-form">
             <div className="details-form-data">
               <div className="sop-type-header">
-              <div className="logo">
-                <img src="/vidyalogo2.png" alt="..." />
+                <div className="logo">
+                  <img src="/vidyalogo2.png" alt="..." />
+                </div>
+                <div className="main-head">
+                  <div>VidyaGxP Private Limited</div>
+                </div>
               </div>
-              <div className="main-head">
-                <div>VidyaGxP Private Limited</div>
-              </div>
-            </div>
               <div className="sub-head-2">Dispensing Of Materials</div>
 
               <div className="outerDiv4">
