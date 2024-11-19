@@ -274,8 +274,6 @@
   text-decoration: underline;
 }
 
-
-
 #config-form-document-page .group-input .file-attachment-field .add-btn {
   position: relative;
 }
@@ -607,4 +605,8 @@ tr th {
   flex-direction: column;
   align-items: flex-end; /* Right-align the buttons */
   gap: 10px; /* Space between the buttons */
+}
+
+table thead tr th {
+  color: white;
 }
