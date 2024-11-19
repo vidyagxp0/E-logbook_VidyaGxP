@@ -56,156 +56,150 @@ const DispensingOfMaterialsPanel = () => {
     editData.initiatorDeclaration = credentials?.declaration;
     console.log(data, "datatatatatata");
 
-   
-  console.log(editData, "editData");
+    console.log(editData, "editData");
 
- 
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-      "Content-Type": "multipart/form-data",
-    },
-  };
-
-  if (popupAction === "sendFromOpenToReview") {
-    data.initiatorDeclaration = credentials?.declaration;
-    data.initiatorAttachment = editData?.initiatorAttachment;
-    axios
-      .put(
-        "http://localhost:1000/dispensing-material/send-for-review",
-        data,
-        config
-      )
-      .then(() => {
-        toast.success("Elog successfully sent for review");
-        navigate(-1);
-      })
-      .catch((error) => {
-        toast.error(
-          error?.response?.data?.message || "Couldn't send elog for review!!"
-        );
-      });
-  } else if (popupAction === "sendFromReviewToApproval") {
-    data.reviewerDeclaration = credentials?.declaration;
-    data.reviewerAttachment = editData.reviewerAttachment;
-    axios
-      .put(
-        "http://localhost:1000/dispensing-material/send-review-to-approval",
-        data,
-        config
-      )
-      .then(() => {
-        toast.success("Elog successfully sent for approval");
-        navigate(-1);
-      })
-      .catch((error) => {
-        toast.error(
-          error?.response?.data?.message ||
-            "Couldn't send elog for approval!!"
-        );
-      });
-  } else if (popupAction === "sendFromReviewToOpen") {
-    data.reviewerDeclaration = credentials?.declaration;
-    data.reviewerAttachment = editData.reviewerAttachment;
-    axios
-      .put(
-        "http://localhost:1000/dispensing-material/send-review-to-open",
-        data,
-        config
-      )
-      .then(() => {
-        toast.success("Elog successfully opened");
-        navigate(-1);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || "Couldn't open elog!!");
-      });
-  } else if (popupAction === "sendFromApprovalToClosedDone") {
-    data.approverDeclaration = credentials?.declaration;
-    data.approverAttachment = editData.approverAttachment;
-    axios
-      .put(
-        "http://localhost:1000/dispensing-material/approve",
-        data,
-        config
-      )
-      .then(() => {
-        toast.success("Elog successfully Closed Done");
-        navigate(-1);
-      })
-      .catch((error) => {
-        toast.error(
-          error?.response?.data?.message || "Couldn't approve elog!!"
-        );
-      });
-  } else if (popupAction === "sendFromApprovalToOpen") {
-    data.approverAttachment = editData.approverAttachment;
-    data.approverDeclaration = credentials?.declaration;
-    axios
-      .put(
-        "http://localhost:1000/dispensing-material/send-approval-to-open",
-        data,
-        config
-      )
-      .then(() => {
-        toast.success("Elog successfully opened");
-        navigate(-1);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || "Couldn't open elog!!");
-      });
-  } else if (popupAction === "updateElog") {
-    data.initiatorDeclaration = credentials?.declaration;
-    // if (
-    //   parseFloat(editData.limit) < 0.6 ||
-    //   parseFloat(editData.limit) > 2.6
-    // ) {
-    //   toast.error("The limit value must be between 0.6 and 2.6.");
-    //   return;
-    // }
-    if (editData.description === "") {
-      toast.error("description is required");
-      return;
-    }
-    if (
-      editData?.DifferentialPressureRecords?.some(
-        (record) =>
-          record.differential_pressure === "" || record.remarks === ""
-      )
-    ) {
-      toast.error("Please provide grid details!");
-      return;
-    }
-
-    editData.email = credentials.email;
-    editData.password = credentials.password;
-    editData.initiatorDeclaration = credentials?.declaration;
-
-    const myHeaders = {
-      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-      "Content-Type": "multipart/form-data",
-    };
-
-    const requestOptions = {
-      method: "PUT",
+    const config = {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "multipart/form-data",
       },
-      data: editData,
-      
-      url: "http://localhost:1000/dispensing-material/update",
     };
 
-    axios(requestOptions)
-      .then(() => {
-        toast.success("Data saved successfully!");
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+    if (popupAction === "sendFromOpenToReview") {
+      data.initiatorDeclaration = credentials?.declaration;
+      data.initiatorAttachment = editData?.initiatorAttachment;
+      axios
+        .put(
+          "http://localhost:1000/dispensing-material/send-for-review",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully sent for review");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message || "Couldn't send elog for review!!"
+          );
+        });
+    } else if (popupAction === "sendFromReviewToApproval") {
+      data.reviewerDeclaration = credentials?.declaration;
+      data.reviewerAttachment = editData.reviewerAttachment;
+      axios
+        .put(
+          "http://localhost:1000/dispensing-material/send-review-to-approval",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully sent for approval");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message ||
+              "Couldn't send elog for approval!!"
+          );
+        });
+    } else if (popupAction === "sendFromReviewToOpen") {
+      data.reviewerDeclaration = credentials?.declaration;
+      data.reviewerAttachment = editData.reviewerAttachment;
+      axios
+        .put(
+          "http://localhost:1000/dispensing-material/send-review-to-open",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully opened");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
+    } else if (popupAction === "sendFromApprovalToClosedDone") {
+      data.approverDeclaration = credentials?.declaration;
+      data.approverAttachment = editData.approverAttachment;
+      axios
+        .put("http://localhost:1000/dispensing-material/approve", data, config)
+        .then(() => {
+          toast.success("Elog successfully Closed Done");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.message || "Couldn't approve elog!!"
+          );
+        });
+    } else if (popupAction === "sendFromApprovalToOpen") {
+      data.approverAttachment = editData.approverAttachment;
+      data.approverDeclaration = credentials?.declaration;
+      axios
+        .put(
+          "http://localhost:1000/dispensing-material/send-approval-to-open",
+          data,
+          config
+        )
+        .then(() => {
+          toast.success("Elog successfully opened");
+          navigate(-1);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+        });
+    } else if (popupAction === "updateElog") {
+      data.initiatorDeclaration = credentials?.declaration;
+      // if (
+      //   parseFloat(editData.limit) < 0.6 ||
+      //   parseFloat(editData.limit) > 2.6
+      // ) {
+      //   toast.error("The limit value must be between 0.6 and 2.6.");
+      //   return;
+      // }
+      if (editData.description === "") {
+        toast.error("description is required");
+        return;
+      }
+      if (
+        editData?.DifferentialPressureRecords?.some(
+          (record) =>
+            record.differential_pressure === "" || record.remarks === ""
+        )
+      ) {
+        toast.error("Please provide grid details!");
+        return;
+      }
+
+      editData.email = credentials.email;
+      editData.password = credentials.password;
+      editData.initiatorDeclaration = credentials?.declaration;
+
+      const myHeaders = {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      };
+
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+        data: editData,
+
+        url: "http://localhost:1000/dispensing-material/update",
+      };
+
+      axios(requestOptions)
+        .then(() => {
+          toast.success("Data saved successfully!");
+          navigate("/dashboard");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
 
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -230,23 +224,23 @@ const DispensingOfMaterialsPanel = () => {
       const newRow = {
         unique_id: generateUniqueId(),
         time: currentTime,
-        date:"",
+        date: "",
         on_time_auh: "",
         on_time_laf: "",
-        on_time_uv_light:"",
-        on_time_done_by:"",
-        name_of_material:"",
-        control_no:"",
-        dispensed_quantity:"",
-        dispensed_by_qa:"",
-        dispensed_by_store:"",
-        off_time_auh:"",
-        off_time_laf:"",
-        off_time_uv_light:"",
-        uv_burning:"",
-        off_time_done_by:"",
-        cleaning_done_by:"",
-        weighing_balance_id:"",
+        on_time_uv_light: "",
+        on_time_done_by: "",
+        name_of_material: "",
+        control_no: "",
+        dispensed_quantity: "",
+        dispensed_by_qa: "",
+        dispensed_by_store: "",
+        off_time_auh: "",
+        off_time_laf: "",
+        off_time_uv_light: "",
+        uv_burning: "",
+        off_time_done_by: "",
+        cleaning_done_by: "",
+        weighing_balance_id: "",
         checked_by: location?.state?.initiator_name,
         remarks: "",
       };
@@ -314,8 +308,7 @@ const DispensingOfMaterialsPanel = () => {
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
-        DispenseOfMaterials
-: updatedGridData,
+        DispenseOfMaterials: updatedGridData,
       }));
     }
   };
@@ -399,7 +392,7 @@ const DispensingOfMaterialsPanel = () => {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title:"Dispensing Of Materials",
+    title: "Dispensing Of Materials",
     ...editData,
   };
 
@@ -578,7 +571,7 @@ const DispensingOfMaterialsPanel = () => {
   return (
     <div>
       <HeaderTop />
-      <LaunchQMS/>
+      <LaunchQMS />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
@@ -617,46 +610,59 @@ const DispensingOfMaterialsPanel = () => {
               </div> */}
 
               <div className="sub-head-2">Dispensing Of Materials</div>
-              <div className="outerDiv4">
-                <div className="btn-forms">
+              <div className="flex justify-center items-center mt-5 bg-slate-300 p-4">
+                <div className="flex gap-3 ">
                   <div
-                    className={`${
-                      location.state?.stage === 1
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 1
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 1
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     OPENED
                   </div>
+
                   <div
-                    className={`${
-                      location.state?.stage === 2
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 2
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 2
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER REVIEW
                   </div>
+
                   <div
-                    className={`${
-                      location.state?.stage === 3
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 3
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 3
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER APPROVAL
                   </div>
+
+                  {/* Button 4: CLOSED DONE */}
                   <div
-                    className={`${
-                      location.state?.stage === 4
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 4
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 4
+                        ? "bg-red-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     CLOSED DONE
                   </div>
                 </div>
               </div>
+
               <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
@@ -837,27 +843,28 @@ const DispensingOfMaterialsPanel = () => {
                     </div>
                   </div>
                   <table>
-                  <thead>
+                    <thead>
                       <tr>
                         <th rowSpan={3}>S no.</th>
                         <th rowSpan={3}>Unique Id</th>
                         <th rowSpan={3}>Date</th>
-                        <th rowSpan={1} colSpan={3}>ON TIME</th>
+                        <th rowSpan={1} colSpan={3}>
+                          ON TIME
+                        </th>
                         <th rowSpan={3}>Done by</th>
                         <th rowSpan={3}>Name of Material</th>
                         <th rowSpan={3}>Control No.</th>
                         <th rowSpan={3}>Dispensed Quantity (Kg)</th>
                         <th rowSpan={1} colSpan={2}>
-                        Dispensed By (Sign/Date)
+                          Dispensed By (Sign/Date)
                         </th>
                         <th rowSpan={1} colSpan={3}>
-                        OFF TIME
+                          OFF TIME
                         </th>
                         <th rowSpan={3}>UV Burning Hrs</th>
                         <th rowSpan={3}>Done by</th>
                         <th rowSpan={3}>Cleaning done by</th>
-                        <th rowSpan={3}>Checked by
-                        (Sign/Date)</th>
+                        <th rowSpan={3}>Checked by (Sign/Date)</th>
                         <th rowSpan={3}>Weighing Balance ID</th>
                         <th rowSpan={3}>Remark</th>
 
@@ -931,7 +938,8 @@ const DispensingOfMaterialsPanel = () => {
                                 const newData = [
                                   ...editData.DispenseOfMaterials,
                                 ];
-                                newData[index].on_time_uv_light = e.target.value;
+                                newData[index].on_time_uv_light =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   DispenseOfMaterials: newData,
@@ -1013,7 +1021,8 @@ const DispensingOfMaterialsPanel = () => {
                                 const newData = [
                                   ...editData.DispenseOfMaterials,
                                 ];
-                                newData[index].dispensed_quantity  = e.target.value;
+                                newData[index].dispensed_quantity =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   DispenseOfMaterials: newData,
@@ -1053,7 +1062,8 @@ const DispensingOfMaterialsPanel = () => {
                                 const newData = [
                                   ...editData.DispenseOfMaterials,
                                 ];
-                                newData[index].dispensed_by_store = e.target.value;
+                                newData[index].dispensed_by_store =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   DispenseOfMaterials: newData,
@@ -1113,7 +1123,8 @@ const DispensingOfMaterialsPanel = () => {
                                 const newData = [
                                   ...editData.DispenseOfMaterials,
                                 ];
-                                newData[index].off_time_uv_light = e.target.value;
+                                newData[index].off_time_uv_light =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   DispenseOfMaterials: newData,
@@ -1153,7 +1164,8 @@ const DispensingOfMaterialsPanel = () => {
                                 const newData = [
                                   ...editData.DispenseOfMaterials,
                                 ];
-                                newData[index].off_time_done_by = e.target.value;
+                                newData[index].off_time_done_by =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   DispenseOfMaterials: newData,
@@ -1173,7 +1185,8 @@ const DispensingOfMaterialsPanel = () => {
                                 const newData = [
                                   ...editData.DispenseOfMaterials,
                                 ];
-                                newData[index].cleaning_done_by = e.target.value;
+                                newData[index].cleaning_done_by =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   DispenseOfMaterials: newData,
@@ -1209,7 +1222,8 @@ const DispensingOfMaterialsPanel = () => {
                                 const newData = [
                                   ...editData.DispenseOfMaterials,
                                 ];
-                                newData[index].weighing_balance_id = e.target.value;
+                                newData[index].weighing_balance_id =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   DispenseOfMaterials: newData,

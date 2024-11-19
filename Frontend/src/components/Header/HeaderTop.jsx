@@ -4,6 +4,7 @@ import "./HeaderTop.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { FaUserCircle } from "react-icons/fa";
 
 function HeaderTop() {
   const navigate = useNavigate();
@@ -78,13 +79,14 @@ function HeaderTop() {
 
             <div className="drop-container">
               <div className="drop-btn name-btn">
-                <div className="profile-img">
-                  <img src={User?.profile_pic} alt="Profile Picture" />
+                <div className="">
+                  {/* <img src={User?.profile_pic} alt="Profile Picture" /> */}
+                  <FaUserCircle size={36} className="text-black"/>
                 </div>
               </div>
               <div className="drop-list">
                 <div className="image">
-                  <img src={User?.profile_pic} alt="..." />
+                  {/* <img src={User?.profile_pic} alt="..." /> */}
                   <div className="manager-name">{User?.name}</div>
                 </div>
                 <Link to="#" className="drop-item">
