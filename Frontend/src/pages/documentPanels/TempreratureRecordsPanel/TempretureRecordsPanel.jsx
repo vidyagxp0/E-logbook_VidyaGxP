@@ -555,60 +555,164 @@ export default function TempretureRecordsPanel() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div>
-              <div className="sub-head-2">Temperature Record</div>
+              <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
+                <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
+                  Temperature Record
+                </span>
+
+                <div className="flex flex-wrap gap-3 items-center justify-center">
+                  {/* Audit Trail Button */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() =>
+                      navigate("/audit-trail", {
+                        state: {
+                          formId: location.state?.form_id,
+                          process: "Differential Pressure",
+                        },
+                      })
+                    }
+                  >
+                    Audit Trail
+                  </button>
+
+                  {/* Generate Report Button */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={generateReport}
+                  >
+                    Generate Report
+                  </button>
+
+                  {/* Conditional Buttons Based on Stages */}
+                  {location.state?.stage === 1 &&
+                    location.state?.initiator_id === userDetails.userId && (
+                      <button
+                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromOpenToReview");
+                        }}
+                      >
+                        Send for Review
+                      </button>
+                    )}
+
+                  {location.state?.stage === 2 &&
+                    location.state?.reviewer_id === userDetails.userId && (
+                      <>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromReviewToApproval");
+                          }}
+                        >
+                          Review Completed
+                        </button>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromReviewToOpen");
+                          }}
+                        >
+                          More Info Required
+                        </button>
+                      </>
+                    )}
+
+                  {location.state?.stage === 3 &&
+                    location.state?.approver_id === userDetails.userId && (
+                      <>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromApprovalToClosedDone");
+                          }}
+                        >
+                          Approve elog
+                        </button>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromApprovalToOpen");
+                          }}
+                        >
+                          More Info Required
+                        </button>
+                      </>
+                    )}
+
+                  {/* Save Button */}
+                  {location.state?.stage === 1 &&
+                    userDetails.userId === location.state?.initiator_id && (
+                      <button
+                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("updateElog");
+                        }}
+                      >
+                        Save
+                      </button>
+                    )}
+                </div>
+              </div>
               <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="status-container">
-                 
-                <div className="flex gap-3 ">
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 1
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 1
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    OPENED
-                  </div>
+                  <div className="flex gap-3 ">
+                    <div
+                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                        location.state?.stage > 1
+                          ? "bg-green-500 text-white"
+                          : location.state?.stage === 1
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      OPENED
+                    </div>
 
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 2
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 2
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    UNDER REVIEW
-                  </div>
+                    <div
+                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                        location.state?.stage > 2
+                          ? "bg-green-500 text-white"
+                          : location.state?.stage === 2
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      UNDER REVIEW
+                    </div>
 
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 3
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 3
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    UNDER APPROVAL
-                  </div>
+                    <div
+                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                        location.state?.stage > 3
+                          ? "bg-green-500 text-white"
+                          : location.state?.stage === 3
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      UNDER APPROVAL
+                    </div>
 
-                  {/* Button 4: CLOSED DONE */}
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 4
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 4
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    CLOSED DONE
+                    {/* Button 4: CLOSED DONE */}
+                    <div
+                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                        location.state?.stage > 4
+                          ? "bg-green-500 text-white"
+                          : location.state?.stage === 4
+                          ? "bg-red-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      CLOSED DONE
+                    </div>
                   </div>
-                </div>
                 </div>
               </div>
               <div className="outerDiv4">
@@ -693,9 +797,7 @@ export default function TempretureRecordsPanel() {
                   >
                     Approver Remarks
                   </div>
-                 
                 </div>
-               
               </div>
 
               {isSelectedGeneral === true ? (
@@ -1322,7 +1424,7 @@ export default function TempretureRecordsPanel() {
               ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              {location.state?.stage === 1
+              {/* {location.state?.stage === 1
                 ? location.state?.initiator_id === userDetails.userId && (
                     <button
                       className="themeBtn"
@@ -1393,7 +1495,7 @@ export default function TempretureRecordsPanel() {
                       Save
                     </button>
                   )
-                : null}
+                : null} */}
               <button
                 className="themeBtn"
                 onClick={() => {
@@ -1417,35 +1519,34 @@ export default function TempretureRecordsPanel() {
         </div>
       </div>
       <div className="btn-formate">
-      <div
-                    className="btn-forms-select"
-                    onClick={() =>
-                      navigate("/audit-trail", {
-                        state: {
-                          formId: location.state?.form_id,
-                          process: "Temperature Records",
-                        },
-                      })
-                    }
-                  >
-                    Audit Trail
-                  </div>
-                <button className="btn-forms-select" onClick={generateReport}>
-                  Generate Report
-                </button>
-                <div className="analytics-btn">
-                  <button
-                    className="btn-print"
-                    onClick={() =>
-                      navigate("/analytics", {
-                        state: { records: location.state, processId: 4 },
-                      })
-                    }
-                  >
-                    Analytics
-                  </button>
-                 
-                </div>
+        {/* <div
+          className="btn-forms-select"
+          onClick={() =>
+            navigate("/audit-trail", {
+              state: {
+                formId: location.state?.form_id,
+                process: "Temperature Records",
+              },
+            })
+          }
+        >
+          Audit Trail
+        </div> */}
+        {/* <button className="btn-forms-select" onClick={generateReport}>
+          Generate Report
+        </button> */}
+        {/* <div className="analytics-btn">
+          <button
+            className="btn-print"
+            onClick={() =>
+              navigate("/analytics", {
+                state: { records: location.state, processId: 4 },
+              })
+            }
+          >
+            Analytics
+          </button>
+        </div> */}
       </div>
     </>
   );
