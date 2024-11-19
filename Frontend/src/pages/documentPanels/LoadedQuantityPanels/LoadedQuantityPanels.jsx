@@ -229,6 +229,19 @@ const LoadedQuantityPanels = () => {
 
   console.log(location.state.stage === 2);
 
+   const object = getCurrentDateTime();
+  let date = object.currentDate;
+  function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(0);
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${year}/${month}/${day}`;
+    return {
+      currentDate: currentDate,
+    };
+  }
+
   const addRow = () => {
     if (
       location.state?.stage === 1 &&
