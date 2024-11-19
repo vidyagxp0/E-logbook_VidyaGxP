@@ -28,10 +28,10 @@ const LoadedQuantity = () => {
       approver_id: 2,
       description: "",
       department: 1,
-      review_comments: "dfsdfds",
-      compression_area: "sdfsdfdsf",
+      review_comments: "",
+      compression_area: "",
       limit: 1,
-      initiatorComment: "dsssdas",
+      initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }

@@ -1,4 +1,3 @@
-
 /*! DOCUMENT CSS */
 /*! ===================================================================== */
 #main-form-container .aside-container {
@@ -99,7 +98,8 @@
 }
 
 #config-form-document-page .top-block {
-  background: var(--themeColor);
+  /* background: var(--themeColor); */
+  background: #0c5fc6;
   color: white;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -221,12 +221,12 @@
 
 #config-form-document-page .details-form-data .sub-head-2 {
   text-align: center;
-  background: #efa035;
+  background: #0c5fc6;
   padding: 10px 20px;
   font-size: 1.6rem;
   color: #ffffff;
   border-radius: 40px;
-  font-weight:600;
+  font-weight: 600;
 }
 
 #config-form-document-page .group-input .file-attachment-field {
@@ -385,7 +385,7 @@
 }
 
 .btn-forms-isSelected {
-  background-color: rgb(255, 210, 120);
+  background-color: #0c5fc6;
   color: #ffffff;
   padding: 5px 10px;
   border-radius: 28px;
@@ -548,7 +548,7 @@ tr th {
 }
 
 .btn-print {
-  display:flex;
+  display: flex;
   justify-content: flex-end;
   padding: 5%;
   background-color: #efa035;
@@ -559,10 +559,10 @@ tr th {
 }
 
 .status-heading {
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
-  border:2px solid gray ;
+  border: 2px solid gray;
   padding: 5px 10px;
   font-weight: bold;
   text-align: left;
@@ -582,7 +582,6 @@ tr th {
   width: 100%;
 }
 
-
 .btn-forms-isSelectedsTpr {
   background-color: #eba42a;
   font-weight: bold;
@@ -597,7 +596,6 @@ tr th {
   color: white;
 }
 
-
 .btn-formate {
   position: fixed;
   right: 0; /* Stick the buttons to the far right */
@@ -607,4 +605,8 @@ tr th {
   flex-direction: column;
   align-items: flex-end; /* Right-align the buttons */
   gap: 10px; /* Space between the buttons */
+}
+
+table thead tr th {
+  color: white;
 }

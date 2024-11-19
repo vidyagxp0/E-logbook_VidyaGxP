@@ -29,10 +29,10 @@ const DispensingOfMaterials = () => {
       approver_id: 2,
       description: "",
       department: 1,
-      review_comments: "dfsdfds",
-      compression_area: "sdfsdfdsf",
+      review_comments: "",
+      compression_area: "",
       limit: 1,
-      initiatorComment: "dsssdas",
+      initiatorComment: "",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
     }
@@ -40,7 +40,6 @@ const DispensingOfMaterials = () => {
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const config = {
@@ -87,7 +86,6 @@ const DispensingOfMaterials = () => {
         console.error("Error: ", error);
       });
   }, []);
-
 
   useEffect(() => {
     const requestOptions = {
@@ -209,25 +207,25 @@ const DispensingOfMaterials = () => {
     const newRow = {
       unique_id: generateUniqueId(),
       time: currentTime,
-      date:date,
+      date: date,
       on_time_auh: "",
       on_time_laf: "",
-      on_time_uv_light:"",
-      on_time_done_by:"",
-      name_of_material:"",
-      control_no:"",
-      dispensed_quantity:"",
-      dispensed_by_qa:"",
-      dispensed_by_store:"",
-      off_time_auh:"",
-      off_time_laf:"",
-      off_time_uv_light:"",
-      uv_burning:"",
-      off_time_done_by:"",
-      cleaning_done_by:"",
-      weighing_balance_id:"",
+      on_time_uv_light: "",
+      on_time_done_by: "",
+      name_of_material: "",
+      control_no: "",
+      dispensed_quantity: "",
+      dispensed_by_qa: "",
+      dispensed_by_store: "",
+      off_time_auh: "",
+      off_time_laf: "",
+      off_time_uv_light: "",
+      uv_burning: "",
+      off_time_done_by: "",
+      cleaning_done_by: "",
+      weighing_balance_id: "",
       checked_by: User?.name,
-      remark:""
+      remark: "",
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -387,7 +385,7 @@ const DispensingOfMaterials = () => {
 
               {isSelectedDetails === true ? (
                 <>
-                 <div className="form-flex">
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
                         Reviewer
@@ -460,51 +458,52 @@ const DispensingOfMaterials = () => {
                     </div>
                   </div>
                   <div className="overflow-x-auto">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th rowSpan={3}>S no.</th>
-                        <th rowSpan={3}>Unique Id</th>
-                        <th rowSpan={3}>Date</th>
-                        <th rowSpan={1} colSpan={3}>ON TIME</th>
-                        <th rowSpan={3}>Done by</th>
-                        <th rowSpan={3}>Name of Material</th>
-                        <th rowSpan={3}>Control No.</th>
-                        <th rowSpan={3}>Dispensed Quantity (Kg)</th>
-                        <th rowSpan={1} colSpan={2}>
-                        Dispensed By (Sign/Date)
-                        </th>
-                        <th rowSpan={1} colSpan={3}>
-                        OFF TIME
-                        </th>
-                        <th rowSpan={3}>UV Burning Hrs</th>
-                        <th rowSpan={3}>Done by</th>
-                        <th rowSpan={3}>Cleaning done by</th>
-                        <th rowSpan={3}>Checked by
-                        (Sign/Date)</th>
-                        <th rowSpan={3}>Weighing Balance ID</th>
-                        <th rowSpan={3}>Remark</th>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th rowSpan={3}>S no.</th>
+                          <th rowSpan={3}>Unique Id</th>
+                          <th rowSpan={3}>Date</th>
+                          <th rowSpan={1} colSpan={3}>
+                            ON TIME
+                          </th>
+                          <th rowSpan={3}>Done by</th>
+                          <th rowSpan={3}>Name of Material</th>
+                          <th rowSpan={3}>Control No.</th>
+                          <th rowSpan={3}>Dispensed Quantity (Kg)</th>
+                          <th rowSpan={1} colSpan={2}>
+                            Dispensed By (Sign/Date)
+                          </th>
+                          <th rowSpan={1} colSpan={3}>
+                            OFF TIME
+                          </th>
+                          <th rowSpan={3}>UV Burning Hrs</th>
+                          <th rowSpan={3}>Done by</th>
+                          <th rowSpan={3}>Cleaning done by</th>
+                          <th rowSpan={3}>Checked by (Sign/Date)</th>
+                          <th rowSpan={3}>Weighing Balance ID</th>
+                          <th rowSpan={3}>Remark</th>
 
-                        {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
-                        <th rowSpan={3}>Actions</th>
-                      </tr>
-                      <tr>
-                        <th>AHU</th>
-                        <th>LAF</th>
-                        <th>UV LIGHT</th>
-                        <th>QA</th>
-                        <th>STORE</th>
-                        <th>AHU</th>
-                        <th>LAF</th>
-                        <th>UV LIGHT</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {allTableData.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{item.unique_id}</td>
-                          {/* <td>
+                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th rowSpan={3}>Actions</th>
+                        </tr>
+                        <tr>
+                          <th>AHU</th>
+                          <th>LAF</th>
+                          <th>UV LIGHT</th>
+                          <th>QA</th>
+                          <th>STORE</th>
+                          <th>AHU</th>
+                          <th>LAF</th>
+                          <th>UV LIGHT</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allTableData.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.unique_id}</td>
+                            {/* <td>
                           <input
                             value={item.date}
                             onChange={(e) => {
@@ -514,229 +513,238 @@ const DispensingOfMaterials = () => {
                             }}
                           />
                         </td> */}
-                          <td>
-                            <input
-                              value={item.date}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].date =
-                                  e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              readOnly
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.on_time_auh}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].on_time_auh = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.on_time_laf}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].on_time_laf   = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.on_time_uv_light}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].on_time_uv_light = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.on_time_done_by}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].on_time_done_by = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.name_of_material}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].name_of_material = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.control_no}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].control_no = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.dispensed_quantity}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].dispensed_quantity = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.dispensed_by_qa}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].dispensed_by_qa = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.dispensed_by_store}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].dispensed_by_store = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.off_time_auh}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].off_time_auh = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.off_time_laf}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].off_time_laf = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.off_time_uv_light}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].off_time_uv_light = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.uv_burning}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].uv_burning = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              value={item.off_time_done_by}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].off_time_done_by = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              required
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.cleaning_done_by}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].cleaning_done_by = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].checked_by = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              readOnly
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.weighing_balance_id}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].weighing_balance_id = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.remark}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].remark = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
+                            <td>
+                              <input
+                                value={item.date}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].date = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.on_time_auh}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].on_time_auh = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.on_time_laf}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].on_time_laf = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.on_time_uv_light}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].on_time_uv_light =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.on_time_done_by}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].on_time_done_by =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.name_of_material}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].name_of_material =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.control_no}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].control_no = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.dispensed_quantity}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].dispensed_quantity =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.dispensed_by_qa}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].dispensed_by_qa =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.dispensed_by_store}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].dispensed_by_store =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.off_time_auh}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].off_time_auh = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.off_time_laf}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].off_time_laf = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.off_time_uv_light}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].off_time_uv_light =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.uv_burning}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].uv_burning = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.off_time_done_by}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].off_time_done_by =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.cleaning_done_by}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].cleaning_done_by =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.checked_by}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].checked_by = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.weighing_balance_id}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].weighing_balance_id =
+                                    e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.remark}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].remark = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                              />
+                            </td>
 
-                          {/* <td style={{ width: "250px" }}>
+                            {/* <td style={{ width: "250px" }}>
                           <div className="d-flex align-items-center">
                             <button
                               type="button"
@@ -778,13 +786,13 @@ const DispensingOfMaterials = () => {
                             />
                           </div>
                         </td> */}
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </>
               ) : null}

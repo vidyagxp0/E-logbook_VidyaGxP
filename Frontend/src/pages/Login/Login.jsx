@@ -85,7 +85,7 @@ function Login() {
         </div>
         <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
           <div className="group-input">
-            <label>{Envelope(20, "#efa035")}</label>
+            <label>{Envelope(20, "#88D1E9")}</label>
             <input
               type="text"
               name="username"
@@ -96,7 +96,7 @@ function Login() {
             />
           </div>
           <div className="group-input">
-            <label>{PasswordLock(20, "#efa035")}</label>
+            <label>{PasswordLock(20, "#88D1E9")}</label>
             <input
               type="password"
               name="password"

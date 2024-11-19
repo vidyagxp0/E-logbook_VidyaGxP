@@ -217,11 +217,12 @@
 
 #config-form-document-page .details-form-data .sub-head-2 {
   text-align: center;
-  background: #efa035;
+  background: #0b3f93;
   padding: 10px 20px;
   font-size: 1.5rem;
   color: #ffffff;
   border-radius: 40px;
+  
 }
 
 #config-form-document-page .group-input .file-attachment-field {
@@ -537,7 +538,6 @@ tr th {
 .btn-forms {
   display: flex;
 }
-
 
 .btn-forms-isSelecteds {
   background-color: #f79520;

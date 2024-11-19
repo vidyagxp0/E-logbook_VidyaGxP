@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import "./Header.css";
+// import "./Header.css";
 import "./HeaderTop.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { FaUserCircle } from "react-icons/fa";
 
 function HeaderTop() {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ function HeaderTop() {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
-                  fill="#efa035"
+                  fill="#0c5fc6"
                   width={"25"}
                   height={"25"}
                 >
@@ -77,14 +78,15 @@ function HeaderTop() {
             </div>
 
             <div className="drop-container">
-              <div className="drop-btn name-btn">
-                <div className="profile-img">
-                  <img src={User?.profile_pic} alt="Profile Picture" />
+              <div className="drop-btn">
+                <div className="">
+                  {/* <img src={User?.profile_pic} alt="Profile Picture" /> */}
+                  <FaUserCircle size={36} className="text-[#EFA035]"/>
                 </div>
               </div>
               <div className="drop-list">
                 <div className="image">
-                  <img src={User?.profile_pic} alt="..." />
+                  {/* <img src={User?.profile_pic} alt="..." /> */}
                   <div className="manager-name">{User?.name}</div>
                 </div>
                 <Link to="#" className="drop-item">
