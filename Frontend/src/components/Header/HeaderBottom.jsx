@@ -44,8 +44,8 @@ function HeaderBottom() {
                 className={`tab py-2 px-4 rounded-md  ${
                   window.location.pathname === "/dashboard2"
                     ? "bg-blue-600 text-white"
-                    : "bg-white text-blue-500 border border-blue-500"
-                } hover:bg-blue-600 transition duration-300`}
+                    : "bg-white text-blue-500 border border-blue-500 "
+                } hover:bg-blue-600 transition duration-300 `}
               >
                 Analytics
               </Link>
@@ -55,7 +55,7 @@ function HeaderBottom() {
           {userDetails.roles?.some(
             (itm) => itm.role_id === 5 || itm.role_id === 1
           ) ? (
-            <div className="headerBottomRgt">
+            <div className="headerBottomRgt" >
               <div className="themeBtn" onClick={() => setRecordModal(true)}>
                 Initiate eLog
               </div>
