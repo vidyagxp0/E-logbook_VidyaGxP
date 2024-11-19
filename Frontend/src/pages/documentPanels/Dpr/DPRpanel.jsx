@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS"
 
 export default function DPRpanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -106,7 +107,7 @@ export default function DPRpanel() {
         .catch((error) => {
           toast.error(error?.response?.data?.message || "Couldn't open elog!!");
         });
-    } else if (popupAction === "sendFromApprovalToApproved") {
+    } else if (popupAction === "sendFromApprovalToClosedDone") {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
@@ -116,7 +117,7 @@ export default function DPRpanel() {
           config
         )
         .then(() => {
-          toast.success("Elog successfully approved");
+          toast.success("Elog successfully Closed Done");
           navigate(-1);
         })
         .catch((error) => {
@@ -553,6 +554,7 @@ export default function DPRpanel() {
   return (
     <>
       <HeaderTop />
+      <LaunchQMS/>
       <div id="main-form-container">
         <div id="config-form-document-page"  className="min-w-full">
           <div className="top-block">
@@ -600,7 +602,7 @@ export default function DPRpanel() {
                         : "btn-forms-selects"
                     }`}
                   >
-                    INITIATION
+                    OPENED
                   </div>
                   <div
                     className={`${
@@ -627,7 +629,7 @@ export default function DPRpanel() {
                         : "btn-forms-selects"
                     }`}
                   >
-                    APPROVED
+                    CLOSED DONE
                   </div>
                 </div>
               </div>
@@ -1452,7 +1454,7 @@ export default function DPRpanel() {
                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
                         }}
                       >
-                        Send for Approval
+                        Review Completed
                       </button>
                       <button
                         className="themeBtn"
@@ -1461,7 +1463,7 @@ export default function DPRpanel() {
                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )
@@ -1472,7 +1474,7 @@ export default function DPRpanel() {
                         className="themeBtn"
                         onClick={() => {
                           setIsPopupOpen(true);
-                          setPopupAction("sendFromApprovalToApproved"); // Set the action when opening the popup
+                          setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
                         }}
                       >
                         Approve elog
@@ -1484,7 +1486,7 @@ export default function DPRpanel() {
                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
                         }}
                       >
-                        Open Elog
+                        More Info Required
                       </button>
                     </>
                   )

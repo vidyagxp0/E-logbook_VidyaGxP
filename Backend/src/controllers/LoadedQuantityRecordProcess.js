@@ -99,7 +99,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
-        status: "Initiation",
+        status: "Opened",
         stage: 1,
         department: department,
         compression_area: compression_area,
@@ -132,9 +132,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
           new_value: value,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
-          new_status: "Initiation",
+          new_status: "Opened",
           declaration: initiatorDeclaration,
-          action: "Initiate",
+          action: "Opened",
         });
       }
     }
@@ -147,9 +147,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
-        new_status: "Initiation",
+        new_status: "Opened",
         declaration: initiatorDeclaration,
-        action: "Initiate",
+        action: "Opened",
       });
     }
 
@@ -182,9 +182,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //       new_value: record.unique_id,
       //       changed_by: user.user_id,
       //       previous_status: "Not Applicable",
-      //       new_status: "Initiation",
+      //       new_status: "Opened",
       //       declaration: initiatorDeclaration,
-      //       action: "Initiate",
+      //       action: "Opened",
       //     });
       //     auditTrailEntries.push({
       //       form_id: newForm.date,
@@ -193,9 +193,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //       new_value: record.date,
       //       changed_by: user.user_id,
       //       previous_status: "Not Applicable",
-      //       new_status: "Initiation",
+      //       new_status: "Opened",
       //       declaration: initiatorDeclaration,
-      //       action: "Initiate",
+      //       action: "Opened",
       //     });
       //     auditTrailEntries.push({
       //       form_id: newForm.form_id,
@@ -204,9 +204,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //       new_value: record.product_name,
       //       changed_by: user.user_id,
       //       previous_status: "Not Applicable",
-      //       new_status: "Initiation",
+      //       new_status: "Opened",
       //       declaration: initiatorDeclaration,
-      //       action: "Initiate",
+      //       action: "Opened",
       //     });
       //     auditTrailEntries.push({
       //       form_id: newForm.form_id,
@@ -215,9 +215,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //       new_value: record.remarks,
       //       changed_by: user.user_id,
       //       previous_status: "Not Applicable",
-      //       new_status: "Initiation",
+      //       new_status: "Opened",
       //       declaration: initiatorDeclaration,
-      //       action: "Initiate",
+      //       action: "Opened",
       //     });
       //     auditTrailEntries.push({
       //       form_id: newForm.form_id,
@@ -226,9 +226,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //       new_value: record.checked_by,
       //       changed_by: user.user_id,
       //       previous_status: "Not Applicable",
-      //       new_status: "Initiation",
+      //       new_status: "Opened",
       //       declaration: initiatorDeclaration,
-      //       action: "Initiate",
+      //       action: "Opened",
       //     });
       //       auditTrailEntries.push({
       //         form_id: newForm.form_id,
@@ -237,9 +237,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //         new_value: record.batch_no,
       //         changed_by: user.user_id,
       //         previous_status: "Not Applicable",
-      //         new_status: "Initiation",
+      //         new_status: "Opened",
       //         declaration: initiatorDeclaration,
-      //         action: "Initiate",
+      //         action: "Opened",
       //       });
       //       auditTrailEntries.push({
       //         form_id: newForm.form_id,
@@ -248,9 +248,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //         new_value: record.container_size,
       //         changed_by: user.user_id,
       //         previous_status: "Not Applicable",
-      //         new_status: "Initiation",
+      //         new_status: "Opened",
       //         declaration: initiatorDeclaration,
-      //         action: "Initiate",
+      //         action: "Opened",
       //       });
       //       auditTrailEntries.push({
       //         form_id: newForm.form_id,
@@ -259,9 +259,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //         new_value: record.batch_size,
       //         changed_by: user.user_id,
       //         previous_status: "Not Applicable",
-      //         new_status: "Initiation",
+      //         new_status: "Opened",
       //         declaration: initiatorDeclaration,
-      //         action: "Initiate",
+      //         action: "Opened",
       //       });
       //       auditTrailEntries.push({
       //         form_id: newForm.form_id,
@@ -270,9 +270,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //         new_value: record.theoretical_production,
       //         changed_by: user.user_id,
       //         previous_status: "Not Applicable",
-      //         new_status: "Initiation",
+      //         new_status: "Opened",
       //         declaration: initiatorDeclaration,
-      //         action: "Initiate",
+      //         action: "Opened",
       //       });
       //       auditTrailEntries.push({
       //         form_id: newForm.form_id,
@@ -281,9 +281,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //         new_value: record.loaded_quantity,
       //         changed_by: user.user_id,
       //         previous_status: "Not Applicable",
-      //         new_status: "Initiation",
+      //         new_status: "Opened",
       //         declaration: initiatorDeclaration,
-      //         action: "Initiate",
+      //         action: "Opened",
       //       });
       //       auditTrailEntries.push({
       //         form_id: newForm.form_id,
@@ -292,9 +292,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
       //         new_value: record.yield,
       //         changed_by: user.user_id,
       //         previous_status: "Not Applicable",
-      //         new_status: "Initiation",
+      //         new_status: "Opened",
       //         declaration: initiatorDeclaration,
-      //         action: "Initiate",
+      //         action: "Opened",
       //       });
       //   });
     }
@@ -307,9 +307,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
 
     // const elogData = {
     //   initiator: user.name,
-    //   dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
+    //   dateOfOpened: new Date().toISOString().split("T")[0], // Current date
     //   description,
-    //   status: "Initiation",
+    //   status: "Opened",
     //   reviewerName: (await getUserById(reviewer_id)).name,
     //   approverName: (await getUserById(approver_id)).name,
     //   reviewerEmail: (await getUserById(reviewer_id)).email,
@@ -464,7 +464,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     //       new_value: newValue,
     //       changed_by: user.user_id,
     //       previous_status: form.status,
-    //       new_status: "Initiation",
+    //       new_status: "Opened",
     //       declaration: initiatorDeclaration,
     //       action: "Update Elog",
     //     });
@@ -532,7 +532,7 @@ exports.EditLoadedQuantity = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "Initiation",
+                new_status: "Opened",
                 declaration: initiatorDeclaration,
                 action: "Update Elog",
               });
@@ -570,7 +570,7 @@ exports.EditLoadedQuantity = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "Initiation",
+                new_status: "Opened",
                 declaration: initiatorDeclaration,
                 action: "Update Elog",
               });
@@ -770,7 +770,7 @@ exports.SendDPElogForReview = async (req, res) => {
         previous_value: form.initiatorAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
-        previous_status: "Initiation",
+        previous_status: "Opened",
         new_status: "Under Review",
         declaration: initiatorDeclaration,
         action: "Send For Review",
@@ -783,7 +783,7 @@ exports.SendDPElogForReview = async (req, res) => {
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
-      previous_status: "Initiation",
+      previous_status: "Opened",
       new_status: "Under Review",
       declaration: initiatorDeclaration,
       action: "Send For Review",
@@ -896,7 +896,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
         previous_status: "Under Review",
-        new_status: "Initiation",
+        new_status: "Opened",
         declaration: reviewerDeclaration,
         action: "Open Elog",
       });
@@ -909,7 +909,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       new_value: "Not Applicable",
       changed_by: user.user_id,
       previous_status: "Under Review",
-      new_status: "Initiation",
+      new_status: "Opened",
       declaration: reviewerDeclaration,
       action: "Open Elog",
     });
@@ -917,7 +917,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "Initiation",
+        status: "Opened",
         stage: 1,
         reviewerAttachment: getElogDocsUrl(req?.file),
       },
@@ -934,7 +934,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 
       return res.status(200).json({
         error: false,
-        message: "E-log status successfully changed from review to initiation",
+        message: "E-log status successfully changed from review to Opened",
       });
   } catch (error) {
     // Rollback the transaction in case of error
@@ -1167,7 +1167,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
         previous_status: "Under Approval",
-        new_status: "Initiation",
+        new_status: "Opened",
         declaration: approverDeclaration,
         action: "Open Elog",
       });
@@ -1180,7 +1180,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       new_value: "Not Applicable",
       changed_by: user.user_id,
       previous_status: "Under Approval",
-      new_status: "Initiation",
+      new_status: "Opened",
       declaration: approverDeclaration,
       action: "Open Elog",
     });
@@ -1188,7 +1188,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        status: "Initiation",
+        status: "Opened",
         stage: 1,
         approverAttachment: getElogDocsUrl(req?.file),
       },
@@ -1206,7 +1206,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       return res.status(200).json({
         error: false,
         message:
-          "E-log status successfully changed from under-approval to initiation",
+          "E-log status successfully changed from under-approval to Opened",
       });
   } catch (error) {
     // Rollback the transaction in case of error
@@ -1296,9 +1296,9 @@ exports.ApproveDPElog = async (req, res) => {
         new_value: approverComment,
         changed_by: user.user_id,
         previous_status: "Under Approval",
-        new_status: "Approved",
+        new_status: "Closed",
         declaration: approverDeclaration,
-        action: "Approved",
+        action: "Closed",
       });
     }
 
@@ -1311,9 +1311,9 @@ exports.ApproveDPElog = async (req, res) => {
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
         previous_status: "Under Approval",
-        new_status: "Approved",
+        new_status: "Closed",
         declaration: approverDeclaration,
-        action: "Approved",
+        action: "Closed",
       });
     }
 
@@ -1324,15 +1324,15 @@ exports.ApproveDPElog = async (req, res) => {
       new_value: "Not Applicable",
       changed_by: user.user_id,
       previous_status: "Under Approval",
-      new_status: "Approved",
+      new_status: "Closed",
       declaration: approverDeclaration,
-      action: "Approved",
+      action: "Closed",
     });
 
     // Update the form details
     await form.update(
       {
-        status: "Approved",
+        status: "Closed",
         stage: 4,
         approverComment: approverComment,
         approverAttachment: req?.file
@@ -1353,7 +1353,7 @@ exports.ApproveDPElog = async (req, res) => {
 
     return res.status(200).json({
       error: false,
-      message: "E-log successfully approved!!",
+      message: "E-log successfully Closed!!",
     });
   } catch (error) {
     // Rollback the transaction in case of error
@@ -1454,158 +1454,86 @@ exports.ApproveDPElog = async (req, res) => {
 //   }
 // };
 
-// exports.generateReport = async (req, res) => {
-//   try {
-//     let reportData = req.body.reportData;
+exports.generateReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
 
-//     const getCurrentDateTime = () => {
-//       const now = new Date();
-//       return now.toLocaleString("en-GB", {
-//         day: "2-digit",
-//         month: "2-digit",
-//         year: "numeric",
-//         hour: "2-digit",
-//         minute: "2-digit",
-//         second: "2-digit",
-//         hour12: false, // Specify using 24-hour format
-//       });
-//     };
+    const date = new Date();
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
 
-//     // Render HTML using EJS template
-//     const html = await new Promise((resolve, reject) => {
-//       res.render("report", { reportData }, (err, html) => {
-//         if (err) return reject(err);
-//         resolve(html);
-//       });
-//     });
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      res.render("LoadedQuantityRecordProcess", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
 
-//     const browser = await puppeteer.launch({
-//       headless: true,
-//       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-//     });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
 
-//     const page = await browser.newPage();
-//     const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
-//     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
-//     const logoDataUri = `data:image/png;base64,${logoBase64}`;
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
-//     const user = await getUserById(req.user.userId);
+    const user = await getUserById(req.user.userId);
 
-//     // Set HTML content
-//     await page.setContent(html, { waitUntil: "networkidle0" });
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
 
-//     // Generate PDF
-//     const pdf = await page.pdf({
-//       format: "A4",
-//       printBackground: true,
-//       displayHeaderFooter: true,
-//       headerTemplate: `
-// <div class="header-container">
-//   <table class="header-table">
-//     <tr>
-//       <th colspan="2" class="header-title">Differential Pressure Records</th>
-//       <th rowspan="2" class="header-logo">
-//         <img src="${logoDataUri}" alt="Logo" style="max-width: 100px; height: auto;" />
-//       </th>
-//     </tr>
-//     <tr>
-//       <td class="header-info">DP${reportData.form_id}</td>
-//       <td class="header-info">Status: ${reportData?.status}</td>
-//     </tr>
-//   </table>
-// </div>
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
 
-// <style>
-//   .header-container {
-//     width: 100%;
-//     padding: 0 50px; /* Increased margin from left and right */
-//     box-sizing: border-box;
-//   }
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "150px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
 
-//   .header-table {
-//     width: 100%;
-//     border-collapse: collapse;
-//     text-align: left;
-//     font-size: 14px;
-//     table-layout: fixed;
-//   }
+    // Close the browser
+    await browser.close();
 
-//   .header-table th, .header-table td {
-//     border: 1px solid #000;
-//     padding: 8px;
-//   }
-
-//   .header-table th {
-//     background-color: #f8f8f8;
-//     font-weight: bold;
-//   }
-
-//   .header-logo {
-//     text-align: center;
-//     width: 100px;
-//   }
-
-//   .header-title {
-//     text-align: center;
-//     font-size: 18px;
-//     margin: 10px 0;
-//   }
-
-//   .header-info {
-//     font-size: 12px;
-//     text-align: center;
-//   }
-// </style>
-// `,
-
-//       footerTemplate: `
-// <style>
-//   .footer {
-//     display: flex;
-//     justify-content: space-between;
-//     align-items: center;
-//     width: 100%;
-//     font-size: 10px;
-//     padding: 5px 0;
-//   }
-//   .leftContent, .centerContent, .rightContent {
-//     display: inline-block;
-//   }
-//   .centerContent {
-//     flex-grow: 1;
-//     text-align: center;
-//   }
-//   .leftContent {
-//     flex-grow: 0;
-//     padding-left: 20px;  /* Added padding to the left content */
-//   }
-//   .rightContent {
-//     flex-grow: 0;
-//     padding-right: 20px; /* Added padding to the right content */
-//   }
-// </style>
-// <div class="footer">
-//   <span class="leftContent">Printed on: ${getCurrentDateTime()}</span>
-//   <span class="centerContent">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-//   <span class="rightContent">Printed by: ${user ? user.name : "Unknown"}</span>
-// </div>
-// `,
-//       margin: {
-//         top: "120px",
-//         bottom: "60px",
-//         right: "30px",
-//         left: "30px",
-//       },
-//     });
-
-//     // Close the browser
-//     await browser.close();
-
-//     // Set response headers and send PDF
-//     res.set("Content-Type", "application/pdf");
-//     res.send(pdf);
-//   } catch (error) {
-//     console.error("Error generating PDF:", error);
-//     res.status(500).send("Error generating PDF");
-//   }
-// };
+    // Set response headers and send PDF
+    res.set("Content-Type", "application/pdf");
+    res.send(pdf);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    res.status(500).send("Error generating PDF");
+  }
+};

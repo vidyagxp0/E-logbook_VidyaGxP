@@ -117,4 +117,10 @@ router.put(
 //   LoadedQuantityRecordProcess.getAuditTrailForAnElog
 // );
 
+router.post(
+  "/generate-pdf",
+  Auth.checkUserJwtToken,
+  LoadedQuantityRecordProcess.generateReport
+);
+
 module.exports = router;

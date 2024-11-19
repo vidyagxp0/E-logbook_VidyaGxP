@@ -485,6 +485,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "operation-sterlizer/generate-pdf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Operation Of sterlizer\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"OperationOfSterlizer\": [\r\n        {\r\n      \"record_id\": 2,\r\n      \"form_id\": 2,\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"air_pressure\": \"product_name\",\r\n      \"steam_pressure\": \"batch_no\",\r\n      \"printer_ok\": \"container_size\",\r\n      \"product_name\": \"batch_size\",\r\n      \"container_size\": \"theoretical_production\",\r\n      \"loaded_quantity\": \"loaded_quantity\",\r\n      \"batch_no_lot_no\": \"yield\",\r\n      \"loading_time\": \"remarks\",\r\n      \"d_well_period_start\": \"checked_by\",\r\n      \"d_well_period_end\": \"d_well_period_end\",\r\n      \"unloading_time\": \"checked_by\",\r\n      \"cleaning_time_start\": \"cleaning_time_start\",\r\n      \"cleaning_time_end\": \"cleaning_time_end\",\r\n      \"cleaning_done_by\": \"cleaning_done_by\",\r\n      \"checked_by\": \"checked_by\"\r\n\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/operation-sterlizer/generate-pdf",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"operation-sterlizer",
+								"generate-pdf"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -937,6 +974,43 @@
 							"path": [
 								"loaded-quantity",
 								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loaded-quantity/generate-pdf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Loaded Quantity Records\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"LoadedQuantityRecords\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n                \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"product_name\",\r\n      \"batch_no\": \"batch_no\",\r\n      \"container_size\": \"container_size\",\r\n      \"batch_size\": \"batch_size\",\r\n      \"theoretical_production\": \"theoretical_production\",\r\n      \"loaded_quantity\": \"loaded_quantity\",\r\n      \"yield\": \"yield\",\r\n      \"remarks\": \"remarks\",\r\n      \"checked_by\": \"checked_by\"\r\n\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/loaded-quantity/generate-pdf",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"loaded-quantity",
+								"generate-pdf"
 							]
 						}
 					},
@@ -1423,6 +1497,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "media-record/generate-pdf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Media Record\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"MediaRecords\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n                 \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"name_medium\": \"product_name\",\r\n      \"date_of_preparation\": \"batch_no\",\r\n      \"date_of_use\": \"container_size\",\r\n      \"lot_no\": \"batch_size\",\r\n      \"no_of_plate_prepared\": \"theoretical_production\",\r\n      \"no_of_plate_used\": \"loaded_quantity\",\r\n      \"used_for\": \"yield\",\r\n      \"balance_no_plate\": \"remarks\",\r\n      \"signature\": \"checked_by\"\r\n\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/media-record/generate-pdf",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"media-record",
+								"generate-pdf"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1538,7 +1649,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -1547,7 +1658,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"description\":\"dddd\",\r\n\"site_id\":1,\r\n\"form_id\":1,\r\n\"email\":\"swapnil@vidyagxp.com\",\r\n\"password\":\"00000000\",\r\n\"initiatorDeclaration\":\"aaaa\",\r\n\"DispenseOfMaterialRecords\":[{\r\n    \"on_time_auh\":\"ffgggag\",\r\n    \"date\": \"2024-12-22\",\r\n    \"unique_id\": 1232\r\n\r\n}]\r\n}",
+							"raw": "{\r\n\"description\":\"dddd\",\r\n\"site_id\":1,\r\n\"form_id\":1,\r\n\"email\":\"swapnil@vidyagxp.com\",\r\n\"password\":\"00000000\",\r\n\"initiatorDeclaration\":\"aaaa\",\r\n\"DispenseOfMaterialRecords\":[{\r\n    \"on_time_auh\":\"qqqqqqqqqqqqq\",\r\n    \"date\": \"2024-12-22\",\r\n    \"unique_id\": 1232\r\n\r\n}]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1882,6 +1993,43 @@
 							"path": [
 								"dispensing-material",
 								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dispensing-material/generate-pdf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Dispensing Material\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"DispensngOfMaterialRecords\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n            \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"name_of_material\": \"theoretical_production\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/dispensing-material/generate-pdf",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"dispensing-material",
+								"generate-pdf"
 							]
 						}
 					},

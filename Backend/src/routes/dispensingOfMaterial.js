@@ -108,4 +108,10 @@ router.put(
 //   Auth.checkUserJwtToken,
 //   DispenseOfMaterial.getAuditTrailForAnElog
 // );
+
+router.post(
+  "/generate-pdf",
+  Auth.checkUserJwtToken,
+  DispenseOfMaterial.generateReport
+);
 module.exports = router;

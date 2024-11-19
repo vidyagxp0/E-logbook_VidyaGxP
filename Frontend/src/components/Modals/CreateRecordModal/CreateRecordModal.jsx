@@ -13,8 +13,6 @@ function CreateRecordModal(_props) {
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
-  console.log(division);
-
   useEffect(() => {
     const fetchSites = async () => {
       try {
@@ -58,6 +56,7 @@ function CreateRecordModal(_props) {
         filteredProcessIds.includes(process.process_id)
       );
       setProcesses(filteredProcesses);
+      console.log(filteredProcesses);
     } catch (error) {
       console.error("Error fetching processes:", error);
     }
@@ -65,7 +64,7 @@ function CreateRecordModal(_props) {
 
   useEffect(() => {
     fetchProcesses();
-  }, [division])
+  }, [division]);
 
   useEffect(() => {
     if (processVisible) {
@@ -75,6 +74,7 @@ function CreateRecordModal(_props) {
 
   const handleSelectProcess = (element) => {
     setProject(element.process);
+
     switch (element.process_id) {
       case 1:
         navigate("/differential-pressure-record", {
@@ -82,27 +82,27 @@ function CreateRecordModal(_props) {
         });
         break;
       case 2:
-        navigate("/area-and-equipment-panel", {
-          state: division,
-        });
-        break;
-      case 3:
-        navigate("/equipment-cleaning-checklist", {
-          state: division,
-        });
-        break;
-      case 4:
         navigate("/temperature-records", {
           state: division,
         });
         break;
-      case 5:
+      case 3:
         navigate("/loaded-quantity", {
           state: division,
         });
         break;
-      case 6:
+      case 4:
         navigate("/operations-of-sterilizer", {
+          state: division,
+        });
+        break;
+      case 5:
+        navigate("/media-record", {
+          state: division,
+        });
+        break;
+      case 6:
+        navigate("/dispensing-of-material", {
           state: division,
         });
         break;
