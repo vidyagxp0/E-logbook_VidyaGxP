@@ -594,39 +594,51 @@ export default function DPRpanel() {
 
               <div className="sub-head-2">Differential Pressure Record</div>
               <div className="outerDiv4">
-                <div className="btn-forms">
+              <div className="flex gap-3 ">
                   <div
-                    className={`${
-                      location.state?.stage === 1
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 1
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 1
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     OPENED
                   </div>
+
                   <div
-                    className={`${
-                      location.state?.stage === 2
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 2
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 2
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER REVIEW
                   </div>
+
                   <div
-                    className={`${
-                      location.state?.stage === 3
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 3
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 3
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER APPROVAL
                   </div>
+
+                  {/* Button 4: CLOSED DONE */}
                   <div
-                    className={`${
-                      location.state?.stage === 4
-                        ? "btn-forms-isSelecteds"
-                        : "btn-forms-selects"
+                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                      location.state?.stage > 4
+                        ? "bg-green-500 text-white"
+                        : location.state?.stage === 4
+                        ? "bg-red-500 text-white"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     CLOSED DONE
