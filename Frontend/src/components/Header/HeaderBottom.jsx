@@ -40,7 +40,7 @@ function HeaderBottom() {
                 Dashboard
               </Link>
               <Link
-                to="/dashboard"
+                to="/analytics2"
                 className={`tab py-2 px-4 rounded-md  ${
                   window.location.pathname === "/dashboard2"
                     ? "bg-blue-600 text-white"
