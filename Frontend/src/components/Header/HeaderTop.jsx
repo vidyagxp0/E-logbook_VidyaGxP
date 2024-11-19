@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import "./Header.css";
+// import "./Header.css";
 import "./HeaderTop.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -54,7 +54,7 @@ function HeaderTop() {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
-                  fill="#efa035"
+                  fill="#0c5fc6"
                   width={"25"}
                   height={"25"}
                 >
@@ -81,7 +81,7 @@ function HeaderTop() {
               <div className="drop-btn name-btn">
                 <div className="">
                   {/* <img src={User?.profile_pic} alt="Profile Picture" /> */}
-                  <FaUserCircle size={36} className="text-black"/>
+                  <FaUserCircle size={36} className="text-black" />
                 </div>
               </div>
               <div className="drop-list">

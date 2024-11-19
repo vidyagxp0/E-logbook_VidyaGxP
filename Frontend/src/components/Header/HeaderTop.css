@@ -73,7 +73,8 @@
 .Header_Top .header_inner .center .inputContainer .inputInnerLeft i {
   font-size: 20px;
   font-weight: 900;
-  color:var(--themeColor);
+  /* color: var(--themeColor); */
+  color: red;
 }
 
 .Header_Top .header_inner .center .inputContainer .inputInnerRight {
@@ -143,6 +144,7 @@
   font-size: 20px;
   font-weight: 900;
   color: var(--themeColor);
+  color: red;
 }
 
 .Header_Top .header_inner .right .profileRight {
@@ -216,7 +218,6 @@
   border-top: 3px solid var(--theme1);
   width: max-content;
   border-radius: 8px;
- 
 }
 
 .drop-container .drop-list .image {
@@ -228,9 +229,8 @@
   font-weight: 600;
   display: flex;
   justify-content: center;
-  padding:10px;
+  padding: 10px;
   /* text-shadow: 1px 1px 2px rgb(13, 193, 193); */
-  
 }
 
 .drop-container .drop-list .image img {
