@@ -65,7 +65,7 @@ function HeaderTop() {
                 <input type="search" />
                 <button
                   className=""
-                  style={{ width: "30%", marginLeft: "20%", padding: "3%" }}
+                  style={{ width: "30%", marginLeft: "20%", padding: "3%" ,background:"#0c5fc6"}}
                 >
                   Search
                 </button>
@@ -81,7 +81,7 @@ function HeaderTop() {
               <div className="drop-btn">
                 <div className="">
                   {/* <img src={User?.profile_pic} alt="Profile Picture" /> */}
-                  <FaUserCircle size={36} className="text-[#EFA035]"/>
+                  <FaUserCircle size={36} className="text-[#0c5fc6]"/>
                 </div>
               </div>
               <div className="drop-list">
