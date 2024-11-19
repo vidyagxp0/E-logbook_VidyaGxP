@@ -17,7 +17,7 @@ Treemap(Highcharts);
 const Analytics2 = () => {
   // Line Chart Options
   const lineChartOptions = {
-    title: { text: "Line Chart Example" },
+    title: { text: "Differential Pressure " },
     series: [
       {
         name: "Sample Data",
@@ -29,7 +29,7 @@ const Analytics2 = () => {
   // Bar Chart Options
   const barChartOptions = {
     chart: { type: "bar" },
-    title: { text: "Bar Chart Example" },
+    title: { text: "Loaded Quantity" },
     series: [
       {
         name: "Sample Data",
@@ -41,7 +41,7 @@ const Analytics2 = () => {
   // Pie Chart Options
   const pieChartOptions = {
     chart: { type: "pie" },
-    title: { text: "Pie Chart Example" },
+    title: { text: "Media Record " },
     series: [
       {
         name: "Share",
@@ -57,7 +57,7 @@ const Analytics2 = () => {
   // Column Chart Options
   const columnChartOptions = {
     chart: { type: "column" },
-    title: { text: "Column Chart Example" },
+    title: { text: "Upper Limit " },
     series: [
       {
         name: "Sample Data",
@@ -69,7 +69,7 @@ const Analytics2 = () => {
   // Area Chart Options
   const areaChartOptions = {
     chart: { type: "area" },
-    title: { text: "Area Chart Example" },
+    title: { text: "Lower Limit " },
     series: [
       {
         name: "Sample Data",
@@ -80,7 +80,7 @@ const Analytics2 = () => {
   // Scatter Chart Options
   const scatterChartOptions = {
     chart: { type: "scatter" },
-    title: { text: "Scatter Chart Example" },
+    title: { text: "Applied Pressure " },
     xAxis: { title: { text: "X-Axis" } },
     yAxis: { title: { text: "Y-Axis" } },
     series: [
@@ -112,7 +112,7 @@ const Analytics2 = () => {
   // Bubble Chart Options
   const bubbleChartOptions = {
     chart: { type: "bubble" },
-    title: { text: "Bubble Chart Example" },
+    title: { text: "Limit " },
     series: [
       {
         data: [
@@ -127,7 +127,7 @@ const Analytics2 = () => {
   // Gauge Chart Options
   //   const gaugeChartOptions = {
   //     chart: { type: "gauge" },
-  //     title: { text: "Gauge Chart Example" },
+  //     title: { text: "Gauge Chart " },
   //     pane: { startAngle: -150, endAngle: 150 },
   //     yAxis: { min: 0, max: 100 },
   //     series: [{ name: "Speed", data: [80] }],
@@ -136,7 +136,7 @@ const Analytics2 = () => {
   // Waterfall Chart Options
   //   const waterfallChartOptions = {
   //     chart: { type: "waterfall" },
-  //     title: { text: "Waterfall Chart Example" },
+  //     title: { text: "Waterfall Chart " },
   //     series: [
   //       {
   //         name: "Net Change",
@@ -153,7 +153,7 @@ const Analytics2 = () => {
   // Heatmap Chart Options
   const heatmapChartOptions = {
     chart: { type: "heatmap" },
-    title: { text: "Heatmap Example" },
+    title: { text: "Operation of Sterilizer " },
     xAxis: { categories: ["Monday", "Tuesday", "Wednesday"] },
     yAxis: { categories: ["Morning", "Afternoon", "Evening"] },
     colorAxis: { min: 0, minColor: "#FFFFFF", maxColor: "#FF0000" },
