@@ -83,6 +83,7 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     type: DataTypes.STRING,
   },
   initiatorComment: {
+    allowNull:true,
     type: DataTypes.STRING,
   },
   initiatorAttachment: {

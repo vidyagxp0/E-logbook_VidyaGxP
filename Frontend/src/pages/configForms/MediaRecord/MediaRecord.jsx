@@ -240,235 +240,243 @@ const MediaRecord = () => {
               {User?.name}
             </div>
           </div>
-          <div className="document-form">
-            <div className="details-form-data">
-              {/* <div className="sop-type-header">
+          <div>
+            <strong> Site:&nbsp;</strong>
+            {location.state?.site}
+          </div>
+          <div>
+            <strong> Current Status:&nbsp;</strong>Under Initiation
+          </div>
+          <div>
+            <strong> Initiated By:&nbsp;</strong>
+            {User?.name}
+          </div>
+        </div>
+        <div className="document-form">
+          <div className="details-form-data">
+            <div className="sop-type-header">
               <div className="logo">
                 <img src="/vidyalogo2.png" alt="..." />
               </div>
               <div className="main-head">
                 <div>VidyaGxP Private Limited</div>
               </div>
-            </div> */}
-              <div className="sub-head-2">Media Records</div>
+            </div>
+            <div className="sub-head-2">Media Records</div>
 
-              <div className="outerDiv4">
-                <div className="btn-forms">
-                  <div
-                    className={`${
-                      isSelectedGeneral === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
-                    }`}
-                    onClick={() => {
-                      setIsSelectedDetails(false), setIsSelectedGeneral(true);
-                    }}
-                  >
-                    General Information
-                  </div>
-                  <div
-                    className={`${
-                      isSelectedDetails === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
-                    }`}
-                    onClick={() => {
-                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
-                    }}
-                  >
-                    Details
-                  </div>
+            <div className="outerDiv4">
+              <div className="btn-forms">
+                <div
+                  className={`${
+                    isSelectedGeneral === true
+                      ? "btn-forms-isSelected"
+                      : "btn-forms-select"
+                  }`}
+                  onClick={() => {
+                    setIsSelectedDetails(false), setIsSelectedGeneral(true);
+                  }}
+                >
+                  General Information
+                </div>
+                <div
+                  className={`${
+                    isSelectedDetails === true
+                      ? "btn-forms-isSelected"
+                      : "btn-forms-select"
+                  }`}
+                  onClick={() => {
+                    setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                  }}
+                >
+                  Details
                 </div>
               </div>
+            </div>
 
-              {isSelectedGeneral === true ? (
-                <>
-                  <div className="group-input">
-                    <label className="color-label">Initiator</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={User?.name}
-                        onChange={(e) =>
-                          setMediaRecords({
-                            initiator: e.target.value,
-                          })
-                        }
-                        disabled
-                        style={{ backgroundColor: "#fafafa" }}
-                        className="shadow-xl"
-                      />
-                    </div>
+            {isSelectedGeneral === true ? (
+              <>
+                <div className="group-input">
+                  <label className="color-label">Initiator</label>
+                  <div>
+                    <input
+                      type="text"
+                      value={User?.name}
+                      onChange={(e) =>
+                        setMediaRecords({
+                          initiator: e.target.value,
+                        })
+                      }
+                      disabled
+                      style={{ backgroundColor: "#fafafa" }}
+                      className="shadow-xl"
+                    />
                   </div>
+                </div>
 
-                  <div className="group-input">
-                    <label className="color-label">Date of Initiation</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={date}
-                        onChange={(e) =>
-                          setMediaRecords({
-                            dateOfInitiation: e.target.value,
-                          })
-                        }
-                        disabled
-                        style={{ backgroundColor: "#fafafa" }}
-                        className="shadow-xl"
-                      />
-                    </div>
+                <div className="group-input">
+                  <label className="color-label">Date of Initiation</label>
+                  <div>
+                    <input
+                      type="text"
+                      value={date}
+                      onChange={(e) =>
+                        setMediaRecords({
+                          dateOfInitiation: e.target.value,
+                        })
+                      }
+                      disabled
+                      style={{ backgroundColor: "#fafafa" }}
+                      className="shadow-xl"
+                    />
                   </div>
+                </div>
 
+                <div className="group-input">
+                  <label className="color-label">
+                    Description{" "}
+                    <span className="required-asterisk text-red-500">*</span>
+                  </label>
+                  <div>
+                    <input
+                      type="text"
+                      value={mediaRecords.description}
+                      onChange={(e) =>
+                        setMediaRecords({
+                          description: e.target.value,
+                        })
+                      }
+                      required // HTML5 attribute to enforce field requirement
+                    />
+                  </div>
+                </div>
+
+                <div className="group-input">
+                  <label className="color-label">Status</label>
+                  <div>
+                    <input
+                      type="text"
+                      value="Under Initiation"
+                      onChange={(e) =>
+                        setMediaRecords({ status: e.target.value })
+                      }
+                      disabled
+                      style={{ backgroundColor: "#fafafa" }}
+                      className="shadow-xl"
+                    />
+                  </div>
+                </div>
+              </>
+            ) : null}
+
+            {isSelectedDetails === true ? (
+              <>
+                <div className="form-flex">
                   <div className="group-input">
                     <label className="color-label">
-                      Description{" "}
-                      <span className="required-asterisk text-red-500">*</span>
+                      Reviewer
+                      <span style={{ color: "red", marginLeft: "2px" }}>*</span>
                     </label>
                     <div>
-                      <input
-                        type="text"
-                        value={mediaRecords.description}
-                        onChange={(e) =>
+                      <select
+                        value={mediaRecords.reviewer_id}
+                        onChange={(e) => {
                           setMediaRecords({
-                            description: e.target.value,
-                          })
-                        }
-                        required // HTML5 attribute to enforce field requirement
-                      />
+                            reviewer_id: e.target.value,
+                          });
+                        }}
+                      >
+                        <option value="">Select a reviewer</option>
+                        {[
+                          ...new Map(
+                            reviewers.map((reviewer) => [
+                              reviewer.user_id,
+                              reviewer,
+                            ])
+                          ).values(),
+                        ].map((reviewer, index) => (
+                          <option key={index} value={reviewer.user_id}>
+                            {reviewer.User.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
-
                   <div className="group-input">
-                    <label className="color-label">Status</label>
+                    <label className="color-label">
+                      Approver
+                      <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+                    </label>
                     <div>
-                      <input
-                        type="text"
-                        value="Under Initiation"
-                        onChange={(e) =>
-                          setMediaRecords({ status: e.target.value })
-                        }
-                        disabled
-                        style={{ backgroundColor: "#fafafa" }}
-                        className="shadow-xl"
-                      />
+                      <select
+                        value={mediaRecords.approver_id}
+                        onChange={(e) => {
+                          setMediaRecords({
+                            approver_id: e.target.value,
+                          });
+                        }}
+                      >
+                        <option value="">Select an approver</option>
+                        {[
+                          ...new Map(
+                            approvers.map((approver) => [
+                              approver.user_id,
+                              approver,
+                            ])
+                          ).values(),
+                        ].map((approver, index) => (
+                          <option key={index} value={approver.user_id}>
+                            {approver.User.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
-                </>
-              ) : null}
+                </div>
+                <div>
+                  <div className="AddRows d-flex">
+                    <NoteAdd onClick={addRow} />
+                    <div className="addrowinstruction"></div>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>S no.</th>
+                        <th>Unique Id</th>
+                        <th>Date</th>
+                        <th>Name of the Medium</th>
+                        <th>Date of Preparation</th>
+                        <th>Date of Use</th>
+                        <th>Lot No.</th>
+                        <th>No. of Plates Prepared</th>
+                        <th>No. of Plates used</th>
+                        <th>Used for</th>
+                        <th>Balance No. of Plates</th>
+                        <th>Checked By</th>
 
-              {isSelectedDetails === true ? (
-                <>
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">
-                        Reviewer
-                        <span style={{ color: "red", marginLeft: "2px" }}>
-                          *
-                        </span>
-                      </label>
-                      <div>
-                        <select
-                          value={mediaRecords.reviewer_id}
-                          onChange={(e) => {
-                            setMediaRecords({
-                              reviewer_id: e.target.value,
-                            });
-                          }}
-                        >
-                          <option value="">Select a reviewer</option>
-                          {[
-                            ...new Map(
-                              reviewers.map((reviewer) => [
-                                reviewer.user_id,
-                                reviewer,
-                              ])
-                            ).values(),
-                          ].map((reviewer, index) => (
-                            <option key={index} value={reviewer.user_id}>
-                              {reviewer.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">
-                        Approver
-                        <span style={{ color: "red", marginLeft: "2px" }}>
-                          *
-                        </span>
-                      </label>
-                      <div>
-                        <select
-                          value={mediaRecords.approver_id}
-                          onChange={(e) => {
-                            setMediaRecords({
-                              approver_id: e.target.value,
-                            });
-                          }}
-                        >
-                          <option value="">Select an approver</option>
-                          {[
-                            ...new Map(
-                              approvers.map((approver) => [
-                                approver.user_id,
-                                approver,
-                              ])
-                            ).values(),
-                          ].map((approver, index) => (
-                            <option key={index} value={approver.user_id}>
-                              {approver.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
-                      <div className="addrowinstruction"></div>
-                    </div>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>S no.</th>
-                          <th>Unique Id</th>
-                          <th>Date</th>
-                          <th>Name of the Medium</th>
-                          <th>Date of Preparation</th>
-                          <th>Date of Use</th>
-                          <th>Lot No.</th>
-                          <th>No. of Plates Prepared</th>
-                          <th>No. of Plates used</th>
-                          <th>Used for</th>
-                          <th>Balance No. of Plates</th>
-                          <th>Checked By</th>
-
-                          <th> Signature</th>
-                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {allTableData.map((item, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.unique_id}</td>
-                            <td>
-                              <input
-                                value={item.date}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].date = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                readOnly
-                              />
-                            </td>
-                            {/* <td>
+                        <th> Signature</th>
+                        {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allTableData.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.unique_id}</td>
+                          <td>
+                            <input
+                              value={item.date}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].date = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              readOnly
+                            />
+                          </td>
+                          {/* <td>
                           <input
                             type="date"
                             value={item.date}
@@ -481,130 +489,130 @@ const MediaRecord = () => {
                             required
                           />
                         </td> */}
-                            <td>
-                              <input
-                                type="text"
-                                value={item.name_medium}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].name_medium = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="date"
-                                value={item.date_of_preparation}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].date_of_preparation =
-                                    e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="date"
-                                value={item.date_of_use}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].date_of_use = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                value={item.lot_no}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].lot_no = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                value={item.no_of_plate_prepared}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].no_of_plate_prepared =
-                                    e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                value={item.no_of_plate_used}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].no_of_plate_used =
-                                    e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                value={item.used_for}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].used_for = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                value={item.balance_no_plate}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].balance_no_plate =
-                                    e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].checked_by = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                readOnly
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                value={item.signature}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].signature = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            {/* <td>
+                          <td>
+                            <input
+                              type="text"
+                              value={item.name_medium}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].name_medium = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="date"
+                              value={item.date_of_preparation}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].date_of_preparation =
+                                  e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="date"
+                              value={item.date_of_use}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].date_of_use = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.lot_no}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].lot_no = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.no_of_plate_prepared}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].no_of_plate_prepared =
+                                  e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.no_of_plate_used}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].no_of_plate_used =
+                                  e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={item.used_for}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].used_for = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.balance_no_plate}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].balance_no_plate =
+                                  e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.checked_by}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].checked_by = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              readOnly
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={item.signature}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].signature = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                              required
+                            />
+                          </td>
+                          {/* <td>
                           <input
                             type="text"
                            value={item.unloadingTime}
@@ -617,7 +625,7 @@ const MediaRecord = () => {
                           />
                         </td> */}
 
-                            {/* <td style={{ width: "250px" }}>
+                          {/* <td style={{ width: "250px" }}>
                           <div className="d-flex align-items-center">
                             <button
                               type="button"
@@ -659,40 +667,36 @@ const MediaRecord = () => {
                             />
                           </div>
                         </td> */}
-                            <td>
-                              <DeleteIcon onClick={() => deleteRow(index)} />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              ) : null}
-            </div>
-            <div className="button-block" style={{ width: "100%" }}>
-              <button
-                className="themeBtn"
-                onClick={() => {
-                  setIsPopupOpen(true);
-                }}
-              >
-                Save
-              </button>
-              <button
-                className="themeBtn"
-                onClick={() => navigate("/dashboard")}
-              >
-                Exit
-              </button>
-            </div>
-            {isPopupOpen && (
-              <UserVerificationPopUp
-                onClose={handlePopupClose}
-                onSubmit={handlePopupSubmit}
-              />
-            )}
+                          <td>
+                            <DeleteIcon onClick={() => deleteRow(index)} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            ) : null}
           </div>
+          <div className="button-block" style={{ width: "100%" }}>
+            <button
+              className="themeBtn"
+              onClick={() => {
+                setIsPopupOpen(true);
+              }}
+            >
+              Save
+            </button>
+            <button className="themeBtn" onClick={() => navigate("/dashboard")}>
+              Exit
+            </button>
+          </div>
+          {isPopupOpen && (
+            <UserVerificationPopUp
+              onClose={handlePopupClose}
+              onSubmit={handlePopupSubmit}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -31,7 +31,7 @@ const LoadedQuantity = () => {
       review_comments: "",
       compression_area: "",
       limit: 1,
-      initiatorComment: " ",
+      // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }
@@ -227,8 +227,11 @@ const LoadedQuantity = () => {
     <div>
       <HeaderTop />
       <div id="main-form-container">
+        
         <div id="config-form-document-pages" className="min-w-full">
+          
           <div className="top-blocks">
+            
             <div>
               <strong> Record Name:&nbsp;</strong>Loaded Quantity
             </div>
@@ -246,14 +249,14 @@ const LoadedQuantity = () => {
           </div>
           <div className="document-form">
             <div className="details-form-data">
-              {/* <div className="sop-type-header">
+              <div className="sop-type-header">
                 <div className="logo">
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
                 </div>
-              </div> */}
+              </div>
               <div className="sub-head-2">Loaded Quantity</div>
 
               <div className="outerDiv4">

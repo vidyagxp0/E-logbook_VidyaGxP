@@ -83,6 +83,7 @@ const DispenseOfMaterialForm = sequelize.define("DispenseOfMaterialForm", {
     type: DataTypes.STRING,
   },
   initiatorComment: {
+    allowNull:true,
     type: DataTypes.STRING,
   },
   initiatorAttachment: {

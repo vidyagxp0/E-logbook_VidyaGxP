@@ -32,7 +32,7 @@ const OperationOfSterilizer = () => {
       review_comments: "",
       compression_area: "",
       limit: 1,
-      initiatorComment: " ",
+      // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }
@@ -253,14 +253,7 @@ const OperationOfSterilizer = () => {
           </div>
           <div className="document-form">
             <div className="details-form-data">
-              {/* <div className="sop-type-header">
-                <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
-                </div>
-                <div className="main-head">
-                  <div>VidyaGxP Private Limited</div>
-                </div>
-              </div> */}
+              
               <div className="sub-head-2">Operation Of Sterilizer</div>
 
               <div className="outerDiv4">

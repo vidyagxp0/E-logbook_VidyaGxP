@@ -117,7 +117,7 @@ function Dashboard() {
 
     const newConfigMedia = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/media-record/get-all",
+      url: "http://localhost:1000/media-record/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -145,7 +145,7 @@ function Dashboard() {
 
     const newConfigDispensing = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/dispensing-material/get-all",
+      url: "http://localhost:1000/dispensing-material/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -262,6 +262,7 @@ function Dashboard() {
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
+              style={{ height: "40px" }}
             >
               <option value="All_Records">All Records</option>
               <option value="diffrential_pressure">

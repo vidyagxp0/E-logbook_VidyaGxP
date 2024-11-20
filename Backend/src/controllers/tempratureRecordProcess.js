@@ -51,12 +51,6 @@ exports.InsertTempratureRecord = async (req, res) => {
       .json({ error: true, message: "Please provide email and password." });
   }
 
-  if (!initiatorComment) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an initiator comment." });
-  }
-
   // Start a transaction
   const transaction = await sequelize.transaction();
 
@@ -281,10 +275,10 @@ exports.InsertTempratureRecord = async (req, res) => {
     //     recipients: elogData.approverEmail,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log Created successfully",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log Created successfully",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -650,7 +644,8 @@ exports.GetAllTempratureRecordElog = async (req, res) => {
 
 //send tempratre record elog for review
 exports.SendTRElogForReview = async (req, res) => {
-  const { form_id, email, password, initiatorDeclaration } = req.body;
+  const { form_id, email, password, initiatorDeclaration, initiatorComment } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -746,6 +741,7 @@ exports.SendTRElogForReview = async (req, res) => {
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
+        initiatorComment: initiatorComment,
       },
       { transaction }
     );
@@ -770,10 +766,10 @@ exports.SendTRElogForReview = async (req, res) => {
     //     recipients: reviewer.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log successfully sent for review",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log successfully sent for review",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -911,10 +907,10 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
     //     recipients: initiator.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log status successfully changed from review to Opened",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log status successfully changed from review to Opened",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -1218,11 +1214,11 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
     //     recipients: initiator.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message:
-          "E-log status successfully changed from under-approval to under-review",
-      });
+    return res.status(200).json({
+      error: false,
+      message:
+        "E-log status successfully changed from under-approval to under-review",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -1516,8 +1512,8 @@ exports.generateReport = async (req, res) => {
       </th>
     </tr>
     <tr>
-      <td class="header-info">DP${reportData.form_id}</td>
-      <td class="header-info">Status: ${reportData?.status}</td>
+      <td class="header-info"><span style="font-weight: 600;">Form ID:</span>${reportData.form_id}</td>
+      <td class="header-info"><span style="font-weight: 600;">Status:</span>${reportData?.status}</td>
     </tr>
   </table>
 </div>
