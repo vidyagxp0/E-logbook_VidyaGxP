@@ -499,6 +499,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
+        additionalInfo,
       },
       { transaction }
     );
