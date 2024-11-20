@@ -1271,7 +1271,7 @@ const DispensingOfMaterialsPanel = () => {
                     <div>
                       <input
                         type="file"
-                        name="Attachment"
+                        name="additionalAttachment"
                         value={editData.additionalAttachment}
                         onChange={handleInputChange1}
                       />
@@ -1284,7 +1284,7 @@ const DispensingOfMaterialsPanel = () => {
                     <div>
                       <textarea
                         type="text"
-                        name="Additional"
+                        name="additionalInfo"
                         value={editData.additionalInfo}
                         onChange={handleInputChange1}
                       />
