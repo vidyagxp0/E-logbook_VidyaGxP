@@ -114,9 +114,9 @@ router.post(
   Auth.checkUserJwtToken,
   DispenseOfMaterial.generateReport
 );
-router.get(
+router.post(
   "/chat-pdf/:form_id",
-  // Auth.checkUserJwtToken,
+  Auth.checkUserJwtToken,
   DispenseOfMaterial.chatByPdf
 );
 router.post(

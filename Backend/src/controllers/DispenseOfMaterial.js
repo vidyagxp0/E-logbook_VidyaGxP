@@ -199,7 +199,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
           action: "Opened",
         });
         auditTrailEntries.push({
-          form_id: newForm.date,
+          form_id: newForm.form_id,
           field_name: `Date[${index}]`,
           previous_value: null,
           new_value: record.date,
@@ -1655,7 +1655,7 @@ exports.generateReport = async (req, res) => {
 
 exports.chatByPdf = async (req, res) => {
   try {
-    let reportData = req.body.reportData;
+    const reportData = req.body.reportData;
     const formId = req.params.form_id;
 
     const date = new Date();
@@ -1733,8 +1733,8 @@ exports.chatByPdf = async (req, res) => {
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("pdfs", `Elog_Report_${formId}.pdf`);
-    fs.writeFileSync(filePath, pdfBuffer);
+    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
 
     res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
   } catch (error) {
