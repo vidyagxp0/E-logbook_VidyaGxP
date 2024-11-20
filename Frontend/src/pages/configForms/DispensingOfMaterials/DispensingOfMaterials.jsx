@@ -35,6 +35,8 @@ const DispensingOfMaterials = () => {
       initiatorComment: " ",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
+      additionalInfo:"",
+      additionalAttachment: null,
     }
   );
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -44,7 +46,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -66,7 +68,7 @@ const DispensingOfMaterials = () => {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -90,7 +92,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -106,7 +108,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -161,7 +163,7 @@ const DispensingOfMaterials = () => {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com/dispensing-material/post",
+        "http://localhost:1000/dispensing-material/post",
         dispensingOfMaterials,
         config
       )
@@ -793,7 +795,33 @@ const DispensingOfMaterials = () => {
                         ))}
                       </tbody>
                     </table>
+                    <div className="group-input">
+                    <label className="color-label">Attachment </label>
+                    <div>
+                      <input type="file" name="Attachment"
+                      value={dispensingOfMaterials.additionalAttachment} 
+                      onChange={(e) => {
+                        setDispensingOfMaterials({
+                          additionalAttachment: e.target.value,
+                        });
+                       }} />
+                    </div>
                   </div>
+                  <div className="group-input ">
+                    <label className="color-label">
+                      Additional Info (If/Any){" "}
+                    </label>
+                    <div>
+                      <textarea type="text" name="Additional"  value={dispensingOfMaterials.additionalInfo}
+                          onChange={(e) => {
+                            setDispensingOfMaterials({
+                              additionalInfo: e.target.value,
+                            });
+                          }} />
+                    </div>
+                  </div>
+                  </div>
+
                 </>
               ) : null}
             </div>

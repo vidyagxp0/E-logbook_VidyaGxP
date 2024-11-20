@@ -27,9 +27,7 @@ const LoadedQuantityPanels = () => {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-console.log(editData,"LOADED");
-
-
+  console.log(editData, "LOADED");
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
@@ -45,7 +43,7 @@ console.log(editData,"LOADED");
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
-      initiatorComment:editData.initiatorComment
+      initiatorComment: editData.initiatorComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -67,7 +65,7 @@ console.log(editData,"LOADED");
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+    //     url: "http://localhost:1000/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -98,11 +96,11 @@ console.log(editData,"LOADED");
       if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
-    }
-    
+      }
+
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
+          "http://localhost:1000/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -120,7 +118,7 @@ console.log(editData,"LOADED");
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
+          "http://localhost:1000/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -139,7 +137,7 @@ console.log(editData,"LOADED");
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
+          "http://localhost:1000/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -154,11 +152,7 @@ console.log(editData,"LOADED");
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/loaded-quantity/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -173,7 +167,7 @@ console.log(editData,"LOADED");
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
+          "http://localhost:1000/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -220,7 +214,7 @@ console.log(editData,"LOADED");
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+        url: "http://localhost:1000/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -242,7 +236,7 @@ console.log(editData,"LOADED");
 
   console.log(location.state.stage === 2);
 
-   const object = getCurrentDateTime();
+  const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
     const now = new Date();
@@ -353,12 +347,9 @@ console.log(editData,"LOADED");
 
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
-  
+
     setEditData({ ...editData, [name]: value });
-  
-   
   };
-  
 
   const handleDeleteFile = (index) => {
     if (
@@ -542,18 +533,19 @@ console.log(editData,"LOADED");
                   >
                     {isLoading ? (
                       <>
-                          <span>Generate Report</span>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          border: "3px solid #f3f3f3",
-                          borderTop: "3px solid black",
-                          borderRadius: "50%",
-                          animation: "spin 1s linear infinite",
-                          marginLeft: "10px",
-                        }}
-                      ></div></>
+                        <span>Generate Report</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
                     ) : (
                       "Generate Report"
                     )}
@@ -1070,12 +1062,57 @@ console.log(editData,"LOADED");
                       </tbody>
                     </table>
                   </div>
+                  <div className="group-input">
+                    <label className="color-label">Attachment </label>
+                    <div>
+                      <input
+                        type="file"
+                        name="Attachment"
+                        value={editData.additionalAttachment}
+                        onChange={handleInputChange1}
+                      />
+                    </div>
+                  </div>
+                  <div className="group-input ">
+                    <label className="color-label">
+                      Additional Information (If/Any){" "}
+                    </label>
+                    <div>
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={editData.additionalInfo}
+                        onChange={handleInputChange1}
+                      />
+                    </div>
+                  </div>
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
                     <div className="group-input">
                       <label className="color-label">
                         Initiator Comment
@@ -1165,35 +1202,34 @@ console.log(editData,"LOADED");
                     </div>
                   </div>
 
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <div className="form-flex"></div>
                 </>
               ) : null}
 
               {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.reviewer1?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_review)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
@@ -1283,35 +1319,34 @@ console.log(editData,"LOADED");
                     </div>
                   </div>
 
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Reviewer </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="reviewer"
-                          value={editData?.reviewer1?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Review</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_review)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <div className="form-flex"></div>
                 </>
               ) : null}
 
               {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.approver1?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_approval)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
@@ -1401,29 +1436,7 @@ console.log(editData,"LOADED");
                     </div>
                   </div>
 
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Approver </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="approver"
-                          value={editData?.approver1?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Approval</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_approval)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <div className="form-flex"></div>
                 </>
               ) : null}
             </div>

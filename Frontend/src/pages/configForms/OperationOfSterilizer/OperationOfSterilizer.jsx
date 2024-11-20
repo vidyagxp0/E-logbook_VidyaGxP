@@ -31,6 +31,8 @@ const OperationOfSterilizer = () => {
       department: "",
       review_comments: "",
       compression_area: "",
+      additionalAttachment: "",
+      additionalInfo: "",
       limit: 1,
       // initiatorComment: "",
       initiatorAttachment: null,
@@ -45,7 +47,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -67,7 +69,7 @@ const OperationOfSterilizer = () => {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -91,7 +93,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -103,6 +105,21 @@ const OperationOfSterilizer = () => {
         console.error(error);
       });
   }, []);
+
+  const setTinyContent = (data, tinyNO) => {
+    switch (tinyNO) {
+      case 1:
+        setTiny1(data);
+        break;
+      case 2:
+        setTiny2(data);
+        break;
+      case 3:
+        setTiny3(data);
+
+        break;
+    }
+  };
 
   const handlePopupSubmit = (credentials) => {
     if (
@@ -146,7 +163,7 @@ const OperationOfSterilizer = () => {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com/operation-sterlizer/post",
+        "http://localhost:1000/operation-sterlizer/post",
         operationOfSterilizer,
         config
       )
@@ -745,6 +762,39 @@ const OperationOfSterilizer = () => {
                         ))}
                       </tbody>
                     </table>
+                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Attachment (If / Any)
+                        </label>
+                        <input
+                          type="file"
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          value={OperationOfSterilizer.additionalAttachment}
+                          onChange={(e) => {
+                            setOperationOfSterilizer({
+                              additionalAttachment: e.target.value,
+                            });
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Info (If / Any)
+                        </label>
+                        <textarea
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          rows="4"
+                          value={OperationOfSterilizer.additionalInfo}
+                          onChange={(e) => {
+                            setOperationOfSterilizer({
+                              additionalInfo: e.target.value,
+                            });
+                          }}
+                        ></textarea>
+                      </div>
+                    </div>
                   </div>
                 </>
               ) : null}
