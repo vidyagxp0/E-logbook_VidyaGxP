@@ -35,7 +35,7 @@ function HeaderBottom() {
                   window.location.pathname === "/dashboard"
                     ? "bg-blue-600 text-white"
                     : "bg-white text-blue-500 border border-blue-500"
-                } hover:bg-blue-600 transition duration-300`}
+                } hover:bg-blue-600 transition duration-300 hover:text-white`}
               >
                 Dashboard
               </Link>
@@ -45,7 +45,7 @@ function HeaderBottom() {
                   window.location.pathname === "/dashboard2"
                     ? "bg-blue-600 text-white"
                     : "bg-white text-blue-500 border border-blue-500 "
-                } hover:bg-blue-600 transition duration-300 `}
+                } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
                 Analytics
               </Link>
