@@ -35,7 +35,7 @@ function AdminProcesses() {
           ) : (
             <table
               style={{
-                marginLeft: '150px',
+                marginLeft: "150px",
                 width: "60%",
                 borderCollapse: "collapse",
                 backgroundColor: "#fff",
@@ -95,5 +95,3 @@ function AdminProcesses() {
 }
 
 export default AdminProcesses;
-
-  

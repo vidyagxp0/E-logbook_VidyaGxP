@@ -15,14 +15,18 @@ const OperationOfSterilizerPanel = () => {
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
     description: "",
+    additionalInfo: "",
+    additionalAttachment: "",
     OperationOfSterilizerRecords: [],
   });
+  console.log(editData, "editData");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -40,6 +44,7 @@ const OperationOfSterilizerPanel = () => {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
+      initiatorComment: editData.initiatorComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -89,6 +94,15 @@ const OperationOfSterilizerPanel = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
+      // data.initiatorComment=editData.initiatorComment;
+      console.log(data.initiatorComment, "INININI");
+      console.log(data);
+
+      if (!data.initiatorComment || data.initiatorComment.trim() === "") {
+        toast.error("Please provide an initiator comment!");
+        return;
+      }
+
       axios
         .put(
           "http://localhost:1000/operation-sterlizer/send-for-review",
@@ -423,181 +437,44 @@ const OperationOfSterilizerPanel = () => {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title:"Operation Of Sterilizer",
+    title: "Operation Of Sterilizer",
     ...editData,
   };
 
-  async function generateReport() {
-    // Create the confirmation popup container
-    const confirmationContainer = document.createElement("div");
-    confirmationContainer.style.position = "fixed";
-    confirmationContainer.style.top = "20px"; // Adjusted top position
-    confirmationContainer.style.left = "50%";
-    confirmationContainer.style.transform = "translate(-50%, 0)";
-    confirmationContainer.style.backgroundColor = "#ffffff";
-    confirmationContainer.style.border = "1px solid #ccc";
-    confirmationContainer.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
-    confirmationContainer.style.padding = "20px";
-    confirmationContainer.style.borderRadius = "5px";
-    confirmationContainer.style.zIndex = "1000";
-    confirmationContainer.style.width = "300px";
+  const generateReport = async () => {
+    setIsLoading(true);
 
-    // Create the confirmation message
-    const confirmationMessage = document.createElement("div");
-    confirmationMessage.textContent =
-      "Are you sure you want to generate the PDF?";
-    confirmationMessage.style.fontSize = "16px";
-    confirmationMessage.style.marginBottom = "15px";
+    try {
+      const response = await axios({
+        url: "http://localhost:1000/operation-sterlizer/generate-pdf",
+        method: "POST",
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          "Content-Type": "application/json",
+        },
+        data: {
+          reportData: reportData,
+        },
+      });
 
-    // Create the buttons container
-    const buttonsContainer = document.createElement("div");
-    buttonsContainer.style.textAlign = "center";
+      const url = window.URL.createObjectURL(new Blob([response.data]));
 
-    // Create the confirm button
-    const confirmButton = document.createElement("button");
-    confirmButton.textContent = "Confirm";
-    confirmButton.style.padding = "10px 20px";
-    confirmButton.style.margin = "0 10px";
-    confirmButton.style.cursor = "pointer";
-    confirmButton.style.border = "none";
-    confirmButton.style.borderRadius = "5px";
-    confirmButton.style.backgroundColor = "#4CAF50";
-    confirmButton.style.color = "white";
-    confirmButton.style.fontSize = "14px";
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = `OS${reportData.form_id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
 
-    // Create the cancel button
-    const cancelButton = document.createElement("button");
-    cancelButton.textContent = "Cancel";
-    cancelButton.style.padding = "10px 20px";
-    cancelButton.style.margin = "0 10px";
-    cancelButton.style.cursor = "pointer";
-    cancelButton.style.border = "none";
-    cancelButton.style.borderRadius = "5px";
-    cancelButton.style.backgroundColor = "#f44336";
-    cancelButton.style.color = "white";
-    cancelButton.style.fontSize = "14px";
-
-    // Append buttons to the buttons container
-    buttonsContainer.appendChild(confirmButton);
-    buttonsContainer.appendChild(cancelButton);
-
-    // Append message and buttons to the confirmation container
-    confirmationContainer.appendChild(confirmationMessage);
-    confirmationContainer.appendChild(buttonsContainer);
-
-    // Append the confirmation container to the document body
-    document.body.appendChild(confirmationContainer);
-
-    // Add event listener to the confirm button
-    confirmButton.addEventListener("click", async () => {
-      try {
-        // Close the confirmation popup
-        confirmationContainer.remove();
-
-        // Make API request to generate PDF
-        const response = await axios({
-          url: "http://localhost:1000/operation-sterlizer/generate-pdf",
-          method: "POST",
-          responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-            "Content-Type": "application/json",
-          },
-          data: {
-            reportData: reportData,
-          },
-        });
-
-        // Create a blob URL for the PDF content
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-
-        // Create an anchor element to trigger the download
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = url;
-        a.download = `OS${reportData.form_id}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-
-        // Clean up the blob URL
-        window.URL.revokeObjectURL(url);
-
-        // Display success message as styled popup
-        const successMessage = document.createElement("div");
-        successMessage.textContent = "PDF generated successfully!";
-        successMessage.style.position = "fixed";
-        successMessage.style.top = "20px";
-        successMessage.style.left = "50%";
-        successMessage.style.transform = "translateX(-50%)";
-        successMessage.style.backgroundColor =
-          "rgba(76, 175, 80, 0.8)"; /* Green for success */
-        successMessage.style.color = "white";
-        successMessage.style.padding = "15px";
-        successMessage.style.borderRadius = "5px";
-        successMessage.style.zIndex = "1000";
-        successMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
-        successMessage.style.fontSize = "14px";
-        document.body.appendChild(successMessage);
-
-        // Remove the success message after 3 seconds
-        setTimeout(() => {
-          successMessage.remove();
-        }, 3000);
-      } catch (error) {
-        console.error("Error:", error);
-        // Display error message as styled popup
-        const errorMessage = document.createElement("div");
-        errorMessage.textContent =
-          "Failed to generate PDF. Please try again later.";
-        errorMessage.style.position = "fixed";
-        errorMessage.style.top = "20px";
-        errorMessage.style.left = "50%";
-        errorMessage.style.transform = "translateX(-50%)";
-        errorMessage.style.backgroundColor =
-          "rgba(244, 67, 54, 0.8)"; /* Red for error */
-        errorMessage.style.color = "white";
-        errorMessage.style.padding = "15px";
-        errorMessage.style.borderRadius = "5px";
-        errorMessage.style.zIndex = "1000";
-        errorMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
-        errorMessage.style.fontSize = "14px";
-        document.body.appendChild(errorMessage);
-
-        // Remove the error message after 3 seconds
-        setTimeout(() => {
-          errorMessage.remove();
-        }, 3000);
-      }
-    });
-
-    // Add event listener to the cancel button
-    cancelButton.addEventListener("click", () => {
-      // Close the confirmation popup
-      confirmationContainer.remove();
-
-      // Display cancel message as styled popup
-      const cancelMessage = document.createElement("div");
-      cancelMessage.textContent = "PDF generation canceled.";
-      cancelMessage.style.position = "fixed";
-      cancelMessage.style.top = "20px";
-      cancelMessage.style.left = "50%";
-      cancelMessage.style.transform = "translateX(-50%)";
-      cancelMessage.style.backgroundColor =
-        "rgba(183, 28, 28, 0.8)"; /* Dark red for cancel */
-      cancelMessage.style.color = "white";
-      cancelMessage.style.padding = "15px";
-      cancelMessage.style.borderRadius = "5px";
-      cancelMessage.style.zIndex = "1000";
-      cancelMessage.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
-      cancelMessage.style.fontSize = "14px";
-      document.body.appendChild(cancelMessage);
-
-      // Remove the cancel message after 3 seconds
-      setTimeout(() => {
-        cancelMessage.remove();
-      }, 3000);
-    });
-  }
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to generate PDF. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -642,8 +519,7 @@ const OperationOfSterilizerPanel = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                Operation Of Sterilizer
-
+                  Operation Of Sterilizer
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -664,10 +540,35 @@ const OperationOfSterilizerPanel = () => {
 
                   {/* Generate Report Button */}
                   <button
-                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={generateReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
                   >
-                    Generate Report
+                    {isLoading ? (
+                      <>
+                        <span>Generate Report</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Generate Report"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
@@ -748,7 +649,7 @@ const OperationOfSterilizerPanel = () => {
                 </div>
               </div>
               <div className="outerDiv4 bg-slate-300 py-4">
-              <div className="flex gap-3 ">
+                <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                       location.state?.stage > 1
@@ -881,7 +782,7 @@ const OperationOfSterilizerPanel = () => {
                   >
                     Approver Remarks
                   </div>
-                  <div
+                  {/* <div
                     className="btn-forms-select"
                     onClick={() =>
                       navigate("/audit-trail", {
@@ -893,11 +794,11 @@ const OperationOfSterilizerPanel = () => {
                     }
                   >
                     Audit Trail
-                  </div>
+                  </div> */}
                 </div>
-                <button className="btn-forms-select" onClick={generateReport}>
+                {/* <button className="btn-forms-select" onClick={generateReport}>
                   Generate Report
-                </button>
+                </button> */}
                 {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
@@ -979,380 +880,454 @@ const OperationOfSterilizerPanel = () => {
                     </div>
                   </div>
                   <div className="overflow-x-auto">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th rowSpan={2}>S no.</th>
-                        <th rowSpan={2}>Unique Id</th>
-                        <th rowSpan={2}>Date</th>
-                        <th rowSpan={2}>Air Pressure (4-6 kg)</th>
-                        <th rowSpan={2}>Steam Pressure (4-6 kg)</th>
-                        <th rowSpan={2}>Printer Ok Yes/No</th>
-                        <th rowSpan={2}>Product Name</th>
-                        <th rowSpan={2}>Container size (ml)</th>
-                        <th rowSpan={2}>Loaded quantity</th>
-                        <th rowSpan={2}>Batch No.- Lot. No.</th>
-                        <th rowSpan={2}>Loading Time</th>
-                        <th rowSpan={1} colSpan={2}>
-                          {" "}
-                          D-well Period
-                        </th>
-                        <th rowSpan={2}>Unloading Time</th>
-                        <th rowSpan={1} colSpan={2}>
-                          Cleaning Time
-                        </th>
-                        <th rowSpan={2}>Cleaning Done By</th>
-                        <th rowSpan={2}>Checked By</th>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th rowSpan={2}>S no.</th>
+                          <th rowSpan={2}>Unique Id</th>
+                          <th rowSpan={2}>Date</th>
+                          <th rowSpan={2}>Air Pressure (4-6 kg)</th>
+                          <th rowSpan={2}>Steam Pressure (4-6 kg)</th>
+                          <th rowSpan={2}>Printer Ok Yes/No</th>
+                          <th rowSpan={2}>Product Name</th>
+                          <th rowSpan={2}>Container size (ml)</th>
+                          <th rowSpan={2}>Loaded quantity</th>
+                          <th rowSpan={2}>Batch No.- Lot. No.</th>
+                          <th rowSpan={2}>Loading Time</th>
+                          <th rowSpan={1} colSpan={2}>
+                            {" "}
+                            D-well Period
+                          </th>
+                          <th rowSpan={2}>Unloading Time</th>
+                          <th rowSpan={1} colSpan={2}>
+                            Cleaning Time
+                          </th>
+                          <th rowSpan={2}>Cleaning Done By</th>
+                          <th rowSpan={2}>Checked By</th>
 
-                        {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
-                        <th rowSpan={2}>Actions</th>
-                      </tr>
-                      <tr>
-                        <th>Start</th>
-                        <th>End</th>
-                        <th>Start</th>
-                        <th>End</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {editData?.OperationOfSterilizerRecords.map(
-                        (item, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.unique_id}</td>
-                            <td>
-                            <input
-                              value={item.date}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].date = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                              readOnly
-                            />
-                          </td>
-                            <td>
-                              <input
-                                value={item.air_pressure}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].air_pressure = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.steam_pressure}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].steam_pressure =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
+                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th rowSpan={2}>Actions</th>
+                        </tr>
+                        <tr>
+                          <th>Start</th>
+                          <th>End</th>
+                          <th>Start</th>
+                          <th>End</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {editData?.OperationOfSterilizerRecords.map(
+                          (item, index) => (
+                            <tr key={index}>
+                              <td>{index + 1}</td>
+                              <td>{item.unique_id}</td>
+                              <td>
+                                <input
+                                  value={item.date}
+                                  onChange={(e) => {
+                                    const newData = [...allTableData];
+                                    newData[index].date = e.target.value;
+                                    setAllTableData(newData);
+                                  }}
+                                  readOnly
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.air_pressure}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].air_pressure =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.steam_pressure}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].steam_pressure =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
 
-                            <td>
-                              <input
-                                value={item.printer_ok}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].printer_ok = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.product_name}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].product_name = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.container_size}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].container_size =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.loaded_quantity}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].loaded_quantity =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
+                              <td>
+                                <input
+                                  value={item.printer_ok}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].printer_ok = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.product_name}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].product_name =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.container_size}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].container_size =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.loaded_quantity}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].loaded_quantity =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
 
-                            <td>
-                              <input
-                                value={item.batch_no_lot_no}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].batch_no_lot_no =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.loading_time}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].loading_time = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.d_well_period_start}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].d_well_period_start =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.d_well_period_end}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].d_well_period_end =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.unloading_time}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].unloading_time =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.cleaning_time_start}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].cleaning_time_start =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.cleaning_time_end}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].cleaning_time_end =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.cleaning_done_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].cleaning_done_by =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.OperationOfSterilizerRecords,
-                                  ];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    OperationOfSterilizerRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
-                            </td>
-                            <td>
-                              <DeleteIcon onClick={() => deleteRow(index)} />
-                            </td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                  </div>
+                              <td>
+                                <input
+                                  value={item.batch_no_lot_no}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].batch_no_lot_no =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.loading_time}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].loading_time =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.d_well_period_start}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].d_well_period_start =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.d_well_period_end}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].d_well_period_end =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.unloading_time}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].unloading_time =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.cleaning_time_start}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].cleaning_time_start =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.cleaning_time_end}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].cleaning_time_end =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.cleaning_done_by}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].cleaning_done_by =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.checked_by}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.OperationOfSterilizerRecords,
+                                    ];
+                                    newData[index].checked_by = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      OperationOfSterilizerRecords: newData,
+                                    });
+                                  }}
+                                  readOnly
+                                />
+                              </td>
+                              <td>
+                                <DeleteIcon onClick={() => deleteRow(index)} />
+                              </td>
+                            </tr>
+                          )
+                        )}
+                      </tbody>
+                    </table>
+                    {editData?.OperationOfSterilizerRecords.map(
+                          (item, index) => (
+                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Attachment (If / Any)
+                        </label>
+                        <input
+                          type="file"
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          value={item.additionalAttachment}
+                          onChange={(e) => {
+                            const newData = [
+                              ...editData.OperationOfSterilizerRecords,
+                            ];
+                            newData[index].additionalAttachment =
+                              e.target.value;
+                            setEditData({
+                              ...editData,
+                              OperationOfSterilizerRecords: newData,
+                            });
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Info (If / Any)
+                        </label>
+                        <textarea
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          rows="4"
+                          value={item.additionalInfo}
+                          onChange={(e) => {
+                            const newData = [
+                              ...editData.OperationOfSterilizerRecords,
+                            ];
+                            newData[index].additionalInfo = e.target.value;
+                            setEditData({
+                              ...editData,
+                              OperationOfSterilizerRecords: newData,
+                            });
+                          }}
+                        ></textarea>
+                      </div>
+                    </div>
+                )
+              )}
+              </div>
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
@@ -1442,35 +1417,34 @@ const OperationOfSterilizerPanel = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
               {reviewerRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.reviewer2?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_review)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
@@ -1560,35 +1534,34 @@ const OperationOfSterilizerPanel = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Reviewer </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="reviewer"
-                          value={editData?.reviewer2?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Review</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_review)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
               {approverRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.approver2?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_approval)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
@@ -1674,30 +1647,6 @@ const OperationOfSterilizerPanel = () => {
                           id="approverAttachment"
                           onChange={handleApproverFileChange}
                           style={{ display: "none" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Approver </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="approver"
-                          value={editData?.approver2?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Approval</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_approval)}
-                          readOnly
                         />
                       </div>
                     </div>

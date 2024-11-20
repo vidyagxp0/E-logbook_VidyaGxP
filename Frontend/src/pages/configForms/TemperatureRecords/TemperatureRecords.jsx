@@ -282,6 +282,14 @@ export default function TemperatureRecords() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div> */}
+              <div className="sop-type-header">
+                <div className="logo">
+                  <img src="/vidyalogo2.png" alt="..." />
+                </div>
+                <div className="main-head">
+                  <div>VidyaGxP Private Limited</div>
+                </div>
+              </div>
               <div className="sub-head-2">Temperature Record</div>
               <div className="outerDiv4">
                 <div className="btn-forms">
@@ -317,7 +325,7 @@ export default function TemperatureRecords() {
                   >
                     Details
                   </div>
-                  <div
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -364,7 +372,7 @@ export default function TemperatureRecords() {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

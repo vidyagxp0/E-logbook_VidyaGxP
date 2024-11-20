@@ -31,7 +31,7 @@ const LoadedQuantity = () => {
       review_comments: "",
       compression_area: "",
       limit: 1,
-      initiatorComment: " ",
+      // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }
@@ -246,14 +246,14 @@ const LoadedQuantity = () => {
           </div>
           <div className="document-form">
             <div className="details-form-data">
-              {/* <div className="sop-type-header">
+              <div className="sop-type-header">
                 <div className="logo">
                   <img src="/vidyalogo2.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
                 </div>
-              </div> */}
+              </div>
               <div className="sub-head-2">Loaded Quantity</div>
 
               <div className="outerDiv4">
@@ -647,6 +647,20 @@ const LoadedQuantity = () => {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                  <div className="group-input">
+                    <label className="color-label">Attachment </label>
+                    <div>
+                      <input type="file" name="Attachment" />
+                    </div>
+                  </div>
+                  <div className="group-input ">
+                    <label className="color-label">
+                      Additional Information (If/Any){" "}
+                    </label>
+                    <div>
+                      <textarea type="text" name="Additional" />
+                    </div>
                   </div>
                 </>
               ) : null}

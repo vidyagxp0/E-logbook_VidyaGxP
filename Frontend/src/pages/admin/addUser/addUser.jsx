@@ -199,7 +199,9 @@ function AddNewUser() {
               isMulti
             />
           </div>
-          <button className="submit-button" type="submit">Add User</button>
+          <button className="submit-button" type="submit">
+            Add User
+          </button>
         </form>
       </div>
     </div>

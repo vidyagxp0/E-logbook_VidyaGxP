@@ -52,12 +52,6 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
       .json({ error: true, message: "Please provide email and password." });
   }
 
-  if (!initiatorComment) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an initiator comment." });
-  }
-
   // Start a transaction
   const transaction = await sequelize.transaction();
 
@@ -761,7 +755,8 @@ exports.GetAlltOperationOfSterilizerForm = async (req, res) => {
 
 //send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, email, password, initiatorDeclaration } = req.body;
+  const { form_id, email, password, initiatorDeclaration, initiatorComment } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -857,6 +852,7 @@ exports.SendDPElogForReview = async (req, res) => {
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
+        initiatorComment: initiatorComment,
       },
       { transaction }
     );

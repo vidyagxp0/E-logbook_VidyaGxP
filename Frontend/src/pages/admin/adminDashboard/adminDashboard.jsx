@@ -314,7 +314,7 @@ function AdminDashboard() {
                         >
                           Edit
                         </button>
-                      
+
                         <button
                           style={{
                             padding: "5px 10px",

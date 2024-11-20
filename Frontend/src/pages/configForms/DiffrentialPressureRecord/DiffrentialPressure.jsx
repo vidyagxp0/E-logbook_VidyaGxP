@@ -286,6 +286,14 @@ export default function DiffrentialPressure() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div> */}
+              <div className="sop-type-header">
+                <div className="logo">
+                  <img src="/vidyalogo2.png" alt="..." />
+                </div>
+                <div className="main-head">
+                  <div>VidyaGxP Private Limited</div>
+                </div>
+              </div>
               <div className="sub-head-2">Differential Pressure Record</div>
 
               <div className="outerDiv4">
@@ -322,7 +330,7 @@ export default function DiffrentialPressure() {
                   >
                     Details
                   </div>
-                  <div
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -337,8 +345,8 @@ export default function DiffrentialPressure() {
                     }}
                   >
                     Initiator Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       reviewerRemarks === true
                         ? "btn-forms-isSelected"
@@ -369,7 +377,7 @@ export default function DiffrentialPressure() {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

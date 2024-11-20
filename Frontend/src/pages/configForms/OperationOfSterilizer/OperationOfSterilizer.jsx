@@ -31,8 +31,10 @@ const OperationOfSterilizer = () => {
       department: "",
       review_comments: "",
       compression_area: "",
+      additionalAttachment: "",
+      additionalInfo: "",
       limit: 1,
-      initiatorComment: " ",
+      // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }
@@ -103,6 +105,21 @@ const OperationOfSterilizer = () => {
         console.error(error);
       });
   }, []);
+
+  const setTinyContent = (data, tinyNO) => {
+    switch (tinyNO) {
+      case 1:
+        setTiny1(data);
+        break;
+      case 2:
+        setTiny2(data);
+        break;
+      case 3:
+        setTiny3(data);
+
+        break;
+    }
+  };
 
   const handlePopupSubmit = (credentials) => {
     if (
@@ -253,14 +270,6 @@ const OperationOfSterilizer = () => {
           </div>
           <div className="document-form">
             <div className="details-form-data">
-              {/* <div className="sop-type-header">
-                <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
-                </div>
-                <div className="main-head">
-                  <div>VidyaGxP Private Limited</div>
-                </div>
-              </div> */}
               <div className="sub-head-2">Operation Of Sterilizer</div>
 
               <div className="outerDiv4">
@@ -753,6 +762,39 @@ const OperationOfSterilizer = () => {
                         ))}
                       </tbody>
                     </table>
+                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Attachment (If / Any)
+                        </label>
+                        <input
+                          type="file"
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          value={OperationOfSterilizer.additionalAttachment}
+                          onChange={(e) => {
+                            setOperationOfSterilizer({
+                              additionalAttachment: e.target.value,
+                            });
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Info (If / Any)
+                        </label>
+                        <textarea
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          rows="4"
+                          value={OperationOfSterilizer.additionalInfo}
+                          onChange={(e) => {
+                            setOperationOfSterilizer({
+                              additionalInfo: e.target.value,
+                            });
+                          }}
+                        ></textarea>
+                      </div>
+                    </div>
                   </div>
                 </>
               ) : null}
