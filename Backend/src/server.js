@@ -49,3 +49,4 @@ server.listen(config.development.PORT, "0.0.0.0", async () => {
       console.log("Error in database connection", e);
     });
 });
+

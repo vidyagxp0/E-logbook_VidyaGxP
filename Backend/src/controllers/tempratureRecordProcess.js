@@ -32,6 +32,8 @@ exports.InsertTempratureRecord = async (req, res) => {
     password,
     FormRecordsArray,
     initiatorDeclaration,
+    additionalAttachment,
+    additionalInfo,
   } = req.body;
 
   if (!approver_id) {
@@ -83,12 +85,15 @@ exports.InsertTempratureRecord = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
     const supportingDocs = {};
 
     // Process files
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       } else if (file.fieldname.startsWith("FormRecordsArray[")) {
         // Extract the index from the fieldname
         const match = file.fieldname.match(
@@ -116,6 +121,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
       },
 
@@ -154,6 +160,19 @@ exports.InsertTempratureRecord = async (req, res) => {
         field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+        declaration: initiatorDeclaration,
+        action: "Opened",
+      });
+    }
+    if (additionalAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "additionalAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
@@ -281,10 +300,10 @@ exports.InsertTempratureRecord = async (req, res) => {
     //     recipients: elogData.approverEmail,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log Created successfully",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log Created successfully",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -363,11 +382,14 @@ exports.EditTempratureRecord = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
     const supportingDocs = {};
 
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       } else if (file.fieldname.startsWith("TempratureRecords[")) {
         // Extract the index from the fieldname
         const match = file.fieldname.match(
@@ -408,6 +430,9 @@ exports.EditTempratureRecord = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalAttachment: additionalAttachment
+        ? getElogDocsUrl(additionalAttachment)
+        : form.additionalAttachment,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -443,6 +468,7 @@ exports.EditTempratureRecord = async (req, res) => {
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
       },
       { transaction }
@@ -725,6 +751,19 @@ exports.SendTRElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "additionalAttachment",
+        previous_value: form.additionalAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Opened",
+        new_status: "Under Review",
+        declaration: initiatorDeclaration,
+        action: "Send For Review",
+      });
+    }
 
     auditTrailEntries.push({
       form_id: form.form_id,
@@ -746,6 +785,9 @@ exports.SendTRElogForReview = async (req, res) => {
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
+        additionalAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.additionalAttachment,
       },
       { transaction }
     );
@@ -770,10 +812,10 @@ exports.SendTRElogForReview = async (req, res) => {
     //     recipients: reviewer.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log successfully sent for review",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log successfully sent for review",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -911,10 +953,10 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
     //     recipients: initiator.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log status successfully changed from review to Opened",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log status successfully changed from review to Opened",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({
@@ -1218,11 +1260,11 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
     //     recipients: initiator.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message:
-          "E-log status successfully changed from under-approval to under-review",
-      });
+    return res.status(200).json({
+      error: false,
+      message:
+        "E-log status successfully changed from under-approval to under-review",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({

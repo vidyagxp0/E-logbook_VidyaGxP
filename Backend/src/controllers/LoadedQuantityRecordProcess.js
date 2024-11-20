@@ -33,6 +33,8 @@ exports.InsertLoadedQuantity = async (req, res) => {
     password,
     FormRecordsArray,
     initiatorDeclaration,
+    additionalAttachment,
+    additionalInfo,
   } = req.body;
 
   if (!approver_id) {
@@ -84,11 +86,14 @@ exports.InsertLoadedQuantity = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
 
     // Process files
     req?.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       }
     });
 
@@ -107,6 +112,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
       },
 
@@ -145,6 +151,19 @@ exports.InsertLoadedQuantity = async (req, res) => {
         field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+        declaration: initiatorDeclaration,
+        action: "Opened",
+      });
+    }
+    if (additionalAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "additionalAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
@@ -413,10 +432,13 @@ exports.EditLoadedQuantity = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
 
     req?.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       }
     });
 
@@ -482,6 +504,7 @@ exports.EditLoadedQuantity = async (req, res) => {
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
       },
       { transaction }
@@ -776,6 +799,19 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "additionalAttachment",
+        previous_value: form.additionalAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Opened",
+        new_status: "Under Review",
+        declaration: initiatorDeclaration,
+        action: "Send For Review",
+      });
+    }
 
     auditTrailEntries.push({
       form_id: form.form_id,
@@ -797,6 +833,9 @@ exports.SendDPElogForReview = async (req, res) => {
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
+        additionalAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.additionalAttachment,
       },
       { transaction }
     );
@@ -809,10 +848,10 @@ exports.SendDPElogForReview = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log successfully sent for review",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log successfully sent for review",
+    });
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -932,10 +971,10 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log status successfully changed from review to Opened",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log status successfully changed from review to Opened",
+    });
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1079,11 +1118,11 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-      return res.status(200).json({
-        error: false,
-        message:
-          "E-log status successfully changed from review to under-approval",
-      });
+    return res.status(200).json({
+      error: false,
+      message:
+        "E-log status successfully changed from review to under-approval",
+    });
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1203,11 +1242,11 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-      return res.status(200).json({
-        error: false,
-        message:
-          "E-log status successfully changed from under-approval to under-review",
-      });
+    return res.status(200).json({
+      error: false,
+      message:
+        "E-log status successfully changed from under-approval to under-review",
+    });
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();

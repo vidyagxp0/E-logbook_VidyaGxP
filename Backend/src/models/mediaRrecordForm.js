@@ -41,7 +41,7 @@ const MediaRecordProcessForm = sequelize.define("MediaRecordProcessForm", {
     type: DataTypes.DATE,
   },
   description: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
   },
   status: {
     type: DataTypes.STRING,
@@ -94,6 +94,12 @@ const MediaRecordProcessForm = sequelize.define("MediaRecordProcessForm", {
   approverAttachment: {
     type: DataTypes.STRING,
   },
+  additionalAttachment: {
+    type: DataTypes.STRING,
+  },
+  additionalInfo: {
+    type: DataTypes.STRING,
+  },
 });
 
 MediaRecordProcessForm.belongsTo(Site, { foreignKey: "site_id3" });
@@ -102,10 +108,22 @@ Site.hasMany(MediaRecordProcessForm, { foreignKey: "site_id3" });
 MediaRecordProcessForm.belongsTo(User, { foreignKey: "initiator_id3" });
 User.hasMany(MediaRecordProcessForm, { foreignKey: "initiator_id3" });
 
-MediaRecordProcessForm.belongsTo(User, { foreignKey: "reviewer_id", as: 'reviewer3' });
-User.hasMany(MediaRecordProcessForm, { foreignKey: "reviewer_id", as: 'reviewer3' });
+MediaRecordProcessForm.belongsTo(User, {
+  foreignKey: "reviewer_id",
+  as: "reviewer3",
+});
+User.hasMany(MediaRecordProcessForm, {
+  foreignKey: "reviewer_id",
+  as: "reviewer3",
+});
 
-MediaRecordProcessForm.belongsTo(User, { foreignKey: "approver_id", as: 'approver3' });
-User.hasMany(MediaRecordProcessForm, { foreignKey: "approver_id", as: 'approver3' });
+MediaRecordProcessForm.belongsTo(User, {
+  foreignKey: "approver_id",
+  as: "approver3",
+});
+User.hasMany(MediaRecordProcessForm, {
+  foreignKey: "approver_id",
+  as: "approver3",
+});
 
 module.exports = MediaRecordProcessForm;

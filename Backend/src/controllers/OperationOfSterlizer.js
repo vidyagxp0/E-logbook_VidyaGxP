@@ -32,7 +32,8 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
     email,
     password,
     FormRecordsArray,
-    initiatorDeclaration,
+    additionalAttachment,
+    additionalInfo,
   } = req.body;
 
   if (!approver_id) {
@@ -84,11 +85,14 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
 
     // Process files
     req?.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       }
     });
 
@@ -107,6 +111,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
       },
 
@@ -421,10 +426,13 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
 
     req?.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       }
     });
 
@@ -490,6 +498,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
       },
       { transaction }
@@ -805,6 +814,19 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "additionalAttachment",
+        previous_value: form.additionalAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Opened",
+        new_status: "Under Review",
+        declaration: initiatorDeclaration,
+        action: "Send For Review",
+      });
+    }
 
     auditTrailEntries.push({
       form_id: form.form_id,
@@ -826,6 +848,9 @@ exports.SendDPElogForReview = async (req, res) => {
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
+        additionalAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.additionalAttachment,
       },
       { transaction }
     );
@@ -1120,11 +1145,11 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     //     recipients: approver.email,
     //   });
 
-      return res.status(200).json({
-        error: false,
-        message:
-          "E-log status successfully changed from review to under-approval",
-      });
+    return res.status(200).json({
+      error: false,
+      message:
+        "E-log status successfully changed from review to under-approval",
+    });
     // } catch (emailError) {
     //   console.error("Failed to send emails:", emailError.message);
     //   return res.json({

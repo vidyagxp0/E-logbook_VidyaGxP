@@ -41,7 +41,7 @@ const DispenseOfMaterialForm = sequelize.define("DispenseOfMaterialForm", {
     type: DataTypes.DATE,
   },
   description: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
   },
   status: {
     type: DataTypes.STRING,
@@ -92,6 +92,12 @@ const DispenseOfMaterialForm = sequelize.define("DispenseOfMaterialForm", {
     type: DataTypes.STRING,
   },
   approverAttachment: {
+    type: DataTypes.STRING,
+  },
+  additionalAttachment: {
+    type: DataTypes.STRING,
+  },
+  additionalInfo: {
     type: DataTypes.STRING,
   },
 });
