@@ -516,9 +516,9 @@ export default function TemperatureRecords() {
                     <input
                       type="number"
                       className={`${
-                        tempratureRecord.limit < 0.6
+                        tempratureRecord.limit < 23
                           ? "limit"
-                          : tempratureRecord.limit > 2.6
+                          : tempratureRecord.limit > 27
                           ? "limit"
                           : ""
                       }`}
@@ -645,9 +645,9 @@ export default function TemperatureRecords() {
                               type="number"
                               value={item.temprature_record}
                               className={`${
-                                item.temprature_record < 0.6
+                                item.temprature_record < 23
                                   ? "limit"
-                                  : item.temprature_record > 2.6
+                                  : item.temprature_record > 27
                                   ? "limit"
                                   : ""
                               }`}
