@@ -325,7 +325,7 @@ export default function TemperatureRecords() {
                   >
                     Details
                   </div>
-                  <div
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -372,7 +372,7 @@ export default function TemperatureRecords() {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
