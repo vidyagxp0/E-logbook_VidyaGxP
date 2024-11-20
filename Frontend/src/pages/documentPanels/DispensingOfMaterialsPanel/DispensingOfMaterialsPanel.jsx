@@ -44,7 +44,7 @@ const DispensingOfMaterialsPanel = () => {
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
-      additionalInfo:editData.additionalInfo,
+      additionalInfo: editData.additionalInfo,
       additionalAttachment: editData.additionalAttachment,
     };
     data.initiatorDeclaration = credentials?.declaration;
@@ -842,433 +842,439 @@ const DispensingOfMaterialsPanel = () => {
                     </div>
                   </div>
                   <div className="overflow-x-auto">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th rowSpan={3}>S no.</th>
-                        <th rowSpan={3}>Unique Id</th>
-                        <th rowSpan={3}>Date</th>
-                        <th rowSpan={1} colSpan={3}>
-                          ON TIME
-                        </th>
-                        <th rowSpan={3}>Done by</th>
-                        <th rowSpan={3}>Name of Material</th>
-                        <th rowSpan={3}>Control No.</th>
-                        <th rowSpan={3}>Dispensed Quantity (Kg)</th>
-                        <th rowSpan={1} colSpan={2}>
-                          Dispensed By (Sign/Date)
-                        </th>
-                        <th rowSpan={1} colSpan={3}>
-                          OFF TIME
-                        </th>
-                        <th rowSpan={3}>UV Burning Hrs</th>
-                        <th rowSpan={3}>Done by</th>
-                        <th rowSpan={3}>Cleaning done by</th>
-                        <th rowSpan={3}>Checked by (Sign/Date)</th>
-                        <th rowSpan={3}>Weighing Balance ID</th>
-                        <th rowSpan={3}>Remark</th>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th rowSpan={3}>S no.</th>
+                          <th rowSpan={3}>Unique Id</th>
+                          <th rowSpan={3}>Date</th>
+                          <th rowSpan={1} colSpan={3}>
+                            ON TIME
+                          </th>
+                          <th rowSpan={3}>Done by</th>
+                          <th rowSpan={3}>Name of Material</th>
+                          <th rowSpan={3}>Control No.</th>
+                          <th rowSpan={3}>Dispensed Quantity (Kg)</th>
+                          <th rowSpan={1} colSpan={2}>
+                            Dispensed By (Sign/Date)
+                          </th>
+                          <th rowSpan={1} colSpan={3}>
+                            OFF TIME
+                          </th>
+                          <th rowSpan={3}>UV Burning Hrs</th>
+                          <th rowSpan={3}>Done by</th>
+                          <th rowSpan={3}>Cleaning done by</th>
+                          <th rowSpan={3}>Checked by (Sign/Date)</th>
+                          <th rowSpan={3}>Weighing Balance ID</th>
+                          <th rowSpan={3}>Remark</th>
 
-                        {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
-                        <th rowSpan={3}>Actions</th>
-                      </tr>
-                      <tr>
-                        <th>AHU</th>
-                        <th>LAF</th>
-                        <th>UV LIGHT</th>
-                        <th>QA</th>
-                        <th>STORE</th>
-                        <th>AHU</th>
-                        <th>LAF</th>
-                        <th>UV LIGHT</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {editData?.DispenseOfMaterials.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{item.unique_id}</td>
-                          <td>
-                            <input value={item.date} readOnly />
-                          </td>
-                          <td>
-                            <input
-                              value={item.on_time_auh}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].on_time_auh = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.on_time_laf}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].on_time_laf = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-
-                          <td>
-                            <input
-                              value={item.on_time_uv_light}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].on_time_uv_light =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.on_time_done_by}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].on_time_done_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.name_of_material}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].name_of_material =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.control_no}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].control_no = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-
-                          <td>
-                            <input
-                              value={item.dispensed_quantity}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].dispensed_quantity =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.dispensed_by_qa}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].dispensed_by_qa = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.dispensed_by_store}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].dispensed_by_store =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.off_time_auh}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].off_time_auh = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.off_time_laf}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].off_time_laf = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.off_time_uv_light}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].off_time_uv_light =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.uv_burning}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].uv_burning = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.off_time_done_by}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].off_time_done_by =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.cleaning_done_by}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].cleaning_done_by =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].checked_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.weighing_balance_id}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].weighing_balance_id =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.remark}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.DispenseOfMaterials,
-                                ];
-                                newData[index].remark = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  DispenseOfMaterials: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                          </td>
+                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th rowSpan={3}>Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table></div>
+                        <tr>
+                          <th>AHU</th>
+                          <th>LAF</th>
+                          <th>UV LIGHT</th>
+                          <th>QA</th>
+                          <th>STORE</th>
+                          <th>AHU</th>
+                          <th>LAF</th>
+                          <th>UV LIGHT</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {editData?.DispenseOfMaterials.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.unique_id}</td>
+                            <td>
+                              <input value={item.date} readOnly />
+                            </td>
+                            <td>
+                              <input
+                                value={item.on_time_auh}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].on_time_auh = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.on_time_laf}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].on_time_laf = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.on_time_uv_light}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].on_time_uv_light =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.on_time_done_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].on_time_done_by =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.name_of_material}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].name_of_material =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.control_no}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].control_no = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.dispensed_quantity}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].dispensed_quantity =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.dispensed_by_qa}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].dispensed_by_qa =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.dispensed_by_store}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].dispensed_by_store =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.off_time_auh}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].off_time_auh = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.off_time_laf}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].off_time_laf = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.off_time_uv_light}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].off_time_uv_light =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.uv_burning}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].uv_burning = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.off_time_done_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].off_time_done_by =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.cleaning_done_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].cleaning_done_by =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.checked_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].checked_by = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.weighing_balance_id}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].weighing_balance_id =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.remark}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].remark = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                   <div className="group-input">
                     <label className="color-label">Attachment </label>
                     <div>
-                      <input type="file" name="Attachment"
-                      value={editData.additionalAttachment} 
-                      onChange={handleInputChange1} />
+                      <input
+                        type="file"
+                        name="Attachment"
+                        value={editData.additionalAttachment}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">
@@ -1276,12 +1282,12 @@ const DispensingOfMaterialsPanel = () => {
                       Additional Information (If/Any){" "}
                     </label>
                     <div>
-                      <textarea type="text" name="Additional"  value={editData.additionalInfo}
-                          onChange={(e) => {
-                            setOperationOfSterilizer({
-                              additionalInfo: e.target.value,
-                            });
-                          }} />
+                      <textarea
+                        type="text"
+                        name="Additional"
+                        value={editData.additionalInfo}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                 </>
@@ -1406,7 +1412,6 @@ const DispensingOfMaterialsPanel = () => {
 
               {reviewerRemarks === true ? (
                 <>
-                 
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Reviewer </label>
@@ -1524,7 +1529,6 @@ const DispensingOfMaterialsPanel = () => {
 
               {approverRemarks === true ? (
                 <>
-                
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Approver </label>
