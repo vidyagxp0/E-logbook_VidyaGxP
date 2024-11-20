@@ -60,7 +60,7 @@ export default function DPRpanel() {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
 
-      if (data.initiatorComment === "") {
+      if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
       }

@@ -93,10 +93,11 @@ const LoadedQuantityPanels = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
-      if (data.initiatorComment === "") {
+      if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
       }
+
       axios
         .put(
           "http://localhost:1000/loaded-quantity/send-for-review",
