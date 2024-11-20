@@ -44,6 +44,8 @@ const DispensingOfMaterialsPanel = () => {
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
+      additionalInfo:editData.additionalInfo,
+      additionalAttachment: editData.additionalAttachment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -744,7 +746,7 @@ const DispensingOfMaterialsPanel = () => {
                   >
                     Approver Remarks
                   </div>
-                  <div
+                  {/* <div
                     className="btn-forms-select"
                     onClick={() =>
                       navigate("/audit-trail", {
@@ -756,7 +758,7 @@ const DispensingOfMaterialsPanel = () => {
                     }
                   >
                     Audit Trail
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* <div className="analytics-btn">
@@ -839,6 +841,7 @@ const DispensingOfMaterialsPanel = () => {
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table>
                     <thead>
                       <tr>
@@ -1259,12 +1262,56 @@ const DispensingOfMaterialsPanel = () => {
                         </tr>
                       ))}
                     </tbody>
-                  </table>
+                  </table></div>
+                  <div className="group-input">
+                    <label className="color-label">Attachment </label>
+                    <div>
+                      <input type="file" name="Attachment"
+                      value={editData.additionalAttachment} 
+                      onChange={handleInputChange1} />
+                    </div>
+                  </div>
+                  <div className="group-input ">
+                    <label className="color-label">
+                      Additional Information (If/Any){" "}
+                    </label>
+                    <div>
+                      <textarea type="text" name="Additional"  value={editData.additionalInfo}
+                          onChange={(e) => {
+                            setOperationOfSterilizer({
+                              additionalInfo: e.target.value,
+                            });
+                          }} />
+                    </div>
+                  </div>
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
@@ -1354,35 +1401,35 @@ const DispensingOfMaterialsPanel = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
               {reviewerRemarks === true ? (
                 <>
+                 
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.reviewer4?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_review)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
@@ -1472,35 +1519,35 @@ const DispensingOfMaterialsPanel = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Reviewer </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="reviewer"
-                          value={editData?.reviewer4?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Review</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_review)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
               {approverRemarks === true ? (
                 <>
+                
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.approver4?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_approval)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
@@ -1586,30 +1633,6 @@ const DispensingOfMaterialsPanel = () => {
                           id="approverAttachment"
                           onChange={handleApproverFileChange}
                           style={{ display: "none" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Approver </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="approver"
-                          value={editData?.approver4?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Approval</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_approval)}
-                          readOnly
                         />
                       </div>
                     </div>

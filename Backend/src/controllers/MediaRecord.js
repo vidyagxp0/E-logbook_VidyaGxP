@@ -33,6 +33,8 @@ exports.InsertMediaRecord = async (req, res) => {
     password,
     FormRecordsArray,
     initiatorDeclaration,
+    additionalAttachment,
+    additionalInfo,
   } = req.body;
 
   if (!approver_id) {
@@ -78,11 +80,14 @@ exports.InsertMediaRecord = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
 
     // Process files
     req?.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       }
     });
 
@@ -101,7 +106,9 @@ exports.InsertMediaRecord = async (req, res) => {
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
+        additionalInfo: additionalInfo,
       },
 
       { transaction }
@@ -387,10 +394,13 @@ exports.EditMediaRecord = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
 
     req?.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       }
     });
 
@@ -456,6 +466,7 @@ exports.EditMediaRecord = async (req, res) => {
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
       },
       { transaction }
@@ -753,6 +764,19 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "additionalAttachment",
+        previous_value: form.additionalAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Opened",
+        new_status: "Under Review",
+        declaration: initiatorDeclaration,
+        action: "Send For Review",
+      });
+    }
 
     auditTrailEntries.push({
       form_id: form.form_id,
@@ -775,6 +799,9 @@ exports.SendDPElogForReview = async (req, res) => {
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
         initiatorComment: initiatorComment,
+        additionalAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.additionalAttachment,
       },
       { transaction }
     );

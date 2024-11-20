@@ -33,6 +33,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
     password,
     FormRecordsArray,
     initiatorDeclaration,
+    additionalAttachment,
+    additionalInfo,
   } = req.body;
 
   if (!approver_id) {
@@ -78,12 +80,15 @@ exports.InsertDifferentialPressure = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
     const supportingDocs = {};
 
     // Process files
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       } else if (file.fieldname.startsWith("FormRecordsArray[")) {
         // Extract the index from the fieldname
         const match = file.fieldname.match(
@@ -111,7 +116,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
+        additionalInfo: additionalInfo,
       },
 
       { transaction }
@@ -149,6 +156,20 @@ exports.InsertDifferentialPressure = async (req, res) => {
         field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+        declaration: initiatorDeclaration,
+        action: "Opened",
+      });
+    }
+
+    if (additionalAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "additionalAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
@@ -337,11 +358,14 @@ exports.EditDifferentialPressure = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
     const supportingDocs = {};
 
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       } else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
         const match = file.fieldname.match(
           /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
@@ -380,6 +404,9 @@ exports.EditDifferentialPressure = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalAttachment: additionalAttachment
+        ? getElogDocsUrl(additionalAttachment)
+        : form.additionalAttachment,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -415,6 +442,7 @@ exports.EditDifferentialPressure = async (req, res) => {
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
       },
       { transaction }
@@ -701,6 +729,20 @@ exports.SendDPElogForReview = async (req, res) => {
       });
     }
 
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "additionalAttachment",
+        previous_value: form.additionalAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Opened",
+        new_status: "Under Review",
+        declaration: initiatorDeclaration,
+        action: "Send For Review",
+      });
+    }
+
     auditTrailEntries.push({
       form_id: form.form_id,
       field_name: "stage Change",
@@ -722,6 +764,9 @@ exports.SendDPElogForReview = async (req, res) => {
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
         initiatorComment: initiatorComment,
+        additionalAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.additionalAttachment,
       },
       { transaction }
     );
