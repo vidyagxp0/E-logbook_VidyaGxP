@@ -304,7 +304,7 @@ export default function DPRpanel() {
   };
 
   const handleInputChange1 = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e?.target;
     setEditData({ ...editData, [name]: value });
   };
 
@@ -1101,17 +1101,10 @@ export default function DPRpanel() {
                         </label>
                         <input
                           type="file"
+                          name="additionalAttachment"
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           value={editData.additionalAttachment}
-                          onChange={(e) => {
-                           handleInputChange1()
-                            newData[index].additionalAttachment =
-                              e.target.value;
-                            setEditData({
-                              ...editData,
-                              additionalAttachment: newData,
-                            });
-                          }}
+                          onChange={handleInputChange1}
                         />
                       </div>
 
@@ -1122,16 +1115,9 @@ export default function DPRpanel() {
                         <textarea
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
-                          value={editData.additionalInfo}
-                          onChange={(e) => {
-                           
-                            handleInputChange1()
-                            newData[index].additionalInfo = e.target.value;
-                            setEditData({
-                              ...editData,
-                              additionalInfo: newData,
-                            });
-                          }}
+                          name="additionalInfo"
+                          value={editData?.additionalInfo}
+                          onChange={handleInputChange1}
                         ></textarea>
                       </div>
                     </div>

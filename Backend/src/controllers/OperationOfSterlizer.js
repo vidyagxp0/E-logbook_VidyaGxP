@@ -107,6 +107,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
+        additionalInfo: additionalInfo,
       },
 
       { transaction }

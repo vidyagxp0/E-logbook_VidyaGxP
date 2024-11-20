@@ -35,6 +35,8 @@ const DispensingOfMaterials = () => {
       initiatorComment: " ",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
+      additionalInfo:"",
+      additionalAttachment: null,
     }
   );
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -793,7 +795,33 @@ const DispensingOfMaterials = () => {
                         ))}
                       </tbody>
                     </table>
+                    <div className="group-input">
+                    <label className="color-label">Attachment </label>
+                    <div>
+                      <input type="file" name="Attachment"
+                      value={dispensingOfMaterials.additionalAttachment} 
+                      onChange={(e) => {
+                        setDispensingOfMaterials({
+                          additionalAttachment: e.target.value,
+                        });
+                       }} />
+                    </div>
                   </div>
+                  <div className="group-input ">
+                    <label className="color-label">
+                      Additional Info (If/Any){" "}
+                    </label>
+                    <div>
+                      <textarea type="text" name="Additional"  value={dispensingOfMaterials.additionalInfo}
+                          onChange={(e) => {
+                            setDispensingOfMaterials({
+                              additionalInfo: e.target.value,
+                            });
+                          }} />
+                    </div>
+                  </div>
+                  </div>
+
                 </>
               ) : null}
             </div>

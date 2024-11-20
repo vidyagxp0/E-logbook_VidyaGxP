@@ -31,27 +31,6 @@ const LoadedQuantityProcessForm = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
- 
-  reviewComment: {
-    type: DataTypes.STRING,
-  },
-  approverComment: {
-    type: DataTypes.STRING,
-  },
-  initiatorComment: {
-    allowNull:true,
-    type: DataTypes.STRING,
-  },
-  initiatorAttachment: {
-    type: DataTypes.STRING,
-  },
-  reviewerAttachment: {
-    type: DataTypes.STRING,
-  },
-  approverAttachment: {
-    type: DataTypes.STRING,
-  },
-
     date_of_initiation: {
       type: DataTypes.DATE,
       allowNull: false,

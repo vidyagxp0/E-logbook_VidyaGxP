@@ -26,7 +26,7 @@ const OperationOfSterilizerPanel = () => {
     additionalAttachment: "",
     OperationOfSterilizerRecords: [],
   });
- 
+
   console.log(editData, "editData");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -1254,7 +1254,7 @@ const OperationOfSterilizerPanel = () => {
                         )}
                       </tbody>
                     </table>
-                  
+
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="flex flex-col w-full">
                         <label className="text-sm font-medium text-gray-900 mb-1">
@@ -1264,15 +1264,7 @@ const OperationOfSterilizerPanel = () => {
                           type="file"
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           value={editData.additionalAttachment}
-                          onChange={(e) => {
-                           handleInputChange1()
-                            newData[index].additionalAttachment =
-                              e.target.value;
-                            setEditData({
-                              ...editData,
-                              additionalAttachment: newData,
-                            });
-                          }}
+                          onChange={handleInputChange1}
                         />
                       </div>
 
@@ -1284,19 +1276,11 @@ const OperationOfSterilizerPanel = () => {
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
                           value={editData.additionalInfo}
-                          onChange={(e) => {
-                            handleInputChange1()
-                            newData[index].additionalInfo = e.target.value;
-                            setEditData({
-                              ...editData,
-                              additionalInfo: newData,
-                            });
-                          }}
+                          onChange={handleInputChange1}
                         ></textarea>
                       </div>
                     </div>
-               
-              </div>
+                  </div>
                 </>
               ) : null}
 
