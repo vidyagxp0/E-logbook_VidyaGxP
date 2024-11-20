@@ -83,6 +83,7 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     type: DataTypes.STRING,
   },
   initiatorComment: {
+    allowNull:true,
     type: DataTypes.STRING,
   },
   initiatorAttachment: {
