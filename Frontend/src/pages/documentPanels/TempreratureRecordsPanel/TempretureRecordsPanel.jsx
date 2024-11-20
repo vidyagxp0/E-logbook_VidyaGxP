@@ -374,7 +374,11 @@ export default function TempretureRecordsPanel() {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+    setEditData({
+      ...editData,
+      initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
+    });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -831,9 +835,9 @@ export default function TempretureRecordsPanel() {
                       name="limit"
                       type="number"
                       className={`${
-                        editData?.limit < 0.6
+                        editData?.limit < 23
                           ? "limit"
-                          : editData?.limit > 2.6
+                          : editData?.limit > 27
                           ? "limit"
                           : ""
                       }`}
@@ -878,9 +882,9 @@ export default function TempretureRecordsPanel() {
                               type="number"
                               value={item.temprature_record}
                               className={`${
-                                item.temprature_record < 0.6
+                                item.temprature_record < 23
                                   ? "limit"
-                                  : item.temprature_record > 2.6
+                                  : item.temprature_record > 27
                                   ? "limit"
                                   : ""
                               }`}
@@ -1002,22 +1006,76 @@ export default function TempretureRecordsPanel() {
                     </tbody>
                   </table>
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Attachment (If / Any)
-                        </label>
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="additionalAttachment"
+                        className="color-label"
+                        name="additionalAttachment"
+                      >
+                        Additional Attachment{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
+                      </label>
+                      <div>
+                        {editData.additionalAttachment ? (
+                          <div className="flex items-center gap-x-10">
+                            <button
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Change File
+                            </button>
+                            <h3 className="">
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
+                              <a
+                                href={editData.additionalAttachment}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline"
+                              >
+                                View File
+                              </a>
+                            </h3>
+                          </div>
+                        ) : (
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
+                          </div>
+                        )}
                         <input
                           type="file"
                           name="additionalAttachment"
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={editData.additionalAttachment}
-                          onChange={handleInputChange1}
+                          id="additionalAttachment"
+                          onChange={handleInitiatorFileChange}
+                          style={{ display: "none" }}
                         />
                       </div>
-
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Info (If / Any)
+                    </div>
+                    
+                  </div>
+                  <div className="flex flex-col w-full">
+                        <label className=" text-lg text-gray-900 mb-1">
+                          Additional Info   <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
                         </label>
                         <textarea
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
@@ -1027,7 +1085,6 @@ export default function TempretureRecordsPanel() {
                           onChange={handleInputChange1}
                         ></textarea>
                       </div>
-                    </div>
                 </>
               ) : null}
 

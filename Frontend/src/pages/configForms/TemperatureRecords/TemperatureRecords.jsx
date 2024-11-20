@@ -244,11 +244,18 @@ export default function TemperatureRecords() {
     updatedData[index].supporting_docs = file;
     setAllTableData(updatedData);
   };
+  const handleFileChangeAttchment = (e) => {
+    setTempratureRecord({
+      ...tempratureRecord,
+      additionalAttachment: e.target.files[0],
+    });
+  };
 
   const handleInitiatorFileChange = (e) => {
     setTempratureRecord({
       ...tempratureRecord,
       initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
 
@@ -516,9 +523,9 @@ export default function TemperatureRecords() {
                     <input
                       type="number"
                       className={`${
-                        tempratureRecord.limit < 0.6
+                        tempratureRecord.limit < 23
                           ? "limit"
-                          : tempratureRecord.limit > 2.6
+                          : tempratureRecord.limit > 27
                           ? "limit"
                           : ""
                       }`}
@@ -645,9 +652,9 @@ export default function TemperatureRecords() {
                               type="number"
                               value={item.temprature_record}
                               className={`${
-                                item.temprature_record < 0.6
+                                item.temprature_record < 23
                                   ? "limit"
-                                  : item.temprature_record > 2.6
+                                  : item.temprature_record > 27
                                   ? "limit"
                                   : ""
                               }`}
@@ -759,23 +766,23 @@ export default function TemperatureRecords() {
                     </tbody>
                   </table>
                   <div className="group-input">
-                    <label className="color-label">Attachment </label>
+                    <label className="color-label">
+                      Additional Attachment
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                    </label>
                     <div>
                       <input
                         type="file"
                         name="additionalAttachment"
-                        value={tempratureRecord.additionalAttachment}
-                        onChange={(e) => {
-                          setTempratureRecord({
-                            additionalAttachment: e.target.value,
-                          });
-                        }}
+                        onChange={handleFileChangeAttchment}
                       />
                     </div>
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Info (If/Any){" "}
+                      Additional Info <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}{" "}
                     </label>
                     <div>
                       <textarea
