@@ -1078,7 +1078,7 @@ const LoadedQuantityPanels = () => {
                       Additional Information (If/Any){" "}
                     </label>
                     <div>
-                      <textarea type="text" name="Additional" />
+                      <textarea type="text" name="Additional" value={editData.additionalInfo} />
                     </div>
                   </div>
                 </>
