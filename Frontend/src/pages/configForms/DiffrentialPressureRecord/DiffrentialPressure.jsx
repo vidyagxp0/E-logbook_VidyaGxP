@@ -248,6 +248,12 @@ export default function DiffrentialPressure() {
     updatedData[index].supporting_docs = file;
     setAllTableData(updatedData);
   };
+  const handleFileChangeAttachment = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      additionalAttachment: e.target.files[0],
+    });
+  };
 
   const handleInitiatorFileChange = (e) => {
     setDifferentialPRecord({
@@ -780,13 +786,9 @@ export default function DiffrentialPressure() {
                         </label>
                         <input
                           type="file"
+                          name="additionalAttachment"
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={differentialPRecord.additionalAttachment}
-                          onChange={(e) => {
-                            setDifferentialPRecord({
-                              additionalAttachment: e.target.value,
-                            });
-                          }}
+                           onChange={handleFileChangeAttachment}
                         />
                       </div>
 
