@@ -113,45 +113,45 @@ exports.InsertMediaRecord = async (req, res) => {
       { transaction }
     );
 
-    // const auditTrailEntries = [];
-    // const fields = {
-    //   description,
-    //   department,
-    //   compression_area,
-    //   limit,
-    //   reviewer: (await getUserById(reviewer_id))?.name,
-    //   approver: (await getUserById(approver_id))?.name,
-    //   initiatorComment,
-    // };
-    // for (const [field, value] of Object.entries(fields)) {
-    //   if (value !== undefined && value !== null && value !== "") {
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: field,
-    //       previous_value: null,
-    //       new_value: value,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Opened",
-    //       declaration: initiatorDeclaration,
-    //       action: "Opened",
-    //     });
-    //   }
-    // }
+    const auditTrailEntries = [];
+    const fields = {
+      description,
+      department,
+      compression_area,
+      limit,
+      reviewer: (await getUserById(reviewer_id))?.name,
+      approver: (await getUserById(approver_id))?.name,
+      initiatorComment,
+    };
+    for (const [field, value] of Object.entries(fields)) {
+      if (value !== undefined && value !== null && value !== "") {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: field,
+          previous_value: null,
+          new_value: value,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+      }
+    }
 
-    // if (initiatorAttachment) {
-    //   auditTrailEntries.push({
-    //     form_id: newForm.form_id,
-    //     field_name: "initiatorAttachment",
-    //     previous_value: null,
-    //     new_value: getElogDocsUrl(initiatorAttachment),
-    //     changed_by: user.user_id,
-    //     previous_status: "Not Applicable",
-    //     new_status: "Opened",
-    //     declaration: initiatorDeclaration,
-    //     action: "Opened",
-    //   });
-    // }
+    if (initiatorAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "initiatorAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+        declaration: initiatorDeclaration,
+        action: "Opened",
+      });
+    }
 
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
@@ -177,175 +177,152 @@ exports.InsertMediaRecord = async (req, res) => {
         transaction,
       });
 
-      //   formRecords.forEach((record, index) => {
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `UniqueId[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.unique_id,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.date,
-      //       field_name: `Date[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.date,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `ProductName[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.product_name,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `Remarks[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.remarks,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `CheckedBy[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.checked_by,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `BatchNo[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.batch_no,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `ContainerSize[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.container_size,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `BatchSize[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.batch_size,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `TheoreticalProduction[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.theoretical_production,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `LoadedQuantity[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.loaded_quantity,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //     auditTrailEntries.push({
-      //       form_id: newForm.form_id,
-      //       field_name: `Yield[${index}]`,
-      //       previous_value: null,
-      //       new_value: record.yield,
-      //       changed_by: user.user_id,
-      //       previous_status: "Not Applicable",
-      //       new_status: "Opened",
-      //       declaration: initiatorDeclaration,
-      //       action: "Opened",
-      //     });
-      //   });
+      formRecords.forEach((record, index) => {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `UniqueId[${index}]`,
+          previous_value: null,
+          new_value: record.unique_id,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.date,
+          field_name: `Date[${index}]`,
+          previous_value: null,
+          new_value: record.date,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `name_medium[${index}]`,
+          previous_value: null,
+          new_value: record.name_medium,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `date_of_preparation[${index}]`,
+          previous_value: null,
+          new_value: record.date_of_preparation,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `date_of_use[${index}]`,
+          previous_value: null,
+          new_value: record.date_of_use,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `lot_no[${index}]`,
+          previous_value: null,
+          new_value: record.lot_no,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `no_of_plate_prepared[${index}]`,
+          previous_value: null,
+          new_value: record.no_of_plate_prepared,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `no_of_plate_used[${index}]`,
+          previous_value: null,
+          new_value: record.no_of_plate_used,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `used_for[${index}]`,
+          previous_value: null,
+          new_value: record.used_for,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `balance_no_plate[${index}]`,
+          previous_value: null,
+          new_value: record.balance_no_plate,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `signature[${index}]`,
+          previous_value: null,
+          new_value: record.signature,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: `checked_by[${index}]`,
+          previous_value: null,
+          new_value: record.checked_by,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+      });
     }
 
-    // await MediaRecordAuditTrail.bulkCreate(auditTrailEntries, {
-    //   transaction,
-    // });
+    await MediaRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     await transaction.commit();
 
-    // const elogData = {
-    //   initiator: user.name,
-    //   dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
-    //   description,
-    //   status: "Opened",
-    //   reviewerName: (await getUserById(reviewer_id)).name,
-    //   approverName: (await getUserById(approver_id)).name,
-    //   reviewerEmail: (await getUserById(reviewer_id)).email,
-    //   approverEmail: (await getUserById(approver_id)).email,
-    //   recipients: [
-    //     (await getUserById(reviewer_id)).email,
-    //     (await getUserById(approver_id)).email,
-    //   ].join(","),
-    // };
-
-    // try {
-    //   // Send emails
-    //   await Mailer.sendEmail("assignReviewer", {
-    //     ...elogData,
-    //     recipients: elogData.reviewerEmail,
-    //   });
-
-    //   await Mailer.sendEmail("assignApprover", {
-    //     ...elogData,
-    //     recipients: elogData.approverEmail,
-    //   });
-
-      return res.status(200).json({
-        error: false,
-        message: "E-log Created successfully",
-      });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
+    return res.status(200).json({
+      error: false,
+      message: "E-log Created successfully",
+    });
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -441,38 +418,38 @@ exports.EditMediaRecord = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
-    // const fields = {
-    //   description,
-    //   department,
-    //   compression_area,
-    //   limit,
-    //   initiatorComment,
-    //   initiatorAttachment: initiatorAttachment
-    //     ? getElogDocsUrl(initiatorAttachment)
-    //     : form.initiatorAttachment,
-    // };
+    const fields = {
+      description,
+      department,
+      compression_area,
+      limit,
+      initiatorComment,
+      initiatorAttachment: initiatorAttachment
+        ? getElogDocsUrl(initiatorAttachment)
+        : form.initiatorAttachment,
+    };
 
-    // for (const [field, newValue] of Object.entries(fields)) {
-    //   const oldValue = form[field];
-    //   if (
-    //     newValue !== undefined &&
-    //     ((typeof newValue === "number" &&
-    //       !areFloatsEqual(oldValue, newValue)) ||
-    //       oldValue != newValue)
-    //   ) {
-    //     auditTrailEntries.push({
-    //       form_id: form.form_id,
-    //       field_name: field,
-    //       previous_value: oldValue || null,
-    //       new_value: newValue,
-    //       changed_by: user.user_id,
-    //       previous_status: form.status,
-    //       new_status: "Opened",
-    //       declaration: initiatorDeclaration,
-    //       action: "Update Elog",
-    //     });
-    //   }
-    // }
+    for (const [field, newValue] of Object.entries(fields)) {
+      const oldValue = form[field];
+      if (
+        newValue !== undefined &&
+        ((typeof newValue === "number" &&
+          !areFloatsEqual(oldValue, newValue)) ||
+          oldValue != newValue)
+      ) {
+        auditTrailEntries.push({
+          form_id: form.form_id,
+          field_name: field,
+          previous_value: oldValue || null,
+          new_value: newValue,
+          changed_by: user.user_id,
+          previous_status: form.status,
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Update Elog",
+        });
+      }
+    }
 
     // Update the form details
     await form.update(
@@ -563,21 +540,21 @@ exports.EditMediaRecord = async (req, res) => {
             yield: newRecord.yield,
           };
 
-          //   for (const [field, newValue] of Object.entries(recordFields)) {
-          //     if (newValue !== undefined) {
-          //       auditTrailEntries.push({
-          //         form_id: form.form_id,
-          //         field_name: `${field}[${i}]`,
-          //         previous_value: null,
-          //         new_value: newValue,
-          //         changed_by: user.user_id,
-          //         previous_status: form.status,
-          //         new_status: "Opened",
-          //         declaration: initiatorDeclaration,
-          //         action: "Update Elog",
-          //       });
-          //     }
-          //   }
+            for (const [field, newValue] of Object.entries(recordFields)) {
+              if (newValue !== undefined) {
+                auditTrailEntries.push({
+                  form_id: form.form_id,
+                  field_name: `${field}[${i}]`,
+                  previous_value: null,
+                  new_value: newValue,
+                  changed_by: user.user_id,
+                  previous_status: form.status,
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Update Elog",
+                });
+              }
+            }
         }
       }
 
@@ -611,9 +588,9 @@ exports.EditMediaRecord = async (req, res) => {
       });
     }
 
-    // await MediaRecordAuditTrail.bulkCreate(auditTrailEntries, {
-    //   transaction,
-    // });
+    await MediaRecordAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     await transaction.commit();
 
