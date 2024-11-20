@@ -47,7 +47,7 @@ function CreateRecordModal(_props) {
         .filter(
           (role) =>
             (role.role_id === 1 || role.role_id === 5) &&
-            role.site_id === division.site_id
+            role?.site_id === division?.site_id
         )
         .map((role) => role.process_id);
 
@@ -132,11 +132,18 @@ function CreateRecordModal(_props) {
           <div className="modal-middle">
             <div className="selection-block">
               <div className="division">
-                <div className="head">Site/Location</div>
-                <div className="select-list division-list">
-                  {sites.map((item) => (
+                <div className="head text-lg font-semibold mb-2">
+                  Site/Location
+                </div>
+                <div className="select-list division-list flex flex-col gap-2">
+                  {sites?.map((item) => (
                     <div
-                      className={division === item.site ? "active" : ""}
+                      className={` cursor-pointer transition-colors duration-300 
+          ${
+            division?.site === item?.site
+              ? "bg-[#0c5fc6] text-white"
+              : " hover:bg-gray-200"
+          }`}
                       key={item.id}
                       onClick={() => {
                         setDivision(item);
@@ -148,9 +155,10 @@ function CreateRecordModal(_props) {
                   ))}
                 </div>
               </div>
+
               <div className="project">
-                <div className="head">Process</div>
-                <div className="select-list division-list">
+                <div className="head gap-2">Process</div>
+                <div className="select-list division-list gap-2">
                   {processes.map((item, index) => (
                     <div
                       className={project === item.process ? "active" : ""}
