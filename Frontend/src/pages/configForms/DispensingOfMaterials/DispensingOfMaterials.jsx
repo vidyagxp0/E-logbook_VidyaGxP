@@ -41,6 +41,13 @@ const DispensingOfMaterials = () => {
   );
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
+  const handleFileChange = (e) => {
+    setDispensingOfMaterials({
+      ...dispensingOfMaterials,
+      additionalAttachment: e.target.files[0],
+    });
+  };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -796,15 +803,13 @@ const DispensingOfMaterials = () => {
                       </tbody>
                     </table>
                     <div className="group-input">
-                    <label className="color-label">Attachment </label>
+                    <label className="color-label">Attachment</label>
                     <div>
-                      <input type="file" name="Attachment"
-                      value={dispensingOfMaterials.additionalAttachment} 
-                      onChange={(e) => {
-                        setDispensingOfMaterials({
-                          additionalAttachment: e.target.value,
-                        });
-                       }} />
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        onChange={handleFileChange}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">

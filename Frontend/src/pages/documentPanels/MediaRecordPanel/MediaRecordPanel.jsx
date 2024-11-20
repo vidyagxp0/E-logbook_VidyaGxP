@@ -383,7 +383,7 @@ const MediaRecordPanel = () => {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+    setEditData({ ...editData, initiatorAttachment: e.target.files[0],additionalAttachment:e.target.files[1] });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -1083,14 +1083,67 @@ const MediaRecordPanel = () => {
                   </div>
                   
                   <div className="group-input">
-                    <label className="color-label">Attachment </label>
+                  <label
+                      htmlFor="additionalAttachment"
+                      className="color-label"
+                      name="additionalAttachment"
+                    >
+                      Additional Attachment <span className="text-sm text-zinc-600">(If / Any)</span> :
+                    </label>
                     <div>
-                      <input type="file" name="additionalAttachment" value={editData.additionalAttachment} onChange={handleInputChange1}  />
+                      {editData.additionalAttachment ? (
+                        <div className="flex items-center gap-x-10">
+                          <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Change File
+                          </button>
+                          <h3 className="">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                              Selected File:{" "}
+                            </span>
+                            <a
+                              href={editData.additionalAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      ) : (
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        id="additionalAttachment"
+                        onChange={handleInitiatorFileChange}
+                        style={{ display: "none" }}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Information (If/Any){" "}
+                      Additional Information <span className="text-sm text-zinc-600">(If / Any)</span> {" "} :
                     </label>
                     <div>
                       <textarea type="text" name="additionalInfo" value={editData.additionalInfo} onChange={handleInputChange1} />

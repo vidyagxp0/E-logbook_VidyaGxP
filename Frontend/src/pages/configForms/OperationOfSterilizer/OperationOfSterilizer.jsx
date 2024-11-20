@@ -42,6 +42,14 @@ const OperationOfSterilizer = () => {
   console.log(operationOfSterilizer, "operationOfSterilizer");
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
+
+  const handleFileChange = (e) => {
+    setOperationOfSterilizer({
+      ...operationOfSterilizer,
+      additionalAttachment: e.target.files[0],
+    });
+  };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -750,21 +758,14 @@ const OperationOfSterilizer = () => {
                       </tbody>
                     </table>
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Attachment (If / Any)
-                        </label>
-                        <input
-                          type="file"
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={operationOfSterilizer.additionalAttachment}
-                          onChange={(e) => {
-                            setOperationOfSterilizer({
-                              additionalAttachment: e.target.value,
-                            });
-                          }}
-                        />
-                      </div>
+                    <label className="color-label">Attachment</label>
+                    <div>
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        onChange={handleFileChange}
+                      />
+                    </div>
 
                       <div className="flex flex-col w-full">
                         <label className="text-sm font-medium text-gray-900 mb-1">
