@@ -35,8 +35,13 @@ const MediaRecord = () => {
       initiatorComment: " ",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
+      additionalAttachment: "",
+      additionalInfo: "",
     }
   );
+  console.log(mediaRecords.additionalInfo, "additionalInfo");
+  console.log(mediaRecords.additionalAttachment, "additionalAttachment");
+
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
   const navigate = useNavigate();
@@ -191,6 +196,7 @@ const MediaRecord = () => {
       no_of_plate_prepared: "",
       no_of_plate_used: "",
       used_for: "",
+
       balance_no_plate: "",
       signature: "",
       checked_by: User?.name,
@@ -663,18 +669,37 @@ const MediaRecord = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="group-input">
-                    <label className="color-label">Attachment (If/Any) </label>
-                    <div>
-                      <input type="file" name="Attachment" />
+                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Attachment (If / Any)
+                      </label>
+                      <input
+                        type="file"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        value={mediaRecords.additionalAttachment}
+                        onChange={(e) => {
+                          setMediaRecords({
+                            additionalAttachment: e.target.value,
+                          });
+                        }}
+                      />
                     </div>
-                  </div>
-                  <div className="group-input ">
-                    <label className="color-label">
-                      Additional Information (If/Any){" "}
-                    </label>
-                    <div>
-                      <textarea type="text" name="Additional" />
+
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Info (If / Any)
+                      </label>
+                      <textarea
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        rows="4"
+                        value={mediaRecords.additionalInfo}
+                        onChange={(e) => {
+                          setMediaRecords({
+                            additionalInfo: e.target.value,
+                          });
+                        }}
+                      ></textarea>
                     </div>
                   </div>
                 </>

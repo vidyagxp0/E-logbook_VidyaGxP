@@ -1065,7 +1065,12 @@ const LoadedQuantityPanels = () => {
                   <div className="group-input">
                     <label className="color-label">Attachment </label>
                     <div>
-                      <input type="file" name="Attachment" />
+                      <input type="file" name="Attachment"  value={editData.additionalAttachment} 
+                      onChange={(e) => {
+                        setDispensingOfMaterials({
+                          additionalAttachment: e.target.value,
+                        });
+                       }} />
                     </div>
                   </div>
                   <div className="group-input ">
