@@ -16,6 +16,8 @@ const OperationOfSterilizerPanel = () => {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formId, setFormId] = useState(null);
+
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
@@ -441,41 +443,40 @@ const OperationOfSterilizerPanel = () => {
     ...editData,
   };
 
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+    }
+  }, []);
+
   const generateReport = async () => {
     setIsLoading(true);
-
     try {
-      const response = await axios({
-        url: "http://localhost:1000/operation-sterlizer/generate-pdf",
-        method: "POST",
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-        data: {
+      const response = await axios.post(
+        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
+        {
           reportData: reportData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const { filename } = response.data; // Access filename from response.data
 
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `OS${reportData.form_id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
 
-      window.URL.revokeObjectURL(url);
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to generate PDF. Please try again later.");
+      console.error("Error opening chat PDF:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div>
       <HeaderTop />
@@ -1252,54 +1253,54 @@ const OperationOfSterilizerPanel = () => {
                       </tbody>
                     </table>
                     {editData?.OperationOfSterilizerRecords.map(
-                          (item, index) => (
-                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Attachment (If / Any)
-                        </label>
-                        <input
-                          type="file"
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={item.additionalAttachment}
-                          onChange={(e) => {
-                            const newData = [
-                              ...editData.OperationOfSterilizerRecords,
-                            ];
-                            newData[index].additionalAttachment =
-                              e.target.value;
-                            setEditData({
-                              ...editData,
-                              OperationOfSterilizerRecords: newData,
-                            });
-                          }}
-                        />
-                      </div>
+                      (item, index) => (
+                        <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                          <div className="flex flex-col w-full">
+                            <label className="text-sm font-medium text-gray-900 mb-1">
+                              Additional Attachment (If / Any)
+                            </label>
+                            <input
+                              type="file"
+                              className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                              value={item.additionalAttachment}
+                              onChange={(e) => {
+                                const newData = [
+                                  ...editData.OperationOfSterilizerRecords,
+                                ];
+                                newData[index].additionalAttachment =
+                                  e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  OperationOfSterilizerRecords: newData,
+                                });
+                              }}
+                            />
+                          </div>
 
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Info (If / Any)
-                        </label>
-                        <textarea
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          rows="4"
-                          value={item.additionalInfo}
-                          onChange={(e) => {
-                            const newData = [
-                              ...editData.OperationOfSterilizerRecords,
-                            ];
-                            newData[index].additionalInfo = e.target.value;
-                            setEditData({
-                              ...editData,
-                              OperationOfSterilizerRecords: newData,
-                            });
-                          }}
-                        ></textarea>
-                      </div>
-                    </div>
-                )
-              )}
-              </div>
+                          <div className="flex flex-col w-full">
+                            <label className="text-sm font-medium text-gray-900 mb-1">
+                              Additional Info (If / Any)
+                            </label>
+                            <textarea
+                              className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                              rows="4"
+                              value={item.additionalInfo}
+                              onChange={(e) => {
+                                const newData = [
+                                  ...editData.OperationOfSterilizerRecords,
+                                ];
+                                newData[index].additionalInfo = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  OperationOfSterilizerRecords: newData,
+                                });
+                              }}
+                            ></textarea>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
                 </>
               ) : null}
 
