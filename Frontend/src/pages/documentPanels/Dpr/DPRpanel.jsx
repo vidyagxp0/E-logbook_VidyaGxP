@@ -46,7 +46,7 @@ export default function DPRpanel() {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
-      initiatorComment:editData.initiatorComment,
+      initiatorComment: editData.initiatorComment,
     };
 
     const config = {
@@ -60,13 +60,13 @@ export default function DPRpanel() {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
 
-      if(data.initiatorComment===""){
+      if (data.initiatorComment === "") {
         toast.error("Please provide an initiator comment!");
         return;
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
+          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -84,7 +84,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
+          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -103,7 +103,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -119,7 +119,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/approve-DP-elog",
+          "http://localhost:1000/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -137,7 +137,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -184,7 +184,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/differential-pressure/update-differential-pressure",
+        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -492,18 +492,19 @@ export default function DPRpanel() {
                   >
                     {isLoading ? (
                       <>
-                          <span>Generate Report</span>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          border: "3px solid #f3f3f3",
-                          borderTop: "3px solid black",
-                          borderRadius: "50%",
-                          animation: "spin 1s linear infinite",
-                          marginLeft: "10px",
-                        }}
-                      ></div></>
+                        <span>Generate Report</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
                     ) : (
                       "Generate Report"
                     )}

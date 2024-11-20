@@ -64,7 +64,7 @@ const MediaRecordPanel = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
+    //   url: "http://localhost:1000/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -92,16 +92,12 @@ const MediaRecordPanel = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
-      if(data.initiatorComment===""){
+      if (data.initiatorComment === "") {
         toast.error("Please provide an initiator comment!");
         return;
       }
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
-          data,
-          config
-        )
+        .put("http://localhost:1000/media-record/send-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -116,7 +112,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
+          "http://localhost:1000/media-record/send-review-to-approval",
           data,
           config
         )
@@ -135,7 +131,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
+          "http://localhost:1000/media-record/send-review-to-open",
           data,
           config
         )
@@ -150,11 +146,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/media-record/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/media-record/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -169,7 +161,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
+          "http://localhost:1000/media-record/send-approval-to-open",
           data,
           config
         )
@@ -216,7 +208,7 @@ const MediaRecordPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/media-record/update",
+        url: "http://localhost:1000/media-record/update",
       };
 
       axios(requestOptions)
@@ -523,18 +515,19 @@ const MediaRecordPanel = () => {
                   >
                     {isLoading ? (
                       <>
-                          <span>Generate Report</span>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          border: "3px solid #f3f3f3",
-                          borderTop: "3px solid black",
-                          borderRadius: "50%",
-                          animation: "spin 1s linear infinite",
-                          marginLeft: "10px",
-                        }}
-                      ></div></>
+                        <span>Generate Report</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
                     ) : (
                       "Generate Report"
                     )}

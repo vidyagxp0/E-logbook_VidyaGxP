@@ -41,7 +41,7 @@ const OperationOfSterilizerPanel = () => {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
-      initiatorComment:editData.initiatorComment,
+      initiatorComment: editData.initiatorComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -63,7 +63,7 @@ const OperationOfSterilizerPanel = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
+    //     url: "http://localhost:1000/operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -91,15 +91,15 @@ const OperationOfSterilizerPanel = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
-      console.log(data.initiatorComment,"INININI");
-      
-      if(data.initiatorComment===""){
+      console.log(data.initiatorComment, "INININI");
+
+      if (data.initiatorComment === "") {
         toast.error("Please provide an initiator comment!");
         return;
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-for-review",
+          "http://localhost:1000/operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -117,7 +117,7 @@ const OperationOfSterilizerPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-approval",
+          "http://localhost:1000/operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -136,7 +136,7 @@ const OperationOfSterilizerPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-open",
+          "http://localhost:1000/operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -151,11 +151,7 @@ const OperationOfSterilizerPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/operation-sterlizer/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -170,7 +166,7 @@ const OperationOfSterilizerPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-approval-to-open",
+          "http://localhost:1000/operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -217,7 +213,7 @@ const OperationOfSterilizerPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
+        url: "http://localhost:1000/operation-sterlizer/update",
       };
 
       axios(requestOptions)
@@ -543,18 +539,19 @@ const OperationOfSterilizerPanel = () => {
                   >
                     {isLoading ? (
                       <>
-                          <span>Generate Report</span>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          border: "3px solid #f3f3f3",
-                          borderTop: "3px solid black",
-                          borderRadius: "50%",
-                          animation: "spin 1s linear infinite",
-                          marginLeft: "10px",
-                        }}
-                      ></div></>
+                        <span>Generate Report</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
                     ) : (
                       "Generate Report"
                     )}
