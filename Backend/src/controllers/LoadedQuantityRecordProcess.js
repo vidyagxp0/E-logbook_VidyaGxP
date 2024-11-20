@@ -389,6 +389,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     password,
     initiatorComment,
     initiatorDeclaration,
+    additionalInfo,
   } = req.body;
   console.log(email, password, "wwwww");
   if (!form_id) {

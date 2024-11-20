@@ -383,6 +383,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
     password,
     initiatorComment,
     initiatorDeclaration,
+    additionalInfo,
   } = req.body;
 
   if (!form_id) {

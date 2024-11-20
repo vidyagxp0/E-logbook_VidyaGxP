@@ -338,6 +338,7 @@ exports.EditTempratureRecord = async (req, res) => {
     password,
     initiatorComment,
     initiatorDeclaration,
+    additionalInfo,
   } = req.body;
 
   // Check for required fields and provide specific error messages
