@@ -46,9 +46,9 @@ const Analytics2 = () => {
       {
         name: "Share",
         data: [
-          { name: "Apples", y: 30 },
-          { name: "Bananas", y: 20 },
-          { name: "Oranges", y: 50 },
+          { name: "30", y: 30 },
+          { name: "20", y: 20 },
+          { name: "10", y: 50 },
         ],
       },
     ],
