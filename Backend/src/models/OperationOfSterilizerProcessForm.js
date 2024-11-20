@@ -86,6 +86,7 @@ const OperationOfSterilizerProcessForm = sequelize.define("OperationOfSterilizer
     type: DataTypes.STRING,
   },
   initiatorAttachment: {
+    allowNull:true,
     type: DataTypes.STRING,
   },
   reviewerAttachment: {

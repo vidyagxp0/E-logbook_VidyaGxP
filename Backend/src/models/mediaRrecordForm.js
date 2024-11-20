@@ -83,6 +83,7 @@ const MediaRecordProcessForm = sequelize.define("MediaRecordProcessForm", {
     type: DataTypes.STRING,
   },
   initiatorComment: {
+    allowNull:true,
     type: DataTypes.STRING,
   },
   initiatorAttachment: {

@@ -43,6 +43,7 @@ const DispensingOfMaterialsPanel = () => {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
+      initiatorComment:editData.initiatorComment
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -69,6 +70,10 @@ const DispensingOfMaterialsPanel = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
+      if (!data.initiatorComment || data.initiatorComment.trim() === "") {
+        toast.error("Please provide an initiator comment!");
+        return;
+    }    
       axios
         .put(
           "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",

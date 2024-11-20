@@ -35,6 +35,7 @@ import LoadedQuantityPanels from "./pages/documentPanels/LoadedQuantityPanels/Lo
 import MediaRecordPanel from "./pages/documentPanels/MediaRecordPanel/MediaRecordPanel.jsx";
 import OperationOfSterilizerPanel from "./pages/documentPanels/OperationOfSterilizerPanel/OperationOfSterilizerPanel.jsx";
 import DispensingOfMaterialsPanel from "./pages/documentPanels/DispensingOfMaterialsPanel/DispensingOfMaterialsPanel.jsx";
+import Analytics2 from "./pages/analytics2/Analytics2.jsx";
 
 function App() {
   return (
@@ -73,6 +74,10 @@ function App() {
             <Route
               path="/chart"
               element={<ProtectedRoute element={<Chart />} />}
+            />
+             <Route
+              path="/analytics2"
+              element={<ProtectedRoute element={<Analytics2 />} />}
             />
             <Route
               path="/analytics"

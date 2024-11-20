@@ -27,6 +27,9 @@ const LoadedQuantityPanels = () => {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
+console.log(editData,"LOADED");
+
+
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
@@ -42,6 +45,7 @@ const LoadedQuantityPanels = () => {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
+      initiatorComment:editData.initiatorComment
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -91,6 +95,11 @@ const LoadedQuantityPanels = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
+      if (!data.initiatorComment || data.initiatorComment.trim() === "") {
+        toast.error("Please provide an initiator comment!");
+        return;
+    }
+    
       axios
         .put(
           "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
@@ -344,8 +353,12 @@ const LoadedQuantityPanels = () => {
 
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
+  
     setEditData({ ...editData, [name]: value });
+  
+   
   };
+  
 
   const handleDeleteFile = (index) => {
     if (
@@ -1077,7 +1090,7 @@ const LoadedQuantityPanels = () => {
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
-                        value={editData?.initiatorDeclaration}
+                        value={editData?.initiatorComment}
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||

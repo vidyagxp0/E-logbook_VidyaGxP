@@ -83,6 +83,7 @@ const LoadedQuantityProcessForm = sequelize.define("LoadedQuantityProcessForm", 
     type: DataTypes.STRING,
   },
   initiatorComment: {
+    allowNull:true,
     type: DataTypes.STRING,
   },
   initiatorAttachment: {
