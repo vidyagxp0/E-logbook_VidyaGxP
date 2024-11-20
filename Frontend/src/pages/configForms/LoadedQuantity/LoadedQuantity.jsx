@@ -34,11 +34,18 @@ const LoadedQuantity = () => {
       // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
-      additionalInfo:"",
-      additionalAttachment:null
-
+      additionalInfo: "",
+      additionalAttachment: null,
     }
   );
+
+
+  const handleFileChange = (e) => {
+    setLoadedQuantity({
+      ...loadedQuantity,
+      additionalAttachment: e.target.files[0],
+    });
+  };
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
   const navigate = useNavigate();
@@ -652,15 +659,13 @@ const LoadedQuantity = () => {
                     </table>
                   </div>
                   <div className="group-input">
-                    <label className="color-label">Attachment </label>
+                    <label className="color-label">Attachment</label>
                     <div>
-                      <input type="file" name="additionalAttachment"
-                      value={loadedQuantity.additionalAttachment} 
-                      onChange={(e) => {
-                        setLoadedQuantity({
-                          additionalAttachment: e.target.value,
-                        });
-                       }} />
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        onChange={handleFileChange}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">
@@ -668,12 +673,16 @@ const LoadedQuantity = () => {
                       Additional Info (If/Any){" "}
                     </label>
                     <div>
-                      <textarea type="text" name="additionalInfo"  value={loadedQuantity.additionalInfo}
-                          onChange={(e) => {
-                            setLoadedQuantity({
-                              additionalInfo: e.target.value,
-                            });
-                          }} />
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={loadedQuantity.additionalInfo}
+                        onChange={(e) => {
+                          setLoadedQuantity({
+                            additionalInfo: e.target.value,
+                          });
+                        }}
+                      />
                     </div>
                   </div>
                 </>
