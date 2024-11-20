@@ -1165,7 +1165,9 @@ export default function DPRpanel() {
 
                     <div className="flex flex-col w-full">
                       <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info (If / Any)
+                        Additional Info  <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
                       </label>
                       <textarea
                         className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
