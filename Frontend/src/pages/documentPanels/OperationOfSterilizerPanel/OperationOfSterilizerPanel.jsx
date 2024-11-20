@@ -26,11 +26,7 @@ const OperationOfSterilizerPanel = () => {
     additionalAttachment: "",
     OperationOfSterilizerRecords: [],
   });
-  const [editData2, setEditData2] = useState({
-    additionalInfo: "",
-    additionalAttachment: "",
-    // OperationOfSterilizerRecords: [],
-  });
+ 
   console.log(editData, "editData");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -1258,8 +1254,7 @@ const OperationOfSterilizerPanel = () => {
                         )}
                       </tbody>
                     </table>
-                    {editData2?.map(
-                          (item, index) => (
+                  
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="flex flex-col w-full">
                         <label className="text-sm font-medium text-gray-900 mb-1">
@@ -1268,15 +1263,13 @@ const OperationOfSterilizerPanel = () => {
                         <input
                           type="file"
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={item.additionalAttachment}
+                          value={editData.additionalAttachment}
                           onChange={(e) => {
-                            const newData = [
-                              ...editData2.additionalAttachment,
-                            ];
+                           handleInputChange1()
                             newData[index].additionalAttachment =
                               e.target.value;
-                            setEditData2({
-                              ...editData2,
+                            setEditData({
+                              ...editData,
                               additionalAttachment: newData,
                             });
                           }}
@@ -1290,13 +1283,11 @@ const OperationOfSterilizerPanel = () => {
                         <textarea
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
-                          value={item.additionalInfo}
+                          value={editData.additionalInfo}
                           onChange={(e) => {
-                            const newData = [
-                              ...editData2.additionalInfo,
-                            ];
+                            handleInputChange1()
                             newData[index].additionalInfo = e.target.value;
-                            setEditData2({
+                            setEditData({
                               ...editData,
                               additionalInfo: newData,
                             });
@@ -1304,8 +1295,7 @@ const OperationOfSterilizerPanel = () => {
                         ></textarea>
                       </div>
                     </div>
-                )
-              )}
+               
               </div>
                 </>
               ) : null}

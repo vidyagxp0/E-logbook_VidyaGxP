@@ -24,14 +24,12 @@ export default function DPRpanel() {
     description: "",
     department: "",
     compression_area: "",
+    additionalAttachment:"",
+    additionalInfo:"",
     DifferentialPressureRecords: [],
     limit: "",
   });
-  const [editData2, setEditData2] = useState({
-    additionalInfo: "",
-    additionalAttachment: "",
-    // OperationOfSterilizerRecords: [],
-  });
+ 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -1104,15 +1102,13 @@ export default function DPRpanel() {
                         <input
                           type="file"
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={editData2.additionalAttachment}
+                          value={editData.additionalAttachment}
                           onChange={(e) => {
-                            const newData = [
-                              ...editData2.additionalAttachment,
-                            ];
+                           handleInputChange1()
                             newData[index].additionalAttachment =
                               e.target.value;
-                            setEditData2({
-                              ...editData2,
+                            setEditData({
+                              ...editData,
                               additionalAttachment: newData,
                             });
                           }}
@@ -1126,13 +1122,12 @@ export default function DPRpanel() {
                         <textarea
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
-                          value={editData2.additionalInfo}
+                          value={editData.additionalInfo}
                           onChange={(e) => {
-                            const newData = [
-                              ...editData2.additionalInfo,
-                            ];
+                           
+                            handleInputChange1()
                             newData[index].additionalInfo = e.target.value;
-                            setEditData2({
+                            setEditData({
                               ...editData,
                               additionalInfo: newData,
                             });
