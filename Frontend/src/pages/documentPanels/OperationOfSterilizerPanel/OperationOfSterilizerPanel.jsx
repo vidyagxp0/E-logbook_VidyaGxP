@@ -26,6 +26,11 @@ const OperationOfSterilizerPanel = () => {
     additionalAttachment: "",
     OperationOfSterilizerRecords: [],
   });
+  const [editData2, setEditData2] = useState({
+    additionalInfo: "",
+    additionalAttachment: "",
+    // OperationOfSterilizerRecords: [],
+  });
   console.log(editData, "editData");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -42,6 +47,8 @@ const OperationOfSterilizerPanel = () => {
       form_id: location.state?.form_id,
       email: credentials?.email,
       password: credentials?.password,
+      additionalInfo: credentials?.additionalInfo,
+      additionalAttachment: credentials?.additionalAttachment,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
@@ -1251,7 +1258,7 @@ const OperationOfSterilizerPanel = () => {
                         )}
                       </tbody>
                     </table>
-                    {editData?.OperationOfSterilizerRecords.map(
+                    {editData2?.map(
                           (item, index) => (
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="flex flex-col w-full">
@@ -1264,13 +1271,13 @@ const OperationOfSterilizerPanel = () => {
                           value={item.additionalAttachment}
                           onChange={(e) => {
                             const newData = [
-                              ...editData.OperationOfSterilizerRecords,
+                              ...editData2.additionalAttachment,
                             ];
                             newData[index].additionalAttachment =
                               e.target.value;
-                            setEditData({
-                              ...editData,
-                              OperationOfSterilizerRecords: newData,
+                            setEditData2({
+                              ...editData2,
+                              additionalAttachment: newData,
                             });
                           }}
                         />
@@ -1286,12 +1293,12 @@ const OperationOfSterilizerPanel = () => {
                           value={item.additionalInfo}
                           onChange={(e) => {
                             const newData = [
-                              ...editData.OperationOfSterilizerRecords,
+                              ...editData2.additionalInfo,
                             ];
                             newData[index].additionalInfo = e.target.value;
-                            setEditData({
+                            setEditData2({
                               ...editData,
-                              OperationOfSterilizerRecords: newData,
+                              additionalInfo: newData,
                             });
                           }}
                         ></textarea>
