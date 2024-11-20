@@ -24,9 +24,12 @@ export default function DPRpanel() {
     description: "",
     department: "",
     compression_area: "",
+    additionalAttachment:"",
+    additionalInfo:"",
     DifferentialPressureRecords: [],
     limit: "",
   });
+ 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -44,6 +47,8 @@ export default function DPRpanel() {
       form_id: location.state?.form_id,
       email: credentials?.email,
       password: credentials?.password,
+      additionalInfo: credentials?.additionalInfo,
+      additionalAttachment: credentials?.additionalAttachment,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
@@ -299,7 +304,7 @@ export default function DPRpanel() {
   };
 
   const handleInputChange1 = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e?.target;
     setEditData({ ...editData, [name]: value });
   };
 
@@ -1088,11 +1093,64 @@ export default function DPRpanel() {
                       )}
                     </tbody>
                   </table>
+               
+                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Attachment (If / Any)
+                        </label>
+                        <input
+                          type="file"
+                          name="additionalAttachment"
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          value={editData.additionalAttachment}
+                          onChange={handleInputChange1}
+                        />
+                      </div>
+
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Info (If / Any)
+                        </label>
+                        <textarea
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          rows="4"
+                          name="additionalInfo"
+                          value={editData?.additionalInfo}
+                          onChange={handleInputChange1}
+                        ></textarea>
+                      </div>
+                    </div>
+                
+             
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
+                   <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
@@ -1183,34 +1241,35 @@ export default function DPRpanel() {
                     </div>
                   </div>
 
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
+               
                 </>
               ) : null}
 
               {reviewerRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.reviewer?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_review)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
@@ -1301,34 +1360,35 @@ export default function DPRpanel() {
                     </div>
                   </div>
 
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Reviewer </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="reviewer"
-                          value={editData?.reviewer?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Review</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_review)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
+                
                 </>
               ) : null}
 
               {approverRemarks === true ? (
                 <>
+                 <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.approver?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_approval)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
@@ -1419,29 +1479,7 @@ export default function DPRpanel() {
                     </div>
                   </div>
 
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Approver </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="approver"
-                          value={editData?.approver?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Approval</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_approval)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
+                 
                 </>
               ) : null}
             </div>

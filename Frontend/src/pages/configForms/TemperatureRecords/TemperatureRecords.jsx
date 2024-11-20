@@ -224,8 +224,8 @@ export default function TemperatureRecords() {
       initiatorComment: " ",
       initiatorAttachment: null,
       initiatorDeclaration: "",
-      additionalInfo:"",
-      additionalAttachment:null,
+      additionalInfo: "",
+      additionalAttachment: null,
     }
   );
 
@@ -761,13 +761,16 @@ export default function TemperatureRecords() {
                   <div className="group-input">
                     <label className="color-label">Attachment </label>
                     <div>
-                      <input type="file" name="additionalAttachment"
-                      value={tempratureRecord.additionalAttachment} 
-                      onChange={(e) => {
-                        setTempratureRecord({
-                          additionalAttachment: e.target.value,
-                        });
-                       }} />
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        value={tempratureRecord.additionalAttachment}
+                        onChange={(e) => {
+                          setTempratureRecord({
+                            additionalAttachment: e.target.value,
+                          });
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">
@@ -775,12 +778,16 @@ export default function TemperatureRecords() {
                       Additional Info (If/Any){" "}
                     </label>
                     <div>
-                      <textarea type="text" name="additionalInfo"  value={tempratureRecord.additionalInfo}
-                          onChange={(e) => {
-                            setTempratureRecord({
-                              additionalInfo: e.target.value,
-                            });
-                          }} />
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={tempratureRecord.additionalInfo}
+                        onChange={(e) => {
+                          setTempratureRecord({
+                            additionalInfo: e.target.value,
+                          });
+                        }}
+                      />
                     </div>
                   </div>
                 </>

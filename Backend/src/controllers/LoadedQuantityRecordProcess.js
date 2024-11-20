@@ -355,6 +355,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     password,
     initiatorComment,
     initiatorDeclaration,
+    additionalInfo,
   } = req.body;
   console.log(email, password, "wwwww");
   if (!form_id) {
@@ -467,6 +468,7 @@ exports.EditLoadedQuantity = async (req, res) => {
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
+        additionalInfo,
       },
       { transaction }
     );

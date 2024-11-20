@@ -18,7 +18,7 @@ const OperationOfSterilizer = () => {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const location = useLocation();
-  const [operationOfSterilizer, setOperationOfSterilizer] = useReducer(
+  const [operationOfSterilizer,   setOperationOfSterilizer] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
@@ -106,20 +106,7 @@ const OperationOfSterilizer = () => {
       });
   }, []);
 
-  const setTinyContent = (data, tinyNO) => {
-    switch (tinyNO) {
-      case 1:
-        setTiny1(data);
-        break;
-      case 2:
-        setTiny2(data);
-        break;
-      case 3:
-        setTiny3(data);
 
-        break;
-    }
-  };
 
   const handlePopupSubmit = (credentials) => {
     if (
@@ -770,7 +757,7 @@ const OperationOfSterilizer = () => {
                         <input
                           type="file"
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={OperationOfSterilizer.additionalAttachment}
+                          value={operationOfSterilizer.additionalAttachment}
                           onChange={(e) => {
                             setOperationOfSterilizer({
                               additionalAttachment: e.target.value,
@@ -786,7 +773,7 @@ const OperationOfSterilizer = () => {
                         <textarea
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
-                          value={OperationOfSterilizer.additionalInfo}
+                          value={operationOfSterilizer.additionalInfo}
                           onChange={(e) => {
                             setOperationOfSterilizer({
                               additionalInfo: e.target.value,

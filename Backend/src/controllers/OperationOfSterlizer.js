@@ -414,6 +414,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
     password,
     initiatorComment,
     initiatorDeclaration,
+    additionalInfo,
   } = req.body;
 
   if (!form_id) {
@@ -526,6 +527,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
+        additionalInfo,
       },
       { transaction }
     );

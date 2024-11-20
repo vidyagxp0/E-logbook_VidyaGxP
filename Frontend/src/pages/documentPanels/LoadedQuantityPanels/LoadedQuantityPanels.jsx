@@ -1065,12 +1065,12 @@ const LoadedQuantityPanels = () => {
                   <div className="group-input">
                     <label className="color-label">Attachment </label>
                     <div>
-                      <input type="file" name="Attachment"  value={editData.additionalAttachment} 
-                      onChange={(e) => {
-                        setDispensingOfMaterials({
-                          additionalAttachment: e.target.value,
-                        });
-                       }} />
+                      <input
+                        type="file"
+                        name="Attachment"
+                        value={editData.additionalAttachment}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">
@@ -1078,7 +1078,12 @@ const LoadedQuantityPanels = () => {
                       Additional Information (If/Any){" "}
                     </label>
                     <div>
-                      <textarea type="text" name="Additional" value={editData.additionalInfo} />
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={editData.additionalInfo}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                 </>

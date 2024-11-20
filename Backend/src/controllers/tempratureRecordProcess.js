@@ -338,6 +338,7 @@ exports.EditTempratureRecord = async (req, res) => {
     password,
     initiatorComment,
     initiatorDeclaration,
+    additionalInfo,
   } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -465,6 +466,7 @@ exports.EditTempratureRecord = async (req, res) => {
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
+        additionalInfo,
       },
       { transaction }
     );
