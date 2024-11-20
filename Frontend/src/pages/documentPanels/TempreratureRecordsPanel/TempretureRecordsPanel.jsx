@@ -377,7 +377,7 @@ export default function TempretureRecordsPanel() {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[1],
+      additionalAttachment: e.target.files[0],
     });
   };
   const handleReviewerFileChange = (e) => {
@@ -1069,22 +1069,20 @@ export default function TempretureRecordsPanel() {
                         />
                       </div>
                     </div>
-                    
                   </div>
                   <div className="flex flex-col w-full">
-                        <label className=" text-lg text-gray-900 mb-1">
-                          Additional Info   <span className="text-sm text-zinc-600">
-                          (If / Any)
-                        </span>{" "}
-                        </label>
-                        <textarea
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          rows="4"
-                          name="additionalInfo"
-                          value={editData?.additionalInfo}
-                          onChange={handleInputChange1}
-                        ></textarea>
-                      </div>
+                    <label className=" text-lg text-gray-900 mb-1">
+                      Additional Info{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                    </label>
+                    <textarea
+                      className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                      rows="4"
+                      name="additionalInfo"
+                      value={editData?.additionalInfo}
+                      onChange={handleInputChange1}
+                    ></textarea>
+                  </div>
                 </>
               ) : null}
 

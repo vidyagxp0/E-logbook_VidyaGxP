@@ -383,7 +383,7 @@ const MediaRecordPanel = () => {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0],additionalAttachment:e.target.files[1] });
+    setEditData({ ...editData, initiatorAttachment: e.target.files[0],additionalAttachment:e.target.files[0] });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -1082,7 +1082,7 @@ const MediaRecordPanel = () => {
                     </table>
                   </div>
                   
-                  <div className="group-input">
+                  <div className="group-input mt-4">
                   <label
                       htmlFor="additionalAttachment"
                       className="color-label"

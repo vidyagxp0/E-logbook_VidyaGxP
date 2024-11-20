@@ -404,7 +404,7 @@ const LoadedQuantityPanels = () => {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[1],
+      additionalAttachment: e.target.files[0],
     });
   };
   const handleReviewerFileChange = (e) => {
@@ -1066,13 +1066,15 @@ const LoadedQuantityPanels = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="group-input">
+                  <div className="group-input mt-4">
                     <label
                       htmlFor="additionalAttachment"
                       className="color-label"
                       name="additionalAttachment"
                     >
-                      Attachment <span className="text-sm text-zinc-600">(If / Any)</span> :
+                      Additional Attachment{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
@@ -1126,8 +1128,13 @@ const LoadedQuantityPanels = () => {
                     </div>
                   </div>
                   <div className="group-input">
-                    <label className="color-label" style={{marginBottom:"0px"}}>
-                      Additional Information <span className="text-sm text-zinc-600">(If / Any)</span> :{" "}
+                    <label
+                      className="color-label"
+                      style={{ marginBottom: "0px" }}
+                    >
+                      Additional Information{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
                     </label>
                     <div>
                       <textarea

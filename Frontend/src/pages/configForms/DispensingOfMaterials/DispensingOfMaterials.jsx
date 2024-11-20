@@ -802,8 +802,8 @@ const DispensingOfMaterials = () => {
                         ))}
                       </tbody>
                     </table>
-                    <div className="group-input">
-                    <label className="color-label">Attachment</label>
+                    <div className="group-input mt-4">
+                    <label className="color-label">Additional Attachment<span className="text-sm text-zinc-600">(If / Any)</span> :</label>
                     <div>
                       <input
                         type="file"
@@ -814,7 +814,7 @@ const DispensingOfMaterials = () => {
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Info (If/Any){" "}
+                      Additional Info <span className="text-sm text-zinc-600">(If / Any)</span> :{" "}
                     </label>
                     <div>
                       <textarea type="text" name="Additional"  value={dispensingOfMaterials.additionalInfo}

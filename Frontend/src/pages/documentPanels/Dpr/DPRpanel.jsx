@@ -361,7 +361,7 @@ export default function DPRpanel() {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[1],
+      additionalAttachment: e.target.files[0],
     });
   };
   const handleReviewerFileChange = (e) => {
@@ -1165,7 +1165,8 @@ export default function DPRpanel() {
 
                     <div className="flex flex-col w-full">
                       <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info  <span className="text-sm text-zinc-600">
+                        Additional Info{" "}
+                        <span className="text-sm text-zinc-600">
                           (If / Any)
                         </span>{" "}
                       </label>

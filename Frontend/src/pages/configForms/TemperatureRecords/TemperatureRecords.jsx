@@ -255,7 +255,7 @@ export default function TemperatureRecords() {
     setTempratureRecord({
       ...tempratureRecord,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[1],
+      additionalAttachment: e.target.files[0],
     });
   };
 
@@ -768,7 +768,10 @@ export default function TemperatureRecords() {
                   <div className="group-input">
                     <label className="color-label">
                       Additional Attachment
-                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      <span className="text-sm text-zinc-600">
+                        (If / Any)
+                      </span>{" "}
+                      :{" "}
                     </label>
                     <div>
                       <input
@@ -780,9 +783,9 @@ export default function TemperatureRecords() {
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Info <span className="text-sm text-zinc-600">
-                          (If / Any)
-                        </span>{" "}{" "}
+                      Additional Info{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
                     </label>
                     <div>
                       <textarea
