@@ -3,7 +3,7 @@
             "PORT": 1000,
             "dbName": "elogbook",
             "username": "root",
-            "password": "127804",
+            "password": "root11",
             "dialect": "mysql",
             "host": "localhost",
             "JWT_SECRET": "NAHKNAHRAF",
