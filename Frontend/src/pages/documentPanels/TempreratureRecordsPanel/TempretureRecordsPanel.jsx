@@ -61,7 +61,7 @@ export default function TempretureRecordsPanel() {
     }    
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -79,7 +79,7 @@ export default function TempretureRecordsPanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -99,7 +99,7 @@ export default function TempretureRecordsPanel() {
 
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -115,7 +115,7 @@ export default function TempretureRecordsPanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/approve-TR-elog",
+          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -133,7 +133,7 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -180,7 +180,7 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)

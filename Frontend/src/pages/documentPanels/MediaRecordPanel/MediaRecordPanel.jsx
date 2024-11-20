@@ -27,8 +27,7 @@ const MediaRecordPanel = () => {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-  console.log(editData.MediaRecords,"edit data od media");
-  
+  console.log(editData.MediaRecords, "edit data od media");
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
@@ -66,7 +65,7 @@ const MediaRecordPanel = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "http://localhost:1000/media-record/update",
+    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -99,7 +98,11 @@ const MediaRecordPanel = () => {
         return;
     }
       axios
-        .put("http://localhost:1000/media-record/send-for-review", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -114,7 +117,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
           data,
           config
         )
@@ -133,7 +136,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
           data,
           config
         )
@@ -148,7 +151,11 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/media-record/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/media-record/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -163,7 +170,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/media-record/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
           data,
           config
         )
@@ -210,7 +217,7 @@ const MediaRecordPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/media-record/update",
+        url: "https://elog-backend.mydemosoftware.com/media-record/update",
       };
 
       axios(requestOptions)
@@ -408,7 +415,7 @@ const MediaRecordPanel = () => {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title:"Media Record",
+    title: "Media Record",
     ...editData,
   };
 
@@ -489,7 +496,7 @@ const MediaRecordPanel = () => {
                 </div>
               </div>
 
-<div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
+              <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
                   Media Record
                 </span>
@@ -619,8 +626,8 @@ const MediaRecordPanel = () => {
                     )}
                 </div>
               </div>
-              <div className="outerDiv4 bg-slate-300 py-4" >
-              <div className="flex gap-3 ">
+              <div className="outerDiv4 bg-slate-300 py-4">
+                <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                       location.state?.stage > 1
@@ -851,202 +858,200 @@ const MediaRecordPanel = () => {
                     </div>
                   </div>
                   <div className="overflow-x-auto">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>S no.</th>
-                        <th>Unique Id</th>
-                        <th>Date</th>
-                        <th>Name of the Medium</th>
-                        <th>Date of Preparation</th>
-                        <th>Date of Use</th>
-                        <th>Lot No.</th>
-                        <th>No. of Plates Prepared</th>
-                        <th>No. of Plates used</th>
-                        <th>Used for</th>
-                        <th>Balance No. of Plates</th>
-                        <th>Checked By</th>
-                        <th> Signature</th>
-                        {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {editData?.MediaRecords.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{item.unique_id}</td>
-                          <td>
-                            <input
-                              value={item.date}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].date = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.name_medium}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].name_medium = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.date_of_preparation}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].date_of_preparation =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>S no.</th>
+                          <th>Unique Id</th>
+                          <th>Date</th>
+                          <th>Name of the Medium</th>
+                          <th>Date of Preparation</th>
+                          <th>Date of Use</th>
+                          <th>Lot No.</th>
+                          <th>No. of Plates Prepared</th>
+                          <th>No. of Plates used</th>
+                          <th>Used for</th>
+                          <th>Balance No. of Plates</th>
+                          <th>Checked By</th>
+                          <th> Signature</th>
+                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {editData?.MediaRecords.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{item.unique_id}</td>
+                            <td>
+                              <input
+                                value={item.date}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].date = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.name_medium}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].name_medium = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.date_of_preparation}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].date_of_preparation =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
 
-                          <td>
-                            <input
-                              value={item.date_of_use}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].date_of_use = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.lot_no}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].lot_no = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.no_of_plate_prepared}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].no_of_plate_prepared =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.no_of_plate_used}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].no_of_plate_used =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
+                            <td>
+                              <input
+                                value={item.date_of_use}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].date_of_use = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.lot_no}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].lot_no = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.no_of_plate_prepared}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].no_of_plate_prepared =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.no_of_plate_used}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].no_of_plate_used =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
 
-                          <td>
-                            <input
-                              value={item.used_for}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].used_for = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.balance_no_plate}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].balance_no_plate =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
-                          <td>
+                            <td>
+                              <input
+                                value={item.used_for}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].used_for = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.balance_no_plate}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].balance_no_plate =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
                               <input
                                 value={item.checked_by}
                                 onChange={(e) => {
-                                  const newData = [
-                                    ...editData.MediaRecords,
-                                  ];
+                                  const newData = [...editData.MediaRecords];
                                   newData[index].checked_by = e.target.value;
                                   setEditData({
                                     ...editData,
@@ -1056,32 +1061,32 @@ const MediaRecordPanel = () => {
                                 readOnly
                               />
                             </td>
-                          <td>
-                            <input
-                              value={item.signature}
-                              onChange={(e) => {
-                                const newData = [...editData.MediaRecords];
-                                newData[index].signature = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  MediaRecords: newData,
-                                });
-                              }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            />
-                          </td>
+                            <td>
+                              <input
+                                value={item.signature}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].signature = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
 
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            <td>
+                              <DeleteIcon onClick={() => deleteRow(index)} />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </>
               ) : null}
@@ -1303,8 +1308,7 @@ const MediaRecordPanel = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer3
-                            ?.name}
+                          value={editData?.reviewer3?.name}
                           readOnly
                         />
                       </div>
@@ -1442,7 +1446,6 @@ const MediaRecordPanel = () => {
               ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-           
               <button
                 className="themeBtn"
                 onClick={() => {

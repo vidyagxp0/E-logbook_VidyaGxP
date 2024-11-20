@@ -45,7 +45,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -67,7 +67,7 @@ const OperationOfSterilizer = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -146,7 +146,7 @@ const OperationOfSterilizer = () => {
 
     axios
       .post(
-        "http://localhost:1000/operation-sterlizer/post",
+        "https://elog-backend.mydemosoftware.com/operation-sterlizer/post",
         operationOfSterilizer,
         config
       )
@@ -253,7 +253,6 @@ const OperationOfSterilizer = () => {
           </div>
           <div className="document-form">
             <div className="details-form-data">
-              
               <div className="sub-head-2">Operation Of Sterilizer</div>
 
               <div className="outerDiv4">
