@@ -42,6 +42,7 @@ export default function TempretureRecordsPanel() {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
+      initiatorComment:editData.initiatorComment
     };
 
     const config = {
@@ -54,10 +55,10 @@ export default function TempretureRecordsPanel() {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
-      if(data.initiatorComment===""){
+      if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
-      }
+    }    
       axios
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-for-review",

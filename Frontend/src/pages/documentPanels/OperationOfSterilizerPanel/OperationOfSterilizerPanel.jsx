@@ -91,12 +91,15 @@ const OperationOfSterilizerPanel = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
+      // data.initiatorComment=editData.initiatorComment;
       console.log(data.initiatorComment,"INININI");
+      console.log(data);
       
-      if(data.initiatorComment===""){
+      if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
-      }
+    }
+    
       axios
         .put(
           "http://localhost:1000/operation-sterlizer/send-for-review",
