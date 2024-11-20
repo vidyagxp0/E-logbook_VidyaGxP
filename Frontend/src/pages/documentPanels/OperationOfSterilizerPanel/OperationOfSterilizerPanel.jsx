@@ -1262,6 +1262,7 @@ const OperationOfSterilizerPanel = () => {
                         </label>
                         <input
                           type="file"
+                          name="additionalAttachment"
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           value={editData.additionalAttachment}
                           onChange={handleInputChange1}
@@ -1275,6 +1276,7 @@ const OperationOfSterilizerPanel = () => {
                         <textarea
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
+                          name="additionalInfo"
                           value={editData.additionalInfo}
                           onChange={handleInputChange1}
                         ></textarea>
