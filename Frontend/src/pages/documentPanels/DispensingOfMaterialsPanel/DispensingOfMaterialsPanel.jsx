@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 const DispensingOfMaterialsPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -16,6 +17,7 @@ const DispensingOfMaterialsPanel = () => {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formId, setFormId] = useState(null);
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
@@ -27,8 +29,6 @@ const DispensingOfMaterialsPanel = () => {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-
-  console.log(editData, "editData of DISPENSING");
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
@@ -58,9 +58,6 @@ const DispensingOfMaterialsPanel = () => {
     editData.email = credentials.email;
     editData.password = credentials.password;
     editData.initiatorDeclaration = credentials?.declaration;
-    console.log(data, "datatatatatata");
-
-    console.log(editData, "editData");
 
     const config = {
       headers: {
@@ -78,7 +75,7 @@ const DispensingOfMaterialsPanel = () => {
       }
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-for-review",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
           data,
           config
         )
@@ -96,7 +93,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -115,7 +112,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -130,7 +127,11 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/dispensing-material/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -145,7 +146,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -196,7 +197,7 @@ const DispensingOfMaterialsPanel = () => {
         },
         data: editData,
 
-        url: "http://localhost:1000/dispensing-material/update",
+        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -376,7 +377,11 @@ const DispensingOfMaterialsPanel = () => {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0],additionalAttachment:e.target.files[0] });
+    setEditData({
+      ...editData,
+      initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[0],
+    });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -403,42 +408,55 @@ const DispensingOfMaterialsPanel = () => {
     title: "Dispensing Of Materials",
     ...editData,
   };
+  useEffect(() => {
+    console.log(reportData, "reportData");
+  }, [reportData]);
+  console.log(reportData, "reportdata");
+
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+      console.log(reportData.form_id, "tfyguhij");
+    }
+  }, [reportData]);
 
   const generateReport = async () => {
-    setIsLoading(true);
+    console.log(formId, "generateReport");
 
+    setIsLoading(true);
     try {
-      const response = await axios({
-        url: "http://localhost:1000/dispensing-material/generate-pdf",
-        method: "POST",
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-        data: {
+      const response = await axios.post(
+        `https://elog-backend.mydemosoftware.com/dispensing-material/chat-pdf/${formId}`,
+        {
           reportData: reportData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const { filename } = response.data; // Access filename from response.data
 
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `DM${reportData.form_id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
 
-      window.URL.revokeObjectURL(url);
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to generate PDF. Please try again later.");
+      console.error("Error opening chat PDF:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <div>
       <HeaderTop />
@@ -806,7 +824,7 @@ const DispensingOfMaterialsPanel = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -815,6 +833,12 @@ const DispensingOfMaterialsPanel = () => {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -1267,12 +1291,14 @@ const DispensingOfMaterialsPanel = () => {
                     </table>
                   </div>
                   <div className="group-input mt-4">
-                  <label
+                    <label
                       htmlFor="additionalAttachment"
                       className="color-label"
                       name="additionalAttachment"
                     >
-                      Additional Attachment <span className="text-sm text-zinc-600">(If / Any)</span> :
+                      Additional Attachment{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
@@ -1327,7 +1353,9 @@ const DispensingOfMaterialsPanel = () => {
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Information <span className="text-sm text-zinc-600">(If / Any)</span> :{" "}
+                      Additional Information{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
                     </label>
                     <div>
                       <textarea

@@ -1508,17 +1508,17 @@ exports.generateReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
 
-   const date = new Date();
-   const formattedDate = date.toLocaleString("en-US", {
-     year: "numeric",
-     month: "2-digit",
-     day: "2-digit",
-     hour: "2-digit",
-     minute: "2-digit",
-     second: "2-digit",
-     hour12: false, // Specify using 24-hour format
-   });
-    
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
       res.render("report", { reportData }, (err, html) => {
@@ -1666,10 +1666,10 @@ exports.chatByPdf = async (req, res) => {
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("public", `DP_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `DP_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

@@ -37,6 +37,8 @@ import OperationOfSterilizerPanel from "./pages/documentPanels/OperationOfSteril
 import DispensingOfMaterialsPanel from "./pages/documentPanels/DispensingOfMaterialsPanel/DispensingOfMaterialsPanel.jsx";
 import Analytics2 from "./pages/analytics2/Analytics2.jsx";
 import EffectiveElogs from "./pages/Dashboard/EffectiveElogs.jsx";
+import ViewReport from "./components/viewReport/ViewReport.jsx";
+
 
 function App() {
   return (
@@ -169,6 +171,7 @@ function App() {
               path="/dispensing-of-material"
               element={<ProtectedRoute element={<DispensingOfMaterials />} />}
             />
+            <Route path="/view-report" element={<ViewReport />} />
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={2000} pauseOnHover={false} />

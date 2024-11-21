@@ -7,6 +7,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import TinyEditor from "../../../components/TinyEditor";
 
 const LoadedQuantity = () => {
   const [User, setUser] = useState(null);
@@ -36,9 +37,10 @@ const LoadedQuantity = () => {
       initiatorDeclaration: "",
       additionalInfo: "",
       additionalAttachment: null,
+      additionalInfo: "",
+      additionalAttachment: null,
     }
   );
-
 
   const handleFileChange = (e) => {
     setLoadedQuantity({
@@ -53,7 +55,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -75,7 +77,7 @@ const LoadedQuantity = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -99,7 +101,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -155,7 +157,7 @@ const LoadedQuantity = () => {
 
     axios
       .post(
-        "http://localhost:1000/loaded-quantity/post",
+        "https://elog-backend.mydemosoftware.com/loaded-quantity/post",
         loadedQuantity,
         config
       )
@@ -232,6 +234,12 @@ const LoadedQuantity = () => {
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
+  };
+
+  const setTinyContent = (content) => {
+    setLoadedQuantity({
+      description: content,
+    });
   };
   return (
     <div>
@@ -345,7 +353,7 @@ const LoadedQuantity = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={loadedQuantity.description}
                         onChange={(e) =>
@@ -354,6 +362,12 @@ const LoadedQuantity = () => {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={loadedQuantity.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -659,7 +673,11 @@ const LoadedQuantity = () => {
                     </table>
                   </div>
                   <div className="group-input">
-                    <label className="color-label mt-4">Additional Attachment<span className="text-sm text-zinc-600">(If / Any)</span> :</label>
+                    <label className="color-label mt-4">
+                      Additional Attachment
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
+                    </label>
                     <div>
                       <input
                         type="file"
@@ -670,7 +688,9 @@ const LoadedQuantity = () => {
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Info <span className="text-sm text-zinc-600">(If / Any)</span> :{" "}
+                      Additional Info{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
                     </label>
                     <div>
                       <textarea

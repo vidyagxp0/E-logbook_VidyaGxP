@@ -191,7 +191,7 @@ exports.InsertMediaRecord = async (req, res) => {
           action: "Opened",
         });
         auditTrailEntries.push({
-          form_id: newForm.date,
+          form_id: newForm.form_id,
           field_name: `Date[${index}]`,
           previous_value: null,
           new_value: record.date,
@@ -1626,10 +1626,10 @@ exports.chatByPdf = async (req, res) => {
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("public", `MR_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `MR_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     res

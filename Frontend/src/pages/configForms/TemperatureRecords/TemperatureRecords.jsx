@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function TemperatureRecords() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -28,7 +29,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -50,7 +51,7 @@ export default function TemperatureRecords() {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -92,7 +93,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -152,7 +153,7 @@ export default function TemperatureRecords() {
 
     axios
       .post(
-        "http://localhost:1000/temprature-record/post-temprature-record",
+        "https://elog-backend.mydemosoftware.com/temprature-record/post-temprature-record",
         tempratureRecord,
         config
       )
@@ -259,6 +260,11 @@ export default function TemperatureRecords() {
     });
   };
 
+  const setTinyContent = (content) => {
+    setTempratureRecord({
+      description: content,
+    });
+  };
   return (
     <>
       <HeaderTop />
@@ -421,7 +427,7 @@ export default function TemperatureRecords() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={tempratureRecord.description}
                         onChange={(e) =>
@@ -430,6 +436,11 @@ export default function TemperatureRecords() {
                           })
                         }
                         required
+                      /> */}
+                      <TinyEditor
+                        editorContent={tempratureRecord.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>

@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function DPRpanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -16,6 +17,8 @@ export default function DPRpanel() {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formId, setFormId] = useState(null);
+
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
@@ -26,6 +29,8 @@ export default function DPRpanel() {
     compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
+    additionalAttachment: "",
+    additionalInfo: "",
     DifferentialPressureRecords: [],
     limit: "",
   });
@@ -33,9 +38,6 @@ export default function DPRpanel() {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-
-  console.log(editData, "editData of DRP");
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -71,7 +73,7 @@ export default function DPRpanel() {
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -89,7 +91,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -108,7 +110,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -124,7 +126,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -142,7 +144,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -189,7 +191,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elog-backend.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -386,44 +388,51 @@ export default function DPRpanel() {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title: "Differential Pressure Record",
     ...editData,
   };
 
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+    }
+  }, [reportData]);
+
   const generateReport = async () => {
     setIsLoading(true);
-
     try {
-      const response = await axios({
-        url: "http://localhost:1000/differential-pressure/generate-pdf",
-        method: "POST",
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-        data: {
+      const response = await axios.post(
+        `https://elog-backend.mydemosoftware.com/differential-pressure/chat-pdf/${formId}`,
+        {
           reportData: reportData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const { filename } = response.data; // Access filename from response.data
 
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `DPR${reportData.form_id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
 
-      window.URL.revokeObjectURL(url);
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to generate PDF. Please try again later.");
+      console.error("Error opening chat PDF:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <>
       <HeaderTop />
@@ -800,7 +809,7 @@ export default function DPRpanel() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -809,6 +818,12 @@ export default function DPRpanel() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
