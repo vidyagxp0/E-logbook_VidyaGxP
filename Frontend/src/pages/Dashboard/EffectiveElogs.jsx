@@ -23,7 +23,6 @@ function Dashboard() {
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
   );
-  console.log(operationOfSterilizerElogs, "operationOfSterilizerElogs");
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -38,11 +37,11 @@ function Dashboard() {
 
     axios(newConfig)
       .then((response) => {
-        const allDifferentialPressureElogs = response.data.message;
-        console.log(
-          allDifferentialPressureElogs,
-          "allDifferentialPressureElogs"
+        const temp = response.data.message;
+        const allDifferentialPressureElogs = temp.filter(
+          (log) => log.status === "Closed"
         );
+
         let filteredArray = allDifferentialPressureElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -70,7 +69,10 @@ function Dashboard() {
 
     axios(newConfigTemp)
       .then((response) => {
-        const allTempratureRecordElogs = response.data.message;
+        const temp = response.data.message;
+        const allTempratureRecordElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allTempratureRecordElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -98,7 +100,10 @@ function Dashboard() {
 
     axios(newConfigloaded)
       .then((response) => {
-        const allLoadedQuantityElogs = response.data.message;
+        const temp = response.data.message;
+        const allLoadedQuantityElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allLoadedQuantityElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -126,7 +131,10 @@ function Dashboard() {
 
     axios(newConfigMedia)
       .then((response) => {
-        const allMediaRecordElogs = response.data.message;
+        const temp = response.data.message;
+        const allMediaRecordElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allMediaRecordElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -154,7 +162,10 @@ function Dashboard() {
 
     axios(newConfigDispensing)
       .then((response) => {
-        const allDispensingMaterialElogs = response.data.message;
+        const temp = response.data.message;
+        const allDispensingMaterialElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allDispensingMaterialElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -180,7 +191,10 @@ function Dashboard() {
     };
     axios(newOperationSterelizer)
       .then((response) => {
-        const allOperationOfSterelizer = response.data.message;
+        const temp = response.data.message;
+        const allOperationOfSterelizer = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allOperationOfSterelizer.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -191,6 +205,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
+        console.log(filteredArray, "filteredArray");
         setOperationOfSterilizerElogs(filteredArray);
       })
       .catch((error) => {
@@ -199,14 +214,14 @@ function Dashboard() {
   }, []);
 
   const combinedRecords = [
-    ...differentialPressureElogs,
-    // ...areaAndERecordElogs,
-    ...equipmentCRecordElogs,
-    ...tempratureRecordElogs,
-    ...loadedQuantityElogs,
-    ...mediaRecordElogs,
-    ...dispensingOfMaterialsElogs,
-    ...operationOfSterilizerElogs,
+    ...differentialPressureElogs.filter((log) => log.status === "Closed"),
+    // ...areaAndERecordElogs.filter(log => log.status === "Closed"), // Uncomment if needed
+    ...equipmentCRecordElogs.filter((log) => log.status === "Closed"),
+    ...tempratureRecordElogs.filter((log) => log.status === "Closed"),
+    ...loadedQuantityElogs.filter((log) => log.status === "Closed"),
+    ...mediaRecordElogs.filter((log) => log.status === "Closed"),
+    ...dispensingOfMaterialsElogs.filter((log) => log.status === "Closed"),
+    ...operationOfSterilizerElogs.filter((log) => log.status === "Closed"),
   ];
 
   const handleNavigation = (item) => {
@@ -274,7 +289,9 @@ function Dashboard() {
               <option value="effective_equipment_cleaning">
                 Equipment Cleaning Checklist
               </option>
-              <option value="effective_temperature_records">Temperature Records</option>
+              <option value="effective_temperature_records">
+                Temperature Records
+              </option>
               <option value="effective_loaded_quantity">Loaded Quantity</option>
               <option value="effective_media_record">Media Record</option>
               <option value="effective_operation_of_sterilizer">
@@ -312,7 +329,9 @@ function Dashboard() {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/effective-dpr", { state: item })}
+                        onClick={() =>
+                          navigate("/effective-dpr", { state: item })
+                        }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -332,7 +351,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -370,7 +391,11 @@ function Dashboard() {
                       <td>{item.process}</td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
-                      <td>{item.shortDescription}</td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item?.shortDescription,
+                        }}
+                      ></td>
                       <td>{item.status}</td>
                     </tr>
                   );
@@ -387,7 +412,9 @@ function Dashboard() {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/effective-tpr", { state: item })}
+                        onClick={() =>
+                          navigate("/effective-tpr", { state: item })
+                        }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -407,7 +434,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -426,7 +455,9 @@ function Dashboard() {
                           color: "black",
                         }}
                         onClick={() =>
-                          navigate("/effective-loaded-quantity", { state: item })
+                          navigate("/effective-loaded-quantity", {
+                            state: item,
+                          })
                         }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
@@ -447,7 +478,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -491,7 +524,11 @@ function Dashboard() {
                             ? "EMEA"
                             : "EU"}
                         </td>
-                        <td>{item.description}</td>
+                        <td
+                          dangerouslySetInnerHTML={{
+                            __html: item?.description,
+                          }}
+                        ></td>{" "}
                         <td>{item.initiator_name}</td>
                         <td>{formatDate(item.date_of_initiation)}</td>
                         <td>{item.status}</td>
@@ -533,7 +570,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -576,7 +615,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -639,7 +680,6 @@ function Dashboard() {
                           ? "Dispensing of Material"
                           : null}
                       </td>
-
                       <td>
                         {item.site_id === 1
                           ? "India"
@@ -649,7 +689,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
