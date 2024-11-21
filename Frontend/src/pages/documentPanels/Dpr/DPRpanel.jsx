@@ -388,6 +388,7 @@ export default function DPRpanel() {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title: "Differential Pressure Record",
     ...editData,
   };
 
@@ -395,7 +396,7 @@ export default function DPRpanel() {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
     }
-  }, []);
+  }, [reportData]);
 
   const generateReport = async () => {
     setIsLoading(true);
