@@ -29,6 +29,7 @@ export default function TempretureRecordsEffective() {
     additionalAttachment: "",
     additionalInfo: "",
     compression_area: "",
+    TempratureRecords:[],
     limit: "",
   });
   console.log(editData, "Edit Dataaa");
@@ -939,40 +940,34 @@ export default function TempretureRecordsEffective() {
                             />
                           </td>
                           <td>
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={
-                                  editData.TempratureRecords[index]?.checked_by
-                                    ? true
-                                    : false
-                                }
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.TempratureRecords,
-                                  ];
-
-                                  if (e.target.checked) {
-                                    newData[index].checked_by =
-                                      item.checked_by || "Anshul Thakur";
-                                  } else {
-                                    newData[index].checked_by = null;
-                                  }
-
-                                  setEditData({
-                                    ...editData,
-                                    TempratureRecords: newData,
-                                  });
-                                }}
-                              />
-                              {editData.TempratureRecords[index]
-                                ?.checked_by && (
-                                <span style={{ marginRight: "8px" }}>
-                                  {editData.TempratureRecords[index].checked_by}
-                                </span>
-                              )}
+                            <div>
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  checked={item.checked_by !== ""}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData?.TempratureRecords,
+                                    ];
+                                    if (e.target.checked) {
+                                      newData[index].checked_by =
+                                        item.checked_by ||
+                                        editData?.reviewer1?.name;
+                                    } else {
+                                      newData[index].checked_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      TempratureRecords: newData,
+                                    });
+                                  }}
+                                />
+                                {item.checked_by && (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    {item.checked_by}
+                                  </span>
+                                )}
+                              </label>
                             </div>
                           </td>
 

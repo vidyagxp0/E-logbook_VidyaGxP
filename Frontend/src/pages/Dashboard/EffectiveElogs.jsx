@@ -39,9 +39,9 @@ function Dashboard() {
     axios(newConfig)
       .then((response) => {
         const allDifferentialPressureElogs = response.data.message;
+        const EffectiveDiffrentialElogs = allDifferentialPressureElogs.status === "closed";
         console.log(
-          allDifferentialPressureElogs,
-          "allDifferentialPressureElogs"
+          EffectiveDiffrentialElogs,"EffectiveDiffrentialElogs"
         );
         let filteredArray = allDifferentialPressureElogs.filter((elog) => {
           const userId = userDetails.userId;
