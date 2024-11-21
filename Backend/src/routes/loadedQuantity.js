@@ -122,5 +122,15 @@ router.post(
   Auth.checkUserJwtToken,
   LoadedQuantityRecordProcess.generateReport
 );
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  LoadedQuantityRecordProcess.chatByPdf
+);
+
+router.post(
+  "/view-report",
+  LoadedQuantityRecordProcess.viewReport
+);
 
 module.exports = router;
