@@ -33,6 +33,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
     password,
     FormRecordsArray,
     initiatorDeclaration,
+    additionalAttachment,
+    additionalInfo,
   } = req.body;
 
   if (!approver_id) {
@@ -50,6 +52,12 @@ exports.InsertDifferentialPressure = async (req, res) => {
     return res
       .status(400)
       .json({ error: true, message: "Please provide email and password." });
+  }
+
+  if (!initiatorComment) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an initiator comment." });
   }
 
   // Start a transaction
@@ -78,12 +86,15 @@ exports.InsertDifferentialPressure = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
     const supportingDocs = {};
 
     // Process files
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       } else if (file.fieldname.startsWith("FormRecordsArray[")) {
         // Extract the index from the fieldname
         const match = file.fieldname.match(
@@ -111,7 +122,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
+        additionalInfo: additionalInfo,
       },
 
       { transaction }
@@ -149,6 +162,20 @@ exports.InsertDifferentialPressure = async (req, res) => {
         field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+        declaration: initiatorDeclaration,
+        action: "Opened",
+      });
+    }
+
+    if (additionalAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "additionalAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
@@ -263,29 +290,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
       ].join(","),
     };
 
-    // try {
-    //   // Send emails
-    //   await Mailer.sendEmail("assignReviewer", {
-    //     ...elogData,
-    //     recipients: elogData.reviewerEmail,
-    //   });
-
-    //   await Mailer.sendEmail("assignApprover", {
-    //     ...elogData,
-    //     recipients: elogData.approverEmail,
-    //   });
-
     return res.status(200).json({
       error: false,
       message: "E-log Created successfully",
     });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -318,6 +326,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     password,
     initiatorComment,
     initiatorDeclaration,
+    additionalInfo,
   } = req.body;
 
   if (!form_id) {
@@ -356,11 +365,14 @@ exports.EditDifferentialPressure = async (req, res) => {
     }
 
     let initiatorAttachment = null;
+    let additionalAttachment = null;
     const supportingDocs = {};
 
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
       } else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
         const match = file.fieldname.match(
           /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
@@ -399,6 +411,9 @@ exports.EditDifferentialPressure = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalAttachment: additionalAttachment
+        ? getElogDocsUrl(additionalAttachment)
+        : form.additionalAttachment,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -434,7 +449,9 @@ exports.EditDifferentialPressure = async (req, res) => {
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
+        additionalInfo,
       },
       { transaction }
     );
@@ -643,8 +660,7 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
 
 //send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, email, password, initiatorDeclaration, initiatorComment } =
-    req.body;
+  const { form_id, email, password, initiatorDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -720,6 +736,20 @@ exports.SendDPElogForReview = async (req, res) => {
       });
     }
 
+    if (req?.file) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "additionalAttachment",
+        previous_value: form.additionalAttachment || null,
+        new_value: getElogDocsUrl(req.file),
+        changed_by: user.user_id,
+        previous_status: "Opened",
+        new_status: "Under Review",
+        declaration: initiatorDeclaration,
+        action: "Send For Review",
+      });
+    }
+
     auditTrailEntries.push({
       form_id: form.form_id,
       field_name: "stage Change",
@@ -740,7 +770,9 @@ exports.SendDPElogForReview = async (req, res) => {
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
-        initiatorComment: initiatorComment,
+        additionalAttachment: req?.file
+          ? getElogDocsUrl(req.file)
+          : form.additionalAttachment,
       },
       { transaction }
     );
@@ -1476,18 +1508,16 @@ exports.generateReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
 
-    const getCurrentDateTime = () => {
-      const now = new Date();
-      return now.toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Specify using 24-hour format
-      });
-    };
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
@@ -1517,97 +1547,27 @@ exports.generateReport = async (req, res) => {
       format: "A4",
       printBackground: true,
       displayHeaderFooter: true,
-      headerTemplate: `
-<div class="header-container">
-  <table class="header-table">
-    <tr>
-      <th colspan="2" class="header-title">Differential Pressure Records</th>
-      <th rowspan="2" class="header-logo">
-        <img src="${logoDataUri}" alt="Logo" style="max-width: 100px; height: auto;" />
-      </th>
-    </tr>
-    <tr>
-      <td class="header-info"><span style="font-weight: 600;">Form ID:</span>${reportData.form_id}</td>
-      <td class="header-info"><span style="font-weight: 600;">Status:</span>${reportData?.status}</td>
-    </tr>
-  </table>
-</div>
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
 
-<style>
-  .header-container {
-    width: 100%;
-    padding: 0 50px; /* Increased margin from left and right */
-    box-sizing: border-box;
-  }
-  
-  .header-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 14px;
-    table-layout: fixed;
-  }
-  
-  .header-table th, .header-table td {
-    border: 1px solid #000;
-    padding: 8px;
-  }
-  
-  .header-table th {
-    background-color: #f8f8f8;
-    font-weight: bold;
-  }
-  
-  .header-logo {
-    text-align: center;
-    width: 100px;
-  }
-  
-  .header-title {
-    text-align: center;
-    font-size: 18px;
-    margin: 10px 0;
-  }
-  
-  .header-info {
-    font-size: 12px;
-    text-align: center;
-  }
-</style>
-`,
-
-      footerTemplate: `
-<style>
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    font-size: 10px;
-    padding: 5px 0;
-  }
-  .leftContent, .centerContent, .rightContent {
-    display: inline-block;
-  }
-  .centerContent {
-    flex-grow: 1;
-    text-align: center;
-  }
-  .leftContent {
-    flex-grow: 0;
-    padding-left: 20px;  /* Added padding to the left content */
-  }
-  .rightContent {
-    flex-grow: 0;
-    padding-right: 20px; /* Added padding to the right content */
-  }
-</style>
-<div class="footer">
-  <span class="leftContent">Printed on: ${getCurrentDateTime()}</span>
-  <span class="centerContent">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-  <span class="rightContent">Printed by: ${user ? user.name : "Unknown"}</span>
-</div>
-`,
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
       margin: {
         top: "120px",
         bottom: "60px",
@@ -1624,6 +1584,114 @@ exports.generateReport = async (req, res) => {
     res.send(pdf);
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res.status(500).send("Error generating PDF");
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+
+exports.chatByPdf = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("report", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "150px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+exports.viewReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+    // Render HTML using EJS template
+    req.app.render("report", { reportData }, (err, html) => {
+      if (err) {
+        console.error("Error rendering HTML:", err);
+        return res.status(500).send("Error rendering HTML", err);
+      }
+      res.send(html);
+    });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };

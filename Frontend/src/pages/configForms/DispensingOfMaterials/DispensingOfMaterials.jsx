@@ -7,6 +7,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import TinyEditor from "../../../components/TinyEditor";
 
 const DispensingOfMaterials = () => {
   const [User, setUser] = useState(null);
@@ -35,9 +36,18 @@ const DispensingOfMaterials = () => {
       initiatorComment: " ",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
+      additionalInfo: "",
+      additionalAttachment: null,
     }
   );
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
+
+  const handleFileChange = (e) => {
+    setDispensingOfMaterials({
+      ...dispensingOfMaterials,
+      additionalAttachment: e.target.files[0],
+    });
+  };
 
   const navigate = useNavigate();
 
@@ -246,6 +256,12 @@ const DispensingOfMaterials = () => {
   const handlePopupClose = () => {
     setIsPopupOpen(false);
   };
+
+  const setTinyContent = (content) => {
+    setDispensingOfMaterials({
+      description: content,
+    });
+  };
   return (
     <div>
       <HeaderTop />
@@ -352,7 +368,7 @@ const DispensingOfMaterials = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={dispensingOfMaterials.description}
                         onChange={(e) =>
@@ -361,6 +377,12 @@ const DispensingOfMaterials = () => {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={dispensingOfMaterials.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -793,6 +815,43 @@ const DispensingOfMaterials = () => {
                         ))}
                       </tbody>
                     </table>
+                    <div className="group-input mt-4">
+                      <label className="color-label">
+                        Additional Attachment
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
+                      </label>
+                      <div>
+                        <input
+                          type="file"
+                          name="additionalAttachment"
+                          onChange={handleFileChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input ">
+                      <label className="color-label">
+                        Additional Info{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :{" "}
+                      </label>
+                      <div>
+                        <textarea
+                          type="text"
+                          name="Additional"
+                          value={dispensingOfMaterials.additionalInfo}
+                          onChange={(e) => {
+                            setDispensingOfMaterials({
+                              additionalInfo: e.target.value,
+                            });
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </>
               ) : null}

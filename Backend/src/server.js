@@ -9,7 +9,7 @@ const loadedQuantityRoutes = require("./routes/loadedQuantity");
 const mediaRecordRoutes = require("./routes/mediaRecord");
 const dispensingOfMaterialRoutes = require("./routes/dispensingOfMaterial");
 const operationOfSterlizerRoutes = require("./routes/operationOfSterlizer");
-const vidyagxpFeedback = require('./config/vidyagxp_feedback');
+const vidyagxpFeedback = require("./config/vidyagxp_feedback");
 const siteRoutes = require("./routes/sites");
 const cors = require("cors");
 const path = require("path");
@@ -18,14 +18,28 @@ const helmet = require("helmet");
 const app = express();
 const server = http.createServer(app);
 
+const pdfsFolder = path.resolve("public");
+
+app.use("/public", express.static(pdfsFolder));
+
 app.use(express.json());
 app.use(
   helmet({
-    crossOriginResourcePolicy: false,
-    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["*"],
+        frameAncestors: ["self"], // Allow iframe embedding from any source
+      },
+    },
+    crossOriginResourcePolicy: true,
+    crossOriginEmbedderPolicy: true,
   })
 );
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
 app.use("/feedback", vidyagxpFeedback);

@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 const OperationOfSterilizerPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -16,14 +17,20 @@ const OperationOfSterilizerPanel = () => {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formId, setFormId] = useState(null);
+
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
     description: "",
+    additionalInfo: "",
+    additionalAttachment: "",
     OperationOfSterilizerRecords: [],
   });
+
+  console.log(editData, "editData");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -39,9 +46,11 @@ const OperationOfSterilizerPanel = () => {
       form_id: location.state?.form_id,
       email: credentials?.email,
       password: credentials?.password,
+      additionalInfo: credentials?.additionalInfo,
+      additionalAttachment: credentials?.additionalAttachment,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
-      initiatorComment:editData.initiatorComment,
+      initiatorComment: editData.initiatorComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -92,14 +101,14 @@ const OperationOfSterilizerPanel = () => {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
       // data.initiatorComment=editData.initiatorComment;
-      console.log(data.initiatorComment,"INININI");
+      console.log(data.initiatorComment, "INININI");
       console.log(data);
-      
+
       if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
-    }
-    
+      }
+
       axios
         .put(
           "http://localhost:1000/operation-sterlizer/send-for-review",
@@ -414,7 +423,11 @@ const OperationOfSterilizerPanel = () => {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+    setEditData({
+      ...editData,
+      initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[0],
+    });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -442,41 +455,47 @@ const OperationOfSterilizerPanel = () => {
     ...editData,
   };
 
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+    }
+  }, [reportData]);
+
   const generateReport = async () => {
     setIsLoading(true);
-
     try {
-      const response = await axios({
-        url: "http://localhost:1000/operation-sterlizer/generate-pdf",
-        method: "POST",
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-        data: {
+      const response = await axios.post(
+        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
+        {
           reportData: reportData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const { filename } = response.data; // Access filename from response.data
 
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `OS${reportData.form_id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
 
-      window.URL.revokeObjectURL(url);
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to generate PDF. Please try again later.");
+      console.error("Error opening chat PDF:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <div>
       <HeaderTop />
@@ -546,18 +565,19 @@ const OperationOfSterilizerPanel = () => {
                   >
                     {isLoading ? (
                       <>
-                          <span>Generate Report</span>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          border: "3px solid #f3f3f3",
-                          borderTop: "3px solid black",
-                          borderRadius: "50%",
-                          animation: "spin 1s linear infinite",
-                          marginLeft: "10px",
-                        }}
-                      ></div></>
+                        <span>Generate Report</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
                     ) : (
                       "Generate Report"
                     )}
@@ -844,7 +864,7 @@ const OperationOfSterilizerPanel = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -853,6 +873,12 @@ const OperationOfSterilizerPanel = () => {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -1251,12 +1277,118 @@ const OperationOfSterilizerPanel = () => {
                         )}
                       </tbody>
                     </table>
+
+                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                      <div className="flex flex-col w-full">
+                        <label
+                          htmlFor="additionalAttachment"
+                          className="color-label"
+                          name="additionalAttachment"
+                        >
+                          Attachment{" "}
+                          <span className="text-sm text-zinc-600">
+                            (If / Any)
+                          </span>{" "}
+                          :
+                        </label>
+                        <div>
+                          {editData.additionalAttachment ? (
+                            <div className="flex items-center gap-x-10">
+                              <button
+                                className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                                type="button"
+                                onClick={() =>
+                                  document
+                                    .getElementById("additionalAttachment")
+                                    .click()
+                                }
+                              >
+                                Change File
+                              </button>
+                              <h3 className="">
+                                <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                  Selected File:{" "}
+                                </span>
+                                <a
+                                  href={editData.additionalAttachment}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 underline"
+                                >
+                                  View File
+                                </a>
+                              </h3>
+                            </div>
+                          ) : (
+                            <div>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  document
+                                    .getElementById("additionalAttachment")
+                                    .click()
+                                }
+                              >
+                                Select File
+                              </button>
+                            </div>
+                          )}
+                          <input
+                            type="file"
+                            name="additionalAttachment"
+                            id="additionalAttachment"
+                            onChange={handleInitiatorFileChange}
+                            style={{ display: "none" }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Info{" "}
+                          <span className="text-sm text-zinc-600">
+                            (If / Any)
+                          </span>{" "}
+                          :
+                        </label>
+                        <textarea
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          rows="4"
+                          name="additionalInfo"
+                          value={editData.additionalInfo}
+                          onChange={handleInputChange1}
+                        ></textarea>
+                      </div>
+                    </div>
                   </div>
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
@@ -1346,35 +1478,34 @@ const OperationOfSterilizerPanel = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
               {reviewerRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.reviewer2?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_review)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
@@ -1464,35 +1595,34 @@ const OperationOfSterilizerPanel = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Reviewer </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="reviewer"
-                          value={editData?.reviewer2?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Review</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_review)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
               {approverRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.approver2?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_approval)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
@@ -1578,30 +1708,6 @@ const OperationOfSterilizerPanel = () => {
                           id="approverAttachment"
                           onChange={handleApproverFileChange}
                           style={{ display: "none" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Approver </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="approver"
-                          value={editData?.approver2?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Approval</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_approval)}
-                          readOnly
                         />
                       </div>
                     </div>

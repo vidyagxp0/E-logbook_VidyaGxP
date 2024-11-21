@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 const MediaRecordPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -16,6 +17,7 @@ const MediaRecordPanel = () => {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formId, setFormId] = useState(null);
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
@@ -42,7 +44,7 @@ const MediaRecordPanel = () => {
       password: credentials?.password,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
-      initiatorComment:editData.initiatorComment
+      initiatorComment: editData.initiatorComment,
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -96,7 +98,7 @@ const MediaRecordPanel = () => {
       if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
-    }
+      }
       axios
         .put(
           "http://localhost:1000/media-record/send-for-review",
@@ -391,7 +393,11 @@ const MediaRecordPanel = () => {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+    setEditData({
+      ...editData,
+      initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[0],
+    });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -419,41 +425,47 @@ const MediaRecordPanel = () => {
     ...editData,
   };
 
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+    }
+  }, [reportData]);
+
   const generateReport = async () => {
     setIsLoading(true);
-
     try {
-      const response = await axios({
-        url: "http://localhost:1000/media-record/generate-pdf",
-        method: "POST",
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-        data: {
+      const response = await axios.post(
+        `http://localhost:1000/media-record/chat-pdf/${formId}`,
+        {
           reportData: reportData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const { filename } = response.data; // Access filename from response.data
 
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `MR${reportData.form_id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
 
-      window.URL.revokeObjectURL(url);
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to generate PDF. Please try again later.");
+      console.error("Error opening chat PDF:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <div>
       <HeaderTop />
@@ -524,18 +536,19 @@ const MediaRecordPanel = () => {
                   >
                     {isLoading ? (
                       <>
-                          <span>Generate Report</span>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          border: "3px solid #f3f3f3",
-                          borderTop: "3px solid black",
-                          borderRadius: "50%",
-                          animation: "spin 1s linear infinite",
-                          marginLeft: "10px",
-                        }}
-                      ></div></>
+                        <span>Generate Report</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
                     ) : (
                       "Generate Report"
                     )}
@@ -822,7 +835,7 @@ const MediaRecordPanel = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -831,6 +844,12 @@ const MediaRecordPanel = () => {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -1088,11 +1107,111 @@ const MediaRecordPanel = () => {
                       </tbody>
                     </table>
                   </div>
+
+                  <div className="group-input mt-4">
+                    <label
+                      htmlFor="additionalAttachment"
+                      className="color-label"
+                      name="additionalAttachment"
+                    >
+                      Additional Attachment{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
+                    </label>
+                    <div>
+                      {editData.additionalAttachment ? (
+                        <div className="flex items-center gap-x-10">
+                          <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Change File
+                          </button>
+                          <h3 className="">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                              Selected File:{" "}
+                            </span>
+                            <a
+                              href={editData.additionalAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      ) : (
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        id="additionalAttachment"
+                        onChange={handleInitiatorFileChange}
+                        style={{ display: "none" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="group-input ">
+                    <label className="color-label">
+                      Additional Information{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
+                    </label>
+                    <div>
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={editData.additionalInfo}
+                        onChange={handleInputChange1}
+                      />
+                    </div>
+                  </div>
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
@@ -1182,35 +1301,34 @@ const MediaRecordPanel = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
               {reviewerRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.reviewer3?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_review)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
@@ -1300,35 +1418,34 @@ const MediaRecordPanel = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Reviewer </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="reviewer"
-                          value={editData?.reviewer3?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Review</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_review)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
               {approverRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.approver3?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_approval)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
@@ -1414,30 +1531,6 @@ const MediaRecordPanel = () => {
                           id="approverAttachment"
                           onChange={handleApproverFileChange}
                           style={{ display: "none" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Approver </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="approver"
-                          value={editData?.approver3?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Approval</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_approval)}
-                          readOnly
                         />
                       </div>
                     </div>

@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function DiffrentialPressure() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -207,6 +208,8 @@ export default function DiffrentialPressure() {
       department: "",
       review_comments: "",
       compression_area: "",
+      additionalAttachment: "",
+      additionalInfo: "",
       limit: null,
       initiatorComment: " ",
       initiatorAttachment: null,
@@ -246,6 +249,12 @@ export default function DiffrentialPressure() {
     updatedData[index].supporting_docs = file;
     setAllTableData(updatedData);
   };
+  const handleFileChangeAttachment = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      additionalAttachment: e.target.files[0],
+    });
+  };
 
   const handleInitiatorFileChange = (e) => {
     setDifferentialPRecord({
@@ -254,6 +263,11 @@ export default function DiffrentialPressure() {
     });
   };
 
+  const setTinyContent = (content) => {
+    setDifferentialPRecord({
+      description: content,
+    });
+  };
   return (
     <>
       <HeaderTop />
@@ -423,7 +437,7 @@ export default function DiffrentialPressure() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={differentialPRecord.description}
                         onChange={(e) =>
@@ -432,6 +446,12 @@ export default function DiffrentialPressure() {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={differentialPRecord.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -771,6 +791,43 @@ export default function DiffrentialPressure() {
                       ))}
                     </tbody>
                   </table>
+                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Attachment{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
+                      </label>
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        onChange={handleFileChangeAttachment}
+                      />
+                    </div>
+
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Info{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
+                      </label>
+                      <textarea
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        rows="4"
+                        value={differentialPRecord.additionalInfo}
+                        onChange={(e) => {
+                          setDifferentialPRecord({
+                            additionalInfo: e.target.value,
+                          });
+                        }}
+                      ></textarea>
+                    </div>
+                  </div>
                 </>
               ) : null}
 

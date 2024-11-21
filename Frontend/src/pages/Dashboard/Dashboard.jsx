@@ -649,7 +649,10 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item.description }}
+                      ></td>
+
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
