@@ -744,8 +744,8 @@ export default function TemperatureRecords() {
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.temprature_record !== "" &&
-                              (item.temprature_record < 0.6 ||
-                                item.temprature_record > 2.6) && (
+                              (item.temprature_record < 23 ||
+                                item.temprature_record > 27) && (
                                 <button
                                   style={{
                                     cursor: "pointer",
@@ -760,8 +760,8 @@ export default function TemperatureRecords() {
                                 </button>
                               )}
                             {item.temprature_record !== "" &&
-                              (item.temprature_record < 0.6 ||
-                                item.temprature_record > 2.6) && (
+                              (item.temprature_record < 23 ||
+                                item.temprature_record > 27) && (
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {

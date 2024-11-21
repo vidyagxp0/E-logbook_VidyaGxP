@@ -1006,7 +1006,7 @@ export default function TempretureRecordsPanel() {
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.limit !== "" &&
-                              (item.limit < 0.6 || item.limit > 2.6) && (
+                              (item.limit < 23 || item.limit > 27) && (
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
