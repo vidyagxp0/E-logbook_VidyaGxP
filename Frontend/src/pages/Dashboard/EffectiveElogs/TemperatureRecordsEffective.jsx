@@ -71,7 +71,7 @@ export default function TempretureRecordsEffective() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
+          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -89,7 +89,7 @@ export default function TempretureRecordsEffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
+          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -109,7 +109,7 @@ export default function TempretureRecordsEffective() {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
+          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -125,7 +125,7 @@ export default function TempretureRecordsEffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
+          "http://localhost:1000/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -143,7 +143,7 @@ export default function TempretureRecordsEffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
+          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -190,7 +190,7 @@ export default function TempretureRecordsEffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
+        url: "http://localhost:1000/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -279,7 +279,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
+        `http://localhost:1000/temprature-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
