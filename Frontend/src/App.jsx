@@ -36,6 +36,7 @@ import MediaRecordPanel from "./pages/documentPanels/MediaRecordPanel/MediaRecor
 import OperationOfSterilizerPanel from "./pages/documentPanels/OperationOfSterilizerPanel/OperationOfSterilizerPanel.jsx";
 import DispensingOfMaterialsPanel from "./pages/documentPanels/DispensingOfMaterialsPanel/DispensingOfMaterialsPanel.jsx";
 import Analytics2 from "./pages/analytics2/Analytics2.jsx";
+import EffectiveElogs from "./pages/Dashboard/EffectiveElogs.jsx";
 import ViewReport from "./components/viewReport/ViewReport.jsx";
 
 
@@ -52,6 +53,7 @@ function App() {
                 path="/admin-dashboard"
                 element={<ProtectedAdminRoute element={<AdminDashboard />} />}
               />
+
               <Route
                 path="/admin-add-user"
                 element={<ProtectedAdminRoute element={<AddNewUser />} />}
@@ -130,6 +132,10 @@ function App() {
             <Route
               path="/dashboard"
               element={<ProtectedRoute element={<Dashboard />} />}
+            />
+            <Route
+              path="/effectiveElogs"
+              element={<ProtectedRoute element={<EffectiveElogs />} />}
             />
             <Route
               path="/differential-pressure-record"

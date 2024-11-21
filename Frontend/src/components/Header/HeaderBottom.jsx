@@ -40,6 +40,16 @@ function HeaderBottom() {
                 Dashboard
               </Link>
               <Link
+                to="/effectiveElogs"
+                className={`tab py-2 px-4 rounded-md  ${
+                  window.location.pathname === "/dashboard2"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-blue-500 border border-blue-500 "
+                } hover:bg-blue-600 transition duration-300  hover:text-white `}
+              >
+                Effective E-Logs
+              </Link>
+              <Link
                 to="/analytics2"
                 className={`tab py-2 px-4 rounded-md  ${
                   window.location.pathname === "/dashboard2"
