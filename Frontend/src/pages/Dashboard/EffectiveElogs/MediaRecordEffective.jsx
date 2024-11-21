@@ -946,7 +946,6 @@ const MediaRecordEffective = () => {
                                 }
                               />
                             </td>
-
                             <td>
                               <input
                                 value={item.date_of_use}
@@ -1021,7 +1020,6 @@ const MediaRecordEffective = () => {
                                 }
                               />
                             </td>
-
                             <td>
                               <input
                                 value={item.used_for}
@@ -1059,20 +1057,33 @@ const MediaRecordEffective = () => {
                                 }
                               />
                             </td>
-                            <td>
-                              <input
-                                type="checkbox"
-                                onChange={(e) => {
-                                  const newData = [...editData.MediaRecords];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    MediaRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
-                            </td>
+                            <div>
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  checked={item.checked_by !== ""}
+                                  onChange={(e) => {
+                                    const newData = [...editData.MediaRecords];
+                                    if (e.target.checked) {
+                                      newData[index].checked_by =
+                                        item.checked_by ||
+                                        editData.reviewer3.name;
+                                    } else {
+                                      newData[index].checked_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      MediaRecords: newData,
+                                    });
+                                  }}
+                                />
+                                {item.checked_by && (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    {item.checked_by}
+                                  </span>
+                                )}
+                              </label>
+                            </div>{" "}
                             <td>
                               <input
                                 value={item.signature}
@@ -1091,7 +1102,6 @@ const MediaRecordEffective = () => {
                                 }
                               />
                             </td>
-
                             <td>
                               <DeleteIcon onClick={() => deleteRow(index)} />
                             </td>
