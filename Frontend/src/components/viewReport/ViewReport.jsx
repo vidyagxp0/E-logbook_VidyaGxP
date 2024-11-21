@@ -19,13 +19,6 @@ const ViewReport = () => {
   const elogIdValue = url.searchParams.get("formId") || NA;
 
   const pdfUrl = `http://localhost:1000/public/Elog_Report_${elogIdValue}.pdf`;
-  // APQR_Report_13.pdf;
-  const chatPdfConfig = {
-    headers: {
-      "x-api-key": "sec_qLUcsYBeIWAt564Tk5zhHg76DQHjastL",
-      "Content-Type": "application/json",
-    },
-  };
 
   const initializeChatModal = async (data) => {
     try {
