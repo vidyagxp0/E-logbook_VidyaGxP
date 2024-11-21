@@ -57,7 +57,7 @@ const MediaRecord = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const MediaRecord = () => {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ const MediaRecord = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -157,11 +157,7 @@ const MediaRecord = () => {
     mediaRecords.initiatorDeclaration = credentials?.declaration;
 
     axios
-      .post(
-        "https://elog-backend.mydemosoftware.com/media-record/post",
-        mediaRecords,
-        config
-      )
+      .post("http://localhost:1000/media-record/post", mediaRecords, config)
       .then(() => {
         toast.success("eLog Saved Successfully!");
         navigate("/dashboard");
@@ -695,7 +691,9 @@ const MediaRecord = () => {
                   <div className="group-input flex flex-col mt-6 items-start">
                     <label className="color-label">
                       Additional Attachment
-                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      <span className="text-sm text-zinc-600">
+                        (If / Any)
+                      </span>{" "}
                       :
                     </label>
                     <div>
