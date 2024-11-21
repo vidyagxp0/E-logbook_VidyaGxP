@@ -421,7 +421,7 @@ const MediaRecordPanel = () => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
     }
-  }, []);
+  }, [reportData]);
 
   const generateReport = async () => {
     setIsLoading(true);

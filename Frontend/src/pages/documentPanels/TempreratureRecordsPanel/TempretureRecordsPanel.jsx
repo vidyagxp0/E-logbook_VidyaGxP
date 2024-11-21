@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import TinyEditor from "../../../components/TinyEditor";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
 export default function TempretureRecordsPanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -269,7 +270,7 @@ export default function TempretureRecordsPanel() {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
     }
-  }, []);
+  }, [reportData]);
 
   const generateReport = async () => {
     setIsLoading(true);
@@ -402,6 +403,7 @@ export default function TempretureRecordsPanel() {
   return (
     <>
       <HeaderTop />
+      <LaunchQMS />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
