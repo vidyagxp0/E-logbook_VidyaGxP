@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
-import "../docPanel.css";
+// import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 
-export default function DPRpanel() {
+const DispensingOfMaterialsEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
@@ -18,26 +18,18 @@ export default function DPRpanel() {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
-
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
     description: "",
-    department: "",
-    compression_area: "",
-    additionalAttachment: "",
-    additionalInfo: "",
-    additionalAttachment: "",
-    additionalInfo: "",
-    DifferentialPressureRecords: [],
-    limit: "",
+    DispenseOfMaterials: [],
   });
-
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
+
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -49,12 +41,23 @@ export default function DPRpanel() {
       form_id: location.state?.form_id,
       email: credentials?.email,
       password: credentials?.password,
-      additionalInfo: credentials?.additionalInfo,
-      additionalAttachment: credentials?.additionalAttachment,
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
+      additionalInfo: editData.additionalInfo,
+      additionalAttachment: editData.additionalAttachment,
     };
+    data.initiatorDeclaration = credentials?.declaration;
+    // if (
+    //   parseFloat(editData.limit) < 0.6 ||
+    //   parseFloat(editData.limit) > 2.6
+    // ) {
+    //   toast.error("The limit value must be between 0.6 and 2.6.");
+    //   return;
+    // }
+    editData.email = credentials.email;
+    editData.password = credentials.password;
+    editData.initiatorDeclaration = credentials?.declaration;
 
     const config = {
       headers: {
@@ -66,14 +69,13 @@ export default function DPRpanel() {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
-
       if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
           data,
           config
         )
@@ -91,7 +93,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -110,7 +112,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -126,7 +128,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
           data,
           config
         )
@@ -144,7 +146,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -189,9 +191,13 @@ export default function DPRpanel() {
 
       const requestOptions = {
         method: "PUT",
-        headers: myHeaders,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          "Content-Type": "multipart/form-data",
+        },
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+
+        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -207,7 +213,6 @@ export default function DPRpanel() {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
-
   useEffect(() => {
     setEditData(location.state);
   }, [location.state]);
@@ -221,25 +226,37 @@ export default function DPRpanel() {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-        hour12: true, // Use 24-hour format
+        hour12: false, // Use 24-hour format
       };
 
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: generateUniqueId(),
         time: currentTime,
-        differential_pressure: "",
-        remarks: "",
+        date: "",
+        on_time_auh: "",
+        on_time_laf: "",
+        on_time_uv_light: "",
+        on_time_done_by: "",
+        name_of_material: "",
+        control_no: "",
+        dispensed_quantity: "",
+        dispensed_by_qa: "",
+        dispensed_by_store: "",
+        off_time_auh: "",
+        off_time_laf: "",
+        off_time_uv_light: "",
+        uv_burning: "",
+        off_time_done_by: "",
+        cleaning_done_by: "",
+        weighing_balance_id: "",
         checked_by: location?.state?.initiator_name,
-        supporting_docs: null,
+        remarks: "",
       };
       setEditData((prevState) => ({
         ...prevState,
 
-        DifferentialPressureRecords: [
-          ...prevState.DifferentialPressureRecords,
-          newRow,
-        ],
+        DispenseOfMaterials: [...prevState.DispenseOfMaterials, newRow],
       }));
     }
   };
@@ -296,17 +313,17 @@ export default function DPRpanel() {
       location.state?.stage === 1 &&
       location.state?.initiator_id === userDetails.userId
     ) {
-      const updatedGridData = [...editData.DifferentialPressureRecords];
+      const updatedGridData = [...editData.DispenseOfMaterials];
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
-        DifferentialPressureRecords: updatedGridData,
+        DispenseOfMaterials: updatedGridData,
       }));
     }
   };
 
   const handleInputChange1 = (e) => {
-    const { name, value } = e?.target;
+    const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
   };
 
@@ -351,11 +368,11 @@ export default function DPRpanel() {
   };
 
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.DifferentialPressureRecords];
+    const updatedGridData = [...editData.DispenseOfMaterials];
     updatedGridData[index].supporting_docs = file;
     setEditData((prevState) => ({
       ...prevState,
-      DifferentialPressureRecords: updatedGridData,
+      DispenseOfMaterials: updatedGridData,
     }));
   };
 
@@ -388,21 +405,28 @@ export default function DPRpanel() {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title: "Differential Pressure Record",
+    title: "Dispensing Of Materials",
     ...editData,
   };
+  useEffect(() => {
+    console.log(reportData, "reportData");
+  }, [reportData]);
+  console.log(reportData, "reportdata");
 
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
+      console.log(reportData.form_id, "tfyguhij");
     }
   }, [reportData]);
 
   const generateReport = async () => {
+    console.log(formId, "generateReport");
+
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/dispensing-material/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -434,14 +458,14 @@ export default function DPRpanel() {
     }));
   };
   return (
-    <>
+    <div>
       <HeaderTop />
       <LaunchQMS />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Differential Pressure
+              <strong> Record Name:&nbsp;</strong>Dispensing Of Materials
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
@@ -473,18 +497,10 @@ export default function DPRpanel() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div>
-              {/* <div className="sop-type-header">
-                <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
-                </div>
-                <div className="main-head">
-                  <div>VidyaGxP Private Limited</div>
-                </div>
-              </div> */}
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Differential Pressure Record
+                  Dispensing Of Materials
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -613,7 +629,7 @@ export default function DPRpanel() {
                     )}
                 </div>
               </div>
-              <div className="outerDiv4 bg-slate-300 py-4">
+              <div className="flex justify-center items-center mt-5 bg-slate-300 p-4">
                 <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
@@ -665,6 +681,7 @@ export default function DPRpanel() {
                   </div>
                 </div>
               </div>
+
               <div className="outerDiv4">
                 <div className="btn-forms">
                   <div
@@ -761,9 +778,7 @@ export default function DPRpanel() {
                     Audit Trail
                   </div> */}
                 </div>
-                {/* <button className="btn-forms-select" onClick={generateReport}>
-                  Generate Report
-                </button> */}
+
                 {/* <div className="analytics-btn">
                   <button
                     className="btn-print"
@@ -844,144 +859,72 @@ export default function DPRpanel() {
 
               {isSelectedDetails === true ? (
                 <>
-                  <div className="group-input">
-                    <label className="color-label">Department</label>
-
-                    <div className="instruction">&nbsp;</div>
-                    <select
-                      className="form-control"
-                      name="department"
-                      value={editData?.department}
-                      onChange={handleInputChange1}
-                      disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
-                    >
-                      <option value="">-- Select --</option>
-                      <option value="Corporate Quality Assurance">
-                        Corporate Quality Assurance
-                      </option>
-                      <option value="Quality Assurance Bio-Pharma">
-                        Quality Assurance Bio-Pharma
-                      </option>
-                      <option value="Central Quality Control">
-                        Central Quality Control
-                      </option>
-                      <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">
-                        Plasma Sourcing Group
-                      </option>
-                      <option value="Central Stores">Central Stores</option>
-                      <option value="Information Technology Group">
-                        Information Technology Group
-                      </option>
-                      <option value="Molecular Medicine">
-                        Molecular Medicine
-                      </option>
-                      <option value="Central Laboratory">
-                        Central Laboratory
-                      </option>
-                      <option value="Tech team">Tech team</option>
-                    </select>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">
-                      Compression Area with respect to Corridor
-                    </label>
-
-                    <div className="instruction">&nbsp;</div>
-                    <select
-                      className="form-control"
-                      name="compression_area"
-                      value={editData?.compression_area}
-                      onChange={handleInputChange1}
-                      disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
-                    >
-                      <option value="Select a value">Select a value</option>
-                      <option value="Area 1">Area 1</option>
-                      <option value="Area 2">Area 2</option>
-                      <option value="Area 3">Area 3</option>
-                      <option value="Area 4">Area 4</option>
-                      <option value="Area 5">Area 5</option>
-                      <option value="Area 6">Area 6</option>
-                    </select>
-                  </div>
-
-                  <div className="group-input">
-                    <label className="color-label">Limit</label>
-                    <div className="instruction"></div>
-                    <input
-                      name="limit"
-                      type="number"
-                      className={`${
-                        editData?.limit < 0.6
-                          ? "limit"
-                          : editData?.limit > 2.6
-                          ? "limit"
-                          : ""
-                      }`}
-                      value={editData?.limit}
-                      onChange={handleInputChange1}
-                      readOnly={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
-                    />
-                  </div>
-
                   <div>
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>S no.</th>
-                        <th>Unique Id</th>
-                        <th>Time</th>
-                        <th>Differential Pressure</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
-                        <th>Supporting Documents</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {editData?.DifferentialPressureRecords.map(
-                        (item, index) => (
+                  <div className="overflow-x-auto">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th rowSpan={3}>S no.</th>
+                          <th rowSpan={3}>Unique Id</th>
+                          <th rowSpan={3}>Date</th>
+                          <th rowSpan={1} colSpan={3}>
+                            ON TIME
+                          </th>
+                          <th rowSpan={3}>Done by</th>
+                          <th rowSpan={3}>Name of Material</th>
+                          <th rowSpan={3}>Control No.</th>
+                          <th rowSpan={3}>Dispensed Quantity (Kg)</th>
+                          <th rowSpan={1} colSpan={2}>
+                            Dispensed By (Sign/Date)
+                          </th>
+                          <th rowSpan={1} colSpan={3}>
+                            OFF TIME
+                          </th>
+                          <th rowSpan={3}>UV Burning Hrs</th>
+                          <th rowSpan={3}>Done by</th>
+                          <th rowSpan={3}>Cleaning done by</th>
+                          <th rowSpan={3}>Checked by (Sign/Date)</th>
+                          <th rowSpan={3}>Weighing Balance ID</th>
+                          <th rowSpan={3}>Remark</th>
+
+                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th rowSpan={3}>Actions</th>
+                        </tr>
+                        <tr>
+                          <th>AHU</th>
+                          <th>LAF</th>
+                          <th>UV LIGHT</th>
+                          <th>QA</th>
+                          <th>STORE</th>
+                          <th>AHU</th>
+                          <th>LAF</th>
+                          <th>UV LIGHT</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {editData?.DispenseOfMaterials.map((item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{item.unique_id}</td>
                             <td>
-                              <input value={item.time} readOnly />
+                              <input value={item.date} readOnly />
                             </td>
                             <td>
                               <input
-                                type="number"
-                                value={item.differential_pressure}
-                                className={`${
-                                  item.differential_pressure < 0.6
-                                    ? "limit"
-                                    : item.differential_pressure > 2.6
-                                    ? "limit"
-                                    : ""
-                                }`}
+                                value={item.on_time_auh}
                                 onChange={(e) => {
                                   const newData = [
-                                    ...editData.DifferentialPressureRecords,
+                                    ...editData.DispenseOfMaterials,
                                   ];
-                                  newData[index].differential_pressure =
-                                    e.target.value;
+                                  newData[index].on_time_auh = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    DifferentialPressureRecords: newData,
+                                    DispenseOfMaterials: newData,
                                   });
                                 }}
                                 readOnly={
@@ -993,15 +936,286 @@ export default function DPRpanel() {
                             </td>
                             <td>
                               <input
-                                value={item.remarks}
+                                value={item.on_time_laf}
                                 onChange={(e) => {
                                   const newData = [
-                                    ...editData.DifferentialPressureRecords,
+                                    ...editData.DispenseOfMaterials,
                                   ];
-                                  newData[index].remarks = e.target.value;
+                                  newData[index].on_time_laf = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    DifferentialPressureRecords: newData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.on_time_uv_light}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].on_time_uv_light =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.on_time_done_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].on_time_done_by =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.name_of_material}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].name_of_material =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.control_no}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].control_no = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.dispensed_quantity}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].dispensed_quantity =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.dispensed_by_qa}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].dispensed_by_qa =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.dispensed_by_store}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].dispensed_by_store =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.off_time_auh}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].off_time_auh = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.off_time_laf}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].off_time_laf = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.off_time_uv_light}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].off_time_uv_light =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.uv_burning}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].uv_burning = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.off_time_done_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].off_time_done_by =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.cleaning_done_by}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].cleaning_done_by =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
                                   });
                                 }}
                                 readOnly={
@@ -1016,182 +1230,140 @@ export default function DPRpanel() {
                                 value={item.checked_by}
                                 onChange={(e) => {
                                   const newData = [
-                                    ...editData.DifferentialPressureRecords,
+                                    ...editData.DispenseOfMaterials,
                                   ];
                                   newData[index].checked_by = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    DifferentialPressureRecords: newData,
+                                    DispenseOfMaterials: newData,
                                   });
                                 }}
                                 readOnly
                               />
                             </td>
-                            <td style={{ width: "250px" }}>
-                              <div className="d-flex">
-                                {item.supporting_docs ? (
-                                  <div className="file-upload-wrapper">
-                                    <button
-                                      type="button"
-                                      className="btn-upload"
-                                      onClick={() =>
-                                        document
-                                          .getElementsByName("supporting_docs")
-                                          [index].click()
-                                      }
-                                      disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
-                                      }
-                                    >
-                                      Change File
-                                    </button>
-                                    <h3>
-                                      Selected File:{" "}
-                                      <a
-                                        href={item.supporting_docs}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        View File
-                                      </a>
-                                      {/* <DeleteIcon
-                                    style={{ color: "red", cursor: "pointer" }}
-                                    onClick={() => handleDeleteFile(index)}
-                                  /> */}
-                                    </h3>
-                                  </div>
-                                ) : (
-                                  <div className="file-upload-wrapper">
-                                    <button
-                                      type="button"
-                                      className="btn-upload"
-                                      onClick={() =>
-                                        document
-                                          .getElementsByName("supporting_docs")
-                                          [index].click()
-                                      }
-                                      disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
-                                      }
-                                    >
-                                      Select File
-                                    </button>
-                                  </div>
-                                )}
-                                <input
-                                  type="file"
-                                  name="supporting_docs"
-                                  style={{ display: "none" }}
-                                  onChange={(e) =>
-                                    handleFileChange(index, e.target.files[0])
-                                  }
-                                />
-                              </div>
+                            <td>
+                              <input
+                                value={item.weighing_balance_id}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].weighing_balance_id =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
                             </td>
-
+                            <td>
+                              <input
+                                value={item.remark}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DispenseOfMaterials,
+                                  ];
+                                  newData[index].remark = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DispenseOfMaterials: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
                             <td>
                               <DeleteIcon onClick={() => deleteRow(index)} />
-                              {item.limit !== "" &&
-                                (item.limit < 0.6 || item.limit > 2.6) && (
-                                  <button
-                                    className="deviation-btn"
-                                    onClick={() => {
-                                      navigate("/chart");
-                                    }}
-                                  >
-                                    Launch Deviation
-                                  </button>
-                                )}
                             </td>
                           </tr>
-                        )
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="group-input mt-4">
+                    <label
+                      htmlFor="additionalAttachment"
+                      className="color-label"
+                      name="additionalAttachment"
+                    >
+                      Additional Attachment{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
+                    </label>
+                    <div>
+                      {editData.additionalAttachment ? (
+                        <div className="flex items-center gap-x-10">
+                          <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Change File
+                          </button>
+                          <h3 className="">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                              Selected File:{" "}
+                            </span>
+                            <a
+                              href={editData.additionalAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      ) : (
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
+                        </div>
                       )}
-                    </tbody>
-                  </table>
-
-                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                    <div className="flex flex-col w-full">
-                      <label
-                        htmlFor="additionalAttachment"
-                        className="color-label"
+                      <input
+                        type="file"
                         name="additionalAttachment"
-                      >
-                        Attachment{" "}
-                        <span className="text-sm text-zinc-600">
-                          (If / Any)
-                        </span>{" "}
-                        :
-                      </label>
-                      <div>
-                        {editData.additionalAttachment ? (
-                          <div className="flex items-center gap-x-10">
-                            <button
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
-                            >
-                              Change File
-                            </button>
-                            <h3 className="">
-                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                                Selected File:{" "}
-                              </span>
-                              <a
-                                href={editData.additionalAttachment}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline"
-                              >
-                                View File
-                              </a>
-                            </h3>
-                          </div>
-                        ) : (
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
-                            >
-                              Select File
-                            </button>
-                          </div>
-                        )}
-                        <input
-                          type="file"
-                          name="additionalAttachment"
-                          id="additionalAttachment"
-                          onChange={handleInitiatorFileChange}
-                          style={{ display: "none" }}
-                        />
-                      </div>
+                        id="additionalAttachment"
+                        onChange={handleInitiatorFileChange}
+                        style={{ display: "none" }}
+                      />
                     </div>
-
-                    <div className="flex flex-col w-full">
-                      <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info{" "}
-                        <span className="text-sm text-zinc-600">
-                          (If / Any)
-                        </span>{" "}
-                      </label>
+                  </div>
+                  <div className="group-input ">
+                    <label className="color-label">
+                      Additional Information{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
+                    </label>
+                    <div>
                       <textarea
-                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        rows="4"
+                        type="text"
                         name="additionalInfo"
-                        value={editData?.additionalInfo}
+                        value={editData.additionalInfo}
                         onChange={handleInputChange1}
-                      ></textarea>
+                      />
                     </div>
                   </div>
                 </>
@@ -1323,7 +1495,7 @@ export default function DPRpanel() {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer?.name}
+                          value={editData?.reviewer4?.name}
                           readOnly
                         />
                       </div>
@@ -1440,7 +1612,7 @@ export default function DPRpanel() {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver?.name}
+                          value={editData?.approver4?.name}
                           readOnly
                         />
                       </div>
@@ -1549,78 +1721,6 @@ export default function DPRpanel() {
               ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
-              {/* {location.state?.stage === 1
-                ? location.state?.initiator_id === userDetails.userId && (
-                    <button
-                      className="themeBtn"
-                      onClick={() => {
-                        setIsPopupOpen(true);
-                        setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
-                      }}
-                    >
-                      Send for Review
-                    </button>
-                  )
-                : location.state?.stage === 2
-                ? location.state?.reviewer_id === userDetails.userId && (
-                    <>
-                      <button
-                        className="themeBtn"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
-                        }}
-                      >
-                        Review Completed
-                      </button>
-                      <button
-                        className="themeBtn"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
-                        }}
-                      >
-                        More Info Required
-                      </button>
-                    </>
-                  )
-                : location.state?.stage === 3
-                ? location.state?.approver_id === userDetails.userId && (
-                    <>
-                      <button
-                        className="themeBtn"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
-                        }}
-                      >
-                        Approve elog
-                      </button>
-                      <button
-                        className="themeBtn"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
-                        }}
-                      >
-                        More Info Required
-                      </button>
-                    </>
-                  )
-                : null}
-              {location.state?.stage === 1
-                ? userDetails.userId === location.state?.initiator_id && (
-                    <button
-                      className="themeBtn"
-                      onClick={() => {
-                        setIsPopupOpen(true);
-                        setPopupAction("updateElog");
-                      }}
-                    >
-                      Save
-                    </button>
-                  )
-                : null} */}
               <button
                 className="themeBtn"
                 onClick={() => {
@@ -1643,6 +1743,8 @@ export default function DPRpanel() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
-}
+};
+
+export default DispensingOfMaterialsEffective;

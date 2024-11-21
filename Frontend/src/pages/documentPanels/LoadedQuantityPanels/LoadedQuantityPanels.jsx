@@ -68,7 +68,7 @@ const LoadedQuantityPanels = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+    //     url: "http://localhost:1000/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -103,7 +103,7 @@ const LoadedQuantityPanels = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
+          "http://localhost:1000/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -121,7 +121,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
+          "http://localhost:1000/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -140,7 +140,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
+          "http://localhost:1000/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -155,11 +155,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/loaded-quantity/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -174,7 +170,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
+          "http://localhost:1000/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -221,7 +217,7 @@ const LoadedQuantityPanels = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+        url: "http://localhost:1000/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -449,7 +445,7 @@ const LoadedQuantityPanels = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
+        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

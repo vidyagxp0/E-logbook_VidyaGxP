@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
-import "../docPanel.css";
+// import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
-import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
-export default function DPRpanel() {
+export default function TempretureRecordsEffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
@@ -26,18 +26,15 @@ export default function DPRpanel() {
     status: "",
     description: "",
     department: "",
+    additionalAttachment: "",
+    additionalInfo: "",
     compression_area: "",
-    additionalAttachment: "",
-    additionalInfo: "",
-    additionalAttachment: "",
-    additionalInfo: "",
-    DifferentialPressureRecords: [],
     limit: "",
   });
-
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
+
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -49,9 +46,9 @@ export default function DPRpanel() {
       form_id: location.state?.form_id,
       email: credentials?.email,
       password: credentials?.password,
-      additionalInfo: credentials?.additionalInfo,
-      additionalAttachment: credentials?.additionalAttachment,
       reviewComment: editData.reviewComment,
+      additionalInfo: editData.additionalInfo,
+      additionalAttachment: editData.additionalAttachment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
     };
@@ -66,14 +63,13 @@ export default function DPRpanel() {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
-
       if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -91,7 +87,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -108,9 +104,10 @@ export default function DPRpanel() {
     } else if (popupAction === "sendFromReviewToOpen") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
+
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -126,7 +123,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -144,7 +141,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -164,14 +161,14 @@ export default function DPRpanel() {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
+
       if (editData.description === "") {
         toast.error("description is required");
         return;
       }
       if (
-        editData?.DifferentialPressureRecords?.some(
-          (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+        editData?.TempratureRecords?.some(
+          (record) => record.temprature_record === "" || record.remarks === ""
         )
       ) {
         toast.error("Please provide grid details!");
@@ -191,7 +188,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -217,18 +214,13 @@ export default function DPRpanel() {
       location.state?.stage === 1 &&
       location.state?.initiator_id === userDetails.userId
     ) {
-      const options = {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true, // Use 24-hour format
-      };
-
-      const currentTime = new Date().toLocaleTimeString("en-US", options);
+      const currentTime = new Date().toLocaleTimeString("en-GB", {
+        hour12: false,
+      });
       const newRow = {
         unique_id: generateUniqueId(),
         time: currentTime,
-        differential_pressure: "",
+        temprature_record: "",
         remarks: "",
         checked_by: location?.state?.initiator_name,
         supporting_docs: null,
@@ -236,11 +228,77 @@ export default function DPRpanel() {
       setEditData((prevState) => ({
         ...prevState,
 
-        DifferentialPressureRecords: [
-          ...prevState.DifferentialPressureRecords,
-          newRow,
-        ],
+        TempratureRecords: [...prevState.TempratureRecords, newRow],
       }));
+    }
+  };
+
+  const deleteRow = (index) => {
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
+      const updatedGridData = [...editData.TempratureRecords];
+      updatedGridData.splice(index, 1);
+      setEditData((prevState) => ({
+        ...prevState,
+        TempratureRecords: updatedGridData,
+      }));
+    }
+  };
+
+  const handleInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
+  };
+
+  const reportData = {
+    site:
+      location.state.site_id === 1
+        ? "India"
+        : location.state.site_id === 2
+        ? "Malaysia"
+        : location.state.site_id === 3
+        ? "EMEA"
+        : "EU",
+    status: location.state.status,
+    initiator_name: location.state.initiator_name,
+    title: "Temperature Record",
+    ...editData,
+  };
+
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+    }
+  }, [reportData]);
+
+  const generateReport = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        `https://elog-backend.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
+        {
+          reportData: reportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const { filename } = response.data; // Access filename from response.data
+
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -291,45 +349,6 @@ export default function DPRpanel() {
     return object != null && typeof object === "object";
   }
 
-  const deleteRow = (index) => {
-    if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
-      const updatedGridData = [...editData.DifferentialPressureRecords];
-      updatedGridData.splice(index, 1);
-      setEditData((prevState) => ({
-        ...prevState,
-        DifferentialPressureRecords: updatedGridData,
-      }));
-    }
-  };
-
-  const handleInputChange1 = (e) => {
-    const { name, value } = e?.target;
-    setEditData({ ...editData, [name]: value });
-  };
-
-  // const handleDeleteFile = (index) => {
-  //   if (
-  //     location.state?.stage === 1 &&
-  //     location.state?.initiator_id === userDetails.userId
-  //   ) {
-  //     const updatedGridData = editData.DifferentialPressureRecords.map(
-  //       (item, i) => {
-  //         if (i === index) {
-  //           return { ...item, supporting_docs: null };
-  //         }
-  //         return item;
-  //       }
-  //     );
-  //     setEditData((prevState) => ({
-  //       ...prevState,
-  //       DifferentialPressureRecords: updatedGridData,
-  //     }));
-  //   }
-  // };
-
   const formatDate = (dateString) => {
     if (!dateString) return ""; // Return empty if the input is falsy
 
@@ -351,11 +370,11 @@ export default function DPRpanel() {
   };
 
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.DifferentialPressureRecords];
+    const updatedGridData = [...editData.TempratureRecords];
     updatedGridData[index].supporting_docs = file;
     setEditData((prevState) => ({
       ...prevState,
-      DifferentialPressureRecords: updatedGridData,
+      TempratureRecords: updatedGridData,
     }));
   };
 
@@ -376,57 +395,6 @@ export default function DPRpanel() {
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
-
-  const reportData = {
-    site:
-      location.state.site_id === 1
-        ? "India"
-        : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
-    status: location.state.status,
-    initiator_name: location.state.initiator_name,
-    title: "Differential Pressure Record",
-    ...editData,
-  };
-
-  useEffect(() => {
-    if (reportData && reportData.form_id) {
-      setFormId(reportData.form_id);
-    }
-  }, [reportData]);
-
-  const generateReport = async () => {
-    setIsLoading(true);
-    try {
-      const response = await axios.post(
-        `http://localhost:1000/differential-pressure/chat-pdf/${formId}`,
-        {
-          reportData: reportData,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const { filename } = response.data; // Access filename from response.data
-
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
-
-      // Open the report in a new tab
-      window.open(reportUrl, "_blank", "noopener,noreferrer");
-    } catch (error) {
-      console.error("Error opening chat PDF:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const setTinyContent = (content) => {
     setEditData((prevState) => ({
       ...prevState,
@@ -441,7 +409,7 @@ export default function DPRpanel() {
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Differential Pressure
+              <strong> Record Name:&nbsp;</strong>Temperature Record
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
@@ -473,18 +441,9 @@ export default function DPRpanel() {
                   <div>VidyaGxP Private Limited</div>
                 </div>
               </div>
-              {/* <div className="sop-type-header">
-                <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
-                </div>
-                <div className="main-head">
-                  <div>VidyaGxP Private Limited</div>
-                </div>
-              </div> */}
-
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Differential Pressure Record
+                  Temperature Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -614,54 +573,56 @@ export default function DPRpanel() {
                 </div>
               </div>
               <div className="outerDiv4 bg-slate-300 py-4">
-                <div className="flex gap-3 ">
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 1
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 1
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    OPENED
-                  </div>
+                <div className="status-container">
+                  <div className="flex gap-3 ">
+                    <div
+                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                        location.state?.stage > 1
+                          ? "bg-green-500 text-white"
+                          : location.state?.stage === 1
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      OPENED
+                    </div>
 
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 2
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 2
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    UNDER REVIEW
-                  </div>
+                    <div
+                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                        location.state?.stage > 2
+                          ? "bg-green-500 text-white"
+                          : location.state?.stage === 2
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      UNDER REVIEW
+                    </div>
 
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 3
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 3
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    UNDER APPROVAL
-                  </div>
+                    <div
+                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                        location.state?.stage > 3
+                          ? "bg-green-500 text-white"
+                          : location.state?.stage === 3
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      UNDER APPROVAL
+                    </div>
 
-                  {/* Button 4: CLOSED DONE */}
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 4
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 4
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    CLOSED DONE
+                    {/* Button 4: CLOSED DONE */}
+                    <div
+                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                        location.state?.stage > 4
+                          ? "bg-green-500 text-white"
+                          : location.state?.stage === 4
+                          ? "bg-red-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      CLOSED DONE
+                    </div>
                   </div>
                 </div>
               </div>
@@ -747,35 +708,7 @@ export default function DPRpanel() {
                   >
                     Approver Remarks
                   </div>
-                  {/* <div
-                    className="btn-forms-select"
-                    onClick={() =>
-                      navigate("/audit-trail", {
-                        state: {
-                          formId: location.state?.form_id,
-                          process: "Differential Pressure",
-                        },
-                      })
-                    }
-                  >
-                    Audit Trail
-                  </div> */}
                 </div>
-                {/* <button className="btn-forms-select" onClick={generateReport}>
-                  Generate Report
-                </button> */}
-                {/* <div className="analytics-btn">
-                  <button
-                    className="btn-print"
-                    onClick={() =>
-                      navigate("/analytics", {
-                        state: { records: location.state, processId: 1 },
-                      })
-                    }
-                  >
-                    Analytics
-                  </button>
-                </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -819,7 +752,6 @@ export default function DPRpanel() {
                           location.state?.initiator_id !== userDetails.userId
                         }
                       /> */}
-
                       <TinyEditor
                         editorContent={editData.description}
                         setEditorContent={setTinyContent}
@@ -919,9 +851,9 @@ export default function DPRpanel() {
                       name="limit"
                       type="number"
                       className={`${
-                        editData?.limit < 0.6
+                        editData?.limit < 23
                           ? "limit"
-                          : editData?.limit > 2.6
+                          : editData?.limit > 27
                           ? "limit"
                           : ""
                       }`}
@@ -946,7 +878,7 @@ export default function DPRpanel() {
                         <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
-                        <th>Differential Pressure</th>
+                        <th>temperature Record</th>
                         <th>Remark</th>
                         <th>Checked By</th>
                         <th>Supporting Documents</th>
@@ -954,165 +886,141 @@ export default function DPRpanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.DifferentialPressureRecords.map(
-                        (item, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.unique_id}</td>
-                            <td>
-                              <input value={item.time} readOnly />
-                            </td>
-                            <td>
+                      {editData?.TempratureRecords.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.unique_id}</td>
+                          <td>
+                            <input value={item.time} readOnly />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.temprature_record}
+                              className={`${
+                                item.temprature_record < 23
+                                  ? "limit"
+                                  : item.temprature_record > 27
+                                  ? "limit"
+                                  : ""
+                              }`}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].temprature_record =
+                                  e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !==
+                                  userDetails.userId
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.remarks}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].remarks = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !==
+                                  userDetails.userId
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.checked_by}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].checked_by = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly
+                            />
+                          </td>
+                          <td style={{ width: "250px" }}>
+                            <div className="d-flex align-items-center">
+                              <button
+                                type="button"
+                                className="btn-upload"
+                                onClick={() =>
+                                  document
+                                    .getElementsByName("supporting_docs")
+                                    [index].click()
+                                }
+                                style={{ marginRight: "10px" }}
+                                disabled={
+                                  location.state?.stage !== 1 ||
+                                  location.state?.initiator_id !==
+                                    userDetails.userId
+                                }
+                              >
+                                {item.supporting_docs
+                                  ? "Change File"
+                                  : "Select File"}
+                              </button>
+                              {item.supporting_docs && (
+                                <div>
+                                  <h3>
+                                    Selected File:{" "}
+                                    <a
+                                      href={item.supporting_docs}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      View File
+                                    </a>
+                                  </h3>
+                                </div>
+                              )}
                               <input
-                                type="number"
-                                value={item.differential_pressure}
-                                className={`${
-                                  item.differential_pressure < 0.6
-                                    ? "limit"
-                                    : item.differential_pressure > 2.6
-                                    ? "limit"
-                                    : ""
-                                }`}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].differential_pressure =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly={
+                                type="file"
+                                name="supporting_docs"
+                                style={{ display: "none" }}
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
+                                disabled={
                                   location.state?.stage !== 1 ||
                                   location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
-                            </td>
-                            <td>
-                              <input
-                                value={item.remarks}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].remarks = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
-                            </td>
-                            <td style={{ width: "250px" }}>
-                              <div className="d-flex">
-                                {item.supporting_docs ? (
-                                  <div className="file-upload-wrapper">
-                                    <button
-                                      type="button"
-                                      className="btn-upload"
-                                      onClick={() =>
-                                        document
-                                          .getElementsByName("supporting_docs")
-                                          [index].click()
-                                      }
-                                      disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
-                                      }
-                                    >
-                                      Change File
-                                    </button>
-                                    <h3>
-                                      Selected File:{" "}
-                                      <a
-                                        href={item.supporting_docs}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        View File
-                                      </a>
-                                      {/* <DeleteIcon
-                                    style={{ color: "red", cursor: "pointer" }}
-                                    onClick={() => handleDeleteFile(index)}
-                                  /> */}
-                                    </h3>
-                                  </div>
-                                ) : (
-                                  <div className="file-upload-wrapper">
-                                    <button
-                                      type="button"
-                                      className="btn-upload"
-                                      onClick={() =>
-                                        document
-                                          .getElementsByName("supporting_docs")
-                                          [index].click()
-                                      }
-                                      disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
-                                      }
-                                    >
-                                      Select File
-                                    </button>
-                                  </div>
-                                )}
-                                <input
-                                  type="file"
-                                  name="supporting_docs"
-                                  style={{ display: "none" }}
-                                  onChange={(e) =>
-                                    handleFileChange(index, e.target.files[0])
-                                  }
-                                />
-                              </div>
-                            </td>
+                            </div>
+                          </td>
 
-                            <td>
-                              <DeleteIcon onClick={() => deleteRow(index)} />
-                              {item.limit !== "" &&
-                                (item.limit < 0.6 || item.limit > 2.6) && (
-                                  <button
-                                    className="deviation-btn"
-                                    onClick={() => {
-                                      navigate("/chart");
-                                    }}
-                                  >
-                                    Launch Deviation
-                                  </button>
-                                )}
-                            </td>
-                          </tr>
-                        )
-                      )}
+                          <td>
+                            <DeleteIcon onClick={() => deleteRow(index)} />
+                            {item.limit !== "" &&
+                              (item.limit < 0.6 || item.limit > 2.6) && (
+                                <button
+                                  className="deviation-btn"
+                                  onClick={() => {
+                                    navigate("/chart");
+                                  }}
+                                >
+                                  Launch Deviation
+                                </button>
+                              )}
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
-
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="flex flex-col w-full">
                       <label
@@ -1120,7 +1028,7 @@ export default function DPRpanel() {
                         className="color-label"
                         name="additionalAttachment"
                       >
-                        Attachment{" "}
+                        Additional Attachment{" "}
                         <span className="text-sm text-zinc-600">
                           (If / Any)
                         </span>{" "}
@@ -1177,51 +1085,25 @@ export default function DPRpanel() {
                         />
                       </div>
                     </div>
-
-                    <div className="flex flex-col w-full">
-                      <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info{" "}
-                        <span className="text-sm text-zinc-600">
-                          (If / Any)
-                        </span>{" "}
-                      </label>
-                      <textarea
-                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        rows="4"
-                        name="additionalInfo"
-                        value={editData?.additionalInfo}
-                        onChange={handleInputChange1}
-                      ></textarea>
-                    </div>
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label className=" text-lg text-gray-900 mb-1">
+                      Additional Info{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                    </label>
+                    <textarea
+                      className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                      rows="4"
+                      name="additionalInfo"
+                      value={editData?.additionalInfo}
+                      onChange={handleInputChange1}
+                    ></textarea>
                   </div>
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
@@ -1249,28 +1131,29 @@ export default function DPRpanel() {
                       <label
                         htmlFor="initiatorAttachment"
                         className="color-label"
-                        name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
                       <div>
-                        {editData.initiatorAttachment ? (
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("initiatorAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 1 ||
+                            location.state?.initiator_id !== userDetails.userId
+                          }
+                        >
+                          {editData.initiatorAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.initiatorAttachment && (
                           <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("initiatorAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            >
-                              Change File
-                            </button>
                             <h3>
                               Selected File:{" "}
                               <a
@@ -1282,24 +1165,6 @@ export default function DPRpanel() {
                               </a>
                             </h3>
                           </div>
-                        ) : (
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("initiatorAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
-                            >
-                              Select File
-                            </button>
-                          </div>
                         )}
                         <input
                           type="file"
@@ -1307,6 +1172,34 @@ export default function DPRpanel() {
                           id="initiatorAttachment"
                           onChange={handleInitiatorFileChange}
                           style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 1 ||
+                            location.state?.initiator_id !== userDetails.userId
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
                         />
                       </div>
                     </div>
@@ -1318,33 +1211,10 @@ export default function DPRpanel() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label">Reviewer </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="reviewer"
-                          value={editData?.reviewer?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Review</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_review)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-flex">
-                    <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.reviewer_id ===
+                          location.state?.initiator_id ===
                             userDetails.userId && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
@@ -1366,28 +1236,29 @@ export default function DPRpanel() {
                       <label
                         htmlFor="reviewerAttachment"
                         className="color-label"
-                        name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
                       <div>
-                        {editData.reviewerAttachment ? (
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("reviewerAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 2 ||
+                            location.state?.reviewer_id !== userDetails.userId
+                          }
+                        >
+                          {editData.reviewerAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.reviewerAttachment && (
                           <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("reviewerAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
-                              }
-                            >
-                              Change File
-                            </button>
                             <h3>
                               Selected File:{" "}
                               <a
@@ -1399,24 +1270,6 @@ export default function DPRpanel() {
                               </a>
                             </h3>
                           </div>
-                        ) : (
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("reviewerAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
-                              }
-                            >
-                              Select File
-                            </button>
-                          </div>
                         )}
                         <input
                           type="file"
@@ -1424,6 +1277,34 @@ export default function DPRpanel() {
                           id="reviewerAttachment"
                           onChange={handleReviewerFileChange}
                           style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 2 ||
+                            location.state?.reviewer_id !== userDetails.userId
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.tpreviewer?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_review)}
+                          readOnly
                         />
                       </div>
                     </div>
@@ -1433,29 +1314,6 @@ export default function DPRpanel() {
 
               {approverRemarks === true ? (
                 <>
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Approver </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="approver"
-                          value={editData?.approver?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Approval</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_approval)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
@@ -1483,28 +1341,29 @@ export default function DPRpanel() {
                       <label
                         htmlFor="approverAttachment"
                         className="color-label"
-                        name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
                       <div>
-                        {editData.approverAttachment ? (
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("approverAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 3 ||
+                            location.state?.approver_id !== userDetails.userId
+                          }
+                        >
+                          {editData.approverAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.approverAttachment && (
                           <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("approverAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
-                            >
-                              Change File
-                            </button>
                             <h3>
                               Selected File:{" "}
                               <a
@@ -1516,24 +1375,6 @@ export default function DPRpanel() {
                               </a>
                             </h3>
                           </div>
-                        ) : (
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("approverAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
-                            >
-                              Select File
-                            </button>
-                          </div>
                         )}
                         <input
                           type="file"
@@ -1541,6 +1382,34 @@ export default function DPRpanel() {
                           id="approverAttachment"
                           onChange={handleApproverFileChange}
                           style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 3 ||
+                            location.state?.approver_id !== userDetails.userId
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.tpapprover?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_approval)}
+                          readOnly
                         />
                       </div>
                     </div>
@@ -1625,7 +1494,7 @@ export default function DPRpanel() {
                 className="themeBtn"
                 onClick={() => {
                   if (!deepEqual(location.state, editData)) {
-                    alert("Please Save the data before exiting");
+                    alert("Please save data before exiting");
                   } else {
                     navigate(-1);
                   }
@@ -1642,6 +1511,36 @@ export default function DPRpanel() {
             )}
           </div>
         </div>
+      </div>
+      <div className="btn-formate">
+        {/* <div
+          className="btn-forms-select"
+          onClick={() =>
+            navigate("/audit-trail", {
+              state: {
+                formId: location.state?.form_id,
+                process: "Temperature Records",
+              },
+            })
+          }
+        >
+          Audit Trail
+        </div> */}
+        {/* <button className="btn-forms-select" onClick={generateReport}>
+          Generate Report
+        </button> */}
+        {/* <div className="analytics-btn">
+          <button
+            className="btn-print"
+            onClick={() =>
+              navigate("/analytics", {
+                state: { records: location.state, processId: 4 },
+              })
+            }
+          >
+            Analytics
+          </button>
+        </div> */}
       </div>
     </>
   );

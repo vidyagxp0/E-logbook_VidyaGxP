@@ -67,7 +67,7 @@ const MediaRecordPanel = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
+    //   url: "http://localhost:1000/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -100,11 +100,7 @@ const MediaRecordPanel = () => {
         return;
       }
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
-          data,
-          config
-        )
+        .put("http://localhost:1000/media-record/send-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -119,7 +115,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
+          "http://localhost:1000/media-record/send-review-to-approval",
           data,
           config
         )
@@ -138,7 +134,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
+          "http://localhost:1000/media-record/send-review-to-open",
           data,
           config
         )
@@ -153,11 +149,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/media-record/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/media-record/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -172,7 +164,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
+          "http://localhost:1000/media-record/send-approval-to-open",
           data,
           config
         )
@@ -219,7 +211,7 @@ const MediaRecordPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/media-record/update",
+        url: "http://localhost:1000/media-record/update",
       };
 
       axios(requestOptions)
@@ -435,7 +427,7 @@ const MediaRecordPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/media-record/chat-pdf/${formId}`,
+        `http://localhost:1000/media-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

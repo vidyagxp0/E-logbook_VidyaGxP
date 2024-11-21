@@ -23,7 +23,6 @@ function Dashboard() {
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
   );
-  console.log(operationOfSterilizerElogs, "operationOfSterilizerElogs");
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -38,11 +37,11 @@ function Dashboard() {
 
     axios(newConfig)
       .then((response) => {
-        const allDifferentialPressureElogs = response.data.message;
-        console.log(
-          allDifferentialPressureElogs,
-          "allDifferentialPressureElogs"
+        const temp = response.data.message;
+        const allDifferentialPressureElogs = temp.filter(
+          (log) => log.status === "Closed"
         );
+
         let filteredArray = allDifferentialPressureElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -70,7 +69,10 @@ function Dashboard() {
 
     axios(newConfigTemp)
       .then((response) => {
-        const allTempratureRecordElogs = response.data.message;
+        const temp = response.data.message;
+        const allTempratureRecordElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allTempratureRecordElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -98,7 +100,10 @@ function Dashboard() {
 
     axios(newConfigloaded)
       .then((response) => {
-        const allLoadedQuantityElogs = response.data.message;
+        const temp = response.data.message;
+        const allLoadedQuantityElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allLoadedQuantityElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -126,7 +131,10 @@ function Dashboard() {
 
     axios(newConfigMedia)
       .then((response) => {
-        const allMediaRecordElogs = response.data.message;
+        const temp = response.data.message;
+        const allMediaRecordElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allMediaRecordElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -154,7 +162,10 @@ function Dashboard() {
 
     axios(newConfigDispensing)
       .then((response) => {
-        const allDispensingMaterialElogs = response.data.message;
+        const temp = response.data.message;
+        const allDispensingMaterialElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allDispensingMaterialElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -180,7 +191,10 @@ function Dashboard() {
     };
     axios(newOperationSterelizer)
       .then((response) => {
-        const allOperationOfSterelizer = response.data.message;
+        const temp = response.data.message;
+        const allOperationOfSterelizer = temp.filter(
+          (log) => log.status === "Closed"
+        );
         let filteredArray = allOperationOfSterelizer.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -191,6 +205,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
+        console.log(filteredArray, "filteredArray");
         setOperationOfSterilizerElogs(filteredArray);
       })
       .catch((error) => {
@@ -199,33 +214,33 @@ function Dashboard() {
   }, []);
 
   const combinedRecords = [
-    ...differentialPressureElogs,
-    // ...areaAndERecordElogs,
-    ...equipmentCRecordElogs,
-    ...tempratureRecordElogs,
-    ...loadedQuantityElogs,
-    ...mediaRecordElogs,
-    ...dispensingOfMaterialsElogs,
-    ...operationOfSterilizerElogs,
+    ...differentialPressureElogs.filter((log) => log.status === "Closed"),
+    // ...areaAndERecordElogs.filter(log => log.status === "Closed"), // Uncomment if needed
+    ...equipmentCRecordElogs.filter((log) => log.status === "Closed"),
+    ...tempratureRecordElogs.filter((log) => log.status === "Closed"),
+    ...loadedQuantityElogs.filter((log) => log.status === "Closed"),
+    ...mediaRecordElogs.filter((log) => log.status === "Closed"),
+    ...dispensingOfMaterialsElogs.filter((log) => log.status === "Closed"),
+    ...operationOfSterilizerElogs.filter((log) => log.status === "Closed"),
   ];
 
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
-      navigate("/dpr-panel", { state: item });
+      navigate("/effective-dpr", { state: item });
       // } else if (item.process === "Area and equipment") {
       //   navigate("/area-and-equipment-panel", { state: item });
     } else if (item.TempratureRecords) {
-      navigate("/tpr-panel", { state: item });
+      navigate("/effective-tpr", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
-      navigate("/ecc-panel", { state: item });
+      navigate("/effective-ecc", { state: item });
     } else if (item.LoadedQuantityRecords) {
-      navigate("/loaded-quantity-panel", { state: item });
+      navigate("/effective-loaded-quantity", { state: item });
     } else if (item.MediaRecords) {
-      navigate("/media-record-panel", { state: item });
+      navigate("/effective-media-record", { state: item });
     } else if (item.OperationOfSterilizerRecords) {
-      navigate("/operation-of-sterilizer-panel", { state: item });
+      navigate("/effective-operation-of-sterilizer", { state: item });
     } else if (item.DispenseOfMaterials) {
-      navigate("/dispensing-of-material-panel", { state: item });
+      navigate("/effective-dispensing-of-material", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
@@ -265,22 +280,24 @@ function Dashboard() {
               style={{ height: "40px" }}
             >
               <option value="All_Records">All Records</option>
-              <option value="diffrential_pressure">
+              <option value="effective_diffrential_pressure">
                 Diffrential Pressure Record
               </option>
               {/* <option value="area_and_equipment">
                 Area & Equipment Usage Log
               </option> */}
-              <option value="equipment_cleaning">
+              <option value="effective_equipment_cleaning">
                 Equipment Cleaning Checklist
               </option>
-              <option value="temperature_records">Temperature Records</option>
-              <option value="loaded_quantity">Loaded Quantity</option>
-              <option value="media_record">Media Record</option>
-              <option value="operation_of_sterilizer">
+              <option value="effective_temperature_records">
+                Temperature Records
+              </option>
+              <option value="effective_loaded_quantity">Loaded Quantity</option>
+              <option value="effective_media_record">Media Record</option>
+              <option value="effective_operation_of_sterilizer">
                 Operation Of Sterilizer
               </option>
-              <option value="dispensing_of_material">
+              <option value="effective_dispensing_of_material">
                 Dispensing Of Materials
               </option>
             </select>
@@ -302,7 +319,7 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {eLogSelect === "diffrential_pressure"
+            {eLogSelect === "effective_diffrential_pressure"
               ? differentialPressureElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -312,7 +329,9 @@ function Dashboard() {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/dpr-panel", { state: item })}
+                        onClick={() =>
+                          navigate("/effective-dpr", { state: item })
+                        }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -332,7 +351,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -359,25 +380,29 @@ function Dashboard() {
                 })
               : null} */}
 
-            {eLogSelect === "equipment_cleaning"
+            {eLogSelect === "effective_equipment_cleaning"
               ? equipmentCRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
-                      <td onClick={() => navigate("/ecc-panel")}>
+                      <td onClick={() => navigate("/effective-ecc")}>
                         {item.eLogId}
                       </td>
                       <td>{item.process}</td>
                       <td>{item.initiator}</td>
                       <td>{item.dateOfInitiation}</td>
-                      <td>{item.shortDescription}</td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item?.shortDescription,
+                        }}
+                      ></td>
                       <td>{item.status}</td>
                     </tr>
                   );
                 })
               : null}
 
-            {eLogSelect === "temperature_records"
+            {eLogSelect === "effective_temperature_records"
               ? tempratureRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -387,7 +412,9 @@ function Dashboard() {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/tpr-panel", { state: item })}
+                        onClick={() =>
+                          navigate("/effective-tpr", { state: item })
+                        }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -407,7 +434,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -415,7 +444,7 @@ function Dashboard() {
                   );
                 })
               : null}
-            {eLogSelect === "loaded_quantity"
+            {eLogSelect === "effective_loaded_quantity"
               ? loadedQuantityElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -426,7 +455,9 @@ function Dashboard() {
                           color: "black",
                         }}
                         onClick={() =>
-                          navigate("/loaded-quantity-panel", { state: item })
+                          navigate("/effective-loaded-quantity", {
+                            state: item,
+                          })
                         }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
@@ -447,7 +478,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -456,7 +489,7 @@ function Dashboard() {
                 })
               : null}
 
-            {eLogSelect === "operation_of_sterilizer"
+            {eLogSelect === "effective_operation_of_sterilizer"
               ? operationOfSterilizerElogs?.map((item, index) => {
                   return (
                     <>
@@ -468,7 +501,7 @@ function Dashboard() {
                             color: "black",
                           }}
                           onClick={() =>
-                            navigate("/operation-of-sterilizer-panel", {
+                            navigate("/effective-operation-of-sterilizer", {
                               state: item,
                             })
                           }
@@ -491,7 +524,11 @@ function Dashboard() {
                             ? "EMEA"
                             : "EU"}
                         </td>
-                        <td>{item.description}</td>
+                        <td
+                          dangerouslySetInnerHTML={{
+                            __html: item?.description,
+                          }}
+                        ></td>{" "}
                         <td>{item.initiator_name}</td>
                         <td>{formatDate(item.date_of_initiation)}</td>
                         <td>{item.status}</td>
@@ -501,7 +538,7 @@ function Dashboard() {
                 })
               : null}
 
-            {eLogSelect === "media_record"
+            {eLogSelect === "effective_media_record"
               ? mediaRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -512,7 +549,7 @@ function Dashboard() {
                           color: "black",
                         }}
                         onClick={() =>
-                          navigate("/media-record-panel", { state: item })
+                          navigate("/effective-media-record", { state: item })
                         }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
@@ -533,7 +570,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -542,7 +581,7 @@ function Dashboard() {
                 })
               : null}
 
-            {eLogSelect === "dispensing_of_material"
+            {eLogSelect === "effective_dispensing_of_material"
               ? dispensingOfMaterialsElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -553,7 +592,7 @@ function Dashboard() {
                           color: "black",
                         }}
                         onClick={() =>
-                          navigate("/dispensing-of-material-panel", {
+                          navigate("/effective-dispensing-of-material", {
                             state: item,
                           })
                         }
@@ -576,7 +615,9 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -639,7 +680,6 @@ function Dashboard() {
                           ? "Dispensing of Material"
                           : null}
                       </td>
-
                       <td>
                         {item.site_id === 1
                           ? "India"
@@ -650,9 +690,8 @@ function Dashboard() {
                           : "EU"}
                       </td>
                       <td
-                        dangerouslySetInnerHTML={{ __html: item.description }}
-                      ></td>
-
+                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
