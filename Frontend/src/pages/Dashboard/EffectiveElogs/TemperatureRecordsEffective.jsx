@@ -12,7 +12,7 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
 export default function TempretureRecordsEffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
@@ -31,6 +31,7 @@ export default function TempretureRecordsEffective() {
     compression_area: "",
     limit: "",
   });
+  console.log(editData, "Edit Dataaa");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -442,8 +443,8 @@ export default function TempretureRecordsEffective() {
                 </div>
               </div>
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
-                <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Temperature Record
+                <span className="text-xl font-semibold text-white mb-4 sm:mb-0">
+                  Temperature Record Details
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -496,7 +497,7 @@ export default function TempretureRecordsEffective() {
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
-                  {location.state?.stage === 1 &&
+                  {/* {location.state?.stage === 1 &&
                     location.state?.initiator_id === userDetails.userId && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -555,7 +556,7 @@ export default function TempretureRecordsEffective() {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
                   {/* Save Button */}
                   {location.state?.stage === 1 &&
@@ -572,7 +573,7 @@ export default function TempretureRecordsEffective() {
                     )}
                 </div>
               </div>
-              <div className="outerDiv4 bg-slate-300 py-4">
+              {/* <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="status-container">
                   <div className="flex gap-3 ">
                     <div
@@ -611,7 +612,6 @@ export default function TempretureRecordsEffective() {
                       UNDER APPROVAL
                     </div>
 
-                    {/* Button 4: CLOSED DONE */}
                     <div
                       className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                         location.state?.stage > 4
@@ -625,10 +625,10 @@ export default function TempretureRecordsEffective() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="outerDiv4">
-                <div className="btn-forms">
-                  <div
+                <div className="btn-forms invisible">
+                  {/* <div
                     className={`${
                       isSelectedGeneral === true
                         ? "btn-forms-isSelected"
@@ -643,7 +643,7 @@ export default function TempretureRecordsEffective() {
                     }}
                   >
                     General Information
-                  </div>
+                  </div> */}
                   <div
                     className={`${
                       isSelectedDetails === true
@@ -660,7 +660,7 @@ export default function TempretureRecordsEffective() {
                   >
                     Details
                   </div>
-                  <div
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -707,11 +707,11 @@ export default function TempretureRecordsEffective() {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
-              {isSelectedGeneral === true ? (
+              {/* {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Initiator </label>
@@ -742,7 +742,7 @@ export default function TempretureRecordsEffective() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      {/* <input
+                      <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -751,7 +751,7 @@ export default function TempretureRecordsEffective() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
-                      /> */}
+                      />
                       <TinyEditor
                         editorContent={editData.description}
                         setEditorContent={setTinyContent}
@@ -772,11 +772,11 @@ export default function TempretureRecordsEffective() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
               {isSelectedDetails === true ? (
                 <>
-                  <div className="group-input">
+                  {/* <div className="group-input">
                     <label className="color-label">Department</label>
 
                     <div className="instruction">&nbsp;</div>
@@ -842,7 +842,7 @@ export default function TempretureRecordsEffective() {
                       <option value="Area 5">Area 5</option>
                       <option value="Area 6">Area 6</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   <div className="group-input">
                     <label className="color-label">Limit</label>
@@ -886,7 +886,7 @@ export default function TempretureRecordsEffective() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords.map((item, index) => (
+                      {editData?.TempratureRecords?.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{item.unique_id}</td>
@@ -939,19 +939,43 @@ export default function TempretureRecordsEffective() {
                             />
                           </td>
                           <td>
-                            <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].checked_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={
+                                  editData.TempratureRecords[index]?.checked_by
+                                    ? true
+                                    : false
+                                }
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.TempratureRecords,
+                                  ];
+
+                                  if (e.target.checked) {
+                                    newData[index].checked_by =
+                                      item.checked_by || "Anshul Thakur";
+                                  } else {
+                                    newData[index].checked_by = null;
+                                  }
+
+                                  setEditData({
+                                    ...editData,
+                                    TempratureRecords: newData,
+                                  });
+                                }}
+                              />
+                              {editData.TempratureRecords[index]
+                                ?.checked_by && (
+                                <span style={{ marginRight: "8px" }}>
+                                  {editData.TempratureRecords[index].checked_by}
+                                </span>
+                              )}
+                            </div>
                           </td>
+
                           <td style={{ width: "250px" }}>
                             <div className="d-flex align-items-center">
                               <button
@@ -1102,7 +1126,7 @@ export default function TempretureRecordsEffective() {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1415,7 +1439,7 @@ export default function TempretureRecordsEffective() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1

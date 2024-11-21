@@ -12,7 +12,7 @@ import TinyEditor from "../../../components/TinyEditor";
 
 export default function DPREffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
@@ -537,7 +537,7 @@ export default function DPREffective() {
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
-                  {location.state?.stage === 1 &&
+                  {/* {location.state?.stage === 1 &&
                     location.state?.initiator_id === userDetails.userId && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -548,9 +548,9 @@ export default function DPREffective() {
                       >
                         Send for Review
                       </button>
-                    )}
+                    )} */}
 
-                  {location.state?.stage === 2 &&
+                  {/* {location.state?.stage === 2 &&
                     location.state?.reviewer_id === userDetails.userId && (
                       <>
                         <button
@@ -572,9 +572,9 @@ export default function DPREffective() {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
-                  {location.state?.stage === 3 &&
+                  {/* {location.state?.stage === 3 &&
                     location.state?.approver_id === userDetails.userId && (
                       <>
                         <button
@@ -596,9 +596,8 @@ export default function DPREffective() {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
-                  {/* Save Button */}
                   {location.state?.stage === 1 &&
                     userDetails.userId === location.state?.initiator_id && (
                       <button
@@ -613,7 +612,7 @@ export default function DPREffective() {
                     )}
                 </div>
               </div>
-              <div className="outerDiv4 bg-slate-300 py-4">
+              {/* <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
@@ -651,7 +650,6 @@ export default function DPREffective() {
                     UNDER APPROVAL
                   </div>
 
-                  {/* Button 4: CLOSED DONE */}
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                       location.state?.stage > 4
@@ -664,10 +662,10 @@ export default function DPREffective() {
                     CLOSED DONE
                   </div>
                 </div>
-              </div>
-              <div className="outerDiv4">
+              </div> */}
+              <div className="outerDiv4 invisible">
                 <div className="btn-forms">
-                  <div
+                  {/* <div
                     className={`${
                       isSelectedGeneral === true
                         ? "btn-forms-isSelected"
@@ -682,7 +680,7 @@ export default function DPREffective() {
                     }}
                   >
                     General Information
-                  </div>
+                  </div> */}
                   <div
                     className={`${
                       isSelectedDetails === true
@@ -699,7 +697,7 @@ export default function DPREffective() {
                   >
                     Details
                   </div>
-                  <div
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -746,7 +744,7 @@ export default function DPREffective() {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                   {/* <div
                     className="btn-forms-select"
                     onClick={() =>
@@ -778,7 +776,7 @@ export default function DPREffective() {
                 </div> */}
               </div>
 
-              {isSelectedGeneral === true ? (
+              {/* {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Initiator </label>
@@ -809,16 +807,7 @@ export default function DPREffective() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      {/* <input
-                        name="description"
-                        type="text"
-                        value={editData.description}
-                        onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
-                        }
-                      /> */}
+                    
 
                       <TinyEditor
                         editorContent={editData.description}
@@ -840,11 +829,11 @@ export default function DPREffective() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
               {isSelectedDetails === true ? (
                 <>
-                  <div className="group-input">
+                  {/* <div className="group-input">
                     <label className="color-label">Department</label>
 
                     <div className="instruction">&nbsp;</div>
@@ -910,7 +899,7 @@ export default function DPREffective() {
                       <option value="Area 5">Area 5</option>
                       <option value="Area 6">Area 6</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   <div className="group-input">
                     <label className="color-label">Limit</label>
@@ -1197,7 +1186,7 @@ export default function DPREffective() {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1546,7 +1535,7 @@ export default function DPREffective() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1
