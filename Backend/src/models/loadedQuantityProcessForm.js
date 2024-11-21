@@ -102,6 +102,7 @@ const LoadedQuantityProcessForm = sequelize.define(
     additionalInfo: {
       type: DataTypes.STRING,
     },
+    
   }
 );
 
