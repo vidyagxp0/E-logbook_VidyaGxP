@@ -80,7 +80,7 @@ function LaunchQMS() {
                       OOS
                     </button>
                   </a>
-                  <a href="https://ipc.mydemosoftware.com">
+                  <a target="_blank" href="https://ipc.mydemosoftware.com">
                     <button
                       className="mt-4 px-4 py-2 bg-[#0c5fc6] text-white font-semibold rounded hover:bg-blue-400 min-w-[200px]"
                       onClick={() => navigate("ipc.mydemosoftware.com")}

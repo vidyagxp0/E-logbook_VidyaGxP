@@ -270,10 +270,14 @@ export default function TempretureRecordsPanel() {
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
+      console.log(reportData.form_id, "hjjjjj");
+      console.log(formId, "formidddd");
     }
   }, [reportData]);
 
   const generateReport = async () => {
+    console.log(formId, "gu");
+
     setIsLoading(true);
     try {
       const response = await axios.post(
