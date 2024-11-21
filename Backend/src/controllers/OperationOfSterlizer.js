@@ -34,6 +34,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
     FormRecordsArray,
     additionalAttachment,
     additionalInfo,
+    initiatorDeclaration
   } = req.body;
 
   if (!approver_id) {

@@ -99,7 +99,13 @@ function Dashboard() {
     axios(newConfigloaded)
       .then((response) => {
         const allLoadedQuantityElogs = response.data.message;
-        let filteredArray = allLoadedQuantityElogs.filter((elog) => {
+        console.log(allLoadedQuantityElogs,"ALL DATA");
+        
+        const EffectiveElogs = allLoadedQuantityElogs.filter((elog) => elog.status === "Closed");
+        console.log(EffectiveElogs,"CLOSEDDTA");
+        
+        
+        let filteredArray = EffectiveElogs.filter((elog) => {
           const userId = userDetails.userId;
 
           return (

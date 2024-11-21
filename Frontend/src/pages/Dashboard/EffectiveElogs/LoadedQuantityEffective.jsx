@@ -11,8 +11,8 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 
 const LoadedQuantityEffective = () => {
-  const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
@@ -523,7 +523,7 @@ const LoadedQuantityEffective = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Loaded Quantity
+                  Loaded Quantity Details
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -576,7 +576,7 @@ const LoadedQuantityEffective = () => {
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
-                  {location.state?.stage === 1 &&
+                  {/* {location.state?.stage === 1 &&
                     location.state?.initiator_id === userDetails.userId && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -635,11 +635,10 @@ const LoadedQuantityEffective = () => {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
                   {/* Save Button */}
-                  {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
+                
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -649,11 +648,11 @@ const LoadedQuantityEffective = () => {
                       >
                         Save
                       </button>
-                    )}
+                    
                 </div>
               </div>
 
-              <div className="outerDiv4 bg-slate-300 py-4">
+              {/* <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
@@ -691,7 +690,6 @@ const LoadedQuantityEffective = () => {
                     UNDER APPROVAL
                   </div>
 
-                  {/* Button 4: CLOSED DONE */}
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                       location.state?.stage > 4
@@ -704,26 +702,26 @@ const LoadedQuantityEffective = () => {
                     CLOSED DONE
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="outerDiv4">
                 <div className="btn-forms">
-                  <div
-                    className={`${
-                      isSelectedGeneral === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
-                    }`}
-                    onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsSelectedGeneral(true),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false);
-                    }}
-                  >
-                    General Information
-                  </div>
-                  <div
+                    {/* <div
+                      className={`${
+                        isSelectedGeneral === true
+                          ? "btn-forms-isSelected"
+                          : "btn-forms-select"
+                      }`}
+                      onClick={() => {
+                        setIsSelectedDetails(false),
+                          setIsSelectedGeneral(true),
+                          setInitiatorRemarks(false),
+                          setReviewerRemarks(false),
+                          setApproverRemarks(false);
+                      }}
+                    >
+                      General Information
+                    </div> */}
+                  {/* <div
                     className={`${
                       isSelectedDetails === true
                         ? "btn-forms-isSelected"
@@ -738,8 +736,8 @@ const LoadedQuantityEffective = () => {
                     }}
                   >
                     Details
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -754,8 +752,8 @@ const LoadedQuantityEffective = () => {
                     }}
                   >
                     Initiator Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       reviewerRemarks === true
                         ? "btn-forms-isSelected"
@@ -770,8 +768,8 @@ const LoadedQuantityEffective = () => {
                     }}
                   >
                     Reviewer Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       approverRemarks === true
                         ? "btn-forms-isSelected"
@@ -786,7 +784,7 @@ const LoadedQuantityEffective = () => {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* <div className="analytics-btn">
@@ -1095,7 +1093,7 @@ const LoadedQuantityEffective = () => {
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
-                        <div className="flex items-center gap-x-10">
+                        <div className="flex items-center gap-x-10 ml-3">
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
@@ -1165,7 +1163,7 @@ const LoadedQuantityEffective = () => {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1280,9 +1278,9 @@ const LoadedQuantityEffective = () => {
 
                   <div className="form-flex"></div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {reviewerRemarks === true ? (
+              {/* {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1397,9 +1395,9 @@ const LoadedQuantityEffective = () => {
 
                   <div className="form-flex"></div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {approverRemarks === true ? (
+              {/* {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1514,7 +1512,7 @@ const LoadedQuantityEffective = () => {
 
                   <div className="form-flex"></div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1
