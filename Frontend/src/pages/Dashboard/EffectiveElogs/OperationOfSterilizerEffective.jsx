@@ -72,7 +72,7 @@ const OperationOfSterilizerEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
+    //     url: "http://localhost:1000/operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -111,7 +111,7 @@ const OperationOfSterilizerEffective = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-for-review",
+          "http://localhost:1000/operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -129,7 +129,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-approval",
+          "http://localhost:1000/operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -148,7 +148,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-open",
+          "http://localhost:1000/operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -163,11 +163,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/operation-sterlizer/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -182,7 +178,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-approval-to-open",
+          "http://localhost:1000/operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -229,7 +225,7 @@ const OperationOfSterilizerEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
+        url: "http://localhost:1000/operation-sterlizer/update",
       };
 
       axios(requestOptions)
@@ -465,7 +461,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/operation-sterlizer/chat-pdf/${formId}`,
+        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -656,16 +652,16 @@ const OperationOfSterilizerEffective = () => {
                   {/* Save Button */}
                   {/* {location.state?.stage === 1 &&
                     userDetails.userId === location.state?.initiator_id && ( */}
-                      <button
-                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    {/* )} */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("updateElog");
+                    }}
+                  >
+                    Save
+                  </button>
+                  {/* )} */}
                 </div>
               </div>
               {/* <div className="outerDiv4 bg-slate-300 py-4">

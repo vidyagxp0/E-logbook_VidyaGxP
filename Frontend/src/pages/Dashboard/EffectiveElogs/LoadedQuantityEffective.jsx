@@ -68,7 +68,7 @@ const LoadedQuantityEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+    //     url: "http://localhost:1000/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -103,7 +103,7 @@ const LoadedQuantityEffective = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
+          "http://localhost:1000/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -121,7 +121,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
+          "http://localhost:1000/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -140,7 +140,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
+          "http://localhost:1000/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -155,11 +155,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/loaded-quantity/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -174,7 +170,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
+          "http://localhost:1000/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -221,7 +217,7 @@ const LoadedQuantityEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+        url: "http://localhost:1000/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -449,7 +445,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
+        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -638,17 +634,16 @@ const LoadedQuantityEffective = () => {
                     )} */}
 
                   {/* Save Button */}
-                
-                      <button
-                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    
+
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("updateElog");
+                    }}
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
 
@@ -705,7 +700,7 @@ const LoadedQuantityEffective = () => {
               </div> */}
               <div className="outerDiv4">
                 <div className="btn-forms">
-                    {/* <div
+                  {/* <div
                       className={`${
                         isSelectedGeneral === true
                           ? "btn-forms-isSelected"
@@ -900,7 +895,7 @@ const LoadedQuantityEffective = () => {
                               <input value={item.date} readOnly />
                             </td>
                             <td>
-                              <input
+                              <select
                                 value={item.product_name}
                                 onChange={(e) => {
                                   const newData = [
@@ -912,15 +907,22 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
+                                // disabled={
+                                //   location.state?.stage !== 1 ||
+                                //   location.state?.initiator_id !==
+                                //     userDetails.userId
+                                // }
+                              >
+                                <option value="" disabled>
+                                  Select a Product
+                                </option>
+                                <option value="Product1">Product 1</option>
+                                <option value="Product2">Product 2</option>
+                                <option value="Product3">Product 3</option>
+                              </select>
                             </td>
                             <td>
-                              <input
+                              <select
                                 value={item.batch_no}
                                 onChange={(e) => {
                                   const newData = [
@@ -932,12 +934,19 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
+                                // disabled={
+                                //   location.state?.stage !== 1 ||
+                                //   location.state?.initiator_id !==
+                                //     userDetails.userId
+                                // }
+                              >
+                                <option value="" disabled>
+                                  Select a Batch
+                                </option>
+                                <option value="Batch001">Batch 001</option>
+                                <option value="Batch002">Batch 002</option>
+                                <option value="Batch003">Batch 003</option>
+                              </select>
                             </td>
 
                             <td>
@@ -1025,20 +1034,34 @@ const LoadedQuantityEffective = () => {
                             </td>
 
                             <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.LoadedQuantityRecords,
-                                  ];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    LoadedQuantityRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
+                              <div>
+                                <label>
+                                  <input
+                                    type="checkbox"
+                                    checked={item.checked_by !== ""}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.LoadedQuantityRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].checked_by =
+                                          item.checked_by || editData.reviewer1.name;
+                                      } else {
+                                        newData[index].checked_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        LoadedQuantityRecords: newData,
+                                      });
+                                    }}
+                                  />
+                                  {item.checked_by && (
+                                    <span style={{ marginLeft: "10px" }}>
+                                      {item.checked_by}
+                                    </span>
+                                  )}
+                                </label>
+                              </div>
                             </td>
                             <td>
                               <input
