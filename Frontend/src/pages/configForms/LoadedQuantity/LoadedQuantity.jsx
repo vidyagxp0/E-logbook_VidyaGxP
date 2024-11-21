@@ -7,6 +7,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import TinyEditor from "../../../components/TinyEditor";
 
 const LoadedQuantity = () => {
   const [User, setUser] = useState(null);
@@ -34,11 +35,20 @@ const LoadedQuantity = () => {
       // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
-      additionalInfo:"",
-      additionalAttachment:null
-
+      additionalInfo: "",
+      additionalAttachment: null,
+      additionalInfo: "",
+      additionalAttachment: null,
     }
   );
+
+
+  const handleFileChange = (e) => {
+    setLoadedQuantity({
+      ...loadedQuantity,
+      additionalAttachment: e.target.files[0],
+    });
+  };
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
   const navigate = useNavigate();
@@ -226,6 +236,12 @@ const LoadedQuantity = () => {
   const handlePopupClose = () => {
     setIsPopupOpen(false);
   };
+
+  const setTinyContent = (content) => {
+    setLoadedQuantity({
+      description: content,
+    });
+  };
   return (
     <div>
       <HeaderTop />
@@ -338,7 +354,7 @@ const LoadedQuantity = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={loadedQuantity.description}
                         onChange={(e) =>
@@ -347,6 +363,12 @@ const LoadedQuantity = () => {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={loadedQuantity.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -652,28 +674,30 @@ const LoadedQuantity = () => {
                     </table>
                   </div>
                   <div className="group-input">
-                    <label className="color-label">Attachment </label>
+                    <label className="color-label mt-4">Additional Attachment<span className="text-sm text-zinc-600">(If / Any)</span> :</label>
                     <div>
-                      <input type="file" name="additionalAttachment"
-                      value={loadedQuantity.additionalAttachment} 
-                      onChange={(e) => {
-                        setLoadedQuantity({
-                          additionalAttachment: e.target.value,
-                        });
-                       }} />
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        onChange={handleFileChange}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Info (If/Any){" "}
+                      Additional Info <span className="text-sm text-zinc-600">(If / Any)</span> :{" "}
                     </label>
                     <div>
-                      <textarea type="text" name="additionalInfo"  value={loadedQuantity.additionalInfo}
-                          onChange={(e) => {
-                            setLoadedQuantity({
-                              additionalInfo: e.target.value,
-                            });
-                          }} />
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={loadedQuantity.additionalInfo}
+                        onChange={(e) => {
+                          setLoadedQuantity({
+                            additionalInfo: e.target.value,
+                          });
+                        }}
+                      />
                     </div>
                   </div>
                 </>

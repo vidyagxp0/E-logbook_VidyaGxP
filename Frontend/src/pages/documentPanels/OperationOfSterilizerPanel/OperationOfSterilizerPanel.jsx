@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 const OperationOfSterilizerPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -16,6 +17,8 @@ const OperationOfSterilizerPanel = () => {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formId, setFormId] = useState(null);
+
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
@@ -416,7 +419,7 @@ const OperationOfSterilizerPanel = () => {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+    setEditData({ ...editData, initiatorAttachment: e.target.files[0],additionalAttachment:e.target.files[0] });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -444,41 +447,47 @@ const OperationOfSterilizerPanel = () => {
     ...editData,
   };
 
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+    }
+  }, []);
+
   const generateReport = async () => {
     setIsLoading(true);
-
     try {
-      const response = await axios({
-        url: "http://localhost:1000/operation-sterlizer/generate-pdf",
-        method: "POST",
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-        data: {
+      const response = await axios.post(
+        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
+        {
           reportData: reportData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const { filename } = response.data; // Access filename from response.data
 
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `OS${reportData.form_id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
 
-      window.URL.revokeObjectURL(url);
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to generate PDF. Please try again later.");
+      console.error("Error opening chat PDF:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <div>
       <HeaderTop />
@@ -847,7 +856,7 @@ const OperationOfSterilizerPanel = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -856,6 +865,12 @@ const OperationOfSterilizerPanel = () => {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -1257,21 +1272,68 @@ const OperationOfSterilizerPanel = () => {
 
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Attachment (If / Any)
-                        </label>
-                        <input
-                          type="file"
-                          name="additionalAttachment"
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={editData.additionalAttachment}
-                          onChange={handleInputChange1}
-                        />
+                      <label
+                      htmlFor="additionalAttachment"
+                      className="color-label"
+                      name="additionalAttachment"
+                    >
+                      Attachment <span className="text-sm text-zinc-600">(If / Any)</span> :
+                    </label>
+                    <div>
+                      {editData.additionalAttachment ? (
+                        <div className="flex items-center gap-x-10">
+                          <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Change File
+                          </button>
+                          <h3 className="">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                              Selected File:{" "}
+                            </span>
+                            <a
+                              href={editData.additionalAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline"
+                            >
+                              View File
+                            </a>
+                          </h3>
+                        </div>
+                      ) : (
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        id="additionalAttachment"
+                        onChange={handleInitiatorFileChange}
+                        style={{ display: "none" }}
+                      />
+                    </div>
                       </div>
 
                       <div className="flex flex-col w-full">
                         <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Info (If / Any)
+                          Additional Info <span className="text-sm text-zinc-600">(If / Any)</span> :
                         </label>
                         <textarea
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
