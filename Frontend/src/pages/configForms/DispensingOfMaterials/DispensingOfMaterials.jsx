@@ -816,21 +816,34 @@ const DispensingOfMaterials = () => {
                       </tbody>
                     </table>
                     <div className="group-input mt-4">
-                    <label className="color-label">Additional Attachment<span className="text-sm text-zinc-600">(If / Any)</span> :</label>
-                    <div>
-                      <input
-                        type="file"
-                        name="additionalAttachment"
-                        onChange={handleFileChange}
-                      />
+                      <label className="color-label">
+                        Additional Attachment
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
+                      </label>
+                      <div>
+                        <input
+                          type="file"
+                          name="additionalAttachment"
+                          onChange={handleFileChange}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="group-input ">
-                    <label className="color-label">
-                      Additional Info <span className="text-sm text-zinc-600">(If / Any)</span> :{" "}
-                    </label>
-                    <div>
-                      <textarea type="text" name="Additional"  value={dispensingOfMaterials.additionalInfo}
+                    <div className="group-input ">
+                      <label className="color-label">
+                        Additional Info{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :{" "}
+                      </label>
+                      <div>
+                        <textarea
+                          type="text"
+                          name="Additional"
+                          value={dispensingOfMaterials.additionalInfo}
                           onChange={(e) => {
                             setDispensingOfMaterials({
                               additionalInfo: e.target.value,

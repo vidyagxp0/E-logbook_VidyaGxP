@@ -17,7 +17,7 @@ export default function DPRpanel() {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formId, setFormId] = useState(null); 
+  const [formId, setFormId] = useState(null);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
@@ -388,6 +388,7 @@ export default function DPRpanel() {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title: "Differential Pressure Record",
     ...editData,
   };
 

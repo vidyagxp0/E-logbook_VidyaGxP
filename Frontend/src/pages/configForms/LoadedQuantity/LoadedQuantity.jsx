@@ -42,7 +42,6 @@ const LoadedQuantity = () => {
     }
   );
 
-
   const handleFileChange = (e) => {
     setLoadedQuantity({
       ...loadedQuantity,
@@ -674,7 +673,13 @@ const LoadedQuantity = () => {
                     </table>
                   </div>
                   <div className="group-input">
-                    <label className="color-label mt-4">Additional Attachment<span className="text-sm text-zinc-600">(If / Any)</span> :</label>
+                    <label className="color-label mt-4">
+                      Additional Attachment
+                      <span className="text-sm text-zinc-600">
+                        (If / Any)
+                      </span>{" "}
+                      :
+                    </label>
                     <div>
                       <input
                         type="file"
@@ -685,7 +690,9 @@ const LoadedQuantity = () => {
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Info <span className="text-sm text-zinc-600">(If / Any)</span> :{" "}
+                      Additional Info{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
                     </label>
                     <div>
                       <textarea

@@ -689,7 +689,13 @@ const MediaRecord = () => {
                     </table>
                   </div>
                   <div className="group-input flex flex-col mt-6 items-start">
-                  <label className="color-label">Additional Attachment<span className="text-sm text-zinc-600">(If / Any)</span> :</label>
+                    <label className="color-label">
+                      Additional Attachment
+                      <span className="text-sm text-zinc-600">
+                        (If / Any)
+                      </span>{" "}
+                      :
+                    </label>
                     <div>
                       <input
                         type="file"
@@ -700,7 +706,11 @@ const MediaRecord = () => {
 
                     <div className="flex flex-col w-full mt-4">
                       <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info <span className="text-sm text-zinc-600">(If / Any)</span> :
+                        Additional Info{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
                       </label>
                       <textarea
                         className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"

@@ -373,7 +373,11 @@ const DispensingOfMaterialsPanel = () => {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0],additionalAttachment:e.target.files[0] });
+    setEditData({
+      ...editData,
+      initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[0],
+    });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -1283,12 +1287,14 @@ const DispensingOfMaterialsPanel = () => {
                     </table>
                   </div>
                   <div className="group-input mt-4">
-                  <label
+                    <label
                       htmlFor="additionalAttachment"
                       className="color-label"
                       name="additionalAttachment"
                     >
-                      Additional Attachment <span className="text-sm text-zinc-600">(If / Any)</span> :
+                      Additional Attachment{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
@@ -1343,7 +1349,9 @@ const DispensingOfMaterialsPanel = () => {
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Information <span className="text-sm text-zinc-600">(If / Any)</span> :{" "}
+                      Additional Information{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
                     </label>
                     <div>
                       <textarea

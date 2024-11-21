@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import TinyEditor from "../../../components/TinyEditor";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
 export default function TempretureRecordsPanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -262,16 +263,21 @@ export default function TempretureRecordsPanel() {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title: "Temperature Record",
     ...editData,
   };
 
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
+      console.log(reportData.form_id, "hjjjjj");
+      console.log(formId, "formidddd");
     }
-  }, []);
+  }, [reportData]);
 
   const generateReport = async () => {
+    console.log(formId, "gu");
+
     setIsLoading(true);
     try {
       const response = await axios.post(
@@ -402,6 +408,7 @@ export default function TempretureRecordsPanel() {
   return (
     <>
       <HeaderTop />
+      <LaunchQMS />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
