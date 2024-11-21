@@ -7,6 +7,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import TinyEditor from "../../../components/TinyEditor";
 
 const DispensingOfMaterials = () => {
   const [User, setUser] = useState(null);
@@ -35,7 +36,7 @@ const DispensingOfMaterials = () => {
       initiatorComment: " ",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
-      additionalInfo:"",
+      additionalInfo: "",
       additionalAttachment: null,
     }
   );
@@ -255,6 +256,12 @@ const DispensingOfMaterials = () => {
   const handlePopupClose = () => {
     setIsPopupOpen(false);
   };
+
+  const setTinyContent = (content) => {
+    setDispensingOfMaterials({
+      description: content,
+    });
+  };
   return (
     <div>
       <HeaderTop />
@@ -361,7 +368,7 @@ const DispensingOfMaterials = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={dispensingOfMaterials.description}
                         onChange={(e) =>
@@ -370,6 +377,12 @@ const DispensingOfMaterials = () => {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={dispensingOfMaterials.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -822,11 +835,11 @@ const DispensingOfMaterials = () => {
                             setDispensingOfMaterials({
                               additionalInfo: e.target.value,
                             });
-                          }} />
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                  </div>
-
                 </>
               ) : null}
             </div>

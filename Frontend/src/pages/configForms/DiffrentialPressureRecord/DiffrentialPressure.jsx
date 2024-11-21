@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function DiffrentialPressure() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -262,6 +263,11 @@ export default function DiffrentialPressure() {
     });
   };
 
+  const setTinyContent = (content) => {
+    setDifferentialPRecord({
+      description: content,
+    });
+  };
   return (
     <>
       <HeaderTop />
@@ -431,7 +437,7 @@ export default function DiffrentialPressure() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={differentialPRecord.description}
                         onChange={(e) =>
@@ -440,6 +446,12 @@ export default function DiffrentialPressure() {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={differentialPRecord.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>

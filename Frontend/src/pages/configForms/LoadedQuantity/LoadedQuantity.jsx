@@ -7,6 +7,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import TinyEditor from "../../../components/TinyEditor";
 
 const LoadedQuantity = () => {
   const [User, setUser] = useState(null);
@@ -34,6 +35,8 @@ const LoadedQuantity = () => {
       // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
+      additionalInfo: "",
+      additionalAttachment: null,
       additionalInfo: "",
       additionalAttachment: null,
     }
@@ -233,6 +236,12 @@ const LoadedQuantity = () => {
   const handlePopupClose = () => {
     setIsPopupOpen(false);
   };
+
+  const setTinyContent = (content) => {
+    setLoadedQuantity({
+      description: content,
+    });
+  };
   return (
     <div>
       <HeaderTop />
@@ -345,7 +354,7 @@ const LoadedQuantity = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={loadedQuantity.description}
                         onChange={(e) =>
@@ -354,6 +363,12 @@ const LoadedQuantity = () => {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={loadedQuantity.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>

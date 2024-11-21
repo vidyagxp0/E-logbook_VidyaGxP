@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function DPRpanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -26,6 +27,8 @@ export default function DPRpanel() {
     compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
+    additionalAttachment: "",
+    additionalInfo: "",
     DifferentialPressureRecords: [],
     limit: "",
   });
@@ -33,9 +36,6 @@ export default function DPRpanel() {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-
-  console.log(editData, "editData of DRP");
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -424,6 +424,12 @@ export default function DPRpanel() {
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <>
       <HeaderTop />
@@ -800,7 +806,7 @@ export default function DPRpanel() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -809,6 +815,12 @@ export default function DPRpanel() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
