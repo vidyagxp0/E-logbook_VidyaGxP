@@ -402,7 +402,7 @@ export default function DPRpanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/dispensing-material/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/differential-pressure/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
