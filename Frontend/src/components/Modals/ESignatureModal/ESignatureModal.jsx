@@ -30,7 +30,7 @@ function ESignatureModal(_props) {
 
   return (
     <>
-      <div className="custom-modal" id="e-signature-modal">
+      <div className="custom-modal" id="e-signature-modal" style={{zIndex:"999999"}}>
         <div className="modal-container">
           <div className="modal-top">
             <div className="head">E-Signature</div>
