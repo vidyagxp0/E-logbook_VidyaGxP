@@ -114,14 +114,15 @@ router.post(
   Auth.checkUserJwtToken,
   DispenseOfMaterial.generateReport
 );
+
 router.post(
   "/chat-pdf/:form_id",
   Auth.checkUserJwtToken,
   DispenseOfMaterial.chatByPdf
 );
+
 router.post(
   "/view-report",
-  // Auth.checkUserJwtToken,
   DispenseOfMaterial.viewReport
 );
 module.exports = router;

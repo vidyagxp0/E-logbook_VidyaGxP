@@ -290,10 +290,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
       ].join(","),
     };
 
-      return res.status(200).json({
-        error: false,
-        message: "E-log Created successfully",
-      });
+    return res.status(200).json({
+      error: false,
+      message: "E-log Created successfully",
+    });
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1508,19 +1508,17 @@ exports.generateReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
 
-    const getCurrentDateTime = () => {
-      const now = new Date();
-      return now.toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Specify using 24-hour format
-      });
-    };
-
+   const date = new Date();
+   const formattedDate = date.toLocaleString("en-US", {
+     year: "numeric",
+     month: "2-digit",
+     day: "2-digit",
+     hour: "2-digit",
+     minute: "2-digit",
+     second: "2-digit",
+     hour12: false, // Specify using 24-hour format
+   });
+    
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
       res.render("report", { reportData }, (err, html) => {
@@ -1549,97 +1547,27 @@ exports.generateReport = async (req, res) => {
       format: "A4",
       printBackground: true,
       displayHeaderFooter: true,
-      headerTemplate: `
-<div class="header-container">
-  <table class="header-table">
-    <tr>
-      <th colspan="2" class="header-title">Differential Pressure Records</th>
-      <th rowspan="2" class="header-logo">
-        <img src="${logoDataUri}" alt="Logo" style="max-width: 100px; height: auto;" />
-      </th>
-    </tr>
-    <tr>
-      <td class="header-info"><span style="font-weight: 600;">Form ID:</span>${reportData.form_id}</td>
-      <td class="header-info"><span style="font-weight: 600;">Status:</span>${reportData?.status}</td>
-    </tr>
-  </table>
-</div>
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
 
-<style>
-  .header-container {
-    width: 100%;
-    padding: 0 50px; /* Increased margin from left and right */
-    box-sizing: border-box;
-  }
-  
-  .header-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 14px;
-    table-layout: fixed;
-  }
-  
-  .header-table th, .header-table td {
-    border: 1px solid #000;
-    padding: 8px;
-  }
-  
-  .header-table th {
-    background-color: #f8f8f8;
-    font-weight: bold;
-  }
-  
-  .header-logo {
-    text-align: center;
-    width: 100px;
-  }
-  
-  .header-title {
-    text-align: center;
-    font-size: 18px;
-    margin: 10px 0;
-  }
-  
-  .header-info {
-    font-size: 12px;
-    text-align: center;
-  }
-</style>
-`,
-
-      footerTemplate: `
-<style>
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    font-size: 10px;
-    padding: 5px 0;
-  }
-  .leftContent, .centerContent, .rightContent {
-    display: inline-block;
-  }
-  .centerContent {
-    flex-grow: 1;
-    text-align: center;
-  }
-  .leftContent {
-    flex-grow: 0;
-    padding-left: 20px;  /* Added padding to the left content */
-  }
-  .rightContent {
-    flex-grow: 0;
-    padding-right: 20px; /* Added padding to the right content */
-  }
-</style>
-<div class="footer">
-  <span class="leftContent">Printed on: ${getCurrentDateTime()}</span>
-  <span class="centerContent">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-  <span class="rightContent">Printed by: ${user ? user.name : "Unknown"}</span>
-</div>
-`,
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
       margin: {
         top: "120px",
         bottom: "60px",
@@ -1656,6 +1584,114 @@ exports.generateReport = async (req, res) => {
     res.send(pdf);
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res.status(500).send("Error generating PDF");
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+
+exports.chatByPdf = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("report", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "150px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `DP_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `DP_Elog_Report_${formId}.pdf` });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+exports.viewReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+    // Render HTML using EJS template
+    req.app.render("report", { reportData }, (err, html) => {
+      if (err) {
+        console.error("Error rendering HTML:", err);
+        return res.status(500).send("Error rendering HTML", err);
+      }
+      res.send(html);
+    });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };

@@ -394,12 +394,10 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
 
     await transaction.commit();
 
-
     return res.status(200).json({
       error: false,
       message: "E-log Created successfully",
     });
-   
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1574,7 +1572,7 @@ exports.generateReport = async (req, res) => {
     let reportData = req.body.reportData;
 
     const date = new Date();
-    const formattedDate = date.toLocaleDateString("en-US", {
+    const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -1659,7 +1657,7 @@ exports.chatByPdf = async (req, res) => {
     const formId = req.params.form_id;
 
     const date = new Date();
-    const formattedDate = date.toLocaleDateString("en-US", {
+    const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -1733,20 +1731,21 @@ exports.chatByPdf = async (req, res) => {
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `DM_Elog_Report_${formId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `DM_Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res.status(500).send("Error generating PDF", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
 exports.viewReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
     // Render HTML using EJS template
-    // const html = await new Promise((resolve, reject) => {
     req.app.render(
       "dispensing_material_report",
       { reportData },
@@ -1758,9 +1757,10 @@ exports.viewReport = async (req, res) => {
         res.send(html);
       }
     );
-    // });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res.status(500).send("Error generating PDF");
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
