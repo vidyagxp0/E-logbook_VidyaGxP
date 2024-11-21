@@ -191,7 +191,7 @@ exports.InsertMediaRecord = async (req, res) => {
           action: "Opened",
         });
         auditTrailEntries.push({
-          form_id: newForm.date,
+          form_id: newForm.form_id,
           field_name: `Date[${index}]`,
           previous_value: null,
           new_value: record.date,
