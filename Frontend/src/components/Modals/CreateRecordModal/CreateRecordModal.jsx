@@ -157,7 +157,7 @@ function CreateRecordModal(_props) {
               </div>
 
               <div className="project">
-                <div className="head gap-2">Process</div>
+                <div className="head gap-2 mb-3">Process</div>
                 <div className="select-list division-list gap-2">
                   {processes.map((item, index) => (
                     <div

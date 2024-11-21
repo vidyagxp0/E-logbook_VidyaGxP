@@ -7,7 +7,9 @@ import Select from "react-select";
 
 function AddNewUser() {
   const [roleGroups, setRoleGroups] = useState([]);
+  const [roleGroups2, setRoleGroups2] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions2, setSelectedOptions2] = useState([]);
   const [error, setError] = useState("");
   const [AgeError, setAgeError] = useState("");
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ function AddNewUser() {
     password: "",
     profile_pic: "",
     rolesArray: [],
+    rolesArray2: [],
   });
 
   useEffect(() => {
@@ -37,9 +40,32 @@ function AddNewUser() {
       });
   }, []);
 
+  useEffect(() => {
+    setFormData((prevData) => ({ ...prevData, rolesArray2: selectedOptions2 }));
+  }, [selectedOptions2]);
+
+  useEffect(() => {
+    const url = "http://localhost:1000/user/get-all-effective-roles";
+    axios
+      .get(url)
+      .then((response) => {
+        setRoleGroups2(response.data.response || []);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const options = [
     { label: "Select All", value: "all" },
     ...roleGroups.map((role) => ({
+      label: role.roleGroup,
+      value: role.roleGroup_id,
+    })),
+  ];
+  const options2 = [
+    { label: "Select All", value: "all" },
+    ...roleGroups2.map((role) => ({
       label: role.roleGroup,
       value: role.roleGroup_id,
     })),
@@ -54,6 +80,17 @@ function AddNewUser() {
       setSelectedOptions(options.slice(1));
     } else {
       setSelectedOptions(selectedOptions);
+    }
+  };
+  const handleChange2 = (selectedOptions2) => {
+    if (
+      selectedOptions2 &&
+      selectedOptions2.length &&
+      selectedOptions2[selectedOptions2.length - 1].value === "all"
+    ) {
+      setSelectedOptions2(options2.slice(1));
+    } else {
+      setSelectedOptions2(selectedOptions2);
     }
   };
 
@@ -196,6 +233,16 @@ function AddNewUser() {
               onChange={handleChange}
               options={options}
               value={selectedOptions}
+              isMulti
+            />
+          </div>
+          <div className="group-input">
+            <label htmlFor="roles">Effective Roles</label>
+            <Select
+              name="selectedRoles"
+              onChange={handleChange2}
+              options={options2}
+              value={selectedOptions2}
               isMulti
             />
           </div>
