@@ -184,6 +184,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         yield: record?.yield,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await LoadedQuantityRecord.bulkCreate(formRecords, { transaction });
@@ -501,6 +502,7 @@ exports.EditLoadedQuantity = async (req, res) => {
             loaded_quantity: newRecord?.loaded_quantity,
             remarks: newRecord?.remarks,
             yield: newRecord?.yield,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -545,6 +547,7 @@ exports.EditLoadedQuantity = async (req, res) => {
             loaded_quantity: newRecord?.loaded_quantity,
             remarks: newRecord?.remarks,
             yield: newRecord?.yield,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -587,6 +590,7 @@ exports.EditLoadedQuantity = async (req, res) => {
         loaded_quantity: record?.loaded_quantity,
         yield: record?.yield,
         remarks: record?.remarks,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await LoadedQuantityRecord.bulkCreate(formRecords, { transaction });
