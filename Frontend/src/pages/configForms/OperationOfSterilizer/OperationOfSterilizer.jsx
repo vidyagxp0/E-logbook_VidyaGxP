@@ -7,6 +7,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import TinyEditor from "../../../components/TinyEditor";
 
 const OperationOfSterilizer = () => {
   const [User, setUser] = useState(null);
@@ -18,7 +19,7 @@ const OperationOfSterilizer = () => {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const location = useLocation();
-  const [operationOfSterilizer,   setOperationOfSterilizer] = useReducer(
+  const [operationOfSterilizer, setOperationOfSterilizer] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
@@ -105,8 +106,6 @@ const OperationOfSterilizer = () => {
         console.error(error);
       });
   }, []);
-
-
 
   const handlePopupSubmit = (credentials) => {
     if (
@@ -234,6 +233,12 @@ const OperationOfSterilizer = () => {
   const handlePopupClose = () => {
     setIsPopupOpen(false);
   };
+
+  const setTinyContent = (content) => {
+    setOperationOfSterilizer({
+      description: content,
+    });
+  };
   return (
     <div>
       <HeaderTop />
@@ -332,7 +337,7 @@ const OperationOfSterilizer = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={operationOfSterilizer.description}
                         onChange={(e) =>
@@ -341,6 +346,12 @@ const OperationOfSterilizer = () => {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={operationOfSterilizer.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>

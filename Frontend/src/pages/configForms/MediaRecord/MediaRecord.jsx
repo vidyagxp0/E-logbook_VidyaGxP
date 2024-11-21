@@ -7,6 +7,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import TinyEditor from "../../../components/TinyEditor";
 
 const MediaRecord = () => {
   const [User, setUser] = useState(null);
@@ -221,6 +222,11 @@ const MediaRecord = () => {
     setIsPopupOpen(false);
   };
 
+  const setTinyContent = (content) => {
+    setMediaRecords({
+      description: content,
+    });
+  };
   return (
     <div>
       <HeaderTop />
@@ -327,7 +333,7 @@ const MediaRecord = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={mediaRecords.description}
                         onChange={(e) =>
@@ -336,6 +342,12 @@ const MediaRecord = () => {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={mediaRecords.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>

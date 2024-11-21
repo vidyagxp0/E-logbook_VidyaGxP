@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function TempretureRecordsPanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -386,7 +387,12 @@ export default function TempretureRecordsPanel() {
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
-
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <>
       <HeaderTop />
@@ -727,7 +733,7 @@ export default function TempretureRecordsPanel() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -736,6 +742,11 @@ export default function TempretureRecordsPanel() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -1002,32 +1013,32 @@ export default function TempretureRecordsPanel() {
                     </tbody>
                   </table>
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Attachment (If / Any)
-                        </label>
-                        <input
-                          type="file"
-                          name="additionalAttachment"
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={editData.additionalAttachment}
-                          onChange={handleInputChange1}
-                        />
-                      </div>
-
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Info (If / Any)
-                        </label>
-                        <textarea
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          rows="4"
-                          name="additionalInfo"
-                          value={editData?.additionalInfo}
-                          onChange={handleInputChange1}
-                        ></textarea>
-                      </div>
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Attachment (If / Any)
+                      </label>
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        value={editData.additionalAttachment}
+                        onChange={handleInputChange1}
+                      />
                     </div>
+
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Info (If / Any)
+                      </label>
+                      <textarea
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        rows="4"
+                        name="additionalInfo"
+                        value={editData?.additionalInfo}
+                        onChange={handleInputChange1}
+                      ></textarea>
+                    </div>
+                  </div>
                 </>
               ) : null}
 

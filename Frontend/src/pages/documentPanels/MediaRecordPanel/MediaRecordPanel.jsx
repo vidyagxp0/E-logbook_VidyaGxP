@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 const MediaRecordPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -446,6 +447,12 @@ const MediaRecordPanel = () => {
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <div>
       <HeaderTop />
@@ -815,7 +822,7 @@ const MediaRecordPanel = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -824,6 +831,12 @@ const MediaRecordPanel = () => {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -1081,11 +1094,16 @@ const MediaRecordPanel = () => {
                       </tbody>
                     </table>
                   </div>
-                  
+
                   <div className="group-input">
                     <label className="color-label">Attachment </label>
                     <div>
-                      <input type="file" name="additionalAttachment" value={editData.additionalAttachment} onChange={handleInputChange1}  />
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        value={editData.additionalAttachment}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">
@@ -1093,7 +1111,12 @@ const MediaRecordPanel = () => {
                       Additional Information (If/Any){" "}
                     </label>
                     <div>
-                      <textarea type="text" name="additionalInfo" value={editData.additionalInfo} onChange={handleInputChange1} />
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={editData.additionalInfo}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                 </>
@@ -1218,7 +1241,6 @@ const MediaRecordPanel = () => {
 
               {reviewerRemarks === true ? (
                 <>
-                 
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Reviewer </label>
@@ -1336,7 +1358,6 @@ const MediaRecordPanel = () => {
 
               {approverRemarks === true ? (
                 <>
-                  
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Approver </label>

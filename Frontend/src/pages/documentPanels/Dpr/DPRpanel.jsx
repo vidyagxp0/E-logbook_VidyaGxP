@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function DPRpanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -24,18 +25,15 @@ export default function DPRpanel() {
     description: "",
     department: "",
     compression_area: "",
-    additionalAttachment:"",
-    additionalInfo:"",
+    additionalAttachment: "",
+    additionalInfo: "",
     DifferentialPressureRecords: [],
     limit: "",
   });
- 
+
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-
-  console.log(editData, "editData of DRP");
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -420,6 +418,12 @@ export default function DPRpanel() {
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <>
       <HeaderTop />
@@ -796,7 +800,7 @@ export default function DPRpanel() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -805,6 +809,12 @@ export default function DPRpanel() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -1093,42 +1103,40 @@ export default function DPRpanel() {
                       )}
                     </tbody>
                   </table>
-               
-                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Attachment (If / Any)
-                        </label>
-                        <input
-                          type="file"
-                          name="additionalAttachment"
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={editData.additionalAttachment}
-                          onChange={handleInputChange1}
-                        />
-                      </div>
 
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Info (If / Any)
-                        </label>
-                        <textarea
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          rows="4"
-                          name="additionalInfo"
-                          value={editData?.additionalInfo}
-                          onChange={handleInputChange1}
-                        ></textarea>
-                      </div>
+                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Attachment (If / Any)
+                      </label>
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        value={editData.additionalAttachment}
+                        onChange={handleInputChange1}
+                      />
                     </div>
-                
-             
+
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Info (If / Any)
+                      </label>
+                      <textarea
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        rows="4"
+                        name="additionalInfo"
+                        value={editData?.additionalInfo}
+                        onChange={handleInputChange1}
+                      ></textarea>
+                    </div>
+                  </div>
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
-                   <div className="form-flex">
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Initiator </label>
                       <div>
@@ -1240,8 +1248,6 @@ export default function DPRpanel() {
                       </div>
                     </div>
                   </div>
-
-               
                 </>
               ) : null}
 
@@ -1359,14 +1365,12 @@ export default function DPRpanel() {
                       </div>
                     </div>
                   </div>
-
-                
                 </>
               ) : null}
 
               {approverRemarks === true ? (
                 <>
-                 <div className="form-flex">
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Approver </label>
                       <div>
@@ -1478,8 +1482,6 @@ export default function DPRpanel() {
                       </div>
                     </div>
                   </div>
-
-                 
                 </>
               ) : null}
             </div>

@@ -1,15 +1,13 @@
 {
-    "development" : {
-            "PORT": 1000,
-            "dbName": "elogbook",
-            "username": "root",
-            "password": "Mysql@00000000",
-            "dialect": "mysql",
-            "host": "localhost",
-            "JWT_SECRET": "NAHKNAHRAF",
-            "JWT_ADMIN_SECRET": "ADMINNAHKNAHRAF"
-    },
-    "production": {
-
-    }
+  "development": {
+    "PORT": 1000,
+    "dbName": "elogbook",
+    "username": "root",
+    "password": "root",
+    "dialect": "mysql",
+    "host": "localhost",
+    "JWT_SECRET": "NAHKNAHRAF",
+    "JWT_ADMIN_SECRET": "ADMINNAHKNAHRAF"
+  },
+  "production": {}
 }
