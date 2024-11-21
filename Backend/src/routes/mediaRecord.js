@@ -44,18 +44,10 @@ router.put(
 );
 
 // //get a MediaRecord elog by id
-router.get(
-  "/get/:id",
-  Auth.checkUserJwtToken,
-  MediaRecord.GetMediaRecord
-);
+router.get("/get/:id", Auth.checkUserJwtToken, MediaRecord.GetMediaRecord);
 
 // //get all the MediaRecord elogs
-router.get(
-  "/get-all",
-  Auth.checkUserJwtToken,
-  MediaRecord.GetAllMediaRecord
-);
+router.get("/get-all", Auth.checkUserJwtToken, MediaRecord.GetAllMediaRecord);
 
 //send MediaRecord elog for review
 router.put(
@@ -122,4 +114,12 @@ router.post(
   Auth.checkUserJwtToken,
   MediaRecord.generateReport
 );
+
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  MediaRecord.chatByPdf
+);
+
+router.post("/view-report", MediaRecord.viewReport);
 module.exports = router;
