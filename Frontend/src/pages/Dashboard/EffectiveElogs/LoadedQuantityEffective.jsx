@@ -255,8 +255,8 @@ const LoadedQuantityEffective = () => {
 
   const addRow = () => {
     if (
-      location.state?.stage ===4  &&
-      location.state?.reviewer_id
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
     ) {
       const options = {
         hour: "2-digit",
@@ -881,8 +881,8 @@ const LoadedQuantityEffective = () => {
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
-                          <th>Checked By</th>
                           <th>% Yield</th>
+                          <th>Checked By</th>
                           <th>Remarks</th>
                           <th>Actions</th>
                         </tr>
@@ -984,7 +984,6 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                
                                 readOnly={
                                   location.state?.stage !== 4 ||
                                   location.state?.reviewer_id !==
@@ -1006,7 +1005,6 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                
                                 readOnly={
                                   location.state?.stage !== 4 ||
                                   location.state?.reviewer_id !==
@@ -1028,7 +1026,6 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                               
                                 readOnly={
                                   location.state?.stage !== 4 ||
                                   location.state?.reviewer_id !==
@@ -1036,7 +1033,26 @@ const LoadedQuantityEffective = () => {
                                 }
                               />
                             </td>
-
+                            <td>
+                              <input
+                                value={item.yield}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].yield = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
+                                    userDetails.userId
+                                }
+                              />
+                            </td>
                             <td>
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
@@ -1070,27 +1086,6 @@ const LoadedQuantityEffective = () => {
                             </td>
                             <td>
                               <input
-                                value={item.yield}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.LoadedQuantityRecords,
-                                  ];
-                                  newData[index].yield = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    LoadedQuantityRecords: newData,
-                                  });
-                                }}
-                                
-                                readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
                                 value={item.remarks}
                                 onChange={(e) => {
                                   const newData = [
@@ -1102,7 +1097,6 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                
                                 readOnly={
                                   location.state?.stage !== 4 ||
                                   location.state?.reviewer_id !==
