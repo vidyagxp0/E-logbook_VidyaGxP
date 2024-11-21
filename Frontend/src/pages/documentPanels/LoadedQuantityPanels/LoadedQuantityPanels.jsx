@@ -67,7 +67,7 @@ console.log(editData,"LOADED");
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+    //     url: "http://localhost:1000/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -102,7 +102,7 @@ console.log(editData,"LOADED");
     
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
+          "http://localhost:1000/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -120,7 +120,7 @@ console.log(editData,"LOADED");
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
+          "http://localhost:1000/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -139,7 +139,7 @@ console.log(editData,"LOADED");
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
+          "http://localhost:1000/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -155,7 +155,7 @@ console.log(editData,"LOADED");
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
+          "http://localhost:1000/loaded-quantity/approve",
           data,
           config
         )
@@ -173,7 +173,7 @@ console.log(editData,"LOADED");
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
+          "http://localhost:1000/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -220,7 +220,7 @@ console.log(editData,"LOADED");
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+        url: "http://localhost:1000/loaded-quantity/update",
       };
 
       axios(requestOptions)

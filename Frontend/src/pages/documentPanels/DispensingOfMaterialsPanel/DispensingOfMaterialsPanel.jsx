@@ -76,7 +76,7 @@ const DispensingOfMaterialsPanel = () => {
     }    
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
+          "http://localhost:1000/dispensing-material/send-for-review",
           data,
           config
         )
@@ -94,7 +94,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
+          "http://localhost:1000/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -113,7 +113,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
+          "http://localhost:1000/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -129,7 +129,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
+          "http://localhost:1000/dispensing-material/approve",
           data,
           config
         )
@@ -147,7 +147,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
+          "http://localhost:1000/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -198,7 +198,7 @@ const DispensingOfMaterialsPanel = () => {
         },
         data: editData,
 
-        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
+        url: "http://localhost:1000/dispensing-material/update",
       };
 
       axios(requestOptions)
