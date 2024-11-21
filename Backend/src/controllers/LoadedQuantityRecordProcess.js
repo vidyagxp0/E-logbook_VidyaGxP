@@ -1545,11 +1545,15 @@ exports.generateReport = async (req, res) => {
   }
 };
 
+const removeHtmlTags = (htmlString) => {
+  return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
+};
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
-
+    reportData.description = removeHtmlTags(reportData.description);
+    
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",

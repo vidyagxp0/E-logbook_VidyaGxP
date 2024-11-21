@@ -1646,11 +1646,15 @@ exports.generateReport = async (req, res) => {
   }
 };
 
+const removeHtmlTags = (htmlString) => {
+  return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
+};
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
-
+    reportData.description = removeHtmlTags(reportData.description);
+    
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -1728,12 +1732,10 @@ exports.chatByPdf = async (req, res) => {
     res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 exports.viewReport = async (req, res) => {
