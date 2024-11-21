@@ -396,13 +396,13 @@ export default function DPRpanel() {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
     }
-  }, []);
+  }, [reportData]);
 
   const generateReport = async () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
+        `http://localhost:1000/differential-pressure/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
