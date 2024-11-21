@@ -17,7 +17,7 @@ export default function DPRpanel() {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formId, setFormId] = useState(null); 
+  const [formId, setFormId] = useState(null);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
@@ -73,7 +73,7 @@ export default function DPRpanel() {
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -91,7 +91,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -110,7 +110,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -126,7 +126,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -144,7 +144,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -191,7 +191,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elog-backend.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -388,6 +388,7 @@ export default function DPRpanel() {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title: "Differential Pressure Record",
     ...editData,
   };
 
@@ -401,7 +402,7 @@ export default function DPRpanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/dispensing-material/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
