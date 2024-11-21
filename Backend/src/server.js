@@ -18,6 +18,10 @@ const helmet = require("helmet");
 const app = express();
 const server = http.createServer(app);
 
+const pdfsFolder = path.resolve("public");
+
+app.use("/public", express.static(pdfsFolder));
+
 app.use(express.json());
 app.use(
   helmet({
