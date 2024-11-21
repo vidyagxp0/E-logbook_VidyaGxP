@@ -402,14 +402,18 @@ const DispensingOfMaterialsPanel = () => {
   useEffect(() => {
     console.log(reportData, "reportData");
   }, [reportData]);
+  console.log(reportData, "reportdata");
 
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
+      console.log(reportData.form_id, "tfyguhij");
     }
-  }, []);
+  }, [reportData]);
 
   const generateReport = async () => {
+    console.log(formId, "generateReport");
+
     setIsLoading(true);
     try {
       const response = await axios.post(

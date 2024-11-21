@@ -456,7 +456,7 @@ const OperationOfSterilizerPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
+        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

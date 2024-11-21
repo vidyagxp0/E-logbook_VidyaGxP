@@ -1665,10 +1665,10 @@ exports.chatByPdf = async (req, res) => {
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("public", `TR_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `TR_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

@@ -422,7 +422,7 @@ const MediaRecordPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
+        `http://localhost:1000/media-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1086,7 +1086,12 @@ const MediaRecordPanel = () => {
                   <div className="group-input">
                     <label className="color-label">Attachment </label>
                     <div>
-                      <input type="file" name="additionalAttachment" value={editData.additionalAttachment} onChange={handleInputChange1}  />
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        value={editData.additionalAttachment}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                   <div className="group-input ">
@@ -1094,7 +1099,12 @@ const MediaRecordPanel = () => {
                       Additional Information (If/Any){" "}
                     </label>
                     <div>
-                      <textarea type="text" name="additionalInfo" value={editData.additionalInfo} onChange={handleInputChange1} />
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={editData.additionalInfo}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                 </>
@@ -1219,7 +1229,6 @@ const MediaRecordPanel = () => {
 
               {reviewerRemarks === true ? (
                 <>
-                 
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Reviewer </label>
@@ -1337,7 +1346,6 @@ const MediaRecordPanel = () => {
 
               {approverRemarks === true ? (
                 <>
-                  
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Approver </label>
