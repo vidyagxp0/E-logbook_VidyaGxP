@@ -130,4 +130,11 @@ router.post(
 );
 
 router.post("/view-report", DifferentialPressureProcess.viewReport);
+router.post(
+  "/effective-chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  DifferentialPressureProcess.effetiveChatByPdf
+);
+
+router.post("/effective-view-report", DifferentialPressureProcess.effetiveViewReport);
 module.exports = router;

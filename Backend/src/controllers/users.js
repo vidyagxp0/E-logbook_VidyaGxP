@@ -7,6 +7,7 @@ const Role = require("../models/roles");
 const Process = require("../models/processes");
 const Site = require("../models/sites");
 const RoleGroup = require("../models/roleGroups");
+const EffectiveRoleGroup = require("../models/effectiveRoleGroup");
 const { sequelize } = require("../config/db");
 const { getFileUrl } = require("../middlewares/authentication");
 
@@ -471,4 +472,19 @@ exports.resetPassword = async (req, res) => {
     console.error("Error resetting password:", error);
     return res.status(500).json({ message: "Server error" });
   }
+};
+exports.getAllEffectiveRoleGroups = async (req, res) => {
+  await EffectiveRoleGroup.findAll()
+    .then((result) => {
+      res.status(200).json({
+        error: false,
+        response: result,
+      });
+    })
+    .catch((e) => {
+      res.status(500).json({
+        error: true,
+        response: e.message,
+      });
+    });
 };
