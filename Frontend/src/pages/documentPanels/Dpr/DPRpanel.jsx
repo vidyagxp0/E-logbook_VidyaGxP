@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function DPRpanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -16,6 +17,8 @@ export default function DPRpanel() {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formId, setFormId] = useState(null); 
+
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
@@ -24,18 +27,17 @@ export default function DPRpanel() {
     description: "",
     department: "",
     compression_area: "",
-    additionalAttachment:"",
-    additionalInfo:"",
+    additionalAttachment: "",
+    additionalInfo: "",
+    additionalAttachment: "",
+    additionalInfo: "",
     DifferentialPressureRecords: [],
     limit: "",
   });
- 
+
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-
-  console.log(editData, "editData of DRP");
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
@@ -358,7 +360,11 @@ export default function DPRpanel() {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+    setEditData({
+      ...editData,
+      initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[0],
+    });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -385,41 +391,47 @@ export default function DPRpanel() {
     ...editData,
   };
 
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+    }
+  }, []);
+
   const generateReport = async () => {
     setIsLoading(true);
-
     try {
-      const response = await axios({
-        url: "http://localhost:1000/differential-pressure/generate-pdf",
-        method: "POST",
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-        data: {
+      const response = await axios.post(
+        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
+        {
           reportData: reportData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const { filename } = response.data; // Access filename from response.data
 
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `DPR${reportData.form_id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
 
-      window.URL.revokeObjectURL(url);
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to generate PDF. Please try again later.");
+      console.error("Error opening chat PDF:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <>
       <HeaderTop />
@@ -796,7 +808,7 @@ export default function DPRpanel() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -805,6 +817,12 @@ export default function DPRpanel() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -1093,42 +1111,94 @@ export default function DPRpanel() {
                       )}
                     </tbody>
                   </table>
-               
-                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Attachment (If / Any)
-                        </label>
+
+                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="additionalAttachment"
+                        className="color-label"
+                        name="additionalAttachment"
+                      >
+                        Attachment{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
+                      </label>
+                      <div>
+                        {editData.additionalAttachment ? (
+                          <div className="flex items-center gap-x-10">
+                            <button
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Change File
+                            </button>
+                            <h3 className="">
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
+                              <a
+                                href={editData.additionalAttachment}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline"
+                              >
+                                View File
+                              </a>
+                            </h3>
+                          </div>
+                        ) : (
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
+                          </div>
+                        )}
                         <input
                           type="file"
                           name="additionalAttachment"
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          value={editData.additionalAttachment}
-                          onChange={handleInputChange1}
+                          id="additionalAttachment"
+                          onChange={handleInitiatorFileChange}
+                          style={{ display: "none" }}
                         />
                       </div>
-
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Info (If / Any)
-                        </label>
-                        <textarea
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          rows="4"
-                          name="additionalInfo"
-                          value={editData?.additionalInfo}
-                          onChange={handleInputChange1}
-                        ></textarea>
-                      </div>
                     </div>
-                
-             
+
+                    <div className="flex flex-col w-full">
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Info{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                      </label>
+                      <textarea
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        rows="4"
+                        name="additionalInfo"
+                        value={editData?.additionalInfo}
+                        onChange={handleInputChange1}
+                      ></textarea>
+                    </div>
+                  </div>
                 </>
               ) : null}
 
               {initiatorRemarks === true ? (
                 <>
-                   <div className="form-flex">
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Initiator </label>
                       <div>
@@ -1240,8 +1310,6 @@ export default function DPRpanel() {
                       </div>
                     </div>
                   </div>
-
-               
                 </>
               ) : null}
 
@@ -1359,14 +1427,12 @@ export default function DPRpanel() {
                       </div>
                     </div>
                   </div>
-
-                
                 </>
               ) : null}
 
               {approverRemarks === true ? (
                 <>
-                 <div className="form-flex">
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Approver </label>
                       <div>
@@ -1478,8 +1544,6 @@ export default function DPRpanel() {
                       </div>
                     </div>
                   </div>
-
-                 
                 </>
               ) : null}
             </div>

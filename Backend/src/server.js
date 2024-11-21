@@ -9,7 +9,7 @@ const loadedQuantityRoutes = require("./routes/loadedQuantity");
 const mediaRecordRoutes = require("./routes/mediaRecord");
 const dispensingOfMaterialRoutes = require("./routes/dispensingOfMaterial");
 const operationOfSterlizerRoutes = require("./routes/operationOfSterlizer");
-const vidyagxpFeedback = require('./config/vidyagxp_feedback');
+const vidyagxpFeedback = require("./config/vidyagxp_feedback");
 const siteRoutes = require("./routes/sites");
 const cors = require("cors");
 const path = require("path");
@@ -63,4 +63,3 @@ server.listen(config.development.PORT, "0.0.0.0", async () => {
       console.log("Error in database connection", e);
     });
 });
-

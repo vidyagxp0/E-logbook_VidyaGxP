@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import TinyEditor from "../../../components/TinyEditor";
 
 export default function TemperatureRecords() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -244,14 +245,26 @@ export default function TemperatureRecords() {
     updatedData[index].supporting_docs = file;
     setAllTableData(updatedData);
   };
+  const handleFileChangeAttchment = (e) => {
+    setTempratureRecord({
+      ...tempratureRecord,
+      additionalAttachment: e.target.files[0],
+    });
+  };
 
   const handleInitiatorFileChange = (e) => {
     setTempratureRecord({
       ...tempratureRecord,
       initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[0],
     });
   };
 
+  const setTinyContent = (content) => {
+    setTempratureRecord({
+      description: content,
+    });
+  };
   return (
     <>
       <HeaderTop />
@@ -414,7 +427,7 @@ export default function TemperatureRecords() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={tempratureRecord.description}
                         onChange={(e) =>
@@ -423,6 +436,11 @@ export default function TemperatureRecords() {
                           })
                         }
                         required
+                      /> */}
+                      <TinyEditor
+                        editorContent={tempratureRecord.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -759,23 +777,26 @@ export default function TemperatureRecords() {
                     </tbody>
                   </table>
                   <div className="group-input">
-                    <label className="color-label">Attachment </label>
+                    <label className="color-label">
+                      Additional Attachment
+                      <span className="text-sm text-zinc-600">
+                        (If / Any)
+                      </span>{" "}
+                      :{" "}
+                    </label>
                     <div>
                       <input
                         type="file"
                         name="additionalAttachment"
-                        value={tempratureRecord.additionalAttachment}
-                        onChange={(e) => {
-                          setTempratureRecord({
-                            additionalAttachment: e.target.value,
-                          });
-                        }}
+                        onChange={handleFileChangeAttchment}
                       />
                     </div>
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Info (If/Any){" "}
+                      Additional Info{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
                     </label>
                     <div>
                       <textarea
