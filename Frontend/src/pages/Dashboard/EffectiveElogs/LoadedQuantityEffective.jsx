@@ -11,8 +11,8 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 
 const LoadedQuantityEffective = () => {
-  const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
@@ -68,7 +68,7 @@ const LoadedQuantityEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+    //     url: "http://localhost:1000/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -103,7 +103,7 @@ const LoadedQuantityEffective = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
+          "http://localhost:1000/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -121,7 +121,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
+          "http://localhost:1000/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -140,7 +140,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
+          "http://localhost:1000/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -155,11 +155,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/loaded-quantity/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -174,7 +170,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
+          "http://localhost:1000/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -221,7 +217,7 @@ const LoadedQuantityEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+        url: "http://localhost:1000/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -449,7 +445,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
+        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -523,7 +519,7 @@ const LoadedQuantityEffective = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Loaded Quantity
+                  Loaded Quantity Details
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -576,7 +572,7 @@ const LoadedQuantityEffective = () => {
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
-                  {location.state?.stage === 1 &&
+                  {/* {location.state?.stage === 1 &&
                     location.state?.initiator_id === userDetails.userId && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -635,25 +631,23 @@ const LoadedQuantityEffective = () => {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
                   {/* Save Button */}
-                  {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
-                      <button
-                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    )}
+
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("updateElog");
+                    }}
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
 
-              <div className="outerDiv4 bg-slate-300 py-4">
+              {/* <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
@@ -691,7 +685,6 @@ const LoadedQuantityEffective = () => {
                     UNDER APPROVAL
                   </div>
 
-                  {/* Button 4: CLOSED DONE */}
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                       location.state?.stage > 4
@@ -704,26 +697,26 @@ const LoadedQuantityEffective = () => {
                     CLOSED DONE
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="outerDiv4">
                 <div className="btn-forms">
-                  <div
-                    className={`${
-                      isSelectedGeneral === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
-                    }`}
-                    onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsSelectedGeneral(true),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false);
-                    }}
-                  >
-                    General Information
-                  </div>
-                  <div
+                  {/* <div
+                      className={`${
+                        isSelectedGeneral === true
+                          ? "btn-forms-isSelected"
+                          : "btn-forms-select"
+                      }`}
+                      onClick={() => {
+                        setIsSelectedDetails(false),
+                          setIsSelectedGeneral(true),
+                          setInitiatorRemarks(false),
+                          setReviewerRemarks(false),
+                          setApproverRemarks(false);
+                      }}
+                    >
+                      General Information
+                    </div> */}
+                  {/* <div
                     className={`${
                       isSelectedDetails === true
                         ? "btn-forms-isSelected"
@@ -738,8 +731,8 @@ const LoadedQuantityEffective = () => {
                     }}
                   >
                     Details
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -754,8 +747,8 @@ const LoadedQuantityEffective = () => {
                     }}
                   >
                     Initiator Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       reviewerRemarks === true
                         ? "btn-forms-isSelected"
@@ -770,8 +763,8 @@ const LoadedQuantityEffective = () => {
                     }}
                   >
                     Reviewer Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       approverRemarks === true
                         ? "btn-forms-isSelected"
@@ -786,7 +779,7 @@ const LoadedQuantityEffective = () => {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* <div className="analytics-btn">
@@ -902,7 +895,7 @@ const LoadedQuantityEffective = () => {
                               <input value={item.date} readOnly />
                             </td>
                             <td>
-                              <input
+                              <select
                                 value={item.product_name}
                                 onChange={(e) => {
                                   const newData = [
@@ -914,15 +907,22 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
+                                // disabled={
+                                //   location.state?.stage !== 1 ||
+                                //   location.state?.initiator_id !==
+                                //     userDetails.userId
+                                // }
+                              >
+                                <option value="" disabled>
+                                  Select a Product
+                                </option>
+                                <option value="Product1">Product 1</option>
+                                <option value="Product2">Product 2</option>
+                                <option value="Product3">Product 3</option>
+                              </select>
                             </td>
                             <td>
-                              <input
+                              <select
                                 value={item.batch_no}
                                 onChange={(e) => {
                                   const newData = [
@@ -934,12 +934,19 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
+                                // disabled={
+                                //   location.state?.stage !== 1 ||
+                                //   location.state?.initiator_id !==
+                                //     userDetails.userId
+                                // }
+                              >
+                                <option value="" disabled>
+                                  Select a Batch
+                                </option>
+                                <option value="Batch001">Batch 001</option>
+                                <option value="Batch002">Batch 002</option>
+                                <option value="Batch003">Batch 003</option>
+                              </select>
                             </td>
 
                             <td>
@@ -1027,20 +1034,34 @@ const LoadedQuantityEffective = () => {
                             </td>
 
                             <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.LoadedQuantityRecords,
-                                  ];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    LoadedQuantityRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
+                              <div>
+                                <label>
+                                  <input
+                                    type="checkbox"
+                                    checked={item.checked_by !== ""}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.LoadedQuantityRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].checked_by =
+                                          item.checked_by || editData.reviewer1.name;
+                                      } else {
+                                        newData[index].checked_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        LoadedQuantityRecords: newData,
+                                      });
+                                    }}
+                                  />
+                                  {item.checked_by && (
+                                    <span style={{ marginLeft: "10px" }}>
+                                      {item.checked_by}
+                                    </span>
+                                  )}
+                                </label>
+                              </div>
                             </td>
                             <td>
                               <input
@@ -1095,7 +1116,7 @@ const LoadedQuantityEffective = () => {
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
-                        <div className="flex items-center gap-x-10">
+                        <div className="flex items-center gap-x-10 ml-3">
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
@@ -1165,7 +1186,7 @@ const LoadedQuantityEffective = () => {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1280,9 +1301,9 @@ const LoadedQuantityEffective = () => {
 
                   <div className="form-flex"></div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {reviewerRemarks === true ? (
+              {/* {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1397,9 +1418,9 @@ const LoadedQuantityEffective = () => {
 
                   <div className="form-flex"></div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {approverRemarks === true ? (
+              {/* {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1514,7 +1535,7 @@ const LoadedQuantityEffective = () => {
 
                   <div className="form-flex"></div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1

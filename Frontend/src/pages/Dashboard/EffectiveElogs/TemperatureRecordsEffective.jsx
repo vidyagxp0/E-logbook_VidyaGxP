@@ -12,7 +12,7 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
 export default function TempretureRecordsEffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
@@ -29,8 +29,10 @@ export default function TempretureRecordsEffective() {
     additionalAttachment: "",
     additionalInfo: "",
     compression_area: "",
+    TempratureRecords:[],
     limit: "",
   });
+  console.log(editData, "Edit Dataaa");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -69,7 +71,7 @@ export default function TempretureRecordsEffective() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
+          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -87,7 +89,7 @@ export default function TempretureRecordsEffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
+          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -107,7 +109,7 @@ export default function TempretureRecordsEffective() {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
+          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -123,7 +125,7 @@ export default function TempretureRecordsEffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
+          "http://localhost:1000/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -141,7 +143,7 @@ export default function TempretureRecordsEffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
+          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -188,7 +190,7 @@ export default function TempretureRecordsEffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
+        url: "http://localhost:1000/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -277,7 +279,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
+        `http://localhost:1000/temprature-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -442,8 +444,8 @@ export default function TempretureRecordsEffective() {
                 </div>
               </div>
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
-                <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Temperature Record
+                <span className="text-xl font-semibold text-white mb-4 sm:mb-0">
+                  Temperature Record Details
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -496,7 +498,7 @@ export default function TempretureRecordsEffective() {
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
-                  {location.state?.stage === 1 &&
+                  {/* {location.state?.stage === 1 &&
                     location.state?.initiator_id === userDetails.userId && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -555,7 +557,7 @@ export default function TempretureRecordsEffective() {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
                   {/* Save Button */}
                   {location.state?.stage === 1 &&
@@ -572,7 +574,7 @@ export default function TempretureRecordsEffective() {
                     )}
                 </div>
               </div>
-              <div className="outerDiv4 bg-slate-300 py-4">
+              {/* <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="status-container">
                   <div className="flex gap-3 ">
                     <div
@@ -611,7 +613,6 @@ export default function TempretureRecordsEffective() {
                       UNDER APPROVAL
                     </div>
 
-                    {/* Button 4: CLOSED DONE */}
                     <div
                       className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                         location.state?.stage > 4
@@ -625,10 +626,10 @@ export default function TempretureRecordsEffective() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="outerDiv4">
-                <div className="btn-forms">
-                  <div
+                <div className="btn-forms invisible">
+                  {/* <div
                     className={`${
                       isSelectedGeneral === true
                         ? "btn-forms-isSelected"
@@ -643,7 +644,7 @@ export default function TempretureRecordsEffective() {
                     }}
                   >
                     General Information
-                  </div>
+                  </div> */}
                   <div
                     className={`${
                       isSelectedDetails === true
@@ -660,7 +661,7 @@ export default function TempretureRecordsEffective() {
                   >
                     Details
                   </div>
-                  <div
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -707,11 +708,11 @@ export default function TempretureRecordsEffective() {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
-              {isSelectedGeneral === true ? (
+              {/* {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Initiator </label>
@@ -742,7 +743,7 @@ export default function TempretureRecordsEffective() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      {/* <input
+                      <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -751,7 +752,7 @@ export default function TempretureRecordsEffective() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
-                      /> */}
+                      />
                       <TinyEditor
                         editorContent={editData.description}
                         setEditorContent={setTinyContent}
@@ -772,11 +773,11 @@ export default function TempretureRecordsEffective() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
               {isSelectedDetails === true ? (
                 <>
-                  <div className="group-input">
+                  {/* <div className="group-input">
                     <label className="color-label">Department</label>
 
                     <div className="instruction">&nbsp;</div>
@@ -842,7 +843,7 @@ export default function TempretureRecordsEffective() {
                       <option value="Area 5">Area 5</option>
                       <option value="Area 6">Area 6</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   <div className="group-input">
                     <label className="color-label">Limit</label>
@@ -886,7 +887,7 @@ export default function TempretureRecordsEffective() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords.map((item, index) => (
+                      {editData?.TempratureRecords?.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{item.unique_id}</td>
@@ -939,19 +940,37 @@ export default function TempretureRecordsEffective() {
                             />
                           </td>
                           <td>
-                            <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].checked_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
+                            <div>
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  checked={item.checked_by !== ""}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData?.TempratureRecords,
+                                    ];
+                                    if (e.target.checked) {
+                                      newData[index].checked_by =
+                                        item.checked_by ||
+                                        editData?.reviewer1?.name;
+                                    } else {
+                                      newData[index].checked_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      TempratureRecords: newData,
+                                    });
+                                  }}
+                                />
+                                {item.checked_by && (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    {item.checked_by}
+                                  </span>
+                                )}
+                              </label>
+                            </div>
                           </td>
+
                           <td style={{ width: "250px" }}>
                             <div className="d-flex align-items-center">
                               <button
@@ -1102,7 +1121,7 @@ export default function TempretureRecordsEffective() {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1415,7 +1434,7 @@ export default function TempretureRecordsEffective() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1
