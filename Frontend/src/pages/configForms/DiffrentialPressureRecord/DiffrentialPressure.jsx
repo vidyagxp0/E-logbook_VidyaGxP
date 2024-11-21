@@ -207,6 +207,8 @@ export default function DiffrentialPressure() {
       department: "",
       review_comments: "",
       compression_area: "",
+      additionalAttachment: "",
+      additionalInfo: "",
       limit: null,
       initiatorComment: " ",
       initiatorAttachment: null,
@@ -771,6 +773,39 @@ export default function DiffrentialPressure() {
                       ))}
                     </tbody>
                   </table>
+                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Attachment (If / Any)
+                        </label>
+                        <input
+                          type="file"
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          value={differentialPRecord.additionalAttachment}
+                          onChange={(e) => {
+                            setDifferentialPRecord({
+                              additionalAttachment: e.target.value,
+                            });
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Info (If / Any)
+                        </label>
+                        <textarea
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          rows="4"
+                          value={differentialPRecord.additionalInfo}
+                          onChange={(e) => {
+                            setDifferentialPRecord({
+                              additionalInfo: e.target.value,
+                            });
+                          }}
+                        ></textarea>
+                      </div>
+                    </div>
                 </>
               ) : null}
 

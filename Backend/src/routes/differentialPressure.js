@@ -123,4 +123,11 @@ router.post(
   DifferentialPressureProcess.generateReport
 );
 
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  DifferentialPressureProcess.chatByPdf
+);
+
+router.post("/view-report", DifferentialPressureProcess.viewReport);
 module.exports = router;

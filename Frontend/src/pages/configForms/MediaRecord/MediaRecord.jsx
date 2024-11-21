@@ -35,7 +35,7 @@ const MediaRecord = () => {
       initiatorComment: " ",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
-      additionalAttachment: "",
+      additionalAttachment: null,
       additionalInfo: "",
     }
   );

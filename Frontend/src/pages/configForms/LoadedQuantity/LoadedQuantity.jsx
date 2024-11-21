@@ -34,6 +34,9 @@ const LoadedQuantity = () => {
       // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
+      additionalInfo:"",
+      additionalAttachment:null
+
     }
   );
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -651,15 +654,26 @@ const LoadedQuantity = () => {
                   <div className="group-input">
                     <label className="color-label">Attachment </label>
                     <div>
-                      <input type="file" name="Attachment" />
+                      <input type="file" name="additionalAttachment"
+                      value={loadedQuantity.additionalAttachment} 
+                      onChange={(e) => {
+                        setLoadedQuantity({
+                          additionalAttachment: e.target.value,
+                        });
+                       }} />
                     </div>
                   </div>
                   <div className="group-input ">
                     <label className="color-label">
-                      Additional Information (If/Any){" "}
+                      Additional Info (If/Any){" "}
                     </label>
                     <div>
-                      <textarea type="text" name="Additional" />
+                      <textarea type="text" name="additionalInfo"  value={loadedQuantity.additionalInfo}
+                          onChange={(e) => {
+                            setLoadedQuantity({
+                              additionalInfo: e.target.value,
+                            });
+                          }} />
                     </div>
                   </div>
                 </>
