@@ -36,6 +36,8 @@ import MediaRecordPanel from "./pages/documentPanels/MediaRecordPanel/MediaRecor
 import OperationOfSterilizerPanel from "./pages/documentPanels/OperationOfSterilizerPanel/OperationOfSterilizerPanel.jsx";
 import DispensingOfMaterialsPanel from "./pages/documentPanels/DispensingOfMaterialsPanel/DispensingOfMaterialsPanel.jsx";
 import Analytics2 from "./pages/analytics2/Analytics2.jsx";
+import ViewReport from "./components/viewReport/ViewReport.jsx";
+
 
 function App() {
   return (
@@ -75,7 +77,7 @@ function App() {
               path="/chart"
               element={<ProtectedRoute element={<Chart />} />}
             />
-             <Route
+            <Route
               path="/analytics2"
               element={<ProtectedRoute element={<Analytics2 />} />}
             />
@@ -115,11 +117,15 @@ function App() {
             />
             <Route
               path="/operation-of-sterilizer-panel"
-              element={<ProtectedRoute element={<OperationOfSterilizerPanel />} />}
+              element={
+                <ProtectedRoute element={<OperationOfSterilizerPanel />} />
+              }
             />
             <Route
               path="/dispensing-of-material-panel"
-              element={<ProtectedRoute element={<DispensingOfMaterialsPanel />} />}
+              element={
+                <ProtectedRoute element={<DispensingOfMaterialsPanel />} />
+              }
             />
             <Route
               path="/dashboard"
@@ -159,6 +165,7 @@ function App() {
               path="/dispensing-of-material"
               element={<ProtectedRoute element={<DispensingOfMaterials />} />}
             />
+            <Route path="/view-report" element={<ViewReport />} />
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={2000} pauseOnHover={false} />

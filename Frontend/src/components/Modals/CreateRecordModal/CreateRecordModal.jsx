@@ -17,7 +17,7 @@ function CreateRecordModal(_props) {
     const fetchSites = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1000/site/get-sites"
+          "https://elog-backend.mydemosoftware.com/site/get-sites"
         );
         const userSiteIds = await userDetails.roles
           .filter((role) => role.role_id === 1 || role.role_id === 5)
@@ -40,7 +40,7 @@ function CreateRecordModal(_props) {
   const fetchProcesses = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:1000/differential-pressure/get-processes"
+        "https://elog-backend.mydemosoftware.com/differential-pressure/get-processes"
       );
 
       const filteredProcessIds = userDetails.roles
@@ -157,7 +157,7 @@ function CreateRecordModal(_props) {
               </div>
 
               <div className="project">
-                <div className="head gap-2">Process</div>
+                <div className="head gap-2 mb-3">Process</div>
                 <div className="select-list division-list gap-2">
                   {processes.map((item, index) => (
                     <div
