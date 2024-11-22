@@ -935,8 +935,8 @@ export default function DPRpanel() {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd 
-                      // onClick={addRow} 
+                      <NoteAdd
+                      // onClick={addRow}
                       />
                       <div className="addrowinstruction"></div>
                     </div>
@@ -1015,7 +1015,7 @@ export default function DPRpanel() {
                             <td>
                               <input
                                 value={item.checked_by}
-                                disabled 
+                                disabled
                                 onChange={(e) => {
                                   const newData = [
                                     ...editData.DifferentialPressureRecords,

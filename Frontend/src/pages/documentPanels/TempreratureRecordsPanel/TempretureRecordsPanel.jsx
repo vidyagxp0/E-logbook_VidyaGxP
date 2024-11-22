@@ -853,6 +853,7 @@ export default function TempretureRecordsPanel() {
                     <div className="instruction"></div>
                     <input
                       name="limit"
+                      disabled
                       type="number"
                       className={`${
                         editData?.limit < 23
