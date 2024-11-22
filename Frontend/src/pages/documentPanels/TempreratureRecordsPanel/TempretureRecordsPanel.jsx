@@ -1108,7 +1108,31 @@ export default function TempretureRecordsPanel() {
 
               {initiatorRemarks === true ? (
                 <>
+                 <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
+                    
                     <div className="group-input">
                       <label className="color-label">
                         Initiator Comment
@@ -1185,29 +1209,7 @@ export default function TempretureRecordsPanel() {
                     </div>
                   </div>
 
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
+                 
                 </>
               ) : null}
 

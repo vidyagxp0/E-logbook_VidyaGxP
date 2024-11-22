@@ -47,6 +47,7 @@ const LoadedQuantityEffective = () => {
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
+
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -880,8 +881,8 @@ const LoadedQuantityEffective = () => {
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
-                          <th>Checked By</th>
                           <th>% Yield</th>
+                          <th>Checked By</th>
                           <th>Remarks</th>
                           <th>Actions</th>
                         </tr>
@@ -964,8 +965,8 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
@@ -984,8 +985,8 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1005,8 +1006,8 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1026,42 +1027,11 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
-                            </td>
-
-                            <td>
-                              <div>
-                                <label>
-                                  <input
-                                    type="checkbox"
-                                    checked={item.checked_by !== ""}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.LoadedQuantityRecords,
-                                      ];
-                                      if (e.target.checked) {
-                                        newData[index].checked_by =
-                                          item.checked_by || editData.reviewer1.name;
-                                      } else {
-                                        newData[index].checked_by = "";
-                                      }
-                                      setEditData({
-                                        ...editData,
-                                        LoadedQuantityRecords: newData,
-                                      });
-                                    }}
-                                  />
-                                  {item.checked_by && (
-                                    <span style={{ marginLeft: "10px" }}>
-                                      {item.checked_by}
-                                    </span>
-                                  )}
-                                </label>
-                              </div>
                             </td>
                             <td>
                               <input
@@ -1076,8 +1046,43 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly
+                                readOnly={
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
+                                    userDetails.userId
+                                }
                               />
+                            </td>
+                            <td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                  className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.LoadedQuantityRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].reviewed_by = editData.reviewer1.name;
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        LoadedQuantityRecords: newData,
+                                      });
+                                    }}
+                                    disabled={
+                                      location.state?.reviewer_id
+                                       !==
+                                        userDetails.userId
+                                    }
+                                  />
+                                  {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                                </div>
+                              </div>
                             </td>
                             <td>
                               <input
@@ -1092,7 +1097,11 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly
+                                readOnly={
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
+                                    userDetails.userId
+                                }
                               />
                             </td>
 

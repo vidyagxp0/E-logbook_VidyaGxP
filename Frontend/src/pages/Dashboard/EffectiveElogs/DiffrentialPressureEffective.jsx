@@ -34,6 +34,7 @@ export default function DPREffective() {
     DifferentialPressureRecords: [],
     limit: "",
   });
+  console.log(editData,"editdata")
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -214,7 +215,7 @@ export default function DPREffective() {
 
   const addRow = () => {
     if (
-      location.state?.stage === 1 &&
+      location.state?.stage === 4 &&
       location.state?.initiator_id === userDetails.userId
     ) {
       const options = {
@@ -1001,20 +1002,35 @@ export default function DPREffective() {
                               />
                             </td>
                             <td>
-                              <input
-                                value={item.checked_by}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].checked_by = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly
-                              />
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                  className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.DifferentialPressureRecords,
+                                      ];
+                                      if (e?.target?.checked) {
+                                        newData[index].reviewed_by = editData?.tpreviewer?.name;
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        DifferentialPressureRecords: newData,
+                                      });
+                                    }}
+                                    disabled={
+                                      location.state?.reviewer_id
+                                       !==
+                                        userDetails.userId
+                                    }
+                                  />
+                                  {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                                </div>
+                              </div>
                             </td>
                             <td style={{ width: "250px" }}>
                               <div className="d-flex">
