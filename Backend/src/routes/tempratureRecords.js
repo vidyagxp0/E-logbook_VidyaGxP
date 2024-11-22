@@ -25,7 +25,7 @@ router.post(
   "/post-temprature-record",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(4, 1),
+  Auth.authorizeUserRole(2, 1),
   TempratureProcess.InsertTempratureRecord
 );
 
@@ -34,7 +34,7 @@ router.put(
   "/update-temprature-record",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(4, 1),
+  Auth.authorizeUserRole(2, 1),
   TempratureProcess.EditTempratureRecord
 );
 
@@ -57,7 +57,7 @@ router.put(
   "/send-TR-elog-for-review",
   Auth.checkUserJwtToken,
   upload.single("initiatorAttachment"),
-  Auth.authorizeUserRole(4, 1),
+  Auth.authorizeUserRole(2, 1),
   TempratureProcess.SendTRElogForReview
 );
 
@@ -66,7 +66,7 @@ router.put(
   "/send-TR-elog-from-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("initiatorAttachment"),
-  Auth.authorizeUserRole(4, 2),
+  Auth.authorizeUserRole(2, 2),
   TempratureProcess.SendTRElogfromReviewToOpen
 );
 
@@ -75,7 +75,7 @@ router.put(
   "/send-TR-from-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(4, 2),
+  Auth.authorizeUserRole(2, 2),
   TempratureProcess.SendTRfromReviewToApproval
 );
 
@@ -84,7 +84,7 @@ router.put(
   "/send-TR-elog-from-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(4, 3),
+  Auth.authorizeUserRole(2, 3),
   TempratureProcess.SendTRfromApprovalToOpen
 );
 
@@ -93,7 +93,7 @@ router.put(
   "/approve-TR-elog",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(4, 3),
+  Auth.authorizeUserRole(2, 3),
   TempratureProcess.ApproveTRElog
 );
 

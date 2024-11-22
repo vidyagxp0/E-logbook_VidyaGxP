@@ -139,6 +139,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -275,22 +276,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
     });
 
     await transaction.commit();
-
-    const elogData = {
-      initiator: user.name,
-      dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
-      description,
-      status: "Opened",
-      reviewerName: (await getUserById(reviewer_id)).name,
-      approverName: (await getUserById(approver_id)).name,
-      reviewerEmail: (await getUserById(reviewer_id)).email,
-      approverEmail: (await getUserById(approver_id)).email,
-      recipients: [
-        (await getUserById(reviewer_id)).email,
-        (await getUserById(approver_id)).email,
-      ].join(","),
-    };
-
     return res.status(200).json({
       error: false,
       message: "E-log Created successfully",
@@ -415,6 +400,7 @@ exports.EditDifferentialPressure = async (req, res) => {
       additionalAttachment: additionalAttachment
         ? getElogDocsUrl(additionalAttachment)
         : form.additionalAttachment,
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
