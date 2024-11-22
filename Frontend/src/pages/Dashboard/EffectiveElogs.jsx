@@ -41,6 +41,7 @@ function Dashboard() {
         const allDifferentialPressureElogs = temp.filter(
           (log) => log.status === "Closed"
         );
+        setDifferentialPressureElogs(allDifferentialPressureElogs);
 
         let filteredArray = allDifferentialPressureElogs.filter((elog) => {
           const userId = userDetails.userId;
@@ -52,7 +53,6 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 1)
           );
         });
-        setDifferentialPressureElogs(filteredArray);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -61,8 +61,8 @@ function Dashboard() {
     const newConfigTemp = {
       method: "get",
       url: "http://localhost:1000/temprature-record/get-all-temprature-record",
+      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
       },
     };
@@ -73,6 +73,7 @@ function Dashboard() {
         const allTempratureRecordElogs = temp.filter(
           (log) => log.status === "Closed"
         );
+        setTempratureRecordElogs(allTempratureRecordElogs);
         let filteredArray = allTempratureRecordElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -83,7 +84,6 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setTempratureRecordElogs(filteredArray);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -104,6 +104,7 @@ function Dashboard() {
         const allLoadedQuantityElogs = temp.filter(
           (log) => log.status === "Closed"
         );
+        setLoadedQuantityElogs(allLoadedQuantityElogs);
         let filteredArray = allLoadedQuantityElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -114,7 +115,6 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setLoadedQuantityElogs(filteredArray);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -135,6 +135,7 @@ function Dashboard() {
         const allMediaRecordElogs = temp.filter(
           (log) => log.status === "Closed"
         );
+        setMediaRecordElogs(allMediaRecordElogs);
         let filteredArray = allMediaRecordElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -145,7 +146,6 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setMediaRecordElogs(filteredArray);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -166,6 +166,7 @@ function Dashboard() {
         const allDispensingMaterialElogs = temp.filter(
           (log) => log.status === "Closed"
         );
+        setDispensingOfMaterialsElogs(allDispensingMaterialElogs);
         let filteredArray = allDispensingMaterialElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -176,7 +177,6 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setDispensingOfMaterialsElogs(filteredArray);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -195,6 +195,7 @@ function Dashboard() {
         const allOperationOfSterelizer = temp.filter(
           (log) => log.status === "Closed"
         );
+        setOperationOfSterilizerElogs(allOperationOfSterelizer);
         let filteredArray = allOperationOfSterelizer.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -206,7 +207,6 @@ function Dashboard() {
           );
         });
         console.log(filteredArray, "filteredArray");
-        setOperationOfSterilizerElogs(filteredArray);
       })
       .catch((error) => {
         console.error("Error: ", error);
