@@ -1303,11 +1303,11 @@ const DispensingOfMaterialsPanel = () => {
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
                           >
                             Change File
                           </button>
@@ -1330,11 +1330,12 @@ const DispensingOfMaterialsPanel = () => {
                         <div>
                           <button
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
+                            disabled
                           >
                             Select File
                           </button>
@@ -1346,6 +1347,7 @@ const DispensingOfMaterialsPanel = () => {
                         id="additionalAttachment"
                         onChange={handleInitiatorFileChange}
                         style={{ display: "none" }}
+                        disabled
                       />
                     </div>
                   </div>
@@ -1361,6 +1363,7 @@ const DispensingOfMaterialsPanel = () => {
                         name="additionalInfo"
                         value={editData.additionalInfo}
                         onChange={handleInputChange1}
+                        disabled
                       />
                     </div>
                   </div>
