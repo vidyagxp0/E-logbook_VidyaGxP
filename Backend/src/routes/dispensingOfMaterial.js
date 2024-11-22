@@ -30,7 +30,7 @@ router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(6, 1),
   DispenseOfMaterial.InsertDispenseOfMaterialRecord
 );
 
@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(6, 1),
   DispenseOfMaterial.EditDispenseOfMaterialRecord
 );
 
@@ -54,7 +54,7 @@ router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
   upload.single("initiatorAttachment"),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(6, 1),
   DispenseOfMaterial.SendDPElogForReview
 );
 
@@ -63,7 +63,7 @@ router.put(
   "/send-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
+  Auth.authorizeUserRole(6, 2),
   DispenseOfMaterial.SendDPElogfromReviewToOpen
 );
 
@@ -72,7 +72,7 @@ router.put(
   "/send-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
+  Auth.authorizeUserRole(6, 2),
   DispenseOfMaterial.SendDPfromReviewToApproval
 );
 
@@ -81,7 +81,7 @@ router.put(
   "/send-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
+  Auth.authorizeUserRole(6, 3),
   DispenseOfMaterial.SendDPfromApprovalToOpen
 );
 
@@ -90,7 +90,7 @@ router.put(
   "/approve",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
+  Auth.authorizeUserRole(6, 3),
   DispenseOfMaterial.ApproveDPElog
 );
 

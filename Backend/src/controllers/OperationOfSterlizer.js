@@ -123,6 +123,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -491,6 +492,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
