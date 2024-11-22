@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(6, 1),
+  // Auth.authorizeUserRole(6, 1),
   DispenseOfMaterial.EditDispenseOfMaterialRecord
 );
 

@@ -248,7 +248,10 @@ const MediaRecordEffective = () => {
   }
 
   const addRow = () => {
-    if (location.state?.initiator_name) {
+    if (
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
+    ) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
@@ -922,11 +925,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -942,11 +943,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -961,11 +960,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -979,11 +976,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               >
                                 <option value="" disabled>
                                   Select a Product
@@ -1005,11 +1000,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1024,11 +1017,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1042,11 +1033,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1061,11 +1050,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1090,10 +1077,9 @@ const MediaRecordEffective = () => {
                                         MediaRecords: newData,
                                       });
                                     }}
-                                    disabled={
-                                      location.state?.reviewer_id !==
-                                      userDetails.userId
-                                    }
+                                    disabled={[1, 3].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
                                   />
                                   {item.reviewed_by && (
                                     <p>{item.reviewed_by}</p>
@@ -1112,11 +1098,9 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>

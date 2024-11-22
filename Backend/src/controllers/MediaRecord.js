@@ -578,7 +578,7 @@ exports.EditMediaRecord = async (req, res) => {
 
       // Create new records
       const formRecords = MediaRecords.map((record, index) => ({
-        form_id: record?.form_id,
+        form_id: form_id,
         unique_id: record?.unique_id,
         date:
           record?.date && !isNaN(new Date(record?.date))
@@ -618,10 +618,11 @@ console.log(error);
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
+console.log(error);
 
     return res.status(500).json({
       error: true,
-      message: `${errorMessage}: ${error.message}`,
+      message: `${errorMessage}: ${error}`,
     });
   }
 };

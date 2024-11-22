@@ -49,6 +49,8 @@ const DispensingOfMaterialsEffective = () => {
       additionalInfo: editData.additionalInfo,
       additionalAttachment: editData.additionalAttachment,
     };
+    console.log(location.state, "nickshay");
+
     data.initiatorDeclaration = credentials?.declaration;
     // if (
     //   parseFloat(editData.limit) < 0.6 ||
@@ -229,7 +231,10 @@ const DispensingOfMaterialsEffective = () => {
   }
 
   const addRow = () => {
-    if (location.state?.stage === 4) {
+    if (
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
+    ) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
@@ -862,7 +867,7 @@ const DispensingOfMaterialsEffective = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                    <NoteAdd onClick={addRow} />
+                      <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -928,11 +933,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -948,11 +951,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
 
@@ -970,11 +971,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -991,11 +990,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1012,11 +1009,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1032,11 +1027,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               >
                                 <option value="" disabled>
                                   Select A Control No
@@ -1062,11 +1055,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                // readOnly={
-                                //   location.state?.stage !== 1 ||
-                                //   location.state?.initiator_id !==
-                                //     userDetails.userId
-                                // }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               >
                                 <option value="" disabled>
                                   Select Dispensed Quantity (Kg){" "}
@@ -1091,11 +1082,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1112,11 +1101,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1132,11 +1119,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1152,11 +1137,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1173,11 +1156,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1193,11 +1174,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1214,11 +1193,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1235,11 +1212,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             {/* <td>
@@ -1280,10 +1255,9 @@ const DispensingOfMaterialsEffective = () => {
                                         DispenseOfMaterials: newData,
                                       });
                                     }}
-                                    disabled={
-                                      location.state?.reviewer_id !==
-                                      userDetails.userId
-                                    }
+                                    disabled={[1, 3].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
                                   />
                                   {item.reviewed_by && (
                                     <p>{item.reviewed_by}</p>
@@ -1306,11 +1280,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1326,11 +1298,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
+                                disabled={[1, 3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
