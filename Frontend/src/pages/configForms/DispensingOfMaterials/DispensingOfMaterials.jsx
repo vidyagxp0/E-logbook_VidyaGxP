@@ -475,7 +475,7 @@ const DispensingOfMaterials = () => {
                   </div>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -828,6 +828,7 @@ const DispensingOfMaterials = () => {
                           type="file"
                           name="additionalAttachment"
                           onChange={handleFileChange}
+                          disabled
                         />
                       </div>
                     </div>
@@ -849,6 +850,7 @@ const DispensingOfMaterials = () => {
                               additionalInfo: e.target.value,
                             });
                           }}
+                          disabled
                         />
                       </div>
                     </div>

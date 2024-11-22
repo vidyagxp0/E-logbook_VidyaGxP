@@ -897,7 +897,7 @@ const OperationOfSterilizerPanel = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                    <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1277,9 +1277,9 @@ const OperationOfSterilizerPanel = () => {
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="flex flex-col w-full">
                         <label
-                          htmlFor="additionalAttachment"
-                          className="color-label"
-                          name="additionalAttachment"
+                          // htmlFor="additionalAttachment"
+                          // className="color-label"
+                          // name="additionalAttachment"
                         >
                           Attachment{" "}
                           <span className="text-sm text-zinc-600">
@@ -1318,6 +1318,7 @@ const OperationOfSterilizerPanel = () => {
                           ) : (
                             <div>
                               <button
+                              disabled
                                 type="button"
                                 onClick={() =>
                                   document
@@ -1348,6 +1349,7 @@ const OperationOfSterilizerPanel = () => {
                           :
                         </label>
                         <textarea
+                        disabled
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
                           name="additionalInfo"

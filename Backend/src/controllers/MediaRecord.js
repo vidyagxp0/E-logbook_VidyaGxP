@@ -123,6 +123,7 @@ exports.InsertMediaRecord = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -433,6 +434,7 @@ exports.EditMediaRecord = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -550,21 +552,21 @@ exports.EditMediaRecord = async (req, res) => {
             reviewed_by: newRecord?.reviewed_by,
           };
 
-            for (const [field, newValue] of Object.entries(recordFields)) {
-              if (newValue !== undefined) {
-                auditTrailEntries.push({
-                  form_id: form.form_id,
-                  field_name: `${field}[${i}]`,
-                  previous_value: null,
-                  new_value: newValue,
-                  changed_by: user.user_id,
-                  previous_status: form.status,
-                  new_status: "Opened",
-                  declaration: initiatorDeclaration,
-                  action: "Update Elog",
-                });
-              }
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                declaration: initiatorDeclaration,
+                action: "Update Elog",
+              });
             }
+          }
         }
       }
 
@@ -611,7 +613,7 @@ exports.EditMediaRecord = async (req, res) => {
     });
   } catch (error) {
     await transaction.rollback();
-
+console.log(error);
     let errorMessage = "Error during updating elog";
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
@@ -1545,12 +1547,10 @@ exports.generateReport = async (req, res) => {
     res.send(pdf);
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 
@@ -1660,12 +1660,10 @@ exports.viewReport = async (req, res) => {
     });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 exports.effetiveChatByPdf = async (req, res) => {
