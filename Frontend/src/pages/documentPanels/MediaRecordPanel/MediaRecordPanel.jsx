@@ -1116,18 +1116,21 @@ const MediaRecordPanel = () => {
                         <div className="flex items-center gap-x-10">
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // type="button"
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
                             disabled
                           >
                             Change File
                           </button>
                           <h3 className="">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                            <span
+                              className="py-1 bg-zinc-300 px-2 rounded-md mr-2 "
+                              disabled
+                            >
                               Selected File:{" "}
                             </span>
                             <a
@@ -1145,11 +1148,11 @@ const MediaRecordPanel = () => {
                         <div>
                           <button
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
                           >
                             Select File
                           </button>
@@ -1176,6 +1179,7 @@ const MediaRecordPanel = () => {
                         name="additionalInfo"
                         value={editData.additionalInfo}
                         onChange={handleInputChange1}
+                        disabled
                       />
                     </div>
                   </div>
