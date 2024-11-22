@@ -61,8 +61,8 @@ function Dashboard() {
     const newConfigTemp = {
       method: "get",
       url: "http://localhost:1000/temprature-record/get-all-temprature-record",
-      Authorization: `Bearer ${localStorage.getItem("user-token")}`,
       headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
       },
     };
@@ -83,8 +83,7 @@ function Dashboard() {
             userId === elog.approver_id ||
             hasAccess(4, elog.site_id, 4)
           );
-        }
-      );
+        });
       })
       .catch((error) => {
         console.error("Error: ", error);

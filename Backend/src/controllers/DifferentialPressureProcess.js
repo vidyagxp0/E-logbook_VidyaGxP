@@ -465,7 +465,7 @@ exports.EditDifferentialPressure = async (req, res) => {
           const recordFields = {
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
-            reviewed_by: record?.reviewed_by,
+            reviewed_by: newRecord?.reviewed_by,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),

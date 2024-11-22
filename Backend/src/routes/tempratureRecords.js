@@ -34,7 +34,7 @@ router.put(
   "/update-temprature-record",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(2, 1),
+  // Auth.authorizeUserRole(2, 1),
   TempratureProcess.EditTempratureRecord
 );
 

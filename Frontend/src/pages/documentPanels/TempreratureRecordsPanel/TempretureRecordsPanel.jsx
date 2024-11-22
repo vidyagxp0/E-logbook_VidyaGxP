@@ -853,6 +853,7 @@ export default function TempretureRecordsPanel() {
                     <div className="instruction"></div>
                     <input
                       name="limit"
+                      disabled
                       type="number"
                       className={`${
                         editData?.limit < 23
@@ -1044,11 +1045,12 @@ export default function TempretureRecordsPanel() {
                             <button
                               className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                               type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
+                              disabled
+                              // onClick={() =>
+                              //   document
+                              //     .getElementById("additionalAttachment")
+                              //     .click()
+                              // }
                             >
                               Change File
                             </button>
@@ -1059,6 +1061,7 @@ export default function TempretureRecordsPanel() {
                               <a
                                 href={editData.additionalAttachment}
                                 target="_blank"
+                                disabled
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
@@ -1070,6 +1073,7 @@ export default function TempretureRecordsPanel() {
                           <div>
                             <button
                               type="button"
+                              disabled
                               onClick={() =>
                                 document
                                   .getElementById("additionalAttachment")
@@ -1083,6 +1087,7 @@ export default function TempretureRecordsPanel() {
                         <input
                           type="file"
                           name="additionalAttachment"
+                          disabled
                           id="additionalAttachment"
                           onChange={handleInitiatorFileChange}
                           style={{ display: "none" }}
@@ -1098,6 +1103,7 @@ export default function TempretureRecordsPanel() {
                     <textarea
                       className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                       rows="4"
+                      disabled
                       name="additionalInfo"
                       value={editData?.additionalInfo}
                       onChange={handleInputChange1}
