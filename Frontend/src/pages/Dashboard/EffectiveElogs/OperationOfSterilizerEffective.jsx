@@ -11,8 +11,8 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 
 const OperationOfSterilizerEffective = () => {
-  const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
@@ -72,7 +72,7 @@ const OperationOfSterilizerEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
+    //     url: "http://localhost:1000/operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -111,7 +111,7 @@ const OperationOfSterilizerEffective = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-for-review",
+          "http://localhost:1000/operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -129,7 +129,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-approval",
+          "http://localhost:1000/operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -148,7 +148,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-open",
+          "http://localhost:1000/operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -163,11 +163,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/operation-sterlizer/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -182,7 +178,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-approval-to-open",
+          "http://localhost:1000/operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -229,7 +225,7 @@ const OperationOfSterilizerEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
+        url: "http://localhost:1000/operation-sterlizer/update",
       };
 
       axios(requestOptions)
@@ -465,7 +461,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/operation-sterlizer/chat-pdf/${formId}`,
+        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -539,7 +535,7 @@ const OperationOfSterilizerEffective = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Operation Of Sterilizer
+                  Operation Of Sterilizer Details
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -592,7 +588,7 @@ const OperationOfSterilizerEffective = () => {
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
-                  {location.state?.stage === 1 &&
+                  {/* {location.state?.stage === 1 &&
                     location.state?.initiator_id === userDetails.userId && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -651,24 +647,24 @@ const OperationOfSterilizerEffective = () => {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
                   {/* Save Button */}
-                  {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
-                      <button
-                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    )}
+                  {/* {location.state?.stage === 1 &&
+                    userDetails.userId === location.state?.initiator_id && ( */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("updateElog");
+                    }}
+                  >
+                    Save
+                  </button>
+                  {/* )} */}
                 </div>
               </div>
-              <div className="outerDiv4 bg-slate-300 py-4">
+              {/* <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
@@ -706,7 +702,6 @@ const OperationOfSterilizerEffective = () => {
                     UNDER APPROVAL
                   </div>
 
-                  {/* Button 4: CLOSED DONE */}
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                       location.state?.stage > 4
@@ -719,10 +714,10 @@ const OperationOfSterilizerEffective = () => {
                     CLOSED DONE
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="outerDiv4  ">
                 <div className="btn-forms">
-                  <div
+                  {/* <div
                     className={`${
                       isSelectedGeneral === true
                         ? "btn-forms-isSelected"
@@ -737,8 +732,8 @@ const OperationOfSterilizerEffective = () => {
                     }}
                   >
                     General Information
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       isSelectedDetails === true
                         ? "btn-forms-isSelected"
@@ -753,8 +748,8 @@ const OperationOfSterilizerEffective = () => {
                     }}
                   >
                     Details
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -769,8 +764,8 @@ const OperationOfSterilizerEffective = () => {
                     }}
                   >
                     Initiator Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       reviewerRemarks === true
                         ? "btn-forms-isSelected"
@@ -785,8 +780,8 @@ const OperationOfSterilizerEffective = () => {
                     }}
                   >
                     Reviewer Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       approverRemarks === true
                         ? "btn-forms-isSelected"
@@ -801,7 +796,7 @@ const OperationOfSterilizerEffective = () => {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                   {/* <div
                     className="btn-forms-select"
                     onClick={() =>
@@ -833,7 +828,7 @@ const OperationOfSterilizerEffective = () => {
                 </div> */}
               </div>
 
-              {isSelectedGeneral === true ? (
+              {/* {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Initiator </label>
@@ -864,7 +859,7 @@ const OperationOfSterilizerEffective = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      {/* <input
+                      <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -873,7 +868,7 @@ const OperationOfSterilizerEffective = () => {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
-                      /> */}
+                      />
 
                       <TinyEditor
                         editorContent={editData.description}
@@ -895,7 +890,7 @@ const OperationOfSterilizerEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
               {isSelectedDetails === true ? (
                 <>
@@ -1364,7 +1359,7 @@ const OperationOfSterilizerEffective = () => {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1479,9 +1474,9 @@ const OperationOfSterilizerEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {reviewerRemarks === true ? (
+              {/* {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1596,9 +1591,9 @@ const OperationOfSterilizerEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {approverRemarks === true ? (
+              {/* {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1713,7 +1708,7 @@ const OperationOfSterilizerEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1

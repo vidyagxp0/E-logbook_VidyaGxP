@@ -12,7 +12,7 @@ import TinyEditor from "../../../components/TinyEditor";
 
 const MediaRecordEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
@@ -67,7 +67,7 @@ const MediaRecordEffective = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
+    //   url: "http://localhost:1000/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -100,11 +100,7 @@ const MediaRecordEffective = () => {
         return;
       }
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
-          data,
-          config
-        )
+        .put("http://localhost:1000/media-record/send-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -119,7 +115,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
+          "http://localhost:1000/media-record/send-review-to-approval",
           data,
           config
         )
@@ -138,7 +134,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
+          "http://localhost:1000/media-record/send-review-to-open",
           data,
           config
         )
@@ -153,11 +149,7 @@ const MediaRecordEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/media-record/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/media-record/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -172,7 +164,7 @@ const MediaRecordEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
+          "http://localhost:1000/media-record/send-approval-to-open",
           data,
           config
         )
@@ -219,7 +211,7 @@ const MediaRecordEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/media-record/update",
+        url: "http://localhost:1000/media-record/update",
       };
 
       axios(requestOptions)
@@ -240,41 +232,48 @@ const MediaRecordEffective = () => {
   }, [location.state]);
 
   console.log(location.state.stage === 2);
+  const object = getCurrentDateTime();
+  let date = object.currentDate;
+  function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice();
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${year}/${month}/${day}`;
+    return {
+      currentDate: currentDate,
+    };
+  }
 
   const addRow = () => {
-    if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
-      const options = {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-      };
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Use 24-hour format
+    };
 
-      const currentTime = new Date().toLocaleTimeString("en-US", options);
-      const newRow = {
-        unique_id: generateUniqueId(),
-        time: currentTime,
-        date: date,
-        name_medium: "",
-        date_of_preparation: "",
-        date_of_use: "",
-        lot_no: "",
-        no_of_plate_prepared: "",
-        no_of_plate_used: "",
-        used_for: "",
-        balance_no_plate: "",
-        signature: "",
-        checked_by: location?.state?.initiator_name,
-      };
-      setEditData((prevState) => ({
-        ...prevState,
+    const currentTime = new Date().toLocaleTimeString("en-US", options);
+    const newRow = {
+      unique_id: generateUniqueId(),
+      time: currentTime,
+      date: date,
+      name_medium: "",
+      date_of_preparation: "",
+      date_of_use: "",
+      lot_no: "",
+      no_of_plate_prepared: "",
+      no_of_plate_used: "",
+      used_for: "",
+      balance_no_plate: "",
+      signature: "",
+      checked_by: location?.state?.initiator_name,
+    };
+    setEditData((prevState) => ({
+      ...prevState,
 
-        MediaRecords: [...prevState.MediaRecords, newRow],
-      }));
-    }
+      MediaRecords: [...prevState.MediaRecords, newRow],
+    }));
   };
 
   function deepEqual(object1, object2) {
@@ -435,7 +434,7 @@ const MediaRecordEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/media-record/chat-pdf/${formId}`,
+        `http://localhost:1000/media-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -563,7 +562,7 @@ const MediaRecordEffective = () => {
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
-                  {location.state?.stage === 1 &&
+                  {/* {location.state?.stage === 1 &&
                     location.state?.initiator_id === userDetails.userId && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -574,7 +573,7 @@ const MediaRecordEffective = () => {
                       >
                         Send for Review
                       </button>
-                    )}
+                    )} */}
 
                   {location.state?.stage === 2 &&
                     location.state?.reviewer_id === userDetails.userId && (
@@ -625,21 +624,19 @@ const MediaRecordEffective = () => {
                     )}
 
                   {/* Save Button */}
-                  {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
-                      <button
-                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    )}
+
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      // setPopupAction("updateElog");
+                    }}
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
-              <div className="outerDiv4 bg-slate-300 py-4">
+              {/* <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="flex gap-3 ">
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
@@ -677,7 +674,7 @@ const MediaRecordEffective = () => {
                     UNDER APPROVAL
                   </div>
 
-                  {/* Button 4: CLOSED DONE */}
+              
                   <div
                     className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                       location.state?.stage > 4
@@ -690,10 +687,10 @@ const MediaRecordEffective = () => {
                     CLOSED DONE
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="outerDiv4">
                 <div className="btn-forms">
-                  <div
+                  {/* <div
                     className={`${
                       isSelectedGeneral === true
                         ? "btn-forms-isSelected"
@@ -708,13 +705,12 @@ const MediaRecordEffective = () => {
                     }}
                   >
                     General Information
-                  </div>
+                  </div> */}
+                  {/* hide details button */}
                   <div
-                    className={`${
-                      isSelectedDetails === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
-                    }`}
+                    className={`$
+                      
+                    `}
                     onClick={() => {
                       setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
@@ -722,10 +718,8 @@ const MediaRecordEffective = () => {
                         setReviewerRemarks(false),
                         setApproverRemarks(false);
                     }}
-                  >
-                    Details
-                  </div>
-                  <div
+                  ></div>
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -740,8 +734,8 @@ const MediaRecordEffective = () => {
                     }}
                   >
                     Initiator Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       reviewerRemarks === true
                         ? "btn-forms-isSelected"
@@ -756,8 +750,8 @@ const MediaRecordEffective = () => {
                     }}
                   >
                     Reviewer Remarks
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     className={`${
                       approverRemarks === true
                         ? "btn-forms-isSelected"
@@ -772,7 +766,7 @@ const MediaRecordEffective = () => {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                   {/* <div
                     className="btn-forms-select"
                     onClick={() =>
@@ -806,7 +800,7 @@ const MediaRecordEffective = () => {
 
               {isSelectedGeneral === true ? (
                 <>
-                  <div className="group-input">
+                  {/* <div className="group-input">
                     <label className="color-label">Initiator </label>
                     <div>
                       <input
@@ -816,9 +810,9 @@ const MediaRecordEffective = () => {
                         readOnly
                       />
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="group-input">
+                  {/* <div className="group-input">
                     <label className="color-label">Date of Initiation</label>
                     <div>
                       <input
@@ -827,24 +821,15 @@ const MediaRecordEffective = () => {
                         readOnly
                       />
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="group-input">
+                  {/* <div className="group-input">
                     <label className="color-label">
                       Description{" "}
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      {/* <input
-                        name="description"
-                        type="text"
-                        value={editData.description}
-                        onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
-                        }
-                      /> */}
+                      
 
                       <TinyEditor
                         editorContent={editData.description}
@@ -852,9 +837,9 @@ const MediaRecordEffective = () => {
                         tinyNo={1}
                       />
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="group-input">
+                  {/* <div className="group-input">
                     <label className="color-label">Status</label>
                     <div>
                       <input
@@ -864,7 +849,7 @@ const MediaRecordEffective = () => {
                         readOnly
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </>
               ) : null}
 
@@ -1068,7 +1053,7 @@ const MediaRecordEffective = () => {
                             </td>
                             <td>
                               <input
-                                value={item.checked_by}
+                                type="checkbox"
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
                                   newData[index].checked_by = e.target.value;
