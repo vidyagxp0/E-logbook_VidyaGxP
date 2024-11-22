@@ -21,6 +21,8 @@ const LoadedQuantityEffective = () => {
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  console.log(userDetails, "userDetails");
+
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -253,17 +255,17 @@ const LoadedQuantityEffective = () => {
   }
 
   const addRow = () => {
-    if (location.state?.stage === 4 && location.state?.initiator_id) {
+    if (userDetails.roles[0].role_id === 1 || userDetails.roles[0].role_id === 5) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: false, // Use 24-hour format
       };
-const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
+      const nextIndex = editData?.LoadedQuantityRecords?.length || 0;
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        unique_id: `LQ000${nextIndex+1}`,
+        unique_id: `LQ000${nextIndex + 1}`,
         date: date,
         time: currentTime,
         product_name: "",
@@ -904,11 +906,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                // disabled={
-                                //   location.state?.stage !== 1 ||
-                                //   location.state?.initiator_id !==
-                                //     userDetails.userId
-                                // }
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               >
                                 <option value="" disabled>
                                   Select a Product
@@ -931,11 +931,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                // disabled={
-                                //   location.state?.stage !== 1 ||
-                                //   location.state?.initiator_id !==
-                                //     userDetails.userId
-                                // }
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               >
                                 <option value="" disabled>
                                   Select a Batch
@@ -960,10 +958,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={ 
-                                  location.state?.stage !== 2 ||
-                                  location.state?.stage !== 3 ||location.state?.stage !== 4
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -979,11 +976,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1000,11 +995,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1021,11 +1014,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1041,11 +1032,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1070,12 +1059,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                         LoadedQuantityRecords: newData,
                                       });
                                     }}
-                                    disabled={
-                                      location.state?.stage !== 4 || // Ensure stage is 4
-                                      location.state?.reviewer_id !==
-                                        userDetails.user_id || // Ensure current user is the reviewer
-                                      item.reviewed_by // Optionally, disable if already reviewed
-                                    }
+                                    disabled={[1,3].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
                                   />
                                   {item.reviewed_by && (
                                     <p>{item.reviewed_by}</p>
@@ -1097,12 +1083,9 @@ const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
                                   });
                                 }}
                                 // readOnly={!location.state?.reviewer_id}
-                                disabled={
-                                  location.state?.stage !== 4 || // Ensure stage is 4
-                                  location.state?.reviewer_id !==
-                                    userDetails.user_id || // Ensure current user is the reviewer
-                                  item.reviewed_by // Optionally, disable if already reviewed
-                                }
+                                disabled={[1,3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
 
