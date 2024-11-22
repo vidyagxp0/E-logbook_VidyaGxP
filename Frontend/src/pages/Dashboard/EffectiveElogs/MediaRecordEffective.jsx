@@ -230,8 +230,10 @@ const MediaRecordEffective = () => {
   useEffect(() => {
     setEditData(location.state);
   }, [location.state]);
+  console.log(location.state, "location stage");
+  console.log(location.state.initiator_name, "init ids");
 
-  console.log(location.state.stage === 2);
+  console.log(location.state.stage === 1, "staggeee");
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
@@ -246,10 +248,7 @@ const MediaRecordEffective = () => {
   }
 
   const addRow = () => {
-    if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
+    if (location.state?.initiator_name) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
