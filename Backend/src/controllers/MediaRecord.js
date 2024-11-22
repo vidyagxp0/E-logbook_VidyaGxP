@@ -547,21 +547,21 @@ exports.EditMediaRecord = async (req, res) => {
             yield: newRecord.yield,
           };
 
-            for (const [field, newValue] of Object.entries(recordFields)) {
-              if (newValue !== undefined) {
-                auditTrailEntries.push({
-                  form_id: form.form_id,
-                  field_name: `${field}[${i}]`,
-                  previous_value: null,
-                  new_value: newValue,
-                  changed_by: user.user_id,
-                  previous_status: form.status,
-                  new_status: "Opened",
-                  declaration: initiatorDeclaration,
-                  action: "Update Elog",
-                });
-              }
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                declaration: initiatorDeclaration,
+                action: "Update Elog",
+              });
             }
+          }
         }
       }
 
@@ -1541,12 +1541,10 @@ exports.generateReport = async (req, res) => {
     res.send(pdf);
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 
@@ -1632,12 +1630,10 @@ exports.chatByPdf = async (req, res) => {
     res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 
@@ -1654,11 +1650,9 @@ exports.viewReport = async (req, res) => {
     });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };

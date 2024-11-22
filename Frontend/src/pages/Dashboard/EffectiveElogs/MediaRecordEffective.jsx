@@ -246,34 +246,39 @@ const MediaRecordEffective = () => {
   }
 
   const addRow = () => {
-    const options = {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false, // Use 24-hour format
-    };
+    if (
+      location.state?.stage === 1 &&
+      location.state?.initiator_id === userDetails.userId
+    ) {
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      };
 
-    const currentTime = new Date().toLocaleTimeString("en-US", options);
-    const newRow = {
-      unique_id: generateUniqueId(),
-      time: currentTime,
-      date: date,
-      name_medium: "",
-      date_of_preparation: "",
-      date_of_use: "",
-      lot_no: "",
-      no_of_plate_prepared: "",
-      no_of_plate_used: "",
-      used_for: "",
-      balance_no_plate: "",
-      signature: "",
-      checked_by: location?.state?.initiator_name,
-    };
-    setEditData((prevState) => ({
-      ...prevState,
+      const currentTime = new Date().toLocaleTimeString("en-US", options);
+      const newRow = {
+        unique_id: generateUniqueId(),
+        time: currentTime,
+        date: date,
+        name_medium: "",
+        date_of_preparation: "",
+        date_of_use: "",
+        lot_no: "",
+        no_of_plate_prepared: "",
+        no_of_plate_used: "",
+        used_for: "",
+        balance_no_plate: "",
+        signature: "",
+        checked_by: location?.state?.initiator_name,
+      };
+      setEditData((prevState) => ({
+        ...prevState,
 
-      MediaRecords: [...prevState.MediaRecords, newRow],
-    }));
+        MediaRecords: [...prevState.MediaRecords, newRow],
+      }));
+    }
   };
 
   function deepEqual(object1, object2) {
@@ -406,7 +411,12 @@ const MediaRecordEffective = () => {
   };
 
   const generateUniqueId = () => {
-    return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+    const currentCounter =
+      parseInt(localStorage.getItem("uniqueIdCounter") || "0", 10) + 1;
+    const paddedCounter = String(currentCounter).padStart(4, "0");
+    const uniqueId = `MR${paddedCounter}`;
+    localStorage.setItem("uniqueIdCounter", currentCounter); // Persist the updated counter
+    return uniqueId;
   };
 
   const reportData = {
@@ -509,7 +519,7 @@ const MediaRecordEffective = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Media Record
+                  Media Record Details
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -575,7 +585,7 @@ const MediaRecordEffective = () => {
                       </button>
                     )} */}
 
-                  {location.state?.stage === 2 &&
+                  {/* {location.state?.stage === 2 &&
                     location.state?.reviewer_id === userDetails.userId && (
                       <>
                         <button
@@ -621,7 +631,7 @@ const MediaRecordEffective = () => {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
                   {/* Save Button */}
 
@@ -629,7 +639,7 @@ const MediaRecordEffective = () => {
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() => {
                       setIsPopupOpen(true);
-                      // setPopupAction("updateElog");
+                      setPopupAction("updateElog");
                     }}
                   >
                     Save
@@ -914,7 +924,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
@@ -922,6 +932,7 @@ const MediaRecordEffective = () => {
                             <td>
                               <input
                                 value={item.date_of_preparation}
+                                type="date"
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
                                   newData[index].date_of_preparation =
@@ -933,7 +944,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
@@ -941,6 +952,7 @@ const MediaRecordEffective = () => {
                             <td>
                               <input
                                 value={item.date_of_use}
+                                type="date"
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
                                   newData[index].date_of_use = e.target.value;
@@ -951,13 +963,13 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
                             </td>
                             <td>
-                              <input
+                              <select
                                 value={item.lot_no}
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
@@ -972,7 +984,14 @@ const MediaRecordEffective = () => {
                                   location.state?.initiator_id !==
                                     userDetails.userId
                                 }
-                              />
+                              >
+                                <option value="" disabled>
+                                  Select a Product
+                                </option>
+                                <option value="LotNo1">Lot No 1</option>
+                                <option value="LotNo2">Lot No 2</option>
+                                <option value="LotNo3">Lot No 3</option>
+                              </select>
                             </td>
                             <td>
                               <input
@@ -988,7 +1007,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1007,7 +1026,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1025,7 +1044,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1043,39 +1062,45 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
                             </td>
-                            <div>
-                              <label>
-                                <input
-                                  type="checkbox"
-                                  checked={item.checked_by !== ""}
-                                  onChange={(e) => {
-                                    const newData = [...editData.MediaRecords];
-                                    if (e.target.checked) {
-                                      newData[index].checked_by =
-                                        item.checked_by ||
-                                        editData.reviewer3.name;
-                                    } else {
-                                      newData[index].checked_by = "";
+                            <td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.MediaRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].reviewed_by =
+                                          editData.reviewer3.name;
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        MediaRecords: newData,
+                                      });
+                                    }}
+                                    disabled={
+                                      location.state?.reviewer_id !==
+                                      userDetails.userId
                                     }
-                                    setEditData({
-                                      ...editData,
-                                      MediaRecords: newData,
-                                    });
-                                  }}
-                                />
-                                {item.checked_by && (
-                                  <span style={{ marginLeft: "10px" }}>
-                                    {item.checked_by}
-                                  </span>
-                                )}
-                              </label>
-                            </div>{" "}
+                                  />
+                                  {item.reviewed_by && (
+                                    <p>{item.reviewed_by}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
                             <td>
                               <input
                                 value={item.signature}
@@ -1088,8 +1113,8 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
+                                  location.state?.stage !== 4 ||
+                                  location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
                               />
