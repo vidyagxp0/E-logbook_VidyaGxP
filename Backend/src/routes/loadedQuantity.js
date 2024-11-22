@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(3, 1),
+  // Auth.authorizeUserRole(3, 1),
   LoadedQuantityRecordProcess.EditLoadedQuantity
 );
 
@@ -128,10 +128,7 @@ router.post(
   LoadedQuantityRecordProcess.chatByPdf
 );
 
-router.post(
-  "/view-report",
-  LoadedQuantityRecordProcess.viewReport
-);
+router.post("/view-report", LoadedQuantityRecordProcess.viewReport);
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,
