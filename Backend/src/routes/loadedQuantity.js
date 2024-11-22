@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(3, 1),
+  // Auth.authorizeUserRole(3, 1),
   LoadedQuantityRecordProcess.EditLoadedQuantity
 );
 

@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(5, 1),
+  // Auth.authorizeUserRole(5, 1),
   MediaRecord.EditMediaRecord
 );
 
