@@ -918,10 +918,9 @@ export default function DPREffective() {
                       // }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
-                      readOnly={
-                        location.state?.stage === 3 ||
-                        location.state?.reviewer_id === userDetails.userId
-                      }
+                      readOnly={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
                     />
                   </div>
 
@@ -1076,11 +1075,9 @@ export default function DPREffective() {
                                           .getElementsByName("supporting_docs")
                                           [index].click()
                                       }
-                                      disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
-                                      }
+                                      readOnly={[3, 2, 4].includes(
+                                        userDetails.roles[0].role_id
+                                      )}
                                     >
                                       Select File
                                     </button>
