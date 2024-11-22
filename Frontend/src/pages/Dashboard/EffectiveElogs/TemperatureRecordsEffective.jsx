@@ -211,9 +211,23 @@ export default function TempretureRecordsEffective() {
     setEditData(location.state);
   }, [location.state]);
 
+
+  const object = getCurrentDateTime();
+  let date = object.currentDate;
+  function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(0);
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${year}/${month}/${day}`;
+    return {
+      currentDate: currentDate,
+    };
+  }
+
   const addRow = () => {
     if (
-      location.state?.stage === 1 &&
+      location.state?.stage === 4 &&
       location.state?.initiator_id === userDetails.userId
     ) {
       const currentTime = new Date().toLocaleTimeString("en-GB", {
@@ -940,36 +954,36 @@ export default function TempretureRecordsEffective() {
                             />
                           </td>
                           <td>
-                            <div>
-                              <label>
-                                <input
-                                  type="checkbox"
-                                  checked={item.checked_by !== ""}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData?.TempratureRecords,
-                                    ];
-                                    if (e.target.checked) {
-                                      newData[index].checked_by =
-                                        item.checked_by ||
-                                        editData?.reviewer1?.name;
-                                    } else {
-                                      newData[index].checked_by = "";
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                  className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.TempratureRecords,
+                                      ];
+                                      if (e?.target?.checked) {
+                                        newData[index].reviewed_by = editData?.reviewer?.name;
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        TempratureRecords: newData,
+                                      });
+                                    }}
+                                    disabled={
+                                      location.state?.reviewer_id
+                                       !==
+                                        userDetails.userId
                                     }
-                                    setEditData({
-                                      ...editData,
-                                      TempratureRecords: newData,
-                                    });
-                                  }}
-                                />
-                                {item.checked_by && (
-                                  <span style={{ marginLeft: "10px" }}>
-                                    {item.checked_by}
-                                  </span>
-                                )}
-                              </label>
-                            </div>
-                          </td>
+                                  />
+                                  {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                                </div>
+                              </div>
+                            </td>
 
                           <td style={{ width: "250px" }}>
                             <div className="d-flex align-items-center">
