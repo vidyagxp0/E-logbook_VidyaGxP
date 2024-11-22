@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(4, 1),
+  // Auth.authorizeUserRole(4, 1),
   OperationOfSterilizer.EditOperationOfSterilizerForm
 );
 
