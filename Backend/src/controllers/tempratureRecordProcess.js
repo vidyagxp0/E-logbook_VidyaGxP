@@ -315,10 +315,11 @@ exports.InsertTempratureRecord = async (req, res) => {
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
+console.log(error);
 
     return res.status(500).json({
       error: true,
-      message: `${errorMessage}: ${error.message}`,
+      message: `${errorMessage}: ${error}`,
     });
   }
 };
