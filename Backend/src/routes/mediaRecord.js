@@ -120,6 +120,17 @@ router.post(
   Auth.checkUserJwtToken,
   MediaRecord.chatByPdf
 );
+router.post(
+  "/generate-pdf",
+  Auth.checkUserJwtToken,
+  MediaRecord.generateReport
+);
 
-router.post("/view-report", MediaRecord.viewReport);
+router.post(
+  "/effective-chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  MediaRecord.effetiveChatByPdf
+);
+
+router.post("/effective-view-report", MediaRecord.effetiveViewReport);
 module.exports = router;

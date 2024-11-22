@@ -53,6 +53,7 @@ User.addHook("afterSync", async () => {
     if (processesCount === 0) {
       await User.bulkCreate([
         { name: "Admin", email: "admin@vidyagxp.com", password: hashpass },
+        { name: "Amit", email: "amit@vidyagxp.com", password: hashpass },
       ]);
       console.log("Admin User created");
     } else {
