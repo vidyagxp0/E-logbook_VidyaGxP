@@ -34,7 +34,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
     FormRecordsArray,
     additionalAttachment,
     additionalInfo,
-    initiatorDeclaration
+    initiatorDeclaration,
   } = req.body;
 
   if (!approver_id) {
@@ -622,21 +622,21 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
             reviewed_by: newRecord?.reviewed_by,
           };
 
-            for (const [field, newValue] of Object.entries(recordFields)) {
-              if (newValue !== undefined) {
-                auditTrailEntries.push({
-                  form_id: form.form_id,
-                  field_name: `${field}[${i}]`,
-                  previous_value: null,
-                  new_value: newValue,
-                  changed_by: user.user_id,
-                  previous_status: form.status,
-                  new_status: "Opened",
-                  declaration: initiatorDeclaration,
-                  action: "Update Elog",
-                });
-              }
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                declaration: initiatorDeclaration,
+                action: "Update Elog",
+              });
             }
+          }
         }
       }
 
@@ -1642,19 +1642,21 @@ exports.generateReport = async (req, res) => {
     res.send(pdf);
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 
+const removeHtmlTags = (htmlString) => {
+  return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
+};
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
+    reportData.description = removeHtmlTags(reportData.description);
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
@@ -1733,12 +1735,10 @@ exports.chatByPdf = async (req, res) => {
     res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 exports.viewReport = async (req, res) => {
@@ -1754,11 +1754,117 @@ exports.viewReport = async (req, res) => {
     });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
+  }
+};
+exports.effetiveChatByPdf = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("effectiveOSReport", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
       });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "150px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `OS_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `OS_Elog_Report_${formId}.pdf` });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+exports.effetiveViewReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+    // Render HTML using EJS template
+    req.app.render("effectiveOSReport", { reportData }, (err, html) => {
+      if (err) {
+        console.error("Error rendering HTML:", err);
+        return res.status(500).send("Error rendering HTML", err);
+      }
+      res.send(html);
+    });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
