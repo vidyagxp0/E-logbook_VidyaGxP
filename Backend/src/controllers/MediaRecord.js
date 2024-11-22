@@ -172,6 +172,7 @@ exports.InsertMediaRecord = async (req, res) => {
         balance_no_plate: record?.balance_no_plate,
         signature: record?.signature,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await MediaRecord.bulkCreate(formRecords, {
@@ -505,6 +506,7 @@ exports.EditMediaRecord = async (req, res) => {
             used_for: newRecord?.used_for,
             balance_no_plate: newRecord?.balance_no_plate,
             signature: newRecord?.signature,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -545,6 +547,7 @@ exports.EditMediaRecord = async (req, res) => {
             loaded_quantity: newRecord.loaded_quantity,
             remarks: newRecord.remarks,
             yield: newRecord.yield,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -588,6 +591,7 @@ exports.EditMediaRecord = async (req, res) => {
         used_for: record?.used_for,
         balance_no_plate: record?.balance_no_plate,
         signature: record?.signature,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await MediaRecord.bulkCreate(formRecords, {

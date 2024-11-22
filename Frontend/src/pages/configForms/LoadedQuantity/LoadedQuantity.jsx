@@ -589,14 +589,15 @@ const LoadedQuantity = () => {
                             </td>
                             <td>
                               <input
-                                type="text"
+                                type="checkbox"
+                                className="h-4"
                                 value={item.checked_by}
                                 onChange={(e) => {
                                   const newData = [...allTableData];
                                   newData[index].checked_by = e.target.value;
                                   setAllTableData(newData);
                                 }}
-                                readOnly
+                                disabled
                               />
                             </td>
                             <td>
