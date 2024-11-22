@@ -184,6 +184,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
         supporting_docs: record?.supporting_docs
           ? record.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -491,6 +492,7 @@ exports.EditTempratureRecord = async (req, res) => {
           const recordFields = {
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
+            reviewed_by: newRecord?.reviewed_by,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),
@@ -534,6 +536,7 @@ exports.EditTempratureRecord = async (req, res) => {
             checked_by: newRecord?.checked_by,
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
+            reviewed_by: newRecord?.reviewed_by,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
@@ -570,6 +573,7 @@ exports.EditTempratureRecord = async (req, res) => {
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),

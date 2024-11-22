@@ -192,6 +192,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
         supporting_docs: getElogDocsUrl(supportingDocs[index]),
       }));
 
@@ -478,6 +479,7 @@ exports.EditDifferentialPressure = async (req, res) => {
           const recordFields = {
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
+            reviewed_by: record?.reviewed_by,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),
@@ -521,6 +523,7 @@ exports.EditDifferentialPressure = async (req, res) => {
             checked_by: newRecord?.checked_by,
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
+            reviewed_by: newRecord?.reviewed_by,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
@@ -557,6 +560,7 @@ exports.EditDifferentialPressure = async (req, res) => {
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
