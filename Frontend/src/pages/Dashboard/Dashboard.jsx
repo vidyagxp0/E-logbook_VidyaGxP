@@ -109,7 +109,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setLoadedQuantityElogs(filteredArray);
+        setLoadedQuantityElogs(allLoadedQuantityElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);

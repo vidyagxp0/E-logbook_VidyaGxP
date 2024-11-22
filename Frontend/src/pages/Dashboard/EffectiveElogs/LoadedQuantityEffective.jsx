@@ -47,7 +47,6 @@ const LoadedQuantityEffective = () => {
       reviewComment: editData.reviewComment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
-
     };
     data.initiatorDeclaration = credentials?.declaration;
     // if (
@@ -254,20 +253,17 @@ const LoadedQuantityEffective = () => {
   }
 
   const addRow = () => {
-    if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
+    if (location.state?.stage === 4 && location.state?.initiator_id) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: false, // Use 24-hour format
       };
-
+const nextIndex=editData?.LoadedQuantityRecords?.length ||0;
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        unique_id: generateUniqueId(),
+        unique_id: `LQ000${nextIndex+1}`,
         date: date,
         time: currentTime,
         product_name: "",
@@ -964,10 +960,9 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
+                                readOnly={ 
+                                  location.state?.stage !== 2 ||
+                                  location.state?.stage !== 3 ||location.state?.stage !== 4
                                 }
                               />
                             </td>
@@ -1057,7 +1052,7 @@ const LoadedQuantityEffective = () => {
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                   <input
-                                  className="h-4 w-4 cursor-pointer"
+                                    className="h-4 w-4 cursor-pointer"
                                     type="checkbox"
                                     checked={!!item.reviewed_by}
                                     onChange={(e) => {
@@ -1065,7 +1060,8 @@ const LoadedQuantityEffective = () => {
                                         ...editData.LoadedQuantityRecords,
                                       ];
                                       if (e.target.checked) {
-                                        newData[index].reviewed_by = editData.reviewer1.name;
+                                        newData[index].reviewed_by =
+                                          editData.reviewer1.name;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1075,10 +1071,15 @@ const LoadedQuantityEffective = () => {
                                       });
                                     }}
                                     disabled={
-                                      !location.state?.reviewer_id
+                                      location.state?.stage !== 4 || // Ensure stage is 4
+                                      location.state?.reviewer_id !==
+                                        userDetails.user_id || // Ensure current user is the reviewer
+                                      item.reviewed_by // Optionally, disable if already reviewed
                                     }
                                   />
-                                  {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                                  {item.reviewed_by && (
+                                    <p>{item.reviewed_by}</p>
+                                  )}
                                 </div>
                               </div>
                             </td>
@@ -1095,8 +1096,12 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  !location.state?.reviewer_id
+                                // readOnly={!location.state?.reviewer_id}
+                                disabled={
+                                  location.state?.stage !== 4 || // Ensure stage is 4
+                                  location.state?.reviewer_id !==
+                                    userDetails.user_id || // Ensure current user is the reviewer
+                                  item.reviewed_by // Optionally, disable if already reviewed
                                 }
                               />
                             </td>
