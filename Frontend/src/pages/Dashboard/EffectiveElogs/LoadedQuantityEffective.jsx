@@ -1075,9 +1075,7 @@ const LoadedQuantityEffective = () => {
                                       });
                                     }}
                                     disabled={
-                                      location.state?.reviewer_id
-                                       !==
-                                        userDetails.userId
+                                      !location.state?.reviewer_id
                                     }
                                   />
                                   {item.reviewed_by && <p>{item.reviewed_by}</p>}
@@ -1098,9 +1096,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={
-                                  location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
+                                  !location.state?.reviewer_id
                                 }
                               />
                             </td>
