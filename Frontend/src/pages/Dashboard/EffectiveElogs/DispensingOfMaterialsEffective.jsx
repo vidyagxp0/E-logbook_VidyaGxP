@@ -1027,13 +1027,11 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={[3, 2, 4].includes(
+                                disabled={[3, 2, 4].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="" disabled>
-                                  Select A Control No
-                                </option>
+                                <option value="">Select A Control No</option>
                                 <option value="CN01">CN01</option>
                                 <option value="CN02">CN02</option>
                                 <option value="CN03">CN03</option>
@@ -1055,7 +1053,7 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={[3, 2, 4].includes(
+                                disabled={[3, 2, 4].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               >
@@ -1082,7 +1080,7 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={[3, 2, 4].includes(
+                                disabled={[3, 2, 4].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
@@ -1101,7 +1099,7 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={[3, 2, 4].includes(
+                                disabled={[3, 2, 4].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
