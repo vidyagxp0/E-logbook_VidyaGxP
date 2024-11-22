@@ -924,7 +924,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.reviewer_id !==
+                                  location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
@@ -944,7 +944,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.reviewer_id !==
+                                  location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
@@ -963,7 +963,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.reviewer_id !==
+                                  location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1007,7 +1007,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.reviewer_id !==
+                                  location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1026,7 +1026,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.reviewer_id !==
+                                  location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1044,7 +1044,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 1 ||
-                                  location.state?.reviewer_id !==
+                                  location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1063,7 +1063,7 @@ const MediaRecordEffective = () => {
                                 }}
                                 readOnly={
                                   location.state?.stage !== 4 ||
-                                  location.state?.reviewer_id !==
+                                  location.state?.initiator_id !==
                                     userDetails.userId
                                 }
                               />
@@ -1113,7 +1113,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={
-                                  location.state?.stage !== 4 ||
+                                  location.state?.stage !== 1 ||
                                   location.state?.reviewer_id !==
                                     userDetails.userId
                                 }
