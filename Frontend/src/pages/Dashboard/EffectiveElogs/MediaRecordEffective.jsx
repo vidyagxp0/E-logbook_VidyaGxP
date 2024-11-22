@@ -255,10 +255,11 @@ const MediaRecordEffective = () => {
         second: "2-digit",
         hour12: false, // Use 24-hour format
       };
+      const nextIndex = editData?.MediaRecords?.length || 0;
 
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        unique_id: generateUniqueId(),
+        unique_id: `MR000${nextIndex + 1}`,
         time: currentTime,
         date: date,
         name_medium: "",

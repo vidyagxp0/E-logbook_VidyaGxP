@@ -229,46 +229,44 @@ const DispensingOfMaterialsEffective = () => {
   }
 
   const addRow = () => {
-    if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
+    if (location.state?.stage === 4) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: false, // Use 24-hour format
       };
-    }
-    const currentTime = new Date().toLocaleTimeString("en-US", options);
-    const newRow = {
-      unique_id: generateUniqueId(),
-      time: currentTime,
-      date: date,
-      on_time_auh: "",
-      on_time_laf: "",
-      on_time_uv_light: "",
-      on_time_done_by: "",
-      name_of_material: "",
-      control_no: "",
-      dispensed_quantity: "",
-      dispensed_by_qa: "",
-      dispensed_by_store: "",
-      off_time_auh: "",
-      off_time_laf: "",
-      off_time_uv_light: "",
-      uv_burning: "",
-      off_time_done_by: "",
-      cleaning_done_by: "",
-      weighing_balance_id: "",
-      checked_by: location?.state?.initiator_name,
-      remarks: "",
-    };
-    setEditData((prevState) => ({
-      ...prevState,
+      const nextIndex = editData?.DispenseOfMaterials?.length || 0;
+      const currentTime = new Date().toLocaleTimeString("en-US", options);
+      const newRow = {
+        unique_id: `DM000${nextIndex + 1}`,
+        time: currentTime,
+        date: date,
+        on_time_auh: "",
+        on_time_laf: "",
+        on_time_uv_light: "",
+        on_time_done_by: "",
+        name_of_material: "",
+        control_no: "",
+        dispensed_quantity: "",
+        dispensed_by_qa: "",
+        dispensed_by_store: "",
+        off_time_auh: "",
+        off_time_laf: "",
+        off_time_uv_light: "",
+        uv_burning: "",
+        off_time_done_by: "",
+        cleaning_done_by: "",
+        weighing_balance_id: "",
+        checked_by: location?.state?.initiator_name,
+        remarks: "",
+      };
+      setEditData((prevState) => ({
+        ...prevState,
 
-      DispenseOfMaterials: [...prevState.DispenseOfMaterials, newRow],
-    }));
+        DispenseOfMaterials: [...prevState.DispenseOfMaterials, newRow],
+      }));
+    }
   };
 
   function deepEqual(object1, object2) {
@@ -864,7 +862,7 @@ const DispensingOfMaterialsEffective = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                    <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>

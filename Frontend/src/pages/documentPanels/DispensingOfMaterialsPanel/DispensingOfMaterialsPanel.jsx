@@ -857,7 +857,7 @@ const DispensingOfMaterialsPanel = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1291,6 +1291,7 @@ const DispensingOfMaterialsPanel = () => {
                       htmlFor="additionalAttachment"
                       className="color-label"
                       name="additionalAttachment"
+                      disabled
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1319,6 +1320,7 @@ const DispensingOfMaterialsPanel = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
+                              disabled
                             >
                               View File
                             </a>

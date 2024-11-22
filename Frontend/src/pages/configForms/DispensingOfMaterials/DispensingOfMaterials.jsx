@@ -475,7 +475,7 @@ const DispensingOfMaterials = () => {
                   </div>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={""} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
