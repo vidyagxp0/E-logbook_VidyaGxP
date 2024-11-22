@@ -54,6 +54,26 @@ User.addHook("afterSync", async () => {
       await User.bulkCreate([
         { name: "Admin", email: "admin@vidyagxp.com", password: hashpass },
         { name: "Amit", email: "amit@vidyagxp.com", password: hashpass },
+        {
+          name: "Initiator",
+          email: "initiator@vidyagxp.com",
+          password: hashpass,
+        },
+        {
+          name: "Reviewer",
+          email: "reviewer@vidyagxp.com",
+          password: hashpass,
+        },
+        {
+          name: "Approver",
+          email: "approver@vidyagxp.com",
+          password: hashpass,
+        },
+        {
+          name: "Full Permission",
+          email: "fullpermission@vidyagxp.com",
+          password: hashpass,
+        },
       ]);
       console.log("Admin User created");
     } else {
