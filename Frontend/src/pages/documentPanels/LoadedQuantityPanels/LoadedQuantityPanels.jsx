@@ -866,8 +866,8 @@ const LoadedQuantityPanels = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
-                      <div className="addrowinstruction"></div>
+                    <NoteAdd /*onClick={addRow}*/ />
+                    <div className="addrowinstruction"></div>
                     </div>
                   </div>
                   <div className="overflow-x-auto text-black ">
@@ -1081,9 +1081,9 @@ const LoadedQuantityPanels = () => {
                   </div>
                   <div className="group-input mt-4">
                     <label
-                      htmlFor="additionalAttachment"
-                      className="color-label"
-                      name="additionalAttachment"
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1120,6 +1120,7 @@ const LoadedQuantityPanels = () => {
                       ) : (
                         <div>
                           <button
+                          disabled
                             type="button"
                             onClick={() =>
                               document
@@ -1151,6 +1152,7 @@ const LoadedQuantityPanels = () => {
                     </label>
                     <div>
                       <textarea
+                      disabled
                         type="text"
                         name="additionalInfo"
                         value={editData.additionalInfo}
