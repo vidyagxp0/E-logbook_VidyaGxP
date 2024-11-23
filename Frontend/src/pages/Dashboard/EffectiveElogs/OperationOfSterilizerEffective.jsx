@@ -461,7 +461,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
+        `http://localhost:1000/operation-sterlizer/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -475,7 +475,7 @@ const OperationOfSterilizerEffective = () => {
 
       const { filename } = response.data; // Access filename from response.data
 
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -1028,7 +1028,6 @@ const OperationOfSterilizerEffective = () => {
                                     userDetails.roles[0].role_id
                                   )}
                                 >
-                                  
                                   <option value="">Select Product Name</option>
                                   <option value="ProductA">ProductA</option>
                                   <option value="ProductB">ProductB</option>
@@ -1234,36 +1233,36 @@ const OperationOfSterilizerEffective = () => {
                                 />
                               </td>
                               <td>
-                              <div>
-                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                  <input
-                                    className="h-4 w-4 cursor-pointer"
-                                    type="checkbox"
-                                    checked={!!item.reviewed_by}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.OperationOfSterilizerRecords,
-                                      ];
-                                      if (e.target.checked) {
-                                        newData[index].reviewed_by =
-                                          editData.reviewer2.name;
-                                      } else {
-                                        newData[index].reviewed_by = "";
-                                      }
-                                      setEditData({
-                                        ...editData,
-                                       OperationOfSterilizerRecords: newData,
-                                      });
-                                    }}
-                                    disabled={[1,3].includes(
-                                      userDetails.roles[0].role_id
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                    <input
+                                      className="h-4 w-4 cursor-pointer"
+                                      type="checkbox"
+                                      checked={!!item.reviewed_by}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.OperationOfSterilizerRecords,
+                                        ];
+                                        if (e.target.checked) {
+                                          newData[index].reviewed_by =
+                                            editData.reviewer2.name;
+                                        } else {
+                                          newData[index].reviewed_by = "";
+                                        }
+                                        setEditData({
+                                          ...editData,
+                                          OperationOfSterilizerRecords: newData,
+                                        });
+                                      }}
+                                      disabled={[1, 3].includes(
+                                        userDetails.roles[0].role_id
+                                      )}
+                                    />
+                                    {item.reviewed_by && (
+                                      <p>{item.reviewed_by}</p>
                                     )}
-                                  />
-                                  {item.reviewed_by && (
-                                    <p>{item.reviewed_by}</p>
-                                  )}
+                                  </div>
                                 </div>
-                              </div>
                               </td>
                               <td>
                                 <DeleteIcon onClick={() => deleteRow(index)} />
@@ -1273,12 +1272,12 @@ const OperationOfSterilizerEffective = () => {
                         )}
                       </tbody>
                     </table>
-                    </div>
-                    <div className="group-input mt-4">
+                  </div>
+                  <div className="group-input mt-4">
                     <label
-                      // htmlFor="additionalAttachment"
-                      // className="color-label"
-                      // name="additionalAttachment"
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1303,28 +1302,28 @@ const OperationOfSterilizerEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={
-                                editData.additionalAttachment
-                              }
+                              href={editData.additionalAttachment}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name || "View File"}
-                            </a>{
-                            editData.additionalAttachment.name &&
-                            <button
-                              className="text-red-500 hover:text-red-700 text-lg"
-                              type="button"
-                              onClick={() =>
-                                setEditData({
-                                  ...editData,
-                                  additionalAttachment: null,
-                                })
-                              }
-                            >
-                              ✖
-                            </button>}
+                              {editData.additionalAttachment.name ||
+                                "View File"}
+                            </a>
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
                           </h3>
                         </div>
                       ) : (

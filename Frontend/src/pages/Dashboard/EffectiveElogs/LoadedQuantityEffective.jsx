@@ -9,6 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import ExcelSelectWithTwoDropdowns from "../../TestPages/ExcelImport";
 
 const LoadedQuantityEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
@@ -21,7 +22,7 @@ const LoadedQuantityEffective = () => {
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
-  console.log(userDetails, "userDetails");
+  // console.log(userDetails, "userDetails");
 
   const [editData, setEditData] = useState({
     initiator_name: "",
@@ -32,13 +33,13 @@ const LoadedQuantityEffective = () => {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-  console.log(editData, "LOADED");
+  // console.log(editData, "LOADED");
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
-  console.log(editData.LoadedQuantityRecords, "editttt");
+  // console.log(editData.LoadedQuantityRecords, "editttt");
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -239,7 +240,7 @@ const LoadedQuantityEffective = () => {
     setEditData(location.state);
   }, [location.state]);
 
-  console.log(location.state.stage === 2);
+  // console.log(location.state.stage === 2);
 
   const object = getCurrentDateTime();
   let date = object.currentDate;
@@ -442,12 +443,13 @@ const LoadedQuantityEffective = () => {
       setFormId(reportData.form_id);
     }
   }, [reportData]);
+  // console.log(reportData, "FILENAME");
 
   const generateReport = async () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
+        `http://localhost:1000/loaded-quantity/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -459,9 +461,8 @@ const LoadedQuantityEffective = () => {
         }
       );
 
-      const { filename } = response.data; // Access filename from response.data
-
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -867,6 +868,7 @@ const LoadedQuantityEffective = () => {
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
+                      {/* <ExcelSelectWithTwoDropdowns/> */}
                     </div>
                   </div>
                   <div className="overflow-x-auto text-black ">
@@ -1102,9 +1104,9 @@ const LoadedQuantityEffective = () => {
                   </div>
                   <div className="group-input mt-4">
                     <label
-                      // htmlFor="additionalAttachment"
-                      // className="color-label"
-                      // name="additionalAttachment"
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1129,29 +1131,28 @@ const LoadedQuantityEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={
-                                editData.additionalAttachment
-                              }
+                              href={editData.additionalAttachment}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name || "View File"}
+                              {editData.additionalAttachment.name ||
+                                "View File"}
                             </a>
-                            {
-                            editData.additionalAttachment.name &&
-                            <button
-                              className="text-red-500 hover:text-red-700 text-lg"
-                              type="button"
-                              onClick={() =>
-                                setEditData({
-                                  ...editData,
-                                  additionalAttachment: null,
-                                })
-                              }
-                            >
-                              ✖
-                            </button>}
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
                           </h3>
                         </div>
                       ) : (
