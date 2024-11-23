@@ -123,6 +123,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -177,6 +178,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         cleaning_time_end: record?.cleaning_time_end,
         cleaning_done_by: record?.cleaning_done_by,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await OperationOfSterilizerRecord.bulkCreate(formRecords, {
@@ -491,6 +493,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -573,6 +576,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
             cleaning_time_end: newRecord?.cleaning_time_end,
             cleaning_done_by: newRecord?.cleaning_done_by,
             checked_by: newRecord?.checked_by,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -617,6 +621,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
             loaded_quantity: newRecord.loaded_quantity,
             remarks: newRecord.remarks,
             yield: newRecord.yield,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -666,6 +671,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
         cleaning_time_end: record?.cleaning_time_end,
         cleaning_done_by: record?.cleaning_done_by,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await OperationOfSterilizerRecord.bulkCreate(formRecords, {

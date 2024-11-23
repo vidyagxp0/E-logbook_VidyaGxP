@@ -468,6 +468,7 @@ export default function TemperatureRecords() {
                     <select
                       className="form-control"
                       name="assign_to"
+                      disabled
                       value={tempratureRecord.department}
                       onChange={(e) =>
                         setTempratureRecord({
@@ -510,6 +511,7 @@ export default function TemperatureRecords() {
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
+                      disabled
                       name="assign_to"
                       value={tempratureRecord.compression_area}
                       onChange={(e) =>
@@ -533,6 +535,7 @@ export default function TemperatureRecords() {
                     <div className="instruction"></div>
                     <input
                       type="number"
+                      disabled
                       className={`${
                         tempratureRecord.limit < 23
                           ? "limit"
@@ -615,7 +618,7 @@ export default function TemperatureRecords() {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd onClick={""} />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -787,6 +790,7 @@ export default function TemperatureRecords() {
                     <div>
                       <input
                         type="file"
+                        disabled
                         name="additionalAttachment"
                         onChange={handleFileChangeAttchment}
                       />
@@ -802,6 +806,7 @@ export default function TemperatureRecords() {
                       <textarea
                         type="text"
                         name="additionalInfo"
+                        disabled
                         value={tempratureRecord.additionalInfo}
                         onChange={(e) => {
                           setTempratureRecord({

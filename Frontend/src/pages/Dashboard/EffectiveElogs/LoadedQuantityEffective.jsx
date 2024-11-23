@@ -21,6 +21,8 @@ const LoadedQuantityEffective = () => {
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  console.log(userDetails, "userDetails");
+
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -223,7 +225,7 @@ const LoadedQuantityEffective = () => {
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
@@ -254,8 +256,8 @@ const LoadedQuantityEffective = () => {
 
   const addRow = () => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const options = {
         hour: "2-digit",
@@ -263,10 +265,10 @@ const LoadedQuantityEffective = () => {
         second: "2-digit",
         hour12: false, // Use 24-hour format
       };
-
+      const nextIndex = editData?.LoadedQuantityRecords?.length || 0;
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        unique_id: generateUniqueId(),
+        unique_id: `LQ000${nextIndex + 1}`,
         date: date,
         time: currentTime,
         product_name: "",
@@ -375,7 +377,7 @@ const LoadedQuantityEffective = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
+    if (!dateString) return "";
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -387,10 +389,10 @@ const LoadedQuantityEffective = () => {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
+      // hour: "2-digit",
+      // minute: "2-digit",
+      // second: "2-digit",
+      // hour12: true,
     });
   };
 
@@ -880,8 +882,8 @@ const LoadedQuantityEffective = () => {
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
-                          <th>Checked By</th>
                           <th>% Yield</th>
+                          <th>Checked By</th>
                           <th>Remarks</th>
                           <th>Actions</th>
                         </tr>
@@ -892,7 +894,7 @@ const LoadedQuantityEffective = () => {
                             <td>{index + 1}</td>
                             <td>{item.unique_id}</td>
                             <td>
-                              <input value={item.date} readOnly />
+                              <input value={formatDate(item.date)} readOnly />
                             </td>
                             <td>
                               <select
@@ -907,11 +909,9 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                // disabled={
-                                //   location.state?.stage !== 1 ||
-                                //   location.state?.initiator_id !==
-                                //     userDetails.userId
-                                // }
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               >
                                 <option value="" disabled>
                                   Select a Product
@@ -934,11 +934,9 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                // disabled={
-                                //   location.state?.stage !== 1 ||
-                                //   location.state?.initiator_id !==
-                                //     userDetails.userId
-                                // }
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               >
                                 <option value="" disabled>
                                   Select a Batch
@@ -963,11 +961,9 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -983,11 +979,9 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1004,11 +998,9 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1025,43 +1017,10 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
-                            </td>
-
-                            <td>
-                              <div>
-                                <label>
-                                  <input
-                                    type="checkbox"
-                                    checked={item.checked_by !== ""}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.LoadedQuantityRecords,
-                                      ];
-                                      if (e.target.checked) {
-                                        newData[index].checked_by =
-                                          item.checked_by || editData.reviewer1.name;
-                                      } else {
-                                        newData[index].checked_by = "";
-                                      }
-                                      setEditData({
-                                        ...editData,
-                                        LoadedQuantityRecords: newData,
-                                      });
-                                    }}
-                                  />
-                                  {item.checked_by && (
-                                    <span style={{ marginLeft: "10px" }}>
-                                      {item.checked_by}
-                                    </span>
-                                  )}
-                                </label>
-                              </div>
                             </td>
                             <td>
                               <input
@@ -1076,8 +1035,42 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
+                            </td>
+                            <td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.LoadedQuantityRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].reviewed_by =
+                                          editData.reviewer1.name;
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        LoadedQuantityRecords: newData,
+                                      });
+                                    }}
+                                    disabled={[1, 3].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
+                                  />
+                                  {item.reviewed_by && (
+                                    <p>{item.reviewed_by}</p>
+                                  )}
+                                </div>
+                              </div>
                             </td>
                             <td>
                               <input
@@ -1092,7 +1085,10 @@ const LoadedQuantityEffective = () => {
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
-                                readOnly
+                                // readOnly={!location.state?.reviewer_id}
+                                disabled={[1, 3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
 
@@ -1106,9 +1102,9 @@ const LoadedQuantityEffective = () => {
                   </div>
                   <div className="group-input mt-4">
                     <label
-                      htmlFor="additionalAttachment"
-                      className="color-label"
-                      name="additionalAttachment"
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1116,9 +1112,9 @@ const LoadedQuantityEffective = () => {
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
-                        <div className="flex items-center gap-x-10 ml-3">
+                        <div className="flex items-center gap-x-4 ml-3">
                           <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
                             type="button"
                             onClick={() =>
                               document
@@ -1128,23 +1124,40 @@ const LoadedQuantityEffective = () => {
                           >
                             Change File
                           </button>
-                          <h3 className="">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                              Selected File:{" "}
+                          <h3 className="flex items-center">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                              Selected File:
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 underline"
+                              className="text-blue-600 underline mr-1"
                             >
-                              View File
+                              {editData.additionalAttachment.name || "View File"}
                             </a>
+                            {
+                            editData.additionalAttachment.name &&
+                            <button
+                              className="text-red-500 hover:text-red-700 text-lg"
+                              type="button"
+                              onClick={() =>
+                                setEditData({
+                                  ...editData,
+                                  additionalAttachment: null,
+                                })
+                              }
+                            >
+                              ✖
+                            </button>}
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>
                               document

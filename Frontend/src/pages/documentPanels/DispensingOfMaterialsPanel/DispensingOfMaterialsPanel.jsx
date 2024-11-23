@@ -857,7 +857,7 @@ const DispensingOfMaterialsPanel = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1291,6 +1291,7 @@ const DispensingOfMaterialsPanel = () => {
                       htmlFor="additionalAttachment"
                       className="color-label"
                       name="additionalAttachment"
+                      disabled
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1302,11 +1303,11 @@ const DispensingOfMaterialsPanel = () => {
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
                           >
                             Change File
                           </button>
@@ -1319,6 +1320,7 @@ const DispensingOfMaterialsPanel = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
+                              disabled
                             >
                               View File
                             </a>
@@ -1328,11 +1330,12 @@ const DispensingOfMaterialsPanel = () => {
                         <div>
                           <button
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
+                            disabled
                           >
                             Select File
                           </button>
@@ -1344,6 +1347,7 @@ const DispensingOfMaterialsPanel = () => {
                         id="additionalAttachment"
                         onChange={handleInitiatorFileChange}
                         style={{ display: "none" }}
+                        disabled
                       />
                     </div>
                   </div>
@@ -1359,6 +1363,7 @@ const DispensingOfMaterialsPanel = () => {
                         name="additionalInfo"
                         value={editData.additionalInfo}
                         onChange={handleInputChange1}
+                        disabled
                       />
                     </div>
                   </div>

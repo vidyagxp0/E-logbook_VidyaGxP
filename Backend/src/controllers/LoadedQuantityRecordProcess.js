@@ -123,6 +123,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -184,6 +185,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         yield: record?.yield,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await LoadedQuantityRecord.bulkCreate(formRecords, { transaction });
@@ -431,6 +433,7 @@ exports.EditLoadedQuantity = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -501,6 +504,7 @@ exports.EditLoadedQuantity = async (req, res) => {
             loaded_quantity: newRecord?.loaded_quantity,
             remarks: newRecord?.remarks,
             yield: newRecord?.yield,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -545,6 +549,7 @@ exports.EditLoadedQuantity = async (req, res) => {
             loaded_quantity: newRecord?.loaded_quantity,
             remarks: newRecord?.remarks,
             yield: newRecord?.yield,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -587,6 +592,7 @@ exports.EditLoadedQuantity = async (req, res) => {
         loaded_quantity: record?.loaded_quantity,
         yield: record?.yield,
         remarks: record?.remarks,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await LoadedQuantityRecord.bulkCreate(formRecords, { transaction });

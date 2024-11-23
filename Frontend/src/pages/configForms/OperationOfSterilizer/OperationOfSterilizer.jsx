@@ -451,7 +451,7 @@ const OperationOfSterilizer = () => {
                   </div>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -777,6 +777,7 @@ const OperationOfSterilizer = () => {
                       </label>
                       <div>
                         <input
+                        disabled
                           type="file"
                           name="additionalAttachment"
                           onChange={handleFileChange}
@@ -792,6 +793,7 @@ const OperationOfSterilizer = () => {
                           :
                         </label>
                         <textarea
+                        disabled
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
                           value={operationOfSterilizer.additionalInfo}
