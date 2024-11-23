@@ -231,7 +231,7 @@ const OperationOfSterilizerEffective = () => {
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
@@ -260,8 +260,8 @@ const OperationOfSterilizerEffective = () => {
   }
   const addRow = () => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const options = {
         hour: "2-digit",
@@ -269,10 +269,10 @@ const OperationOfSterilizerEffective = () => {
         second: "2-digit",
         hour12: false, // Use 24-hour format
       };
-
+      const nextIndex = editData?.LoadedQuantityRecords?.length || 0;
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        unique_id: generateUniqueId(),
+        unique_id: `OS000${nextIndex + 1}`,
         time: currentTime,
         date: date,
         air_pressure: "",
@@ -967,11 +967,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
@@ -988,11 +986,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
 
@@ -1009,15 +1005,13 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
-                                <input
+                                <select
                                   value={item.product_name}
                                   onChange={(e) => {
                                     const newData = [
@@ -1030,12 +1024,16 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
-                                />
+                                  disabled={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
+                                >
+                                  
+                                  <option value="">Select Product Name</option>
+                                  <option value="ProductA">ProductA</option>
+                                  <option value="ProductB">ProductB</option>
+                                  <option value="ProductC">ProductC</option>
+                                </select>
                               </td>
                               <td>
                                 <input
@@ -1051,11 +1049,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1072,16 +1068,14 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
 
                               <td>
-                                <input
+                                <select
                                   value={item.batch_no_lot_no}
                                   onChange={(e) => {
                                     const newData = [
@@ -1094,12 +1088,17 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
-                                />
+                                  disabled={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
+                                >
+                                  <option value="">
+                                    Select Batch/Lot Number
+                                  </option>
+                                  <option value="Batch001">Batch001</option>
+                                  <option value="Batch002">Batch002</option>
+                                  <option value="Batch003">Batch003</option>
+                                </select>
                               </td>
                               <td>
                                 <input
@@ -1115,11 +1114,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1136,11 +1133,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1157,11 +1152,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1178,11 +1171,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1199,11 +1190,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1220,11 +1209,9 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1241,28 +1228,42 @@ const OperationOfSterilizerEffective = () => {
                                       OperationOfSterilizerRecords: newData,
                                     });
                                   }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
                                 />
                               </td>
                               <td>
-                                <input
-                                  value={item.checked_by}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.OperationOfSterilizerRecords,
-                                    ];
-                                    newData[index].checked_by = e.target.value;
-                                    setEditData({
-                                      ...editData,
-                                      OperationOfSterilizerRecords: newData,
-                                    });
-                                  }}
-                                  readOnly
-                                />
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.OperationOfSterilizerRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].reviewed_by =
+                                          editData.reviewer2.name;
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                       OperationOfSterilizerRecords: newData,
+                                      });
+                                    }}
+                                    disabled={[1,3].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
+                                  />
+                                  {item.reviewed_by && (
+                                    <p>{item.reviewed_by}</p>
+                                  )}
+                                </div>
+                              </div>
                               </td>
                               <td>
                                 <DeleteIcon onClick={() => deleteRow(index)} />
@@ -1272,88 +1273,100 @@ const OperationOfSterilizerEffective = () => {
                         )}
                       </tbody>
                     </table>
-
-                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                      <div className="flex flex-col w-full">
-                        <label
-                          htmlFor="additionalAttachment"
-                          className="color-label"
-                          name="additionalAttachment"
-                        >
-                          Attachment{" "}
-                          <span className="text-sm text-zinc-600">
-                            (If / Any)
-                          </span>{" "}
-                          :
-                        </label>
-                        <div>
-                          {editData.additionalAttachment ? (
-                            <div className="flex items-center gap-x-10">
-                              <button
-                                className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
-                                type="button"
-                                onClick={() =>
-                                  document
-                                    .getElementById("additionalAttachment")
-                                    .click()
-                                }
-                              >
-                                Change File
-                              </button>
-                              <h3 className="">
-                                <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                                  Selected File:{" "}
-                                </span>
-                                <a
-                                  href={editData.additionalAttachment}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 underline"
-                                >
-                                  View File
-                                </a>
-                              </h3>
-                            </div>
-                          ) : (
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  document
-                                    .getElementById("additionalAttachment")
-                                    .click()
-                                }
-                              >
-                                Select File
-                              </button>
-                            </div>
-                          )}
-                          <input
-                            type="file"
-                            name="additionalAttachment"
-                            id="additionalAttachment"
-                            onChange={handleInitiatorFileChange}
-                            style={{ display: "none" }}
-                          />
+                    </div>
+                    <div className="group-input mt-4">
+                    <label
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
+                    >
+                      Additional Attachment{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
+                    </label>
+                    <div>
+                      {editData.additionalAttachment ? (
+                        <div className="flex items-center gap-x-4 ml-3">
+                          <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Change File
+                          </button>
+                          <h3 className="flex items-center">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                              Selected File:
+                            </span>
+                            <a
+                              href={
+                                editData.additionalAttachment
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline mr-1"
+                            >
+                              {editData.additionalAttachment.name || "View File"}
+                            </a>{
+                            editData.additionalAttachment.name &&
+                            <button
+                              className="text-red-500 hover:text-red-700 text-lg"
+                              type="button"
+                              onClick={() =>
+                                setEditData({
+                                  ...editData,
+                                  additionalAttachment: null,
+                                })
+                              }
+                            >
+                              ✖
+                            </button>}
+                          </h3>
                         </div>
-                      </div>
-
-                      <div className="flex flex-col w-full">
-                        <label className="text-sm font-medium text-gray-900 mb-1">
-                          Additional Info{" "}
-                          <span className="text-sm text-zinc-600">
-                            (If / Any)
-                          </span>{" "}
-                          :
-                        </label>
-                        <textarea
-                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                          rows="4"
-                          name="additionalInfo"
-                          value={editData.additionalInfo}
-                          onChange={handleInputChange1}
-                        ></textarea>
-                      </div>
+                      ) : (
+                        <div>
+                          <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        id="additionalAttachment"
+                        onChange={handleInitiatorFileChange}
+                        style={{ display: "none" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="group-input">
+                    <label
+                      className="color-label"
+                      style={{ marginBottom: "0px" }}
+                    >
+                      Additional Information{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :{" "}
+                    </label>
+                    <div>
+                      <textarea
+                        type="text"
+                        name="additionalInfo"
+                        value={editData.additionalInfo}
+                        onChange={handleInputChange1}
+                      />
                     </div>
                   </div>
                 </>

@@ -30,7 +30,7 @@ router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(3, 1),
   LoadedQuantityRecordProcess.InsertLoadedQuantity
 );
 
@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  // Auth.authorizeUserRole(3, 1),
   LoadedQuantityRecordProcess.EditLoadedQuantity
 );
 
@@ -62,7 +62,7 @@ router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
   upload.single("initiatorAttachment"),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(3, 1),
   LoadedQuantityRecordProcess.SendDPElogForReview
 );
 
@@ -71,7 +71,7 @@ router.put(
   "/send-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
+  Auth.authorizeUserRole(3, 2),
   LoadedQuantityRecordProcess.SendDPElogfromReviewToOpen
 );
 
@@ -80,7 +80,7 @@ router.put(
   "/send-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
+  Auth.authorizeUserRole(3, 2),
   LoadedQuantityRecordProcess.SendDPfromReviewToApproval
 );
 
@@ -89,7 +89,7 @@ router.put(
   "/send-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
+  Auth.authorizeUserRole(3, 3),
   LoadedQuantityRecordProcess.SendDPfromApprovalToOpen
 );
 
@@ -98,7 +98,7 @@ router.put(
   "/approve",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
+  Auth.authorizeUserRole(3, 3),
   LoadedQuantityRecordProcess.ApproveDPElog
 );
 
@@ -128,10 +128,7 @@ router.post(
   LoadedQuantityRecordProcess.chatByPdf
 );
 
-router.post(
-  "/view-report",
-  LoadedQuantityRecordProcess.viewReport
-);
+router.post("/view-report", LoadedQuantityRecordProcess.viewReport);
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,

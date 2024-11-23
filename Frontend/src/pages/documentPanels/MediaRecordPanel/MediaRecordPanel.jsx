@@ -872,7 +872,7 @@ const MediaRecordPanel = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1113,6 +1113,7 @@ const MediaRecordPanel = () => {
                       htmlFor="additionalAttachment"
                       className="color-label"
                       name="additionalAttachment"
+                      disabled
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1123,17 +1124,21 @@ const MediaRecordPanel = () => {
                         <div className="flex items-center gap-x-10">
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // type="button"
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
+                            disabled
                           >
                             Change File
                           </button>
                           <h3 className="">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                            <span
+                              className="py-1 bg-zinc-300 px-2 rounded-md mr-2 "
+                              disabled
+                            >
                               Selected File:{" "}
                             </span>
                             <a
@@ -1141,6 +1146,7 @@ const MediaRecordPanel = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
+                              disabled
                             >
                               View File
                             </a>
@@ -1150,11 +1156,11 @@ const MediaRecordPanel = () => {
                         <div>
                           <button
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
                           >
                             Select File
                           </button>
@@ -1181,6 +1187,7 @@ const MediaRecordPanel = () => {
                         name="additionalInfo"
                         value={editData.additionalInfo}
                         onChange={handleInputChange1}
+                        disabled
                       />
                     </div>
                   </div>

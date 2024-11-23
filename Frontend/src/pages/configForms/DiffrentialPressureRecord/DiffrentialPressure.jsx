@@ -478,9 +478,9 @@ export default function DiffrentialPressure() {
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
-                    {/* <div className="instruction">&nbsp;</div> */}
                     <select
                       className="form-control"
+                      disabled
                       name="assign_to"
                       value={differentialPRecord.department}
                       onChange={(e) =>
@@ -521,8 +521,8 @@ export default function DiffrentialPressure() {
                     <label className="color-label">
                       Compression Area with respect to Corridor
                     </label>
-                    {/* <div className="instruction">&nbsp;</div> */}
                     <select
+                      disabled
                       className="form-control"
                       name="assign_to"
                       value={differentialPRecord.compression_area}
@@ -547,6 +547,7 @@ export default function DiffrentialPressure() {
                     <div className="instruction"></div>
                     <input
                       type="number"
+                      disabled
                       className={`${
                         differentialPRecord.limit < 0.6
                           ? "limit"
@@ -560,6 +561,7 @@ export default function DiffrentialPressure() {
                       }
                     />
                   </div>
+
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">
@@ -629,7 +631,9 @@ export default function DiffrentialPressure() {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd 
+                      // onClick={addRow}
+                       />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -696,6 +700,7 @@ export default function DiffrentialPressure() {
                           <td>
                             <input
                               value={item.remarks}
+                              disabled
                               onChange={(e) => {
                                 const newData = [...allTableData];
                                 newData[index].remarks = e.target.value;
@@ -706,6 +711,7 @@ export default function DiffrentialPressure() {
                           <td>
                             <input
                               value={item.checked_by}
+                              disabled
                               onChange={(e) => {
                                 const newData = [...allTableData];
                                 newData[index].checked_by = e.target.value;
@@ -805,6 +811,7 @@ export default function DiffrentialPressure() {
                         name="additionalAttachment"
                         className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                         onChange={handleFileChangeAttachment}
+                        disabled
                       />
                     </div>
 
@@ -820,6 +827,7 @@ export default function DiffrentialPressure() {
                         className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                         rows="4"
                         value={differentialPRecord.additionalInfo}
+                        disabled
                         onChange={(e) => {
                           setDifferentialPRecord({
                             additionalInfo: e.target.value,

@@ -460,8 +460,8 @@ const LoadedQuantity = () => {
                   </div>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
-                      <div className="addrowinstruction"></div>
+                    <NoteAdd /*onClick={addRow}*/ />
+                    <div className="addrowinstruction"></div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
@@ -477,8 +477,8 @@ const LoadedQuantity = () => {
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
-                          <th>Checked By</th>
                           <th>% Yield</th>
+                          <th>Checked By</th>
                           {/* <th>Product Name</th> */}
                           <th>Remark</th>
                           {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
@@ -512,7 +512,7 @@ const LoadedQuantity = () => {
                             </td>
                             <td>{item.unique_id}</td>
 
-                            <td>
+                            {/* <td>
                               <input
                                 type="text"
                                 value={item.product_name}
@@ -523,6 +523,32 @@ const LoadedQuantity = () => {
                                 }}
                                 required
                               />
+
+
+                            </td> */}
+                            <td>
+                              <select
+                                value={item.product_name}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...allTableData,
+                                  ];
+                                  newData[index].product_name = e.target.value;
+                                    setAllTableData(newData);
+                                }}
+                                // disabled={
+                                //   location.state?.stage !== 1 ||
+                                //   location.state?.initiator_id !==
+                                //     userDetails.userId
+                                // }
+                              >
+                                <option value="" disabled>
+                                  Select a Product
+                                </option>
+                                <option value="Product1">Product 1</option>
+                                <option value="Product2">Product 2</option>
+                                <option value="Product3">Product 3</option>
+                              </select>
                             </td>
                             <td>
                               <input
@@ -587,6 +613,19 @@ const LoadedQuantity = () => {
                                 required
                               />
                             </td>
+                            
+                            <td>
+                              <input
+                                type="text"
+                                value={item.yield}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].yield = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                required
+                              />
+                            </td>
                             <td>
                               <input
                                 type="checkbox"
@@ -602,24 +641,13 @@ const LoadedQuantity = () => {
                             </td>
                             <td>
                               <input
-                                type="text"
-                                value={item.yield}
-                                onChange={(e) => {
-                                  const newData = [...allTableData];
-                                  newData[index].yield = e.target.value;
-                                  setAllTableData(newData);
-                                }}
-                                required
-                              />
-                            </td>
-                            <td>
-                              <input
                                 value={item.remarks}
                                 onChange={(e) => {
                                   const newData = [...allTableData];
                                   newData[index].remarks = e.target.value;
                                   setAllTableData(newData);
                                 }}
+                               disabled
                               />
                             </td>
 
@@ -683,6 +711,7 @@ const LoadedQuantity = () => {
                     </label>
                     <div>
                       <input
+                      disabled
                         type="file"
                         name="additionalAttachment"
                         onChange={handleFileChange}
@@ -697,6 +726,7 @@ const LoadedQuantity = () => {
                     </label>
                     <div>
                       <textarea
+                      disabled
                         type="text"
                         name="additionalInfo"
                         value={loadedQuantity.additionalInfo}

@@ -850,13 +850,14 @@ export default function DPRpanel() {
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
+                      disabled
                       name="department"
                       value={editData?.department}
                       onChange={handleInputChange1}
-                      disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
+                      // disabled={
+                      //   location.state?.stage !== 1 ||
+                      //   location.state?.initiator_id !== userDetails.userId
+                      // }
                     >
                       <option value="">-- Select --</option>
                       <option value="Corporate Quality Assurance">
@@ -897,10 +898,7 @@ export default function DPRpanel() {
                       name="compression_area"
                       value={editData?.compression_area}
                       onChange={handleInputChange1}
-                      disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
+                      disabled
                     >
                       <option value="Select a value">Select a value</option>
                       <option value="Area 1">Area 1</option>
@@ -917,6 +915,7 @@ export default function DPRpanel() {
                     <div className="instruction"></div>
                     <input
                       name="limit"
+                      disabled
                       type="number"
                       className={`${
                         editData?.limit < 0.6
@@ -936,7 +935,9 @@ export default function DPRpanel() {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd
+                      // onClick={addRow}
+                      />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1014,6 +1015,7 @@ export default function DPRpanel() {
                             <td>
                               <input
                                 value={item.checked_by}
+                                disabled
                                 onChange={(e) => {
                                   const newData = [
                                     ...editData.DifferentialPressureRecords,
@@ -1119,6 +1121,7 @@ export default function DPRpanel() {
                         htmlFor="additionalAttachment"
                         className="color-label"
                         name="additionalAttachment"
+                        disabled
                       >
                         Attachment{" "}
                         <span className="text-sm text-zinc-600">
@@ -1130,13 +1133,14 @@ export default function DPRpanel() {
                         {editData.additionalAttachment ? (
                           <div className="flex items-center gap-x-10">
                             <button
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                              className=""
                               type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
+                              disabled
+                              // onClick={() =>
+                              //   document
+                              //     .getElementById("additionalAttachment")
+                              //     .click()
+                              // }
                             >
                               Change File
                             </button>
@@ -1147,6 +1151,7 @@ export default function DPRpanel() {
                               <a
                                 href={editData.additionalAttachment}
                                 target="_blank"
+                                disabled
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
@@ -1171,6 +1176,7 @@ export default function DPRpanel() {
                         <input
                           type="file"
                           name="additionalAttachment"
+                          disabled
                           id="additionalAttachment"
                           onChange={handleInitiatorFileChange}
                           style={{ display: "none" }}
@@ -1188,6 +1194,7 @@ export default function DPRpanel() {
                       <textarea
                         className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                         rows="4"
+                        disabled
                         name="additionalInfo"
                         value={editData?.additionalInfo}
                         onChange={handleInputChange1}

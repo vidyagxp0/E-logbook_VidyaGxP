@@ -78,6 +78,9 @@ const DispenseOfMaterialRecord = sequelize.define("DispenseOfMaterial", {
   remark: {
     type: DataTypes.STRING,
   },
+  reviewed_by: {
+    type: DataTypes.STRING,
+  },
 });
 
 DispenseOfMaterialRecord.belongsTo(DispenseOfMaterialProcessForm, {

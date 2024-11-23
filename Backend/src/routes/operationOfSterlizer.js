@@ -30,7 +30,7 @@ router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(4, 1),
   OperationOfSterilizer.InsertOperationOfSterilizerForm
 );
 
@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  // Auth.authorizeUserRole(4, 1),
   OperationOfSterilizer.EditOperationOfSterilizerForm
 );
 
@@ -61,7 +61,7 @@ router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
   upload.single("initiatorAttachment"),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(4, 1),
   OperationOfSterilizer.SendDPElogForReview
 );
 
@@ -70,7 +70,7 @@ router.put(
   "/send-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
+  Auth.authorizeUserRole(4, 2),
   OperationOfSterilizer.SendDPElogfromReviewToOpen
 );
 
@@ -79,7 +79,7 @@ router.put(
   "/send-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
+  Auth.authorizeUserRole(4, 2),
   OperationOfSterilizer.SendDPfromReviewToApproval
 );
 
@@ -88,7 +88,7 @@ router.put(
   "/send-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
+  Auth.authorizeUserRole(4, 3),
   OperationOfSterilizer.SendDPfromApprovalToOpen
 );
 
@@ -97,7 +97,7 @@ router.put(
   "/approve",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
+  Auth.authorizeUserRole(4, 3),
   OperationOfSterilizer.ApproveDPElog
 );
 

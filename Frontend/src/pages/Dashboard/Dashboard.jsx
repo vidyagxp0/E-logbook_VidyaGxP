@@ -53,7 +53,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 1)
           );
         });
-        setDifferentialPressureElogs(filteredArray);
+        setDifferentialPressureElogs(allDifferentialPressureElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -81,7 +81,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setTempratureRecordElogs(filteredArray);
+        setTempratureRecordElogs(allTempratureRecordElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -109,7 +109,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setLoadedQuantityElogs(filteredArray);
+        setLoadedQuantityElogs(allLoadedQuantityElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -137,7 +137,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setMediaRecordElogs(filteredArray);
+        setMediaRecordElogs(allMediaRecordElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -165,7 +165,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setDispensingOfMaterialsElogs(filteredArray);
+        setDispensingOfMaterialsElogs(allDispensingMaterialElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -191,7 +191,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setOperationOfSterilizerElogs(filteredArray);
+        setOperationOfSterilizerElogs(allOperationOfSterelizer);
       })
       .catch((error) => {
         console.error("Error: ", error);

@@ -132,6 +132,7 @@ exports.InsertTempratureRecord = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -184,6 +185,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
         supporting_docs: record?.supporting_docs
           ? record.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -268,44 +270,10 @@ exports.InsertTempratureRecord = async (req, res) => {
 
     await transaction.commit();
 
-    const elogData = {
-      initiator: user.name,
-      dateOfInitiation: new Date().toISOString().split("T")[0], // Current date
-      description,
-      status: "Opened",
-      reviewerName: (await getUserById(reviewer_id)).name,
-      approverName: (await getUserById(approver_id)).name,
-      reviewerEmail: (await getUserById(reviewer_id)).email,
-      approverEmail: (await getUserById(approver_id)).email,
-      recipients: [
-        (await getUserById(reviewer_id)).email,
-        (await getUserById(approver_id)).email,
-      ].join(","),
-    };
-
-    // try {
-    //   // Send emails
-    //   await Mailer.sendEmail("assignReviewer", {
-    //     ...elogData,
-    //     recipients: elogData.reviewerEmail,
-    //   });
-
-    //   await Mailer.sendEmail("assignApprover", {
-    //     ...elogData,
-    //     recipients: elogData.approverEmail,
-    //   });
-
     return res.status(200).json({
       error: false,
       message: "E-log Created successfully",
     });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -314,10 +282,11 @@ exports.InsertTempratureRecord = async (req, res) => {
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
+console.log(error);
 
     return res.status(500).json({
       error: true,
-      message: `${errorMessage}: ${error.message}`,
+      message: `${errorMessage}: ${error}`,
     });
   }
 };
@@ -429,6 +398,7 @@ exports.EditTempratureRecord = async (req, res) => {
       additionalAttachment: additionalAttachment
         ? getElogDocsUrl(additionalAttachment)
         : form.additionalAttachment,
+      additionalInfo
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -491,6 +461,7 @@ exports.EditTempratureRecord = async (req, res) => {
           const recordFields = {
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
+            reviewed_by: newRecord?.reviewed_by,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),
@@ -534,6 +505,7 @@ exports.EditTempratureRecord = async (req, res) => {
             checked_by: newRecord?.checked_by,
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
+            reviewed_by: newRecord?.reviewed_by,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
@@ -570,6 +542,7 @@ exports.EditTempratureRecord = async (req, res) => {
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -1721,7 +1694,7 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveTRReport", { reportData }, (err, html) => {
+      req.app.render("effectiveTPReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1794,7 +1767,7 @@ exports.effetiveViewReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
     // Render HTML using EJS template
-    req.app.render("effectiveTRReport", { reportData }, (err, html) => {
+    req.app.render("effectiveTPReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);

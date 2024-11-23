@@ -49,6 +49,8 @@ const DispensingOfMaterialsEffective = () => {
       additionalInfo: editData.additionalInfo,
       additionalAttachment: editData.additionalAttachment,
     };
+    console.log(location.state, "nickshay");
+
     data.initiatorDeclaration = credentials?.declaration;
     // if (
     //   parseFloat(editData.limit) < 0.6 ||
@@ -201,7 +203,7 @@ const DispensingOfMaterialsEffective = () => {
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
@@ -229,41 +231,47 @@ const DispensingOfMaterialsEffective = () => {
   }
 
   const addRow = () => {
-    const options = {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false, // Use 24-hour format
-    };
-    const currentTime = new Date().toLocaleTimeString("en-US", options);
-    const newRow = {
-      unique_id: generateUniqueId(),
-      time: currentTime,
-      date: "",
-      on_time_auh: "",
-      on_time_laf: "",
-      on_time_uv_light: "",
-      on_time_done_by: "",
-      name_of_material: "",
-      control_no: "",
-      dispensed_quantity: "",
-      dispensed_by_qa: "",
-      dispensed_by_store: "",
-      off_time_auh: "",
-      off_time_laf: "",
-      off_time_uv_light: "",
-      uv_burning: "",
-      off_time_done_by: "",
-      cleaning_done_by: "",
-      weighing_balance_id: "",
-      checked_by: location?.state?.initiator_name,
-      remarks: "",
-    };
-    setEditData((prevState) => ({
-      ...prevState,
+    if (
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
+    ) {
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      };
+      const nextIndex = editData?.DispenseOfMaterials?.length || 0;
+      const currentTime = new Date().toLocaleTimeString("en-US", options);
+      const newRow = {
+        unique_id: `DM000${nextIndex + 1}`,
+        time: currentTime,
+        date: date,
+        on_time_auh: "",
+        on_time_laf: "",
+        on_time_uv_light: "",
+        on_time_done_by: "",
+        name_of_material: "",
+        control_no: "",
+        dispensed_quantity: "",
+        dispensed_by_qa: "",
+        dispensed_by_store: "",
+        off_time_auh: "",
+        off_time_laf: "",
+        off_time_uv_light: "",
+        uv_burning: "",
+        off_time_done_by: "",
+        cleaning_done_by: "",
+        weighing_balance_id: "",
+        checked_by: location?.state?.initiator_name,
+        remarks: "",
+      };
+      setEditData((prevState) => ({
+        ...prevState,
 
-      DispenseOfMaterials: [...prevState.DispenseOfMaterials, newRow],
-    }));
+        DispenseOfMaterials: [...prevState.DispenseOfMaterials, newRow],
+      }));
+    }
   };
 
   function deepEqual(object1, object2) {
@@ -633,7 +641,7 @@ const DispensingOfMaterialsEffective = () => {
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() => {
                       setIsPopupOpen(true);
-                      // setPopupAction("updateElog");
+                      setPopupAction("updateElog");
                     }}
                   >
                     Save
@@ -925,11 +933,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -945,11 +951,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
 
@@ -967,11 +971,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -988,11 +990,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1009,15 +1009,13 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
-                              <input
+                              <select
                                 value={item.control_no}
                                 onChange={(e) => {
                                   const newData = [
@@ -1029,16 +1027,20 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              >
+                                <option value="">Select A Control No</option>
+                                <option value="CN01">CN01</option>
+                                <option value="CN02">CN02</option>
+                                <option value="CN03">CN03</option>
+                                <option value="CN04">CN04</option>
+                              </select>
                             </td>
 
                             <td>
-                              <input
+                              <select
                                 value={item.dispensed_quantity}
                                 onChange={(e) => {
                                   const newData = [
@@ -1051,12 +1053,18 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              />
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              >
+                                <option value="" disabled>
+                                  Select Dispensed Quantity (Kg){" "}
+                                </option>
+                                <option value="1">1 Kg</option>
+                                <option value="2">2 Kg</option>
+                                <option value="5">5 Kg</option>
+                                <option value="10">10 Kg</option>
+                              </select>
                             </td>
                             <td>
                               <input
@@ -1072,11 +1080,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1093,11 +1099,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1113,11 +1117,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1133,11 +1135,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1154,11 +1154,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1174,11 +1172,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1195,11 +1191,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1216,11 +1210,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             {/* <td>
@@ -1239,35 +1231,38 @@ const DispensingOfMaterialsEffective = () => {
                                 readOnly
                               />
                             </td> */}
-                            <div>
-                              <label>
-                                <input
-                                  type="checkbox"
-                                  checked={item.checked_by !== ""}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.DispenseOfMaterials,
-                                    ];
-                                    if (e.target.checked) {
-                                      newData[index].checked_by =
-                                        item.checked_by ||
-                                        editData.reviewer4?.name;
-                                    } else {
-                                      newData[index].checked_by = "";
-                                    }
-                                    setEditData({
-                                      ...editData,
-                                      DispenseOfMaterials: newData,
-                                    });
-                                  }}
-                                />
-                                {item.checked_by && (
-                                  <span style={{ marginLeft: "10px" }}>
-                                    {item.checked_by}
-                                  </span>
-                                )}
-                              </label>
-                            </div>
+                            <td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.DispenseOfMaterials,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].reviewed_by =
+                                          editData.reviewer4.name;
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        DispenseOfMaterials: newData,
+                                      });
+                                    }}
+                                    disabled={[1, 3].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
+                                  />
+                                  {item.reviewed_by && (
+                                    <p>{item.reviewed_by}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
 
                             <td>
                               <input
@@ -1283,11 +1278,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -1303,11 +1296,9 @@ const DispensingOfMaterialsEffective = () => {
                                     DispenseOfMaterials: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                disabled={[1, 3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>

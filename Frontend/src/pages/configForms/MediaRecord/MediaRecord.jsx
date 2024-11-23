@@ -451,7 +451,7 @@ const MediaRecord = () => {
                   </div>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -705,6 +705,7 @@ const MediaRecord = () => {
                         type="file"
                         name="additionalAttachment"
                         onChange={handleFileChange}
+                        disabled
                       />
                     </div>
 
@@ -725,6 +726,7 @@ const MediaRecord = () => {
                             additionalInfo: e.target.value,
                           });
                         }}
+                        disabled
                       ></textarea>
                     </div>
                   </div>
