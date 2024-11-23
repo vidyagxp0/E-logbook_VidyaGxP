@@ -1016,7 +1016,7 @@ const MediaRecordEffective = () => {
                               />
                             </td>
                             <td>
-                              <select
+                              {/* <select
                                 value={item.lot_no || ""} // Ensure value is never null or undefined
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
@@ -1039,7 +1039,22 @@ const MediaRecordEffective = () => {
                                 ) : (
                                   <option value="">No lots available</option>
                                 )}
-                              </select>
+                              </select> */}
+                              <input
+                                value={item.lot_no}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].lot_no =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              />
                             </td>
                             <td>
                               <input
