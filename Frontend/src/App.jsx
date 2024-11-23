@@ -44,6 +44,7 @@ import LoadedQuantityEffective from "./pages/Dashboard/EffectiveElogs/LoadedQuan
 import OperationOfSterilizerEffective from "./pages/Dashboard/EffectiveElogs/OperationOfSterilizerEffective.jsx";
 import MediaRecordEffective from "./pages/Dashboard/EffectiveElogs/MediaRecordEffective.jsx";
 import DispensingOfMaterialsEffective from "./pages/Dashboard/EffectiveElogs/DispensingOfMaterialsEffective.jsx";
+import ExcelSelectWithFileInput from "./pages/TestPages/ExcelImport.jsx";
 
 function App() {
   return (
@@ -51,6 +52,8 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
+          <Route path="/test" element={<ExcelSelectWithFileInput />} />
+
             <Route path="/" element={<Login />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="" element={<Wrapper />}>

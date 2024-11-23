@@ -217,7 +217,7 @@ const MediaRecordEffective = () => {
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
