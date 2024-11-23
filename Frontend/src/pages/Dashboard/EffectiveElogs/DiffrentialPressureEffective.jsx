@@ -171,8 +171,7 @@ export default function DPREffective() {
       }
       if (
         editData?.DifferentialPressureRecords?.some(
-          (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+          (record) => record.differential_pressure === ""
         )
       ) {
         toast.error("Please provide grid details!");
@@ -214,17 +213,19 @@ export default function DPREffective() {
   }, [location.state]);
 
   const addRow = () => {
-    if (location.state?.initiator_id) {
+    if (userDetails.roles[0].role_id === 1 || userDetails.roles[0].role_id === 5) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: true, // Use 12-hour format
       };
-
+      const nextIndex = editData?.DifferentialPressureRecords?.length || 0;
+     
+     
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        unique_id: generateUniqueId(),
+        unique_id: `DPR000${nextIndex + 1}`,
         time: currentTime,
         differential_pressure: "",
         remarks: "",
@@ -599,18 +600,18 @@ export default function DPREffective() {
                       </>
                     )} */}
 
-                  {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
-                      <button
-                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    )}
+                  {/* {location.state?.stage === 3 &&
+                    userDetails.userId === location.state?.reviewer_id && ( */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("updateElog");
+                    }}
+                  >
+                    Save
+                  </button>
+                  {/* ) */}
                 </div>
               </div>
               {/* <div className="outerDiv4 bg-slate-300 py-4">
@@ -904,23 +905,22 @@ export default function DPREffective() {
 
                   <div className="group-input">
                     <label className="color-label">Limit</label>
-                    <div className="instruction"></div>
+                    {/* <div className="instruction"></div> */}
                     <input
                       name="limit"
                       type="number"
-                      className={`${
-                        editData?.limit < 0.6
-                          ? "limit"
-                          : editData?.limit > 2.6
-                          ? "limit"
-                          : ""
-                      }`}
+                      // className={`${
+                      //   editData?.limit < 0.6
+                      //     ? "limit"
+                      //     : editData?.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
-                      readOnly={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
+                      readOnly={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
                     />
                   </div>
 
@@ -955,12 +955,13 @@ export default function DPREffective() {
                             <td>
                               <input
                                 type="number"
-                                value={item.differential_pressure}
+                                value={item?.differential_pressure}
                                 className={`${
-                                  item.differential_pressure < 0.6
-                                    ? "limit"
-                                    : item.differential_pressure > 2.6
-                                    ? "limit"
+                                  item?.differential_pressure < editData?.limit
+                                    ? "text-green-500"
+                                    : item?.differential_pressure >
+                                      editData?.limit
+                                    ? "text-red-600"
                                     : ""
                                 }`}
                                 onChange={(e) => {
@@ -974,11 +975,9 @@ export default function DPREffective() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
@@ -994,17 +993,15 @@ export default function DPREffective() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
-                                readOnly={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                disabled={[1,3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </td>
                             <td>
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                  <input
+                                <input
                                     className="h-4 w-4 cursor-pointer"
                                     type="checkbox"
                                     checked={!!item.reviewed_by}
@@ -1012,9 +1009,9 @@ export default function DPREffective() {
                                       const newData = [
                                         ...editData.DifferentialPressureRecords,
                                       ];
-                                      if (e?.target?.checked) {
+                                      if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData?.tpreviewer?.name;
+                                          editData.reviewer.name;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1023,10 +1020,9 @@ export default function DPREffective() {
                                         DifferentialPressureRecords: newData,
                                       });
                                     }}
-                                    disabled={
-                                      location.state?.reviewer_id !==
-                                      userDetails.userId
-                                    }
+                                    disabled={[1,3].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
                                   />
                                   {item.reviewed_by && (
                                     <p>{item.reviewed_by}</p>
@@ -1079,11 +1075,9 @@ export default function DPREffective() {
                                           .getElementsByName("supporting_docs")
                                           [index].click()
                                       }
-                                      disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
-                                      }
+                                      readOnly={[3, 2, 4].includes(
+                                        userDetails.roles[0].role_id
+                                      )}
                                     >
                                       Select File
                                     </button>

@@ -976,13 +976,11 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={[3, 2, 4].includes(
+                                disabled={[3, 2, 4].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="" disabled>
-                                  Select a Product
-                                </option>
+                                <option value="">Select a Product</option>
                                 <option value="LotNo1">Lot No 1</option>
                                 <option value="LotNo2">Lot No 2</option>
                                 <option value="LotNo3">Lot No 3</option>
@@ -1000,7 +998,7 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                readOnly={[3, 2, 4].includes(
+                                disabled={[3, 2, 4].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />

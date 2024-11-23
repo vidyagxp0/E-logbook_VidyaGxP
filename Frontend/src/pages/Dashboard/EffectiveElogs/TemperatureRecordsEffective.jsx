@@ -170,7 +170,7 @@ export default function TempretureRecordsEffective() {
       }
       if (
         editData?.TempratureRecords?.some(
-          (record) => record.temprature_record === "" || record.remarks === ""
+          (record) => record.temprature_record === "" 
         )
       ) {
         toast.error("Please provide grid details!");
@@ -226,15 +226,14 @@ export default function TempretureRecordsEffective() {
   }
 
   const addRow = () => {
-    if (
-      location.state?.stage === 4 &&
-      location.state?.initiator_id === userDetails.userId
-    ) {
+    if (userDetails.roles[0].role_id === 1 || userDetails.roles[0].role_id === 5) {
       const currentTime = new Date().toLocaleTimeString("en-GB", {
         hour12: false,
       });
+      const nextIndex = editData?.TempratureRecords?.length || 0;
+     
       const newRow = {
-        unique_id: generateUniqueId(),
+        unique_id: `TPR000${nextIndex + 1}`,
         time: currentTime,
         temprature_record: "",
         remarks: "",
@@ -574,8 +573,8 @@ export default function TempretureRecordsEffective() {
                     )} */}
 
                   {/* Save Button */}
-                  {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
+                  {/* {location.state?.stage === 1 &&
+                    userDetails.userId === location.state?.initiator_id && ( */}
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -585,7 +584,7 @@ export default function TempretureRecordsEffective() {
                       >
                         Save
                       </button>
-                    )}
+                   {/*    )}*/}
                 </div>
               </div>
               {/* <div className="outerDiv4 bg-slate-300 py-4">
@@ -874,10 +873,9 @@ export default function TempretureRecordsEffective() {
                       }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
-                      readOnly={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
+                      readOnly={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
                     />
                   </div>
 
@@ -913,10 +911,10 @@ export default function TempretureRecordsEffective() {
                               type="number"
                               value={item.temprature_record}
                               className={`${
-                                item.temprature_record < 23
-                                  ? "limit"
-                                  : item.temprature_record > 27
-                                  ? "limit"
+                                item.temprature_record < editData.limit
+                                  ? "text-green-500" 
+                                  : item.temprature_record > editData.limit
+                                  ? "text-red-600" 
                                   : ""
                               }`}
                               onChange={(e) => {
@@ -928,11 +926,9 @@ export default function TempretureRecordsEffective() {
                                   TempratureRecords: newData,
                                 });
                               }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              readOnly={[3, 2, 4].includes(
+                                userDetails.roles[0].role_id
+                              )}
                             />
                           </td>
                           <td>
@@ -946,11 +942,9 @@ export default function TempretureRecordsEffective() {
                                   TempratureRecords: newData,
                                 });
                               }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[1,3].includes(
+                                userDetails.roles[0].role_id
+                              )}
                             />
                           </td>
                           <td>
@@ -965,7 +959,7 @@ export default function TempretureRecordsEffective() {
                                         ...editData.TempratureRecords,
                                       ];
                                       if (e?.target?.checked) {
-                                        newData[index].reviewed_by = editData?.reviewer?.name;
+                                        newData[index].reviewed_by = editData?.tpreviewer?.name;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -974,11 +968,9 @@ export default function TempretureRecordsEffective() {
                                         TempratureRecords: newData,
                                       });
                                     }}
-                                    disabled={
-                                      location.state?.reviewer_id
-                                       !==
-                                        userDetails.userId
-                                    }
+                                    disabled={[1,3].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
                                   />
                                   {item.reviewed_by && <p>{item.reviewed_by}</p>}
                                 </div>
@@ -1027,11 +1019,9 @@ export default function TempretureRecordsEffective() {
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
-                                disabled={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
+                                disabled={[1,3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
                               />
                             </div>
                           </td>
