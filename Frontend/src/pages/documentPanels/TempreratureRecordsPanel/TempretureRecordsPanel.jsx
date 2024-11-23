@@ -69,7 +69,7 @@ export default function TempretureRecordsPanel() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
+          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -87,7 +87,7 @@ export default function TempretureRecordsPanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
+          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -107,7 +107,7 @@ export default function TempretureRecordsPanel() {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
+          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -123,7 +123,7 @@ export default function TempretureRecordsPanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
+          "http://localhost:1000/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -141,7 +141,7 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
+          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -188,7 +188,7 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
+        url: "http://localhost:1000/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -270,14 +270,18 @@ export default function TempretureRecordsPanel() {
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
+      console.log(reportData.form_id, "hjjjjj");
+      console.log(formId, "formidddd");
     }
   }, [reportData]);
 
   const generateReport = async () => {
+    console.log(formId, "gu");
+
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
+        `http://localhost:1000/temprature-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -849,6 +853,7 @@ export default function TempretureRecordsPanel() {
                     <div className="instruction"></div>
                     <input
                       name="limit"
+                      disabled
                       type="number"
                       className={`${
                         editData?.limit < 23
@@ -1040,11 +1045,12 @@ export default function TempretureRecordsPanel() {
                             <button
                               className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                               type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
+                              disabled
+                              // onClick={() =>
+                              //   document
+                              //     .getElementById("additionalAttachment")
+                              //     .click()
+                              // }
                             >
                               Change File
                             </button>
@@ -1055,6 +1061,7 @@ export default function TempretureRecordsPanel() {
                               <a
                                 href={editData.additionalAttachment}
                                 target="_blank"
+                                disabled
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
@@ -1066,6 +1073,7 @@ export default function TempretureRecordsPanel() {
                           <div>
                             <button
                               type="button"
+                              disabled
                               onClick={() =>
                                 document
                                   .getElementById("additionalAttachment")
@@ -1079,6 +1087,7 @@ export default function TempretureRecordsPanel() {
                         <input
                           type="file"
                           name="additionalAttachment"
+                          disabled
                           id="additionalAttachment"
                           onChange={handleInitiatorFileChange}
                           style={{ display: "none" }}
@@ -1094,6 +1103,7 @@ export default function TempretureRecordsPanel() {
                     <textarea
                       className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                       rows="4"
+                      disabled
                       name="additionalInfo"
                       value={editData?.additionalInfo}
                       onChange={handleInputChange1}
@@ -1104,7 +1114,31 @@ export default function TempretureRecordsPanel() {
 
               {initiatorRemarks === true ? (
                 <>
+                 <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Initiator </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="initiator"
+                          value={editData.initiator_name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Initiation</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_initiation)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
+                    
                     <div className="group-input">
                       <label className="color-label">
                         Initiator Comment
@@ -1181,29 +1215,7 @@ export default function TempretureRecordsPanel() {
                     </div>
                   </div>
 
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </div>
+                 
                 </>
               ) : null}
 

@@ -67,7 +67,7 @@ const MediaRecordPanel = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
+    //   url: "http://localhost:1000/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -100,11 +100,7 @@ const MediaRecordPanel = () => {
         return;
       }
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
-          data,
-          config
-        )
+        .put("http://localhost:1000/media-record/send-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -119,7 +115,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
+          "http://localhost:1000/media-record/send-review-to-approval",
           data,
           config
         )
@@ -138,7 +134,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
+          "http://localhost:1000/media-record/send-review-to-open",
           data,
           config
         )
@@ -153,11 +149,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/media-record/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/media-record/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -172,7 +164,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
+          "http://localhost:1000/media-record/send-approval-to-open",
           data,
           config
         )
@@ -219,7 +211,7 @@ const MediaRecordPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/media-record/update",
+        url: "http://localhost:1000/media-record/update",
       };
 
       axios(requestOptions)
@@ -435,7 +427,7 @@ const MediaRecordPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/media-record/chat-pdf/${formId}`,
+        `http://localhost:1000/media-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -872,7 +864,7 @@ const MediaRecordPanel = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1113,6 +1105,7 @@ const MediaRecordPanel = () => {
                       htmlFor="additionalAttachment"
                       className="color-label"
                       name="additionalAttachment"
+                      disabled
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1123,17 +1116,21 @@ const MediaRecordPanel = () => {
                         <div className="flex items-center gap-x-10">
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // type="button"
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
+                            disabled
                           >
                             Change File
                           </button>
                           <h3 className="">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                            <span
+                              className="py-1 bg-zinc-300 px-2 rounded-md mr-2 "
+                              disabled
+                            >
                               Selected File:{" "}
                             </span>
                             <a
@@ -1141,6 +1138,7 @@ const MediaRecordPanel = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
+                              disabled
                             >
                               View File
                             </a>
@@ -1150,11 +1148,11 @@ const MediaRecordPanel = () => {
                         <div>
                           <button
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
                           >
                             Select File
                           </button>
@@ -1181,6 +1179,7 @@ const MediaRecordPanel = () => {
                         name="additionalInfo"
                         value={editData.additionalInfo}
                         onChange={handleInputChange1}
+                        disabled
                       />
                     </div>
                   </div>

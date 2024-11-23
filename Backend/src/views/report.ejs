@@ -59,7 +59,18 @@
       {
         padding-top: 35px;
       }
-
+         .green {
+        color: green;
+        font-weight: bold;
+    }
+    .red {
+        color: red;
+        font-weight: bold;
+    }
+.black {
+        color: black;
+        font-weight: bold;
+    }
       </style>
       
     
@@ -82,7 +93,9 @@
             
             <tr>
                 <th>Description</th>
-                <td colspan="3"><%- reportData?.description || "Not Applicable" %></td>
+                <td><%- reportData?.description || "Not Applicable" %></td>
+                <th>Limit</th>
+                <td ><%- reportData?.limit || "Not Applicable" %></td>
             </tr>
         </table>
         <hr />
@@ -100,7 +113,15 @@
                     </tr>
                     <tr>
                         <th>Differential Pressure</th>
-                        <td><%= record?.differential_pressure || "Not Applicable" %></td>
+                     <td class="<%= 
+    record?.differential_pressure < reportData?.limit 
+        ? 'green' 
+        : record?.differential_pressure > reportData?.limit 
+            ? 'red' 
+            : 'black' 
+%>">
+    <%= record?.differential_pressure || "Not Applicable" %>
+</td>
                         <th>Remark</th>
                         <td><%= record?.remarks || "Not Applicable" %></td>
                     </tr>

@@ -123,6 +123,7 @@ exports.InsertMediaRecord = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -172,6 +173,7 @@ exports.InsertMediaRecord = async (req, res) => {
         balance_no_plate: record?.balance_no_plate,
         signature: record?.signature,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await MediaRecord.bulkCreate(formRecords, {
@@ -432,6 +434,7 @@ exports.EditMediaRecord = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -505,6 +508,7 @@ exports.EditMediaRecord = async (req, res) => {
             used_for: newRecord?.used_for,
             balance_no_plate: newRecord?.balance_no_plate,
             signature: newRecord?.signature,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -545,23 +549,24 @@ exports.EditMediaRecord = async (req, res) => {
             loaded_quantity: newRecord.loaded_quantity,
             remarks: newRecord.remarks,
             yield: newRecord.yield,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
-            for (const [field, newValue] of Object.entries(recordFields)) {
-              if (newValue !== undefined) {
-                auditTrailEntries.push({
-                  form_id: form.form_id,
-                  field_name: `${field}[${i}]`,
-                  previous_value: null,
-                  new_value: newValue,
-                  changed_by: user.user_id,
-                  previous_status: form.status,
-                  new_status: "Opened",
-                  declaration: initiatorDeclaration,
-                  action: "Update Elog",
-                });
-              }
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                declaration: initiatorDeclaration,
+                action: "Update Elog",
+              });
             }
+          }
         }
       }
 
@@ -573,7 +578,7 @@ exports.EditMediaRecord = async (req, res) => {
 
       // Create new records
       const formRecords = MediaRecords.map((record, index) => ({
-        form_id: record?.form_id,
+        form_id: form_id,
         unique_id: record?.unique_id,
         date:
           record?.date && !isNaN(new Date(record?.date))
@@ -588,6 +593,7 @@ exports.EditMediaRecord = async (req, res) => {
         used_for: record?.used_for,
         balance_no_plate: record?.balance_no_plate,
         signature: record?.signature,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await MediaRecord.bulkCreate(formRecords, {
@@ -607,15 +613,16 @@ exports.EditMediaRecord = async (req, res) => {
     });
   } catch (error) {
     await transaction.rollback();
-
+console.log(error);
     let errorMessage = "Error during updating elog";
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
+console.log(error);
 
     return res.status(500).json({
       error: true,
-      message: `${errorMessage}: ${error.message}`,
+      message: `${errorMessage}: ${error}`,
     });
   }
 };
@@ -1541,12 +1548,10 @@ exports.generateReport = async (req, res) => {
     res.send(pdf);
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 
@@ -1656,12 +1661,10 @@ exports.viewReport = async (req, res) => {
     });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 exports.effetiveChatByPdf = async (req, res) => {

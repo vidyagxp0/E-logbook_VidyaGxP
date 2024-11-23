@@ -302,9 +302,11 @@ exports.getUserPermissions = async (req, res) => {
       });
     })
     .catch((error) => {
+      console.log(error);
+      
       res.status(400).json({
         error: true,
-        message: error.message,
+        message: error,
       });
     });
 };

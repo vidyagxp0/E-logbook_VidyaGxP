@@ -123,6 +123,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -177,6 +178,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         cleaning_time_end: record?.cleaning_time_end,
         cleaning_done_by: record?.cleaning_done_by,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await OperationOfSterilizerRecord.bulkCreate(formRecords, {
@@ -491,6 +493,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -573,6 +576,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
             cleaning_time_end: newRecord?.cleaning_time_end,
             cleaning_done_by: newRecord?.cleaning_done_by,
             checked_by: newRecord?.checked_by,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -617,23 +621,24 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
             loaded_quantity: newRecord.loaded_quantity,
             remarks: newRecord.remarks,
             yield: newRecord.yield,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
-            for (const [field, newValue] of Object.entries(recordFields)) {
-              if (newValue !== undefined) {
-                auditTrailEntries.push({
-                  form_id: form.form_id,
-                  field_name: `${field}[${i}]`,
-                  previous_value: null,
-                  new_value: newValue,
-                  changed_by: user.user_id,
-                  previous_status: form.status,
-                  new_status: "Opened",
-                  declaration: initiatorDeclaration,
-                  action: "Update Elog",
-                });
-              }
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                declaration: initiatorDeclaration,
+                action: "Update Elog",
+              });
             }
+          }
         }
       }
 
@@ -666,6 +671,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
         cleaning_time_end: record?.cleaning_time_end,
         cleaning_done_by: record?.cleaning_done_by,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await OperationOfSterilizerRecord.bulkCreate(formRecords, {
@@ -1638,12 +1644,10 @@ exports.generateReport = async (req, res) => {
     res.send(pdf);
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 
@@ -1655,7 +1659,7 @@ exports.chatByPdf = async (req, res) => {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
-    
+
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -1752,21 +1756,19 @@ exports.viewReport = async (req, res) => {
     });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res
-      .status(500)
-      .json({
-        error: true,
-        message: `Error generating PDF: ${error.message}`,
-      });
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
   }
 };
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
-   reportData.addtionalInfo = reportData?.addtionalInfo
-     ? removeHtmlTags(reportData?.addtionalInfo)
-     : "Not Applicable";
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {

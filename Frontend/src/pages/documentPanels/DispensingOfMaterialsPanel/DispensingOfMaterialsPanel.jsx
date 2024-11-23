@@ -75,7 +75,7 @@ const DispensingOfMaterialsPanel = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
+          "http://localhost:1000/dispensing-material/send-for-review",
           data,
           config
         )
@@ -93,7 +93,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
+          "http://localhost:1000/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -112,7 +112,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
+          "http://localhost:1000/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -127,11 +127,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/dispensing-material/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -146,7 +142,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
+          "http://localhost:1000/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -197,7 +193,7 @@ const DispensingOfMaterialsPanel = () => {
         },
         data: editData,
 
-        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
+        url: "http://localhost:1000/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -426,7 +422,7 @@ const DispensingOfMaterialsPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/dispensing-material/chat-pdf/${formId}`,
+        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -861,7 +857,7 @@ const DispensingOfMaterialsPanel = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1295,6 +1291,7 @@ const DispensingOfMaterialsPanel = () => {
                       htmlFor="additionalAttachment"
                       className="color-label"
                       name="additionalAttachment"
+                      disabled
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1306,11 +1303,11 @@ const DispensingOfMaterialsPanel = () => {
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
                           >
                             Change File
                           </button>
@@ -1323,6 +1320,7 @@ const DispensingOfMaterialsPanel = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
+                              disabled
                             >
                               View File
                             </a>
@@ -1332,11 +1330,12 @@ const DispensingOfMaterialsPanel = () => {
                         <div>
                           <button
                             type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
+                            // onClick={() =>
+                            //   document
+                            //     .getElementById("additionalAttachment")
+                            //     .click()
+                            // }
+                            disabled
                           >
                             Select File
                           </button>
@@ -1348,6 +1347,7 @@ const DispensingOfMaterialsPanel = () => {
                         id="additionalAttachment"
                         onChange={handleInitiatorFileChange}
                         style={{ display: "none" }}
+                        disabled
                       />
                     </div>
                   </div>
@@ -1363,6 +1363,7 @@ const DispensingOfMaterialsPanel = () => {
                         name="additionalInfo"
                         value={editData.additionalInfo}
                         onChange={handleInputChange1}
+                        disabled
                       />
                     </div>
                   </div>

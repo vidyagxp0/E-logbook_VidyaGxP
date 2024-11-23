@@ -36,8 +36,15 @@ import MediaRecordPanel from "./pages/documentPanels/MediaRecordPanel/MediaRecor
 import OperationOfSterilizerPanel from "./pages/documentPanels/OperationOfSterilizerPanel/OperationOfSterilizerPanel.jsx";
 import DispensingOfMaterialsPanel from "./pages/documentPanels/DispensingOfMaterialsPanel/DispensingOfMaterialsPanel.jsx";
 import Analytics2 from "./pages/analytics2/Analytics2.jsx";
+import EffectiveElogs from "./pages/Dashboard/EffectiveElogs.jsx";
 import ViewReport from "./components/viewReport/ViewReport.jsx";
-
+import DPREffective from "./pages/Dashboard/EffectiveElogs/DiffrentialPressureEffective.jsx";
+import TempretureRecordsEffective from "./pages/Dashboard/EffectiveElogs/TemperatureRecordsEffective.jsx";
+import LoadedQuantityEffective from "./pages/Dashboard/EffectiveElogs/LoadedQuantityEffective.jsx";
+import OperationOfSterilizerEffective from "./pages/Dashboard/EffectiveElogs/OperationOfSterilizerEffective.jsx";
+import MediaRecordEffective from "./pages/Dashboard/EffectiveElogs/MediaRecordEffective.jsx";
+import DispensingOfMaterialsEffective from "./pages/Dashboard/EffectiveElogs/DispensingOfMaterialsEffective.jsx";
+import ExcelSelectWithFileInput from "./pages/TestPages/ExcelImport.jsx";
 
 function App() {
   return (
@@ -45,6 +52,8 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
+          <Route path="/test" element={<ExcelSelectWithFileInput />} />
+
             <Route path="/" element={<Login />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="" element={<Wrapper />}>
@@ -52,6 +61,7 @@ function App() {
                 path="/admin-dashboard"
                 element={<ProtectedAdminRoute element={<AdminDashboard />} />}
               />
+
               <Route
                 path="/admin-add-user"
                 element={<ProtectedAdminRoute element={<AddNewUser />} />}
@@ -103,6 +113,38 @@ function App() {
                 <ProtectedRoute element={<EquipmentCleaningCheckListPanel />} />
               }
             />
+
+            <Route
+              path="/effective-dispensing-of-material"
+              element={
+                <ProtectedRoute element={<DispensingOfMaterialsEffective />} />
+              }
+            />
+            <Route
+              path="/effective-media-record"
+              element={<ProtectedRoute element={<MediaRecordEffective />} />}
+            />
+            <Route
+              path="/effective-operation-of-sterilizer"
+              element={
+                <ProtectedRoute element={<OperationOfSterilizerEffective />} />
+              }
+            />
+            <Route
+              path="/effective-loaded-quantity"
+              element={<ProtectedRoute element={<LoadedQuantityEffective />} />}
+            />
+            <Route
+              path="/effective-tpr"
+              element={
+                <ProtectedRoute element={<TempretureRecordsEffective />} />
+              }
+            />
+            <Route
+              path="/effective-dpr"
+              element={<ProtectedRoute element={<DPREffective />} />}
+            />
+
             <Route
               path="/area-and-equipment-panel"
               element={<ProtectedRoute element={<AreaAndEquipmentPanel />} />}
@@ -130,6 +172,10 @@ function App() {
             <Route
               path="/dashboard"
               element={<ProtectedRoute element={<Dashboard />} />}
+            />
+            <Route
+              path="/effectiveElogs"
+              element={<ProtectedRoute element={<EffectiveElogs />} />}
             />
             <Route
               path="/differential-pressure-record"

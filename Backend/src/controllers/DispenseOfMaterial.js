@@ -123,6 +123,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
+      additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -180,6 +181,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         checked_by: record?.checked_by,
         weighing_balance_id: record?.weighing_balance_id,
         remark: record?.remark,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await DispenseOfMaterialRecord.bulkCreate(formRecords, {
@@ -506,6 +508,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -588,6 +591,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
             checked_by: newRecord?.checked_by,
             weighing_balance_id: newRecord?.weighing_balance_id,
             remark: newRecord?.remark,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -642,6 +646,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
             checked_by: newRecord?.checked_by,
             weighing_balance_id: newRecord?.weighing_balance_id,
             remark: newRecord?.remark,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -694,6 +699,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
         checked_by: record?.checked_by,
         weighing_balance_id: record?.weighing_balance_id,
         remark: record?.remark,
+        reviewed_by: record?.reviewed_by,
       }));
 
       await DispenseOfMaterialRecord.bulkCreate(formRecords, {

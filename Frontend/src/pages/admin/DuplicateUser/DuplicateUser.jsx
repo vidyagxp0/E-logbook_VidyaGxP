@@ -23,14 +23,11 @@ function DuplicateUser() {
 
   useEffect(() => {
     axios
-      .get(
-        `https://elog-backend.mydemosoftware.com/user/get-a-user/${location.state.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
-          },
-        }
-      )
+      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+        },
+      })
       .then((response) => {
         setUserInfo(response.data);
         setSelectedOptions(response.data.roles || []);
@@ -40,7 +37,7 @@ function DuplicateUser() {
       });
 
     axios
-      .get("https://elog-backend.mydemosoftware.com/user/get-all-rolegroups")
+      .get("http://localhost:1000/user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []);
       })
@@ -94,7 +91,7 @@ function DuplicateUser() {
     };
 
     axios
-      .post("https://elog-backend.mydemosoftware.com/user/add-user", formData, {
+      .post("http://localhost:1000/user/add-user", formData, {
         headers: myHeaders,
       })
       .then(() => {

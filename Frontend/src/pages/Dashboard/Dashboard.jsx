@@ -29,7 +29,7 @@ function Dashboard() {
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-all-differential-pressure",
+      url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -53,7 +53,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 1)
           );
         });
-        setDifferentialPressureElogs(filteredArray);
+        setDifferentialPressureElogs(allDifferentialPressureElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -61,7 +61,7 @@ function Dashboard() {
 
     const newConfigTemp = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-all-temprature-record",
+      url: "http://localhost:1000/temprature-record/get-all-temprature-record",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -81,7 +81,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setTempratureRecordElogs(filteredArray);
+        setTempratureRecordElogs(allTempratureRecordElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -89,7 +89,7 @@ function Dashboard() {
 
     const newConfigloaded = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/loaded-quantity/get-all",
+      url: "http://localhost:1000/loaded-quantity/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -109,7 +109,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setLoadedQuantityElogs(filteredArray);
+        setLoadedQuantityElogs(allLoadedQuantityElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -117,7 +117,7 @@ function Dashboard() {
 
     const newConfigMedia = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/media-record/get-all",
+      url: "http://localhost:1000/media-record/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -137,7 +137,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setMediaRecordElogs(filteredArray);
+        setMediaRecordElogs(allMediaRecordElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -145,7 +145,7 @@ function Dashboard() {
 
     const newConfigDispensing = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/dispensing-material/get-all",
+      url: "http://localhost:1000/dispensing-material/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -165,14 +165,14 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setDispensingOfMaterialsElogs(filteredArray);
+        setDispensingOfMaterialsElogs(allDispensingMaterialElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
       });
     const newOperationSterelizer = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/get-all",
+      url: "http://localhost:1000/operation-sterlizer/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -191,7 +191,7 @@ function Dashboard() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setOperationOfSterilizerElogs(filteredArray);
+        setOperationOfSterilizerElogs(allOperationOfSterelizer);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -239,8 +239,7 @@ function Dashboard() {
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
+      hour12: true,
     });
   };
 
