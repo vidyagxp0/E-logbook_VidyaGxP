@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { hasAccess } from "../../components/userAuth/userAuth";
 
-function Dashboard() {
+function EffectiveElogs() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
@@ -83,8 +83,7 @@ function Dashboard() {
             userId === elog.approver_id ||
             hasAccess(4, elog.site_id, 4)
           );
-        }
-      );
+        });
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -705,4 +704,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default EffectiveElogs;
