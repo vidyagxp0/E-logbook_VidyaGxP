@@ -225,7 +225,7 @@ const LoadedQuantityEffective = () => {
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
@@ -255,7 +255,10 @@ const LoadedQuantityEffective = () => {
   }
 
   const addRow = () => {
-    if (userDetails.roles[0].role_id === 1 || userDetails.roles[0].role_id === 5) {
+    if (
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
+    ) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
@@ -374,7 +377,7 @@ const LoadedQuantityEffective = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
+    if (!dateString) return "";
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -386,10 +389,10 @@ const LoadedQuantityEffective = () => {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
+      // hour: "2-digit",
+      // minute: "2-digit",
+      // second: "2-digit",
+      // hour12: true,
     });
   };
 
@@ -891,7 +894,7 @@ const LoadedQuantityEffective = () => {
                             <td>{index + 1}</td>
                             <td>{item.unique_id}</td>
                             <td>
-                              <input value={item.date} readOnly />
+                              <input value={formatDate(item.date)} readOnly />
                             </td>
                             <td>
                               <select
@@ -1059,7 +1062,7 @@ const LoadedQuantityEffective = () => {
                                         LoadedQuantityRecords: newData,
                                       });
                                     }}
-                                    disabled={[1,3].includes(
+                                    disabled={[1, 3].includes(
                                       userDetails.roles[0].role_id
                                     )}
                                   />
@@ -1083,7 +1086,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 // readOnly={!location.state?.reviewer_id}
-                                disabled={[1,3].includes(
+                                disabled={[1, 3].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
@@ -1099,9 +1102,9 @@ const LoadedQuantityEffective = () => {
                   </div>
                   <div className="group-input mt-4">
                     <label
-                      htmlFor="additionalAttachment"
-                      className="color-label"
-                      name="additionalAttachment"
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1109,9 +1112,9 @@ const LoadedQuantityEffective = () => {
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
-                        <div className="flex items-center gap-x-10 ml-3">
+                        <div className="flex items-center gap-x-4 ml-3">
                           <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
                             type="button"
                             onClick={() =>
                               document
@@ -1121,23 +1124,40 @@ const LoadedQuantityEffective = () => {
                           >
                             Change File
                           </button>
-                          <h3 className="">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                              Selected File:{" "}
+                          <h3 className="flex items-center">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                              Selected File:
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 underline"
+                              className="text-blue-600 underline mr-1"
                             >
-                              View File
+                              {editData.additionalAttachment.name || "View File"}
                             </a>
+                            {
+                            editData.additionalAttachment.name &&
+                            <button
+                              className="text-red-500 hover:text-red-700 text-lg"
+                              type="button"
+                              onClick={() =>
+                                setEditData({
+                                  ...editData,
+                                  additionalAttachment: null,
+                                })
+                              }
+                            >
+                              ✖
+                            </button>}
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>
                               document
