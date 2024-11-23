@@ -70,7 +70,7 @@ const LoadedQuantityEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/loaded-quantity/update",
+    //     url: "https://elog-backend.mydemosoftware.com//loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -105,7 +105,7 @@ const LoadedQuantityEffective = () => {
 
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-for-review",
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/send-for-review",
           data,
           config
         )
@@ -123,7 +123,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -142,7 +142,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -157,7 +157,11 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/loaded-quantity/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -172,7 +176,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -219,7 +223,7 @@ const LoadedQuantityEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update",
+        url: "https://elog-backend.mydemosoftware.com//loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -447,7 +451,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com//loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1102,9 +1106,9 @@ const LoadedQuantityEffective = () => {
                   </div>
                   <div className="group-input mt-4">
                     <label
-                      // htmlFor="additionalAttachment"
-                      // className="color-label"
-                      // name="additionalAttachment"
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1129,29 +1133,28 @@ const LoadedQuantityEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={
-                                editData.additionalAttachment
-                              }
+                              href={editData.additionalAttachment}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name || "View File"}
+                              {editData.additionalAttachment.name ||
+                                "View File"}
                             </a>
-                            {
-                            editData.additionalAttachment.name &&
-                            <button
-                              className="text-red-500 hover:text-red-700 text-lg"
-                              type="button"
-                              onClick={() =>
-                                setEditData({
-                                  ...editData,
-                                  additionalAttachment: null,
-                                })
-                              }
-                            >
-                              ✖
-                            </button>}
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
                           </h3>
                         </div>
                       ) : (

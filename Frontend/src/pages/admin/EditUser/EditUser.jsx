@@ -23,11 +23,14 @@ function EditUser() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
-        },
-      })
+      .get(
+        `https://elog-backend.mydemosoftware.com//user/get-a-user/${location.state.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+          },
+        }
+      )
       .then((response) => {
         setUserInfo(response.data);
         setSelectedOptions(response.data.roles || []);
@@ -37,7 +40,7 @@ function EditUser() {
       });
 
     axios
-      .get("http://localhost:1000/user/get-all-rolegroups")
+      .get("https://elog-backend.mydemosoftware.com//user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []);
       })
@@ -105,7 +108,7 @@ function EditUser() {
 
     axios
       .put(
-        `http://localhost:1000/user/edit-user/${location.state.id}`,
+        `https://elog-backend.mydemosoftware.com//user/edit-user/${location.state.id}`,
         resultObj,
         {
           headers: myHeaders,

@@ -72,7 +72,7 @@ const OperationOfSterilizerEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/operation-sterlizer/update",
+    //     url: "https://elog-backend.mydemosoftware.com//operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -111,7 +111,7 @@ const OperationOfSterilizerEffective = () => {
 
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-for-review",
+          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -129,7 +129,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -148,7 +148,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -163,7 +163,11 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/operation-sterlizer/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com//operation-sterlizer/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -178,7 +182,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -225,7 +229,7 @@ const OperationOfSterilizerEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/operation-sterlizer/update",
+        url: "https://elog-backend.mydemosoftware.com//operation-sterlizer/update",
       };
 
       axios(requestOptions)
@@ -461,7 +465,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com//operation-sterlizer/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1028,7 +1032,6 @@ const OperationOfSterilizerEffective = () => {
                                     userDetails.roles[0].role_id
                                   )}
                                 >
-                                  
                                   <option value="">Select Product Name</option>
                                   <option value="ProductA">ProductA</option>
                                   <option value="ProductB">ProductB</option>
@@ -1234,36 +1237,36 @@ const OperationOfSterilizerEffective = () => {
                                 />
                               </td>
                               <td>
-                              <div>
-                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                  <input
-                                    className="h-4 w-4 cursor-pointer"
-                                    type="checkbox"
-                                    checked={!!item.reviewed_by}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.OperationOfSterilizerRecords,
-                                      ];
-                                      if (e.target.checked) {
-                                        newData[index].reviewed_by =
-                                          editData.reviewer2.name;
-                                      } else {
-                                        newData[index].reviewed_by = "";
-                                      }
-                                      setEditData({
-                                        ...editData,
-                                       OperationOfSterilizerRecords: newData,
-                                      });
-                                    }}
-                                    disabled={[1,3].includes(
-                                      userDetails.roles[0].role_id
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                    <input
+                                      className="h-4 w-4 cursor-pointer"
+                                      type="checkbox"
+                                      checked={!!item.reviewed_by}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.OperationOfSterilizerRecords,
+                                        ];
+                                        if (e.target.checked) {
+                                          newData[index].reviewed_by =
+                                            editData.reviewer2.name;
+                                        } else {
+                                          newData[index].reviewed_by = "";
+                                        }
+                                        setEditData({
+                                          ...editData,
+                                          OperationOfSterilizerRecords: newData,
+                                        });
+                                      }}
+                                      disabled={[1, 3].includes(
+                                        userDetails.roles[0].role_id
+                                      )}
+                                    />
+                                    {item.reviewed_by && (
+                                      <p>{item.reviewed_by}</p>
                                     )}
-                                  />
-                                  {item.reviewed_by && (
-                                    <p>{item.reviewed_by}</p>
-                                  )}
+                                  </div>
                                 </div>
-                              </div>
                               </td>
                               <td>
                                 <DeleteIcon onClick={() => deleteRow(index)} />
@@ -1273,12 +1276,12 @@ const OperationOfSterilizerEffective = () => {
                         )}
                       </tbody>
                     </table>
-                    </div>
-                    <div className="group-input mt-4">
+                  </div>
+                  <div className="group-input mt-4">
                     <label
-                      // htmlFor="additionalAttachment"
-                      // className="color-label"
-                      // name="additionalAttachment"
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1303,28 +1306,28 @@ const OperationOfSterilizerEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={
-                                editData.additionalAttachment
-                              }
+                              href={editData.additionalAttachment}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name || "View File"}
-                            </a>{
-                            editData.additionalAttachment.name &&
-                            <button
-                              className="text-red-500 hover:text-red-700 text-lg"
-                              type="button"
-                              onClick={() =>
-                                setEditData({
-                                  ...editData,
-                                  additionalAttachment: null,
-                                })
-                              }
-                            >
-                              ✖
-                            </button>}
+                              {editData.additionalAttachment.name ||
+                                "View File"}
+                            </a>
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
                           </h3>
                         </div>
                       ) : (
