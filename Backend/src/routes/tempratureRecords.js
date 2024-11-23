@@ -116,4 +116,19 @@ router.post(
   TempratureProcess.generateReport
 );
 
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  TempratureProcess.chatByPdf
+);
+
+router.post("/view-report", TempratureProcess.viewReport);
+
+router.post(
+  "/effective-chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  TempratureProcess.effetiveChatByPdf
+);
+
+router.post("/effective-view-report", TempratureProcess.effetiveViewReport);
 module.exports = router;

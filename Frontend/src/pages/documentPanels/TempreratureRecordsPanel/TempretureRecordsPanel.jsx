@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import TinyEditor from "../../../components/TinyEditor";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
 export default function TempretureRecordsPanel() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -15,6 +17,8 @@ export default function TempretureRecordsPanel() {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formId, setFormId] = useState(null);
+
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
@@ -22,6 +26,8 @@ export default function TempretureRecordsPanel() {
     status: "",
     description: "",
     department: "",
+    additionalAttachment: "",
+    additionalInfo: "",
     compression_area: "",
     limit: "",
   });
@@ -41,6 +47,8 @@ export default function TempretureRecordsPanel() {
       email: credentials?.email,
       password: credentials?.password,
       reviewComment: editData.reviewComment,
+      additionalInfo: editData.additionalInfo,
+      additionalAttachment: editData.additionalAttachment,
       approverComment: editData.approverComment,
       initiatorComment: editData.initiatorComment,
     };
@@ -61,7 +69,7 @@ export default function TempretureRecordsPanel() {
       }
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -79,7 +87,7 @@ export default function TempretureRecordsPanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -99,7 +107,7 @@ export default function TempretureRecordsPanel() {
 
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -115,7 +123,7 @@ export default function TempretureRecordsPanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/approve-TR-elog",
+          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -133,7 +141,7 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -180,7 +188,7 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -255,39 +263,40 @@ export default function TempretureRecordsPanel() {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
+    title: "Temperature Record",
     ...editData,
   };
 
+  useEffect(() => {
+    if (reportData && reportData.form_id) {
+      setFormId(reportData.form_id);
+    }
+  }, [reportData]);
+
   const generateReport = async () => {
     setIsLoading(true);
-
     try {
-      const response = await axios({
-        url: "http://localhost:1000/temprature-record/generate-pdf",
-        method: "POST",
-        responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-          "Content-Type": "application/json",
-        },
-        data: {
+      const response = await axios.post(
+        `https://elog-backend.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
+        {
           reportData: reportData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const { filename } = response.data; // Access filename from response.data
 
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `TR${reportData.form_id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
+      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
 
-      window.URL.revokeObjectURL(url);
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to generate PDF. Please try again later.");
+      console.error("Error opening chat PDF:", error);
     } finally {
       setIsLoading(false);
     }
@@ -370,7 +379,11 @@ export default function TempretureRecordsPanel() {
   };
 
   const handleInitiatorFileChange = (e) => {
-    setEditData({ ...editData, initiatorAttachment: e.target.files[0] });
+    setEditData({
+      ...editData,
+      initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[0],
+    });
   };
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
@@ -382,10 +395,16 @@ export default function TempretureRecordsPanel() {
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
-
+  const setTinyContent = (content) => {
+    setEditData((prevState) => ({
+      ...prevState,
+      description: content,
+    }));
+  };
   return (
     <>
       <HeaderTop />
+      <LaunchQMS />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
@@ -723,7 +742,7 @@ export default function TempretureRecordsPanel() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -732,6 +751,11 @@ export default function TempretureRecordsPanel() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
+                      /> */}
+                      <TinyEditor
+                        editorContent={editData.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -827,9 +851,9 @@ export default function TempretureRecordsPanel() {
                       name="limit"
                       type="number"
                       className={`${
-                        editData?.limit < 0.6
+                        editData?.limit < 23
                           ? "limit"
-                          : editData?.limit > 2.6
+                          : editData?.limit > 27
                           ? "limit"
                           : ""
                       }`}
@@ -874,9 +898,9 @@ export default function TempretureRecordsPanel() {
                               type="number"
                               value={item.temprature_record}
                               className={`${
-                                item.temprature_record < 0.6
+                                item.temprature_record < 23
                                   ? "limit"
-                                  : item.temprature_record > 2.6
+                                  : item.temprature_record > 27
                                   ? "limit"
                                   : ""
                               }`}
@@ -997,6 +1021,84 @@ export default function TempretureRecordsPanel() {
                       ))}
                     </tbody>
                   </table>
+                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="additionalAttachment"
+                        className="color-label"
+                        name="additionalAttachment"
+                      >
+                        Additional Attachment{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
+                      </label>
+                      <div>
+                        {editData.additionalAttachment ? (
+                          <div className="flex items-center gap-x-10">
+                            <button
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Change File
+                            </button>
+                            <h3 className="">
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
+                              <a
+                                href={editData.additionalAttachment}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline"
+                              >
+                                View File
+                              </a>
+                            </h3>
+                          </div>
+                        ) : (
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          name="additionalAttachment"
+                          id="additionalAttachment"
+                          onChange={handleInitiatorFileChange}
+                          style={{ display: "none" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label className=" text-lg text-gray-900 mb-1">
+                      Additional Info{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                    </label>
+                    <textarea
+                      className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                      rows="4"
+                      name="additionalInfo"
+                      value={editData?.additionalInfo}
+                      onChange={handleInputChange1}
+                    ></textarea>
+                  </div>
                 </>
               ) : null}
 

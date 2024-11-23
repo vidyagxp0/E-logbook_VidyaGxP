@@ -121,4 +121,18 @@ router.post(
   Auth.checkUserJwtToken,
   OperationOfSterilizer.generateReport
 );
+
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  OperationOfSterilizer.chatByPdf
+);
+router.post("/view-report", OperationOfSterilizer.viewReport);
+
+router.post(
+  "/effective-chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  OperationOfSterilizer.effetiveChatByPdf
+);
+router.post("/effective-view-report", OperationOfSterilizer.effetiveViewReport);
 module.exports = router;

@@ -7,6 +7,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import TinyEditor from "../../../components/TinyEditor";
 
 const MediaRecord = () => {
   const [User, setUser] = useState(null);
@@ -35,10 +36,17 @@ const MediaRecord = () => {
       initiatorComment: " ",
       // initiatorAttachment: null,
       // initiatorDeclaration: "",
-      additionalAttachment: "",
+      additionalAttachment: null,
       additionalInfo: "",
     }
   );
+
+  const handleFileChange = (e) => {
+    setMediaRecords({
+      ...mediaRecords,
+      additionalAttachment: e.target.files[0],
+    });
+  };
   console.log(mediaRecords.additionalInfo, "additionalInfo");
   console.log(mediaRecords.additionalAttachment, "additionalAttachment");
 
@@ -49,7 +57,7 @@ const MediaRecord = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -71,7 +79,7 @@ const MediaRecord = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -95,7 +103,7 @@ const MediaRecord = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -149,7 +157,11 @@ const MediaRecord = () => {
     mediaRecords.initiatorDeclaration = credentials?.declaration;
 
     axios
-      .post("http://localhost:1000/media-record/post", mediaRecords, config)
+      .post(
+        "https://elog-backend.mydemosoftware.com/media-record/post",
+        mediaRecords,
+        config
+      )
       .then(() => {
         toast.success("eLog Saved Successfully!");
         navigate("/dashboard");
@@ -221,6 +233,11 @@ const MediaRecord = () => {
     setIsPopupOpen(false);
   };
 
+  const setTinyContent = (content) => {
+    setMediaRecords({
+      description: content,
+    });
+  };
   return (
     <div>
       <HeaderTop />
@@ -327,7 +344,7 @@ const MediaRecord = () => {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      <input
+                      {/* <input
                         type="text"
                         value={mediaRecords.description}
                         onChange={(e) =>
@@ -336,6 +353,12 @@ const MediaRecord = () => {
                           })
                         }
                         required // HTML5 attribute to enforce field requirement
+                      /> */}
+
+                      <TinyEditor
+                        editorContent={mediaRecords.description}
+                        setEditorContent={setTinyContent}
+                        tinyNo={1}
                       />
                     </div>
                   </div>
@@ -669,26 +692,27 @@ const MediaRecord = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                    <div className="flex flex-col w-full">
-                      <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Attachment (If / Any)
-                      </label>
+                  <div className="group-input flex flex-col mt-6 items-start">
+                    <label className="color-label">
+                      Additional Attachment
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
+                    </label>
+                    <div>
                       <input
                         type="file"
-                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        value={mediaRecords.additionalAttachment}
-                        onChange={(e) => {
-                          setMediaRecords({
-                            additionalAttachment: e.target.value,
-                          });
-                        }}
+                        name="additionalAttachment"
+                        onChange={handleFileChange}
                       />
                     </div>
 
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col w-full mt-4">
                       <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info (If / Any)
+                        Additional Info{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
                       </label>
                       <textarea
                         className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"

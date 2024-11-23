@@ -114,4 +114,23 @@ router.post(
   Auth.checkUserJwtToken,
   DispenseOfMaterial.generateReport
 );
+
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  DispenseOfMaterial.chatByPdf
+);
+
+router.post(
+  "/view-report",
+  DispenseOfMaterial.viewReport
+);
+
+router.post(
+  "/effective-chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  DispenseOfMaterial.effetiveChatByPdf
+);
+
+router.post("/effective-view-report", DispenseOfMaterial.effetiveViewReport);
 module.exports = router;
