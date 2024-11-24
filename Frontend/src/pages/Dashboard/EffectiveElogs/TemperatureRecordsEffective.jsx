@@ -1087,16 +1087,17 @@ export default function TempretureRecordsEffective() {
                           </div>
                         ) : (
                           <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
-                            >
-                              Select File
-                            </button>
+                           <button
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
                           </div>
                         )}
                         <input

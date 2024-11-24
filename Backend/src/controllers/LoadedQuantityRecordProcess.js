@@ -35,6 +35,8 @@ exports.InsertLoadedQuantity = async (req, res) => {
     initiatorDeclaration,
     additionalAttachment,
     additionalInfo,
+    product_nameArray,
+    batch_noArray,
   } = req.body;
 
   if (!approver_id) {
@@ -90,6 +92,8 @@ exports.InsertLoadedQuantity = async (req, res) => {
         additionalAttachment = file;
       }
     });
+    // const validArray = req.body.product_nameArray.map((item) => ({ ...item }));
+    // const validBatch = req.body.batch_noArray.map((item) => ({ ...item }));
 
     // Create new Differential Pressure Form
     const newForm = await LoadedQuantityProcessForm.create(
@@ -109,6 +113,8 @@ exports.InsertLoadedQuantity = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
+        product_nameArray,
+        batch_noArray
       },
 
       { transaction }
@@ -358,6 +364,8 @@ exports.EditLoadedQuantity = async (req, res) => {
     initiatorComment,
     initiatorDeclaration,
     additionalInfo,
+    product_nameArray,
+    batch_noArray,
   } = req.body;
   console.log(email, password, "wwwww");
   if (!form_id) {
@@ -457,6 +465,10 @@ exports.EditLoadedQuantity = async (req, res) => {
         });
       }
     }
+    const validArray = req.body.product_nameArray.map((item) => ({ ...item }));
+    const validBatch = req.body.batch_noArray.map((item) => ({ ...item }));
+    // console.log(validArray, "VALIDPRODUCT");
+
 
     // Update the form details
     await form.update(
@@ -472,6 +484,8 @@ exports.EditLoadedQuantity = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
         additionalInfo,
+        product_nameArray:validArray,
+        batch_noArray:validBatch,
       },
       { transaction }
     );
@@ -1559,7 +1573,7 @@ exports.chatByPdf = async (req, res) => {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
-    
+
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -1675,9 +1689,9 @@ exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
-   reportData.addtionalInfo = reportData?.addtionalInfo
-     ? removeHtmlTags(reportData?.addtionalInfo)
-     : "Not Applicable";
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
