@@ -72,7 +72,7 @@ const OperationOfSterilizerPanel = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
+    //     url: "http://localhost:1000/operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -111,7 +111,7 @@ const OperationOfSterilizerPanel = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-for-review",
+          "http://localhost:1000/operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -129,7 +129,7 @@ const OperationOfSterilizerPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-approval",
+          "http://localhost:1000/operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -148,7 +148,7 @@ const OperationOfSterilizerPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-open",
+          "http://localhost:1000/operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -163,11 +163,7 @@ const OperationOfSterilizerPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/operation-sterlizer/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -182,7 +178,7 @@ const OperationOfSterilizerPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-approval-to-open",
+          "http://localhost:1000/operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -229,7 +225,7 @@ const OperationOfSterilizerPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
+        url: "http://localhost:1000/operation-sterlizer/update",
       };
 
       axios(requestOptions)
@@ -465,7 +461,7 @@ const OperationOfSterilizerPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/operation-sterlizer/chat-pdf/${formId}`,
+        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -901,7 +897,7 @@ const OperationOfSterilizerPanel = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd /*onClick={addRow}*/ />
+                    <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1281,9 +1277,9 @@ const OperationOfSterilizerPanel = () => {
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="flex flex-col w-full">
                         <label
-                        // htmlFor="additionalAttachment"
-                        // className="color-label"
-                        // name="additionalAttachment"
+                          // htmlFor="additionalAttachment"
+                          // className="color-label"
+                          // name="additionalAttachment"
                         >
                           Attachment{" "}
                           <span className="text-sm text-zinc-600">
@@ -1322,7 +1318,7 @@ const OperationOfSterilizerPanel = () => {
                           ) : (
                             <div>
                               <button
-                                disabled
+                              disabled
                                 type="button"
                                 onClick={() =>
                                   document
@@ -1353,7 +1349,7 @@ const OperationOfSterilizerPanel = () => {
                           :
                         </label>
                         <textarea
-                          disabled
+                        disabled
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
                           name="additionalInfo"

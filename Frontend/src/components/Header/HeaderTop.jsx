@@ -14,7 +14,7 @@ function HeaderTop() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -49,7 +49,7 @@ function HeaderTop() {
             </div>
           </div>
           <div className="center">
-            {/* <div className="inputContainer">
+            <div className="inputContainer">
               <div className="inputInnerLeft">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -75,9 +75,7 @@ function HeaderTop() {
                   Search
                 </button>
               </div>
-            </div> */}
-
-            <h1 className="text-4xl font-bold font-serif">eLog-Book</h1>
+            </div>
           </div>
           <div className="right">
             <div className="bellLeft">

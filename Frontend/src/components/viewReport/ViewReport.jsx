@@ -20,7 +20,7 @@ const ViewReport = () => {
 
   // console.log(elogIdValue, "elogvalue");
 
-  const pdfUrl = `https://elog-backend.mydemosoftware.com/public/Elog_Report_${elogIdValue}.pdf`;
+  const pdfUrl = `http://localhost:1000/public/Elog_Report_${elogIdValue}.pdf`;
 
   const initializeChatModal = async (data) => {
     try {

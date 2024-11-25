@@ -55,7 +55,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const LoadedQuantity = () => {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -157,7 +157,7 @@ const LoadedQuantity = () => {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com/loaded-quantity/post",
+        "http://localhost:1000/loaded-quantity/post",
         loadedQuantity,
         config
       )
@@ -460,8 +460,8 @@ const LoadedQuantity = () => {
                   </div>
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd /*onClick={addRow}*/ />
-                      <div className="addrowinstruction"></div>
+                    <NoteAdd /*onClick={addRow}*/ />
+                    <div className="addrowinstruction"></div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
@@ -530,9 +530,11 @@ const LoadedQuantity = () => {
                               <select
                                 value={item.product_name}
                                 onChange={(e) => {
-                                  const newData = [...allTableData];
+                                  const newData = [
+                                    ...allTableData,
+                                  ];
                                   newData[index].product_name = e.target.value;
-                                  setAllTableData(newData);
+                                    setAllTableData(newData);
                                 }}
                                 // disabled={
                                 //   location.state?.stage !== 1 ||
@@ -611,7 +613,7 @@ const LoadedQuantity = () => {
                                 required
                               />
                             </td>
-
+                            
                             <td>
                               <input
                                 type="text"
@@ -645,7 +647,7 @@ const LoadedQuantity = () => {
                                   newData[index].remarks = e.target.value;
                                   setAllTableData(newData);
                                 }}
-                                disabled
+                               disabled
                               />
                             </td>
 
@@ -709,7 +711,7 @@ const LoadedQuantity = () => {
                     </label>
                     <div>
                       <input
-                        disabled
+                      disabled
                         type="file"
                         name="additionalAttachment"
                         onChange={handleFileChange}
@@ -724,7 +726,7 @@ const LoadedQuantity = () => {
                     </label>
                     <div>
                       <textarea
-                        disabled
+                      disabled
                         type="text"
                         name="additionalInfo"
                         value={loadedQuantity.additionalInfo}
