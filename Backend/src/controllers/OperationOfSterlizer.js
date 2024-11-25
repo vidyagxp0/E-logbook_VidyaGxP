@@ -418,6 +418,8 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
     initiatorComment,
     initiatorDeclaration,
     additionalInfo,
+    product_nameArray,
+    batch_noArray,
   } = req.body;
 
   if (!form_id) {
@@ -518,6 +520,9 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
       }
     }
 
+     const validArray = product_nameArray.map((item) => ({ ...item }));
+    const validBatch = batch_noArray.map((item) => ({ ...item }));
+
     // Update the form details
     await form.update(
       {
@@ -532,6 +537,8 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
         additionalInfo,
+        product_nameArray: validArray,
+        batch_noArray: validBatch,
       },
       { transaction }
     );

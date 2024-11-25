@@ -12,6 +12,17 @@ const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const DispenseOfMaterialForm = require("../models/dispensingOfMaterialForm");
+const DispenseOfMaterialRecord = require("../models/dispensingOfMaterialRecords");
+const LoadedQuantityProcessForm = require("../models/loadedQuantityProcessForm");
+const LoadedQuantityRecord = require("../models/loadedQuantityRecords");
+const MediaRecordProcessForm = require("../models/mediaRrecordForm");
+const MediaRecord = require("../models/mediaRecords");
+const OperationOfSterilizerProcessForm = require("../models/OperationOfSterilizerProcessForm");
+const OperationOfSterilizerRecord = require("../models/operationOfSterilizerRecords");
+const TempratureProcessForm = require("../models/tempratureProcessForm");
+const TempratureProcessRecord = require("../models/tempratureProcessRecords");
+
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -1794,5 +1805,107 @@ exports.effetiveViewReport = async (req, res) => {
     return res
       .status(500)
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+
+exports.GetAll = async (req, res) => {
+  try {
+  const { search } = req.query; // Capture search keyword from query parameters
+
+  const searchCondition = search
+    ? {
+        [Op.or]: [
+          { site_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
+          { form_id: { [Op.like]: `%${search}%` } }, // Example: Search by form_id
+          { initiator_name: { [Op.like]: `%${search}%` } }, // Example: Search by initiator_name
+        ],
+      }
+    : {};
+
+  // Use Promise.all to run all queries concurrently
+  const [
+    differentialPressureForms,
+    dispenseOfMaterialForms,
+    loadedQuantityForms,
+    mediaRecordForms,
+    operationOfSterilizerForms,
+    temperatureForms,
+  ] = await Promise.all([
+    DifferentialPressureForm.findAll({
+      where: searchCondition,
+      include: [
+        { model: DifferentialPressureRecord },
+        { model: User, as: "reviewer", attributes: ["user_id", "name"] },
+        { model: User, as: "approver", attributes: ["user_id", "name"] },
+      ],
+      order: [["form_id", "DESC"]],
+    }),
+    DispenseOfMaterialForm.findAll({
+      where: searchCondition,
+      include: [
+        { model: DispenseOfMaterialRecord },
+        { model: User, as: "reviewer4", attributes: ["user_id", "name"] },
+        { model: User, as: "approver4", attributes: ["user_id", "name"] },
+      ],
+      order: [["form_id", "DESC"]],
+    }),
+    LoadedQuantityProcessForm.findAll({
+      where: searchCondition,
+      include: [
+        { model: LoadedQuantityRecord },
+        { model: User, as: "reviewer1", attributes: ["user_id", "name"] },
+        { model: User, as: "approver1", attributes: ["user_id", "name"] },
+      ],
+      order: [["form_id", "DESC"]],
+    }),
+    MediaRecordProcessForm.findAll({
+      where: searchCondition,
+      include: [
+        { model: MediaRecord },
+        { model: User, as: "reviewer3", attributes: ["user_id", "name"] },
+        { model: User, as: "approver3", attributes: ["user_id", "name"] },
+      ],
+      order: [["form_id", "DESC"]],
+    }),
+    OperationOfSterilizerProcessForm.findAll({
+      where: searchCondition,
+      include: [
+        { model: OperationOfSterilizerRecord },
+        { model: User, as: "reviewer2", attributes: ["user_id", "name"] },
+        { model: User, as: "approver2", attributes: ["user_id", "name"] },
+      ],
+      order: [["form_id", "DESC"]],
+    }),
+    TempratureProcessForm.findAll({
+      where: searchCondition,
+      include: [
+        { model: TempratureProcessRecord },
+        { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
+        { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
+      ],
+      order: [["form_id", "DESC"]],
+    }),
+  ]);
+
+  // Combine all results into a single object
+  const data = {
+    differentialPressureForms,
+    dispenseOfMaterialForms,
+    loadedQuantityForms,
+    mediaRecordForms,
+    operationOfSterilizerForms,
+    temperatureForms,
+  };
+
+    return res.status(200).json({
+      error: false,
+      message: "Data fetched successfully",
+      data: data,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error: ${error.message}` });
   }
 };

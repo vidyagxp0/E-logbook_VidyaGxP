@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FaComments, FaTimes } from "react-icons/fa"; // Icon for chat button and close button
 import { useLocation } from "react-router-dom";
 
-const ViewReport = () => {
+const Effective_ViewReport = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -17,10 +17,12 @@ const ViewReport = () => {
   const url = new URL(window.location.href);
 
   const elogIdValue = url.searchParams.get("formId") || NA;
+    const elogfilename = url.searchParams.get("filename") || NA;
+    const dynamicPattern = new RegExp(`_${elogIdValue}\\.pdf$`);
+    const filteredfilename = elogfilename.replace(dynamicPattern, "");
+//   console.log(elogIdValue, "elogvalue");
 
-  // console.log(elogIdValue, "elogvalue");
-
-  const pdfUrl = `http://localhost:1000/public/Elog_Report_${elogIdValue}.pdf`;
+  const pdfUrl = `http://localhost:1000/public/${filteredfilename}_${elogIdValue}.pdf`;
 
   const initializeChatModal = async (data) => {
     try {
@@ -176,4 +178,4 @@ const ViewReport = () => {
   );
 };
 
-export default ViewReport;
+export default Effective_ViewReport;

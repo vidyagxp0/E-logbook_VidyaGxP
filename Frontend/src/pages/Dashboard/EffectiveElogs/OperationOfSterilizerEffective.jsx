@@ -9,6 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import * as XLSX from "xlsx";
 
 const OperationOfSterilizerEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
@@ -18,6 +19,8 @@ const OperationOfSterilizerEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [productNameArray, setProductNameArray] = useState([]);
+  const [batchNoArray, setBatchNoArray] = useState([]);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
@@ -28,7 +31,33 @@ const OperationOfSterilizerEffective = () => {
     additionalInfo: "",
     additionalAttachment: "",
     OperationOfSterilizerRecords: [],
+    product_nameArray: [],
+    batch_noArray: [],
   });
+
+  useEffect(() => {
+    setEditData((prevData) => {
+      const updatedProductNameArray = Array.isArray(productNameArray)
+        ? [
+            ...(prevData.product_nameArray || []), // Retain previous values
+            ...productNameArray.map((itm) => ({ productName: itm })),
+          ]
+        : prevData.product_nameArray;
+  
+      const updatedBatchNoArray = Array.isArray(batchNoArray)
+        ? [
+            ...(prevData.batch_noArray || []), // Retain previous values
+            ...batchNoArray.map((itm) => ({ batchNo: itm })),
+          ]
+        : prevData.batch_noArray;
+  
+      return {
+        ...prevData,
+        product_nameArray: updatedProductNameArray,
+        batch_noArray: updatedBatchNoArray,
+      };
+    });
+  }, [productNameArray, batchNoArray]);
 
   console.log(editData, "editData");
   const navigate = useNavigate();
@@ -352,8 +381,8 @@ const OperationOfSterilizerEffective = () => {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.OperationOfSterilizerRecords];
       updatedGridData.splice(index, 1);
@@ -461,7 +490,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/operation-sterlizer/chat-pdf/${formId}`,
+        `http://localhost:1000/operation-sterlizer/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -475,7 +504,7 @@ const OperationOfSterilizerEffective = () => {
 
       const { filename } = response.data; // Access filename from response.data
 
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -491,6 +520,63 @@ const OperationOfSterilizerEffective = () => {
       ...prevState,
       description: content,
     }));
+  };
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileReader = new FileReader();
+      let hasErrorOccurred = false;
+  
+      fileReader.onload = (e) => {
+        const workbook = XLSX.read(e.target.result, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+  
+        const normalizedData = jsonData.map((item, index) => {
+          const normalizedItem = {};
+  
+          if (index === 0 && !hasErrorOccurred) {
+            const headers = Object.keys(item);
+            const isProductNamePresent = headers.includes("Product Name");
+            const isBatchNoPresent = headers.includes("Batch No") || headers.includes("Batch No.");
+  
+            if (!isProductNamePresent && !isBatchNoPresent) {
+              toast.error("Excel file headers do not match the required format!");
+              hasErrorOccurred = true;
+              return null; 
+            }
+          }
+  
+          Object.keys(item).forEach((key) => {
+            const normalizedKey = key.trim();
+            normalizedItem[normalizedKey] = item[key];
+          });
+  
+          return normalizedItem;
+        }).filter((item) => item !== null);
+  
+        if (hasErrorOccurred) {
+          return;
+        }
+  
+        const importedProductName = normalizedData
+          .map((item) => item["Product Name"])
+          .filter((name) => name); 
+        const importedBatchNo = normalizedData
+          .map((item) => item["Batch No"] || item["Batch No."])
+          .filter((no) => no);
+  
+        if (importedProductName.length > 0) {
+          setProductNameArray((prev) => [...prev, ...importedProductName]);
+        }
+        if (importedBatchNo.length > 0) {
+          setBatchNoArray((prev) => [...prev, ...importedBatchNo]);
+        }
+      };
+  
+      fileReader.readAsBinaryString(file);
+    }
   };
   return (
     <div>
@@ -895,9 +981,25 @@ const OperationOfSterilizerEffective = () => {
               {isSelectedDetails === true ? (
                 <>
                   <div>
-                    <div className="AddRows d-flex">
+                    <div className="AddRows flex items-center justify-between">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
+                      <div className="flex items-start">
+                        {/* Added ml-auto to push to the right */}
+                        <label
+                          htmlFor="file-upload"
+                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:outline-none px-4 py-2 m-0"
+                        >
+                          Import Product & Batch
+                        </label>
+                        <input
+                          id="file-upload"
+                          type="file"
+                          accept=".xlsx, .xls"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
@@ -913,7 +1015,7 @@ const OperationOfSterilizerEffective = () => {
                           <th rowSpan={2}>Product Name</th>
                           <th rowSpan={2}>Container size (ml)</th>
                           <th rowSpan={2}>Loaded quantity</th>
-                          <th rowSpan={2}>Batch No.- Lot. No.</th>
+                          <th rowSpan={2}>Batch No.</th>
                           <th rowSpan={2}>Loading Time</th>
                           <th rowSpan={1} colSpan={2}>
                             {" "}
@@ -1028,11 +1130,23 @@ const OperationOfSterilizerEffective = () => {
                                     userDetails.roles[0].role_id
                                   )}
                                 >
-                                  
-                                  <option value="">Select Product Name</option>
-                                  <option value="ProductA">ProductA</option>
-                                  <option value="ProductB">ProductB</option>
-                                  <option value="ProductC">ProductC</option>
+                                  {Array.isArray(editData.product_nameArray) &&
+                                  editData.product_nameArray.length > 0 ? (
+                                    editData.product_nameArray.map(
+                                      (productNameArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={productNameArray.productName}
+                                        >
+                                          {productNameArray.productName}
+                                        </option>
+                                      )
+                                    )
+                                  ) : (
+                                    <option value="">
+                                      No Product Name available
+                                    </option>
+                                  )}
                                 </select>
                               </td>
                               <td>
@@ -1081,8 +1195,7 @@ const OperationOfSterilizerEffective = () => {
                                     const newData = [
                                       ...editData.OperationOfSterilizerRecords,
                                     ];
-                                    newData[index].batch_no_lot_no =
-                                      e.target.value;
+                                    newData[index].batch_no_lot_no = e.target.value;
                                     setEditData({
                                       ...editData,
                                       OperationOfSterilizerRecords: newData,
@@ -1092,12 +1205,23 @@ const OperationOfSterilizerEffective = () => {
                                     userDetails.roles[0].role_id
                                   )}
                                 >
-                                  <option value="">
-                                    Select Batch/Lot Number
-                                  </option>
-                                  <option value="Batch001">Batch001</option>
-                                  <option value="Batch002">Batch002</option>
-                                  <option value="Batch003">Batch003</option>
+                                  {Array.isArray(editData.batch_noArray) &&
+                                  editData.batch_noArray.length > 0 ? (
+                                    editData.batch_noArray.map(
+                                      (batchNoArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={batchNoArray.batchNo}
+                                        >
+                                          {batchNoArray.batchNo}
+                                        </option>
+                                      )
+                                    )
+                                  ) : (
+                                    <option value="">
+                                      No Batch No. available
+                                    </option>
+                                  )}
                                 </select>
                               </td>
                               <td>
@@ -1234,36 +1358,36 @@ const OperationOfSterilizerEffective = () => {
                                 />
                               </td>
                               <td>
-                              <div>
-                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                  <input
-                                    className="h-4 w-4 cursor-pointer"
-                                    type="checkbox"
-                                    checked={!!item.reviewed_by}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.OperationOfSterilizerRecords,
-                                      ];
-                                      if (e.target.checked) {
-                                        newData[index].reviewed_by =
-                                          editData.reviewer2.name;
-                                      } else {
-                                        newData[index].reviewed_by = "";
-                                      }
-                                      setEditData({
-                                        ...editData,
-                                       OperationOfSterilizerRecords: newData,
-                                      });
-                                    }}
-                                    disabled={[1,3].includes(
-                                      userDetails.roles[0].role_id
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                    <input
+                                      className="h-4 w-4 cursor-pointer"
+                                      type="checkbox"
+                                      checked={!!item.reviewed_by}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.OperationOfSterilizerRecords,
+                                        ];
+                                        if (e.target.checked) {
+                                          newData[index].reviewed_by =
+                                            editData.reviewer2.name;
+                                        } else {
+                                          newData[index].reviewed_by = "";
+                                        }
+                                        setEditData({
+                                          ...editData,
+                                          OperationOfSterilizerRecords: newData,
+                                        });
+                                      }}
+                                      disabled={[1, 3].includes(
+                                        userDetails.roles[0].role_id
+                                      )}
+                                    />
+                                    {item.reviewed_by && (
+                                      <p>{item.reviewed_by}</p>
                                     )}
-                                  />
-                                  {item.reviewed_by && (
-                                    <p>{item.reviewed_by}</p>
-                                  )}
+                                  </div>
                                 </div>
-                              </div>
                               </td>
                               <td>
                                 <DeleteIcon onClick={() => deleteRow(index)} />
@@ -1273,12 +1397,12 @@ const OperationOfSterilizerEffective = () => {
                         )}
                       </tbody>
                     </table>
-                    </div>
-                    <div className="group-input mt-4">
+                  </div>
+                  <div className="group-input mt-4">
                     <label
-                      // htmlFor="additionalAttachment"
-                      // className="color-label"
-                      // name="additionalAttachment"
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1303,34 +1427,34 @@ const OperationOfSterilizerEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={
-                                editData.additionalAttachment
-                              }
+                              href={editData.additionalAttachment}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name || "View File"}
-                            </a>{
-                            editData.additionalAttachment.name &&
-                            <button
-                              className="text-red-500 hover:text-red-700 text-lg"
-                              type="button"
-                              onClick={() =>
-                                setEditData({
-                                  ...editData,
-                                  additionalAttachment: null,
-                                })
-                              }
-                            >
-                              ✖
-                            </button>}
+                              {editData.additionalAttachment.name ||
+                                "View File"}
+                            </a>
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>
                               document
