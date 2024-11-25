@@ -9,6 +9,7 @@ import { hasAccess } from "../../components/userAuth/userAuth";
 function Dashboard() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
+  const [eLogStatus, setELogStatus] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
     []
   );
@@ -23,6 +24,7 @@ function Dashboard() {
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
   );
+  const [filteredRecords, setFilteredRecords] = useState([]);
   console.log(operationOfSterilizerElogs, "operationOfSterilizerElogs");
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
@@ -198,17 +200,8 @@ function Dashboard() {
       });
   }, []);
 
-  const combinedRecords = [
-    ...differentialPressureElogs,
-    // ...areaAndERecordElogs,
-    ...equipmentCRecordElogs,
-    ...tempratureRecordElogs,
-    ...loadedQuantityElogs,
-    ...mediaRecordElogs,
-    ...dispensingOfMaterialsElogs,
-    ...operationOfSterilizerElogs,
-  ];
-
+  const [combinedRecords, setCombinedRecords] = useState([]);
+  console.log(combinedRecords, "combinedRecords");
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
       navigate("/dpr-panel", { state: item });
@@ -243,33 +236,102 @@ function Dashboard() {
     });
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const filteredData = [
+      ...differentialPressureElogs,
+      ...equipmentCRecordElogs,
+      ...tempratureRecordElogs,
+      ...loadedQuantityElogs,
+      ...mediaRecordElogs,
+      ...dispensingOfMaterialsElogs,
+      ...operationOfSterilizerElogs,
+    ].filter((item) => {
+      const matchesSearchTerm =
+        item.date_of_initiation
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.initiator_name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item?.TempratureRecords
+          ? `TR${item.form_id}`
+          : item?.LoadedQuantityRecords
+          ? `LQ${item.form_id}`
+          : item?.OperationOfSterilizerRecords
+          ? `OF${item.form_id}`
+          : item?.MediaRecords
+          ? `MR${item.form_id}`
+          : item?.DispenseOfMaterials
+          ? `DM${item.form_id}`
+          : `DP${item.form_id}`
+        )
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
+
+      // Check if the status matches
+      const matchesStatus =
+        eLogStatus === "All_Records" || // Match all records
+        item.status.toLowerCase() === eLogStatus.toLowerCase();
+
+      return matchesSearchTerm && matchesStatus;
+    });
+
+    setCombinedRecords(filteredData);
+  }, [
+    searchTerm,
+    eLogStatus,
+    differentialPressureElogs,
+    equipmentCRecordElogs,
+    tempratureRecordElogs,
+    loadedQuantityElogs,
+    mediaRecordElogs,
+    dispensingOfMaterialsElogs,
+    operationOfSterilizerElogs,
+  ]);
+
   return (
     <>
       <HeaderTop />
       <HeaderBottom />
 
       <div className="desktop-input-table-wrapper">
-        <div
-          className="input-wrapper"
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          <div
-            className="group-input-2"
-            style={{ width: "70%", display: "flex", justifyContent: "center" }}
-          >
-            {/* <label>eLog</label> */}
+        <div className="flex  items-center  gap-10 p-4">
+          {/* Search Input and Button */}
+          <div className="flex items-center h-[40px] border border-gray-300 rounded-md shadow-sm w-full max-w-md p-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="#0c5fc6"
+              width={"25"}
+              height={"25"}
+            >
+              <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"></path>
+            </svg>
+            <input
+              type="search"
+              placeholder="Search..."
+              className="flex-grow outline-none border-none px-2 py-1"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          {/* Dropdown */}
+          <div className="w-full max-w-md ">
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
-              style={{ height: "40px" }}
+              className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
+              style={{ border: "1px solid gray", padding: "2px 0px" }}
             >
               <option value="All_Records">All Records</option>
               <option value="diffrential_pressure">
-                Diffrential Pressure Record
+                Differential Pressure Record
               </option>
-              {/* <option value="area_and_equipment">
-                Area & Equipment Usage Log
-              </option> */}
               <option value="equipment_cleaning">
                 Equipment Cleaning Checklist
               </option>
@@ -284,7 +346,21 @@ function Dashboard() {
               </option>
             </select>
           </div>
-          {/* <button className="btn">Print</button> */}
+
+          <div className="w-full max-w-md ">
+            <select
+              value={eLogStatus}
+              onChange={(e) => setELogStatus(e.target.value)}
+              className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
+              style={{ border: "1px solid gray", padding: "2px 0px" }}
+            >
+              <option value="All_Records">All</option>
+              <option value="opened">Opened</option>
+              <option value="underReview">Under Review</option>
+              <option value="underApproval">Under Approval</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
         </div>
 
         <table>
@@ -590,7 +666,8 @@ function Dashboard() {
                   (a, b) =>
                     new Date(b.date_of_initiation) -
                     new Date(a.date_of_initiation)
-                ) // Sorting in descending order
+                )
+
                 .map((item, index) => (
                   <>
                     {/* {console.log(item, "item")} */}
