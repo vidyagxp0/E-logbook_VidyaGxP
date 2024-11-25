@@ -443,7 +443,7 @@ const DispensingOfMaterialsEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com//dispensing-material/chat-pdf/${formId}`,
+        `http://localhost:1000/dispensing-material/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -457,7 +457,7 @@ const DispensingOfMaterialsEffective = () => {
 
       const { filename } = response.data; // Access filename from response.data
 
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");

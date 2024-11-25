@@ -465,7 +465,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com//operation-sterlizer/chat-pdf/${formId}`,
+        `http://localhost:1000/operation-sterlizer/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -479,7 +479,7 @@ const OperationOfSterilizerEffective = () => {
 
       const { filename } = response.data; // Access filename from response.data
 
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");

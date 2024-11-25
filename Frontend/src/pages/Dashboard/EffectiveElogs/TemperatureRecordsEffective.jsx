@@ -294,7 +294,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com//temprature-record/chat-pdf/${formId}`,
+        `http://localhost:1000/temprature-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -308,7 +308,7 @@ export default function TempretureRecordsEffective() {
 
       const { filename } = response.data; // Access filename from response.data
 
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
