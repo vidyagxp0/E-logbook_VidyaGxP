@@ -30,7 +30,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export default function DiffrentialPressure() {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -135,7 +135,7 @@ export default function DiffrentialPressure() {
 
     axios
       .post(
-        "http://localhost:1000/differential-pressure/post-differential-pressure",
+        "https://elog-backend.mydemosoftware.com/differential-pressure/post-differential-pressure",
         differentialPRecord,
         config
       )
@@ -638,9 +638,9 @@ export default function DiffrentialPressure() {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd 
+                      <NoteAdd
                       // onClick={addRow}
-                       />
+                      />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>

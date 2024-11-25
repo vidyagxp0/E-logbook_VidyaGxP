@@ -55,7 +55,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const OperationOfSterilizer = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -156,7 +156,7 @@ const OperationOfSterilizer = () => {
 
     axios
       .post(
-        "http://localhost:1000/operation-sterlizer/post",
+        "https://elog-backend.mydemosoftware.com/operation-sterlizer/post",
         operationOfSterilizer,
         config
       )
@@ -777,7 +777,7 @@ const OperationOfSterilizer = () => {
                       </label>
                       <div>
                         <input
-                        disabled
+                          disabled
                           type="file"
                           name="additionalAttachment"
                           onChange={handleFileChange}
@@ -793,7 +793,7 @@ const OperationOfSterilizer = () => {
                           :
                         </label>
                         <textarea
-                        disabled
+                          disabled
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
                           value={operationOfSterilizer.additionalInfo}
