@@ -1838,7 +1838,7 @@ exports.blankReport = async (req, res) => {
 
     // Generate PDF
     const pdf = await page.pdf({
-      format: "a4",
+      format: "A4",
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
@@ -1864,9 +1864,9 @@ exports.blankReport = async (req, res) => {
       }),
       margin: {
         top: "145px",
-        // right: "50px",
+        right: "50px",
         bottom: "50px",
-        // left: "50px",
+        left: "37px",
       },
     });
 
