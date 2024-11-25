@@ -25,6 +25,7 @@ export default function DiffrentialPressure() {
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
   const location = useLocation();
+  const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
     const config = {
@@ -480,7 +481,6 @@ export default function DiffrentialPressure() {
                     <label className="color-label">Department</label>
                     <select
                       className="form-control"
-                      disabled
                       name="assign_to"
                       value={differentialPRecord.department}
                       onChange={(e) =>
@@ -488,6 +488,9 @@ export default function DiffrentialPressure() {
                           department: e.target.value,
                         })
                       }
+                      disabled={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
                     >
                       <option value="">-- Select --</option>
                       <option value="Corporate Quality Assurance">
@@ -522,7 +525,6 @@ export default function DiffrentialPressure() {
                       Compression Area with respect to Corridor
                     </label>
                     <select
-                      disabled
                       className="form-control"
                       name="assign_to"
                       value={differentialPRecord.compression_area}
@@ -531,6 +533,9 @@ export default function DiffrentialPressure() {
                           compression_area: e.target.value,
                         })
                       }
+                      disabled={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
                     >
                       <option value="Select a value">Select a value</option>
                       <option value="Area 1">Area 1</option>
@@ -547,7 +552,6 @@ export default function DiffrentialPressure() {
                     <div className="instruction"></div>
                     <input
                       type="number"
-                      disabled
                       className={`${
                         differentialPRecord.limit < 0.6
                           ? "limit"
@@ -559,6 +563,9 @@ export default function DiffrentialPressure() {
                       onChange={(e) =>
                         setDifferentialPRecord({ limit: e.target.value })
                       }
+                      disabled={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
                     />
                   </div>
 

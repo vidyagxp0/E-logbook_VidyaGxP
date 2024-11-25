@@ -1332,8 +1332,8 @@ const OperationOfSterilizerEffective = () => {
                         </div>
                       ) : (
                         <div>
-                          <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                         <button
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>
                               document

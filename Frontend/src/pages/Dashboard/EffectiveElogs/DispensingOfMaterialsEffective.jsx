@@ -1692,11 +1692,6 @@ const DispensingOfMaterialsEffective = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
                             >
                               Change File
                             </button>
@@ -1713,21 +1708,17 @@ const DispensingOfMaterialsEffective = () => {
                           </div>
                         ) : (
                           <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("approverAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
-                            >
-                              Select File
-                            </button>
+                           <button
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
                           </div>
                         )}
                         <input
