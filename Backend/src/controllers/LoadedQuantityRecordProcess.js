@@ -35,7 +35,6 @@ exports.InsertLoadedQuantity = async (req, res) => {
     initiatorDeclaration,
     additionalAttachment,
     additionalInfo,
-    product_nameArray,
     batch_noArray,
   } = req.body;
 
@@ -92,8 +91,6 @@ exports.InsertLoadedQuantity = async (req, res) => {
         additionalAttachment = file;
       }
     });
-    // const validArray = req.body.product_nameArray.map((item) => ({ ...item }));
-    // const validBatch = req.body.batch_noArray.map((item) => ({ ...item }));
 
     // Create new Differential Pressure Form
     const newForm = await LoadedQuantityProcessForm.create(
@@ -113,7 +110,6 @@ exports.InsertLoadedQuantity = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
-        product_nameArray,
         batch_noArray
       },
 
@@ -465,8 +461,8 @@ exports.EditLoadedQuantity = async (req, res) => {
         });
       }
     }
-    const validArray = req.body.product_nameArray.map((item) => ({ ...item }));
-    const validBatch = req.body.batch_noArray.map((item) => ({ ...item }));
+    const validArray = product_nameArray.map((item) => ({ ...item }));
+    const validBatch = batch_noArray.map((item) => ({ ...item }));
     // console.log(validArray, "VALIDPRODUCT");
 
 

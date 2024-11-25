@@ -137,4 +137,5 @@ router.post(
 );
 
 router.post("/effective-view-report", DifferentialPressureProcess.effetiveViewReport);
+router.get("/search", DifferentialPressureProcess.GetAll);
 module.exports = router;
