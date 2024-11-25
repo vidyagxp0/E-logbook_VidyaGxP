@@ -2,6 +2,10 @@
 <html>
   <head>
     <style>
+      @page {
+        margin-bottom: 55px;
+        margin-top: 20vh;
+      }
       body {
         font-family: Arial, sans-serif;
         font-size: 14px;
@@ -71,23 +75,27 @@
       <table>
         <thead>
           <tr>
-            <th>Unique Id</th>
-            <th>Date</th>
-            <th>Air Pressure (4-6 kg)</th>
-            <th>Steam Pressure (4-6 kg)</th>
-            <th>Printer Ok (Yes/No)</th>
-            <th>Product Name</th>
-            <th>Container Size (ml)</th>
-            <th>Loaded Quantity</th>
-            <th>Batch Number-Lot Number</th>
-            <th>Loading Time</th>
-            <th>D-Well Period Start</th>
-            <th>D-Well Period End</th>
-            <th>Unloading Time</th>
-            <th>Cleaning Time Start</th>
-            <th>Cleaning Time End</th>
-            <th>Cleaning Done By</th>
-            <th>Checked By</th>
+            <th rowspan="2">Unique Id</th>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">Air Pressure (4-6 kg)</th>
+            <th rowspan="2">Steam Pressure (4-6 kg)</th>
+            <th rowspan="2">Printer Ok (Yes/No)</th>
+            <th rowspan="2">Product Name</th>
+            <th rowspan="2">Container Size (ml)</th>
+            <th rowspan="2">Loaded Quantity</th>
+            <th rowspan="2">Batch Number-Lot Number</th>
+            <th rowspan="2">Loading Time</th>
+            <th rowspan="1" colspan="2">D-well Period</th>
+            <th rowspan="2">Unloading Time</th>
+            <th rowspan="1" colspan="2">Cleaning Time</th>
+            <th rowspan="2">Cleaning Done By</th>
+            <th rowspan="2">Checked By</th>
+          </tr>
+          <tr>
+            <th rowspan="2">Start</th>
+            <th rowspan="2">End</th>
+            <th rowspan="2">Start</th>
+            <th rowspan="2">End</th>
           </tr>
         </thead>
         <tbody>
