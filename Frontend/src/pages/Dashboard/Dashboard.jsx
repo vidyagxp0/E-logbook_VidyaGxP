@@ -314,7 +314,7 @@ function Dashboard() {
             <input
               type="search"
               placeholder="Search..."
-              className="flex-grow outline-none border-none px-2 py-1"
+              className="flex-grow outline-none border-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
