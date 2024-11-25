@@ -49,7 +49,7 @@ function HeaderTop() {
             </div>
           </div>
           <div className="center">
-            <div className="inputContainer">
+            {/* <div className="inputContainer">
               <div className="inputInnerLeft">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +75,8 @@ function HeaderTop() {
                   Search
                 </button>
               </div>
-            </div>
+            </div> */}
+            <h1 className="text-4xl font-bold font-serif">elog-Book</h1>
           </div>
           <div className="right">
             <div className="bellLeft">
