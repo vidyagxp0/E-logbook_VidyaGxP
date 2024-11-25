@@ -9,7 +9,7 @@ import { hasAccess } from "../../components/userAuth/userAuth";
 function Dashboard() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
-  const [eLogStatus, setELogStatus] = useState("");
+  const [eLogStatus, setELogStatus] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
     []
   );
@@ -250,13 +250,18 @@ function Dashboard() {
     ].filter((item) => {
       // Check if the search term matches any of the fields
       const matchesSearchTerm =
-        item.date_of_initiation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.date_of_initiation
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item?.initiator_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.initiator_name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase());
 
+      // Check if the status matches
       const matchesStatus =
-        eLogStatus === "all" ||
+        eLogStatus === "All_Records" || // Match all records
         item.status.toLowerCase() === eLogStatus.toLowerCase();
 
       return matchesSearchTerm && matchesStatus;
@@ -336,7 +341,7 @@ function Dashboard() {
               className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
               style={{ border: "1px solid gray", padding: "2px 0px" }}
             >
-              <option value="all">All</option>
+              <option value="All_Records">All</option>
               <option value="opened">Opened</option>
               <option value="underReview">Under Review</option>
               <option value="underApproval">Under Approval</option>
