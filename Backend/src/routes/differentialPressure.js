@@ -145,4 +145,6 @@ router.post(
   Auth.checkUserJwtToken,
   DifferentialPressureProcess.blankReport
 );
+router.get("/search", DifferentialPressureProcess.GetAll);
+
 module.exports = router;

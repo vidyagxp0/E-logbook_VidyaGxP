@@ -111,11 +111,11 @@ router.put(
 
 // router.get("/get-processes", LoadedQuantityRecordProcess.getAllProcesses);
 
-// router.get(
-//   "/get-audit-trail-for-elog/:id",
-//   Auth.checkUserJwtToken,
-//   LoadedQuantityRecordProcess.getAuditTrailForAnElog
-// );
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  LoadedQuantityRecordProcess.getAuditTrailForAnElog
+);
 
 router.post(
   "/generate-pdf",

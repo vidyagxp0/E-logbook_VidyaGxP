@@ -23,9 +23,6 @@ exports.InsertMediaRecord = async (req, res) => {
   const {
     site_id,
     description,
-    department,
-    compression_area,
-    limit,
     reviewer_id,
     approver_id,
     initiatorComment,
@@ -100,9 +97,6 @@ exports.InsertMediaRecord = async (req, res) => {
         description: description,
         status: "Opened",
         stage: 1,
-        department: department,
-        compression_area: compression_area,
-        limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -117,9 +111,6 @@ exports.InsertMediaRecord = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
-      compression_area,
-      limit,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -144,7 +135,7 @@ exports.InsertMediaRecord = async (req, res) => {
     if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "initiatorAttachment",
+        field_name: "Initiator Attachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
@@ -183,7 +174,7 @@ exports.InsertMediaRecord = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `UniqueId[${index}]`,
+          field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id,
           changed_by: user.user_id,
@@ -194,7 +185,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Date[${index}]`,
+          field_name: "Date",
           previous_value: null,
           new_value: record.date,
           changed_by: user.user_id,
@@ -205,7 +196,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `name_medium[${index}]`,
+          field_name: "Name Medium",
           previous_value: null,
           new_value: record.name_medium,
           changed_by: user.user_id,
@@ -216,7 +207,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `date_of_preparation[${index}]`,
+          field_name: "Date Of Preparation",
           previous_value: null,
           new_value: record.date_of_preparation,
           changed_by: user.user_id,
@@ -227,7 +218,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `date_of_use[${index}]`,
+          field_name: "Date Of Use",
           previous_value: null,
           new_value: record.date_of_use,
           changed_by: user.user_id,
@@ -238,7 +229,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `lot_no[${index}]`,
+          field_name: "Lot No",
           previous_value: null,
           new_value: record.lot_no,
           changed_by: user.user_id,
@@ -249,7 +240,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `no_of_plate_prepared[${index}]`,
+          field_name: "No Of Plate Prepared",
           previous_value: null,
           new_value: record.no_of_plate_prepared,
           changed_by: user.user_id,
@@ -260,7 +251,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `no_of_plate_used[${index}]`,
+          field_name: "No Of Plate Used",
           previous_value: null,
           new_value: record.no_of_plate_used,
           changed_by: user.user_id,
@@ -271,7 +262,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `used_for[${index}]`,
+          field_name: "Used For",
           previous_value: null,
           new_value: record.used_for,
           changed_by: user.user_id,
@@ -282,7 +273,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `balance_no_plate[${index}]`,
+          field_name: "Balance No Plate",
           previous_value: null,
           new_value: record.balance_no_plate,
           changed_by: user.user_id,
@@ -293,7 +284,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `signature[${index}]`,
+          field_name: "Signature",
           previous_value: null,
           new_value: record.signature,
           changed_by: user.user_id,
@@ -304,7 +295,7 @@ exports.InsertMediaRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `checked_by[${index}]`,
+          field_name: "Checked By",
           previous_value: null,
           new_value: record.checked_by,
           changed_by: user.user_id,
@@ -348,9 +339,6 @@ exports.EditMediaRecord = async (req, res) => {
     form_id,
     site_id,
     description,
-    department,
-    compression_area,
-    limit,
     reviewer_id,
     approver_id,
     MediaRecords,
@@ -427,9 +415,6 @@ exports.EditMediaRecord = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
-      compression_area,
-      limit,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -464,9 +449,6 @@ exports.EditMediaRecord = async (req, res) => {
       {
         site_id,
         description,
-        department,
-        compression_area,
-        limit,
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -521,7 +503,7 @@ exports.EditMediaRecord = async (req, res) => {
             ) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${index}]`,
+                field_name: `${field}`,
                 previous_value: oldValue || null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -556,7 +538,7 @@ exports.EditMediaRecord = async (req, res) => {
             if (newValue !== undefined) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${i}]`,
+                field_name: `${field}`,
                 previous_value: null,
                 new_value: newValue,
                 changed_by: user.user_id,
