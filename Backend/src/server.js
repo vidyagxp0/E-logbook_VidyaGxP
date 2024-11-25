@@ -35,6 +35,18 @@ app.use(
     crossOriginEmbedderPolicy: true,
   })
 );
+// Remove 'X-Frame-Options' header
+app.use((req, res, next) => {
+  res.removeHeader("X-Frame-Options");
+  next();
+});
+
+// OR set a specific value for 'Content-Security-Policy'
+// app.use((req, res, next) => {
+//   res.setHeader("Content-Security-Policy", "frame-ancestors 'self' http://localhost:1000");
+//   next();
+// });
+
 app.use(
   cors({
     origin: "*",
