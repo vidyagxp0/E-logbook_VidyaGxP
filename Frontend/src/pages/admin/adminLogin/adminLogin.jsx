@@ -18,7 +18,7 @@ function AdminLogin() {
       password: password,
     };
     axios
-      .post("https://elog-backend.mydemosoftware.com//user/admin-login", data, {
+      .post("https://elog-backend.mydemosoftware.com/user/admin-login", data, {
         headers: {
           "Content-Type": "application/json",
         },

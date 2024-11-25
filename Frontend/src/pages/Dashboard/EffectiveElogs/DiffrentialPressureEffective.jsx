@@ -74,7 +74,7 @@ export default function DPREffective() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/send-DP-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -92,7 +92,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -111,7 +111,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -127,7 +127,7 @@ export default function DPREffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/approve-DP-elog",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -145,7 +145,7 @@ export default function DPREffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -191,7 +191,7 @@ export default function DPREffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com//differential-pressure/update-differential-pressure",
+        url: "https://elog-backend.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -1159,17 +1159,17 @@ export default function DPREffective() {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input

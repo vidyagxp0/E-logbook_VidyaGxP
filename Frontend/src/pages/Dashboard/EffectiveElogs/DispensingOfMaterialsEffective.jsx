@@ -79,7 +79,7 @@ const DispensingOfMaterialsEffective = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-for-review",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
           data,
           config
         )
@@ -97,7 +97,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -116,7 +116,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -132,7 +132,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/approve",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
           data,
           config
         )
@@ -150,7 +150,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -201,7 +201,7 @@ const DispensingOfMaterialsEffective = () => {
         },
         data: editData,
 
-        url: "https://elog-backend.mydemosoftware.com//dispensing-material/update",
+        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -1708,17 +1708,17 @@ const DispensingOfMaterialsEffective = () => {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input

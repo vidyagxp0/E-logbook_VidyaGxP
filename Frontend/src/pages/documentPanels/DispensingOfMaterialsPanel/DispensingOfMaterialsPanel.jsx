@@ -75,7 +75,7 @@ const DispensingOfMaterialsPanel = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-for-review",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
           data,
           config
         )
@@ -93,7 +93,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -112,7 +112,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -128,7 +128,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/approve",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
           data,
           config
         )
@@ -146,7 +146,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -197,7 +197,7 @@ const DispensingOfMaterialsPanel = () => {
         },
         data: editData,
 
-        url: "https://elog-backend.mydemosoftware.com//dispensing-material/update",
+        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -426,7 +426,7 @@ const DispensingOfMaterialsPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com//dispensing-material/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/dispensing-material/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

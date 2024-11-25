@@ -17,7 +17,7 @@ function RelatedRecordModal(_props) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://elog-backend.mydemosoftware.com//LabIncident/api/findAllDivision"
+          "https://elog-backend.mydemosoftware.com/LabIncident/api/findAllDivision"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch data");

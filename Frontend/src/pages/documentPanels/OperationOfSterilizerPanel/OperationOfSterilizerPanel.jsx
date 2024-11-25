@@ -72,7 +72,7 @@ const OperationOfSterilizerPanel = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com//operation-sterlizer/update",
+    //     url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -111,7 +111,7 @@ const OperationOfSterilizerPanel = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-for-review",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -129,7 +129,7 @@ const OperationOfSterilizerPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -148,7 +148,7 @@ const OperationOfSterilizerPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -164,7 +164,7 @@ const OperationOfSterilizerPanel = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/approve",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/approve",
           data,
           config
         )
@@ -182,7 +182,7 @@ const OperationOfSterilizerPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -229,7 +229,7 @@ const OperationOfSterilizerPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com//operation-sterlizer/update",
+        url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
       };
 
       axios(requestOptions)
@@ -465,7 +465,7 @@ const OperationOfSterilizerPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com//operation-sterlizer/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/operation-sterlizer/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

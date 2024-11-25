@@ -29,7 +29,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com//temprature-record/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function TemperatureRecords() {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com//temprature-record/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com//user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -153,7 +153,7 @@ export default function TemperatureRecords() {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com//temprature-record/post-temprature-record",
+        "https://elog-backend.mydemosoftware.com/temprature-record/post-temprature-record",
         tempratureRecord,
         config
       )

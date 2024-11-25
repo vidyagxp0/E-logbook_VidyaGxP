@@ -17,7 +17,7 @@ function CreateRecordModal(_props) {
     const fetchSites = async () => {
       try {
         const response = await axios.get(
-          "https://elog-backend.mydemosoftware.com//site/get-sites"
+          "https://elog-backend.mydemosoftware.com/site/get-sites"
         );
         const userSiteIds = await userDetails.roles
           .filter((role) => role.role_id === 1 || role.role_id === 5)
@@ -40,7 +40,7 @@ function CreateRecordModal(_props) {
   const fetchProcesses = async () => {
     try {
       const response = await axios.get(
-        "https://elog-backend.mydemosoftware.com//differential-pressure/get-processes"
+        "https://elog-backend.mydemosoftware.com/differential-pressure/get-processes"
       );
 
       const filteredProcessIds = userDetails.roles

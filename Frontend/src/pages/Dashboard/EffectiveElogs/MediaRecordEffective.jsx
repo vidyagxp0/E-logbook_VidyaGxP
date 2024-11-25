@@ -70,7 +70,7 @@ const MediaRecordEffective = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "https://elog-backend.mydemosoftware.com//media-record/update",
+    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -104,7 +104,7 @@ const MediaRecordEffective = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//media-record/send-for-review",
+          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
           data,
           config
         )
@@ -122,7 +122,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//media-record/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
           data,
           config
         )
@@ -141,7 +141,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//media-record/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
           data,
           config
         )
@@ -157,7 +157,7 @@ const MediaRecordEffective = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//media-record/approve",
+          "https://elog-backend.mydemosoftware.com/media-record/approve",
           data,
           config
         )
@@ -175,7 +175,7 @@ const MediaRecordEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//media-record/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
           data,
           config
         )
@@ -222,7 +222,7 @@ const MediaRecordEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com//media-record/update",
+        url: "https://elog-backend.mydemosoftware.com/media-record/update",
       };
 
       axios(requestOptions)
@@ -1052,8 +1052,7 @@ const MediaRecordEffective = () => {
                                 value={item.lot_no}
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
-                                  newData[index].lot_no =
-                                    e.target.value;
+                                  newData[index].lot_no = e.target.value;
                                   setEditData({
                                     ...editData,
                                     MediaRecords: newData,
@@ -1583,17 +1582,17 @@ const MediaRecordEffective = () => {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input

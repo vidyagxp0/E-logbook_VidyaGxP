@@ -17,7 +17,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com//differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -33,7 +33,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com//temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
