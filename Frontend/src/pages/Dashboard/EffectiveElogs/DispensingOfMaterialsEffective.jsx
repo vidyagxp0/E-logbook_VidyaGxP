@@ -1015,7 +1015,7 @@ const DispensingOfMaterialsEffective = () => {
                               />
                             </td>
                             <td>
-                              <select
+                              <input
                                 value={item.control_no}
                                 onChange={(e) => {
                                   const newData = [
@@ -1031,16 +1031,16 @@ const DispensingOfMaterialsEffective = () => {
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="">Select A Control No</option>
+                                {/* <option value="">Select A Control No</option>
                                 <option value="CN01">CN01</option>
                                 <option value="CN02">CN02</option>
                                 <option value="CN03">CN03</option>
-                                <option value="CN04">CN04</option>
-                              </select>
+                                <option value="CN04">CN04</option> */}
+                              </input>
                             </td>
 
                             <td>
-                              <select
+                              <input
                                 value={item.dispensed_quantity}
                                 onChange={(e) => {
                                   const newData = [
@@ -1057,14 +1057,14 @@ const DispensingOfMaterialsEffective = () => {
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="" disabled>
+                                {/* <option value="" disabled>
                                   Select Dispensed Quantity (Kg){" "}
                                 </option>
                                 <option value="1">1 Kg</option>
                                 <option value="2">2 Kg</option>
                                 <option value="5">5 Kg</option>
-                                <option value="10">10 Kg</option>
-                              </select>
+                                <option value="10">10 Kg</option> */}
+                              </input>
                             </td>
                             <td>
                               <input
@@ -1704,17 +1704,17 @@ const DispensingOfMaterialsEffective = () => {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input
