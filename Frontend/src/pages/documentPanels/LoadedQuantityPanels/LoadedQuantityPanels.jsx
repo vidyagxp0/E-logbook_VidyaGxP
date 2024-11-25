@@ -530,7 +530,7 @@ const LoadedQuantityPanels = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Loaded Quantity",
                         },
                       })
                     }
@@ -573,7 +573,7 @@ const LoadedQuantityPanels = () => {
 
                   {/* Conditional Buttons Based on Stages */}
                   {location.state?.stage === 1 &&
-                    location.state?.initiator_id === userDetails.userId && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -584,9 +584,8 @@ const LoadedQuantityPanels = () => {
                         Send for Review
                       </button>
                     )}
-
                   {location.state?.stage === 2 &&
-                    location.state?.reviewer_id === userDetails.userId && (
+                    [2, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -889,7 +888,7 @@ const LoadedQuantityPanels = () => {
                           <th>Actions</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      {/* <tbody>
                         {editData?.LoadedQuantityRecords.map((item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
@@ -1076,7 +1075,7 @@ const LoadedQuantityPanels = () => {
                             </td>
                           </tr>
                         ))}
-                      </tbody>
+                      </tbody> */}
                     </table>
                   </div>
                   <div className="group-input mt-4">
@@ -1192,8 +1191,7 @@ const LoadedQuantityPanels = () => {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1206,7 +1204,7 @@ const LoadedQuantityPanels = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1309,8 +1307,7 @@ const LoadedQuantityPanels = () => {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.reviewer_id ===
-                            userDetails.userId && (
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1323,7 +1320,7 @@ const LoadedQuantityPanels = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>

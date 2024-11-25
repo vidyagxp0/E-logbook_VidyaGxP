@@ -53,7 +53,7 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
-          <Route path="/test" element={<ExcelSelectWithFileInput />} /> 
+          {/* <Route path="/test" element={<ExcelSelectWithFileInput />} />  */}
 
             <Route path="/" element={<Login />} />
             <Route path="/admin-login" element={<AdminLogin />} />

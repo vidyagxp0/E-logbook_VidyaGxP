@@ -121,7 +121,8 @@ exports.InsertLoadedQuantity = async (req, res) => {
       additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
-      console.log(field, value);
+      // console.log(field,value,"FIELDVALUE");
+      
       if (value !== undefined && value !== null && value !== "") {
         auditTrailEntries.push({
           form_id: newForm.form_id,

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { hasAccess } from "../../components/userAuth/userAuth";
 
-function Dashboard() {
+function EffectiveElogs() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
@@ -704,4 +704,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default EffectiveElogs;
