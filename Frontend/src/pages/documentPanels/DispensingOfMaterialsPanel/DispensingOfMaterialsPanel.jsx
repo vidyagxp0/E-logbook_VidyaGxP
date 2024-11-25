@@ -1370,7 +1370,7 @@ const DispensingOfMaterialsPanel = () => {
                 </>
               ) : null}
 
-              {/* {initiatorRemarks === true ? (
+              {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1485,9 +1485,9 @@ const DispensingOfMaterialsPanel = () => {
                     </div>
                   </div>
                 </>
-              ) : null} */}
+              ) : null}
 
-              {/* {reviewerRemarks === true ? (
+              {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1602,9 +1602,9 @@ const DispensingOfMaterialsPanel = () => {
                     </div>
                   </div>
                 </>
-              ) : null} */}
+              ) : null}
 
-              {/* {approverRemarks === true ? (
+              {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1719,7 +1719,7 @@ const DispensingOfMaterialsPanel = () => {
                     </div>
                   </div>
                 </>
-              ) : null} */}
+              ) : null}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button
