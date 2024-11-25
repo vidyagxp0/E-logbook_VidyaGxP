@@ -135,4 +135,11 @@ router.post(
   OperationOfSterilizer.effetiveChatByPdf
 );
 router.post("/effective-view-report", OperationOfSterilizer.effetiveViewReport);
+
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  OperationOfSterilizer.blankReport
+);
+
 module.exports = router;

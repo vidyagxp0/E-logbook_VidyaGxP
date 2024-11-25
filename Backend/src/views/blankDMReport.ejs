@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        margin: 20px;
+        line-height: 1.6;
+      }
+
+      .report-content {
+        margin-top: 30px;
+      }
+
+      h1,
+      h2 {
+        margin-bottom: 20px;
+        text-align: left;
+        clear: both;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 18px;
+        color: #0066cc;
+      }
+
+      p {
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+        border: 1px solid #000;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 10px;
+        /* text-align: left; */
+        text-align: center;
+        height: 24px;
+      }
+
+      th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+      }
+
+      .remarks {
+        page-break-inside: avoid;
+      }
+
+      .heading {
+        padding-top: 35px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="report-content">
+      <!-- <h2 class="heading">Dispensng Of Material</h2> -->
+      <% if (arrayData && arrayData.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Unique Id</th>
+            <th>Date</th>
+            <th>AUH</th>
+            <th>LAF</th>
+            <th>UV Light</th>
+            <th>Done By</th>
+            <th>Name Of Material</th>
+            <th>Control No</th>
+            <th>Dispensed Quantity (kg)</th>
+            <th>Dispensed By Qa</th>
+            <th>Dispensed By Store</th>
+            <th>AUH</th>
+            <th>LAF</th>
+            <th>UV Light</th>
+            <th>UV Burning Hrs</th>
+            <th>Done By</th>
+            <th>Cleaning Done By</th>
+            <th>Checked By (Sign/Date)</th>
+            <th>Weighing Balance ID</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% arrayData.forEach(record => { %>
+          <tr>
+            <td><%= record?.unique_id %></td>
+            <td><%= record?.date %></td>
+            <td><%= record?.on_time_auh %></td>
+            <td><%= record?.on_time_laf %></td>
+            <td><%= record?.on_time_uv_light %></td>
+            <td><%= record?.on_time_done_by %></td>
+            <td><%= record?.name_of_material %></td>
+            <td><%= record?.control_no %></td>
+            <td><%= record?.dispensed_quantity %></td>
+            <td><%= record?.dispensed_by_qa %></td>
+            <td><%= record?.dispensed_by_store %></td>
+            <td><%= record?.off_time_auh %></td>
+            <td><%= record?.off_time_laf %></td>
+            <td><%= record?.off_time_uv_light %></td>
+            <td><%= record?.uv_burning %></td>
+            <td><%= record?.off_time_done_by %></td>
+            <td><%= record?.cleaning_done_by %></td>
+            <td><%= record?.reviewed_by %></td>
+            <td><%= record?.weighing_balance_id %></td>
+            <td><%= record?.remark %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+  </body>
+</html>

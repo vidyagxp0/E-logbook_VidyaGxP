@@ -44,10 +44,18 @@ router.put(
 );
 
 // //get a DispenseOfMaterial elog by id
-router.get("/get/:id", Auth.checkUserJwtToken, DispenseOfMaterial.GetDispenseOfMaterialRecord);
+router.get(
+  "/get/:id",
+  Auth.checkUserJwtToken,
+  DispenseOfMaterial.GetDispenseOfMaterialRecord
+);
 
 // //get all the DispenseOfMaterial elogs
-router.get("/get-all", Auth.checkUserJwtToken, DispenseOfMaterial.GetAllDispenseOfMaterialRecord);
+router.get(
+  "/get-all",
+  Auth.checkUserJwtToken,
+  DispenseOfMaterial.GetAllDispenseOfMaterialRecord
+);
 
 //send DispenseOfMaterial elog for review
 router.put(
@@ -121,10 +129,7 @@ router.post(
   DispenseOfMaterial.chatByPdf
 );
 
-router.post(
-  "/view-report",
-  DispenseOfMaterial.viewReport
-);
+router.post("/view-report", DispenseOfMaterial.viewReport);
 
 router.post(
   "/effective-chat-pdf/:form_id",
@@ -133,4 +138,11 @@ router.post(
 );
 
 router.post("/effective-view-report", DispenseOfMaterial.effetiveViewReport);
+
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  DispenseOfMaterial.blankReport
+);
+
 module.exports = router;

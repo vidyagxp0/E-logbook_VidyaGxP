@@ -1559,7 +1559,7 @@ exports.chatByPdf = async (req, res) => {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
-    
+
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -1675,9 +1675,9 @@ exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
-   reportData.addtionalInfo = reportData?.addtionalInfo
-     ? removeHtmlTags(reportData?.addtionalInfo)
-     : "Not Applicable";
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
@@ -1772,6 +1772,118 @@ exports.effetiveViewReport = async (req, res) => {
       }
       res.send(html);
     });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+
+exports.blankReport = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    const blankRows = Array(reportData?.blankRows).fill({
+      UniqueId: "",
+      Time: "",
+      DifferentialPressure: "",
+      Remark: "",
+      CheckedBy: "",
+      SupportingDocuments: "",
+    });
+
+    const data = reportData?.LoadedQuantityRecord?.map((record) => ({
+      unique_id: record?.unique_id || "",
+      date: record?.date || "",
+      product_name: record?.product_name || "",
+      batch_no: record?.batch_no || "",
+      batch_size: record?.batch_size || "",
+      container_size: record?.container_size || "",
+      theoretical_production: record?.theoretical_production || "",
+      loaded_quantity: record?.loaded_quantity || "",
+      yield: record?.yield || "",
+      remarks: record?.remarks || "",
+      reviewed_by: record?.reviewed_by || "",
+    }));
+
+    const arrayData = [...data, ...blankRows];
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("blankLQReport", { arrayData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "a4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "145px",
+        // right: "50px",
+        bottom: "50px",
+        // left: "50px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `LQ_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `LQ_Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

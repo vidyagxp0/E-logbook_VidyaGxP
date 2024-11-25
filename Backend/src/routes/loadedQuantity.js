@@ -140,4 +140,10 @@ router.post(
   LoadedQuantityRecordProcess.effetiveViewReport
 );
 
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  LoadedQuantityRecordProcess.blankReport
+);
+
 module.exports = router;
