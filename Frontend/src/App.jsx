@@ -45,6 +45,7 @@ import OperationOfSterilizerEffective from "./pages/Dashboard/EffectiveElogs/Ope
 import MediaRecordEffective from "./pages/Dashboard/EffectiveElogs/MediaRecordEffective.jsx";
 import DispensingOfMaterialsEffective from "./pages/Dashboard/EffectiveElogs/DispensingOfMaterialsEffective.jsx";
 import ExcelSelectWithFileInput from "./pages/TestPages/ExcelImport.jsx";
+import Effective_ViewReport from "./components/viewReport/Effective_ViewReport.jsx";
 
 function App() {
   return (
@@ -52,7 +53,7 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
-          <Route path="/test" element={<ExcelSelectWithFileInput />} />
+          <Route path="/test" element={<ExcelSelectWithFileInput />} /> 
 
             <Route path="/" element={<Login />} />
             <Route path="/admin-login" element={<AdminLogin />} />
@@ -212,6 +213,7 @@ function App() {
               element={<ProtectedRoute element={<DispensingOfMaterials />} />}
             />
             <Route path="/view-report" element={<ViewReport />} />
+            <Route path="/effective-view-report" element={<Effective_ViewReport />} />
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={2000} pauseOnHover={false} />

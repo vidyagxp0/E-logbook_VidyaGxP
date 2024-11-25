@@ -450,7 +450,7 @@ const MediaRecordEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/chat-pdf/${formId}`,
+        `http://localhost:1000/media-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -464,7 +464,7 @@ const MediaRecordEffective = () => {
 
       const { filename } = response.data; // Access filename from response.data
 
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -1016,7 +1016,7 @@ const MediaRecordEffective = () => {
                               />
                             </td>
                             <td>
-                              <select
+                              {/* <select
                                 value={item.lot_no || ""} // Ensure value is never null or undefined
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
@@ -1039,7 +1039,22 @@ const MediaRecordEffective = () => {
                                 ) : (
                                   <option value="">No lots available</option>
                                 )}
-                              </select>
+                              </select> */}
+                              <input
+                                value={item.lot_no}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].lot_no =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              />
                             </td>
                             <td>
                               <input
@@ -1544,11 +1559,6 @@ const MediaRecordEffective = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
                             >
                               Change File
                             </button>
@@ -1565,21 +1575,17 @@ const MediaRecordEffective = () => {
                           </div>
                         ) : (
                           <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("approverAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
-                            >
-                              Select File
-                            </button>
+                           <button
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
                           </div>
                         )}
                         <input
