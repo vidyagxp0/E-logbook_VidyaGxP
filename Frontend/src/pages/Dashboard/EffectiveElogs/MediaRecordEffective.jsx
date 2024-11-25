@@ -9,6 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import * as XLSX from "xlsx";
 
 const MediaRecordEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -29,6 +30,8 @@ const MediaRecordEffective = () => {
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
+  const [lotNo, setLotNo] = useState([]);
+
   console.log(editData.MediaRecords, "edit data od media");
 
   const handlePopupClose = () => {
@@ -447,7 +450,7 @@ const MediaRecordEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/chat-pdf/${formId}`,
+        `http://localhost:1000/media-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -461,7 +464,7 @@ const MediaRecordEffective = () => {
 
       const { filename } = response.data; // Access filename from response.data
 
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -478,6 +481,37 @@ const MediaRecordEffective = () => {
       description: content,
     }));
   };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileReader = new FileReader();
+
+      fileReader.onload = (e) => {
+        const workbook = XLSX.read(e.target.result, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+        const normalizedData = jsonData.map((item) => {
+          const normalizedItem = {};
+          Object.keys(item).forEach((key) => {
+            const normalizedKey = key.trim();
+            normalizedItem[normalizedKey] = item[key];
+          });
+          return normalizedItem;
+        });
+
+        const importedLotNo = normalizedData.map((item) => item["Lot No."]);
+        console.log("Imported Lot No:", importedLotNo); // Check the imported Lot No. values
+
+        setLotNo(importedLotNo);
+      };
+
+      fileReader.readAsBinaryString(file);
+    }
+  };
+
   return (
     <div>
       <HeaderTop />
@@ -966,8 +1000,8 @@ const MediaRecordEffective = () => {
                               />
                             </td>
                             <td>
-                              <select
-                                value={item.lot_no}
+                              {/* <select
+                                value={item.lot_no || ""} // Ensure value is never null or undefined
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
                                   newData[index].lot_no = e.target.value;
@@ -980,11 +1014,30 @@ const MediaRecordEffective = () => {
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="">Select a Product</option>
-                                <option value="LotNo1">Lot No 1</option>
-                                <option value="LotNo2">Lot No 2</option>
-                                <option value="LotNo3">Lot No 3</option>
-                              </select>
+                                {lotNo && lotNo.length > 0 ? (
+                                  lotNo.map((lot_no, index) => (
+                                    <option key={index} value={lot_no}>
+                                      {lot_no}
+                                    </option>
+                                  ))
+                                ) : (
+                                  <option value="">No lots available</option>
+                                )}
+                              </select> */}
+                              <input
+                                value={item.lot_no}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].lot_no = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              />
                             </td>
                             <td>
                               <input
@@ -998,7 +1051,7 @@ const MediaRecordEffective = () => {
                                     MediaRecords: newData,
                                   });
                                 }}
-                                disabled={[3, 2, 4].includes(
+                                readOnly={[3, 2, 4].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
@@ -1489,11 +1542,6 @@ const MediaRecordEffective = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
                             >
                               Change File
                             </button>
@@ -1511,16 +1559,12 @@ const MediaRecordEffective = () => {
                         ) : (
                           <div>
                             <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                               type="button"
                               onClick={() =>
                                 document
-                                  .getElementById("approverAttachment")
+                                  .getElementById("additionalAttachment")
                                   .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
                               }
                             >
                               Select File

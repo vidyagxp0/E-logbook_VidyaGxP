@@ -9,6 +9,8 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import ExcelSelectWithTwoDropdowns from "../../TestPages/ExcelImport";
+import * as XLSX from "xlsx";
 
 const LoadedQuantityEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
@@ -18,27 +20,67 @@ const LoadedQuantityEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [productNameArray, setProductNameArray] = useState([]);
+  const [batchNoArray, setBatchNoArray] = useState([]);
+  // console.log(batchNoArray);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
-  console.log(userDetails, "userDetails");
+  // console.log(userDetails, "userDetails");
 
   const [editData, setEditData] = useState({
     initiator_name: "",
+    product_nameArray: [],
+    batch_noArray: [],
     status: "",
     description: "",
     LoadedQuantityRecords: [],
   });
+  // console.log(editData.product_nameArray.map((item) => item.productName), "Updated product_nameArray in state");
+
+  // useEffect(() => {
+  //   if (Array.isArray(productNameArray)) {
+  //     setEditData((prevData) => ({
+  //       ...prevData,
+  //       product_nameArray: productNameArray.map((itm) => ({
+  //         productName: itm,
+  //       })),
+  //     }));
+  //   } else {
+  //     console.error("productNameArray is not an array");
+  //   }
+  // }, [productNameArray]);
+  useEffect(() => {
+    if (Array.isArray(productNameArray)) {
+      setEditData((prevData) => ({
+        ...prevData,
+        product_nameArray: productNameArray.map((itm) => ({
+          productName: itm,
+        })),
+      }));
+    }
+    if (Array.isArray(batchNoArray)) {
+      setEditData((prevData) => ({
+        ...prevData,
+        batch_noArray: batchNoArray.map((itm) => ({
+          batchNo: itm,
+        })),
+      }));
+    }
+  }, [productNameArray, batchNoArray]);
+  // console.log(editData.batch_noArray, "editData.batch_noArray");
+  // console.log(editData.product_nameArray, "editData.product");
+
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
-  console.log(editData, "LOADED");
+  // console.log(editData, "LOADED");
 
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
-  console.log(editData.LoadedQuantityRecords, "editttt");
+  // console.log(editData.LoadedQuantityRecords, "editttt");
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -239,7 +281,7 @@ const LoadedQuantityEffective = () => {
     setEditData(location.state);
   }, [location.state]);
 
-  console.log(location.state.stage === 2);
+  // console.log(location.state.stage === 2);
 
   const object = getCurrentDateTime();
   let date = object.currentDate;
@@ -442,12 +484,13 @@ const LoadedQuantityEffective = () => {
       setFormId(reportData.form_id);
     }
   }, [reportData]);
+  // console.log(reportData, "FILENAME");
 
   const generateReport = async () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
+        `http://localhost:1000/loaded-quantity/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -459,9 +502,8 @@ const LoadedQuantityEffective = () => {
         }
       );
 
-      const { filename } = response.data; // Access filename from response.data
-
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -478,6 +520,41 @@ const LoadedQuantityEffective = () => {
       description: content,
     }));
   };
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileReader = new FileReader();
+
+      fileReader.onload = (e) => {
+        const workbook = XLSX.read(e.target.result, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+        const normalizedData = jsonData.map((item) => {
+          const normalizedItem = {};
+          Object.keys(item).forEach((key) => {
+            const normalizedKey = key.trim();
+            normalizedItem[normalizedKey] = item[key];
+          });
+          return normalizedItem;
+        });
+
+        const importedProductName = normalizedData.map(
+          (item) => item["Product Name"]
+        );
+        const importedBatchNo = normalizedData.map((item) => item["Batch No"]);
+        // console.log("Imported Batch No:", importedBatchNo);
+
+        setProductNameArray(importedProductName);
+        setBatchNoArray(importedBatchNo);
+        // setEditData.LoadedQuantityRecords(productNameArray);
+      };
+
+      fileReader.readAsBinaryString(file);
+    }
+  };
+
   return (
     <div>
       <HeaderTop />
@@ -864,9 +941,26 @@ const LoadedQuantityEffective = () => {
               {isSelectedDetails === true ? (
                 <>
                   <div>
-                    <div className="AddRows d-flex">
+                    <div className="AddRows flex items-center">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
+                      {/* <ExcelSelectWithTwoDropdowns/> */}
+                      <div className="flex flex-col items-start space-y-2 ml-auto">
+                        {/* Added ml-auto to push to the right */}
+                        <label
+                          htmlFor="file-upload"
+                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2"
+                        >
+                          Import Product Name
+                        </label>
+                        <input
+                          id="file-upload"
+                          type="file"
+                          accept=".xlsx, .xls"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="overflow-x-auto text-black ">
@@ -896,7 +990,7 @@ const LoadedQuantityEffective = () => {
                             <td>
                               <input value={formatDate(item.date)} readOnly />
                             </td>
-                            <td>
+                            {/* <td>
                               <select
                                 value={item.product_name}
                                 onChange={(e) => {
@@ -920,7 +1014,44 @@ const LoadedQuantityEffective = () => {
                                 <option value="Product2">Product 2</option>
                                 <option value="Product3">Product 3</option>
                               </select>
+                            </td> */}
+                            <td>
+                              <select
+                                value={item.product_name}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].product_name = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              >
+                                {Array.isArray(editData.product_nameArray) &&
+                                editData.product_nameArray.length > 0 ? (
+                                  editData.product_nameArray.map(
+                                    (productNameArray, index) => (
+                                      <option
+                                        key={index}
+                                        value={productNameArray.productName}
+                                      >
+                                        {productNameArray.productName}
+                                      </option>
+                                    )
+                                  )
+                                ) : (
+                                  <option value="">
+                                    No Product Name available
+                                  </option>
+                                )}
+                              </select>
                             </td>
+
                             <td>
                               <select
                                 value={item.batch_no}
@@ -938,12 +1069,23 @@ const LoadedQuantityEffective = () => {
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="" disabled>
-                                  Select a Batch
-                                </option>
-                                <option value="Batch001">Batch 001</option>
-                                <option value="Batch002">Batch 002</option>
-                                <option value="Batch003">Batch 003</option>
+                                {Array.isArray(editData.batch_noArray) &&
+                                editData.batch_noArray.length > 0 ? (
+                                  editData.batch_noArray.map(
+                                    (batchNoArray, index) => (
+                                      <option
+                                        key={index}
+                                        value={batchNoArray.batchNo}
+                                      >
+                                        {batchNoArray.batchNo}
+                                      </option>
+                                    )
+                                  )
+                                ) : (
+                                  <option value="">
+                                    No Batch No. available
+                                  </option>
+                                )}
                               </select>
                             </td>
 
@@ -1102,9 +1244,9 @@ const LoadedQuantityEffective = () => {
                   </div>
                   <div className="group-input mt-4">
                     <label
-                      // htmlFor="additionalAttachment"
-                      // className="color-label"
-                      // name="additionalAttachment"
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1129,35 +1271,34 @@ const LoadedQuantityEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={
-                                editData.additionalAttachment
-                              }
+                              href={editData.additionalAttachment}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name || "View File"}
+                              {editData.additionalAttachment.name ||
+                                "View File"}
                             </a>
-                            {
-                            editData.additionalAttachment.name &&
-                            <button
-                              className="text-red-500 hover:text-red-700 text-lg"
-                              type="button"
-                              onClick={() =>
-                                setEditData({
-                                  ...editData,
-                                  additionalAttachment: null,
-                                })
-                              }
-                            >
-                              ✖
-                            </button>}
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>
                               document
