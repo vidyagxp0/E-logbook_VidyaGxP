@@ -110,11 +110,11 @@ router.put(
 
 // router.get("/get-processes", OperationOfSterilizer.getAllProcesses);
 
-// router.get(
-//   "/get-audit-trail-for-elog/:id",
-//   Auth.checkUserJwtToken,
-//   OperationOfSterilizer.getAuditTrailForAnElog
-// );
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  OperationOfSterilizer.getAuditTrailForAnElog
+);
 
 router.post(
   "/generate-pdf",

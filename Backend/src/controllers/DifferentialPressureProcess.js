@@ -23,7 +23,6 @@ const OperationOfSterilizerRecord = require("../models/operationOfSterilizerReco
 const TempratureProcessForm = require("../models/tempratureProcessForm");
 const TempratureProcessRecord = require("../models/tempratureProcessRecords");
 
-
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
   return user;
@@ -171,7 +170,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "initiatorAttachment",
+        field_name: "Initiator Attachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
@@ -185,7 +184,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "additionalAttachment",
+        field_name: "Additional Attachment",
         previous_value: null,
         new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
@@ -213,7 +212,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `UniqueId[${index}]`,
+          field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id,
           changed_by: user.user_id,
@@ -224,7 +223,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Time[${index}]`,
+          field_name: "Time",
           previous_value: null,
           new_value: record.time,
           changed_by: user.user_id,
@@ -235,7 +234,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `DifferentialPressure[${index}]`,
+          field_name: "DifferentialPressure",
           previous_value: null,
           new_value: record.differential_pressure,
           changed_by: user.user_id,
@@ -246,7 +245,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Remarks[${index}]`,
+          field_name: "Remarks",
           previous_value: null,
           new_value: record.remarks,
           changed_by: user.user_id,
@@ -257,7 +256,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `CheckedBy[${index}]`,
+          field_name: "CheckedBy",
           previous_value: null,
           new_value: record.checked_by,
           changed_by: user.user_id,
@@ -269,7 +268,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         if (supportingDocs[index]) {
           auditTrailEntries.push({
             form_id: newForm.form_id,
-            field_name: `SupportingDocs[${index}]`,
+            field_name: "SupportingDocs",
             previous_value: null,
             new_value: getElogDocsUrl(supportingDocs[index]),
             changed_by: user.user_id,
@@ -492,7 +491,7 @@ exports.EditDifferentialPressure = async (req, res) => {
             ) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${index}]`,
+                field_name: `${field}`,
                 previous_value: oldValue || null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -529,7 +528,7 @@ exports.EditDifferentialPressure = async (req, res) => {
             if (newValue !== undefined) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${i}]`,
+                field_name: `${field}`,
                 previous_value: null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -726,7 +725,7 @@ exports.SendDPElogForReview = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "initiatorAttachment",
+        field_name: "Initiator Attachment",
         previous_value: form.initiatorAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -740,7 +739,7 @@ exports.SendDPElogForReview = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "additionalAttachment",
+        field_name: "Additional Attachment",
         previous_value: form.additionalAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -753,7 +752,7 @@ exports.SendDPElogForReview = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -786,29 +785,10 @@ exports.SendDPElogForReview = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    // try {
-    //   const reviewer = await getUserById(form.reviewer_id);
-    //   // Send emails
-    //   await Mailer.sendEmail("reminderReviewer", {
-    //     reviewerName: reviewer.name,
-    //     initiator: user.name,
-    //     dateOfInitiation: new Date().toISOString().split("T")[0],
-    //     description: form.description,
-    //     status: "Under Review",
-    //     recipients: reviewer.email,
-    //   });
-
     return res.status(200).json({
       error: false,
       message: "E-log successfully sent for review",
     });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -887,7 +867,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewerAttachment",
+        field_name: "Reviewer Attachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -900,7 +880,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -928,28 +908,10 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    // try {
-    //   const initiator = await getUserById(form.initiator_id);
-    //   // Send emails
-    //   await Mailer.sendEmail("reminderInitiator", {
-    //     initiatorName: initiator.name,
-    //     dateOfInitiation: new Date().toISOString().split("T")[0],
-    //     description: form.description,
-    //     status: "Opened",
-    //     recipients: initiator.email,
-    //   });
-
     return res.status(200).json({
       error: false,
       message: "E-log status successfully changed from review to Opened",
     });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1033,7 +995,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (reviewComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewComment",
+        field_name: "Review Comment",
         previous_value: form.reviewComment || null,
         new_value: reviewComment,
         changed_by: user.user_id,
@@ -1048,7 +1010,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewerAttachment",
+        field_name: "Reviewer Attachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1061,7 +1023,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1093,30 +1055,11 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    // try {
-    //   const approver = await getUserById(form.approver_id);
-    //   // Send emails
-    //   await Mailer.sendEmail("reminderApprover", {
-    //     approverName: approver.name,
-    //     dateOfInitiation: new Date().toISOString().split("T")[0],
-    //     description: form.description,
-    //     reviewer: user.name,
-    //     status: "Under Approval",
-    //     recipients: approver.email,
-    //   });
-
     return res.status(200).json({
       error: false,
       message:
         "E-log status successfully changed from review to under-approval",
     });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1195,7 +1138,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverAttachment",
+        field_name: "Approver Attachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1208,7 +1151,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1235,30 +1178,11 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
     // Commit the transaction
     await transaction.commit();
-
-    // try {
-    //   const initiator = await getUserById(form.initiator_id);
-    //   // Send emails
-    //   await Mailer.sendEmail("reminderInitiator", {
-    //     initiatorName: initiator.name,
-    //     dateOfInitiation: new Date().toISOString().split("T")[0],
-    //     description: form.description,
-    //     status: "Opened",
-    //     recipients: initiator.email,
-    //   });
-
     return res.status(200).json({
       error: false,
       message:
         "E-log status successfully changed from under-approval to under-review",
     });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1342,7 +1266,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (approverComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverComment",
+        field_name: "Approver Comment",
         previous_value: form.approverComment || null,
         new_value: approverComment,
         changed_by: user.user_id,
@@ -1357,7 +1281,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverAttachment",
+        field_name: "Approver Attachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1370,7 +1294,7 @@ exports.ApproveDPElog = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1810,92 +1734,92 @@ exports.effetiveViewReport = async (req, res) => {
 
 exports.GetAll = async (req, res) => {
   try {
-  const { search } = req.query; // Capture search keyword from query parameters
+    const { search } = req.query; // Capture search keyword from query parameters
 
-  const searchCondition = search
-    ? {
-        [Op.or]: [
-          { site_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
-          { form_id: { [Op.like]: `%${search}%` } }, // Example: Search by form_id
-          { initiator_name: { [Op.like]: `%${search}%` } }, // Example: Search by initiator_name
+    const searchCondition = search
+      ? {
+          [Op.or]: [
+            { site_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
+            { form_id: { [Op.like]: `%${search}%` } }, // Example: Search by form_id
+            { initiator_name: { [Op.like]: `%${search}%` } }, // Example: Search by initiator_name
+          ],
+        }
+      : {};
+
+    // Use Promise.all to run all queries concurrently
+    const [
+      differentialPressureForms,
+      dispenseOfMaterialForms,
+      loadedQuantityForms,
+      mediaRecordForms,
+      operationOfSterilizerForms,
+      temperatureForms,
+    ] = await Promise.all([
+      DifferentialPressureForm.findAll({
+        where: searchCondition,
+        include: [
+          { model: DifferentialPressureRecord },
+          { model: User, as: "reviewer", attributes: ["user_id", "name"] },
+          { model: User, as: "approver", attributes: ["user_id", "name"] },
         ],
-      }
-    : {};
+        order: [["form_id", "DESC"]],
+      }),
+      DispenseOfMaterialForm.findAll({
+        where: searchCondition,
+        include: [
+          { model: DispenseOfMaterialRecord },
+          { model: User, as: "reviewer4", attributes: ["user_id", "name"] },
+          { model: User, as: "approver4", attributes: ["user_id", "name"] },
+        ],
+        order: [["form_id", "DESC"]],
+      }),
+      LoadedQuantityProcessForm.findAll({
+        where: searchCondition,
+        include: [
+          { model: LoadedQuantityRecord },
+          { model: User, as: "reviewer1", attributes: ["user_id", "name"] },
+          { model: User, as: "approver1", attributes: ["user_id", "name"] },
+        ],
+        order: [["form_id", "DESC"]],
+      }),
+      MediaRecordProcessForm.findAll({
+        where: searchCondition,
+        include: [
+          { model: MediaRecord },
+          { model: User, as: "reviewer3", attributes: ["user_id", "name"] },
+          { model: User, as: "approver3", attributes: ["user_id", "name"] },
+        ],
+        order: [["form_id", "DESC"]],
+      }),
+      OperationOfSterilizerProcessForm.findAll({
+        where: searchCondition,
+        include: [
+          { model: OperationOfSterilizerRecord },
+          { model: User, as: "reviewer2", attributes: ["user_id", "name"] },
+          { model: User, as: "approver2", attributes: ["user_id", "name"] },
+        ],
+        order: [["form_id", "DESC"]],
+      }),
+      TempratureProcessForm.findAll({
+        where: searchCondition,
+        include: [
+          { model: TempratureProcessRecord },
+          { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
+          { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
+        ],
+        order: [["form_id", "DESC"]],
+      }),
+    ]);
 
-  // Use Promise.all to run all queries concurrently
-  const [
-    differentialPressureForms,
-    dispenseOfMaterialForms,
-    loadedQuantityForms,
-    mediaRecordForms,
-    operationOfSterilizerForms,
-    temperatureForms,
-  ] = await Promise.all([
-    DifferentialPressureForm.findAll({
-      where: searchCondition,
-      include: [
-        { model: DifferentialPressureRecord },
-        { model: User, as: "reviewer", attributes: ["user_id", "name"] },
-        { model: User, as: "approver", attributes: ["user_id", "name"] },
-      ],
-      order: [["form_id", "DESC"]],
-    }),
-    DispenseOfMaterialForm.findAll({
-      where: searchCondition,
-      include: [
-        { model: DispenseOfMaterialRecord },
-        { model: User, as: "reviewer4", attributes: ["user_id", "name"] },
-        { model: User, as: "approver4", attributes: ["user_id", "name"] },
-      ],
-      order: [["form_id", "DESC"]],
-    }),
-    LoadedQuantityProcessForm.findAll({
-      where: searchCondition,
-      include: [
-        { model: LoadedQuantityRecord },
-        { model: User, as: "reviewer1", attributes: ["user_id", "name"] },
-        { model: User, as: "approver1", attributes: ["user_id", "name"] },
-      ],
-      order: [["form_id", "DESC"]],
-    }),
-    MediaRecordProcessForm.findAll({
-      where: searchCondition,
-      include: [
-        { model: MediaRecord },
-        { model: User, as: "reviewer3", attributes: ["user_id", "name"] },
-        { model: User, as: "approver3", attributes: ["user_id", "name"] },
-      ],
-      order: [["form_id", "DESC"]],
-    }),
-    OperationOfSterilizerProcessForm.findAll({
-      where: searchCondition,
-      include: [
-        { model: OperationOfSterilizerRecord },
-        { model: User, as: "reviewer2", attributes: ["user_id", "name"] },
-        { model: User, as: "approver2", attributes: ["user_id", "name"] },
-      ],
-      order: [["form_id", "DESC"]],
-    }),
-    TempratureProcessForm.findAll({
-      where: searchCondition,
-      include: [
-        { model: TempratureProcessRecord },
-        { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
-        { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
-      ],
-      order: [["form_id", "DESC"]],
-    }),
-  ]);
-
-  // Combine all results into a single object
-  const data = {
-    differentialPressureForms,
-    dispenseOfMaterialForms,
-    loadedQuantityForms,
-    mediaRecordForms,
-    operationOfSterilizerForms,
-    temperatureForms,
-  };
+    // Combine all results into a single object
+    const data = {
+      differentialPressureForms,
+      dispenseOfMaterialForms,
+      loadedQuantityForms,
+      mediaRecordForms,
+      operationOfSterilizerForms,
+      temperatureForms,
+    };
 
     return res.status(200).json({
       error: false,

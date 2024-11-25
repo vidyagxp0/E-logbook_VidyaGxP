@@ -103,11 +103,11 @@ router.put(
 
 // router.get("/get-processes", MediaRecord.getAllProcesses);
 
-// router.get(
-//   "/get-audit-trail-for-elog/:id",
-//   Auth.checkUserJwtToken,
-//   MediaRecord.getAuditTrailForAnElog
-// );
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  MediaRecord.getAuditTrailForAnElog
+);
 
 router.post(
   "/generate-pdf",
