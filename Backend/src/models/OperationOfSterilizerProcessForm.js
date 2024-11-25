@@ -102,6 +102,14 @@ const OperationOfSterilizerProcessForm = sequelize.define(
     additionalInfo: {
       type: DataTypes.STRING,
     },
+    product_nameArray: {
+      allowNull: true,
+      type: DataTypes.JSON,
+    },
+    batch_noArray: {
+      allowNull: true,
+      type: DataTypes.JSON,
+    },
   }
 );
 

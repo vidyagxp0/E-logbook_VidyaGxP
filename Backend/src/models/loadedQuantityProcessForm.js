@@ -104,9 +104,11 @@ const LoadedQuantityProcessForm = sequelize.define(
     },
     product_nameArray: {
       type: DataTypes.JSON,
+      allowNull:true,
     },
     batch_noArray: {
       type: DataTypes.JSON,
+      allowNull:true,
     },
   }
 );
