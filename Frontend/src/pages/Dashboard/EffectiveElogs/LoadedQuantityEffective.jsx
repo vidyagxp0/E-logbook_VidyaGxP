@@ -11,6 +11,7 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 import ExcelSelectWithTwoDropdowns from "../../TestPages/ExcelImport";
 import * as XLSX from "xlsx";
+import { height } from "@mui/system";
 
 const LoadedQuantityEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
@@ -380,8 +381,8 @@ const LoadedQuantityEffective = () => {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.LoadedQuantityRecords];
       updatedGridData.splice(index, 1);
@@ -949,9 +950,9 @@ const LoadedQuantityEffective = () => {
                         {/* Added ml-auto to push to the right */}
                         <label
                           htmlFor="file-upload"
-                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2"
+                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2 m-0"
                         >
-                          Import Product Name
+                          Import Product & Batch
                         </label>
                         <input
                           id="file-upload"

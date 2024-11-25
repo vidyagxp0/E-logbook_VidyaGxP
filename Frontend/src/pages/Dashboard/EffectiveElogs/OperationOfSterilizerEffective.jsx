@@ -9,6 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import * as XLSX from "xlsx";
 
 const OperationOfSterilizerEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
@@ -18,6 +19,8 @@ const OperationOfSterilizerEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [productNameArray, setProductNameArray] = useState([]);
+  const [batchNoArray, setBatchNoArray] = useState([]);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
@@ -28,7 +31,28 @@ const OperationOfSterilizerEffective = () => {
     additionalInfo: "",
     additionalAttachment: "",
     OperationOfSterilizerRecords: [],
+    product_nameArray: [],
+    batch_noArray: [],
   });
+
+  useEffect(() => {
+    if (Array.isArray(productNameArray)) {
+      setEditData((prevData) => ({
+        ...prevData,
+        product_nameArray: productNameArray.map((itm) => ({
+          productName: itm,
+        })),
+      }));
+    }
+    if (Array.isArray(batchNoArray)) {
+      setEditData((prevData) => ({
+        ...prevData,
+        batch_noArray: batchNoArray.map((itm) => ({
+          batchNo: itm,
+        })),
+      }));
+    }
+  }, [productNameArray, batchNoArray]);
 
   console.log(editData, "editData");
   const navigate = useNavigate();
@@ -352,8 +376,8 @@ const OperationOfSterilizerEffective = () => {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.OperationOfSterilizerRecords];
       updatedGridData.splice(index, 1);
@@ -491,6 +515,40 @@ const OperationOfSterilizerEffective = () => {
       ...prevState,
       description: content,
     }));
+  };
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileReader = new FileReader();
+
+      fileReader.onload = (e) => {
+        const workbook = XLSX.read(e.target.result, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+        const normalizedData = jsonData.map((item) => {
+          const normalizedItem = {};
+          Object.keys(item).forEach((key) => {
+            const normalizedKey = key.trim();
+            normalizedItem[normalizedKey] = item[key];
+          });
+          return normalizedItem;
+        });
+
+        const importedProductName = normalizedData.map(
+          (item) => item["Product Name"]
+        );
+        const importedBatchNo = normalizedData.map((item) => item["Batch No"]);
+        // console.log("Imported Batch No:", importedBatchNo);
+
+        setProductNameArray(importedProductName);
+        setBatchNoArray(importedBatchNo);
+        // setEditData.LoadedQuantityRecords(productNameArray);
+      };
+
+      fileReader.readAsBinaryString(file);
+    }
   };
   return (
     <div>
@@ -895,9 +953,25 @@ const OperationOfSterilizerEffective = () => {
               {isSelectedDetails === true ? (
                 <>
                   <div>
-                    <div className="AddRows d-flex">
+                    <div className="AddRows flex items-center justify-between">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
+                      <div className="flex items-start">
+                        {/* Added ml-auto to push to the right */}
+                        <label
+                          htmlFor="file-upload"
+                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:outline-none px-4 py-2 m-0"
+                        >
+                          Import Product & Batch
+                        </label>
+                        <input
+                          id="file-upload"
+                          type="file"
+                          accept=".xlsx, .xls"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
@@ -913,7 +987,7 @@ const OperationOfSterilizerEffective = () => {
                           <th rowSpan={2}>Product Name</th>
                           <th rowSpan={2}>Container size (ml)</th>
                           <th rowSpan={2}>Loaded quantity</th>
-                          <th rowSpan={2}>Batch No.- Lot. No.</th>
+                          <th rowSpan={2}>Batch No.</th>
                           <th rowSpan={2}>Loading Time</th>
                           <th rowSpan={1} colSpan={2}>
                             {" "}
@@ -1028,10 +1102,23 @@ const OperationOfSterilizerEffective = () => {
                                     userDetails.roles[0].role_id
                                   )}
                                 >
-                                  <option value="">Select Product Name</option>
-                                  <option value="ProductA">ProductA</option>
-                                  <option value="ProductB">ProductB</option>
-                                  <option value="ProductC">ProductC</option>
+                                  {Array.isArray(editData.product_nameArray) &&
+                                  editData.product_nameArray.length > 0 ? (
+                                    editData.product_nameArray.map(
+                                      (productNameArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={productNameArray.productName}
+                                        >
+                                          {productNameArray.productName}
+                                        </option>
+                                      )
+                                    )
+                                  ) : (
+                                    <option value="">
+                                      No Product Name available
+                                    </option>
+                                  )}
                                 </select>
                               </td>
                               <td>
@@ -1080,8 +1167,7 @@ const OperationOfSterilizerEffective = () => {
                                     const newData = [
                                       ...editData.OperationOfSterilizerRecords,
                                     ];
-                                    newData[index].batch_no_lot_no =
-                                      e.target.value;
+                                    newData[index].batch_no_lot_no = e.target.value;
                                     setEditData({
                                       ...editData,
                                       OperationOfSterilizerRecords: newData,
@@ -1091,12 +1177,23 @@ const OperationOfSterilizerEffective = () => {
                                     userDetails.roles[0].role_id
                                   )}
                                 >
-                                  <option value="">
-                                    Select Batch/Lot Number
-                                  </option>
-                                  <option value="Batch001">Batch001</option>
-                                  <option value="Batch002">Batch002</option>
-                                  <option value="Batch003">Batch003</option>
+                                  {Array.isArray(editData.batch_noArray) &&
+                                  editData.batch_noArray.length > 0 ? (
+                                    editData.batch_noArray.map(
+                                      (batchNoArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={batchNoArray.batchNo}
+                                        >
+                                          {batchNoArray.batchNo}
+                                        </option>
+                                      )
+                                    )
+                                  ) : (
+                                    <option value="">
+                                      No Batch No. available
+                                    </option>
+                                  )}
                                 </select>
                               </td>
                               <td>
@@ -1328,7 +1425,7 @@ const OperationOfSterilizerEffective = () => {
                         </div>
                       ) : (
                         <div>
-                         <button
+                          <button
                             className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>
