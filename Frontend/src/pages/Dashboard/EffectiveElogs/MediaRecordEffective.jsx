@@ -220,7 +220,7 @@ const MediaRecordEffective = () => {
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
@@ -1044,8 +1044,7 @@ const MediaRecordEffective = () => {
                                 value={item.lot_no}
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
-                                  newData[index].lot_no =
-                                    e.target.value;
+                                  newData[index].lot_no = e.target.value;
                                   setEditData({
                                     ...editData,
                                     MediaRecords: newData,
@@ -1575,17 +1574,17 @@ const MediaRecordEffective = () => {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input
