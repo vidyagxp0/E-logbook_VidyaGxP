@@ -69,9 +69,9 @@ function AddNewUser() {
 
   const options2 = [
     { label: "Select All", value: "all" },
-    ...roleGroups2.map((role) => ({
-      label: role.effectiveRole,
-      value: role.effectiveRole_id,
+    ...roleGroups.map((role, index) => ({
+      label: role.roleGroup,
+      value: `${role.roleGroup_id}-${index}`,
     })),
   ];
 

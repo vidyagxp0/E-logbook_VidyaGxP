@@ -10,6 +10,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import TinyEditor from "../../../components/TinyEditor";
+import Select from "react-select";
 
 export default function DiffrentialPressure() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -20,6 +21,7 @@ export default function DiffrentialPressure() {
   const [allTableData, setAllTableData] = useState([]);
   const [reviewers, setReviewers] = useState([]);
   const [approvers, setApprovers] = useState([]);
+  console.log(approvers,"approversapprovers")
   const [User, setUser] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -203,8 +205,8 @@ export default function DiffrentialPressure() {
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: null,
-      approver_id: null,
+      reviewer_id: [],
+      approver_id: [],
       description: "",
       department: "",
       review_comments: "",
@@ -577,31 +579,52 @@ export default function DiffrentialPressure() {
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={differentialPRecord.reviewer_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedReviewers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setDifferentialPRecord({
-                              reviewer_id: e.target.value,
+                              ...differentialPRecord,
+                              reviewer_id: reviewers.map(
+                                (reviewers) => reviewers.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select a reviewer</option>
-                          {[
-                            ...new Map(
-                              reviewers.map((reviewer) => [
-                                reviewer.user_id,
-                                reviewer,
-                              ])
-                            ).values(),
-                          ].map((reviewer, index) => (
-                            <option key={index} value={reviewer.user_id}>
-                              {reviewer.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setDifferentialPRecord({
+                              ...differentialPRecord,
+                              reviewer_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...reviewers.map((reviewer) => ({
+                            label: reviewer.User.name,
+                            value: reviewer.user_id,
+                          })),
+                        ]}
+                        value={differentialPRecord.reviewer_id
+                          .filter(
+                            (value, index, self) =>
+                              self.indexOf(value) === index
+                          ) // Remove duplicates
+                          .map((id) => ({
+                            value: id,
+                            label:
+                              reviewers.find(
+                                (reviewer) => reviewer.user_id === id
+                              )?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
+
                     <div className="group-input">
                       <label className="color-label">
                         Approver
@@ -609,30 +632,50 @@ export default function DiffrentialPressure() {
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={differentialPRecord.approver_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedApprovers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setDifferentialPRecord({
-                              approver_id: e.target.value,
+                              ...differentialPRecord,
+                              approver_id: approvers.map(
+                                (approver) => approver.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select an approver</option>
-                          {[
-                            ...new Map(
-                              approvers.map((approver) => [
-                                approver.user_id,
-                                approver,
-                              ])
-                            ).values(),
-                          ].map((approver, index) => (
-                            <option key={index} value={approver.user_id}>
-                              {approver.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setDifferentialPRecord({
+                              ...differentialPRecord,
+                              approver_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...approvers.map((approver) => ({
+                            label: approver.User.name,
+                            value: approver.user_id,
+                          })),
+                        ]}
+                        value={differentialPRecord.approver_id
+                          .filter(
+                            (value, index, self) =>
+                              self.indexOf(value) === index
+                          )
+                          .map((id) => ({
+                            value: id,
+                            label:
+                              approvers.find(
+                                (approver) => approver.user_id === id
+                              )?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
                   </div>
 

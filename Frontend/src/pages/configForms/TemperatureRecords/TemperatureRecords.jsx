@@ -10,6 +10,7 @@ import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import TinyEditor from "../../../components/TinyEditor";
+import Select from "react-select";
 
 export default function TemperatureRecords() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -215,8 +216,8 @@ export default function TemperatureRecords() {
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: null,
-      approver_id: null,
+      reviewer_id: [],
+      approver_id: [],
       description: "",
       department: "",
       review_comments: "",
@@ -550,37 +551,51 @@ export default function TemperatureRecords() {
                     />
                   </div>
                   <div className="form-flex">
-                    <div className="group-input">
+                  <div className="group-input">
                       <label className="color-label">
                         Reviewer
                         <span style={{ color: "red", marginLeft: "2px" }}>
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={tempratureRecord.reviewer_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedReviewers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setTempratureRecord({
-                              reviewer_id: e.target.value,
+                              ...tempratureRecord,
+                              reviewer_id: reviewers.map(
+                                (reviewers) => reviewers.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select a reviewer</option>
-                          {[
-                            ...new Map(
-                              reviewers.map((reviewer) => [
-                                reviewer.user_id,
-                                reviewer,
-                              ])
-                            ).values(),
-                          ].map((reviewer, index) => (
-                            <option key={index} value={reviewer.user_id}>
-                              {reviewer.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setTempratureRecord({
+                              ...tempratureRecord,
+                              reviewer_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...reviewers.map((reviewer) => ({
+                            label: reviewer.User.name,
+                            value: reviewer.user_id,
+                          })),
+                        ]}
+                        value={tempratureRecord.reviewer_id
+                          .filter((value, index, self) => self.indexOf(value) === index) 
+                          .map((id) => ({
+                            value: id,
+                            label: reviewers.find((reviewer) => reviewer.user_id === id)?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
                     <div className="group-input">
                       <label className="color-label">
@@ -589,30 +604,44 @@ export default function TemperatureRecords() {
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={tempratureRecord.approver_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedApprovers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setTempratureRecord({
-                              approver_id: e.target.value,
+                              ...tempratureRecord,
+                              approver_id: approvers.map(
+                                (approver) => approver.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select an approver</option>
-                          {[
-                            ...new Map(
-                              approvers.map((approver) => [
-                                approver.user_id,
-                                approver,
-                              ])
-                            ).values(),
-                          ].map((approver, index) => (
-                            <option key={index} value={approver.user_id}>
-                              {approver.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setTempratureRecord({
+                              ...tempratureRecord,
+                              approver_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...approvers.map((approver) => ({
+                            label: approver.User.name,
+                            value: approver.user_id,
+                          })),
+                        ]}
+                        value={tempratureRecord.approver_id
+                          .filter((value, index, self) => self.indexOf(value) === index)
+                          .map((id) => ({
+                            value: id,
+                            label: approvers.find((approver) => approver.user_id === id)?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
                   </div>
 
