@@ -458,7 +458,7 @@ export default function TempretureRecordsPanel() {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Temperature Record",
                         },
                       })
                     }
@@ -855,13 +855,13 @@ export default function TempretureRecordsPanel() {
                       name="limit"
                       disabled
                       type="number"
-                      className={`${
-                        editData?.limit < 23
-                          ? "limit"
-                          : editData?.limit > 27
-                          ? "limit"
-                          : ""
-                      }`}
+                      // className={`${
+                      //   editData?.limit < 23
+                      //     ? "limit"
+                      //     : editData?.limit > 27
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
                       readOnly={
@@ -873,7 +873,7 @@ export default function TempretureRecordsPanel() {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>

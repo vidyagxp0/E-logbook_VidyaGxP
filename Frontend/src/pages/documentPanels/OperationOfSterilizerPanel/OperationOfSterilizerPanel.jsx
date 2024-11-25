@@ -546,7 +546,7 @@ const OperationOfSterilizerPanel = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Operation Of Sterilizer",
                         },
                       })
                     }

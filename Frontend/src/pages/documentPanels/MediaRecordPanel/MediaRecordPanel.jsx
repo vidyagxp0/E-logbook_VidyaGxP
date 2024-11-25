@@ -513,7 +513,7 @@ const MediaRecordPanel = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Media Record",
                         },
                       })
                     }

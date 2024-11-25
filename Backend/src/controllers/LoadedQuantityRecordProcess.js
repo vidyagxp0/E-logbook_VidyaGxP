@@ -128,6 +128,8 @@ exports.InsertLoadedQuantity = async (req, res) => {
       additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
+      // console.log(field,value,"FIELDVALUE");
+      
       if (value !== undefined && value !== null && value !== "") {
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -1436,43 +1438,43 @@ exports.ApproveDPElog = async (req, res) => {
 //     });
 // };
 
-// exports.getAuditTrailForAnElog = async (req, res) => {
-//   try {
-//     // Extract form_id from request parameters
-//     const formId = req.params.id;
+exports.getAuditTrailForAnElog = async (req, res) => {
+  try {
+    // Extract form_id from request parameters
+    const formId = req.params.id;
 
-//     // Check if form_id is provided
-//     if (!formId) {
-//       return res
-//         .status(400)
-//         .json({ error: true, message: "Form ID is required." });
-//     }
+    // Check if form_id is provided
+    if (!formId) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Form ID is required." });
+    }
 
-//     // Find all audit trail entries for the given form_id
-//     const auditTrail = await LoadedQuantityProcessAuditTrail.findAll({
-//       where: { form_id: formId },
-//       include: {
-//         model: User,
-//         attributes: ["user_id", "name"],
-//       },
-//       order: [["auditTrail_id", "DESC"]],
-//     });
+    // Find all audit trail entries for the given form_id
+    const auditTrail = await LoadedQuantityProcessAuditTrail.findAll({
+      where: { form_id: formId },
+      include: {
+        model: User,
+        attributes: ["user_id", "name"],
+      },
+      order: [["auditTrail_id", "DESC"]],
+    });
 
-//     if (!auditTrail || auditTrail.length === 0) {
-//       return res.status(404).json({
-//         error: true,
-//         message: "No audit trail found for the given form ID.",
-//       });
-//     }
+    if (!auditTrail || auditTrail.length === 0) {
+      return res.status(404).json({
+        error: true,
+        message: "No audit trail found for the given form ID.",
+      });
+    }
 
-//     return res.status(200).json({ error: false, auditTrail });
-//   } catch (error) {
-//     return res.status(500).json({
-//       error: true,
-//       message: `Error retrieving audit trail: ${error.message}`,
-//     });
-//   }
-// };
+    return res.status(200).json({ error: false, auditTrail });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: `Error retrieving audit trail: ${error.message}`,
+    });
+  }
+};
 
 exports.generateReport = async (req, res) => {
   try {

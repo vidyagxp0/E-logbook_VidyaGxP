@@ -917,13 +917,13 @@ export default function DPRpanel() {
                       name="limit"
                       disabled
                       type="number"
-                      className={`${
-                        editData?.limit < 0.6
-                          ? "limit"
-                          : editData?.limit > 2.6
-                          ? "limit"
-                          : ""
-                      }`}
+                      // className={`${
+                      //   editData?.limit < 0.6
+                      //     ? "limit"
+                      //     : editData?.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
                       readOnly={
