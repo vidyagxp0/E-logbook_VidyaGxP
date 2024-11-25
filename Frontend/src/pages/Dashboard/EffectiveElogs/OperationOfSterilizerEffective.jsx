@@ -525,7 +525,7 @@ const OperationOfSterilizerEffective = () => {
     const file = event.target.files[0];
     if (file) {
       const fileReader = new FileReader();
-      let hasErrorOccurred = false; // Flag to track if an error has been shown
+      let hasErrorOccurred = false;
   
       fileReader.onload = (e) => {
         const workbook = XLSX.read(e.target.result, { type: "binary" });
@@ -536,16 +536,15 @@ const OperationOfSterilizerEffective = () => {
         const normalizedData = jsonData.map((item, index) => {
           const normalizedItem = {};
   
-          // Check headers only for the first row
           if (index === 0 && !hasErrorOccurred) {
             const headers = Object.keys(item);
             const isProductNamePresent = headers.includes("Product Name");
-            const isBatchNoPresent = headers.includes("Batch No");
+            const isBatchNoPresent = headers.includes("Batch No") || headers.includes("Batch No.");
   
             if (!isProductNamePresent && !isBatchNoPresent) {
               toast.error("Excel file headers do not match the required format!");
               hasErrorOccurred = true;
-              return null;
+              return null; 
             }
           }
   
@@ -563,9 +562,9 @@ const OperationOfSterilizerEffective = () => {
   
         const importedProductName = normalizedData
           .map((item) => item["Product Name"])
-          .filter((name) => name);
+          .filter((name) => name); 
         const importedBatchNo = normalizedData
-          .map((item) => item["Batch No"])
+          .map((item) => item["Batch No"] || item["Batch No."])
           .filter((no) => no);
   
         if (importedProductName.length > 0) {

@@ -532,7 +532,7 @@ const LoadedQuantityEffective = () => {
           if (index === 0 && !hasErrorOccurred) {
             const headers = Object.keys(item);
             const isProductNamePresent = headers.includes("Product Name");
-            const isBatchNoPresent = headers.includes("Batch No");
+            const isBatchNoPresent = headers.includes("Batch No") || headers.includes("Batch No.");
   
             if (!isProductNamePresent && !isBatchNoPresent) {
               toast.error("Excel file headers do not match the required format!");
@@ -557,7 +557,7 @@ const LoadedQuantityEffective = () => {
           .map((item) => item["Product Name"])
           .filter((name) => name); 
         const importedBatchNo = normalizedData
-          .map((item) => item["Batch No"])
+          .map((item) => item["Batch No"] || item["Batch No."])
           .filter((no) => no);
   
         if (importedProductName.length > 0) {
