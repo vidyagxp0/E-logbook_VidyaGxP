@@ -111,11 +111,11 @@ router.put(
 
 // router.get("/get-processes", LoadedQuantityRecordProcess.getAllProcesses);
 
-// router.get(
-//   "/get-audit-trail-for-elog/:id",
-//   Auth.checkUserJwtToken,
-//   LoadedQuantityRecordProcess.getAuditTrailForAnElog
-// );
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  LoadedQuantityRecordProcess.getAuditTrailForAnElog
+);
 
 router.post(
   "/generate-pdf",
@@ -138,6 +138,12 @@ router.post(
 router.post(
   "/effective-view-report",
   LoadedQuantityRecordProcess.effetiveViewReport
+);
+
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  LoadedQuantityRecordProcess.blankReport
 );
 
 module.exports = router;

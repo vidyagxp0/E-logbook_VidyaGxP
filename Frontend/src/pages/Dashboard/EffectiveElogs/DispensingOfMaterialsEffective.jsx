@@ -79,7 +79,7 @@ const DispensingOfMaterialsEffective = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
+          "http://localhost:1000/dispensing-material/send-for-review",
           data,
           config
         )
@@ -97,7 +97,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
+          "http://localhost:1000/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -116,7 +116,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
+          "http://localhost:1000/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -131,11 +131,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/dispensing-material/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -150,7 +146,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
+          "http://localhost:1000/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -201,7 +197,7 @@ const DispensingOfMaterialsEffective = () => {
         },
         data: editData,
 
-        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
+        url: "http://localhost:1000/dispensing-material/update",
       };
 
       axios(requestOptions)

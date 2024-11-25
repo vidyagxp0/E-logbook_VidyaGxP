@@ -30,8 +30,7 @@ function AddNewUser() {
   }, [selectedOptions]);
 
   useEffect(() => {
-    const url =
-      "https://elog-backend.mydemosoftware.com/user/get-all-rolegroups";
+    const url = "http://localhost:1000/user/get-all-rolegroups";
     axios
       .get(url)
       .then((response) => {
@@ -134,7 +133,7 @@ function AddNewUser() {
     };
 
     axios
-      .post("https://elog-backend.mydemosoftware.com/user/add-user", formData, {
+      .post("http://localhost:1000/user/add-user", formData, {
         headers: myHeaders,
       })
       .then(() => {

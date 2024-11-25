@@ -51,15 +51,6 @@ const DispenseOfMaterialForm = sequelize.define("DispenseOfMaterialForm", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  department: {
-    type: DataTypes.STRING,
-  },
-  compression_area: {
-    type: DataTypes.STRING,
-  },
-  limit: {
-    type: DataTypes.FLOAT,
-  },
   reviewer_id: {
     type: DataTypes.INTEGER,
     allowNull: false,

@@ -103,11 +103,11 @@ router.put(
 
 // router.get("/get-processes", MediaRecord.getAllProcesses);
 
-// router.get(
-//   "/get-audit-trail-for-elog/:id",
-//   Auth.checkUserJwtToken,
-//   MediaRecord.getAuditTrailForAnElog
-// );
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  MediaRecord.getAuditTrailForAnElog
+);
 
 router.post(
   "/generate-pdf",
@@ -133,4 +133,11 @@ router.post(
 );
 
 router.post("/effective-view-report", MediaRecord.effetiveViewReport);
+
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  MediaRecord.blankReport
+);
+
 module.exports = router;

@@ -31,7 +31,7 @@ function Dashboard() {
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-all-differential-pressure",
+      url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -63,7 +63,7 @@ function Dashboard() {
 
     const newConfigTemp = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-all-temprature-record",
+      url: "http://localhost:1000/temprature-record/get-all-temprature-record",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ function Dashboard() {
 
     const newConfigloaded = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/loaded-quantity/get-all",
+      url: "http://localhost:1000/loaded-quantity/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -119,7 +119,7 @@ function Dashboard() {
 
     const newConfigMedia = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/media-record/get-all",
+      url: "http://localhost:1000/media-record/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -147,7 +147,7 @@ function Dashboard() {
 
     const newConfigDispensing = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/dispensing-material/get-all",
+      url: "http://localhost:1000/dispensing-material/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -174,7 +174,7 @@ function Dashboard() {
       });
     const newOperationSterelizer = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/get-all",
+      url: "http://localhost:1000/operation-sterlizer/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -248,7 +248,6 @@ function Dashboard() {
       ...dispensingOfMaterialsElogs,
       ...operationOfSterilizerElogs,
     ].filter((item) => {
-      // Check if the search term matches any of the fields
       const matchesSearchTerm =
         item.date_of_initiation
           .toLowerCase()
@@ -257,7 +256,21 @@ function Dashboard() {
         item?.initiator_name
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase());
+        item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item?.TempratureRecords
+          ? `TR${item.form_id}`
+          : item?.LoadedQuantityRecords
+          ? `LQ${item.form_id}`
+          : item?.OperationOfSterilizerRecords
+          ? `OF${item.form_id}`
+          : item?.MediaRecords
+          ? `MR${item.form_id}`
+          : item?.DispenseOfMaterials
+          ? `DM${item.form_id}`
+          : `DP${item.form_id}`
+        )
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         eLogStatus === "All_Records" ||
