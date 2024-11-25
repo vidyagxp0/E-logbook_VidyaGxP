@@ -332,9 +332,9 @@ function Dashboard() {
               <option value="diffrential_pressure">
                 Differential Pressure Record
               </option>
-              <option value="equipment_cleaning">
+              {/* <option value="equipment_cleaning">
                 Equipment Cleaning Checklist
-              </option>
+              </option> */}
               <option value="temperature_records">Temperature Records</option>
               <option value="loaded_quantity">Loaded Quantity</option>
               <option value="media_record">Media Record</option>
@@ -407,7 +407,11 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.description,
+                        }}
+                      ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -434,7 +438,7 @@ function Dashboard() {
                 })
               : null} */}
 
-            {eLogSelect === "equipment_cleaning"
+            {/* {eLogSelect === "equipment_cleaning"
               ? equipmentCRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -450,7 +454,7 @@ function Dashboard() {
                     </tr>
                   );
                 })
-              : null}
+              : null} */}
 
             {eLogSelect === "temperature_records"
               ? tempratureRecordElogs?.map((item, index) => {
@@ -482,7 +486,11 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.description,
+                        }}
+                      ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -522,7 +530,11 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.description,
+                        }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -566,7 +578,11 @@ function Dashboard() {
                             ? "EMEA"
                             : "EU"}
                         </td>
-                        <td>{item.description}</td>
+                        <td
+                          dangerouslySetInnerHTML={{
+                            __html: item.description,
+                          }}
+                        ></td>
                         <td>{item.initiator_name}</td>
                         <td>{formatDate(item.date_of_initiation)}</td>
                         <td>{item.status}</td>
@@ -608,7 +624,11 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.description,
+                        }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
@@ -651,7 +671,11 @@ function Dashboard() {
                           ? "EMEA"
                           : "EU"}
                       </td>
-                      <td>{item.description}</td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.description,
+                        }}
+                      ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
