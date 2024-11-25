@@ -1019,7 +1019,7 @@ const DispensingOfMaterialsEffective = () => {
                               />
                             </td>
                             <td>
-                              <select
+                              <input
                                 value={item.control_no}
                                 onChange={(e) => {
                                   const newData = [
@@ -1035,16 +1035,16 @@ const DispensingOfMaterialsEffective = () => {
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="">Select A Control No</option>
+                                {/* <option value="">Select A Control No</option>
                                 <option value="CN01">CN01</option>
                                 <option value="CN02">CN02</option>
                                 <option value="CN03">CN03</option>
-                                <option value="CN04">CN04</option>
-                              </select>
+                                <option value="CN04">CN04</option> */}
+                              </input>
                             </td>
 
                             <td>
-                              <select
+                              <input
                                 value={item.dispensed_quantity}
                                 onChange={(e) => {
                                   const newData = [
@@ -1061,14 +1061,14 @@ const DispensingOfMaterialsEffective = () => {
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="" disabled>
+                                {/* <option value="" disabled>
                                   Select Dispensed Quantity (Kg){" "}
                                 </option>
                                 <option value="1">1 Kg</option>
                                 <option value="2">2 Kg</option>
                                 <option value="5">5 Kg</option>
-                                <option value="10">10 Kg</option>
-                              </select>
+                                <option value="10">10 Kg</option> */}
+                              </input>
                             </td>
                             <td>
                               <input
@@ -1392,7 +1392,7 @@ const DispensingOfMaterialsEffective = () => {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1507,9 +1507,9 @@ const DispensingOfMaterialsEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {reviewerRemarks === true ? (
+              {/* {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1624,9 +1624,9 @@ const DispensingOfMaterialsEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {approverRemarks === true ? (
+              {/* {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1732,7 +1732,7 @@ const DispensingOfMaterialsEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button

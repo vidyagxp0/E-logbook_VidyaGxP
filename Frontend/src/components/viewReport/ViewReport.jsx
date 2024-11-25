@@ -17,7 +17,8 @@ const ViewReport = () => {
   const url = new URL(window.location.href);
 
   const elogIdValue = url.searchParams.get("formId") || NA;
-  console.log(elogIdValue, "elogvalue");
+
+  // console.log(elogIdValue, "elogvalue");
 
   const pdfUrl = `https://elog-backend.mydemosoftware.com/public/Elog_Report_${elogIdValue}.pdf`;
 

@@ -228,7 +228,7 @@ const MediaRecordEffective = () => {
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
@@ -914,22 +914,6 @@ const MediaRecordEffective = () => {
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
-                      <div className="flex flex-col items-start space-y-2 ml-auto">
-                        {/* Added ml-auto to push to the right */}
-                        <label
-                          htmlFor="file-upload"
-                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2"
-                        >
-                          Import Lot No
-                        </label>
-                        <input
-                          id="file-upload"
-                          type="file"
-                          accept=".xlsx, .xls"
-                          onChange={handleFileUpload}
-                          className="hidden"
-                        />
-                      </div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
@@ -1266,7 +1250,7 @@ const MediaRecordEffective = () => {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1381,9 +1365,9 @@ const MediaRecordEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {reviewerRemarks === true ? (
+              {/* {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1498,9 +1482,9 @@ const MediaRecordEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {approverRemarks === true ? (
+              {/* {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1606,7 +1590,7 @@ const MediaRecordEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button

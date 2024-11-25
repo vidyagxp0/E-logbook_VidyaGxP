@@ -102,7 +102,9 @@
                     </tr>
                     <tr>
                         <th>Checked By</th>
-                        <td><%= record?.checked_by || "Not Applicable" %></td>
+                        <td>
+                                <%= record?.reviewed_by || "Not Applicable" %>
+                            </td>
                         <th>Supporting Documents</th>
                         <td>
                             <% if (record?.supporting_docs) { %>
