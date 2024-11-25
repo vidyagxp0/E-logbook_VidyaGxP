@@ -11,9 +11,14 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now();
-    const originalName = path.basename(file.originalname, path.extname(file.originalname));
-    const sanitizedOriginalName = originalName.replace(/[^a-zA-Z0-9]/g, '_'); // Sanitize the original name if necessary
-    const newFilename = `${uniqueSuffix}-${sanitizedOriginalName}${path.extname(file.originalname)}`;
+    const originalName = path.basename(
+      file.originalname,
+      path.extname(file.originalname)
+    );
+    const sanitizedOriginalName = originalName.replace(/[^a-zA-Z0-9]/g, "_"); // Sanitize the original name if necessary
+    const newFilename = `${uniqueSuffix}-${sanitizedOriginalName}${path.extname(
+      file.originalname
+    )}`;
     cb(null, newFilename);
   },
 });
@@ -131,4 +136,11 @@ router.post(
 );
 
 router.post("/effective-view-report", TempratureProcess.effetiveViewReport);
+
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  TempratureProcess.blankReport
+);
+
 module.exports = router;

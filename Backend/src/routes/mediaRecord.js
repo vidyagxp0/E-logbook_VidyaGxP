@@ -133,4 +133,11 @@ router.post(
 );
 
 router.post("/effective-view-report", MediaRecord.effetiveViewReport);
+
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  MediaRecord.blankReport
+);
+
 module.exports = router;

@@ -23,9 +23,6 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
   const {
     site_id,
     description,
-    department,
-    compression_area,
-    limit,
     reviewer_id,
     approver_id,
     initiatorComment,
@@ -100,9 +97,6 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         description: description,
         status: "Opened",
         stage: 1,
-        department: department,
-        compression_area: compression_area,
-        limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -117,9 +111,6 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
-      compression_area,
-      limit,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -144,9 +135,22 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
     if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "initiatorAttachment",
+        field_name: "Initiator Attachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+        declaration: initiatorDeclaration,
+        action: "Opened",
+      });
+    }
+    if (additionalAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "Additional Attachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
@@ -191,7 +195,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `UniqueId[${index}]`,
+          field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id,
           changed_by: user.user_id,
@@ -202,7 +206,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Date[${index}]`,
+          field_name: "Date",
           previous_value: null,
           new_value: record.date,
           changed_by: user.user_id,
@@ -213,7 +217,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `on_time_auh[${index}]`,
+          field_name: "On Time Auh",
           previous_value: null,
           new_value: record.on_time_auh,
           changed_by: user.user_id,
@@ -224,7 +228,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `on_time_laf[${index}]`,
+          field_name: "On Time Laf",
           previous_value: null,
           new_value: record.on_time_laf,
           changed_by: user.user_id,
@@ -235,7 +239,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `on_time_uv_light[${index}]`,
+          field_name: "On Time Uv Light",
           previous_value: null,
           new_value: record.on_time_uv_light,
           changed_by: user.user_id,
@@ -246,7 +250,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `on_time_done_by[${index}]`,
+          field_name: "On Time Done By",
           previous_value: null,
           new_value: record.on_time_done_by,
           changed_by: user.user_id,
@@ -257,7 +261,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `name_of_material[${index}]`,
+          field_name: "name_of_material",
           previous_value: null,
           new_value: record.name_of_material,
           changed_by: user.user_id,
@@ -268,7 +272,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `control_no[${index}]`,
+          field_name: "Control No",
           previous_value: null,
           new_value: record.control_no,
           changed_by: user.user_id,
@@ -279,7 +283,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `dispensed_quantity[${index}]`,
+          field_name: "Dispensed Quantity",
           previous_value: null,
           new_value: record.dispensed_quantity,
           changed_by: user.user_id,
@@ -290,7 +294,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `dispensed_by_qa[${index}]`,
+          field_name: "Dispensed By Qa",
           previous_value: null,
           new_value: record.dispensed_by_qa,
           changed_by: user.user_id,
@@ -301,7 +305,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `dispensed_by_store[${index}]`,
+          field_name: "Dispensed By Store",
           previous_value: null,
           new_value: record.dispensed_by_store,
           changed_by: user.user_id,
@@ -312,7 +316,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `off_time_auh[${index}]`,
+          field_name: "Off Time Auh",
           previous_value: null,
           new_value: record.off_time_auh,
           changed_by: user.user_id,
@@ -323,7 +327,18 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `off_time_uv_light[${index}]`,
+          field_name: "Off Time Laf",
+          previous_value: null,
+          new_value: record.off_time_laf,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Off Time Uv Light",
           previous_value: null,
           new_value: record.off_time_uv_light,
           changed_by: user.user_id,
@@ -334,7 +349,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `uv_burning[${index}]`,
+          field_name: "Uv Burning",
           previous_value: null,
           new_value: record.uv_burning,
           changed_by: user.user_id,
@@ -345,7 +360,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `off_time_done_by[${index}]`,
+          field_name: "Off Time Done By",
           previous_value: null,
           new_value: record.off_time_done_by,
           changed_by: user.user_id,
@@ -356,7 +371,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `cleaning_done_by[${index}]`,
+          field_name: "Cleaning Done By",
           previous_value: null,
           new_value: record.cleaning_done_by,
           changed_by: user.user_id,
@@ -367,7 +382,18 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `weighing_balance_id[${index}]`,
+          field_name: "Checked By",
+          previous_value: null,
+          new_value: record.checked_by,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Weighing Balance Id",
           previous_value: null,
           new_value: record.weighing_balance_id,
           changed_by: user.user_id,
@@ -378,9 +404,20 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `remark[${index}]`,
+          field_name: "Remark",
           previous_value: null,
           new_value: record.remark,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Reviewed By",
+          previous_value: null,
+          new_value: record.reviewed_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -422,9 +459,6 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
     form_id,
     site_id,
     description,
-    department,
-    compression_area,
-    limit,
     reviewer_id,
     approver_id,
     DispenseOfMaterials,
@@ -501,9 +535,6 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
-      compression_area,
-      limit,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -538,9 +569,6 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
       {
         site_id,
         description,
-        department,
-        compression_area,
-        limit,
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -653,7 +681,7 @@ exports.EditDispenseOfMaterialRecord = async (req, res) => {
             if (newValue !== undefined) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${i}]`,
+                field_name: `${field}`,
                 previous_value: null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -868,7 +896,7 @@ exports.SendDPElogForReview = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "initiatorAttachment",
+        field_name: "Initiator Attachment",
         previous_value: form.initiatorAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -881,7 +909,7 @@ exports.SendDPElogForReview = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "additionalAttachment",
+        field_name: "Additional Attachment",
         previous_value: form.additionalAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -894,7 +922,7 @@ exports.SendDPElogForReview = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1010,7 +1038,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewerAttachment",
+        field_name: "Reviewer Attachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1023,7 +1051,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1138,7 +1166,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (reviewComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewComment",
+        field_name: "Review Comment",
         previous_value: form.reviewComment || null,
         new_value: reviewComment,
         changed_by: user.user_id,
@@ -1153,7 +1181,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewerAttachment",
+        field_name: "Reviewer Attachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1166,7 +1194,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1281,7 +1309,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverAttachment",
+        field_name: "Approver Attachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1294,7 +1322,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1410,7 +1438,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (approverComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverComment",
+        field_name: "Approver Comment",
         previous_value: form.approverComment || null,
         new_value: approverComment,
         changed_by: user.user_id,
@@ -1425,7 +1453,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverAttachment",
+        field_name: "Approver Attachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1438,7 +1466,7 @@ exports.ApproveDPElog = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1664,7 +1692,7 @@ exports.chatByPdf = async (req, res) => {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
-    
+
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -1875,6 +1903,128 @@ exports.effetiveViewReport = async (req, res) => {
       }
       res.send(html);
     });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+
+exports.blankReport = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    const blankRows = Array(reportData?.blankRows).fill({
+      UniqueId: "",
+      Time: "",
+      DifferentialPressure: "",
+      Remark: "",
+      CheckedBy: "",
+      SupportingDocuments: "",
+    });
+
+    const data = reportData?.DispenseOfMaterial?.map((record) => ({
+      unique_id: record?.unique_id || "",
+      date: record?.date || "",
+      on_time_auh: record?.on_time_auh || "",
+      on_time_laf: record?.on_time_laf || "",
+      on_time_uv_light: record?.on_time_uv_light || "",
+      on_time_done_by: record?.on_time_done_by || "",
+      name_of_material: record?.name_of_material || "",
+      control_no: record?.control_no || "",
+      dispensed_quantity: record?.dispensed_quantity || "",
+      dispensed_by_qa: record?.dispensed_by_qa || "",
+      dispensed_by_store: record?.dispensed_by_store || "",
+      off_time_auh: record?.off_time_auh || "",
+      off_time_laf: record?.off_time_laf || "",
+      off_time_uv_light: record?.off_time_uv_light || "",
+      uv_burning: record?.uv_burning || "",
+      off_time_done_by: record?.off_time_done_by || "",
+      cleaning_done_by: record?.cleaning_done_by || "",
+      reviewed_by: record?.reviewed_by || "",
+      weighing_balance_id: record?.weighing_balance_id || "",
+      remark: record?.remark || "",
+    }));
+
+    const arrayData = [...data, ...blankRows];
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("blankDMReport", { arrayData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      landscape: true,
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "145px",
+        // right: "50px",
+        bottom: "50px",
+        // left: "50px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `DM_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `DM_Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
