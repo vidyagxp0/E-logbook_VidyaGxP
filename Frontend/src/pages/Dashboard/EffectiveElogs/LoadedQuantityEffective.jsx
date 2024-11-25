@@ -37,38 +37,31 @@ const LoadedQuantityEffective = () => {
     description: "",
     LoadedQuantityRecords: [],
   });
-  // console.log(editData.product_nameArray.map((item) => item.productName), "Updated product_nameArray in state");
 
-  // useEffect(() => {
-  //   if (Array.isArray(productNameArray)) {
-  //     setEditData((prevData) => ({
-  //       ...prevData,
-  //       product_nameArray: productNameArray.map((itm) => ({
-  //         productName: itm,
-  //       })),
-  //     }));
-  //   } else {
-  //     console.error("productNameArray is not an array");
-  //   }
-  // }, [productNameArray]);
   useEffect(() => {
-    if (Array.isArray(productNameArray)) {
-      setEditData((prevData) => ({
+    setEditData((prevData) => {
+      const updatedProductNameArray = Array.isArray(productNameArray)
+        ? [
+            ...(prevData.product_nameArray || []), // Retain previous values
+            ...productNameArray.map((itm) => ({ productName: itm })),
+          ]
+        : prevData.product_nameArray;
+  
+      const updatedBatchNoArray = Array.isArray(batchNoArray)
+        ? [
+            ...(prevData.batch_noArray || []), // Retain previous values
+            ...batchNoArray.map((itm) => ({ batchNo: itm })),
+          ]
+        : prevData.batch_noArray;
+  
+      return {
         ...prevData,
-        product_nameArray: productNameArray.map((itm) => ({
-          productName: itm,
-        })),
-      }));
-    }
-    if (Array.isArray(batchNoArray)) {
-      setEditData((prevData) => ({
-        ...prevData,
-        batch_noArray: batchNoArray.map((itm) => ({
-          batchNo: itm,
-        })),
-      }));
-    }
+        product_nameArray: updatedProductNameArray,
+        batch_noArray: updatedBatchNoArray,
+      };
+    });
   }, [productNameArray, batchNoArray]);
+  
   // console.log(editData.batch_noArray, "editData.batch_noArray");
   // console.log(editData.product_nameArray, "editData.product");
 
@@ -525,36 +518,60 @@ const LoadedQuantityEffective = () => {
     const file = event.target.files[0];
     if (file) {
       const fileReader = new FileReader();
-
+      let hasErrorOccurred = false;
+  
       fileReader.onload = (e) => {
         const workbook = XLSX.read(e.target.result, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-        const normalizedData = jsonData.map((item) => {
+  
+        const normalizedData = jsonData.map((item, index) => {
           const normalizedItem = {};
+  
+          if (index === 0 && !hasErrorOccurred) {
+            const headers = Object.keys(item);
+            const isProductNamePresent = headers.includes("Product Name");
+            const isBatchNoPresent = headers.includes("Batch No");
+  
+            if (!isProductNamePresent && !isBatchNoPresent) {
+              toast.error("Excel file headers do not match the required format!");
+              hasErrorOccurred = true;
+              return null; 
+            }
+          }
+  
           Object.keys(item).forEach((key) => {
             const normalizedKey = key.trim();
             normalizedItem[normalizedKey] = item[key];
           });
+  
           return normalizedItem;
-        });
-
-        const importedProductName = normalizedData.map(
-          (item) => item["Product Name"]
-        );
-        const importedBatchNo = normalizedData.map((item) => item["Batch No"]);
-        // console.log("Imported Batch No:", importedBatchNo);
-
-        setProductNameArray(importedProductName);
-        setBatchNoArray(importedBatchNo);
-        // setEditData.LoadedQuantityRecords(productNameArray);
+        }).filter((item) => item !== null);
+  
+        if (hasErrorOccurred) {
+          return;
+        }
+  
+        const importedProductName = normalizedData
+          .map((item) => item["Product Name"])
+          .filter((name) => name); 
+        const importedBatchNo = normalizedData
+          .map((item) => item["Batch No"])
+          .filter((no) => no);
+  
+        if (importedProductName.length > 0) {
+          setProductNameArray((prev) => [...prev, ...importedProductName]);
+        }
+        if (importedBatchNo.length > 0) {
+          setBatchNoArray((prev) => [...prev, ...importedBatchNo]);
+        }
       };
-
+  
       fileReader.readAsBinaryString(file);
     }
   };
+  
 
   return (
     <div>
