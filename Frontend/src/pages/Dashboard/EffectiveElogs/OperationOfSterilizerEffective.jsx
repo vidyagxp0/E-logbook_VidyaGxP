@@ -43,14 +43,14 @@ const OperationOfSterilizerEffective = () => {
             ...productNameArray.map((itm) => ({ productName: itm })),
           ]
         : prevData.product_nameArray;
-  
+
       const updatedBatchNoArray = Array.isArray(batchNoArray)
         ? [
             ...(prevData.batch_noArray || []), // Retain previous values
             ...batchNoArray.map((itm) => ({ batchNo: itm })),
           ]
         : prevData.batch_noArray;
-  
+
       return {
         ...prevData,
         product_nameArray: updatedProductNameArray,
@@ -494,7 +494,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/operation-sterlizer/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/operation-sterlizer/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -530,47 +530,52 @@ const OperationOfSterilizerEffective = () => {
     if (file) {
       const fileReader = new FileReader();
       let hasErrorOccurred = false;
-  
+
       fileReader.onload = (e) => {
         const workbook = XLSX.read(e.target.result, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
-  
-        const normalizedData = jsonData.map((item, index) => {
-          const normalizedItem = {};
-  
-          if (index === 0 && !hasErrorOccurred) {
-            const headers = Object.keys(item);
-            const isProductNamePresent = headers.includes("Product Name");
-            const isBatchNoPresent = headers.includes("Batch No") || headers.includes("Batch No.");
-  
-            if (!isProductNamePresent && !isBatchNoPresent) {
-              toast.error("Excel file headers do not match the required format!");
-              hasErrorOccurred = true;
-              return null; 
+
+        const normalizedData = jsonData
+          .map((item, index) => {
+            const normalizedItem = {};
+
+            if (index === 0 && !hasErrorOccurred) {
+              const headers = Object.keys(item);
+              const isProductNamePresent = headers.includes("Product Name");
+              const isBatchNoPresent =
+                headers.includes("Batch No") || headers.includes("Batch No.");
+
+              if (!isProductNamePresent && !isBatchNoPresent) {
+                toast.error(
+                  "Excel file headers do not match the required format!"
+                );
+                hasErrorOccurred = true;
+                return null;
+              }
             }
-          }
-  
-          Object.keys(item).forEach((key) => {
-            const normalizedKey = key.trim();
-            normalizedItem[normalizedKey] = item[key];
-          });
-  
-          return normalizedItem;
-        }).filter((item) => item !== null);
-  
+
+            Object.keys(item).forEach((key) => {
+              const normalizedKey = key.trim();
+              normalizedItem[normalizedKey] = item[key];
+            });
+
+            return normalizedItem;
+          })
+          .filter((item) => item !== null);
+
         if (hasErrorOccurred) {
           return;
         }
-  
+
         const importedProductName = normalizedData
           .map((item) => item["Product Name"])
-          .filter((name) => name); 
+          .filter((name) => name);
         const importedBatchNo = normalizedData
           .map((item) => item["Batch No"] || item["Batch No."])
           .filter((no) => no);
-  
+
         if (importedProductName.length > 0) {
           setProductNameArray((prev) => [...prev, ...importedProductName]);
         }
@@ -578,7 +583,7 @@ const OperationOfSterilizerEffective = () => {
           setBatchNoArray((prev) => [...prev, ...importedBatchNo]);
         }
       };
-  
+
       fileReader.readAsBinaryString(file);
     }
   };
@@ -1199,7 +1204,8 @@ const OperationOfSterilizerEffective = () => {
                                     const newData = [
                                       ...editData.OperationOfSterilizerRecords,
                                     ];
-                                    newData[index].batch_no_lot_no = e.target.value;
+                                    newData[index].batch_no_lot_no =
+                                      e.target.value;
                                     setEditData({
                                       ...editData,
                                       OperationOfSterilizerRecords: newData,

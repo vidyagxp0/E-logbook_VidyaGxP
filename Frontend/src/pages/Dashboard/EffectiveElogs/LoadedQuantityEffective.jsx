@@ -46,14 +46,14 @@ const LoadedQuantityEffective = () => {
             ...productNameArray.map((itm) => ({ productName: itm })),
           ]
         : prevData.product_nameArray;
-  
+
       const updatedBatchNoArray = Array.isArray(batchNoArray)
         ? [
             ...(prevData.batch_noArray || []), // Retain previous values
             ...batchNoArray.map((itm) => ({ batchNo: itm })),
           ]
         : prevData.batch_noArray;
-  
+
       return {
         ...prevData,
         product_nameArray: updatedProductNameArray,
@@ -61,7 +61,7 @@ const LoadedQuantityEffective = () => {
       };
     });
   }, [productNameArray, batchNoArray]);
-  
+
   // console.log(editData.batch_noArray, "editData.batch_noArray");
   // console.log(editData.product_nameArray, "editData.product");
 
@@ -488,7 +488,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/loaded-quantity/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -523,47 +523,52 @@ const LoadedQuantityEffective = () => {
     if (file) {
       const fileReader = new FileReader();
       let hasErrorOccurred = false;
-  
+
       fileReader.onload = (e) => {
         const workbook = XLSX.read(e.target.result, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
-  
-        const normalizedData = jsonData.map((item, index) => {
-          const normalizedItem = {};
-  
-          if (index === 0 && !hasErrorOccurred) {
-            const headers = Object.keys(item);
-            const isProductNamePresent = headers.includes("Product Name");
-            const isBatchNoPresent = headers.includes("Batch No") || headers.includes("Batch No.");
-  
-            if (!isProductNamePresent && !isBatchNoPresent) {
-              toast.error("Excel file headers do not match the required format!");
-              hasErrorOccurred = true;
-              return null; 
+
+        const normalizedData = jsonData
+          .map((item, index) => {
+            const normalizedItem = {};
+
+            if (index === 0 && !hasErrorOccurred) {
+              const headers = Object.keys(item);
+              const isProductNamePresent = headers.includes("Product Name");
+              const isBatchNoPresent =
+                headers.includes("Batch No") || headers.includes("Batch No.");
+
+              if (!isProductNamePresent && !isBatchNoPresent) {
+                toast.error(
+                  "Excel file headers do not match the required format!"
+                );
+                hasErrorOccurred = true;
+                return null;
+              }
             }
-          }
-  
-          Object.keys(item).forEach((key) => {
-            const normalizedKey = key.trim();
-            normalizedItem[normalizedKey] = item[key];
-          });
-  
-          return normalizedItem;
-        }).filter((item) => item !== null);
-  
+
+            Object.keys(item).forEach((key) => {
+              const normalizedKey = key.trim();
+              normalizedItem[normalizedKey] = item[key];
+            });
+
+            return normalizedItem;
+          })
+          .filter((item) => item !== null);
+
         if (hasErrorOccurred) {
           return;
         }
-  
+
         const importedProductName = normalizedData
           .map((item) => item["Product Name"])
-          .filter((name) => name); 
+          .filter((name) => name);
         const importedBatchNo = normalizedData
           .map((item) => item["Batch No"] || item["Batch No."])
           .filter((no) => no);
-  
+
         if (importedProductName.length > 0) {
           setProductNameArray((prev) => [...prev, ...importedProductName]);
         }
@@ -571,11 +576,10 @@ const LoadedQuantityEffective = () => {
           setBatchNoArray((prev) => [...prev, ...importedBatchNo]);
         }
       };
-  
+
       fileReader.readAsBinaryString(file);
     }
   };
-  
 
   return (
     <div>

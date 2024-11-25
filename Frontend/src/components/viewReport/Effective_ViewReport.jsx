@@ -17,12 +17,12 @@ const Effective_ViewReport = () => {
   const url = new URL(window.location.href);
 
   const elogIdValue = url.searchParams.get("formId") || NA;
-    const elogfilename = url.searchParams.get("filename") || NA;
-    const dynamicPattern = new RegExp(`_${elogIdValue}\\.pdf$`);
-    const filteredfilename = elogfilename.replace(dynamicPattern, "");
-//   console.log(elogIdValue, "elogvalue");
+  const elogfilename = url.searchParams.get("filename") || NA;
+  const dynamicPattern = new RegExp(`_${elogIdValue}\\.pdf$`);
+  const filteredfilename = elogfilename.replace(dynamicPattern, "");
+  //   console.log(elogIdValue, "elogvalue");
 
-  const pdfUrl = `http://localhost:1000/public/${filteredfilename}_${elogIdValue}.pdf`;
+  const pdfUrl = `https://elog-backend.mydemosoftware.com/public/${filteredfilename}_${elogIdValue}.pdf`;
 
   const initializeChatModal = async (data) => {
     try {

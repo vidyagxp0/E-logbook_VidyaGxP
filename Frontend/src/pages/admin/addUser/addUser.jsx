@@ -8,6 +8,7 @@ import Select from "react-select";
 function AddNewUser() {
   const [roleGroups, setRoleGroups] = useState([]);
   const [roleGroups2, setRoleGroups2] = useState([]);
+  console.log(roleGroups2, "roleGroups2");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedOptions2, setSelectedOptions2] = useState([]);
   const [error, setError] = useState("");
@@ -47,7 +48,7 @@ function AddNewUser() {
 
   useEffect(() => {
     const url =
-      "https://elog-backend.mydemosoftware.com/user/get-all-effective-roles";
+      "https://elog-backend.mydemosoftware.com/user/get-all-effective-role";
     axios
       .get(url)
       .then((response) => {
@@ -65,11 +66,12 @@ function AddNewUser() {
       value: role.roleGroup_id,
     })),
   ];
+
   const options2 = [
     { label: "Select All", value: "all" },
     ...roleGroups2.map((role) => ({
-      label: role.roleGroup,
-      value: role.roleGroup_id,
+      label: role.effectiveRole,
+      value: role.effectiveRole_id,
     })),
   ];
 

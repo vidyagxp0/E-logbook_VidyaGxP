@@ -259,9 +259,8 @@ function Dashboard() {
           .includes(searchTerm.toLowerCase()) ||
         item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      // Check if the status matches
       const matchesStatus =
-        eLogStatus === "All_Records" || // Match all records
+        eLogStatus === "All_Records" ||
         item.status.toLowerCase() === eLogStatus.toLowerCase();
 
       return matchesSearchTerm && matchesStatus;
