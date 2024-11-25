@@ -106,7 +106,7 @@ const LoadedQuantityEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/loaded-quantity/update",
+    //     url: "https://elog-backend.mydemosoftware.com//loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -141,7 +141,7 @@ const LoadedQuantityEffective = () => {
 
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-for-review",
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/send-for-review",
           data,
           config
         )
@@ -159,7 +159,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -178,7 +178,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -193,7 +193,11 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/loaded-quantity/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -208,7 +212,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com//loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -255,7 +259,7 @@ const LoadedQuantityEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update",
+        url: "https://elog-backend.mydemosoftware.com//loaded-quantity/update",
       };
 
       axios(requestOptions)

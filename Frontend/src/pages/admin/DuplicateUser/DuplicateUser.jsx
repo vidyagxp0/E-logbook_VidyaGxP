@@ -40,7 +40,7 @@ function DuplicateUser() {
       });
 
     axios
-      .get("http://localhost:1000/user/get-all-rolegroups")
+      .get("https://elog-backend.mydemosoftware.com//user/get-all-rolegroups")
       .then((response) => {
         setRoleGroups(response.data.response || []);
       })
@@ -94,9 +94,13 @@ function DuplicateUser() {
     };
 
     axios
-      .post("http://localhost:1000/user/add-user", formData, {
-        headers: myHeaders,
-      })
+      .post(
+        "https://elog-backend.mydemosoftware.com//user/add-user",
+        formData,
+        {
+          headers: myHeaders,
+        }
+      )
       .then(() => {
         toast.success("Duplicated User successfully!!");
         navigate(-1);
