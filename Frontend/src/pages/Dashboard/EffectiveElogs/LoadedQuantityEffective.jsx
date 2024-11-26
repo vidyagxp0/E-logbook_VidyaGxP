@@ -375,8 +375,6 @@ const LoadedQuantityEffective = () => {
     return object != null && typeof object === "object";
   }
 
-
-
   const deleteRow = (index) => {
     if (
       userDetails.roles[0].role_id === 1 ||
@@ -532,7 +530,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/loaded-quantity/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/loaded-quantity/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -875,7 +873,7 @@ const LoadedQuantityEffective = () => {
                         : "bg-gray-200 text-gray-700"
                     }`}
                   >
-                    CLOSED DONE
+e                    CLOSED DONE
                   </div>
                 </div>
               </div> */}

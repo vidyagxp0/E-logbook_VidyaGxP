@@ -20,9 +20,12 @@ export default function DPRpanel() {
   const [formId, setFormId] = useState(null);
 
   const location = useLocation();
+  console.log(location.state.initiator_id,"0000000")
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  console.log(userDetails,"userDetailsuserDetailsuserDetails")
   const [editData, setEditData] = useState({
     initiator_name: "",
+    initiatorComment: "",
     status: "",
     description: "",
     department: "",
@@ -34,6 +37,7 @@ export default function DPRpanel() {
     DifferentialPressureRecords: [],
     limit: "",
   });
+  console.log(editData, "editDataeditDataeditDataeditData");
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -306,10 +310,13 @@ export default function DPRpanel() {
   };
 
   const handleInputChange1 = (e) => {
-    const { name, value } = e?.target;
-    setEditData({ ...editData, [name]: value });
+    const { name, value } = e.target;
+    setEditData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
-
+  
   // const handleDeleteFile = (index) => {
   //   if (
   //     location.state?.stage === 1 &&
@@ -1242,10 +1249,10 @@ export default function DPRpanel() {
                       <div className="instruction"></div>
                       <input
                         name="initiatorComment"
-                        value={editData?.initiatorComment}
+                        value={editData?.initiatorComment }
                         onChange={handleInputChange1}
                         readOnly={
-                          location.state?.stage !== 1 ||
+                          location.state?.stage === 1 &&
                           [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
@@ -1270,7 +1277,7 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                [2, 3].includes(userDetails.roles[0].role_id)
+                                [2, 3].includes(userDetails.roles[0].user_id)
                               }
                             >
                               Change File
@@ -1327,7 +1334,11 @@ export default function DPRpanel() {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer?.name}
+                          value={
+                            editData?.reviewers.find(
+                              (item) => item.user_id === userDetails.userId
+                            )?.name || ""
+                          }
                           readOnly
                         />
                       </div>
@@ -1442,7 +1453,11 @@ export default function DPRpanel() {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver?.name}
+                          value={
+                            editData?.approvers.find(
+                              (item) => item.user_id === userDetails.userId
+                            )?.name || ""
+                          }
                           readOnly
                         />
                       </div>

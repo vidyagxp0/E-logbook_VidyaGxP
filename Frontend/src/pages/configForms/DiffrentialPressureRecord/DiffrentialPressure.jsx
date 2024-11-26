@@ -107,10 +107,10 @@ export default function DiffrentialPressure() {
       return;
     }
 
-    if (differentialPRecord.initiatorComment === "") {
-      toast.error("Please provide an initiator comment!");
-      return;
-    }
+    // if (differentialPRecord.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
     if (differentialPRecord.description === "") {
       toast.error("Please provide a short description!");
       return;
@@ -214,7 +214,7 @@ export default function DiffrentialPressure() {
       additionalAttachment: "",
       additionalInfo: "",
       limit: null,
-      initiatorComment: " ",
+      initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
     }

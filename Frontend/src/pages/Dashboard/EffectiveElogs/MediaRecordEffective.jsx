@@ -496,7 +496,7 @@ const MediaRecordEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/media-record/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/media-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

@@ -450,7 +450,7 @@ export default function DPREffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/differential-pressure/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/differential-pressure/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1090,7 +1090,9 @@ export default function DPREffective() {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData.reviewer.name;
+                                          editData.reviewers.find(
+                                            (reviewer) => reviewer.user_id === 4
+                                          )?.name || "";
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }

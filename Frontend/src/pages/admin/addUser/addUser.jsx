@@ -46,8 +46,7 @@ function AddNewUser() {
   }, [selectedOptions2]);
 
   useEffect(() => {
-    const url =
-      "https://elog-backend.mydemosoftware.com/user/get-all-effective-role";
+    const url = "http://localhost:1000/user/get-all-effective-role";
     axios
       .get(url)
       .then((response) => {

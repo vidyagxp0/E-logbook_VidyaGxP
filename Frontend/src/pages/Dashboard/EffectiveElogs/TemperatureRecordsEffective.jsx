@@ -299,7 +299,7 @@ export default function TempretureRecordsEffective() {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+e        }
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -338,7 +338,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/temprature-record/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/temprature-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

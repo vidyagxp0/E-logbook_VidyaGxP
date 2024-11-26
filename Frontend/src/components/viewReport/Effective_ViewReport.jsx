@@ -22,7 +22,7 @@ const Effective_ViewReport = () => {
   const filteredfilename = elogfilename.replace(dynamicPattern, "");
   //   console.log(elogIdValue, "elogvalue");
 
-  const pdfUrl = `https://elog-backend.mydemosoftware.com/public/${filteredfilename}_${elogIdValue}.pdf`;
+  const pdfUrl = `http://localhost:1000/public/${filteredfilename}_${elogIdValue}.pdf`;
 
   const initializeChatModal = async (data) => {
     try {
