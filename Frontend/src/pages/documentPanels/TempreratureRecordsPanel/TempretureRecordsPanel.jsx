@@ -1143,8 +1143,7 @@ export default function TempretureRecordsPanel() {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                         [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1157,7 +1156,7 @@ export default function TempretureRecordsPanel() {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1179,7 +1178,7 @@ export default function TempretureRecordsPanel() {
                           }
                           disabled={
                             location.state?.stage !== 1 ||
-                            location.state?.initiator_id !== userDetails.userId
+                            [2, 3].includes(userDetails.roles[0].role_id)
                           }
                         >
                           {editData.initiatorAttachment
@@ -1208,7 +1207,7 @@ export default function TempretureRecordsPanel() {
                           style={{ display: "none" }}
                           disabled={
                             location.state?.stage !== 1 ||
-                            location.state?.initiator_id !== userDetails.userId
+                            [2, 3].includes(userDetails.roles[0].role_id)
                           }
                         />
                       </div>
@@ -1221,13 +1220,35 @@ export default function TempretureRecordsPanel() {
 
               {reviewerRemarks === true ? (
                 <>
+                <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">Reviewer </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="reviewer"
+                          value={editData?.tpreviewer?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Review</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_review)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1240,7 +1261,7 @@ export default function TempretureRecordsPanel() {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1262,7 +1283,7 @@ export default function TempretureRecordsPanel() {
                           }
                           disabled={
                             location.state?.stage !== 2 ||
-                            location.state?.reviewer_id !== userDetails.userId
+                            [1, 3].includes(userDetails.roles[0].role_id)
                           }
                         >
                           {editData.reviewerAttachment
@@ -1291,32 +1312,8 @@ export default function TempretureRecordsPanel() {
                           style={{ display: "none" }}
                           disabled={
                             location.state?.stage !== 2 ||
-                            location.state?.reviewer_id !== userDetails.userId
+                            [1, 3].includes(userDetails.roles[0].role_id)
                           }
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Reviewer </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="reviewer"
-                          value={editData?.tpreviewer?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Review</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_review)}
-                          readOnly
                         />
                       </div>
                     </div>
@@ -1328,11 +1325,33 @@ export default function TempretureRecordsPanel() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
+                      <label className="color-label">Approver </label>
+                      <div>
+                        <input
+                          type="text"
+                          name="approver"
+                          value={editData?.tpapprover?.name}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Date of Approval</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={formatDate(editData.date_of_approval)}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-flex">
+                    <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.approver_id ===
-                            userDetails.userId && (
+                           [3, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1345,7 +1364,7 @@ export default function TempretureRecordsPanel() {
                         onChange={handleInputChange1}
                         disabled={
                           location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
+                          [1, 2].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1367,7 +1386,7 @@ export default function TempretureRecordsPanel() {
                           }
                           disabled={
                             location.state?.stage !== 3 ||
-                            location.state?.approver_id !== userDetails.userId
+                            [1, 2].includes(userDetails.roles[0].role_id)
                           }
                         >
                           {editData.approverAttachment
@@ -1396,32 +1415,8 @@ export default function TempretureRecordsPanel() {
                           style={{ display: "none" }}
                           disabled={
                             location.state?.stage !== 3 ||
-                            location.state?.approver_id !== userDetails.userId
+                            [1, 2].includes(userDetails.roles[0].role_id)
                           }
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">Approver </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="approver"
-                          value={editData?.tpapprover?.name}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <div className="group-input">
-                      <label className="color-label">Date of Approval</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_approval)}
-                          readOnly
                         />
                       </div>
                     </div>

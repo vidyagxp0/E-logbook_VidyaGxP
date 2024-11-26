@@ -1303,11 +1303,11 @@ const DispensingOfMaterialsPanel = () => {
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
-                            // onClick={() =>
-                            //   document
-                            //     .getElementById("additionalAttachment")
-                            //     .click()
-                            // }
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
                           >
                             Change File
                           </button>
@@ -1329,13 +1329,13 @@ const DispensingOfMaterialsPanel = () => {
                       ) : (
                         <div>
                           <button
+                            className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             type="button"
-                            // onClick={() =>
-                            //   document
-                            //     .getElementById("additionalAttachment")
-                            //     .click()
-                            // }
-                            disabled
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
                           >
                             Select File
                           </button>
@@ -1400,8 +1400,7 @@ const DispensingOfMaterialsPanel = () => {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1414,15 +1413,15 @@ const DispensingOfMaterialsPanel = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1438,9 +1437,9 @@ const DispensingOfMaterialsPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1466,9 +1465,9 @@ const DispensingOfMaterialsPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1517,8 +1516,7 @@ const DispensingOfMaterialsPanel = () => {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.reviewer_id ===
-                            userDetails.userId && (
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1531,15 +1529,15 @@ const DispensingOfMaterialsPanel = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
@@ -1555,9 +1553,9 @@ const DispensingOfMaterialsPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1583,9 +1581,9 @@ const DispensingOfMaterialsPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1634,8 +1632,7 @@ const DispensingOfMaterialsPanel = () => {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.approver_id ===
-                            userDetails.userId && (
+                          [3, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1648,15 +1645,15 @@ const DispensingOfMaterialsPanel = () => {
                         onChange={handleInputChange1}
                         disabled={
                           location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
+                          [1, 2].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
@@ -1672,9 +1669,9 @@ const DispensingOfMaterialsPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1700,9 +1697,9 @@ const DispensingOfMaterialsPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>

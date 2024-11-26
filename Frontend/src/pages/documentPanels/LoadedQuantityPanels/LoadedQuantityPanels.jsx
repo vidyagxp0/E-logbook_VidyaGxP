@@ -375,7 +375,7 @@ const LoadedQuantityPanels = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; 
+    if (!dateString) return "";
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -1210,9 +1210,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1230,6 +1230,7 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1254,8 +1255,10 @@ const LoadedQuantityPanels = () => {
                                   .click()
                               }
                               disabled={
-                                location.state?.stage !== 1 ||[2, 3].includes(userDetails.roles[0].role_id)
+                                location.state?.stage !== 1 ||
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1271,8 +1274,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
 
@@ -1323,9 +1324,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
@@ -1343,6 +1344,7 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1370,6 +1372,7 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1385,8 +1388,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
 
@@ -1437,9 +1438,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
@@ -1457,6 +1458,7 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1484,6 +1486,7 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1499,8 +1502,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
             </div>
