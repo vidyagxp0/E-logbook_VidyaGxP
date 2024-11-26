@@ -280,7 +280,7 @@ export default function TempretureRecordsEffective() {
   };
 
   const EmptyreportData = {
-    title: "Temprature Process",
+    title: "Temperature Process",
     status: location.state.status,
     blankRows: 17,
     form_id: location.state.form_id,
