@@ -9,8 +9,10 @@ import { FaUserCircle } from "react-icons/fa";
 function HeaderTop() {
   const navigate = useNavigate();
   const [User, setUser] = useState(null);
+  localStorage.setItem("Username", JSON.stringify(User));
 
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
+  
   useEffect(() => {
     const requestOptions = {
       method: "GET",
