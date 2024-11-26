@@ -1883,7 +1883,7 @@
           ]
         },
         "url": {
-          "raw": "https://elog-backend.mydemosoftware.com//user/user-login",
+          "raw": "http://localhost:1000/user/user-login",
           "protocol": "http",
           "host": ["localhost"],
           "port": "1000",

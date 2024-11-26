@@ -23,9 +23,6 @@ exports.InsertLoadedQuantity = async (req, res) => {
   const {
     site_id,
     description,
-    department,
-    compression_area,
-    limit,
     reviewer_id,
     approver_id,
     initiatorComment,
@@ -36,6 +33,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
     additionalAttachment,
     additionalInfo,
     batch_noArray,
+    product_nameArray,
   } = req.body;
 
   if (!approver_id) {
@@ -101,16 +99,14 @@ exports.InsertLoadedQuantity = async (req, res) => {
         description: description,
         status: "Opened",
         stage: 1,
-        department: department,
-        compression_area: compression_area,
-        limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
-        batch_noArray
+        batch_noArray,
+        product_nameArray,
       },
 
       { transaction }
@@ -119,15 +115,14 @@ exports.InsertLoadedQuantity = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
-      compression_area,
-      limit,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
       additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
+      // console.log(field,value,"FIELDVALUE");
+      
       if (value !== undefined && value !== null && value !== "") {
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -159,7 +154,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
     if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "additionalAttachment",
+        field_name: "Additional Attachment",
         previous_value: null,
         new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
@@ -195,7 +190,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `UniqueId[${index}]`,
+          field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id,
           changed_by: user.user_id,
@@ -206,7 +201,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Date[${index}]`,
+          field_name: "Date",
           previous_value: null,
           new_value: record.date,
           changed_by: user.user_id,
@@ -217,7 +212,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `ProductName[${index}]`,
+          field_name: "Product Name",
           previous_value: null,
           new_value: record.product_name,
           changed_by: user.user_id,
@@ -228,7 +223,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `batch_no[${index}]`,
+          field_name: "Batch No",
           previous_value: null,
           new_value: record.batch_no,
           changed_by: user.user_id,
@@ -239,7 +234,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `container_size[${index}]`,
+          field_name: "Container Size",
           previous_value: null,
           new_value: record.container_size,
           changed_by: user.user_id,
@@ -250,7 +245,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `batch_size[${index}]`,
+          field_name: "Batch Size",
           previous_value: null,
           new_value: record.batch_size,
           changed_by: user.user_id,
@@ -261,7 +256,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `theoretical_production[${index}]`,
+          field_name: "Theoretical Production",
           previous_value: null,
           new_value: record.theoretical_production,
           changed_by: user.user_id,
@@ -272,7 +267,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `loaded_quantity[${index}]`,
+          field_name: "Loaded Quantity",
           previous_value: null,
           new_value: record.loaded_quantity,
           changed_by: user.user_id,
@@ -283,7 +278,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `yield[${index}]`,
+          field_name: "Yield",
           previous_value: null,
           new_value: record.yield,
           changed_by: user.user_id,
@@ -294,7 +289,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `remarks[${index}]`,
+          field_name: "Remarks",
           previous_value: null,
           new_value: record.remarks,
           changed_by: user.user_id,
@@ -305,7 +300,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `checked_by[${index}]`,
+          field_name: "Checked By",
           previous_value: null,
           new_value: record.checked_by,
           changed_by: user.user_id,
@@ -349,9 +344,6 @@ exports.EditLoadedQuantity = async (req, res) => {
     form_id,
     site_id,
     description,
-    department,
-    compression_area,
-    limit,
     reviewer_id,
     approver_id,
     LoadedQuantityRecords,
@@ -363,7 +355,6 @@ exports.EditLoadedQuantity = async (req, res) => {
     product_nameArray,
     batch_noArray,
   } = req.body;
-  console.log(email, password, "wwwww");
   if (!form_id) {
     return res
       .status(400)
@@ -430,9 +421,6 @@ exports.EditLoadedQuantity = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
-      compression_area,
-      limit,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -463,7 +451,6 @@ exports.EditLoadedQuantity = async (req, res) => {
     }
     const validArray = product_nameArray.map((item) => ({ ...item }));
     const validBatch = batch_noArray.map((item) => ({ ...item }));
-    // console.log(validArray, "VALIDPRODUCT");
 
 
     // Update the form details
@@ -471,9 +458,6 @@ exports.EditLoadedQuantity = async (req, res) => {
       {
         site_id,
         description,
-        department,
-        compression_area,
-        limit,
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -527,7 +511,7 @@ exports.EditLoadedQuantity = async (req, res) => {
             ) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${index}]`,
+                field_name: `${field}`,
                 previous_value: oldValue || null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -566,7 +550,7 @@ exports.EditLoadedQuantity = async (req, res) => {
             if (newValue !== undefined) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${i}]`,
+                field_name: `${field}`,
                 previous_value: null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -911,7 +895,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewerAttachment",
+        field_name: "Reviewer Attachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -924,7 +908,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1039,7 +1023,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (reviewComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewComment",
+        field_name: "Review Comment",
         previous_value: form.reviewComment || null,
         new_value: reviewComment,
         changed_by: user.user_id,
@@ -1054,7 +1038,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "reviewerAttachment",
+        field_name: "Reviewer Attachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1067,7 +1051,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1182,7 +1166,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverAttachment",
+        field_name: "Approver Attachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1195,7 +1179,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1311,7 +1295,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (approverComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverComment",
+        field_name: "Approver Comment",
         previous_value: form.approverComment || null,
         new_value: approverComment,
         changed_by: user.user_id,
@@ -1326,7 +1310,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "approverAttachment",
+        field_name: "Approver Attachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1339,7 +1323,7 @@ exports.ApproveDPElog = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1436,43 +1420,43 @@ exports.ApproveDPElog = async (req, res) => {
 //     });
 // };
 
-// exports.getAuditTrailForAnElog = async (req, res) => {
-//   try {
-//     // Extract form_id from request parameters
-//     const formId = req.params.id;
+exports.getAuditTrailForAnElog = async (req, res) => {
+  try {
+    // Extract form_id from request parameters
+    const formId = req.params.id;
 
-//     // Check if form_id is provided
-//     if (!formId) {
-//       return res
-//         .status(400)
-//         .json({ error: true, message: "Form ID is required." });
-//     }
+    // Check if form_id is provided
+    if (!formId) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Form ID is required." });
+    }
 
-//     // Find all audit trail entries for the given form_id
-//     const auditTrail = await LoadedQuantityProcessAuditTrail.findAll({
-//       where: { form_id: formId },
-//       include: {
-//         model: User,
-//         attributes: ["user_id", "name"],
-//       },
-//       order: [["auditTrail_id", "DESC"]],
-//     });
+    // Find all audit trail entries for the given form_id
+    const auditTrail = await LoadedQuantityProcessAuditTrail.findAll({
+      where: { form_id: formId },
+      include: {
+        model: User,
+        attributes: ["user_id", "name"],
+      },
+      order: [["auditTrail_id", "DESC"]],
+    });
 
-//     if (!auditTrail || auditTrail.length === 0) {
-//       return res.status(404).json({
-//         error: true,
-//         message: "No audit trail found for the given form ID.",
-//       });
-//     }
+    if (!auditTrail || auditTrail.length === 0) {
+      return res.status(404).json({
+        error: true,
+        message: "No audit trail found for the given form ID.",
+      });
+    }
 
-//     return res.status(200).json({ error: false, auditTrail });
-//   } catch (error) {
-//     return res.status(500).json({
-//       error: true,
-//       message: `Error retrieving audit trail: ${error.message}`,
-//     });
-//   }
-// };
+    return res.status(200).json({ error: false, auditTrail });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: `Error retrieving audit trail: ${error.message}`,
+    });
+  }
+};
 
 exports.generateReport = async (req, res) => {
   try {
@@ -1782,6 +1766,118 @@ exports.effetiveViewReport = async (req, res) => {
       }
       res.send(html);
     });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+
+exports.blankReport = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    const blankRows = Array(reportData?.blankRows).fill({
+      UniqueId: "",
+      Time: "",
+      DifferentialPressure: "",
+      Remark: "",
+      CheckedBy: "",
+      SupportingDocuments: "",
+    });
+
+    const data = reportData?.LoadedQuantityRecord?.map((record) => ({
+      unique_id: record?.unique_id || "",
+      date: record?.date || "",
+      product_name: record?.product_name || "",
+      batch_no: record?.batch_no || "",
+      batch_size: record?.batch_size || "",
+      container_size: record?.container_size || "",
+      theoretical_production: record?.theoretical_production || "",
+      loaded_quantity: record?.loaded_quantity || "",
+      yield: record?.yield || "",
+      remarks: record?.remarks || "",
+      reviewed_by: record?.reviewed_by || "",
+    }));
+
+    const arrayData = [...data, ...blankRows];
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("blankLQReport", { arrayData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "a4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "145px",
+        // right: "50px",
+        bottom: "50px",
+        // left: "50px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `LQ_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `LQ_Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

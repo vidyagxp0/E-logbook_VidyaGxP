@@ -74,7 +74,7 @@ export default function DPREffective() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/send-DP-elog-for-review",
+          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -92,7 +92,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/send-DP-from-review-to-approval",
+          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -111,7 +111,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/send-DP-elog-from-review-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -127,7 +127,7 @@ export default function DPREffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/approve-DP-elog",
+          "http://localhost:1000/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -145,7 +145,7 @@ export default function DPREffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//differential-pressure/send-DP-elog-from-approval-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -191,7 +191,7 @@ export default function DPREffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com//differential-pressure/update-differential-pressure",
+        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -213,10 +213,7 @@ export default function DPREffective() {
   }, [location.state]);
 
   const addRow = () => {
-    if (
-      userDetails.roles[0].role_id === 1 ||
-      userDetails.roles[0].role_id === 5
-    ) {
+    if (userDetails.roles[0].role_id === 1 || userDetails.roles[0].role_id === 5) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
@@ -224,7 +221,8 @@ export default function DPREffective() {
         hour12: true, // Use 12-hour format
       };
       const nextIndex = editData?.DifferentialPressureRecords?.length || 0;
-
+     
+     
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: `DPR000${nextIndex + 1}`,
@@ -995,7 +993,7 @@ export default function DPREffective() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
-                                disabled={[1, 3].includes(
+                                disabled={[1,3].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
@@ -1003,7 +1001,7 @@ export default function DPREffective() {
                             <td>
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                  <input
+                                <input
                                     className="h-4 w-4 cursor-pointer"
                                     type="checkbox"
                                     checked={!!item.reviewed_by}
@@ -1022,7 +1020,7 @@ export default function DPREffective() {
                                         DifferentialPressureRecords: newData,
                                       });
                                     }}
-                                    disabled={[1, 3].includes(
+                                    disabled={[1,3].includes(
                                       userDetails.roles[0].role_id
                                     )}
                                   />

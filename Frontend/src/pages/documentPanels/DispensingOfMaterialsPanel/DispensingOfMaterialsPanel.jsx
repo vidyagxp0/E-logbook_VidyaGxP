@@ -75,7 +75,7 @@ const DispensingOfMaterialsPanel = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-for-review",
+          "http://localhost:1000/dispensing-material/send-for-review",
           data,
           config
         )
@@ -93,7 +93,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-review-to-approval",
+          "http://localhost:1000/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -112,7 +112,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-review-to-open",
+          "http://localhost:1000/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -146,7 +146,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//dispensing-material/send-approval-to-open",
+          "http://localhost:1000/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -197,7 +197,7 @@ const DispensingOfMaterialsPanel = () => {
         },
         data: editData,
 
-        url: "https://elog-backend.mydemosoftware.com//dispensing-material/update",
+        url: "http://localhost:1000/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -426,7 +426,7 @@ const DispensingOfMaterialsPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com//dispensing-material/chat-pdf/${formId}`,
+        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -511,7 +511,7 @@ const DispensingOfMaterialsPanel = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Dispensing Of Materials",
                         },
                       })
                     }

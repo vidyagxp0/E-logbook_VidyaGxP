@@ -17,7 +17,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com//differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
+            `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -26,14 +26,78 @@ function AuditTrail() {
         } catch (error) {
           console.error(error);
         }
-      } else if (location.state?.process === "Temperature Records") {
+      } else if (location.state?.process === "Temperature Record") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com//temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `http://localhost:1000/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (location.state?.process === "Loaded Quantity") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (location.state?.process === "Operation of Sterilizer") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (location.state?.process === "Media Record") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (location.state?.process === "Dispensing Of Materials") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -95,7 +159,9 @@ function AuditTrail() {
           <br />
           <hr />
           {auditTrails?.length === 0 ? (
-            <>No audit trails Available</>
+            <>
+              <p className="text-center mt-10">No audit trails Available</p>
+            </>
           ) : (
             <div className="scrollable-container">
               <table
@@ -117,7 +183,8 @@ function AuditTrail() {
                         width: "15%",
                       }}
                     >
-                      Checked By
+                      {/* Checked By */}
+                      Flow Changed From
                     </th>
                     <th
                       style={{
@@ -126,9 +193,20 @@ function AuditTrail() {
                         width: "15%",
                       }}
                     >
-                      Field Name
+                      {/* Field Name */}
+                      Flow Changed To
                     </th>
                     <th
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                        width: "10%",
+                      }}
+                    >
+                      {/* Previous Value */}
+                      Data Fields
+                    </th>
+                    {/* <th
                       style={{
                         padding: "10px",
                         borderBottom: "1px solid #ccc",
@@ -136,8 +214,8 @@ function AuditTrail() {
                       }}
                     >
                       Previous Value
-                    </th>
-                    <th
+                    </th> */}
+                    {/* <th
                       style={{
                         padding: "10px",
                         borderBottom: "1px solid #ccc",
@@ -145,8 +223,8 @@ function AuditTrail() {
                       }}
                     >
                       New Value
-                    </th>
-                    <th
+                    </th> */}
+                    {/* <th
                       style={{
                         padding: "10px",
                         borderBottom: "1px solid #ccc",
@@ -154,8 +232,8 @@ function AuditTrail() {
                       }}
                     >
                       Previous Status
-                    </th>
-                    <th
+                    </th> */}
+                    {/* <th
                       style={{
                         padding: "10px",
                         borderBottom: "1px solid #ccc",
@@ -163,7 +241,7 @@ function AuditTrail() {
                       }}
                     >
                       New Status
-                    </th>
+                    </th> */}
                     <th
                       style={{
                         padding: "10px",
@@ -173,7 +251,7 @@ function AuditTrail() {
                     >
                       Declaration
                     </th>
-                    <th
+                    {/* <th
                       style={{
                         padding: "10px",
                         borderBottom: "1px solid #ccc",
@@ -181,6 +259,15 @@ function AuditTrail() {
                       }}
                     >
                       Date & Time
+                    </th> */}
+                    <th
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                        width: "15%",
+                      }}
+                    >
+                      Action Type
                     </th>
                     <th
                       style={{
@@ -189,7 +276,7 @@ function AuditTrail() {
                         width: "15%",
                       }}
                     >
-                      Action
+                      Performer
                     </th>
                   </tr>
                 </thead>
@@ -203,7 +290,11 @@ function AuditTrail() {
                           width: "15%",
                         }}
                       >
-                        {auditTrail.User.name}
+                        Changed From :{" "}
+                        <span className="font-normal">
+                          {auditTrail.previous_status}
+                        </span>
+                        {/* {auditTrail.User.name} */}
                       </td>
                       <td
                         style={{
@@ -212,9 +303,52 @@ function AuditTrail() {
                           width: "15%",
                         }}
                       >
-                        {auditTrail.field_name}
+                        Changed To :{" "}
+                        <span className="font-normal">
+                          {auditTrail.new_status}
+                        </span>
+                        {/* {auditTrail.field_name} */}
                       </td>
                       <td
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
+                          width: "10%",
+                          textWrap: "nowrap",
+                        }}
+                      >
+                        {/* {auditTrail.previous_value
+                          ? auditTrail.previous_value
+                          : "null"} */}
+                        {/* {auditTrail.field_name}  */}
+                        <div className="mb-2">
+                          <span>Field Name :</span>
+                          <span className="font-normal">
+                            {" "}
+                            {auditTrail.field_name.charAt(0).toUpperCase() +
+                              auditTrail.field_name.slice(1)}
+                          </span>
+                        </div>
+                        <div className="mb-2">
+                          Previous Value :{" "}
+                          <span className="font-normal">
+                            {" "}
+                            {auditTrail.previous_value
+                              ? auditTrail.previous_value
+                              : "null"}
+                          </span>
+                        </div>
+                        <div className="text-nowrap flex">
+                          New Value :{" "}
+                          <span
+                            className="font-normal"
+                            dangerouslySetInnerHTML={{
+                              __html: auditTrail?.new_value,
+                            }}
+                          ></span>
+                        </div>
+                      </td>
+                      {/* <td
                         style={{
                           padding: "10px",
                           borderBottom: "1px solid #ccc",
@@ -224,15 +358,18 @@ function AuditTrail() {
                         {auditTrail.previous_value
                           ? auditTrail.previous_value
                           : "null"}
-                      </td>
-                      <td
+                      </td> */}
+                      {/* <td
                         style={{
                           padding: "10px",
                           borderBottom: "1px solid #ccc",
                           width: "10%",
                         }}
-                      >
-                        {
+                        dangerouslySetInnerHTML={{
+                          __html: auditTrail?.new_value,
+                        }}
+                      > */}
+                      {/* {
                           // Check if the value is a URL
                           /^https?:\/\/.*\//.test(auditTrail.new_value)
                             ? // Extract the file name after the last hyphen
@@ -241,9 +378,9 @@ function AuditTrail() {
                               )
                             : // If not a URL, display the original value
                               auditTrail.new_value
-                        }
-                      </td>
-                      <td
+                        } */}
+                      {/* </td> */}
+                      {/* <td
                         style={{
                           padding: "10px",
                           borderBottom: "1px solid #ccc",
@@ -251,8 +388,8 @@ function AuditTrail() {
                         }}
                       >
                         {auditTrail.previous_status}
-                      </td>
-                      <td
+                      </td> */}
+                      {/* <td
                         style={{
                           padding: "10px",
                           borderBottom: "1px solid #ccc",
@@ -260,7 +397,7 @@ function AuditTrail() {
                         }}
                       >
                         {auditTrail.new_status}
-                      </td>
+                      </td> */}
                       <td
                         style={{
                           padding: "10px",
@@ -268,9 +405,11 @@ function AuditTrail() {
                           width: "15%",
                         }}
                       >
-                        {auditTrail.declaration}
+                        <span className="font-normal">
+                          {auditTrail.declaration}
+                        </span>
                       </td>
-                      <td
+                      {/* <td
                         style={{
                           padding: "10px",
                           borderBottom: "1px solid #ccc",
@@ -278,6 +417,16 @@ function AuditTrail() {
                         }}
                       >
                         {new Date(auditTrail.createdAt).toLocaleString()}
+                      </td> */}
+                      <td
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ccc",
+                          width: "15%",
+                        }}
+                      >
+                        Action Name :{" "}
+                        <span className="font-normal">{auditTrail.action}</span>
                       </td>
                       <td
                         style={{
@@ -286,7 +435,19 @@ function AuditTrail() {
                           width: "15%",
                         }}
                       >
-                        {auditTrail.action}
+                        <div className="mb-2">
+                          Performed By :{" "}
+                          <span className="font-normal">
+                            {auditTrail.User.name}
+                          </span>
+                        </div>
+                        <div>
+                          Performed On :{" "}
+                          <span className="font-normal">
+                            {" "}
+                            {new Date(auditTrail.createdAt).toLocaleString()}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}

@@ -69,7 +69,7 @@ export default function TempretureRecordsPanel() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//temprature-record/send-TR-elog-for-review",
+          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -87,7 +87,7 @@ export default function TempretureRecordsPanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//temprature-record/send-TR-from-review-to-approval",
+          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -107,7 +107,7 @@ export default function TempretureRecordsPanel() {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//temprature-record/send-TR-elog-from-review-to-open",
+          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -123,7 +123,7 @@ export default function TempretureRecordsPanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//temprature-record/approve-TR-elog",
+          "http://localhost:1000/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -141,7 +141,7 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//temprature-record/send-TR-elog-from-approval-to-open",
+          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -188,7 +188,7 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com//temprature-record/update-temprature-record",
+        url: "http://localhost:1000/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -281,7 +281,7 @@ export default function TempretureRecordsPanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com//temprature-record/chat-pdf/${formId}`,
+        `http://localhost:1000/temprature-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -458,7 +458,7 @@ export default function TempretureRecordsPanel() {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Temperature Record",
                         },
                       })
                     }
@@ -855,13 +855,13 @@ export default function TempretureRecordsPanel() {
                       name="limit"
                       disabled
                       type="number"
-                      className={`${
-                        editData?.limit < 23
-                          ? "limit"
-                          : editData?.limit > 27
-                          ? "limit"
-                          : ""
-                      }`}
+                      // className={`${
+                      //   editData?.limit < 23
+                      //     ? "limit"
+                      //     : editData?.limit > 27
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
                       readOnly={
@@ -873,7 +873,7 @@ export default function TempretureRecordsPanel() {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1114,7 +1114,7 @@ export default function TempretureRecordsPanel() {
 
               {initiatorRemarks === true ? (
                 <>
-                  <div className="form-flex">
+                 <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Initiator </label>
                       <div>
@@ -1138,6 +1138,7 @@ export default function TempretureRecordsPanel() {
                     </div>
                   </div>
                   <div className="form-flex">
+                    
                     <div className="group-input">
                       <label className="color-label">
                         Initiator Comment
@@ -1213,6 +1214,8 @@ export default function TempretureRecordsPanel() {
                       </div>
                     </div>
                   </div>
+
+                 
                 </>
               ) : null}
 

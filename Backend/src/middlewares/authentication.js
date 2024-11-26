@@ -82,13 +82,13 @@ function hasAccess(userRoles, site_id, processId, roleId) {
 
 const getFileUrl = (file) => {
   if (file?.filename) {
-    return `https://elog-backend.mydemosoftware.com//profile_pics/${file?.filename}`;
+    return `http://localhost:1000/profile_pics/${file?.filename}`;
   }
 };
 
 const getElogDocsUrl = (file) => {
   if (file?.filename) {
-    return `https://elog-backend.mydemosoftware.com//elog_docs/${file?.filename}`;
+    return `http://localhost:1000/elog_docs/${file?.filename}`;
   }
 };
 

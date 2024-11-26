@@ -54,7 +54,7 @@ function AdminDashboard() {
     const { currentPassword, newPassword, confirmNewPassword } = passwords;
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com//user/reset-password",
+        "http://localhost:1000/user/reset-password",
         {
           user_id: JSON.parse(localStorage.getItem("user-details"))?.userId,
           current_password: currentPassword,
@@ -79,7 +79,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("admin-token");
-    const url = "https://elog-backend.mydemosoftware.com//user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
+    const url = "http://localhost:1000/user/get-all-users"; // Assuming the endpoint is corrected to "/user/get-all-users"
     axios
       .get(url, {
         headers: {
@@ -107,7 +107,7 @@ function AdminDashboard() {
   const handleDelete = () => {
     const config = {
       method: "delete",
-      url: `https://elog-backend.mydemosoftware.com//user/delete-user/${selectedUser.user_id}`,
+      url: `http://localhost:1000/user/delete-user/${selectedUser.user_id}`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
       },

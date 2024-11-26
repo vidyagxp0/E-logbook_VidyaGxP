@@ -101,7 +101,7 @@ const OperationOfSterilizerEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com//operation-sterlizer/update",
+    //     url: "http://localhost:1000/operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -140,7 +140,7 @@ const OperationOfSterilizerEffective = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-for-review",
+          "http://localhost:1000/operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -158,7 +158,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-review-to-approval",
+          "http://localhost:1000/operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -177,7 +177,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-review-to-open",
+          "http://localhost:1000/operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -192,11 +192,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/approve",
-          data,
-          config
-        )
+        .put("http://localhost:1000/operation-sterlizer/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -211,7 +207,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com//operation-sterlizer/send-approval-to-open",
+          "http://localhost:1000/operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -258,7 +254,7 @@ const OperationOfSterilizerEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com//operation-sterlizer/update",
+        url: "http://localhost:1000/operation-sterlizer/update",
       };
 
       axios(requestOptions)
