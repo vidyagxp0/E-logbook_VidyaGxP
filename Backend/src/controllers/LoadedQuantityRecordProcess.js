@@ -122,7 +122,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
     };
     for (const [field, value] of Object.entries(fields)) {
       // console.log(field,value,"FIELDVALUE");
-      
+
       if (value !== undefined && value !== null && value !== "") {
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -452,7 +452,6 @@ exports.EditLoadedQuantity = async (req, res) => {
     const validArray = product_nameArray.map((item) => ({ ...item }));
     const validBatch = batch_noArray.map((item) => ({ ...item }));
 
-
     // Update the form details
     await form.update(
       {
@@ -464,8 +463,8 @@ exports.EditLoadedQuantity = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
         additionalInfo,
-        product_nameArray:validArray,
-        batch_noArray:validBatch,
+        product_nameArray: validArray,
+        batch_noArray: validBatch,
       },
       { transaction }
     );
@@ -1787,7 +1786,7 @@ exports.blankReport = async (req, res) => {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false, // Specify using 24-hour format
+      hour12: true, // Specify using 24-hour format
     });
 
     const blankRows = Array(reportData?.blankRows).fill({
@@ -1839,7 +1838,7 @@ exports.blankReport = async (req, res) => {
 
     // Generate PDF
     const pdf = await page.pdf({
-      format: "a4",
+      format: "A4",
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
@@ -1864,10 +1863,10 @@ exports.blankReport = async (req, res) => {
         );
       }),
       margin: {
-        top: "145px",
-        // right: "50px",
+        top: "142px",
+        right: "50px",
         bottom: "50px",
-        // left: "50px",
+        left: "34px",
       },
     });
 

@@ -172,7 +172,7 @@ export default function TinyEditor({
       tempFunc();
       setTemp(false);
     }
-  }, 500);
+  }, 250);
   return (
     <div style={{ padding: "15px 0px" }} className="shadow-lg">
       {/* Textarea ref where TinyMCE will be initialized */}
