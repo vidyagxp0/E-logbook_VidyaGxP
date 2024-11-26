@@ -375,8 +375,6 @@ const LoadedQuantityEffective = () => {
     return object != null && typeof object === "object";
   }
 
-
-
   const deleteRow = (index) => {
     if (
       userDetails.roles[0].role_id === 1 ||

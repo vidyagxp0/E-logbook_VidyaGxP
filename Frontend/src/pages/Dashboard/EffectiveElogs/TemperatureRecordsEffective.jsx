@@ -1040,7 +1040,7 @@ export default function TempretureRecordsEffective() {
                                     ];
                                     if (e?.target?.checked) {
                                       newData[index].reviewed_by =
-                                      UserName.name;
+                                        UserName.name;
                                     } else {
                                       newData[index].reviewed_by = "";
                                     }

@@ -1114,7 +1114,7 @@ export default function TempretureRecordsPanel() {
 
               {initiatorRemarks === true ? (
                 <>
-                 <div className="form-flex">
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Initiator </label>
                       <div>
@@ -1138,12 +1138,11 @@ export default function TempretureRecordsPanel() {
                     </div>
                   </div>
                   <div className="form-flex">
-                    
                     <div className="group-input">
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                         [1, 5].includes(userDetails.roles[0].role_id) && (
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1170,7 +1169,7 @@ export default function TempretureRecordsPanel() {
                       <div>
                         <button
                           type="button"
-                          className="btn-upload"
+                          className="btn-upload py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                           onClick={() =>
                             document
                               .getElementById("initiatorAttachment")
@@ -1213,14 +1212,12 @@ export default function TempretureRecordsPanel() {
                       </div>
                     </div>
                   </div>
-
-                 
                 </>
               ) : null}
 
               {reviewerRemarks === true ? (
                 <>
-                <div className="form-flex">
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Reviewer </label>
                       <div>
@@ -1275,7 +1272,7 @@ export default function TempretureRecordsPanel() {
                       <div>
                         <button
                           type="button"
-                          className="btn-upload"
+                          className="btn-upload py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                           onClick={() =>
                             document
                               .getElementById("reviewerAttachment")
@@ -1351,7 +1348,7 @@ export default function TempretureRecordsPanel() {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                           [3, 5].includes(userDetails.roles[0].role_id) && (
+                          [3, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1378,7 +1375,7 @@ export default function TempretureRecordsPanel() {
                       <div>
                         <button
                           type="button"
-                          className="btn-upload"
+                          className="btn-upload py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                           onClick={() =>
                             document
                               .getElementById("approverAttachment")
