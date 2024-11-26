@@ -18,6 +18,7 @@ export default function DPREffective() {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
@@ -213,7 +214,10 @@ export default function DPREffective() {
   }, [location.state]);
 
   const addRow = () => {
-    if (userDetails.roles[0].role_id === 1 || userDetails.roles[0].role_id === 5) {
+    if (
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
+    ) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
@@ -221,8 +225,7 @@ export default function DPREffective() {
         hour12: true, // Use 12-hour format
       };
       const nextIndex = editData?.DifferentialPressureRecords?.length || 0;
-     
-     
+
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: `DPR000${nextIndex + 1}`,
@@ -295,10 +298,19 @@ export default function DPREffective() {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.DifferentialPressureRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -377,6 +389,40 @@ export default function DPREffective() {
 
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
+  const EmptyreportData = {
+    title: "Differential Pressure",
+    status: location.state.status,
+    blankRows: 17,
+    form_id: location.state.form_id,
+    DifferentialPressureRecords: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:1000/differential-pressure/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -503,6 +549,39 @@ export default function DPREffective() {
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -993,7 +1072,7 @@ export default function DPREffective() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
-                                disabled={[1,3].includes(
+                                disabled={[1, 3].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
@@ -1001,7 +1080,7 @@ export default function DPREffective() {
                             <td>
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                <input
+                                  <input
                                     className="h-4 w-4 cursor-pointer"
                                     type="checkbox"
                                     checked={!!item.reviewed_by}
@@ -1020,7 +1099,7 @@ export default function DPREffective() {
                                         DifferentialPressureRecords: newData,
                                       });
                                     }}
-                                    disabled={[1,3].includes(
+                                    disabled={[1, 3].includes(
                                       userDetails.roles[0].role_id
                                     )}
                                   />
@@ -1157,17 +1236,17 @@ export default function DPREffective() {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input
