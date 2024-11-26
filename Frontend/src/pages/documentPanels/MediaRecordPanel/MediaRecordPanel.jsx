@@ -1253,8 +1253,7 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1281,8 +1280,7 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File
@@ -1369,8 +1367,7 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1397,8 +1394,7 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File
@@ -1485,8 +1481,7 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1513,8 +1508,7 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File
