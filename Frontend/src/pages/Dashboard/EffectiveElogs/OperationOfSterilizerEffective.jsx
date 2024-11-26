@@ -19,6 +19,7 @@ const OperationOfSterilizerEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
   const [productNameArray, setProductNameArray] = useState([]);
   const [batchNoArray, setBatchNoArray] = useState([]);
 
@@ -385,6 +386,15 @@ const OperationOfSterilizerEffective = () => {
       userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.OperationOfSterilizerRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -463,6 +473,40 @@ const OperationOfSterilizerEffective = () => {
 
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
+  const EmptyreportData = {
+    title: "Operation Of Sterilizer",
+    status: location.state.status,
+    blankRows: 20,
+    form_id: location.state.form_id,
+    OperationOfSterilizerRecord: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:1000/operation-sterlizer/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -634,7 +678,7 @@ const OperationOfSterilizerEffective = () => {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
                           process: "Differential Pressure",
@@ -643,6 +687,39 @@ const OperationOfSterilizerEffective = () => {
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}

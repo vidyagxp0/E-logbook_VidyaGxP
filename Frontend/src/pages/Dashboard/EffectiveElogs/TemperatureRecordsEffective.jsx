@@ -18,6 +18,7 @@ export default function TempretureRecordsEffective() {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
@@ -29,7 +30,7 @@ export default function TempretureRecordsEffective() {
     additionalAttachment: "",
     additionalInfo: "",
     compression_area: "",
-    TempratureRecords:[],
+    TempratureRecords: [],
     limit: "",
   });
   console.log(editData, "Edit Dataaa");
@@ -170,7 +171,7 @@ export default function TempretureRecordsEffective() {
       }
       if (
         editData?.TempratureRecords?.some(
-          (record) => record.temprature_record === "" 
+          (record) => record.temprature_record === ""
         )
       ) {
         toast.error("Please provide grid details!");
@@ -211,7 +212,6 @@ export default function TempretureRecordsEffective() {
     setEditData(location.state);
   }, [location.state]);
 
-
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
@@ -226,12 +226,15 @@ export default function TempretureRecordsEffective() {
   }
 
   const addRow = () => {
-    if (userDetails.roles[0].role_id === 1 || userDetails.roles[0].role_id === 5) {
+    if (
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
+    ) {
       const currentTime = new Date().toLocaleTimeString("en-GB", {
         hour12: false,
       });
       const nextIndex = editData?.TempratureRecords?.length || 0;
-     
+
       const newRow = {
         unique_id: `TPR000${nextIndex + 1}`,
         time: currentTime,
@@ -250,10 +253,19 @@ export default function TempretureRecordsEffective() {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.TempratureRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -265,6 +277,40 @@ export default function TempretureRecordsEffective() {
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
+  };
+
+  const EmptyreportData = {
+    title: "Temprature Process",
+    status: location.state.status,
+    blankRows: 17,
+    form_id: location.state.form_id,
+    temprature_record: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:1000/temprature-record/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -466,15 +512,48 @@ export default function TempretureRecordsEffective() {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Temperature Record",
                         },
                       })
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -575,16 +654,16 @@ export default function TempretureRecordsEffective() {
                   {/* Save Button */}
                   {/* {location.state?.stage === 1 &&
                     userDetails.userId === location.state?.initiator_id && ( */}
-                      <button
-                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                   {/*    )}*/}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("updateElog");
+                    }}
+                  >
+                    Save
+                  </button>
+                  {/*    )}*/}
                 </div>
               </div>
               {/* <div className="outerDiv4 bg-slate-300 py-4">
@@ -912,9 +991,9 @@ export default function TempretureRecordsEffective() {
                               value={item.temprature_record}
                               className={`${
                                 item.temprature_record < editData.limit
-                                  ? "text-green-500" 
+                                  ? "text-green-500"
                                   : item.temprature_record > editData.limit
-                                  ? "text-red-600" 
+                                  ? "text-red-600"
                                   : ""
                               }`}
                               onChange={(e) => {
@@ -942,40 +1021,41 @@ export default function TempretureRecordsEffective() {
                                   TempratureRecords: newData,
                                 });
                               }}
-                              disabled={[1,3].includes(
+                              disabled={[1, 3].includes(
                                 userDetails.roles[0].role_id
                               )}
                             />
                           </td>
                           <td>
-                              <div>
-                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                  <input
+                            <div>
+                              <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                <input
                                   className="h-4 w-4 cursor-pointer"
-                                    type="checkbox"
-                                    checked={!!item.reviewed_by}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.TempratureRecords,
-                                      ];
-                                      if (e?.target?.checked) {
-                                        newData[index].reviewed_by = editData?.tpreviewer?.name;
-                                      } else {
-                                        newData[index].reviewed_by = "";
-                                      }
-                                      setEditData({
-                                        ...editData,
-                                        TempratureRecords: newData,
-                                      });
-                                    }}
-                                    disabled={[1,3].includes(
-                                      userDetails.roles[0].role_id
-                                    )}
-                                  />
-                                  {item.reviewed_by && <p>{item.reviewed_by}</p>}
-                                </div>
+                                  type="checkbox"
+                                  checked={!!item.reviewed_by}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.TempratureRecords,
+                                    ];
+                                    if (e?.target?.checked) {
+                                      newData[index].reviewed_by =
+                                        editData?.tpreviewer?.name;
+                                    } else {
+                                      newData[index].reviewed_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      TempratureRecords: newData,
+                                    });
+                                  }}
+                                  disabled={[1, 3].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
+                                />
+                                {item.reviewed_by && <p>{item.reviewed_by}</p>}
                               </div>
-                            </td>
+                            </div>
+                          </td>
 
                           <td style={{ width: "250px" }}>
                             <div className="d-flex align-items-center">
@@ -1019,7 +1099,7 @@ export default function TempretureRecordsEffective() {
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
-                                disabled={[1,3].includes(
+                                disabled={[1, 3].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
@@ -1087,17 +1167,17 @@ export default function TempretureRecordsEffective() {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input
