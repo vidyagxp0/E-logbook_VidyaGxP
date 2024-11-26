@@ -1384,8 +1384,8 @@ export default function DPRpanel() {
                                   .click()
                               }
                               disabled={
-                                location.state?.stage !== 1 ||
-                                [2, 3].includes(userDetails.roles[0].role_id)
+                                location.state?.stage !== 2 ||
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1411,8 +1411,8 @@ export default function DPRpanel() {
                                   .click()
                               }
                               disabled={
-                                location.state?.stage !== 1 ||
-                                [2, 3].includes(userDetails.roles[0].role_id)
+                                location.state?.stage !== 2 ||
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
                               className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
@@ -1499,8 +1499,8 @@ export default function DPRpanel() {
                                   .click()
                               }
                               disabled={
-                                location.state?.stage !== 1 ||
-                                [2, 3].includes(userDetails.roles[0].role_id)
+                                location.state?.stage !== 3 ||
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
                               className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
@@ -1527,8 +1527,8 @@ export default function DPRpanel() {
                                   .click()
                               }
                               disabled={
-                                location.state?.stage !== 1 ||
-                                [2, 3].includes(userDetails.roles[0].role_id)
+                                location.state?.stage !== 3 ||
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
                               className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >

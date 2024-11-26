@@ -1226,9 +1226,10 @@ const LoadedQuantityPanels = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={[2, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                [2, 3].includes(userDetails.roles[0].role_id)
+                              }
                             >
                               Change File
                             </button>
