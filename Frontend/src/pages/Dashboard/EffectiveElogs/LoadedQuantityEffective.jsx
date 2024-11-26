@@ -375,12 +375,23 @@ const LoadedQuantityEffective = () => {
     return object != null && typeof object === "object";
   }
 
+
+
   const deleteRow = (index) => {
     if (
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.LoadedQuantityRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -682,7 +693,7 @@ const LoadedQuantityEffective = () => {
                   >
                     {isLoading1 ? (
                       <>
-                        <span>Print Paper</span>
+                        <span>Blank Draft</span>
                         <div
                           style={{
                             width: "20px",
@@ -696,7 +707,7 @@ const LoadedQuantityEffective = () => {
                         ></div>
                       </>
                     ) : (
-                      "Print Paper"
+                      "Blank Draft"
                     )}
                     <style>
                       {`
