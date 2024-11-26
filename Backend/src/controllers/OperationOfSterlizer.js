@@ -505,8 +505,13 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
       }
     }
 
-     const validArray = product_nameArray.map((item) => ({ ...item }));
-    const validBatch = batch_noArray.map((item) => ({ ...item }));
+    // Ensure product_nameArray and batch_noArray are valid arrays
+    const validArray = Array.isArray(product_nameArray)
+      ? product_nameArray.map((item) => ({ ...item }))
+      : [];
+    const validBatch = Array.isArray(batch_noArray)
+      ? batch_noArray.map((item) => ({ ...item }))
+      : [];
 
     // Update the form details
     await form.update(
