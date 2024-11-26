@@ -22,6 +22,8 @@ const OperationOfSterilizerProcessForm = require("../models/OperationOfSterilize
 const OperationOfSterilizerRecord = require("../models/operationOfSterilizerRecords");
 const TempratureProcessForm = require("../models/tempratureProcessForm");
 const TempratureProcessRecord = require("../models/tempratureProcessRecords");
+const ApproverAssignment = require("../models/approverAssignment");
+const ReviewerAssignment = require("../models/reviewerAssignment");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -117,6 +119,20 @@ exports.InsertDifferentialPressure = async (req, res) => {
       }
     });
 
+    // Associate reviewers
+    const reviewerAssignments = reviewer_id.map((reviewerId) => ({
+      form_id: newForm.form_id,
+      user_id: reviewerId,
+    }));
+    await ReviewerAssignment.bulkCreate(reviewerAssignments, { transaction });
+
+    // Associate approvers
+    const approverAssignments = approver_id.map((approverId) => ({
+      form_id: newForm.form_id,
+      user_id: approverId,
+    }));
+    await ApproverAssignment.bulkCreate(approverAssignments, { transaction });
+
     // Create new Differential Pressure Form
     const newForm = await DifferentialPressureForm.create(
       {
@@ -129,8 +145,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
         department: department,
         compression_area: compression_area,
         limit: limit,
-        reviewer_id: reviewer_id,
-        approver_id: approver_id,
+        // reviewer_id: reviewer_id,
+        // approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,

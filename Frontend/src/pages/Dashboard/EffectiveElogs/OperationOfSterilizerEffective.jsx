@@ -535,7 +535,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/operation-sterlizer/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/operation-sterlizer/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

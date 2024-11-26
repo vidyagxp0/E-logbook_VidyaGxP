@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import TinyEditor from "../../../components/TinyEditor";
+import Select from "react-select";
 
 const DispensingOfMaterials = () => {
   const [User, setUser] = useState(null);
@@ -26,8 +27,8 @@ const DispensingOfMaterials = () => {
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: 2,
-      approver_id: 2,
+      reviewer_id: [],
+      approver_id: [],
       description: "",
       department: 1,
       review_comments: "",
@@ -408,38 +409,59 @@ const DispensingOfMaterials = () => {
               {isSelectedDetails === true ? (
                 <>
                   <div className="form-flex">
-                    <div className="group-input">
+                  <div className="group-input">
                       <label className="color-label">
                         Reviewer
                         <span style={{ color: "red", marginLeft: "2px" }}>
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={dispensingOfMaterials.reviewer_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedReviewers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setDispensingOfMaterials({
-                              reviewer_id: e.target.value,
+                              ...dispensingOfMaterials,
+                              reviewer_id: reviewers.map(
+                                (reviewers) => reviewers.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select a reviewer</option>
-                          {[
-                            ...new Map(
-                              reviewers.map((reviewer) => [
-                                reviewer.user_id,
-                                reviewer,
-                              ])
-                            ).values(),
-                          ].map((reviewer, index) => (
-                            <option key={index} value={reviewer.user_id}>
-                              {reviewer.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setDispensingOfMaterials({
+                              ...dispensingOfMaterials,
+                              reviewer_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...reviewers.map((reviewer) => ({
+                            label: reviewer.User.name,
+                            value: reviewer.user_id,
+                          })),
+                        ]}
+                        value={dispensingOfMaterials.reviewer_id
+                          .filter(
+                            (value, index, self) =>
+                              self.indexOf(value) === index
+                          ) // Remove duplicates
+                          .map((id) => ({
+                            value: id,
+                            label:
+                              reviewers.find(
+                                (reviewer) => reviewer.user_id === id
+                              )?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
+
                     <div className="group-input">
                       <label className="color-label">
                         Approver
@@ -447,30 +469,50 @@ const DispensingOfMaterials = () => {
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={dispensingOfMaterials.approver_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedApprovers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setDispensingOfMaterials({
-                              approver_id: e.target.value,
+                              ...dispensingOfMaterials,
+                              approver_id: approvers.map(
+                                (approver) => approver.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select an approver</option>
-                          {[
-                            ...new Map(
-                              approvers.map((approver) => [
-                                approver.user_id,
-                                approver,
-                              ])
-                            ).values(),
-                          ].map((approver, index) => (
-                            <option key={index} value={approver.user_id}>
-                              {approver.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setDispensingOfMaterials({
+                              ...dispensingOfMaterials,
+                              approver_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...approvers.map((approver) => ({
+                            label: approver.User.name,
+                            value: approver.user_id,
+                          })),
+                        ]}
+                        value={dispensingOfMaterials.approver_id
+                          .filter(
+                            (value, index, self) =>
+                              self.indexOf(value) === index
+                          )
+                          .map((id) => ({
+                            value: id,
+                            label:
+                              approvers.find(
+                                (approver) => approver.user_id === id
+                              )?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
                   </div>
                   <div>

@@ -488,7 +488,7 @@ const DispensingOfMaterialsEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/dispensing-material/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/dispensing-material/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

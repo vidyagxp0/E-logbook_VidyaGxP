@@ -449,8 +449,14 @@ exports.EditLoadedQuantity = async (req, res) => {
         });
       }
     }
-    const validArray = product_nameArray.map((item) => ({ ...item }));
-    const validBatch = batch_noArray.map((item) => ({ ...item }));
+
+    // Ensure product_nameArray and batch_noArray are valid arrays
+const validArray = Array.isArray(product_nameArray) 
+    ? product_nameArray.map((item) => ({ ...item })) 
+    : [];
+const validBatch = Array.isArray(batch_noArray) 
+    ? batch_noArray.map((item) => ({ ...item })) 
+    : [];
 
     // Update the form details
     await form.update(
@@ -608,7 +614,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
-
+console.log(error);
     return res.status(500).json({
       error: true,
       message: `${errorMessage}: ${error.message}`,

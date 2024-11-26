@@ -339,7 +339,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/temprature-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

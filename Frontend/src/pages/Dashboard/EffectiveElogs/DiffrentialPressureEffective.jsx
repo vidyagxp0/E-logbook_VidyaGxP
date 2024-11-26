@@ -451,7 +451,7 @@ export default function DPREffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/differential-pressure/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

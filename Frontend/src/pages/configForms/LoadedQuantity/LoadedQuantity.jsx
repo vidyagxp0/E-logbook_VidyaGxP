@@ -8,6 +8,8 @@ import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import TinyEditor from "../../../components/TinyEditor";
+import Select from "react-select";
+
 
 const LoadedQuantity = () => {
   const [User, setUser] = useState(null);
@@ -25,8 +27,8 @@ const LoadedQuantity = () => {
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: 2,
-      approver_id: 2,
+      reviewer_id: [],
+      approver_id: [],
       description: "",
       department: 1,
       review_comments: "",
@@ -400,31 +402,52 @@ const LoadedQuantity = () => {
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={loadedQuantity.reviewer_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedReviewers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setLoadedQuantity({
-                              reviewer_id: e.target.value,
+                              ...loadedQuantity,
+                              reviewer_id: reviewers.map(
+                                (reviewers) => reviewers.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select a reviewer</option>
-                          {[
-                            ...new Map(
-                              reviewers.map((reviewer) => [
-                                reviewer.user_id,
-                                reviewer,
-                              ])
-                            ).values(),
-                          ].map((reviewer, index) => (
-                            <option key={index} value={reviewer.user_id}>
-                              {reviewer.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setLoadedQuantity({
+                              ...loadedQuantity,
+                              reviewer_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...reviewers.map((reviewer) => ({
+                            label: reviewer.User.name,
+                            value: reviewer.user_id,
+                          })),
+                        ]}
+                        value={loadedQuantity.reviewer_id
+                          .filter(
+                            (value, index, self) =>
+                              self.indexOf(value) === index
+                          ) // Remove duplicates
+                          .map((id) => ({
+                            value: id,
+                            label:
+                              reviewers.find(
+                                (reviewer) => reviewer.user_id === id
+                              )?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
+
                     <div className="group-input">
                       <label className="color-label">
                         Approver
@@ -432,30 +455,50 @@ const LoadedQuantity = () => {
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={loadedQuantity.approver_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedApprovers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setLoadedQuantity({
-                              approver_id: e.target.value,
+                              ...loadedQuantity,
+                              approver_id: approvers.map(
+                                (approver) => approver.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select an approver</option>
-                          {[
-                            ...new Map(
-                              approvers.map((approver) => [
-                                approver.user_id,
-                                approver,
-                              ])
-                            ).values(),
-                          ].map((approver, index) => (
-                            <option key={index} value={approver.user_id}>
-                              {approver.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setLoadedQuantity({
+                              ...loadedQuantity,
+                              approver_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...approvers.map((approver) => ({
+                            label: approver.User.name,
+                            value: approver.user_id,
+                          })),
+                        ]}
+                        value={loadedQuantity.approver_id
+                          .filter(
+                            (value, index, self) =>
+                              self.indexOf(value) === index
+                          )
+                          .map((id) => ({
+                            value: id,
+                            label:
+                              approvers.find(
+                                (approver) => approver.user_id === id
+                              )?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
                   </div>
                   <div>
