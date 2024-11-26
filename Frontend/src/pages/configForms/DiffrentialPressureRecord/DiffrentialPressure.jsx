@@ -219,6 +219,7 @@ export default function DiffrentialPressure() {
       initiatorDeclaration: "",
     }
   );
+  console.log(differentialPRecord,"differentialPRecorddifferentialPRecorddifferentialPRecord")
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
     setDifferentialPRecord({ ...differentialPRecord, [name]: value });

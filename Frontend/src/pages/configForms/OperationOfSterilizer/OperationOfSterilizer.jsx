@@ -8,6 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import TinyEditor from "../../../components/TinyEditor";
+import Select from "react-select";
 
 const OperationOfSterilizer = () => {
   const [User, setUser] = useState(null);
@@ -26,8 +27,8 @@ const OperationOfSterilizer = () => {
     }),
     {
       site_id: location.state?.site_id,
-      reviewer_id: 2,
-      approver_id: 2,
+      reviewer_id: [],
+      approver_id: [],
       description: "",
       department: "",
       review_comments: "",
@@ -391,31 +392,52 @@ const OperationOfSterilizer = () => {
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={OperationOfSterilizer.reviewer_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedReviewers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setOperationOfSterilizer({
-                              reviewer_id: e.target.value,
+                              ...operationOfSterilizer,
+                              reviewer_id: reviewers.map(
+                                (reviewers) => reviewers.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select a reviewer</option>
-                          {[
-                            ...new Map(
-                              reviewers.map((reviewer) => [
-                                reviewer.user_id,
-                                reviewer,
-                              ])
-                            ).values(),
-                          ].map((reviewer, index) => (
-                            <option key={index} value={reviewer.user_id}>
-                              {reviewer.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setOperationOfSterilizer({
+                              ...operationOfSterilizer,
+                              reviewer_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...reviewers.map((reviewer) => ({
+                            label: reviewer.User.name,
+                            value: reviewer.user_id,
+                          })),
+                        ]}
+                        value={operationOfSterilizer.reviewer_id
+                          .filter(
+                            (value, index, self) =>
+                              self.indexOf(value) === index
+                          ) // Remove duplicates
+                          .map((id) => ({
+                            value: id,
+                            label:
+                              reviewers.find(
+                                (reviewer) => reviewer.user_id === id
+                              )?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
+
                     <div className="group-input">
                       <label className="color-label">
                         Approver
@@ -423,30 +445,50 @@ const OperationOfSterilizer = () => {
                           *
                         </span>
                       </label>
-                      <div>
-                        <select
-                          value={OperationOfSterilizer.approver_id}
-                          onChange={(e) => {
+                      <Select
+                        name="selectedApprovers"
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) => option.value === "all"
+                            )
+                          ) {
                             setOperationOfSterilizer({
-                              approver_id: e.target.value,
+                              ...operationOfSterilizer,
+                              approver_id: approvers.map(
+                                (approver) => approver.user_id
+                              ),
                             });
-                          }}
-                        >
-                          <option value="">Select an approver</option>
-                          {[
-                            ...new Map(
-                              approvers.map((approver) => [
-                                approver.user_id,
-                                approver,
-                              ])
-                            ).values(),
-                          ].map((approver, index) => (
-                            <option key={index} value={approver.user_id}>
-                              {approver.User.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          } else {
+                            setOperationOfSterilizer({
+                              ...operationOfSterilizer,
+                              approver_id: selectedOptions.map(
+                                (item) => item.value
+                              ),
+                            });
+                          }
+                        }}
+                        options={[
+                          { label: "Select All", value: "all" },
+                          ...approvers.map((approver) => ({
+                            label: approver.User.name,
+                            value: approver.user_id,
+                          })),
+                        ]}
+                        value={operationOfSterilizer.approver_id
+                          .filter(
+                            (value, index, self) =>
+                              self.indexOf(value) === index
+                          )
+                          .map((id) => ({
+                            value: id,
+                            label:
+                              approvers.find(
+                                (approver) => approver.user_id === id
+                              )?.User.name || "",
+                          }))}
+                        isMulti
+                      />
                     </div>
                   </div>
                   <div>
@@ -777,7 +819,7 @@ const OperationOfSterilizer = () => {
                       </label>
                       <div>
                         <input
-                        disabled
+                          disabled
                           type="file"
                           name="additionalAttachment"
                           onChange={handleFileChange}
@@ -793,7 +835,7 @@ const OperationOfSterilizer = () => {
                           :
                         </label>
                         <textarea
-                        disabled
+                          disabled
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
                           value={operationOfSterilizer.additionalInfo}
