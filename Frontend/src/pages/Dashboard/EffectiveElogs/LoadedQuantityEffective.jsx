@@ -11,6 +11,7 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 import ExcelSelectWithTwoDropdowns from "../../TestPages/ExcelImport";
 import * as XLSX from "xlsx";
+import { height } from "@mui/system";
 
 const LoadedQuantityEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
@@ -19,14 +20,17 @@ const LoadedQuantityEffective = () => {
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading1, setIsLoading1] = useState(false);
   const [formId, setFormId] = useState(null);
   const [productNameArray, setProductNameArray] = useState([]);
   const [batchNoArray, setBatchNoArray] = useState([]);
   // console.log(batchNoArray);
 
   const location = useLocation();
+
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
-  // console.log(userDetails, "userDetails");
+  const UserName = JSON.parse(localStorage.getItem("Username"));
+  // console.log(UserName.name);
 
   const [editData, setEditData] = useState({
     initiator_name: "",
@@ -36,38 +40,31 @@ const LoadedQuantityEffective = () => {
     description: "",
     LoadedQuantityRecords: [],
   });
-  // console.log(editData.product_nameArray.map((item) => item.productName), "Updated product_nameArray in state");
 
-  // useEffect(() => {
-  //   if (Array.isArray(productNameArray)) {
-  //     setEditData((prevData) => ({
-  //       ...prevData,
-  //       product_nameArray: productNameArray.map((itm) => ({
-  //         productName: itm,
-  //       })),
-  //     }));
-  //   } else {
-  //     console.error("productNameArray is not an array");
-  //   }
-  // }, [productNameArray]);
   useEffect(() => {
-    if (Array.isArray(productNameArray)) {
-      setEditData((prevData) => ({
+    setEditData((prevData) => {
+      const updatedProductNameArray = Array.isArray(productNameArray)
+        ? [
+            ...(prevData.product_nameArray || []), // Retain previous values
+            ...productNameArray.map((itm) => ({ productName: itm })),
+          ]
+        : prevData.product_nameArray;
+
+      const updatedBatchNoArray = Array.isArray(batchNoArray)
+        ? [
+            ...(prevData.batch_noArray || []), // Retain previous values
+            ...batchNoArray.map((itm) => ({ batchNo: itm })),
+          ]
+        : prevData.batch_noArray;
+
+      return {
         ...prevData,
-        product_nameArray: productNameArray.map((itm) => ({
-          productName: itm,
-        })),
-      }));
-    }
-    if (Array.isArray(batchNoArray)) {
-      setEditData((prevData) => ({
-        ...prevData,
-        batch_noArray: batchNoArray.map((itm) => ({
-          batchNo: itm,
-        })),
-      }));
-    }
+        product_nameArray: updatedProductNameArray,
+        batch_noArray: updatedBatchNoArray,
+      };
+    });
   }, [productNameArray, batchNoArray]);
+
   // console.log(editData.batch_noArray, "editData.batch_noArray");
   // console.log(editData.product_nameArray, "editData.product");
 
@@ -380,8 +377,8 @@ const LoadedQuantityEffective = () => {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.LoadedQuantityRecords];
       updatedGridData.splice(index, 1);
@@ -465,6 +462,40 @@ const LoadedQuantityEffective = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
+  const EmptyreportData = {
+    title: "Loaded Quantity",
+    status: location.state.status,
+    blankRows: 20,
+    form_id: location.state.form_id,
+    LoadedQuantityRecord: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:1000/loaded-quantity/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
+  };
+
   const reportData = {
     site:
       location.state.site_id === 1
@@ -524,6 +555,7 @@ const LoadedQuantityEffective = () => {
     const file = event.target.files[0];
     if (file) {
       const fileReader = new FileReader();
+      let hasErrorOccurred = false;
 
       fileReader.onload = (e) => {
         const workbook = XLSX.read(e.target.result, { type: "binary" });
@@ -531,24 +563,51 @@ const LoadedQuantityEffective = () => {
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-        const normalizedData = jsonData.map((item) => {
-          const normalizedItem = {};
-          Object.keys(item).forEach((key) => {
-            const normalizedKey = key.trim();
-            normalizedItem[normalizedKey] = item[key];
-          });
-          return normalizedItem;
-        });
+        const normalizedData = jsonData
+          .map((item, index) => {
+            const normalizedItem = {};
 
-        const importedProductName = normalizedData.map(
-          (item) => item["Product Name"]
-        );
-        const importedBatchNo = normalizedData.map((item) => item["Batch No"]);
-        // console.log("Imported Batch No:", importedBatchNo);
+            if (index === 0 && !hasErrorOccurred) {
+              const headers = Object.keys(item);
+              const isProductNamePresent = headers.includes("Product Name");
+              const isBatchNoPresent =
+                headers.includes("Batch No") || headers.includes("Batch No.");
 
-        setProductNameArray(importedProductName);
-        setBatchNoArray(importedBatchNo);
-        // setEditData.LoadedQuantityRecords(productNameArray);
+              if (!isProductNamePresent && !isBatchNoPresent) {
+                toast.error(
+                  "Excel file headers do not match the required format!"
+                );
+                hasErrorOccurred = true;
+                return null;
+              }
+            }
+
+            Object.keys(item).forEach((key) => {
+              const normalizedKey = key.trim();
+              normalizedItem[normalizedKey] = item[key];
+            });
+
+            return normalizedItem;
+          })
+          .filter((item) => item !== null);
+
+        if (hasErrorOccurred) {
+          return;
+        }
+
+        const importedProductName = normalizedData
+          .map((item) => item["Product Name"])
+          .filter((name) => name);
+        const importedBatchNo = normalizedData
+          .map((item) => item["Batch No"] || item["Batch No."])
+          .filter((no) => no);
+
+        if (importedProductName.length > 0) {
+          setProductNameArray((prev) => [...prev, ...importedProductName]);
+        }
+        if (importedBatchNo.length > 0) {
+          setBatchNoArray((prev) => [...prev, ...importedBatchNo]);
+        }
       };
 
       fileReader.readAsBinaryString(file);
@@ -615,6 +674,38 @@ const LoadedQuantityEffective = () => {
                     }
                   >
                     Audit Trail
+                  </button>
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Print Paper</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Print Paper"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -949,9 +1040,9 @@ const LoadedQuantityEffective = () => {
                         {/* Added ml-auto to push to the right */}
                         <label
                           htmlFor="file-upload"
-                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2"
+                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2 m-0"
                         >
-                          Import Product Name
+                          Import Product & Batch
                         </label>
                         <input
                           id="file-upload"
@@ -1195,7 +1286,7 @@ const LoadedQuantityEffective = () => {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData.reviewer1.name;
+                                          UserName.name;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1271,7 +1362,13 @@ const LoadedQuantityEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"

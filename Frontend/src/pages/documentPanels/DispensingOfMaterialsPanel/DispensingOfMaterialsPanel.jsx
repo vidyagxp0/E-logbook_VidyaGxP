@@ -507,7 +507,7 @@ const DispensingOfMaterialsPanel = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Dispensing Of Materials",
                         },
                       })
                     }

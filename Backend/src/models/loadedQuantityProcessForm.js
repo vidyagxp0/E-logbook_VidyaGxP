@@ -53,15 +53,6 @@ const LoadedQuantityProcessForm = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    department: {
-      type: DataTypes.STRING,
-    },
-    compression_area: {
-      type: DataTypes.STRING,
-    },
-    limit: {
-      type: DataTypes.FLOAT,
-    },
     reviewer_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -104,9 +95,11 @@ const LoadedQuantityProcessForm = sequelize.define(
     },
     product_nameArray: {
       type: DataTypes.JSON,
+      allowNull:true,
     },
     batch_noArray: {
       type: DataTypes.JSON,
+      allowNull:true,
     },
   }
 );

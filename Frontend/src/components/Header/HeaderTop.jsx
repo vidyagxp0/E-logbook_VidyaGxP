@@ -9,8 +9,10 @@ import { FaUserCircle } from "react-icons/fa";
 function HeaderTop() {
   const navigate = useNavigate();
   const [User, setUser] = useState(null);
+  localStorage.setItem("Username", JSON.stringify(User));
 
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
+  
   useEffect(() => {
     const requestOptions = {
       method: "GET",
@@ -49,7 +51,7 @@ function HeaderTop() {
             </div>
           </div>
           <div className="center">
-            <div className="inputContainer">
+            {/* <div className="inputContainer">
               <div className="inputInnerLeft">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +77,8 @@ function HeaderTop() {
                   Search
                 </button>
               </div>
-            </div>
+            </div> */}
+            <h1 className="text-4xl font-bold font-serif">elog-Book</h1>
           </div>
           <div className="right">
             <div className="bellLeft">

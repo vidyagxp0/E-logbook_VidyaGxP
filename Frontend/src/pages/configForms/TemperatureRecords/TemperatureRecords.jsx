@@ -468,7 +468,6 @@ export default function TemperatureRecords() {
                     <select
                       className="form-control"
                       name="assign_to"
-                      disabled
                       value={tempratureRecord.department}
                       onChange={(e) =>
                         setTempratureRecord({
@@ -511,7 +510,6 @@ export default function TemperatureRecords() {
                     <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
-                      disabled
                       name="assign_to"
                       value={tempratureRecord.compression_area}
                       onChange={(e) =>
@@ -535,14 +533,13 @@ export default function TemperatureRecords() {
                     <div className="instruction"></div>
                     <input
                       type="number"
-                      disabled
-                      className={`${
-                        tempratureRecord.limit < 23
-                          ? "limit"
-                          : tempratureRecord.limit > 27
-                          ? "limit"
-                          : ""
-                      }`}
+                      // className={`${
+                      //   tempratureRecord.limit < 23
+                      //     ? "limit"
+                      //     : tempratureRecord.limit > 27
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
                       value={tempratureRecord.limit}
                       onChange={(e) =>
                         setTempratureRecord({ limit: e.target.value })
