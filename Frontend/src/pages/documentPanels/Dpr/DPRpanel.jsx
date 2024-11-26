@@ -1042,9 +1042,10 @@ export default function DPRpanel() {
                                           [index].click()
                                       }
                                       disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
+                                        location.state?.stage !== 4 ||
+                                        [2, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        )
                                       }
                                     >
                                       Change File
@@ -1075,9 +1076,10 @@ export default function DPRpanel() {
                                           [index].click()
                                       }
                                       disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
+                                        location.state?.stage !== 4 ||
+                                        [2, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        )
                                       }
                                     >
                                       Select File
@@ -1252,9 +1254,9 @@ export default function DPRpanel() {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1272,6 +1274,7 @@ export default function DPRpanel() {
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1387,6 +1390,7 @@ export default function DPRpanel() {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
