@@ -375,7 +375,7 @@ const LoadedQuantityPanels = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; 
+    if (!dateString) return "";
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -1210,9 +1210,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1271,8 +1271,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
 
@@ -1323,9 +1321,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
@@ -1385,8 +1383,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
 
@@ -1437,9 +1433,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
@@ -1499,8 +1495,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
             </div>

@@ -897,7 +897,7 @@ const OperationOfSterilizerPanel = () => {
                 <>
                   <div>
                     <div className="AddRows d-flex">
-                    <NoteAdd /*onClick={addRow}*/ />
+                      <NoteAdd /*onClick={addRow}*/ />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1277,11 +1277,11 @@ const OperationOfSterilizerPanel = () => {
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="flex flex-col w-full">
                         <label
-                          // htmlFor="additionalAttachment"
-                          // className="color-label"
-                          // name="additionalAttachment"
+                        // htmlFor="additionalAttachment"
+                        // className="color-label"
+                        // name="additionalAttachment"
                         >
-                          Attachment{" "}
+                          Additional Attachment{" "}
                           <span className="text-sm text-zinc-600">
                             (If / Any)
                           </span>{" "}
@@ -1318,7 +1318,8 @@ const OperationOfSterilizerPanel = () => {
                           ) : (
                             <div>
                               <button
-                              disabled
+                                className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                                disabled
                                 type="button"
                                 onClick={() =>
                                   document
@@ -1349,7 +1350,7 @@ const OperationOfSterilizerPanel = () => {
                           :
                         </label>
                         <textarea
-                        disabled
+                          disabled
                           className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           rows="4"
                           name="additionalInfo"
@@ -1391,9 +1392,11 @@ const OperationOfSterilizerPanel = () => {
                     <div className="group-input">
                       <label className="color-label">
                         Initiator Comment
-                        {location.state?.stage === 1 &&
+                        {/* {location.state?.stage === 1 &&
                           location.state?.initiator_id ===
-                            userDetails.userId && (
+                            userDetails.userId && ( */}{" "}
+                        {location.state?.stage === 1 &&
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1404,9 +1407,13 @@ const OperationOfSterilizerPanel = () => {
                         name="initiatorComment"
                         value={editData?.initiatorComment}
                         onChange={handleInputChange1}
+                        // readOnly={
+                        //   location.state?.stage !== 1 ||
+                        //   location.state?.initiator_id !== userDetails.userId
+                        // }
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1428,11 +1435,9 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
                             >
                               Change File
                             </button>
@@ -1456,11 +1461,10 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1508,9 +1512,11 @@ const OperationOfSterilizerPanel = () => {
                     <div className="group-input">
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
-                        {location.state?.stage === 2 &&
+                        {/* {location.state?.stage === 2 &&
                           location.state?.reviewer_id ===
-                            userDetails.userId && (
+                            userDetails.userId && ( */}{" "}
+                        {location.state?.stage === 2 &&
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1521,17 +1527,21 @@ const OperationOfSterilizerPanel = () => {
                         name="reviewComment"
                         value={editData.reviewComment || ""}
                         onChange={handleInputChange1}
+                        // readOnly={
+                        //   location.state?.stage !== 2 ||
+                        //   location.state?.reviewer_id !== userDetails.userId
+                        // }
                         readOnly={
                           location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
@@ -1573,11 +1583,10 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("reviewerAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1625,9 +1634,11 @@ const OperationOfSterilizerPanel = () => {
                     <div className="group-input">
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
-                        {location.state?.stage === 3 &&
+                        {/* {location.state?.stage === 3 &&
                           location.state?.approver_id ===
-                            userDetails.userId && (
+                            userDetails.userId && ( */}
+                        {location.state?.stage === 3 &&
+                          [3, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1638,17 +1649,21 @@ const OperationOfSterilizerPanel = () => {
                         name="approverComment"
                         value={editData.approverComment || ""}
                         onChange={handleInputChange1}
+                        // disabled={
+                        //   location.state?.stage !== 3 ||
+                        //   location.state?.approver_id !== userDetails.userId
+                        // }
                         disabled={
                           location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
+                          [1, 2].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
@@ -1662,11 +1677,10 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1690,11 +1704,10 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
