@@ -1210,9 +1210,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1226,11 +1226,9 @@ const LoadedQuantityPanels = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
                             >
                               Change File
                             </button>
@@ -1254,11 +1252,10 @@ const LoadedQuantityPanels = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1324,9 +1321,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
@@ -1340,11 +1337,9 @@ const LoadedQuantityPanels = () => {
                                   .getElementById("reviewerAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
                             >
                               Change File
                             </button>
@@ -1368,11 +1363,10 @@ const LoadedQuantityPanels = () => {
                                   .getElementById("reviewerAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1438,9 +1432,9 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
@@ -1454,11 +1448,10 @@ const LoadedQuantityPanels = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1482,11 +1475,10 @@ const LoadedQuantityPanels = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1502,7 +1494,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
                 </>
               ) : null}
             </div>

@@ -1303,11 +1303,11 @@ const DispensingOfMaterialsPanel = () => {
                           <button
                             className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
-                            // onClick={() =>
-                            //   document
-                            //     .getElementById("additionalAttachment")
-                            //     .click()
-                            // }
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
                           >
                             Change File
                           </button>
@@ -1329,13 +1329,13 @@ const DispensingOfMaterialsPanel = () => {
                       ) : (
                         <div>
                           <button
+                            className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             type="button"
-                            // onClick={() =>
-                            //   document
-                            //     .getElementById("additionalAttachment")
-                            //     .click()
-                            // }
-                            disabled
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
                           >
                             Select File
                           </button>
@@ -1419,9 +1419,9 @@ const DispensingOfMaterialsPanel = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1435,11 +1435,10 @@ const DispensingOfMaterialsPanel = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1463,11 +1462,10 @@ const DispensingOfMaterialsPanel = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1535,9 +1533,9 @@ const DispensingOfMaterialsPanel = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
@@ -1551,11 +1549,10 @@ const DispensingOfMaterialsPanel = () => {
                                   .getElementById("reviewerAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1579,11 +1576,10 @@ const DispensingOfMaterialsPanel = () => {
                                   .getElementById("reviewerAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1667,11 +1663,10 @@ const DispensingOfMaterialsPanel = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1695,11 +1690,10 @@ const DispensingOfMaterialsPanel = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
-                              }
+                              disabled={[2, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
