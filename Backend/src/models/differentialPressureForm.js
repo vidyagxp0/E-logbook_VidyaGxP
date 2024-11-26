@@ -60,22 +60,24 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   limit: {
     type: DataTypes.FLOAT,
   },
-  reviewer_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
-  },
-  approver_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
-  },
+  // reviewer_id: {
+  //   type: DataTypes.JSON,
+  //   allowNull: false,
+  //   defaultValue: [],
+  //   references: {
+  //     model: User,
+  //     key: "user_id",
+  //   },
+  // },
+  // approver_id: {
+  //   type: DataTypes.JSON,
+  //   allowNull: false,
+  //   defaultValue: [],
+  //   references: {
+  //     model: User,
+  //     key: "user_id",
+  //   },
+  // },
   reviewComment: {
     type: DataTypes.STRING,
   },
@@ -83,7 +85,7 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     type: DataTypes.STRING,
   },
   initiatorComment: {
-    allowNull:true,
+    allowNull: true,
     type: DataTypes.STRING,
   },
   initiatorAttachment: {
