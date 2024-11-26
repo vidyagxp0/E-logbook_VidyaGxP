@@ -1723,14 +1723,7 @@ exports.blankReport = async (req, res) => {
       hour12: false, // Specify using 24-hour format
     });
 
-    const blankRows = Array(reportData?.blankRows).fill({
-      UniqueId: "",
-      Time: "",
-      DifferentialPressure: "",
-      Remark: "",
-      CheckedBy: "",
-      SupportingDocuments: "",
-    });
+    const blankRows = Array(reportData?.blankRows);
 
     const data = reportData?.temprature_record?.map((record) => ({
       unique_id: record?.unique_id || "",
