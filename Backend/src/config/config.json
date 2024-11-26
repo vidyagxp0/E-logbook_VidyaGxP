@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "development": {
     "username": "root",
     "password": "root11",
@@ -22,19 +21,3 @@
     "dialect": "mysql"
   }
 }
-=======
-    "development" : {
-            "PORT": 1000,
-            "dbName": "elogbook",
-            "username": "root",
-            "password": "root",
-            "dialect": "mysql",
-            "host": "localhost",
-            "JWT_SECRET": "NAHKNAHRAF",
-            "JWT_ADMIN_SECRET": "ADMINNAHKNAHRAF"
-    },
-    "production": {
-
-    }
-}
->>>>>>> origin/dev
