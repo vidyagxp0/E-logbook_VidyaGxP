@@ -1419,9 +1419,9 @@ const OperationOfSterilizerPanel = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1435,9 +1435,11 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={[2, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                [2, 3].includes(userDetails.roles[0].role_id)
+                              }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1461,9 +1463,10 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={[2, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                [2, 3].includes(userDetails.roles[0].role_id)
+                              }
                               className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
@@ -1557,9 +1560,9 @@ const OperationOfSterilizerPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1583,9 +1586,10 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("reviewerAttachment")
                                   .click()
                               }
-                              disabled={[2, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              disabled={
+                                location.state?.stage !== 2 ||
+                                [1, 3].includes(userDetails.roles[0].role_id)
+                              }
                               className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
@@ -1677,9 +1681,10 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={[2, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              disabled={
+                                location.state?.stage !== 3 ||
+                                [1, 2].includes(userDetails.roles[0].role_id)
+                              }
                               className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
@@ -1704,9 +1709,10 @@ const OperationOfSterilizerPanel = () => {
                                   .getElementById("approverAttachment")
                                   .click()
                               }
-                              disabled={[2, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              disabled={
+                                location.state?.stage !== 3 ||
+                                [1, 2].includes(userDetails.roles[0].role_id)
+                              }
                               className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
