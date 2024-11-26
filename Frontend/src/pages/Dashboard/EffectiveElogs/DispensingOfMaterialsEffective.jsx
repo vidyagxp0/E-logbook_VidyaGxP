@@ -18,9 +18,12 @@ const DispensingOfMaterialsEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
+
   const [checkby, setCheckby] = useState(null);
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -320,13 +323,25 @@ const DispensingOfMaterialsEffective = () => {
   function isObject(object) {
     return object != null && typeof object === "object";
   }
+  useEffect(() => {
+    console.log(location.state.record_id, "record id");
+  }, []);
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.DispenseOfMaterials];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -405,6 +420,40 @@ const DispensingOfMaterialsEffective = () => {
 
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
+  const EmptyreportData = {
+    title: "Dispensing Of Materials",
+    status: location.state.status,
+    blankRows: 12,
+    form_id: location.state.form_id,
+    DispenseOfMaterial: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:1000/dispensing-material/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -529,7 +578,7 @@ const DispensingOfMaterialsEffective = () => {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
                           process: "Differential Pressure",
@@ -538,6 +587,39 @@ const DispensingOfMaterialsEffective = () => {
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -1015,7 +1097,7 @@ const DispensingOfMaterialsEffective = () => {
                               />
                             </td>
                             <td>
-                              <select
+                              <input
                                 value={item.control_no}
                                 onChange={(e) => {
                                   const newData = [
@@ -1031,16 +1113,16 @@ const DispensingOfMaterialsEffective = () => {
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="">Select A Control No</option>
+                                {/* <option value="">Select A Control No</option>
                                 <option value="CN01">CN01</option>
                                 <option value="CN02">CN02</option>
                                 <option value="CN03">CN03</option>
-                                <option value="CN04">CN04</option>
-                              </select>
+                                <option value="CN04">CN04</option> */}
+                              </input>
                             </td>
 
                             <td>
-                              <select
+                              <input
                                 value={item.dispensed_quantity}
                                 onChange={(e) => {
                                   const newData = [
@@ -1057,14 +1139,14 @@ const DispensingOfMaterialsEffective = () => {
                                   userDetails.roles[0].role_id
                                 )}
                               >
-                                <option value="" disabled>
+                                {/* <option value="" disabled>
                                   Select Dispensed Quantity (Kg){" "}
                                 </option>
                                 <option value="1">1 Kg</option>
                                 <option value="2">2 Kg</option>
                                 <option value="5">5 Kg</option>
-                                <option value="10">10 Kg</option>
-                              </select>
+                                <option value="10">10 Kg</option> */}
+                              </input>
                             </td>
                             <td>
                               <input
@@ -1244,7 +1326,7 @@ const DispensingOfMaterialsEffective = () => {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData.reviewer4.name;
+                                        UserName.name;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1388,7 +1470,7 @@ const DispensingOfMaterialsEffective = () => {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1503,9 +1585,9 @@ const DispensingOfMaterialsEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {reviewerRemarks === true ? (
+              {/* {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1620,9 +1702,9 @@ const DispensingOfMaterialsEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {approverRemarks === true ? (
+              {/* {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1704,17 +1786,17 @@ const DispensingOfMaterialsEffective = () => {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input
@@ -1728,7 +1810,7 @@ const DispensingOfMaterialsEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button

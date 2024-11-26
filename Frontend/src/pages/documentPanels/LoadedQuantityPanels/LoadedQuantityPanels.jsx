@@ -375,7 +375,7 @@ const LoadedQuantityPanels = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
+    if (!dateString) return ""; 
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -390,7 +390,7 @@ const LoadedQuantityPanels = () => {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false,
+      hour12: true,
     });
   };
 
@@ -530,7 +530,7 @@ const LoadedQuantityPanels = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Loaded Quantity",
                         },
                       })
                     }
@@ -573,7 +573,7 @@ const LoadedQuantityPanels = () => {
 
                   {/* Conditional Buttons Based on Stages */}
                   {location.state?.stage === 1 &&
-                    location.state?.initiator_id === userDetails.userId && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -584,9 +584,8 @@ const LoadedQuantityPanels = () => {
                         Send for Review
                       </button>
                     )}
-
                   {location.state?.stage === 2 &&
-                    location.state?.reviewer_id === userDetails.userId && (
+                    [2, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -610,7 +609,7 @@ const LoadedQuantityPanels = () => {
                     )}
 
                   {location.state?.stage === 3 &&
-                    location.state?.approver_id === userDetails.userId && (
+                    [3, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -635,7 +634,7 @@ const LoadedQuantityPanels = () => {
 
                   {/* Save Button */}
                   {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -889,7 +888,7 @@ const LoadedQuantityPanels = () => {
                           <th>Actions</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      {/* <tbody>
                         {editData?.LoadedQuantityRecords.map((item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
@@ -1076,7 +1075,7 @@ const LoadedQuantityPanels = () => {
                             </td>
                           </tr>
                         ))}
-                      </tbody>
+                      </tbody> */}
                     </table>
                   </div>
                   <div className="group-input mt-4">
@@ -1192,8 +1191,7 @@ const LoadedQuantityPanels = () => {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1206,7 +1204,7 @@ const LoadedQuantityPanels = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1230,8 +1228,7 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1257,9 +1254,7 @@ const LoadedQuantityPanels = () => {
                                   .click()
                               }
                               disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                location.state?.stage !== 1 ||[2, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File
@@ -1309,8 +1304,7 @@ const LoadedQuantityPanels = () => {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.reviewer_id ===
-                            userDetails.userId && (
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1323,7 +1317,7 @@ const LoadedQuantityPanels = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1347,8 +1341,7 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1375,8 +1368,7 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File
@@ -1426,8 +1418,7 @@ const LoadedQuantityPanels = () => {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.approver_id ===
-                            userDetails.userId && (
+                          [3, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1440,7 +1431,7 @@ const LoadedQuantityPanels = () => {
                         onChange={handleInputChange1}
                         disabled={
                           location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
+                          [1, 2].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1464,8 +1455,7 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1492,8 +1482,7 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File

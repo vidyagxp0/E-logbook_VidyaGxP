@@ -2,6 +2,10 @@
 <html>
   <head>
     <style>
+      @page {
+        margin-bottom: 55px;
+        margin-top: 20vh;
+      }
       body {
         font-family: Arial, sans-serif;
         font-size: 14px;
@@ -71,32 +75,37 @@
       <table>
         <thead>
           <tr>
-            <th>Unique Id</th>
-            <th>Date</th>
-            <th>AUH</th>
-            <th>LAF</th>
-            <th>UV Light</th>
-            <th>Done By</th>
-            <th>Name Of Material</th>
-            <th>Control No</th>
-            <th>Dispensed Quantity (kg)</th>
-            <th>Dispensed By Qa</th>
-            <th>Dispensed By Store</th>
-            <th>AUH</th>
-            <th>LAF</th>
-            <th>UV Light</th>
-            <th>UV Burning Hrs</th>
-            <th>Done By</th>
-            <th>Cleaning Done By</th>
-            <th>Checked By (Sign/Date)</th>
-            <th>Weighing Balance ID</th>
-            <th>Remark</th>
+            <!-- <th rowspan="3">Unique Id</th> -->
+            <th rowspan="3">Date</th>
+            <th rowspan="1" colspan="3">ON TIME</th>
+            <th rowspan="3">Done By</th>
+            <th rowspan="3">Name Of Material</th>
+            <th rowspan="3">Control No</th>
+            <th rowspan="3">Dispensed Quantity (kg)</th>
+            <th rowspan="1" colspan="2">Dispensed By (Sign/Date)</th>
+            <th rowspan="1" colspan="3">OFF TIME</th>
+            <th rowspan="3">UV Burning Hrs</th>
+            <th rowspan="3">Done By</th>
+            <th rowspan="3">Cleaning Done By</th>
+            <th rowspan="3">Checked By (Sign/Date)</th>
+            <th rowspan="3">Weighing Balance ID</th>
+            <th rowspan="3">Remark</th>
+          </tr>
+          <tr>
+            <th rowspan="3">AUH</th>
+            <th rowspan="3">LAF</th>
+            <th rowspan="3">UV Light</th>
+            <th rowspan="3">Dispensed By Qa</th>
+            <th rowspan="3">Dispensed By Store</th>
+            <th rowspan="3">AUH</th>
+            <th rowspan="3">LAF</th>
+            <th rowspan="3">UV Light</th>
           </tr>
         </thead>
         <tbody>
           <% arrayData.forEach(record => { %>
           <tr>
-            <td><%= record?.unique_id %></td>
+            <!-- <td><%= record?.unique_id %></td> -->
             <td><%= record?.date %></td>
             <td><%= record?.on_time_auh %></td>
             <td><%= record?.on_time_laf %></td>

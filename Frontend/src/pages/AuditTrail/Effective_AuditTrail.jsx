@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import HeaderTop from "../../components/Header/HeaderTop";
 
-function AuditTrail() {
+function Effective_AuditTrail() {
   const [auditTrails, setAuditTrails] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -176,26 +176,24 @@ function AuditTrail() {
               >
                 <thead>
                   <tr>
-                    <th
+                    {/* <th
                       style={{
                         padding: "10px",
                         borderBottom: "1px solid #ccc",
                         width: "15%",
                       }}
                     >
-                      {/* Checked By */}
                       Flow Changed From
-                    </th>
-                    <th
+                    </th> */}
+                    {/* <th
                       style={{
                         padding: "10px",
                         borderBottom: "1px solid #ccc",
                         width: "15%",
                       }}
                     >
-                      {/* Field Name */}
                       Flow Changed To
-                    </th>
+                    </th> */}
                     <th
                       style={{
                         padding: "10px",
@@ -281,176 +279,108 @@ function AuditTrail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {auditTrails.map((auditTrail, index) => (
-                    <tr key={index}>
-                      <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "15%",
-                        }}
-                      >
-                        Changed From :{" "}
-                        <span className="font-normal">
-                          {auditTrail.previous_status}
-                        </span>
-                        {/* {auditTrail.User.name} */}
-                      </td>
-                      <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "15%",
-                        }}
-                      >
-                        Changed To :{" "}
-                        <span className="font-normal">
-                          {auditTrail.new_status}
-                        </span>
-                        {/* {auditTrail.field_name} */}
-                      </td>
-                      <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "10%",
-                          textWrap: "nowrap",
-                        }}
-                      >
-                        {/* {auditTrail.previous_value
-                          ? auditTrail.previous_value
-                          : "null"} */}
-                        {/* {auditTrail.field_name}  */}
-                        <div className="mb-2">
-                          <span>Field Name :</span>
-                          <span className="font-normal">
-                            {" "}
-                            {auditTrail.field_name.charAt(0).toUpperCase() +
-                              auditTrail.field_name.slice(1)}
-                          </span>
-                        </div>
-                        <div className="mb-2">
-                          Previous Value :{" "}
-                          <span className="font-normal">
-                            {" "}
-                            {auditTrail.previous_value
-                              ? auditTrail.previous_value
-                              : "null"}
-                          </span>
-                        </div>
-                        <div className="text-nowrap flex">
-                          New Value :{" "}
-                          <span
-                            className="font-normal"
-                            dangerouslySetInnerHTML={{
-                              __html: auditTrail?.new_value,
+                  {auditTrails
+                    .filter(
+                      (auditTrail) =>
+                        ![
+                          "Approver Comment",
+                          "initiatorComment",
+                          "Stage Change",
+                          "stage Change",
+                          "Review Comment",
+                          "approver",
+                          "reviewer",
+                          "department",
+                          "description",
+                          "compression_area"
+
+                        ].includes(auditTrail.field_name)
+                    )
+                    .map((auditTrail, index) => (
+                        <tr key={index}>
+                          <td
+                            style={{
+                              padding: "10px",
+                              borderBottom: "1px solid #ccc",
+                              width: "10%",
+                              textWrap: "nowrap",
                             }}
-                          ></span>
-                        </div>
-                      </td>
-                      {/* <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "10%",
-                        }}
-                      >
-                        {auditTrail.previous_value
-                          ? auditTrail.previous_value
-                          : "null"}
-                      </td> */}
-                      {/* <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "10%",
-                        }}
-                        dangerouslySetInnerHTML={{
-                          __html: auditTrail?.new_value,
-                        }}
-                      > */}
-                      {/* {
-                          // Check if the value is a URL
-                          /^https?:\/\/.*\//.test(auditTrail.new_value)
-                            ? // Extract the file name after the last hyphen
-                              auditTrail.new_value.substring(
-                                auditTrail.new_value.lastIndexOf("-") + 1
-                              )
-                            : // If not a URL, display the original value
-                              auditTrail.new_value
-                        } */}
-                      {/* </td> */}
-                      {/* <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "10%",
-                        }}
-                      >
-                        {auditTrail.previous_status}
-                      </td> */}
-                      {/* <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "10%",
-                        }}
-                      >
-                        {auditTrail.new_status}
-                      </td> */}
-                      <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "15%",
-                        }}
-                      >
-                        <span className="font-normal">
-                          {auditTrail.declaration}
-                        </span>
-                      </td>
-                      {/* <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "15%",
-                        }}
-                      >
-                        {new Date(auditTrail.createdAt).toLocaleString()}
-                      </td> */}
-                      <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "15%",
-                        }}
-                      >
-                        Action Name :{" "}
-                        <span className="font-normal">{auditTrail.action}</span>
-                      </td>
-                      <td
-                        style={{
-                          padding: "10px",
-                          borderBottom: "1px solid #ccc",
-                          width: "15%",
-                        }}
-                      >
-                        <div className="mb-2">
-                          Performed By :{" "}
-                          <span className="font-normal">
-                            {auditTrail.User.name}
-                          </span>
-                        </div>
-                        <div>
-                          Performed On :{" "}
-                          <span className="font-normal">
-                            {" "}
-                            {new Date(auditTrail.createdAt).toLocaleString()}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                          >
+                            <div className="mb-2">
+                              <span>Field Name :</span>
+                              <span className="font-normal">
+                                {" "}
+                                {auditTrail.field_name.charAt(0).toUpperCase() +
+                                  auditTrail.field_name.slice(1)}
+                              </span>
+                            </div>
+                            <div className="mb-2">
+                              Previous Value :{" "}
+                              <span className="font-normal">
+                                {" "}
+                                {auditTrail.previous_value
+                                  ? auditTrail.previous_value
+                                  : "null"}
+                              </span>
+                            </div>
+                            <div className="text-nowrap flex">
+                              New Value :{" "}
+                              <span
+                                className="font-normal"
+                                dangerouslySetInnerHTML={{
+                                  __html: auditTrail?.new_value,
+                                }}
+                              ></span>
+                            </div>
+                          </td>
+                          <td
+                            style={{
+                              padding: "10px",
+                              borderBottom: "1px solid #ccc",
+                              width: "15%",
+                            }}
+                          >
+                            <span className="font-normal">
+                              {auditTrail.declaration}
+                            </span>
+                          </td>
+                          <td
+                            style={{
+                              padding: "10px",
+                              borderBottom: "1px solid #ccc",
+                              width: "15%",
+                            }}
+                          >
+                            Action Name :{" "}
+                            <span className="font-normal">
+                              {auditTrail.action}
+                            </span>
+                          </td>
+                          <td
+                            style={{
+                              padding: "10px",
+                              borderBottom: "1px solid #ccc",
+                              width: "15%",
+                            }}
+                          >
+                            <div className="mb-2">
+                              Performed By :{" "}
+                              <span className="font-normal">
+                                {auditTrail.User.name}
+                              </span>
+                            </div>
+                            <div>
+                              Performed On :{" "}
+                              <span className="font-normal">
+                                {" "}
+                                {new Date(
+                                  auditTrail.createdAt
+                                ).toLocaleString()}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -475,4 +405,4 @@ function AuditTrail() {
   );
 }
 
-export default AuditTrail;
+export default Effective_AuditTrail;

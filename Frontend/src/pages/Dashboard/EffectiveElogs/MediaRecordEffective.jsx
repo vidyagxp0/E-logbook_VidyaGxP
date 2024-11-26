@@ -19,8 +19,11 @@ const MediaRecordEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
+
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -220,7 +223,7 @@ const MediaRecordEffective = () => {
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
@@ -336,10 +339,20 @@ const MediaRecordEffective = () => {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.MediaRecords];
+      const rowToDelete = updatedGridData[index];
+
+      // Check if the row has a `record_id`
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -416,13 +429,47 @@ const MediaRecordEffective = () => {
     setEditData({ ...editData, approverAttachment: e.target.files[0] });
   };
 
-  const generateUniqueId = () => {
-    const currentCounter =
-      parseInt(localStorage.getItem("uniqueIdCounter") || "0", 10) + 1;
-    const paddedCounter = String(currentCounter).padStart(4, "0");
-    const uniqueId = `MR${paddedCounter}`;
-    localStorage.setItem("uniqueIdCounter", currentCounter); // Persist the updated counter
-    return uniqueId;
+  // const generateUniqueId = () => {
+  //   const currentCounter =
+  //     parseInt(localStorage.getItem("uniqueIdCounter") || "0", 10) + 1;
+  //   const paddedCounter = String(currentCounter).padStart(4, "0");
+  //   const uniqueId = `MR${paddedCounter}`;
+  //   localStorage.setItem("uniqueIdCounter", currentCounter); // Persist the updated counter
+  //   return uniqueId;
+  // };
+
+  const EmptyreportData = {
+    title: "Media Record",
+    status: location.state.status,
+    blankRows: 17,
+    form_id: location.state.form_id,
+    MediaRecords: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:1000/media-record/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -564,7 +611,7 @@ const MediaRecordEffective = () => {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
                           process: "Differential Pressure",
@@ -573,6 +620,39 @@ const MediaRecordEffective = () => {
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -906,22 +986,6 @@ const MediaRecordEffective = () => {
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
-                      <div className="flex flex-col items-start space-y-2 ml-auto">
-                        {/* Added ml-auto to push to the right */}
-                        <label
-                          htmlFor="file-upload"
-                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2"
-                        >
-                          Import Lot No
-                        </label>
-                        <input
-                          id="file-upload"
-                          type="file"
-                          accept=".xlsx, .xls"
-                          onChange={handleFileUpload}
-                          className="hidden"
-                        />
-                      </div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
@@ -1044,8 +1108,7 @@ const MediaRecordEffective = () => {
                                 value={item.lot_no}
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
-                                  newData[index].lot_no =
-                                    e.target.value;
+                                  newData[index].lot_no = e.target.value;
                                   setEditData({
                                     ...editData,
                                     MediaRecords: newData,
@@ -1136,7 +1199,7 @@ const MediaRecordEffective = () => {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData.reviewer3.name;
+                                        UserName.name;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1259,7 +1322,7 @@ const MediaRecordEffective = () => {
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1374,9 +1437,9 @@ const MediaRecordEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {reviewerRemarks === true ? (
+              {/* {reviewerRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1491,9 +1554,9 @@ const MediaRecordEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
-              {approverRemarks === true ? (
+              {/* {approverRemarks === true ? (
                 <>
                   <div className="form-flex">
                     <div className="group-input">
@@ -1575,17 +1638,17 @@ const MediaRecordEffective = () => {
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input
@@ -1599,7 +1662,7 @@ const MediaRecordEffective = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               <button

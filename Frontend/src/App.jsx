@@ -46,6 +46,7 @@ import MediaRecordEffective from "./pages/Dashboard/EffectiveElogs/MediaRecordEf
 import DispensingOfMaterialsEffective from "./pages/Dashboard/EffectiveElogs/DispensingOfMaterialsEffective.jsx";
 import ExcelSelectWithFileInput from "./pages/TestPages/ExcelImport.jsx";
 import Effective_ViewReport from "./components/viewReport/Effective_ViewReport.jsx";
+import Effective_AuditTrail from "./pages/AuditTrail/Effective_AuditTrail.jsx";
 
 function App() {
   return (
@@ -53,7 +54,7 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
-          <Route path="/test" element={<ExcelSelectWithFileInput />} /> 
+          {/* <Route path="/test" element={<ExcelSelectWithFileInput />} />  */}
 
             <Route path="/" element={<Login />} />
             <Route path="/admin-login" element={<AdminLogin />} />
@@ -99,6 +100,10 @@ function App() {
             <Route
               path="/audit-trail"
               element={<ProtectedRoute element={<AuditTrail />} />}
+            />
+            <Route
+              path="/effective-audit-trail"
+              element={<ProtectedRoute element={<Effective_AuditTrail  />} />}
             />
             <Route
               path="/dpr-panel"

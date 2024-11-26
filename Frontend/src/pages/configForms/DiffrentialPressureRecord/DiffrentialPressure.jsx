@@ -552,13 +552,13 @@ export default function DiffrentialPressure() {
                     <div className="instruction"></div>
                     <input
                       type="number"
-                      className={`${
-                        differentialPRecord.limit < 0.6
-                          ? "limit"
-                          : differentialPRecord.limit > 2.6
-                          ? "limit"
-                          : ""
-                      }`}
+                      // className={`${
+                      //   differentialPRecord.limit < 0.6
+                      //     ? "limit"
+                      //     : differentialPRecord.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
                       value={differentialPRecord.limit}
                       onChange={(e) =>
                         setDifferentialPRecord({ limit: e.target.value })

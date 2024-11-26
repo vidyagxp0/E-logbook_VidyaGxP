@@ -9,6 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import * as XLSX from "xlsx";
 
 const OperationOfSterilizerEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(false);
@@ -18,9 +19,13 @@ const OperationOfSterilizerEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
+  const [productNameArray, setProductNameArray] = useState([]);
+  const [batchNoArray, setBatchNoArray] = useState([]);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -28,7 +33,33 @@ const OperationOfSterilizerEffective = () => {
     additionalInfo: "",
     additionalAttachment: "",
     OperationOfSterilizerRecords: [],
+    product_nameArray: [],
+    batch_noArray: [],
   });
+
+  useEffect(() => {
+    setEditData((prevData) => {
+      const updatedProductNameArray = Array.isArray(productNameArray)
+        ? [
+            ...(prevData.product_nameArray || []), // Retain previous values
+            ...productNameArray.map((itm) => ({ productName: itm })),
+          ]
+        : prevData.product_nameArray;
+
+      const updatedBatchNoArray = Array.isArray(batchNoArray)
+        ? [
+            ...(prevData.batch_noArray || []), // Retain previous values
+            ...batchNoArray.map((itm) => ({ batchNo: itm })),
+          ]
+        : prevData.batch_noArray;
+
+      return {
+        ...prevData,
+        product_nameArray: updatedProductNameArray,
+        batch_noArray: updatedBatchNoArray,
+      };
+    });
+  }, [productNameArray, batchNoArray]);
 
   console.log(editData, "editData");
   const navigate = useNavigate();
@@ -352,10 +383,19 @@ const OperationOfSterilizerEffective = () => {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.OperationOfSterilizerRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -436,6 +476,40 @@ const OperationOfSterilizerEffective = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
+  const EmptyreportData = {
+    title: "Operation Of Sterilizer",
+    status: location.state.status,
+    blankRows: 20,
+    form_id: location.state.form_id,
+    OperationOfSterilizerRecord: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:1000/operation-sterlizer/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
+  };
+
   const reportData = {
     site:
       location.state.site_id === 1
@@ -492,6 +566,68 @@ const OperationOfSterilizerEffective = () => {
       description: content,
     }));
   };
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileReader = new FileReader();
+      let hasErrorOccurred = false;
+
+      fileReader.onload = (e) => {
+        const workbook = XLSX.read(e.target.result, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+        const normalizedData = jsonData
+          .map((item, index) => {
+            const normalizedItem = {};
+
+            if (index === 0 && !hasErrorOccurred) {
+              const headers = Object.keys(item);
+              const isProductNamePresent = headers.includes("Product Name");
+              const isBatchNoPresent =
+                headers.includes("Batch No") || headers.includes("Batch No.");
+
+              if (!isProductNamePresent && !isBatchNoPresent) {
+                toast.error(
+                  "Excel file headers do not match the required format!"
+                );
+                hasErrorOccurred = true;
+                return null;
+              }
+            }
+
+            Object.keys(item).forEach((key) => {
+              const normalizedKey = key.trim();
+              normalizedItem[normalizedKey] = item[key];
+            });
+
+            return normalizedItem;
+          })
+          .filter((item) => item !== null);
+
+        if (hasErrorOccurred) {
+          return;
+        }
+
+        const importedProductName = normalizedData
+          .map((item) => item["Product Name"])
+          .filter((name) => name);
+        const importedBatchNo = normalizedData
+          .map((item) => item["Batch No"] || item["Batch No."])
+          .filter((no) => no);
+
+        if (importedProductName.length > 0) {
+          setProductNameArray((prev) => [...prev, ...importedProductName]);
+        }
+        if (importedBatchNo.length > 0) {
+          setBatchNoArray((prev) => [...prev, ...importedBatchNo]);
+        }
+      };
+
+      fileReader.readAsBinaryString(file);
+    }
+  };
   return (
     <div>
       <HeaderTop />
@@ -543,7 +679,7 @@ const OperationOfSterilizerEffective = () => {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
                           process: "Differential Pressure",
@@ -552,6 +688,39 @@ const OperationOfSterilizerEffective = () => {
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -895,9 +1064,25 @@ const OperationOfSterilizerEffective = () => {
               {isSelectedDetails === true ? (
                 <>
                   <div>
-                    <div className="AddRows d-flex">
+                    <div className="AddRows flex items-center justify-between">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
+                      <div className="flex items-start">
+                        {/* Added ml-auto to push to the right */}
+                        <label
+                          htmlFor="file-upload"
+                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:outline-none px-4 py-2 m-0"
+                        >
+                          Import Product & Batch
+                        </label>
+                        <input
+                          id="file-upload"
+                          type="file"
+                          accept=".xlsx, .xls"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
@@ -913,7 +1098,7 @@ const OperationOfSterilizerEffective = () => {
                           <th rowSpan={2}>Product Name</th>
                           <th rowSpan={2}>Container size (ml)</th>
                           <th rowSpan={2}>Loaded quantity</th>
-                          <th rowSpan={2}>Batch No.- Lot. No.</th>
+                          <th rowSpan={2}>Batch No.</th>
                           <th rowSpan={2}>Loading Time</th>
                           <th rowSpan={1} colSpan={2}>
                             {" "}
@@ -1028,10 +1213,23 @@ const OperationOfSterilizerEffective = () => {
                                     userDetails.roles[0].role_id
                                   )}
                                 >
-                                  <option value="">Select Product Name</option>
-                                  <option value="ProductA">ProductA</option>
-                                  <option value="ProductB">ProductB</option>
-                                  <option value="ProductC">ProductC</option>
+                                  {Array.isArray(editData.product_nameArray) &&
+                                  editData.product_nameArray.length > 0 ? (
+                                    editData.product_nameArray.map(
+                                      (productNameArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={productNameArray.productName}
+                                        >
+                                          {productNameArray.productName}
+                                        </option>
+                                      )
+                                    )
+                                  ) : (
+                                    <option value="">
+                                      No Product Name available
+                                    </option>
+                                  )}
                                 </select>
                               </td>
                               <td>
@@ -1091,12 +1289,23 @@ const OperationOfSterilizerEffective = () => {
                                     userDetails.roles[0].role_id
                                   )}
                                 >
-                                  <option value="">
-                                    Select Batch/Lot Number
-                                  </option>
-                                  <option value="Batch001">Batch001</option>
-                                  <option value="Batch002">Batch002</option>
-                                  <option value="Batch003">Batch003</option>
+                                  {Array.isArray(editData.batch_noArray) &&
+                                  editData.batch_noArray.length > 0 ? (
+                                    editData.batch_noArray.map(
+                                      (batchNoArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={batchNoArray.batchNo}
+                                        >
+                                          {batchNoArray.batchNo}
+                                        </option>
+                                      )
+                                    )
+                                  ) : (
+                                    <option value="">
+                                      No Batch No. available
+                                    </option>
+                                  )}
                                 </select>
                               </td>
                               <td>
@@ -1245,7 +1454,7 @@ const OperationOfSterilizerEffective = () => {
                                         ];
                                         if (e.target.checked) {
                                           newData[index].reviewed_by =
-                                            editData.reviewer2.name;
+                                          UserName.name;
                                         } else {
                                           newData[index].reviewed_by = "";
                                         }
@@ -1328,7 +1537,7 @@ const OperationOfSterilizerEffective = () => {
                         </div>
                       ) : (
                         <div>
-                         <button
+                          <button
                             className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>

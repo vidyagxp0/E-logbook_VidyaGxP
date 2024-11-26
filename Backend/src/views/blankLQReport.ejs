@@ -2,6 +2,10 @@
 <html>
   <head>
     <style>
+      @page {
+        margin-bottom: 55px;
+        margin-top: 14vh;
+      }
       body {
         font-family: Arial, sans-serif;
         font-size: 14px;
@@ -71,7 +75,8 @@
       <table>
         <thead>
           <tr>
-            <th>Unique Id</th>
+            <!-- <th>Unique Id</th> -->
+            <th>S. No.</th>
             <th>Date</th>
             <th>Product Name</th>
             <th>Batch Number</th>
@@ -85,9 +90,10 @@
           </tr>
         </thead>
         <tbody>
-          <% arrayData.forEach(record => { %>
+          <% let serialNumber = 1; %> <% arrayData.forEach(record => { %>
           <tr>
-            <td><%= record?.unique_id %></td>
+            <!-- <td><%= record?.unique_id %></td> -->
+            <td><%= serialNumber++ %>.</td>
             <td><%= record?.date %></td>
             <td><%= record?.product_name %></td>
             <td><%= record?.batch_no %></td>

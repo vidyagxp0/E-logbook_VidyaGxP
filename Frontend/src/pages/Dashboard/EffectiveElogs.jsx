@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { hasAccess } from "../../components/userAuth/userAuth";
 
-function Dashboard() {
+function EffectiveElogs() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
@@ -276,7 +276,7 @@ function Dashboard() {
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
-              style={{ height: "40px" }}
+              style={{ border: "1px solid gray", padding: "2px 0px",height: "40px"  }}
             >
               <option value="All_Records">All Records</option>
               <option value="effective_diffrential_pressure">
@@ -285,9 +285,9 @@ function Dashboard() {
               {/* <option value="area_and_equipment">
                 Area & Equipment Usage Log
               </option> */}
-              <option value="effective_equipment_cleaning">
+              {/* <option value="effective_equipment_cleaning">
                 Equipment Cleaning Checklist
-              </option>
+              </option> */}
               <option value="effective_temperature_records">
                 Temperature Records
               </option>
@@ -379,7 +379,7 @@ function Dashboard() {
                 })
               : null} */}
 
-            {eLogSelect === "effective_equipment_cleaning"
+            {/* {eLogSelect === "effective_equipment_cleaning"
               ? equipmentCRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -399,7 +399,7 @@ function Dashboard() {
                     </tr>
                   );
                 })
-              : null}
+              : null} */}
 
             {eLogSelect === "effective_temperature_records"
               ? tempratureRecordElogs?.map((item, index) => {
@@ -704,4 +704,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default EffectiveElogs;
