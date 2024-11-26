@@ -22,6 +22,7 @@ export default function TempretureRecordsEffective() {
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -1039,7 +1040,7 @@ export default function TempretureRecordsEffective() {
                                     ];
                                     if (e?.target?.checked) {
                                       newData[index].reviewed_by =
-                                        editData?.tpreviewer?.name;
+                                      UserName.name;
                                     } else {
                                       newData[index].reviewed_by = "";
                                     }

@@ -25,6 +25,7 @@ const OperationOfSterilizerEffective = () => {
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -1453,7 +1454,7 @@ const OperationOfSterilizerEffective = () => {
                                         ];
                                         if (e.target.checked) {
                                           newData[index].reviewed_by =
-                                            editData.reviewer2.name;
+                                          UserName.name;
                                         } else {
                                           newData[index].reviewed_by = "";
                                         }

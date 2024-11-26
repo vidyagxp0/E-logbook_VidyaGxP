@@ -32,6 +32,8 @@ function HeaderTop() {
   const handleLogout = () => {
     localStorage.removeItem("user-token");
     localStorage.removeItem("admin-token");
+    localStorage.removeItem("Username");
+    localStorage.removeItem("user-details");
     navigate("/");
   };
 

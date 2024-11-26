@@ -22,6 +22,7 @@ export default function DPREffective() {
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -1090,7 +1091,7 @@ export default function DPREffective() {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData.reviewer.name;
+                                        UserName.name;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
