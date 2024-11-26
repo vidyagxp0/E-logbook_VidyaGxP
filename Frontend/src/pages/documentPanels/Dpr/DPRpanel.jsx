@@ -538,7 +538,7 @@ export default function DPRpanel() {
 
                   {/* Conditional Buttons Based on Stages */}
                   {location.state?.stage === 1 &&
-                    location.state?.initiator_id === userDetails.userId && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -551,7 +551,7 @@ export default function DPRpanel() {
                     )}
 
                   {location.state?.stage === 2 &&
-                    location.state?.reviewer_id === userDetails.userId && (
+                    [2, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -575,7 +575,7 @@ export default function DPRpanel() {
                     )}
 
                   {location.state?.stage === 3 &&
-                    location.state?.approver_id === userDetails.userId && (
+                    [3, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -600,7 +600,7 @@ export default function DPRpanel() {
 
                   {/* Save Button */}
                   {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -1234,8 +1234,7 @@ export default function DPRpanel() {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1248,7 +1247,7 @@ export default function DPRpanel() {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1272,8 +1271,7 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1300,8 +1298,7 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File
@@ -1351,8 +1348,7 @@ export default function DPRpanel() {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.reviewer_id ===
-                            userDetails.userId && (
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1365,7 +1361,7 @@ export default function DPRpanel() {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1389,8 +1385,7 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1417,8 +1412,7 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File
@@ -1468,8 +1462,7 @@ export default function DPRpanel() {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.approver_id ===
-                            userDetails.userId && (
+                          [3, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1482,7 +1475,7 @@ export default function DPRpanel() {
                         onChange={handleInputChange1}
                         disabled={
                           location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
+                          [1, 2].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
@@ -1506,8 +1499,7 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Change File
@@ -1534,8 +1526,7 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
                             >
                               Select File

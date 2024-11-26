@@ -58,7 +58,7 @@ function AuditTrail() {
         } catch (error) {
           console.error(error);
         }
-      } else if (location.state?.process === "Operation of Sterilizer") {
+      } else if (location.state?.process === "Operation Of Sterilizer") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
