@@ -26,6 +26,7 @@ const DispensingOfMaterialsPanel = () => {
     description: "",
     DispenseOfMaterials: [],
   });
+  console.log(editData,"editDatattachment")
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -407,12 +408,12 @@ const DispensingOfMaterialsPanel = () => {
   useEffect(() => {
     console.log(reportData, "reportData");
   }, [reportData]);
-  console.log(reportData, "reportdata");
+  // console.log(reportData, "reportdata");
 
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
-      console.log(reportData.form_id, "tfyguhij");
+      // console.log(reportData.form_id, "tfyguhij");
     }
   }, [reportData]);
 

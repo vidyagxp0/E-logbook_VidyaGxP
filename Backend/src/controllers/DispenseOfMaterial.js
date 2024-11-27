@@ -915,6 +915,8 @@ exports.SendDPElogForReview = async (req, res) => {
 
     // Add audit trail entry for the attachment if it exists
     if (req?.file) {
+      console.log(req);
+      
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "Initiator Attachment",

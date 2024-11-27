@@ -584,7 +584,7 @@ const LoadedQuantityPanels = () => {
 
                   {/* Conditional Buttons Based on Stages */}
                   {location.state?.stage === 1 &&
-                    [1, 5].includes(userDetails.roles[0].role_id) && (
+                   !rolesArray.some((role) => [1, 5].includes(role)) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -596,7 +596,7 @@ const LoadedQuantityPanels = () => {
                       </button>
                     )}
                   {location.state?.stage === 2 &&
-                    [2, 5].includes(userDetails.roles[0].role_id) && (
+                    rolesArray.some((role) => [1,3,4].includes(role)) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -620,7 +620,7 @@ const LoadedQuantityPanels = () => {
                     )}
 
                   {location.state?.stage === 3 &&
-                    [3, 5].includes(userDetails.roles[0].role_id) && (
+                    ! rolesArray.some((role) => [3,5].includes(role)) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -1350,7 +1350,7 @@ const LoadedQuantityPanels = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          rolesArray.some((role) => [1, 3].includes(role))
+                          !rolesArray.some((role) => [2, 5].includes(role))
                         }
                       />
                     </div>

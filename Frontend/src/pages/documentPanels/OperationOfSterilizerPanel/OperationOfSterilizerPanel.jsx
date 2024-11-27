@@ -30,7 +30,7 @@ const OperationOfSterilizerPanel = () => {
     OperationOfSterilizerRecords: [],
   });
 
-  console.log(editData, "editData");
+  console.log(editData.initiatorAttachment, "editData");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
