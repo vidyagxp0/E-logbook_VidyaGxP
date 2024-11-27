@@ -32,7 +32,7 @@ LoadedQuantityProcessForm.belongsToMany(User, {
 });
 User.belongsToMany(LoadedQuantityProcessForm, {
   through: LQApproverAssignment,
-  as: "assignedApprovals",
+  as: "assignedApprovals2",
   foreignKey: "user_id",
 });
 

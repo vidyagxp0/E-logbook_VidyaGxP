@@ -27,12 +27,12 @@ const DMReviewerAssignment = sequelize.define("DMReviewerAssignment", {
 });
 DifferentialPressureForm.belongsToMany(User, {
   through: DMReviewerAssignment,
-  as: "reviewers",
+  as: "reviewers1",
   foreignKey: "form_id",
 });
 User.belongsToMany(DifferentialPressureForm, {
   through: DMReviewerAssignment,
-  as: "assignedReviews",
+  as: "assignedReviews4",
   foreignKey: "user_id",
 });
 

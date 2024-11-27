@@ -32,7 +32,7 @@ DispenseOfMaterialForm.belongsToMany(User, {
 });
 User.belongsToMany(DispenseOfMaterialForm, {
   through: DMApproverAssignment,
-  as: "assignedApprovals",
+  as: "assignedApprovals4",
   foreignKey: "user_id",
 });
 

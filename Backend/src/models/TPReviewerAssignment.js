@@ -32,7 +32,7 @@ TempratureProcessForm.belongsToMany(User, {
 });
 User.belongsToMany(TempratureProcessForm, {
   through: TPReviewerAssignment,
-  as: "assignedReviews",
+  as: "assignedReviews1",
   foreignKey: "user_id",
 });
 

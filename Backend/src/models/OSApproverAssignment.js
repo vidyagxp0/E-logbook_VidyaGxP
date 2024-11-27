@@ -32,7 +32,7 @@ OperationOfSterilizerProcessForm.belongsToMany(User, {
 });
 User.belongsToMany(OperationOfSterilizerProcessForm, {
   through: OSApproverAssignment,
-  as: "assignedApprovals",
+  as: "assignedApprovals5",
   foreignKey: "user_id",
 });
 

@@ -32,7 +32,7 @@ MediaRecordProcessForm.belongsToMany(User, {
 });
 User.belongsToMany(MediaRecordProcessForm, {
   through: MRApproverAssignment,
-  as: "assignedApprovals",
+  as: "assignedApprovals3",
   foreignKey: "user_id",
 });
 
