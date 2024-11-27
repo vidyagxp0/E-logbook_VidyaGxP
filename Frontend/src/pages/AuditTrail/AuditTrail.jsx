@@ -340,12 +340,25 @@ function AuditTrail() {
                         </div>
                         <div className="text-nowrap flex">
                           New Value :{" "}
-                          <span
-                            className="font-normal"
-                            dangerouslySetInnerHTML={{
-                              __html: auditTrail?.new_value,
-                            }}
-                          ></span>
+                          {auditTrail?.new_value?.includes(
+                            "http://localhost:1000/"
+                          ) ? (
+                            <a
+                              href={auditTrail.new_value}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                             <span className="ml-1"> View Attachment</span>
+                            </a>
+                          ) : (
+                            <span
+                              className="font-normal"
+                              dangerouslySetInnerHTML={{
+                                __html: auditTrail?.new_value,
+                              }}
+                            ></span>
+                          )}
                         </div>
                       </td>
                       {/* <td

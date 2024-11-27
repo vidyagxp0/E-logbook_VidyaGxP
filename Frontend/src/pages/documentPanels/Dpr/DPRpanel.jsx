@@ -1042,9 +1042,10 @@ export default function DPRpanel() {
                                           [index].click()
                                       }
                                       disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
+                                        location.state?.stage !== 4 ||
+                                        [2, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        )
                                       }
                                     >
                                       Change File
@@ -1075,9 +1076,10 @@ export default function DPRpanel() {
                                           [index].click()
                                       }
                                       disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
+                                        location.state?.stage !== 4 ||
+                                        [2, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        )
                                       }
                                     >
                                       Select File
@@ -1118,12 +1120,12 @@ export default function DPRpanel() {
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="flex flex-col w-full">
                       <label
-                        htmlFor="additionalAttachment"
-                        className="color-label"
-                        name="additionalAttachment"
-                        disabled
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
+                      // disabled
                       >
-                        Attachment{" "}
+                        Additional Attachment{" "}
                         <span className="text-sm text-zinc-600">
                           (If / Any)
                         </span>{" "}
@@ -1135,12 +1137,11 @@ export default function DPRpanel() {
                             <button
                               className=""
                               type="button"
-                              disabled
-                              // onClick={() =>
-                              //   document
-                              //     .getElementById("additionalAttachment")
-                              //     .click()
-                              // }
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
                             >
                               Change File
                             </button>
@@ -1162,6 +1163,8 @@ export default function DPRpanel() {
                         ) : (
                           <div>
                             <button
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                              disabled
                               type="button"
                               onClick={() =>
                                 document
@@ -1176,7 +1179,6 @@ export default function DPRpanel() {
                         <input
                           type="file"
                           name="additionalAttachment"
-                          disabled
                           id="additionalAttachment"
                           onChange={handleInitiatorFileChange}
                           style={{ display: "none" }}
@@ -1186,19 +1188,18 @@ export default function DPRpanel() {
 
                     <div className="flex flex-col w-full">
                       <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info{" "}
+                        Additional Information{" "}
                         <span className="text-sm text-zinc-600">
                           (If / Any)
                         </span>{" "}
                       </label>
                       <textarea
-                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        rows="4"
                         disabled
+                        type="text"
                         name="additionalInfo"
                         value={editData?.additionalInfo}
                         onChange={handleInputChange1}
-                      ></textarea>
+                      />
                     </div>
                   </div>
                 </>
@@ -1253,9 +1254,9 @@ export default function DPRpanel() {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1273,6 +1274,7 @@ export default function DPRpanel() {
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1300,6 +1302,7 @@ export default function DPRpanel() {
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1367,9 +1370,9 @@ export default function DPRpanel() {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
@@ -1387,6 +1390,7 @@ export default function DPRpanel() {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1414,6 +1418,7 @@ export default function DPRpanel() {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1481,9 +1486,9 @@ export default function DPRpanel() {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
@@ -1501,6 +1506,7 @@ export default function DPRpanel() {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
@@ -1528,6 +1534,7 @@ export default function DPRpanel() {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>

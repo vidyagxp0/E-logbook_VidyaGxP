@@ -375,7 +375,7 @@ const LoadedQuantityPanels = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; 
+    if (!dateString) return "";
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -1107,19 +1107,26 @@ const LoadedQuantityPanels = () => {
                               Selected File:{" "}
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
                             >
-                              View File
+                              {editData.additionalAttachment.name ||
+                                editData.additionalAttachment.slice(46)}{" "}
                             </a>
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
-                            className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                            className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             disabled
                             type="button"
                             onClick={() =>
@@ -1210,15 +1217,16 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
                       <div>
                         {editData.initiatorAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1230,17 +1238,28 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
-                            <h3 className="ml-4">
-                              Selected File:{" "}
+                            <h3>
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.initiatorAttachment}
+                                href={
+                                  editData.initiatorAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.initiatorAttachment
+                                      )
+                                    : editData.initiatorAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData.initiatorAttachment.name ||
+                                  editData.initiatorAttachment.slice(46)}{" "}
                               </a>
                             </h3>
                           </div>
@@ -1254,8 +1273,10 @@ const LoadedQuantityPanels = () => {
                                   .click()
                               }
                               disabled={
-                                location.state?.stage !== 1 ||[2, 3].includes(userDetails.roles[0].role_id)
+                                location.state?.stage !== 1 ||
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1271,8 +1292,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
 
@@ -1323,15 +1342,16 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
                       <div>
                         {editData.reviewerAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1343,17 +1363,28 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.reviewerAttachment}
+                                href={
+                                  editData.reviewerAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.reviewerAttachment
+                                      )
+                                    : editData.reviewerAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData.reviewerAttachment.name ||
+                                  editData.reviewerAttachment.slice(46)}
                               </a>
                             </h3>
                           </div>
@@ -1370,6 +1401,7 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1385,8 +1417,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
 
@@ -1437,15 +1467,16 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
                       <div>
                         {editData.approverAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1457,17 +1488,28 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.approverAttachment}
+                               href={
+                                editData.approverAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.approverAttachment
+                                    )
+                                  : editData.approverAttachment
+                              }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData.approverAttachment.name ||
+                                  editData.approverAttachment.slice(46)}{" "}
                               </a>
                             </h3>
                           </div>
@@ -1484,6 +1526,7 @@ const LoadedQuantityPanels = () => {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1499,8 +1542,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
             </div>

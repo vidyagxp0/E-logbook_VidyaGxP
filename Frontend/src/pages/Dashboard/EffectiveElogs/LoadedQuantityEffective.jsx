@@ -30,7 +30,6 @@ const LoadedQuantityEffective = () => {
 
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const UserName = JSON.parse(localStorage.getItem("Username"));
-  // console.log(UserName.name);
 
   const [editData, setEditData] = useState({
     initiator_name: "",
@@ -374,8 +373,6 @@ const LoadedQuantityEffective = () => {
   function isObject(object) {
     return object != null && typeof object === "object";
   }
-
-
 
   const deleteRow = (index) => {
     if (
@@ -1073,7 +1070,7 @@ const LoadedQuantityEffective = () => {
                           <th>Unique Id</th>
                           <th>Date</th>
                           <th>Product Name</th>
-                          <th>Batch No.</th>
+                          <th style={{minWidth:"110px"}}>Batch No.</th>
                           <th>Container Size (ml)</th>
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
@@ -1135,22 +1132,24 @@ const LoadedQuantityEffective = () => {
                                 )}
                               >
                                 {Array.isArray(editData.product_nameArray) &&
-                                editData.product_nameArray.length > 0 ? (
-                                  editData.product_nameArray.map(
-                                    (productNameArray, index) => (
-                                      <option
-                                        key={index}
-                                        value={productNameArray.productName}
-                                      >
-                                        {productNameArray.productName}
-                                      </option>
+                                editData.product_nameArray.length > 0
+                                  ? editData.product_nameArray.map(
+                                      (productNameArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={productNameArray.productName}
+                                        >
+                                          {productNameArray.productName}
+                                        </option>
+                                      )
                                     )
-                                  )
-                                ) : (
-                                  <option value="">
-                                    No Product Name available
-                                  </option>
-                                )}
+                                  : ["Product 1", "Product 2", "Product 3"].map(
+                                      (productName, index) => (
+                                        <option key={index} value={productName}>
+                                          {productName}
+                                        </option>
+                                      )
+                                    )}
                               </select>
                             </td>
 
@@ -1172,22 +1171,24 @@ const LoadedQuantityEffective = () => {
                                 )}
                               >
                                 {Array.isArray(editData.batch_noArray) &&
-                                editData.batch_noArray.length > 0 ? (
-                                  editData.batch_noArray.map(
-                                    (batchNoArray, index) => (
-                                      <option
-                                        key={index}
-                                        value={batchNoArray.batchNo}
-                                      >
-                                        {batchNoArray.batchNo}
-                                      </option>
+                                editData.batch_noArray.length > 0
+                                  ? editData.batch_noArray.map(
+                                      (batchNoArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={batchNoArray.batchNo}
+                                        >
+                                          {batchNoArray.batchNo}
+                                        </option>
+                                      )
                                     )
-                                  )
-                                ) : (
-                                  <option value="">
-                                    No Batch No. available
-                                  </option>
-                                )}
+                                  : ["BatchNo1", "BatchNo2", "BatchNo3"].map(
+                                      (BatchNo, index) => (
+                                        <option key={index} value={BatchNo}>
+                                          {BatchNo}
+                                        </option>
+                                      )
+                                    )}
                               </select>
                             </td>
 
@@ -1288,7 +1289,13 @@ const LoadedQuantityEffective = () => {
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                   <input
-                                    className="h-4 w-4 cursor-pointer"
+                                    className={`h-4 w-4  ${
+                                      [1, 3].includes(
+                                        userDetails.roles[0].role_id
+                                      )
+                                        ? "cursor-not-allowed"
+                                        : "cursor-pointer"
+                                    }`}
                                     type="checkbox"
                                     checked={!!item.reviewed_by}
                                     onChange={(e) => {
@@ -1297,7 +1304,7 @@ const LoadedQuantityEffective = () => {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          UserName.name;
+                                          UserName?.name;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1319,6 +1326,11 @@ const LoadedQuantityEffective = () => {
                             <td>
                               <input
                                 value={item.remarks}
+                                className={`${
+                                  [1, 3].includes(userDetails.roles[0].role_id)
+                                    ? "cursor-not-allowed"
+                                    : ""
+                                }`}
                                 onChange={(e) => {
                                   const newData = [
                                     ...editData.LoadedQuantityRecords,
@@ -1385,7 +1397,7 @@ const LoadedQuantityEffective = () => {
                               className="text-blue-600 underline mr-1"
                             >
                               {editData.additionalAttachment.name ||
-                                "View File"}
+                                editData.additionalAttachment.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (
                               <button

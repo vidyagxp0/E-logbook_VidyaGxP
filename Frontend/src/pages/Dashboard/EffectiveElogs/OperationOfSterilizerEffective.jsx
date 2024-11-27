@@ -300,7 +300,7 @@ const OperationOfSterilizerEffective = () => {
         second: "2-digit",
         hour12: false, // Use 24-hour format
       };
-      const nextIndex = editData?.LoadedQuantityRecords?.length || 0;
+      const nextIndex = editData?.OperationOfSterilizerRecords?.length || 0;
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: `OS000${nextIndex + 1}`,
@@ -1095,10 +1095,10 @@ const OperationOfSterilizerEffective = () => {
                           <th rowSpan={2}>Air Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Steam Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Printer Ok Yes/No</th>
-                          <th rowSpan={2}>Product Name</th>
+                          <th style={{minWidth:"130px"}} rowSpan={2}>Product Name</th>
                           <th rowSpan={2}>Container size (ml)</th>
                           <th rowSpan={2}>Loaded quantity</th>
-                          <th rowSpan={2}>Batch No.</th>
+                          <th style={{minWidth:"115px"}} rowSpan={2}>Batch No.</th>
                           <th rowSpan={2}>Loading Time</th>
                           <th rowSpan={1} colSpan={2}>
                             {" "}
@@ -1214,22 +1214,26 @@ const OperationOfSterilizerEffective = () => {
                                   )}
                                 >
                                   {Array.isArray(editData.product_nameArray) &&
-                                  editData.product_nameArray.length > 0 ? (
-                                    editData.product_nameArray.map(
-                                      (productNameArray, index) => (
-                                        <option
-                                          key={index}
-                                          value={productNameArray.productName}
-                                        >
-                                          {productNameArray.productName}
-                                        </option>
+                                  editData.product_nameArray.length > 0
+                                    ? editData.product_nameArray.map(
+                                        (productNameArray, index) => (
+                                          <option
+                                            key={index}
+                                            value={productNameArray.productName}
+                                          >
+                                            {productNameArray.productName}
+                                          </option>
+                                        )
                                       )
-                                    )
-                                  ) : (
-                                    <option value="">
-                                      No Product Name available
-                                    </option>
-                                  )}
+                                    : [
+                                        "Product 1",
+                                        "Product 2",
+                                        "Product 3",
+                                      ].map((productName, index) => (
+                                        <option key={index} value={productName}>
+                                          {productName}
+                                        </option>
+                                      ))}
                                 </select>
                               </td>
                               <td>
@@ -1290,22 +1294,24 @@ const OperationOfSterilizerEffective = () => {
                                   )}
                                 >
                                   {Array.isArray(editData.batch_noArray) &&
-                                  editData.batch_noArray.length > 0 ? (
-                                    editData.batch_noArray.map(
-                                      (batchNoArray, index) => (
-                                        <option
-                                          key={index}
-                                          value={batchNoArray.batchNo}
-                                        >
-                                          {batchNoArray.batchNo}
-                                        </option>
+                                  editData.batch_noArray.length > 0
+                                    ? editData.batch_noArray.map(
+                                        (batchNoArray, index) => (
+                                          <option
+                                            key={index}
+                                            value={batchNoArray.batchNo}
+                                          >
+                                            {batchNoArray.batchNo}
+                                          </option>
+                                        )
                                       )
-                                    )
-                                  ) : (
-                                    <option value="">
-                                      No Batch No. available
-                                    </option>
-                                  )}
+                                    : ["BatchNo1", "BatchNo2", "BatchNo3"].map(
+                                        (BatchNo, index) => (
+                                          <option key={index} value={BatchNo}>
+                                            {BatchNo}
+                                          </option>
+                                        )
+                                      )}
                                 </select>
                               </td>
                               <td>
@@ -1454,7 +1460,7 @@ const OperationOfSterilizerEffective = () => {
                                         ];
                                         if (e.target.checked) {
                                           newData[index].reviewed_by =
-                                          UserName.name;
+                                            UserName.name;
                                         } else {
                                           newData[index].reviewed_by = "";
                                         }
@@ -1511,13 +1517,19 @@ const OperationOfSterilizerEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name ||
-                                "View File"}
+                             {editData.additionalAttachment.name ||
+                                editData.additionalAttachment.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (
                               <button
