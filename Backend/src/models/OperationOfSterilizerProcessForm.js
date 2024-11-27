@@ -53,22 +53,6 @@ const OperationOfSterilizerProcessForm = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    reviewer_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: User,
-        key: "user_id",
-      },
-    },
-    approver_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: User,
-        key: "user_id",
-      },
-    },
     reviewComment: {
       type: DataTypes.STRING,
     },
@@ -112,22 +96,22 @@ OperationOfSterilizerProcessForm.belongsTo(User, {
 });
 User.hasMany(OperationOfSterilizerProcessForm, { foreignKey: "initiator_id2" });
 
-OperationOfSterilizerProcessForm.belongsTo(User, {
-  foreignKey: "reviewer_id",
-  as: "reviewer2",
-});
-User.hasMany(OperationOfSterilizerProcessForm, {
-  foreignKey: "reviewer_id",
-  as: "reviewer2",
-});
+// OperationOfSterilizerProcessForm.belongsTo(User, {
+//   foreignKey: "reviewer_id",
+//   as: "reviewer2",
+// });
+// User.hasMany(OperationOfSterilizerProcessForm, {
+//   foreignKey: "reviewer_id",
+//   as: "reviewer2",
+// });
 
-OperationOfSterilizerProcessForm.belongsTo(User, {
-  foreignKey: "approver_id",
-  as: "approver2",
-});
-User.hasMany(OperationOfSterilizerProcessForm, {
-  foreignKey: "approver_id",
-  as: "approver2",
-});
+// OperationOfSterilizerProcessForm.belongsTo(User, {
+//   foreignKey: "approver_id",
+//   as: "approver2",
+// });
+// User.hasMany(OperationOfSterilizerProcessForm, {
+//   foreignKey: "approver_id",
+//   as: "approver2",
+// });
 
 module.exports = OperationOfSterilizerProcessForm;

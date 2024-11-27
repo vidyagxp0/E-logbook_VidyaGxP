@@ -60,22 +60,6 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   limit: {
     type: DataTypes.FLOAT,
   },
-  reviewer_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
-  },
-  approver_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
-  },
   reviewComment: {
     type: DataTypes.STRING,
   },

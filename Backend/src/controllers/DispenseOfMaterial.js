@@ -12,6 +12,8 @@ const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const DMApproverAssignment = require("../models/DMApproverAssignment");
+const DMReviewerAssignment = require("../models/DMReviewerAssignment");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -107,6 +109,20 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
 
       { transaction }
     );
+
+    // Associate reviewers
+    const reviewerAssignments = reviewer_id.map((reviewerId) => ({
+      form_id: newForm.form_id,
+      user_id: reviewerId,
+    }));
+    await DMReviewerAssignment.bulkCreate(reviewerAssignments, { transaction });
+
+    // Associate approvers
+    const approverAssignments = approver_id.map((approverId) => ({
+      form_id: newForm.form_id,
+      user_id: approverId,
+    }));
+    await DMApproverAssignment.bulkCreate(approverAssignments, { transaction });
 
     const auditTrailEntries = [];
     const fields = {
@@ -796,36 +812,46 @@ exports.GetDispenseOfMaterialRecord = async (req, res) => {
 
 //get all the differential pressure elogs
 exports.GetAllDispenseOfMaterialRecord = async (req, res) => {
-  DispenseOfMaterialForm.findAll({
-    include: [
-      {
-        model: DispenseOfMaterialRecord,
-      },
-      {
-        model: User,
-        as: "reviewer4", // Use the consistent alias 'reviewer'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-      {
-        model: User,
-        as: "approver4", // Use the consistent alias 'approver'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-    ],
-    order: [["form_id", "DESC"]],
-  })
-    .then((result) => {
-      res.json({
-        error: false,
-        message: result,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: true,
-        message: error.message,
-      });
+  try {
+    const result = await DispenseOfMaterialForm.findAll({
+      include: [
+        {
+          model: DispenseOfMaterialRecord,
+        },
+        {
+          model: User,
+          as: "reviewers", // Use the consistent alias 'reviewer'
+          through: { attributes: [] },
+          attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+        },
+        {
+          model: User,
+          as: "approvers", // Use the consistent alias 'approver'
+          through: { attributes: [] },
+          attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+        },
+      ],
+      order: [["form_id", "DESC"]],
     });
+    const formattedResult = result.map((form) => ({
+      ...form.toJSON(),
+      reviewers: form.reviewers.filter(
+        (v, i, a) => a.findIndex((t) => t.user_id === v.user_id) === i
+      ), // Remove duplicate reviewers
+      approvers: form.approvers.filter(
+        (v, i, a) => a.findIndex((t) => t.user_id === v.user_id) === i
+      ), // Remove duplicate approvers
+    }));
+    return res.json({
+      error: false,
+      message: formattedResult,
+    });
+  } catch (error) {
+    res.json({
+      error: true,
+      message: error,
+    });
+  }
 };
 
 //send differential pressure elog for review

@@ -53,22 +53,6 @@ const LoadedQuantityProcessForm = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    reviewer_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: User,
-        key: "user_id",
-      },
-    },
-    approver_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: User,
-        key: "user_id",
-      },
-    },
     reviewComment: {
       type: DataTypes.STRING,
     },
@@ -110,22 +94,22 @@ Site.hasMany(LoadedQuantityProcessForm, { foreignKey: "site_id" });
 LoadedQuantityProcessForm.belongsTo(User, { foreignKey: "initiator_id" });
 User.hasMany(LoadedQuantityProcessForm, { foreignKey: "initiator_id" });
 
-LoadedQuantityProcessForm.belongsTo(User, {
-  foreignKey: "reviewer_id",
-  as: "reviewer1",
-});
-User.hasMany(LoadedQuantityProcessForm, {
-  foreignKey: "reviewer_id",
-  as: "reviewer1",
-});
+// LoadedQuantityProcessForm.belongsTo(User, {
+//   foreignKey: "reviewer_id",
+//   as: "reviewer1",
+// });
+// User.hasMany(LoadedQuantityProcessForm, {
+//   foreignKey: "reviewer_id",
+//   as: "reviewer1",
+// });
 
-LoadedQuantityProcessForm.belongsTo(User, {
-  foreignKey: "approver_id",
-  as: "approver1",
-});
-User.hasMany(LoadedQuantityProcessForm, {
-  foreignKey: "approver_id",
-  as: "approver1",
-});
+// LoadedQuantityProcessForm.belongsTo(User, {
+//   foreignKey: "approver_id",
+//   as: "approver1",
+// });
+// User.hasMany(LoadedQuantityProcessForm, {
+//   foreignKey: "approver_id",
+//   as: "approver1",
+// });
 
 module.exports = LoadedQuantityProcessForm;
