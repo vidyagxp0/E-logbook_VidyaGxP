@@ -1195,70 +1195,89 @@ export default function DPREffective() {
                   </table>
 
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                    <div className="flex flex-col w-full">
-                      <label
-                        htmlFor="additionalAttachment"
-                        className="color-label"
-                        name="additionalAttachment"
-                      >
-                        Attachment{" "}
-                        <span className="text-sm text-zinc-600">
-                          (If / Any)
-                        </span>{" "}
-                        :
-                      </label>
-                      <div>
-                        {editData.additionalAttachment ? (
-                          <div className="flex items-center gap-x-10">
-                            <button
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
+                  <div className="group-input mt-4">
+                    <label
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
+                    >
+                      Additional Attachment{" "}
+                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      :
+                    </label>
+                    <div>
+                      {editData.additionalAttachment ? (
+                        <div className="flex items-center gap-x-4 ml-3">
+                          <button
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Change File
+                          </button>
+                          <h3 className="flex items-center">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                              Selected File:
+                            </span>
+                            <a
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
                               }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline mr-1"
                             >
-                              Change File
-                            </button>
-                            <h3 className="">
-                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                                Selected File:{" "}
-                              </span>
-                              <a
-                                href={editData.additionalAttachment}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline"
+                              {editData.additionalAttachment.name.slice(0,30) ||
+                                editData.additionalAttachment.slice(46)}
+                            </a>
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
                               >
-                                View File
-                              </a>
-                            </h3>
-                          </div>
-                        ) : (
-                          <div>
-                            <button
-                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
-                            >
-                              Select File
-                            </button>
-                          </div>
-                        )}
-                        <input
-                          type="file"
-                          name="additionalAttachment"
-                          id="additionalAttachment"
-                          onChange={handleInitiatorFileChange}
-                          style={{ display: "none" }}
-                        />
-                      </div>
+                                ✖
+                              </button>
+                            )}
+                          </h3>
+                        </div>
+                      ) : (
+                        <div>
+                          <button
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                            type="button"
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
+                          >
+                            Select File
+                          </button>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        name="additionalAttachment"
+                        id="additionalAttachment"
+                        onChange={handleInitiatorFileChange}
+                        style={{ display: "none" }}
+                      />
                     </div>
+                  </div>
 
                     <div className="flex flex-col w-full">
                       <label className="text-sm font-medium text-gray-900 mb-1">

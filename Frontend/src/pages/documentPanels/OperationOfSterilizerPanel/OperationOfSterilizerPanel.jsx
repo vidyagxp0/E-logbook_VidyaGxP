@@ -1291,8 +1291,9 @@ const OperationOfSterilizerPanel = () => {
                           {editData.additionalAttachment ? (
                             <div className="flex items-center gap-x-10">
                               <button
-                                className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                                className="!scale-100 cursor-not-allowed py-1 bg-blue-500 hover:bg-blue-600 text-white"
                                 type="button"
+                                disabled
                                 onClick={() =>
                                   document
                                     .getElementById("additionalAttachment")
@@ -1318,7 +1319,7 @@ const OperationOfSterilizerPanel = () => {
                                   rel="noopener noreferrer"
                                   className="text-blue-600 underline"
                                 >
-                                  {editData.additionalAttachment.name ||
+                                  {editData.additionalAttachment.name.slice(0,30) ||
                                     editData.additionalAttachment.slice(
                                       46
                                     )}{" "}
@@ -1328,7 +1329,7 @@ const OperationOfSterilizerPanel = () => {
                           ) : (
                             <div>
                               <button
-                                className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
+                                className="py-1 scale-100 bg-blue-600 text-white ml-3 "
                                 disabled
                                 type="button"
                                 onClick={() =>
@@ -1450,13 +1451,12 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
                               <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                                {" "}
                                 Selected File:{" "}
                               </span>
                               <a
@@ -1471,12 +1471,26 @@ const OperationOfSterilizerPanel = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.initiatorAttachment.name ||
+                                {editData.initiatorAttachment.name.slice(0,30) ||
                                   editData.initiatorAttachment.slice(46)}{" "}
                               </a>
-                            </h3>
-                          </div>
-                        ) : (
+                              {editData.initiatorAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    initiatorAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
+                          </h3>
+                        </div>
+                      ) : (
                           <div>
                             <button
                               type="button"
@@ -1489,7 +1503,7 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1573,6 +1587,7 @@ const OperationOfSterilizerPanel = () => {
                       <div>
                         {editData.reviewerAttachment ? (
                           <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1584,7 +1599,7 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
                             </button>
@@ -1604,12 +1619,26 @@ const OperationOfSterilizerPanel = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.reviewerAttachment.name ||
+                                {editData.reviewerAttachment.name.slice(0,30) ||
                                   editData.reviewerAttachment.slice(46)}
                               </a>
-                            </h3>
-                          </div>
-                        ) : (
+                              {editData.reviewerAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    reviewerAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
+                          </h3>
+                        </div>
+                      ) : (
                           <div>
                             <button
                               type="button"
@@ -1622,7 +1651,8 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
+                              className="py-1
+                              bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1706,6 +1736,7 @@ const OperationOfSterilizerPanel = () => {
                       <div>
                         {editData.approverAttachment ? (
                           <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1717,7 +1748,7 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
+                              className="py-1 hover:bg-blue-600 bg-blue-500 text-white ml-3"
                             >
                               Change File
                             </button>
@@ -1726,23 +1757,37 @@ const OperationOfSterilizerPanel = () => {
                                 Selected File:{" "}
                               </span>
                               <a
-                                href={
-                                  editData.approverAttachment instanceof File
-                                    ? URL.createObjectURL(
-                                        editData.approverAttachment
-                                      )
-                                    : editData.approverAttachment
-                                }
+                               href={
+                                editData.approverAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.approverAttachment
+                                    )
+                                  : editData.approverAttachment
+                              }
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="underline text-blue-600"
+                                className="text-blue-600 underline"
                               >
-                                {editData.approverAttachment.name ||
-                                  editData.approverAttachment.slice(46)}
+                                {editData.approverAttachment.name.slice(0,30) ||
+                                  editData.approverAttachment.slice(46)}{" "}
                               </a>
-                            </h3>
-                          </div>
-                        ) : (
+                              {editData.approverAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    approverAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
+                          </h3>
+                        </div>
+                      ): (
                           <div>
                             <button
                               type="button"
@@ -1755,7 +1800,7 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>

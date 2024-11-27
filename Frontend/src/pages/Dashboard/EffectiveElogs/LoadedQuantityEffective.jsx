@@ -318,6 +318,7 @@ const LoadedQuantityEffective = () => {
         yield: "",
         remarks: "",
         checked_by: location?.state?.initiator_name,
+        reviewed_by:""
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -1069,7 +1070,7 @@ const LoadedQuantityEffective = () => {
                           <th>S no.</th>
                           <th>Unique Id</th>
                           <th>Date</th>
-                          <th>Product Name</th>
+                          <th style={{minWidth:"95px"}}>Product Name</th>
                           <th style={{minWidth:"110px"}}>Batch No.</th>
                           <th>Container Size (ml)</th>
                           <th>Batch Size (Ltr)</th>
@@ -1396,7 +1397,7 @@ const LoadedQuantityEffective = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name ||
+                              {editData.additionalAttachment.name.slice(0,30) ||
                                 editData.additionalAttachment.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (
