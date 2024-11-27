@@ -51,22 +51,6 @@ const DispenseOfMaterialForm = sequelize.define("DispenseOfMaterialForm", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  reviewer_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
-  },
-  approver_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
-  },
   reviewComment: {
     type: DataTypes.STRING,
   },
@@ -100,10 +84,10 @@ Site.hasMany(DispenseOfMaterialForm, { foreignKey: "site_id4" });
 DispenseOfMaterialForm.belongsTo(User, { foreignKey: "initiator_id4" });
 User.hasMany(DispenseOfMaterialForm, { foreignKey: "initiator_id4" });
 
-DispenseOfMaterialForm.belongsTo(User, { foreignKey: "reviewer_id", as: 'reviewer4' });
-User.hasMany(DispenseOfMaterialForm, { foreignKey: "reviewer_id", as: 'reviewer4' });
+// DispenseOfMaterialForm.belongsTo(User, { foreignKey: "reviewer_id", as: 'reviewer4' });
+// User.hasMany(DispenseOfMaterialForm, { foreignKey: "reviewer_id", as: 'reviewer4' });
 
-DispenseOfMaterialForm.belongsTo(User, { foreignKey: "approver_id", as: 'approver4' });
-User.hasMany(DispenseOfMaterialForm, { foreignKey: "approver_id", as: 'approver4' });
+// DispenseOfMaterialForm.belongsTo(User, { foreignKey: "approver_id", as: 'approver4' });
+// User.hasMany(DispenseOfMaterialForm, { foreignKey: "approver_id", as: 'approver4' });
 
 module.exports = DispenseOfMaterialForm;

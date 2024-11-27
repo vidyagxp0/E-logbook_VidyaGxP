@@ -22,8 +22,8 @@ const OperationOfSterilizerProcessForm = require("../models/OperationOfSterilize
 const OperationOfSterilizerRecord = require("../models/operationOfSterilizerRecords");
 const TempratureProcessForm = require("../models/tempratureProcessForm");
 const TempratureProcessRecord = require("../models/tempratureProcessRecords");
-const ApproverAssignment = require("../models/approverAssignment");
-const ReviewerAssignment = require("../models/reviewerAssignment");
+const DPApproverAssignment = require("../models/DPApproverAssignment");
+const DPReviewerAssignment = require("../models/DPReviewerAssignment");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -119,20 +119,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
       }
     });
 
-    // Associate reviewers
-    const reviewerAssignments = reviewer_id.map((reviewerId) => ({
-      form_id: newForm.form_id,
-      user_id: reviewerId,
-    }));
-    await ReviewerAssignment.bulkCreate(reviewerAssignments, { transaction });
-
-    // Associate approvers
-    const approverAssignments = approver_id.map((approverId) => ({
-      form_id: newForm.form_id,
-      user_id: approverId,
-    }));
-    await ApproverAssignment.bulkCreate(approverAssignments, { transaction });
-
     // Create new Differential Pressure Form
     const newForm = await DifferentialPressureForm.create(
       {
@@ -145,8 +131,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
         department: department,
         compression_area: compression_area,
         limit: limit,
-        // reviewer_id: reviewer_id,
-        // approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
@@ -155,6 +139,20 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
       { transaction }
     );
+
+    // Associate reviewers
+    const reviewerAssignments = reviewer_id.map((reviewerId) => ({
+      form_id: newForm.form_id,
+      user_id: reviewerId,
+    }));
+    await DPReviewerAssignment.bulkCreate(reviewerAssignments, { transaction });
+
+    // Associate approvers
+    const approverAssignments = approver_id.map((approverId) => ({
+      form_id: newForm.form_id,
+      user_id: approverId,
+    }));
+    await DPApproverAssignment.bulkCreate(approverAssignments, { transaction });
 
     const auditTrailEntries = [];
     const fields = {
@@ -642,41 +640,52 @@ exports.GetDifferentialPressureElog = async (req, res) => {
 
 //get all the differential pressure elogs
 exports.GetAllDifferentialPressureElog = async (req, res) => {
-  DifferentialPressureForm.findAll({
-    include: [
-      {
-        model: DifferentialPressureRecord,
-      },
-      {
-        model: User,
-        as: "reviewer", // Use the consistent alias 'reviewer'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-      {
-        model: User,
-        as: "approver", // Use the consistent alias 'approver'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-    ],
-    order: [["form_id", "DESC"]],
-  })
-    .then((result) => {
-      res.json({
-        error: false,
-        message: result,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: true,
-        message: error.message,
-      });
+  try {
+    const result = await DifferentialPressureForm.findAll({
+      include: [
+        {
+          model: DifferentialPressureRecord,
+        },
+        {
+          model: User,
+          as: "reviewers", // Use the consistent alias 'reviewer'
+          through: { attributes: [] },
+          attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+        },
+        {
+          model: User,
+          as: "approvers", // Use the consistent alias 'approver'
+          through: { attributes: [] },
+          attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+        },
+      ],
+      order: [["form_id", "DESC"]],
     });
+    const formattedResult = result.map((form) => ({
+      ...form.toJSON(),
+      reviewers: form.reviewers.filter(
+        (v, i, a) => a.findIndex((t) => t.user_id === v.user_id) === i
+      ), // Remove duplicate reviewers
+      approvers: form.approvers.filter(
+        (v, i, a) => a.findIndex((t) => t.user_id === v.user_id) === i
+      ), // Remove duplicate approvers
+    }));
+    return res.json({
+      error: false,
+      message: formattedResult,
+    });
+  } catch (error) {
+    res.json({
+      error: true,
+      message: error,
+    });
+  }
 };
 
 //send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, email, password, initiatorDeclaration } = req.body;
+  const { form_id, email, password, initiatorDeclaration, initiatorComment } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -783,6 +792,7 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
+        initiatorComment:initiatorComment,
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
@@ -1885,8 +1895,8 @@ exports.GetAll = async (req, res) => {
         where: searchCondition,
         include: [
           { model: DispenseOfMaterialRecord },
-          { model: User, as: "reviewer4", attributes: ["user_id", "name"] },
-          { model: User, as: "approver4", attributes: ["user_id", "name"] },
+          { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+          { model: User, as: "approvers", attributes: ["user_id", "name"] },
         ],
         order: [["form_id", "DESC"]],
       }),
@@ -1894,8 +1904,8 @@ exports.GetAll = async (req, res) => {
         where: searchCondition,
         include: [
           { model: LoadedQuantityRecord },
-          { model: User, as: "reviewer1", attributes: ["user_id", "name"] },
-          { model: User, as: "approver1", attributes: ["user_id", "name"] },
+          { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+          { model: User, as: "approvers", attributes: ["user_id", "name"] },
         ],
         order: [["form_id", "DESC"]],
       }),
@@ -1903,8 +1913,8 @@ exports.GetAll = async (req, res) => {
         where: searchCondition,
         include: [
           { model: MediaRecord },
-          { model: User, as: "reviewer3", attributes: ["user_id", "name"] },
-          { model: User, as: "approver3", attributes: ["user_id", "name"] },
+          { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+          { model: User, as: "approvers", attributes: ["user_id", "name"] },
         ],
         order: [["form_id", "DESC"]],
       }),
@@ -1912,8 +1922,8 @@ exports.GetAll = async (req, res) => {
         where: searchCondition,
         include: [
           { model: OperationOfSterilizerRecord },
-          { model: User, as: "reviewer2", attributes: ["user_id", "name"] },
-          { model: User, as: "approver2", attributes: ["user_id", "name"] },
+          { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+          { model: User, as: "approvers", attributes: ["user_id", "name"] },
         ],
         order: [["form_id", "DESC"]],
       }),

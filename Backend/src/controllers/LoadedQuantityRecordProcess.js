@@ -12,6 +12,8 @@ const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const LQApproverAssignment = require("../models/LQApproverAssignment");
+const LQReviewerAssignment = require("../models/LQReviewerAssignment");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -111,6 +113,20 @@ exports.InsertLoadedQuantity = async (req, res) => {
 
       { transaction }
     );
+
+    // Associate reviewers
+    const reviewerAssignments = reviewer_id.map((reviewerId) => ({
+      form_id: newForm.form_id,
+      user_id: reviewerId,
+    }));
+    await LQReviewerAssignment.bulkCreate(reviewerAssignments, { transaction });
+
+    // Associate approvers
+    const approverAssignments = approver_id.map((approverId) => ({
+      form_id: newForm.form_id,
+      user_id: approverId,
+    }));
+    await LQApproverAssignment.bulkCreate(approverAssignments, { transaction });
 
     const auditTrailEntries = [];
     const fields = {
@@ -451,12 +467,12 @@ exports.EditLoadedQuantity = async (req, res) => {
     }
 
     // Ensure product_nameArray and batch_noArray are valid arrays
-const validArray = Array.isArray(product_nameArray) 
-    ? product_nameArray.map((item) => ({ ...item })) 
-    : [];
-const validBatch = Array.isArray(batch_noArray) 
-    ? batch_noArray.map((item) => ({ ...item })) 
-    : [];
+    const validArray = Array.isArray(product_nameArray)
+      ? product_nameArray.map((item) => ({ ...item }))
+      : [];
+    const validBatch = Array.isArray(batch_noArray)
+      ? batch_noArray.map((item) => ({ ...item }))
+      : [];
 
     // Update the form details
     await form.update(
@@ -614,7 +630,7 @@ const validBatch = Array.isArray(batch_noArray)
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
-console.log(error);
+    console.log(error);
     return res.status(500).json({
       error: true,
       message: `${errorMessage}: ${error.message}`,
@@ -658,36 +674,46 @@ exports.GettLoadedQuantity = async (req, res) => {
 
 //get all the differential pressure elogs
 exports.GetAlltLoadedQuantity = async (req, res) => {
-  LoadedQuantityProcessForm.findAll({
-    include: [
-      {
-        model: LoadedQuantityRecord,
-      },
-      {
-        model: User,
-        as: "reviewer1", // Use the consistent alias 'reviewer'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-      {
-        model: User,
-        as: "approver1", // Use the consistent alias 'approver'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-    ],
-    order: [["form_id", "DESC"]],
-  })
-    .then((result) => {
-      res.json({
-        error: false,
-        message: result,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: true,
-        message: error.message,
-      });
+  try {
+    const result = await LoadedQuantityProcessForm.findAll({
+      include: [
+        {
+          model: LoadedQuantityRecord,
+        },
+        {
+          model: User,
+          as: "reviewers", // Use the consistent alias 'reviewer'
+          through: { attributes: [] },
+          attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+        },
+        {
+          model: User,
+          as: "approvers", // Use the consistent alias 'approver'
+          through: { attributes: [] },
+          attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+        },
+      ],
+      order: [["form_id", "DESC"]],
     });
+    const formattedResult = result.map((form) => ({
+      ...form.toJSON(),
+      reviewers: form.reviewers.filter(
+        (v, i, a) => a.findIndex((t) => t.user_id === v.user_id) === i
+      ), // Remove duplicate reviewers
+      approvers: form.approvers.filter(
+        (v, i, a) => a.findIndex((t) => t.user_id === v.user_id) === i
+      ), // Remove duplicate approvers
+    }));
+    return res.json({
+      error: false,
+      message: formattedResult,
+    });
+  } catch (error) {
+    res.json({
+      error: true,
+      message: error,
+    });
+  }
 };
 
 //send differential pressure elog for review

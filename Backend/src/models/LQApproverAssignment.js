@@ -1,9 +1,9 @@
-const DifferentialPressureForm = require("./differentialPressureForm");
+const LoadedQuantityProcessForm = require("./loadedQuantityProcessForm");
 const User = require("./users");
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 
-const ReviewerAssignment = sequelize.define("ReviewerAssignment", {
+const LQApproverAssignment = sequelize.define("LQApproverAssignment", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -13,7 +13,7 @@ const ReviewerAssignment = sequelize.define("ReviewerAssignment", {
   form_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: DifferentialPressureForm,
+      model: LoadedQuantityProcessForm,
       key: "form_id",
     },
   },
@@ -25,15 +25,15 @@ const ReviewerAssignment = sequelize.define("ReviewerAssignment", {
     },
   },
 });
-DifferentialPressureForm.belongsToMany(User, {
-  through: ReviewerAssignment,
-  as: "reviewers",
+LoadedQuantityProcessForm.belongsToMany(User, {
+  through: LQApproverAssignment,
+  as: "approvers",
   foreignKey: "form_id",
 });
-User.belongsToMany(DifferentialPressureForm, {
-  through: ReviewerAssignment,
-  as: "assignedReviews",
+User.belongsToMany(LoadedQuantityProcessForm, {
+  through: LQApproverAssignment,
+  as: "assignedApprovals",
   foreignKey: "user_id",
 });
 
-module.exports = ReviewerAssignment;
+module.exports = LQApproverAssignment;

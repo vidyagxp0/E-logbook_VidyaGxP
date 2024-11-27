@@ -1,9 +1,9 @@
-const DifferentialPressureForm = require("./differentialPressureForm");
+const TempratureProcessForm = require("./tempratureProcessForm");
 const User = require("./users");
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 
-const ApproverAssignment = sequelize.define("ApproverAssignment", {
+const TPApproverAssignment = sequelize.define("TPApproverAssignment", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -13,7 +13,7 @@ const ApproverAssignment = sequelize.define("ApproverAssignment", {
   form_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: DifferentialPressureForm,
+      model: TempratureProcessForm,
       key: "form_id",
     },
   },
@@ -25,15 +25,15 @@ const ApproverAssignment = sequelize.define("ApproverAssignment", {
     },
   },
 });
-DifferentialPressureForm.belongsToMany(User, {
-  through: ApproverAssignment,
+TempratureProcessForm.belongsToMany(User, {
+  through: TPApproverAssignment,
   as: "approvers",
   foreignKey: "form_id",
 });
-User.belongsToMany(DifferentialPressureForm, {
-  through: ApproverAssignment,
+User.belongsToMany(TempratureProcessForm, {
+  through: TPApproverAssignment,
   as: "assignedApprovals",
   foreignKey: "user_id",
 });
 
-module.exports = ApproverAssignment;
+module.exports = TPApproverAssignment;

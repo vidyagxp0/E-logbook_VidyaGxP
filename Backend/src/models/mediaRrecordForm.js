@@ -51,22 +51,6 @@ const MediaRecordProcessForm = sequelize.define("MediaRecordProcessForm", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  reviewer_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
-  },
-  approver_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
-  },
   reviewComment: {
     type: DataTypes.STRING,
   },
@@ -100,22 +84,22 @@ Site.hasMany(MediaRecordProcessForm, { foreignKey: "site_id3" });
 MediaRecordProcessForm.belongsTo(User, { foreignKey: "initiator_id3" });
 User.hasMany(MediaRecordProcessForm, { foreignKey: "initiator_id3" });
 
-MediaRecordProcessForm.belongsTo(User, {
-  foreignKey: "reviewer_id",
-  as: "reviewer3",
-});
-User.hasMany(MediaRecordProcessForm, {
-  foreignKey: "reviewer_id",
-  as: "reviewer3",
-});
+// MediaRecordProcessForm.belongsTo(User, {
+//   foreignKey: "reviewer_id",
+//   as: "reviewer3",
+// });
+// User.hasMany(MediaRecordProcessForm, {
+//   foreignKey: "reviewer_id",
+//   as: "reviewer3",
+// });
 
-MediaRecordProcessForm.belongsTo(User, {
-  foreignKey: "approver_id",
-  as: "approver3",
-});
-User.hasMany(MediaRecordProcessForm, {
-  foreignKey: "approver_id",
-  as: "approver3",
-});
+// MediaRecordProcessForm.belongsTo(User, {
+//   foreignKey: "approver_id",
+//   as: "approver3",
+// });
+// User.hasMany(MediaRecordProcessForm, {
+//   foreignKey: "approver_id",
+//   as: "approver3",
+// });
 
 module.exports = MediaRecordProcessForm;
