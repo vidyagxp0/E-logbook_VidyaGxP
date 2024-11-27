@@ -276,7 +276,11 @@ function EffectiveElogs() {
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
-              style={{ border: "1px solid gray", padding: "2px 0px",height: "40px"  }}
+              style={{
+                border: "1px solid gray",
+                padding: "2px 0px",
+                height: "40px",
+              }}
             >
               <option value="All_Records">All Records</option>
               <option value="effective_diffrential_pressure">
