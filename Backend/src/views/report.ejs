@@ -181,11 +181,12 @@
             <table>
                 <tr>
                     <th>Reviewer</th>
-                    <td><%= reportData?.reviewer?.name || "Not Applicable" %></td>
+                    
+                    <td><%= reportData?.reviewers?.[0].name || "Not Applicable" %></td>
                 </tr>
                 <tr>
                     <th>Comment</th>
-                    <td><%= reportData?.reviewerComment || "Not Applicable" %></td>
+                    <td><%= reportData?.reviewComment || "Not Applicable" %></td>
                 </tr>
                 <tr>
                     <th>Attachment</th>
@@ -211,7 +212,7 @@
             <table>
                 <tr>
                     <th>Approver</th>
-                    <td><%= reportData?.approver?.name || "Not Applicable" %></td>
+                    <td><%= reportData?.approvers?.[0]?.name || "Not Applicable" %></td>
                 </tr>
                 <tr>
                     <th>Comment</th>

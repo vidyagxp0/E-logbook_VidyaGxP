@@ -228,7 +228,7 @@
                                     <tr>
                                         <th>Reviewer</th>
                                         <td>
-                                            <%= reportData?.s?.name || "Not Applicable" %>
+                                            <%= reportData?.reviewers?.[0].name || "Not Applicable" %>
                                         </td>
                                     </tr>
                                     <tr>
@@ -267,7 +267,7 @@
                                     <tr>
                                         <th>Approver</th>
                                         <td>
-                                            <%= reportData?.approver3?.name || "Not Applicable" %>
+                                            <%= reportData?.approvers?.[0]?.name || "Not Applicable" %>
                                         </td>
                                     </tr>
                                     <tr>
