@@ -792,7 +792,7 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorComment:initiatorComment,
+        initiatorComment: initiatorComment,
         initiatorAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.initiatorAttachment,
