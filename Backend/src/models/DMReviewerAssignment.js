@@ -1,4 +1,4 @@
-const DifferentialPressureForm = require("./differentialPressureForm");
+const DispenseOfMaterialForm = require("./dispensingOfMaterialForm");
 const User = require("./users");
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
@@ -13,7 +13,7 @@ const DMReviewerAssignment = sequelize.define("DMReviewerAssignment", {
   form_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: DifferentialPressureForm,
+      model: DispenseOfMaterialForm,
       key: "form_id",
     },
   },
@@ -25,12 +25,12 @@ const DMReviewerAssignment = sequelize.define("DMReviewerAssignment", {
     },
   },
 });
-DifferentialPressureForm.belongsToMany(User, {
+DispenseOfMaterialForm.belongsToMany(User, {
   through: DMReviewerAssignment,
   as: "reviewers1",
   foreignKey: "form_id",
 });
-User.belongsToMany(DifferentialPressureForm, {
+User.belongsToMany(DispenseOfMaterialForm, {
   through: DMReviewerAssignment,
   as: "assignedReviews4",
   foreignKey: "user_id",

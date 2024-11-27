@@ -27,7 +27,7 @@ const DMApproverAssignment = sequelize.define("DMApproverAssignment", {
 });
 DispenseOfMaterialForm.belongsToMany(User, {
   through: DMApproverAssignment,
-  as: "approvers",
+  as: "approvers1",
   foreignKey: "form_id",
 });
 User.belongsToMany(DispenseOfMaterialForm, {

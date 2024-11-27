@@ -1095,10 +1095,14 @@ const OperationOfSterilizerEffective = () => {
                           <th rowSpan={2}>Air Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Steam Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Printer Ok Yes/No</th>
-                          <th style={{minWidth:"130px"}} rowSpan={2}>Product Name</th>
+                          <th style={{ minWidth: "130px" }} rowSpan={2}>
+                            Product Name
+                          </th>
                           <th rowSpan={2}>Container size (ml)</th>
                           <th rowSpan={2}>Loaded quantity</th>
-                          <th style={{minWidth:"115px"}} rowSpan={2}>Batch No.</th>
+                          <th style={{ minWidth: "115px" }} rowSpan={2}>
+                            Batch No.
+                          </th>
                           <th rowSpan={2}>Loading Time</th>
                           <th rowSpan={1} colSpan={2}>
                             {" "}
@@ -1528,7 +1532,7 @@ const OperationOfSterilizerEffective = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                             {editData.additionalAttachment.name ||
+                              {editData.additionalAttachment.name ||
                                 editData.additionalAttachment.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (

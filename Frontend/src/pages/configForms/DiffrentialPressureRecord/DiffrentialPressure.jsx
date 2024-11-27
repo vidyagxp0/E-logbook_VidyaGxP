@@ -614,7 +614,7 @@ export default function DiffrentialPressure() {
                           .filter(
                             (value, index, self) =>
                               self.indexOf(value) === index
-                          ) // Remove duplicates
+                          ) 
                           .map((id) => ({
                             value: id,
                             label:

@@ -300,7 +300,8 @@ export default function TempretureRecordsEffective() {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-e        }
+          e,
+        }
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -945,9 +946,9 @@ e        }
                       name="limit"
                       type="number"
                       className={`${
-                        editData?.limit < 23
+                        editData?.limit < editData.temprature_record
                           ? "limit"
-                          : editData?.limit > 27
+                          : editData?.limit > editData.temprature_record
                           ? "limit"
                           : ""
                       }`}
@@ -995,12 +996,13 @@ e        }
                                   ? "text-green-500"
                                   : item.temprature_record > editData.limit
                                   ? "text-red-600"
-                                  : ""
+                                  : "text-black"
                               }`}
                               onChange={(e) => {
                                 const newData = [...editData.TempratureRecords];
-                                newData[index].temprature_record =
-                                  e.target.value;
+                                newData[index].temprature_record = parseFloat(
+                                  e.target.value
+                                ); // Ensure value is a number
                                 setEditData({
                                   ...editData,
                                   TempratureRecords: newData,
@@ -1040,7 +1042,7 @@ e        }
                                     ];
                                     if (e?.target?.checked) {
                                       newData[index].reviewed_by =
-                                      UserName.name;
+                                        UserName.name;
                                     } else {
                                       newData[index].reviewed_by = "";
                                     }

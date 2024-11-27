@@ -989,13 +989,13 @@ export default function DPREffective() {
                     <input
                       name="limit"
                       type="number"
-                      // className={`${
-                      //   editData?.limit < 0.6
-                      //     ? "limit"
-                      //     : editData?.limit > 2.6
-                      //     ? "limit"
-                      //     : ""
-                      // }`}
+                      className={`${
+                        editData?.limit < editData.differential_pressure
+                          ? "limit"
+                          : editData?.limit > editData.differential_pressure
+                          ? "limit"
+                          : ""
+                      }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
                       readOnly={[3, 2, 4].includes(
@@ -1033,32 +1033,30 @@ export default function DPREffective() {
                               <input value={item.time} readOnly />
                             </td>
                             <td>
-                              <input
-                                type="number"
-                                value={item?.differential_pressure}
-                                className={`${
-                                  item?.differential_pressure < editData?.limit
-                                    ? "text-green-500"
-                                    : item?.differential_pressure >
-                                      editData?.limit
-                                    ? "text-red-600"
-                                    : ""
-                                }`}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].differential_pressure =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
-                                )}
-                              />
+                            <input
+                              type="number"
+                              value={item.differential_pressure}
+                              className={`${
+                                item.differential_pressure < editData.limit
+                                  ? "text-green-500"
+                                  : item.differential_pressure > editData.limit
+                                  ? "text-red-600"
+                                  : "text-black"
+                              }`}
+                              onChange={(e) => {
+                                const newData = [...editData.DifferentialPressureRecords];
+                                newData[index].differential_pressure = parseFloat(
+                                  e.target.value
+                                ); // Ensure value is a number
+                                setEditData({
+                                  ...editData,
+                                  DifferentialPressureRecords: newData,
+                                });
+                              }}
+                              readOnly={[3, 2, 4].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                            />
                             </td>
                             <td>
                               <input

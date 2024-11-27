@@ -99,8 +99,8 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
         description: description,
         status: "Opened",
         stage: 1,
-        reviewer_id: reviewer_id,
-        approver_id: approver_id,
+        // reviewer_id: reviewer_id,
+        // approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
@@ -461,6 +461,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
+console.log(error);
 
     return res.status(500).json({
       error: true,
@@ -820,33 +821,27 @@ exports.GetAllDispenseOfMaterialRecord = async (req, res) => {
         },
         {
           model: User,
-          as: "reviewers", // Use the consistent alias 'reviewer'
+          as: "reviewers1", // Use the consistent alias 'reviewer'
           through: { attributes: [] },
           attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
         },
         {
           model: User,
-          as: "approvers", // Use the consistent alias 'approver'
+          as: "approvers1", // Use the consistent alias 'approver'
           through: { attributes: [] },
           attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
         },
       ],
       order: [["form_id", "DESC"]],
     });
-    const formattedResult = result.map((form) => ({
-      ...form.toJSON(),
-      reviewers: form.reviewers.filter(
-        (v, i, a) => a.findIndex((t) => t.user_id === v.user_id) === i
-      ), // Remove duplicate reviewers
-      approvers: form.approvers.filter(
-        (v, i, a) => a.findIndex((t) => t.user_id === v.user_id) === i
-      ), // Remove duplicate approvers
-    }));
+   
     return res.json({
       error: false,
-      message: formattedResult,
+      message: result,
     });
   } catch (error) {
+    console.log(error);
+    
     res.json({
       error: true,
       message: error,

@@ -556,7 +556,7 @@ const MediaRecordPanel = () => {
 
                   {/* Conditional Buttons Based on Stages */}
                   {location.state?.stage === 1 &&
-                    location.state?.initiator_id === userDetails.userId && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -569,7 +569,7 @@ const MediaRecordPanel = () => {
                     )}
 
                   {location.state?.stage === 2 &&
-                    location.state?.reviewer_id === userDetails.userId && (
+                    [2, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -593,7 +593,7 @@ const MediaRecordPanel = () => {
                     )}
 
                   {location.state?.stage === 3 &&
-                    location.state?.approver_id === userDetails.userId && (
+                    [3, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -618,7 +618,7 @@ const MediaRecordPanel = () => {
 
                   {/* Save Button */}
                   {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -1309,7 +1309,11 @@ const MediaRecordPanel = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer3?.name}
+                          value={
+                            editData?.reviewers.find(
+                              (item) => item.user_id 
+                            )?.name || ""
+                          }
                           readOnly
                         />
                       </div>
@@ -1423,7 +1427,11 @@ const MediaRecordPanel = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver3?.name}
+                          value={
+                            editData?.approvers.find(
+                              (item) => item.user_id 
+                            )?.name || ""
+                          }
                           readOnly
                         />
                       </div>

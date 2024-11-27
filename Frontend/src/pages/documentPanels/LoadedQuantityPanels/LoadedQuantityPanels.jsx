@@ -9,6 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import React from "react";
 
 const LoadedQuantityPanels = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -37,6 +38,16 @@ const LoadedQuantityPanels = () => {
     setPopupAction(null);
   };
   console.log(editData.LoadedQuantityRecords, "editttt");
+  // console.log((userDetails.roles.map((/)).role_id), "roles");
+  const [rolesArray, setRolesArray] = useState([
+    ...new Set(userDetails.roles.map((itm) => itm.role_id)),
+  ]);
+  console.log(rolesArray, "rolesArray");
+
+  console.log(
+    rolesArray.some((role) => [1, 3].includes(role)),
+    "[1, 3].includes(rolesArray)"
+  );
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -1304,7 +1315,10 @@ const LoadedQuantityPanels = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer1?.name}
+                          value={
+                            editData?.reviewers.find((item) => item.user_id)
+                              ?.name || ""
+                          }
                           readOnly
                         />
                       </div>
@@ -1323,7 +1337,7 @@ const LoadedQuantityPanels = () => {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          [2, 5].includes(userDetails.roles[0].role_id) && (
+                          rolesArray.some((role) => [2, 5].includes(role)) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1336,7 +1350,7 @@ const LoadedQuantityPanels = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          [1, 3].includes(userDetails.roles[0].role_id)
+                          rolesArray.some((role) => [1, 3].includes(role))
                         }
                       />
                     </div>
@@ -1429,7 +1443,10 @@ const LoadedQuantityPanels = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver1?.name}
+                          value={
+                            editData?.approvers.find((item) => item.user_id)
+                              ?.name || ""
+                          }
                           readOnly
                         />
                       </div>
@@ -1497,13 +1514,13 @@ const LoadedQuantityPanels = () => {
                                 Selected File:{" "}
                               </span>
                               <a
-                               href={
-                                editData.approverAttachment instanceof File
-                                  ? URL.createObjectURL(
-                                      editData.approverAttachment
-                                    )
-                                  : editData.approverAttachment
-                              }
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"

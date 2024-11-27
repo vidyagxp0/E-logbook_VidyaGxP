@@ -22,7 +22,7 @@ export default function DPRpanel() {
   const location = useLocation();
   console.log(location.state.initiator_id,"0000000")
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
-  console.log(userDetails,"userDetailsuserDetailsuserDetails")
+  console.log(userDetails.userId,"userDetailsuserDetailsuserDetails")
   const [editData, setEditData] = useState({
     initiator_name: "",
     initiatorComment: "",
@@ -1339,7 +1339,7 @@ export default function DPRpanel() {
                           name="reviewer"
                           value={
                             editData?.reviewers.find(
-                              (item) => item.user_id === userDetails.userId
+                              (item) => item.user_id 
                             )?.name || ""
                           }
                           readOnly
@@ -1459,7 +1459,7 @@ export default function DPRpanel() {
                           name="approver"
                           value={
                             editData?.approvers.find(
-                              (item) => item.user_id === userDetails.userId
+                              (item) => item.user_id 
                             )?.name || ""
                           }
                           readOnly
