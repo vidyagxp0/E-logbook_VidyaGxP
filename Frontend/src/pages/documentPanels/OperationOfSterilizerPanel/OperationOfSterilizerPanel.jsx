@@ -1306,19 +1306,29 @@ const OperationOfSterilizerPanel = () => {
                                   Selected File:{" "}
                                 </span>
                                 <a
-                                  href={editData.additionalAttachment}
+                                  href={
+                                    editData.additionalAttachment instanceof
+                                    File
+                                      ? URL.createObjectURL(
+                                          editData.additionalAttachment
+                                        )
+                                      : editData.additionalAttachment
+                                  }
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-blue-600 underline"
                                 >
-                                  View File
+                                  {editData.additionalAttachment.name ||
+                                    editData.additionalAttachment.slice(
+                                      46
+                                    )}{" "}
                                 </a>
                               </h3>
                             </div>
                           ) : (
                             <div>
                               <button
-                                className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                                className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                                 disabled
                                 type="button"
                                 onClick={() =>
@@ -1427,7 +1437,8 @@ const OperationOfSterilizerPanel = () => {
                       </label>
                       <div>
                         {editData.initiatorAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1439,18 +1450,29 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                {" "}
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.initiatorAttachment}
+                                href={
+                                  editData.initiatorAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.initiatorAttachment
+                                      )
+                                    : editData.initiatorAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData.initiatorAttachment.name ||
+                                  editData.initiatorAttachment.slice(46)}{" "}
                               </a>
                             </h3>
                           </div>
@@ -1550,7 +1572,7 @@ const OperationOfSterilizerPanel = () => {
                       </label>
                       <div>
                         {editData.reviewerAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
                             <button
                               type="button"
                               onClick={() =>
@@ -1562,18 +1584,28 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.reviewerAttachment}
+                                href={
+                                  editData.reviewerAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.reviewerAttachment
+                                      )
+                                    : editData.reviewerAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData.reviewerAttachment.name ||
+                                  editData.reviewerAttachment.slice(46)}
                               </a>
                             </h3>
                           </div>
@@ -1590,7 +1622,7 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 2 ||
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
@@ -1673,7 +1705,7 @@ const OperationOfSterilizerPanel = () => {
                       </label>
                       <div>
                         {editData.approverAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
                             <button
                               type="button"
                               onClick={() =>
@@ -1685,18 +1717,28 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.approverAttachment}
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="underline text-blue-600"
                               >
-                                View File
+                                {editData.approverAttachment.name ||
+                                  editData.approverAttachment.slice(46)}
                               </a>
                             </h3>
                           </div>
@@ -1713,7 +1755,7 @@ const OperationOfSterilizerPanel = () => {
                                 location.state?.stage !== 3 ||
                                 [1, 2].includes(userDetails.roles[0].role_id)
                               }
-                              className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                              className="py-1 scale-100 bg-blue-600 text-white ml-3 bg-opacity-70"
                             >
                               Select File
                             </button>
