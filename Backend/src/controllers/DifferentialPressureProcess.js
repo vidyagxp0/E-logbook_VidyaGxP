@@ -54,12 +54,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
       .json({ error: true, message: "Please provide email and password." });
   }
 
-  if (!initiatorComment) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an initiator comment." });
-  }
-
   // Start a transaction
   const transaction = await sequelize.transaction();
 
@@ -202,7 +196,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `UniqueId[${index}]`,
+          field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id,
           changed_by: user.user_id,
@@ -213,7 +207,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Time[${index}]`,
+          field_name: "Time",
           previous_value: null,
           new_value: record.time,
           changed_by: user.user_id,
@@ -224,7 +218,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `DifferentialPressure[${index}]`,
+          field_name: "DifferentialPressure",
           previous_value: null,
           new_value: record.differential_pressure,
           changed_by: user.user_id,
@@ -235,7 +229,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Remarks[${index}]`,
+          field_name: "Remarks",
           previous_value: null,
           new_value: record.remarks,
           changed_by: user.user_id,
@@ -246,7 +240,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `CheckedBy[${index}]`,
+          field_name: "CheckedBy",
           previous_value: null,
           new_value: record.checked_by,
           changed_by: user.user_id,
@@ -258,7 +252,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         if (supportingDocs[index]) {
           auditTrailEntries.push({
             form_id: newForm.form_id,
-            field_name: `SupportingDocs[${index}]`,
+            field_name: "SupportingDocs",
             previous_value: null,
             new_value: getElogDocsUrl(supportingDocs[index]),
             changed_by: user.user_id,
@@ -650,7 +644,8 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
 
 //send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, email, password, initiatorDeclaration } = req.body;
+  const { form_id, email, password, initiatorDeclaration, initiatorComment } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -763,6 +758,7 @@ exports.SendDPElogForReview = async (req, res) => {
         additionalAttachment: req?.file
           ? getElogDocsUrl(req.file)
           : form.additionalAttachment,
+        initiatorComment: initiatorComment,
       },
       { transaction }
     );
@@ -1585,6 +1581,7 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
+    console.log(reportData);
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
 
@@ -1796,3 +1793,204 @@ exports.effetiveViewReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
+exports.blankReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+    const formId = req.params.form_id;
+    // reportData.title = "RUSOMA LABORATORIES PRIVATE LIMITED";
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    const blankRows = Array(reportData?.blankRows);
+
+    const data = reportData?.DifferentialPressureRecords?.map((record) => ({
+      unique_id: record?.unique_id || "",
+      time: record?.time || "",
+      differential_pressure: record?.differential_pressure || "",
+      remarks: record?.remarks || "",
+      checked_by: record?.checked_by || "",
+      supporting_docs: record?.supporting_docs || "",
+    }));
+
+    const arrayData = [...data, ...blankRows];
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("blankDPReport", { arrayData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "145px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `DP_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `DP_Elog_Report_${formId}.pdf` });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+// exports.GetAll = async (req, res) => {
+//   try {
+//     const { search } = req.query; // Capture search keyword from query parameters
+
+//     const searchCondition = search
+//       ? {
+//           [Op.or]: [
+//             { site_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
+//             { form_id: { [Op.like]: `%${search}%` } }, // Example: Search by form_id
+//             { initiator_name: { [Op.like]: `%${search}%` } }, // Example: Search by initiator_name
+//           ],
+//         }
+//       : {};
+
+//     // Use Promise.all to run all queries concurrently
+//     const [
+//       differentialPressureForms,
+//       dispenseOfMaterialForms,
+//       loadedQuantityForms,
+//       mediaRecordForms,
+//       operationOfSterilizerForms,
+//       temperatureForms,
+//     ] = await Promise.all([
+//       DifferentialPressureForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: DifferentialPressureRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       DispenseOfMaterialForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: DispenseOfMaterialRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       LoadedQuantityProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: LoadedQuantityRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       MediaRecordProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: MediaRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       OperationOfSterilizerProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: OperationOfSterilizerRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       TempratureProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: TempratureProcessRecord },
+//           { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
+//           { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//     ]);
+
+//     // Combine all results into a single object
+//     const data = {
+//       differentialPressureForms,
+//       dispenseOfMaterialForms,
+//       loadedQuantityForms,
+//       mediaRecordForms,
+//       operationOfSterilizerForms,
+//       temperatureForms,
+//     };
+
+//     return res.status(200).json({
+//       error: false,
+//       message: "Data fetched successfully",
+//       data: data,
+//     });
+//   } catch (error) {
+//     console.error("Error:", error);
+//     return res
+//       .status(500)
+//       .json({ error: true, message: `Error: ${error.message}` });
+//   }
+// };

@@ -246,7 +246,16 @@ User.addHook("afterSync", async () => {
       throw error;
     }
   };
-  assignInitiatorRoles();
+   try {
+     const userRoleCount = await UserRole.count();
+     if (userRoleCount === 0) {
+       await assignInitiatorRoles();
+     } else {
+       console.log("User roles already assigned.");
+     }
+   } catch (error) {
+     console.error("Error in afterSync hook:", error.message);
+   }
 });
 // Call the function
 

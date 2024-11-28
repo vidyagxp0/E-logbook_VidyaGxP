@@ -136,5 +136,17 @@ router.post(
   DifferentialPressureProcess.effetiveChatByPdf
 );
 
-router.post("/effective-view-report", DifferentialPressureProcess.effetiveViewReport);
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  DifferentialPressureProcess.blankReport
+);
+
+router.post(
+  "/effective-view-report",
+  DifferentialPressureProcess.effetiveViewReport
+);
+
+// router.get("/search", DifferentialPressureProcess.GetAll);
+
 module.exports = router;

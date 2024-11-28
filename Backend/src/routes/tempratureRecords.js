@@ -129,6 +129,11 @@ router.post(
   Auth.checkUserJwtToken,
   TempratureProcess.effetiveChatByPdf
 );
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  TempratureProcess.blankReport
+);
 
 router.post("/effective-view-report", TempratureProcess.effetiveViewReport);
 module.exports = router;

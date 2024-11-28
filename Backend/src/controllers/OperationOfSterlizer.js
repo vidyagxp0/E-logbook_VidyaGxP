@@ -188,7 +188,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `UniqueId[${index}]`,
+          field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id,
           changed_by: user.user_id,
@@ -199,7 +199,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Date[${index}]`,
+          field_name: "Date",
           previous_value: null,
           new_value: record.date,
           changed_by: user.user_id,
@@ -210,7 +210,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `air_pressure[${index}]`,
+          field_name: "Air Pressure",
           previous_value: null,
           new_value: record.air_pressure,
           changed_by: user.user_id,
@@ -221,7 +221,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `steam_pressure[${index}]`,
+          field_name: "Steam Pressure",
           previous_value: null,
           new_value: record.steam_pressure,
           changed_by: user.user_id,
@@ -232,7 +232,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `printer_ok[${index}]`,
+          field_name: "Printer Ok",
           previous_value: null,
           new_value: record.printer_ok,
           changed_by: user.user_id,
@@ -243,7 +243,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `product_name[${index}]`,
+          field_name: "Product Name",
           previous_value: null,
           new_value: record.product_name,
           changed_by: user.user_id,
@@ -254,7 +254,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `container_size[${index}]`,
+          field_name: "Container Size",
           previous_value: null,
           new_value: record.container_size,
           changed_by: user.user_id,
@@ -265,7 +265,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `loaded_quantity[${index}]`,
+          field_name: "Loaded Quantity",
           previous_value: null,
           new_value: record.loaded_quantity,
           changed_by: user.user_id,
@@ -276,7 +276,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `batch_no_lot_no[${index}]`,
+          field_name: "Batch No Lot No",
           previous_value: null,
           new_value: record.batch_no_lot_no,
           changed_by: user.user_id,
@@ -287,7 +287,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `loading_time[${index}]`,
+          field_name: "Loading Time",
           previous_value: null,
           new_value: record.loading_time,
           changed_by: user.user_id,
@@ -298,7 +298,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `d_well_period_start[${index}]`,
+          field_name: "D Well Period Start",
           previous_value: null,
           new_value: record.d_well_period_start,
           changed_by: user.user_id,
@@ -309,7 +309,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `d_well_period_end[${index}]`,
+          field_name: "D Well Period End",
           previous_value: null,
           new_value: record.d_well_period_end,
           changed_by: user.user_id,
@@ -320,7 +320,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `unloading_time[${index}]`,
+          field_name: "Unloading Time",
           previous_value: null,
           new_value: record.unloading_time,
           changed_by: user.user_id,
@@ -331,7 +331,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `cleaning_time_start[${index}]`,
+          field_name: "Cleaning Time Start",
           previous_value: null,
           new_value: record.cleaning_time_start,
           changed_by: user.user_id,
@@ -342,7 +342,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `cleaning_time_end[${index}]`,
+          field_name: "Cleaning Time End",
           previous_value: null,
           new_value: record.cleaning_time_end,
           changed_by: user.user_id,
@@ -353,7 +353,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `cleaning_done_by[${index}]`,
+          field_name: "Cleaning Done By",
           previous_value: null,
           new_value: record.cleaning_done_by,
           changed_by: user.user_id,
@@ -364,7 +364,7 @@ exports.InsertOperationOfSterilizerForm = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `checked_by[${index}]`,
+          field_name: "Checked By",
           previous_value: null,
           new_value: record.checked_by,
           changed_by: user.user_id,
@@ -589,7 +589,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
             ) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${index}]`,
+                field_name: `${field}`,
                 previous_value: oldValue || null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -628,7 +628,7 @@ exports.EditOperationOfSterilizerForm = async (req, res) => {
             if (newValue !== undefined) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${i}]`,
+                field_name: `${field}`,
                 previous_value: null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -1870,3 +1870,115 @@ exports.effetiveViewReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
+exports.blankReport = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    const blankRows = Array(reportData?.blankRows);
+
+    const data = reportData?.OperationOfSterilizerRecord?.map((record) => ({
+      unique_id: record?.unique_id || "",
+      date: record?.date || "",
+      air_pressure: record?.air_pressure || "",
+      steam_pressure: record?.steam_pressure || "",
+      printer_ok: record?.printer_ok || "",
+      product_name: record?.product_name || "",
+      container_size: record?.container_size || "",
+      loaded_quantity: record?.loaded_quantity || "",
+      batch_no_lot_no: record?.batch_no_lot_no || "",
+      loading_time: record?.loading_time || "",
+      d_well_period_start: record?.d_well_period_start || "",
+      d_well_period_end: record?.d_well_period_end || "",
+      unloading_time: record?.unloading_time || "",
+      cleaning_time_start: record?.cleaning_time_start || "",
+      cleaning_time_end: record?.cleaning_time_end || "",
+      cleaning_done_by: record?.cleaning_done_by || "",
+      reviewed_by: record?.reviewed_by || "",
+    }));
+
+    const arrayData = [...data, ...blankRows];
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("blankOSReport", { arrayData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      landscape: true,
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "145px",
+        right: "50px",
+        bottom: "50px",
+        left: "37px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `OS_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `OS_Elog_Report_${formId}.pdf` });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+

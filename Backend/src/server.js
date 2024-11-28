@@ -35,6 +35,13 @@ app.use(
     crossOriginEmbedderPolicy: true,
   })
 );
+
+// Remove 'X-Frame-Options' header
+app.use((req, res, next) => {
+  res.removeHeader("X-Frame-Options");
+  next();
+});
+
 app.use(
   cors({
     origin: "*",

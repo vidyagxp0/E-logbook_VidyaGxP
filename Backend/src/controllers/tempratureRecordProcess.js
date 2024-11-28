@@ -81,7 +81,7 @@ exports.InsertTempratureRecord = async (req, res) => {
     let initiatorAttachment = null;
     let additionalAttachment = null;
     const supportingDocs = {};
-
+    console.log(req, "aaa");
     // Process files
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
@@ -195,7 +195,7 @@ exports.InsertTempratureRecord = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `UniqueId[${index}]`,
+          field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id,
           changed_by: user.user_id,
@@ -206,7 +206,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Time[${index}]`,
+          field_name: "Time",
           previous_value: null,
           new_value: record.time,
           changed_by: user.user_id,
@@ -217,7 +217,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `TemperatureRecord[${index}]`,
+          field_name: "DifferentialPressure",
           previous_value: null,
           new_value: record.temprature_record,
           changed_by: user.user_id,
@@ -228,7 +228,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `Remarks[${index}]`,
+          field_name: "Remarks",
           previous_value: null,
           new_value: record.remarks,
           changed_by: user.user_id,
@@ -239,7 +239,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: `CheckedBy[${index}]`,
+          field_name: "CheckedBy",
           previous_value: null,
           new_value: record.checked_by,
           changed_by: user.user_id,
@@ -251,7 +251,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         if (supportingDocs[index]) {
           auditTrailEntries.push({
             form_id: newForm.form_id,
-            field_name: `SupportingDocs[${index}]`,
+            field_name: "SupportingDocs",
             previous_value: null,
             new_value: getElogDocsUrl(supportingDocs[index]),
             changed_by: user.user_id,
@@ -282,7 +282,7 @@ exports.InsertTempratureRecord = async (req, res) => {
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
-console.log(error);
+    console.log(error);
 
     return res.status(500).json({
       error: true,
@@ -398,7 +398,7 @@ exports.EditTempratureRecord = async (req, res) => {
       additionalAttachment: additionalAttachment
         ? getElogDocsUrl(additionalAttachment)
         : form.additionalAttachment,
-      additionalInfo
+      additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
@@ -477,7 +477,7 @@ exports.EditTempratureRecord = async (req, res) => {
             ) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${index}]`,
+                field_name: `${field}`,
                 previous_value: oldValue || null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -514,7 +514,7 @@ exports.EditTempratureRecord = async (req, res) => {
             if (newValue !== undefined) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${i}]`,
+                field_name: `${field}`,
                 previous_value: null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -707,7 +707,7 @@ exports.SendTRElogForReview = async (req, res) => {
     // }
 
     const auditTrailEntries = [];
-
+    console.log(req, "sssss");
     // Add audit trail entry for the attachment if it exists
     if (req?.file) {
       auditTrailEntries.push({
@@ -1570,7 +1570,6 @@ exports.chatByPdf = async (req, res) => {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
-    
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
@@ -1677,9 +1676,9 @@ exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
-   reportData.addtionalInfo = reportData?.addtionalInfo
-     ? removeHtmlTags(reportData?.addtionalInfo)
-     : "Not Applicable";
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
@@ -1774,6 +1773,106 @@ exports.effetiveViewReport = async (req, res) => {
       }
       res.send(html);
     });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+
+exports.blankReport = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    const blankRows = Array(reportData?.blankRows);
+
+    const data = reportData?.temprature_record?.map((record) => ({
+      unique_id: record?.unique_id || "",
+      time: record?.time || "",
+      temprature_record: record?.temprature_record || "",
+      remarks: record?.remarks || "",
+      reviewed_by: record?.reviewed_by || "",
+      supporting_docs: record?.supporting_docs || "",
+    }));
+
+    const arrayData = [...data, ...blankRows];
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("blankTPReport", { arrayData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "145px",
+        // right: "50px",
+        bottom: "50px",
+        // left: "50px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    const filePath = path.resolve("public", `TP_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
+
+    res.status(200).json({ filename: `TP_Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

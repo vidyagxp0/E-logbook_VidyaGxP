@@ -135,7 +135,7 @@
                         <tr>
                             <th>Checked By</th>
                             <td>
-                                <%= record?.checked_by || "Not Applicable" %>
+                                <%= record?.reviewed_by || "Not Applicable" %>
                             </td>
                         </tr>
                     </table>
@@ -153,8 +153,8 @@
                 <tr>
                     <th>Additional Attachment</th>
                     <td>
-                        <% if (reportData?.addtionalAttachment) { %>
-                            <a href="<%= reportData.addtionalAttachment %>" target="_blank">View File</a>
+                        <% if (reportData?.additionalAttachment) { %>
+                            <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
                         <% } else { %>
                             Not Applicable
                         <% } %>
@@ -162,7 +162,7 @@
                 </tr>
                 <tr>
                     <th>Addtional Info</th>
-                    <td><%= (reportData?.addtionalInfo || "Not Applicable") %></td>
+                    <td><%= (reportData?.additionalInfo || "Not Applicable") %></td>
                 </tr>
                 
             </table>

@@ -110,11 +110,11 @@ router.put(
 
 // router.get("/get-processes", OperationOfSterilizer.getAllProcesses);
 
-// router.get(
-//   "/get-audit-trail-for-elog/:id",
-//   Auth.checkUserJwtToken,
-//   OperationOfSterilizer.getAuditTrailForAnElog
-// );
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  OperationOfSterilizer.getAuditTrailForAnElog
+);
 
 router.post(
   "/generate-pdf",
@@ -134,5 +134,12 @@ router.post(
   Auth.checkUserJwtToken,
   OperationOfSterilizer.effetiveChatByPdf
 );
+
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  OperationOfSterilizer.blankReport
+);
+
 router.post("/effective-view-report", OperationOfSterilizer.effetiveViewReport);
 module.exports = router;
