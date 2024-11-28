@@ -116,7 +116,7 @@ const LoadedQuantityEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/loaded-quantity/update",
+    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -151,7 +151,7 @@ const LoadedQuantityEffective = () => {
 
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-for-review",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -169,7 +169,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -188,7 +188,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -203,7 +203,11 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/loaded-quantity/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -218,7 +222,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -265,7 +269,7 @@ const LoadedQuantityEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update",
+        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -326,7 +330,7 @@ const LoadedQuantityEffective = () => {
         yield: "",
         remarks: "",
         checked_by: location?.state?.initiator_name,
-        reviewed_by:""
+        reviewed_by: "",
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -490,7 +494,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/blank-report/${formId}`,
+        `https://elog-backend.mydemosoftware.com/loaded-quantity/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -538,7 +542,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/loaded-quantity/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1078,8 +1082,8 @@ const LoadedQuantityEffective = () => {
                           <th>S no.</th>
                           <th>Unique Id</th>
                           <th>Date</th>
-                          <th style={{minWidth:"95px"}}>Product Name</th>
-                          <th style={{minWidth:"110px"}}>Batch No.</th>
+                          <th style={{ minWidth: "95px" }}>Product Name</th>
+                          <th style={{ minWidth: "110px" }}>Batch No.</th>
                           <th>Container Size (ml)</th>
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
@@ -1405,8 +1409,10 @@ const LoadedQuantityEffective = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name.slice(0,30) ||
-                                editData.additionalAttachment.slice(46)}
+                              {editData?.additionalAttachment?.name?.slice(
+                                0,
+                                30
+                              ) || editData?.additionalAttachment?.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (
                               <button

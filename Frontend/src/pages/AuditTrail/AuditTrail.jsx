@@ -17,7 +17,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -33,7 +33,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -49,7 +49,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -65,7 +65,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -81,7 +81,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -97,7 +97,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -341,7 +341,7 @@ function AuditTrail() {
                         <div className="text-nowrap flex">
                           New Value :{" "}
                           {auditTrail?.new_value?.includes(
-                            "http://localhost:1000/"
+                            "https://elog-backend.mydemosoftware.com/"
                           ) ? (
                             <a
                               href={auditTrail.new_value}
@@ -349,7 +349,7 @@ function AuditTrail() {
                               rel="noopener noreferrer"
                               className="text-blue-500 underline"
                             >
-                             <span className="ml-1"> View Attachment</span>
+                              <span className="ml-1"> View Attachment</span>
                             </a>
                           ) : (
                             <span

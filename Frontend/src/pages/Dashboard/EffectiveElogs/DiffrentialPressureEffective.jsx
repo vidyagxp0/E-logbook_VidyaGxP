@@ -81,7 +81,7 @@ export default function DPREffective() {
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -99,7 +99,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -118,7 +118,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -134,7 +134,7 @@ export default function DPREffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -152,7 +152,7 @@ export default function DPREffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -198,7 +198,7 @@ export default function DPREffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elog-backend.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -408,7 +408,7 @@ export default function DPREffective() {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/blank-report/${formId}`,
+        `https://elog-backend.mydemosoftware.com/differential-pressure/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -456,7 +456,7 @@ export default function DPREffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/differential-pressure/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1200,89 +1200,93 @@ export default function DPREffective() {
                   </table>
 
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                  <div className="group-input mt-4">
-                    <label
-                    // htmlFor="additionalAttachment"
-                    // className="color-label"
-                    // name="additionalAttachment"
-                    >
-                      Additional Attachment{" "}
-                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
-                      :
-                    </label>
-                    <div>
-                      {editData.additionalAttachment ? (
-                        <div className="flex items-center gap-x-4 ml-3">
-                          <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Change File
-                          </button>
-                          <h3 className="flex items-center">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
-                              Selected File:
-                            </span>
-                            <a
-                              href={
-                                editData.additionalAttachment instanceof File
-                                  ? URL.createObjectURL(
-                                      editData.additionalAttachment
-                                    )
-                                  : editData.additionalAttachment
+                    <div className="group-input mt-4">
+                      <label
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
+                      >
+                        Additional Attachment{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                        :
+                      </label>
+                      <div>
+                        {editData.additionalAttachment ? (
+                          <div className="flex items-center gap-x-4 ml-3">
+                            <button
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
                               }
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name.slice(0,30) ||
-                                editData.additionalAttachment.slice(46)}
-                            </a>
-                            {editData.additionalAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    additionalAttachment: null,
-                                  })
+                              Change File
+                            </button>
+                            <h3 className="flex items-center">
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                                Selected File:
+                              </span>
+                              <a
+                                href={
+                                  editData.additionalAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.additionalAttachment
+                                      )
+                                    : editData.additionalAttachment
                                 }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline mr-1"
                               >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ) : (
-                        <div>
-                          <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        name="additionalAttachment"
-                        id="additionalAttachment"
-                        onChange={handleInitiatorFileChange}
-                        style={{ display: "none" }}
-                      />
+                                {editData?.additionalAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.additionalAttachment?.slice(46)}
+                              </a>
+                              {editData.additionalAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      additionalAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
+                          <div>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          name="additionalAttachment"
+                          id="additionalAttachment"
+                          onChange={handleInitiatorFileChange}
+                          style={{ display: "none" }}
+                        />
+                      </div>
                     </div>
-                  </div>
 
                     <div className="flex flex-col w-full">
                       <label className="text-sm font-medium text-gray-900 mb-1">

@@ -12,11 +12,11 @@ function HeaderTop() {
   localStorage.setItem("Username", JSON.stringify(User));
 
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
-  
+
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 

@@ -75,7 +75,7 @@ const DispensingOfMaterialsPanel = () => {
       }
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-for-review",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
           data,
           config
         )
@@ -93,7 +93,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -112,7 +112,7 @@ const DispensingOfMaterialsPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -127,7 +127,11 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/dispensing-material/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -142,7 +146,7 @@ const DispensingOfMaterialsPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -193,7 +197,7 @@ const DispensingOfMaterialsPanel = () => {
         },
         data: editData,
 
-        url: "http://localhost:1000/dispensing-material/update",
+        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -422,7 +426,7 @@ const DispensingOfMaterialsPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/dispensing-material/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/dispensing-material/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1303,7 +1307,7 @@ const DispensingOfMaterialsPanel = () => {
                             className="cursor-not-allowed py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
                             disabled
-                            onClick={() =>  
+                            onClick={() =>
                               document
                                 .getElementById("additionalAttachment")
                                 .click()
@@ -1327,8 +1331,11 @@ const DispensingOfMaterialsPanel = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
                             >
-                              {editData.additionalAttachment.name.slice(0,30) ||
-                                editData.additionalAttachment.slice(46)}{" "}
+                              {editData?.additionalAttachment?.name?.slice(
+                                0,
+                                30
+                              ) ||
+                                editData?.additionalAttachment?.slice(46)}{" "}
                             </a>
                           </h3>
                         </div>
@@ -1466,26 +1473,29 @@ const DispensingOfMaterialsPanel = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.initiatorAttachment.name.slice(0,30) ||
-                                  editData.initiatorAttachment.slice(46)}{" "}
+                                {editData?.initiatorAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
                               {editData.initiatorAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    initiatorAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ) : (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      initiatorAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"
@@ -1607,26 +1617,28 @@ const DispensingOfMaterialsPanel = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.reviewerAttachment.name.slice(0,30) ||
-                                  editData.reviewerAttachment.slice(46)}
+                                {editData?.reviewerAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
                               {editData.reviewerAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    reviewerAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ) : (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      reviewerAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"
@@ -1738,37 +1750,40 @@ const DispensingOfMaterialsPanel = () => {
                                 Selected File:{" "}
                               </span>
                               <a
-                               href={
-                                editData.approverAttachment instanceof File
-                                  ? URL.createObjectURL(
-                                      editData.approverAttachment
-                                    )
-                                  : editData.approverAttachment
-                              }
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.approverAttachment.name.slice(0,30) ||
-                                  editData.approverAttachment.slice(46)}{" "}
+                                {editData?.approverAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.approverAttachment?.slice(46)}{" "}
                               </a>
                               {editData.approverAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    approverAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ): (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      approverAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"

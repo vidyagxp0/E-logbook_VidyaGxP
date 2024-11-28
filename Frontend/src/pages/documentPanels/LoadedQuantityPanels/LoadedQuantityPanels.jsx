@@ -68,7 +68,7 @@ const LoadedQuantityPanels = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/loaded-quantity/update",
+    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -103,7 +103,7 @@ const LoadedQuantityPanels = () => {
 
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-for-review",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -121,7 +121,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -140,7 +140,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -155,7 +155,11 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/loaded-quantity/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -170,7 +174,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -217,7 +221,7 @@ const LoadedQuantityPanels = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update",
+        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -445,7 +449,7 @@ const LoadedQuantityPanels = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1095,7 +1099,7 @@ const LoadedQuantityPanels = () => {
                             className="cursor-not-allowed py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
                             disabled
-                            onClick={() =>  
+                            onClick={() =>
                               document
                                 .getElementById("additionalAttachment")
                                 .click()
@@ -1119,8 +1123,11 @@ const LoadedQuantityPanels = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
                             >
-                              {editData.additionalAttachment.name.slice(0,30) ||
-                                editData.additionalAttachment.slice(46)}{" "}
+                              {editData?.additionalAttachment?.name?.slice(
+                                0,
+                                30
+                              ) ||
+                                editData?.additionalAttachment?.slice(46)}{" "}
                             </a>
                           </h3>
                         </div>
@@ -1259,26 +1266,29 @@ const LoadedQuantityPanels = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.initiatorAttachment.name.slice(0,30) ||
-                                  editData.initiatorAttachment.slice(46)}{" "}
+                                {editData?.initiatorAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
                               {editData.initiatorAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    initiatorAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ) : (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      initiatorAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"
@@ -1398,26 +1408,28 @@ const LoadedQuantityPanels = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.reviewerAttachment.name.slice(0,30) ||
-                                  editData.reviewerAttachment.slice(46)}
+                                {editData?.reviewerAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
                               {editData.reviewerAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    reviewerAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ) : (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      reviewerAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"
@@ -1527,37 +1539,40 @@ const LoadedQuantityPanels = () => {
                                 Selected File:{" "}
                               </span>
                               <a
-                               href={
-                                editData.approverAttachment instanceof File
-                                  ? URL.createObjectURL(
-                                      editData.approverAttachment
-                                    )
-                                  : editData.approverAttachment
-                              }
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.approverAttachment.name.slice(0,30) ||
-                                  editData.approverAttachment.slice(46)}{" "}
+                                {editData?.approverAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.approverAttachment?.slice(46)}{" "}
                               </a>
                               {editData.approverAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    approverAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ): (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      approverAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"

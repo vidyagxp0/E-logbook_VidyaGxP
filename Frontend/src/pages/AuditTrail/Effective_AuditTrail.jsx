@@ -17,7 +17,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -33,7 +33,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -49,7 +49,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -65,7 +65,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -81,7 +81,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -97,7 +97,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-backend.mydemosoftware.com/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -292,94 +292,91 @@ function Effective_AuditTrail() {
                           "reviewer",
                           "department",
                           "description",
-                          "compression_area"
-
+                          "compression_area",
                         ].includes(auditTrail.field_name)
                     )
                     .map((auditTrail, index) => (
-                        <tr key={index}>
-                          <td
-                            style={{
-                              padding: "10px",
-                              borderBottom: "1px solid #ccc",
-                              width: "10%",
-                              textWrap: "nowrap",
-                            }}
-                          >
-                            <div className="mb-2">
-                              <span>Field Name :</span>
-                              <span className="font-normal">
-                                {" "}
-                                {auditTrail.field_name.charAt(0).toUpperCase() +
-                                  auditTrail.field_name.slice(1)}
-                              </span>
-                            </div>
-                            <div className="mb-2">
-                              Previous Value :{" "}
-                              <span className="font-normal">
-                                {" "}
-                                {auditTrail.previous_value
-                                  ? auditTrail.previous_value
-                                  : "null"}
-                              </span>
-                            </div>
-                            <div className="text-nowrap flex">
-                              New Value :{" "}
-                              <span
-                                className="font-normal"
-                                dangerouslySetInnerHTML={{
-                                  __html: auditTrail?.new_value,
-                                }}
-                              ></span>
-                            </div>
-                          </td>
-                          <td
-                            style={{
-                              padding: "10px",
-                              borderBottom: "1px solid #ccc",
-                              width: "15%",
-                            }}
-                          >
+                      <tr key={index}>
+                        <td
+                          style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #ccc",
+                            width: "10%",
+                            textWrap: "nowrap",
+                          }}
+                        >
+                          <div className="mb-2">
+                            <span>Field Name :</span>
                             <span className="font-normal">
-                              {auditTrail.declaration}
+                              {" "}
+                              {auditTrail.field_name.charAt(0).toUpperCase() +
+                                auditTrail.field_name.slice(1)}
                             </span>
-                          </td>
-                          <td
-                            style={{
-                              padding: "10px",
-                              borderBottom: "1px solid #ccc",
-                              width: "15%",
-                            }}
-                          >
-                            Action Name :{" "}
+                          </div>
+                          <div className="mb-2">
+                            Previous Value :{" "}
                             <span className="font-normal">
-                              {auditTrail.action}
+                              {" "}
+                              {auditTrail.previous_value
+                                ? auditTrail.previous_value
+                                : "null"}
                             </span>
-                          </td>
-                          <td
-                            style={{
-                              padding: "10px",
-                              borderBottom: "1px solid #ccc",
-                              width: "15%",
-                            }}
-                          >
-                            <div className="mb-2">
-                              Performed By :{" "}
-                              <span className="font-normal">
-                                {auditTrail.User.name}
-                              </span>
-                            </div>
-                            <div>
-                              Performed On :{" "}
-                              <span className="font-normal">
-                                {" "}
-                                {new Date(
-                                  auditTrail.createdAt
-                                ).toLocaleString()}
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
+                          </div>
+                          <div className="text-nowrap flex">
+                            New Value :{" "}
+                            <span
+                              className="font-normal"
+                              dangerouslySetInnerHTML={{
+                                __html: auditTrail?.new_value,
+                              }}
+                            ></span>
+                          </div>
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #ccc",
+                            width: "15%",
+                          }}
+                        >
+                          <span className="font-normal">
+                            {auditTrail.declaration}
+                          </span>
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #ccc",
+                            width: "15%",
+                          }}
+                        >
+                          Action Name :{" "}
+                          <span className="font-normal">
+                            {auditTrail.action}
+                          </span>
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #ccc",
+                            width: "15%",
+                          }}
+                        >
+                          <div className="mb-2">
+                            Performed By :{" "}
+                            <span className="font-normal">
+                              {auditTrail.User.name}
+                            </span>
+                          </div>
+                          <div>
+                            Performed On :{" "}
+                            <span className="font-normal">
+                              {" "}
+                              {new Date(auditTrail.createdAt).toLocaleString()}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
                     ))}
                 </tbody>
               </table>

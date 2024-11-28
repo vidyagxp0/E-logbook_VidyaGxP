@@ -77,7 +77,7 @@ const MediaRecordEffective = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "http://localhost:1000/media-record/update",
+    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -110,7 +110,11 @@ const MediaRecordEffective = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/media-record/send-for-review", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -125,7 +129,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
           data,
           config
         )
@@ -144,7 +148,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
           data,
           config
         )
@@ -159,7 +163,11 @@ const MediaRecordEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/media-record/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/media-record/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -174,7 +182,7 @@ const MediaRecordEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/media-record/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
           data,
           config
         )
@@ -221,7 +229,7 @@ const MediaRecordEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/media-record/update",
+        url: "https://elog-backend.mydemosoftware.com/media-record/update",
       };
 
       axios(requestOptions)
@@ -453,7 +461,7 @@ const MediaRecordEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/blank-report/${formId}`,
+        `https://elog-backend.mydemosoftware.com/media-record/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -501,7 +509,7 @@ const MediaRecordEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/media-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1288,7 +1296,7 @@ const MediaRecordEffective = () => {
                               className="text-blue-600 underline mr-1"
                             >
                               {editData.additionalAttachment.name ||
-                                editData.additionalAttachment.slice(46)}
+                                editData?.additionalAttachment?.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (
                               <button
@@ -1297,7 +1305,7 @@ const MediaRecordEffective = () => {
                                 onClick={() =>
                                   setEditData({
                                     ...editData,
-                                    additionalAttachment:null
+                                    additionalAttachment: null,
                                   })
                                 }
                               >

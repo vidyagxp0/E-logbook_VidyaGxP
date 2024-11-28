@@ -67,7 +67,7 @@ const MediaRecordPanel = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "http://localhost:1000/media-record/update",
+    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -100,7 +100,11 @@ const MediaRecordPanel = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/media-record/send-for-review", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -115,7 +119,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
           data,
           config
         )
@@ -134,7 +138,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
           data,
           config
         )
@@ -149,7 +153,11 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/media-record/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/media-record/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -164,7 +172,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/media-record/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
           data,
           config
         )
@@ -211,7 +219,7 @@ const MediaRecordPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/media-record/update",
+        url: "https://elog-backend.mydemosoftware.com/media-record/update",
       };
 
       axios(requestOptions)
@@ -427,7 +435,7 @@ const MediaRecordPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/media-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -1117,7 +1125,7 @@ const MediaRecordPanel = () => {
                             className="cursor-not-allowed py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
                             disabled
-                            onClick={() =>  
+                            onClick={() =>
                               document
                                 .getElementById("additionalAttachment")
                                 .click()
@@ -1141,8 +1149,11 @@ const MediaRecordPanel = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
                             >
-                              {editData.additionalAttachment.name.slice(0,30) ||
-                                editData.additionalAttachment.slice(46)}{" "}
+                              {editData?.additionalAttachment?.name?.slice(
+                                0,
+                                30
+                              ) ||
+                                editData?.additionalAttachment?.slice(46)}{" "}
                             </a>
                           </h3>
                         </div>
@@ -1280,26 +1291,29 @@ const MediaRecordPanel = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.initiatorAttachment.name.slice(0,30) ||
-                                  editData.initiatorAttachment.slice(46)}{" "}
+                                {editData?.initiatorAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
                               {editData.initiatorAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    initiatorAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ) : (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      initiatorAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"
@@ -1421,26 +1435,28 @@ const MediaRecordPanel = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.reviewerAttachment.name.slice(0,30) ||
-                                  editData.reviewerAttachment.slice(46)}
+                                {editData?.reviewerAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
                               {editData.reviewerAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    reviewerAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ) : (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      reviewerAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"
@@ -1552,37 +1568,40 @@ const MediaRecordPanel = () => {
                                 Selected File:{" "}
                               </span>
                               <a
-                               href={
-                                editData.approverAttachment instanceof File
-                                  ? URL.createObjectURL(
-                                      editData.approverAttachment
-                                    )
-                                  : editData.approverAttachment
-                              }
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
-                                {editData.approverAttachment.name.slice(0,30) ||
-                                  editData.approverAttachment.slice(46)}{" "}
+                                {editData?.approverAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.approverAttachment?.slice(46)}{" "}
                               </a>
                               {editData.approverAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    approverAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ): (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      approverAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
                           <div>
                             <button
                               type="button"

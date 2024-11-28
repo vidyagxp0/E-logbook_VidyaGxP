@@ -29,7 +29,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function TemperatureRecords() {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -153,7 +153,7 @@ export default function TemperatureRecords() {
 
     axios
       .post(
-        "http://localhost:1000/temprature-record/post-temprature-record",
+        "https://elog-backend.mydemosoftware.com/temprature-record/post-temprature-record",
         tempratureRecord,
         config
       )
@@ -776,86 +776,20 @@ export default function TemperatureRecords() {
                       ))}
                     </tbody>
                   </table>
-                  <div className="group-input mt-4">
-                    <label
-                    // htmlFor="additionalAttachment"
-                    // className="color-label"
-                    // name="additionalAttachment"
-                    >
-                      Additional Attachment{" "}
-                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                  <div className="group-input">
+                    <label className="color-label mt-4">
+                      Additional Attachment
+                      <span className="text-sm text-zinc-600">
+                        (If / Any)
+                      </span>{" "}
                       :
                     </label>
                     <div>
-                      {editData.additionalAttachment ? (
-                        <div className="flex items-center gap-x-4 ml-3">
-                          <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Change File
-                          </button>
-                          <h3 className="flex items-center">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
-                              Selected File:
-                            </span>
-                            <a
-                              href={
-                                editData.additionalAttachment instanceof File
-                                  ? URL.createObjectURL(
-                                      editData.additionalAttachment
-                                    )
-                                  : editData.additionalAttachment
-                              }
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline mr-1"
-                            >
-                              {editData.additionalAttachment.name ||
-                                editData.additionalAttachment.slice(46)}
-                            </a>
-                            {editData.additionalAttachment.name && (
-                              <button
-                                className="text-red-500 hover:text-red-700 text-lg"
-                                type="button"
-                                onClick={() =>
-                                  setEditData({
-                                    ...editData,
-                                    additionalAttachment: null,
-                                  })
-                                }
-                              >
-                                ✖
-                              </button>
-                            )}
-                          </h3>
-                        </div>
-                      ) : (
-                        <div>
-                          <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
-                        </div>
-                      )}
                       <input
+                        disabled
                         type="file"
                         name="additionalAttachment"
-                        id="additionalAttachment"
-                        onChange={handleInitiatorFileChange}
-                        style={{ display: "none" }}
+                        onChange={handleFileChange}
                       />
                     </div>
                   </div>
