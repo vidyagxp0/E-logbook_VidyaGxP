@@ -256,7 +256,7 @@ export default function TemperatureRecords() {
     setTempratureRecord({
       ...tempratureRecord,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
 

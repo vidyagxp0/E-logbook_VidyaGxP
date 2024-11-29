@@ -430,7 +430,7 @@ const MediaRecordEffective = () => {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };

@@ -380,7 +380,7 @@ const DispensingOfMaterialsPanel = () => {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
   const handleReviewerFileChange = (e) => {

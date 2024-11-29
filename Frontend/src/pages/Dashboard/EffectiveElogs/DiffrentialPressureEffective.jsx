@@ -36,8 +36,6 @@ export default function DPREffective() {
     compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
-    additionalAttachment: "",
-    additionalInfo: "",
     DifferentialPressureRecords: [],
     limit: "",
   });
@@ -382,7 +380,7 @@ export default function DPREffective() {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };

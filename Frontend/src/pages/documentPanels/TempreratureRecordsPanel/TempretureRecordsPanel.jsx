@@ -377,17 +377,19 @@ export default function TempretureRecordsPanel() {
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.TempratureRecords];
     updatedGridData[index].supporting_docs = file;
-    setEditData((prevState) => ({
-      ...prevState,
-      TempratureRecords: updatedGridData,
-    }));
+    setEditData((prevState) =>
+      e({
+        ...prevState,
+        TempratureRecords: updatedGridData,
+      })
+    );
   };
 
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
   const handleReviewerFileChange = (e) => {
