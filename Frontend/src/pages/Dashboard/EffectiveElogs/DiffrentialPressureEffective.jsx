@@ -1040,7 +1040,7 @@ export default function DPREffective() {
                                 type="number"
                                 value={item?.differential_pressure}
                                 className={`${
-                                  Number(item?.differential_pressure) < Number(editData?.limit)
+                                  Number(item?.differential_pressure) <= Number(editData?.limit)
                                     ? "text-green-500"
                                     : Number(item?.differential_pressure) > Number(editData?.limit)
                                     ? "text-red-600"
