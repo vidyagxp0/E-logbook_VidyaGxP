@@ -942,7 +942,7 @@ const OperationOfSterilizerPanel = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {editData?.OperationOfSterilizerRecords.map(
+                        {/* {editData?.OperationOfSterilizerRecords.map(
                           (item, index) => (
                             <tr key={index}>
                               <td>{index + 1}</td>
@@ -1274,7 +1274,7 @@ const OperationOfSterilizerPanel = () => {
                               </td>
                             </tr>
                           )
-                        )}
+                        )} */}
                       </tbody>
                     </table>
 

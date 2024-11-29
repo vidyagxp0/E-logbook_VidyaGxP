@@ -907,7 +907,7 @@ const DispensingOfMaterialsPanel = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {editData?.DispenseOfMaterials.map((item, index) => (
+                        {/* {editData?.DispenseOfMaterials.map((item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{item.unique_id}</td>
@@ -1286,7 +1286,7 @@ const DispensingOfMaterialsPanel = () => {
                               <DeleteIcon onClick={() => deleteRow(index)} />
                             </td>
                           </tr>
-                        ))}
+                        ))} */}
                       </tbody>
                     </table>
                   </div>

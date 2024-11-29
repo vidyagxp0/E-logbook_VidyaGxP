@@ -898,7 +898,7 @@ const MediaRecordPanel = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {editData?.MediaRecords.map((item, index) => (
+                        {/* {editData?.MediaRecords.map((item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{item.unique_id}</td>
@@ -1103,7 +1103,7 @@ const MediaRecordPanel = () => {
                               <DeleteIcon onClick={() => deleteRow(index)} />
                             </td>
                           </tr>
-                        ))}
+                        ))} */}
                       </tbody>
                     </table>
                   </div>

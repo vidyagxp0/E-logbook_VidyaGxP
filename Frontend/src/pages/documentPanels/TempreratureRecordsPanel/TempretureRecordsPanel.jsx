@@ -894,7 +894,7 @@ export default function TempretureRecordsPanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords.map((item, index) => (
+                      {/* {editData?.TempratureRecords.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{item.unique_id}</td>
@@ -1026,7 +1026,7 @@ export default function TempretureRecordsPanel() {
                               )}
                           </td>
                         </tr>
-                      ))}
+                      ))} */}
                     </tbody>
                   </table>
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
