@@ -331,11 +331,10 @@ function AuditTrail() {
                         </div>
                         <div className="mb-2">
                           Previous Value :{" "}
-                          <span className="font-normal">
-                            {" "}
-                            {auditTrail.previous_value
+                          <span className="font-normal" dangerouslySetInnerHTML={{__html:auditTrail.previous_value
                               ? auditTrail.previous_value
-                              : "null"}
+                              : "null"}} >
+                           
                           </span>
                         </div>
                         <div className="text-nowrap flex">
