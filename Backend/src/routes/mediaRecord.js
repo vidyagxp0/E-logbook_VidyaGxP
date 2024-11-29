@@ -53,7 +53,7 @@ router.get("/get-all", Auth.checkUserJwtToken, MediaRecord.GetAllMediaRecord);
 router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(5, 1),
   MediaRecord.SendDPElogForReview
 );

@@ -56,7 +56,7 @@ router.get(
 router.put(
   "/send-TR-elog-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(2, 1),
   TempratureProcess.SendTRElogForReview
 );

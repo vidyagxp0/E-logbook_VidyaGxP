@@ -188,7 +188,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         remarks: record?.remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
-        supporting_docs: getElogDocsUrl(supportingDocs[index]),
+        supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
@@ -254,7 +254,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
             form_id: newForm.form_id,
             field_name: "SupportingDocs",
             previous_value: null,
-            new_value: getElogDocsUrl(supportingDocs[index]),
+            new_value: getElogDocsUrl(supportingDocs),
             changed_by: user.user_id,
             previous_status: "Not Applicable",
             new_status: "Opened",
@@ -705,14 +705,23 @@ exports.SendDPElogForReview = async (req, res) => {
     // }
 
     const auditTrailEntries = [];
-
+    let initiatorAttachment = null;
+    let additionalAttachment = null;
+    // Process files
+    req?.files?.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
+      }
+    });
     // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
+    if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "initiatorAttachment",
         previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -721,12 +730,12 @@ exports.SendDPElogForReview = async (req, res) => {
       });
     }
 
-    if (req?.file) {
+    if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "additionalAttachment",
         previous_value: form.additionalAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -752,13 +761,9 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.initiatorAttachment,
-        additionalAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.additionalAttachment,
         initiatorComment: initiatorComment,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
       },
       { transaction }
     );
@@ -771,29 +776,10 @@ exports.SendDPElogForReview = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    // try {
-    //   const reviewer = await getUserById(form.reviewer_id);
-    //   // Send emails
-    //   await Mailer.sendEmail("reminderReviewer", {
-    //     reviewerName: reviewer.name,
-    //     initiator: user.name,
-    //     dateOfInitiation: new Date().toISOString().split("T")[0],
-    //     description: form.description,
-    //     status: "Under Review",
-    //     recipients: reviewer.email,
-    //   });
-
     return res.status(200).json({
       error: false,
       message: "E-log successfully sent for review",
     });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1581,7 +1567,7 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
-    console.log(reportData);
+    
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
 

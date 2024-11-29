@@ -835,14 +835,23 @@ exports.SendDPElogForReview = async (req, res) => {
     // }
 
     const auditTrailEntries = [];
-
+    let initiatorAttachment = null;
+    let additionalAttachment = null;
+    // Process files
+    req?.files?.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
+      }
+    });
     // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
+    if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "initiatorAttachment",
         previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -850,12 +859,12 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
-    if (req?.file) {
+    if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "additionalAttachment",
         previous_value: form.additionalAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -881,13 +890,9 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.initiatorAttachment,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         initiatorComment: initiatorComment,
-        additionalAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.additionalAttachment,
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
       },
       { transaction }
     );
@@ -1981,4 +1986,3 @@ exports.blankReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
-

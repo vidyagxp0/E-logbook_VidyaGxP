@@ -60,7 +60,7 @@ router.get(
 router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(4, 1),
   OperationOfSterilizer.SendDPElogForReview
 );

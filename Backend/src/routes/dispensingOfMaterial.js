@@ -53,7 +53,7 @@ router.get("/get-all", Auth.checkUserJwtToken, DispenseOfMaterial.GetAllDispense
 router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(6, 1),
   DispenseOfMaterial.SendDPElogForReview
 );

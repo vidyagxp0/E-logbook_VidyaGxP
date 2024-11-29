@@ -359,7 +359,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
-  console.log(email, password, "wwwww");
+ 
   if (!form_id) {
     return res
       .status(400)
@@ -754,14 +754,24 @@ exports.SendDPElogForReview = async (req, res) => {
     // }
 
     const auditTrailEntries = [];
+    let initiatorAttachment = null;
+    let additionalAttachment = null;
+    // Process files
+    req?.files?.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
+      }
+    });
 
     // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
+    if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "Initiator Attachment",
         previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -769,12 +779,12 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
-    if (req?.file) {
+    if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "Additional Attachment",
         previous_value: form.additionalAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -800,13 +810,9 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.initiatorAttachment,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         initiatorComment: initiatorComment,
-        additionalAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.additionalAttachment,
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
       },
       { transaction }
     );
@@ -1559,7 +1565,7 @@ exports.chatByPdf = async (req, res) => {
     const reportData = req.body.reportData;
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
-    
+
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -1674,12 +1680,11 @@ exports.viewReport = async (req, res) => {
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
-    console.log(reportData);
 
     const formId = req.params.form_id;
-   reportData.addtionalInfo = reportData?.addtionalInfo
-     ? removeHtmlTags(reportData?.addtionalInfo)
-     : "Not Applicable";
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {

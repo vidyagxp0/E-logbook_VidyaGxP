@@ -61,7 +61,7 @@ router.get(
 router.put(
   "/send-DP-elog-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(1, 1),
   DifferentialPressureProcess.SendDPElogForReview
 );
