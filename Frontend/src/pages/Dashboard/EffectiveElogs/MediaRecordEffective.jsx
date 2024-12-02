@@ -19,8 +19,15 @@ const MediaRecordEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
+
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
+  const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  useEffect(() => {
+    setReviewed_by(UserName?.name);
+  }, []);
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -70,7 +77,7 @@ const MediaRecordEffective = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "http://localhost:1000/media-record/update",
+    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -103,7 +110,11 @@ const MediaRecordEffective = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/media-record/send-for-review", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -118,7 +129,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
           data,
           config
         )
@@ -137,7 +148,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
           data,
           config
         )
@@ -152,7 +163,11 @@ const MediaRecordEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/media-record/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/media-record/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -167,7 +182,7 @@ const MediaRecordEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/media-record/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
           data,
           config
         )
@@ -214,7 +229,7 @@ const MediaRecordEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/media-record/update",
+        url: "https://elog-backend.mydemosoftware.com/media-record/update",
       };
 
       axios(requestOptions)
@@ -336,10 +351,20 @@ const MediaRecordEffective = () => {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.MediaRecords];
+      const rowToDelete = updatedGridData[index];
+
+      // Check if the row has a `record_id`
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -405,7 +430,7 @@ const MediaRecordEffective = () => {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };
@@ -416,13 +441,47 @@ const MediaRecordEffective = () => {
     setEditData({ ...editData, approverAttachment: e.target.files[0] });
   };
 
-  const generateUniqueId = () => {
-    const currentCounter =
-      parseInt(localStorage.getItem("uniqueIdCounter") || "0", 10) + 1;
-    const paddedCounter = String(currentCounter).padStart(4, "0");
-    const uniqueId = `MR${paddedCounter}`;
-    localStorage.setItem("uniqueIdCounter", currentCounter); // Persist the updated counter
-    return uniqueId;
+  // const generateUniqueId = () => {
+  //   const currentCounter =
+  //     parseInt(localStorage.getItem("uniqueIdCounter") || "0", 10) + 1;
+  //   const paddedCounter = String(currentCounter).padStart(4, "0");
+  //   const uniqueId = `MR${paddedCounter}`;
+  //   localStorage.setItem("uniqueIdCounter", currentCounter); // Persist the updated counter
+  //   return uniqueId;
+  // };
+
+  const EmptyreportData = {
+    title: "Media Record",
+    status: location.state.status,
+    blankRows: 17,
+    form_id: location.state.form_id,
+    MediaRecords: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `https://elog-backend.mydemosoftware.com/media-record/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -450,7 +509,7 @@ const MediaRecordEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/media-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -564,7 +623,7 @@ const MediaRecordEffective = () => {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
                           process: "Differential Pressure",
@@ -573,6 +632,39 @@ const MediaRecordEffective = () => {
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -1119,7 +1211,7 @@ const MediaRecordEffective = () => {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData.reviewer3.name;
+                                          reviewed_by;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1165,9 +1257,9 @@ const MediaRecordEffective = () => {
 
                   <div className="group-input mt-4">
                     <label
-                      htmlFor="additionalAttachment"
-                      className="color-label"
-                      name="additionalAttachment"
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1175,9 +1267,9 @@ const MediaRecordEffective = () => {
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
-                        <div className="flex items-center gap-x-10">
+                        <div className="flex items-center gap-x-4 ml-3">
                           <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
                             type="button"
                             onClick={() =>
                               document
@@ -1187,23 +1279,45 @@ const MediaRecordEffective = () => {
                           >
                             Change File
                           </button>
-                          <h3 className="">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                              Selected File:{" "}
+                          <h3 className="flex items-center">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                              Selected File:
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 underline"
+                              className="text-blue-600 underline mr-1"
                             >
-                              View File
+                              {editData.additionalAttachment.name ||
+                                editData?.additionalAttachment?.slice(46)}
                             </a>
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>
                               document

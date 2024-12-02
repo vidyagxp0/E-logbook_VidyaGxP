@@ -69,7 +69,7 @@ export default function TempretureRecordsPanel() {
       }
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -87,7 +87,7 @@ export default function TempretureRecordsPanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -107,7 +107,7 @@ export default function TempretureRecordsPanel() {
 
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -123,7 +123,7 @@ export default function TempretureRecordsPanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/approve-TR-elog",
+          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -141,7 +141,7 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -188,7 +188,7 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -266,6 +266,7 @@ export default function TempretureRecordsPanel() {
     title: "Temperature Record",
     ...editData,
   };
+  console.log(reportData, "8888888888888");
 
   useEffect(() => {
     if (reportData && reportData.form_id) {
@@ -281,7 +282,7 @@ export default function TempretureRecordsPanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -376,17 +377,19 @@ export default function TempretureRecordsPanel() {
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.TempratureRecords];
     updatedGridData[index].supporting_docs = file;
-    setEditData((prevState) => ({
-      ...prevState,
-      TempratureRecords: updatedGridData,
-    }));
+    setEditData((prevState) =>
+      e({
+        ...prevState,
+        TempratureRecords: updatedGridData,
+      })
+    );
   };
 
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
   const handleReviewerFileChange = (e) => {
@@ -891,7 +894,7 @@ export default function TempretureRecordsPanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords.map((item, index) => (
+                      {/* {editData?.TempratureRecords.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{item.unique_id}</td>
@@ -1023,14 +1026,14 @@ export default function TempretureRecordsPanel() {
                               )}
                           </td>
                         </tr>
-                      ))}
+                      ))} */}
                     </tbody>
                   </table>
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="flex flex-col w-full">
                       <label
-                        htmlFor="additionalAttachment"
-                        className="color-label"
+                        // htmlFor="additionalAttachment"
+                        // className="color-label"
                         name="additionalAttachment"
                       >
                         Additional Attachment{" "}
@@ -1043,7 +1046,7 @@ export default function TempretureRecordsPanel() {
                         {editData.additionalAttachment ? (
                           <div className="flex items-center gap-x-10">
                             <button
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white cursor-not-allowed ml-2"
                               type="button"
                               disabled
                               // onClick={() =>
@@ -1074,6 +1077,7 @@ export default function TempretureRecordsPanel() {
                             <button
                               type="button"
                               disabled
+                              className="py-1 bg-blue-500 text-white cursor-not-allowed !scale-100 ml-2"
                               onClick={() =>
                                 document
                                   .getElementById("additionalAttachment")
@@ -1114,7 +1118,7 @@ export default function TempretureRecordsPanel() {
 
               {initiatorRemarks === true ? (
                 <>
-                 <div className="form-flex">
+                  <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Initiator </label>
                       <div>
@@ -1138,13 +1142,11 @@ export default function TempretureRecordsPanel() {
                     </div>
                   </div>
                   <div className="form-flex">
-                    
                     <div className="group-input">
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1157,47 +1159,92 @@ export default function TempretureRecordsPanel() {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
                       <div>
-                        <button
-                          type="button"
-                          className="btn-upload"
-                          onClick={() =>
-                            document
-                              .getElementById("initiatorAttachment")
-                              .click()
-                          }
-                          disabled={
-                            location.state?.stage !== 1 ||
-                            location.state?.initiator_id !== userDetails.userId
-                          }
-                        >
-                          {editData.initiatorAttachment
-                            ? "Change File"
-                            : "Select File"}
-                        </button>
-                        {editData.initiatorAttachment && (
-                          <div>
+                        {editData.initiatorAttachment ? (
+                          <div className="flex items-center gap-x-10">
+                            {" "}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("initiatorAttachment")
+                                  .click()
+                              }
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                [2, 3].includes(userDetails.roles[0].role_id)
+                              }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                            >
+                              Change File
+                            </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.initiatorAttachment}
+                                href={
+                                  editData.initiatorAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.initiatorAttachment
+                                      )
+                                    : editData.initiatorAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.initiatorAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
+                              {editData.initiatorAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      initiatorAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
+                          </div>
+                        ) : (
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("initiatorAttachment")
+                                  .click()
+                              }
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                [2, 3].includes(userDetails.roles[0].role_id)
+                              }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input
@@ -1206,98 +1253,15 @@ export default function TempretureRecordsPanel() {
                           id="initiatorAttachment"
                           onChange={handleInitiatorFileChange}
                           style={{ display: "none" }}
-                          disabled={
-                            location.state?.stage !== 1 ||
-                            location.state?.initiator_id !== userDetails.userId
-                          }
                         />
                       </div>
                     </div>
                   </div>
-
-                 
                 </>
               ) : null}
 
               {reviewerRemarks === true ? (
                 <>
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label" htmlFor="reviewComment">
-                        Review Comment
-                        {location.state?.stage === 2 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
-                          )}
-                      </label>
-                      <input
-                        id="reviewComment"
-                        name="reviewComment"
-                        value={editData.reviewComment || ""}
-                        onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
-                        }
-                      />
-                    </div>
-                    <div className="group-input">
-                      <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                      >
-                        Reviewer Attachment
-                      </label>
-                      <div>
-                        <button
-                          type="button"
-                          className="btn-upload"
-                          onClick={() =>
-                            document
-                              .getElementById("reviewerAttachment")
-                              .click()
-                          }
-                          disabled={
-                            location.state?.stage !== 2 ||
-                            location.state?.reviewer_id !== userDetails.userId
-                          }
-                        >
-                          {editData.reviewerAttachment
-                            ? "Change File"
-                            : "Select File"}
-                        </button>
-                        {editData.reviewerAttachment && (
-                          <div>
-                            <h3>
-                              Selected File:{" "}
-                              <a
-                                href={editData.reviewerAttachment}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                View File
-                              </a>
-                            </h3>
-                          </div>
-                        )}
-                        <input
-                          type="file"
-                          name="reviewerAttachment"
-                          id="reviewerAttachment"
-                          onChange={handleReviewerFileChange}
-                          style={{ display: "none" }}
-                          disabled={
-                            location.state?.stage !== 2 ||
-                            location.state?.reviewer_id !== userDetails.userId
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Reviewer </label>
@@ -1321,88 +1285,127 @@ export default function TempretureRecordsPanel() {
                       </div>
                     </div>
                   </div>
-                </>
-              ) : null}
-
-              {approverRemarks === true ? (
-                <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label" htmlFor="approverComment">
-                        Approver Comment
-                        {location.state?.stage === 3 &&
-                          location.state?.approver_id ===
-                            userDetails.userId && (
+                      <label className="color-label" htmlFor="reviewComment">
+                        Review Comment
+                        {location.state?.stage === 2 &&
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
                           )}
                       </label>
                       <input
-                        id="approverComment"
-                        name="approverComment"
-                        value={editData.approverComment || ""}
+                        id="reviewComment"
+                        name="reviewComment"
+                        value={editData.reviewComment || ""}
                         onChange={handleInputChange1}
-                        disabled={
-                          location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
+                        readOnly={
+                          location.state?.stage !== 2 ||
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
-                        Approver Attachment
+                        Reviewer Attachment
                       </label>
                       <div>
-                        <button
-                          type="button"
-                          className="btn-upload"
-                          onClick={() =>
-                            document
-                              .getElementById("approverAttachment")
-                              .click()
-                          }
-                          disabled={
-                            location.state?.stage !== 3 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
-                        >
-                          {editData.approverAttachment
-                            ? "Change File"
-                            : "Select File"}
-                        </button>
-                        {editData.approverAttachment && (
-                          <div>
+                        {editData.reviewerAttachment ? (
+                          <div className="flex items-center gap-x-10">
+                            {" "}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("reviewerAttachment")
+                                  .click()
+                              }
+                              disabled={
+                                location.state?.stage !== 2 ||
+                                [1, 3].includes(userDetails.roles[0].role_id)
+                              }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                            >
+                              Change File
+                            </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.approverAttachment}
+                                href={
+                                  editData.reviewerAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.reviewerAttachment
+                                      )
+                                    : editData.reviewerAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.reviewerAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
+                              {editData.reviewerAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      reviewerAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
+                          </div>
+                        ) : (
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("reviewerAttachment")
+                                  .click()
+                              }
+                              disabled={
+                                location.state?.stage !== 2 ||
+                                [1, 3].includes(userDetails.roles[0].role_id)
+                              }
+                              className="py-1
+                              bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input
                           type="file"
-                          name="approverAttachment"
-                          id="approverAttachment"
-                          onChange={handleApproverFileChange}
+                          name="reviewerAttachment"
+                          id="reviewerAttachment"
+                          onChange={handleReviewerFileChange}
                           style={{ display: "none" }}
-                          disabled={
-                            location.state?.stage !== 3 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
                         />
                       </div>
                     </div>
                   </div>
+                </>
+              ) : null}
 
+              {approverRemarks === true ? (
+                <>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Approver </label>
@@ -1422,6 +1425,122 @@ export default function TempretureRecordsPanel() {
                           type="text"
                           value={formatDate(editData.date_of_approval)}
                           readOnly
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label" htmlFor="approverComment">
+                        Approver Comment
+                        {location.state?.stage === 3 &&
+                          [3, 5].includes(userDetails.roles[0].role_id) && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
+                          )}
+                      </label>
+                      <input
+                        id="approverComment"
+                        name="approverComment"
+                        value={editData.approverComment || ""}
+                        onChange={handleInputChange1}
+                        disabled={
+                          location.state?.stage !== 3 ||
+                          [1, 2].includes(userDetails.roles[0].role_id)
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
+                      >
+                        Approver Attachment
+                      </label>
+                      <div>
+                        {editData.approverAttachment ? (
+                          <div className="flex items-center gap-x-10">
+                            {" "}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("approverAttachment")
+                                  .click()
+                              }
+                              disabled={
+                                location.state?.stage !== 3 ||
+                                [1, 2].includes(userDetails.roles[0].role_id)
+                              }
+                              className="py-1 hover:bg-blue-600 bg-blue-500 text-white ml-3"
+                            >
+                              Change File
+                            </button>
+                            <h3>
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
+                              <a
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline"
+                              >
+                                {editData?.approverAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.approverAttachment?.slice(46)}{" "}
+                              </a>
+                              {editData.approverAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      approverAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        ) : (
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("approverAttachment")
+                                  .click()
+                              }
+                              disabled={
+                                location.state?.stage !== 3 ||
+                                [1, 2].includes(userDetails.roles[0].role_id)
+                              }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                            >
+                              Select File
+                            </button>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          name="approverAttachment"
+                          id="approverAttachment"
+                          onChange={handleApproverFileChange}
+                          style={{ display: "none" }}
                         />
                       </div>
                     </div>

@@ -34,6 +34,7 @@ export default function DPRpanel() {
     DifferentialPressureRecords: [],
     limit: "",
   });
+  console.log(editData, "0000000000000000");
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -73,7 +74,7 @@ export default function DPRpanel() {
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -91,7 +92,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -110,7 +111,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -126,7 +127,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -144,7 +145,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -191,7 +192,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elog-backend.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -363,7 +364,7 @@ export default function DPRpanel() {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
   const handleReviewerFileChange = (e) => {
@@ -402,7 +403,7 @@ export default function DPRpanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/differential-pressure/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -538,7 +539,7 @@ export default function DPRpanel() {
 
                   {/* Conditional Buttons Based on Stages */}
                   {location.state?.stage === 1 &&
-                    location.state?.initiator_id === userDetails.userId && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -551,7 +552,7 @@ export default function DPRpanel() {
                     )}
 
                   {location.state?.stage === 2 &&
-                    location.state?.reviewer_id === userDetails.userId && (
+                    [2, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -575,7 +576,7 @@ export default function DPRpanel() {
                     )}
 
                   {location.state?.stage === 3 &&
-                    location.state?.approver_id === userDetails.userId && (
+                    [3, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
                           className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -600,7 +601,7 @@ export default function DPRpanel() {
 
                   {/* Save Button */}
                   {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -1042,9 +1043,10 @@ export default function DPRpanel() {
                                           [index].click()
                                       }
                                       disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
+                                        location.state?.stage !== 4 ||
+                                        [2, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        )
                                       }
                                     >
                                       Change File
@@ -1075,9 +1077,10 @@ export default function DPRpanel() {
                                           [index].click()
                                       }
                                       disabled={
-                                        location.state?.stage !== 1 ||
-                                        location.state?.initiator_id !==
-                                          userDetails.userId
+                                        location.state?.stage !== 4 ||
+                                        [2, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        )
                                       }
                                     >
                                       Select File
@@ -1118,12 +1121,12 @@ export default function DPRpanel() {
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="flex flex-col w-full">
                       <label
-                        htmlFor="additionalAttachment"
-                        className="color-label"
-                        name="additionalAttachment"
-                        disabled
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
+                      // disabled
                       >
-                        Attachment{" "}
+                        Additional Attachment{" "}
                         <span className="text-sm text-zinc-600">
                           (If / Any)
                         </span>{" "}
@@ -1133,14 +1136,13 @@ export default function DPRpanel() {
                         {editData.additionalAttachment ? (
                           <div className="flex items-center gap-x-10">
                             <button
-                              className=""
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
                               type="button"
-                              disabled
-                              // onClick={() =>
-                              //   document
-                              //     .getElementById("additionalAttachment")
-                              //     .click()
-                              // }
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
                             >
                               Change File
                             </button>
@@ -1162,6 +1164,8 @@ export default function DPRpanel() {
                         ) : (
                           <div>
                             <button
+                              className="py-1 cursor-not-allowed bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                              disabled
                               type="button"
                               onClick={() =>
                                 document
@@ -1176,7 +1180,6 @@ export default function DPRpanel() {
                         <input
                           type="file"
                           name="additionalAttachment"
-                          disabled
                           id="additionalAttachment"
                           onChange={handleInitiatorFileChange}
                           style={{ display: "none" }}
@@ -1186,19 +1189,18 @@ export default function DPRpanel() {
 
                     <div className="flex flex-col w-full">
                       <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info{" "}
+                        Additional Information{" "}
                         <span className="text-sm text-zinc-600">
                           (If / Any)
                         </span>{" "}
                       </label>
                       <textarea
-                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        rows="4"
                         disabled
+                        type="text"
                         name="additionalInfo"
                         value={editData?.additionalInfo}
                         onChange={handleInputChange1}
-                      ></textarea>
+                      />
                     </div>
                   </div>
                 </>
@@ -1234,8 +1236,7 @@ export default function DPRpanel() {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1248,21 +1249,22 @@ export default function DPRpanel() {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
                       <div>
                         {editData.initiatorAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1272,21 +1274,48 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.initiatorAttachment}
+                                href={
+                                  editData.initiatorAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.initiatorAttachment
+                                      )
+                                    : editData.initiatorAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.initiatorAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
+                              {editData.initiatorAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      initiatorAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1300,9 +1329,9 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1351,8 +1380,7 @@ export default function DPRpanel() {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.reviewer_id ===
-                            userDetails.userId && (
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1365,21 +1393,22 @@ export default function DPRpanel() {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
                       <div>
                         {editData.reviewerAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1389,21 +1418,47 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.reviewerAttachment}
+                                href={
+                                  editData.reviewerAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.reviewerAttachment
+                                      )
+                                    : editData.reviewerAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.reviewerAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
+                              {editData.reviewerAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      reviewerAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1417,9 +1472,10 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1
+                              bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1468,8 +1524,7 @@ export default function DPRpanel() {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.approver_id ===
-                            userDetails.userId && (
+                          [3, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1482,21 +1537,22 @@ export default function DPRpanel() {
                         onChange={handleInputChange1}
                         disabled={
                           location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
+                          [1, 2].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
                       <div>
                         {editData.approverAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1506,21 +1562,48 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 hover:bg-blue-600 bg-blue-500 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.approverAttachment}
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.approverAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.approverAttachment?.slice(46)}{" "}
                               </a>
+                              {editData.approverAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      approverAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1534,9 +1617,9 @@ export default function DPRpanel() {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>

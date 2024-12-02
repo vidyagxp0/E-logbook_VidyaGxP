@@ -28,7 +28,7 @@ function EffectiveElogs() {
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ function EffectiveElogs() {
 
     const newConfigTemp = {
       method: "get",
-      url: "http://localhost:1000/temprature-record/get-all-temprature-record",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-all-temprature-record",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ function EffectiveElogs() {
 
     const newConfigloaded = {
       method: "get",
-      url: "http://localhost:1000/loaded-quantity/get-all",
+      url: "https://elog-backend.mydemosoftware.com/loaded-quantity/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -122,7 +122,7 @@ function EffectiveElogs() {
 
     const newConfigMedia = {
       method: "get",
-      url: "http://localhost:1000/media-record/get-all",
+      url: "https://elog-backend.mydemosoftware.com/media-record/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -153,7 +153,7 @@ function EffectiveElogs() {
 
     const newConfigDispensing = {
       method: "get",
-      url: "http://localhost:1000/dispensing-material/get-all",
+      url: "https://elog-backend.mydemosoftware.com/dispensing-material/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -183,7 +183,7 @@ function EffectiveElogs() {
       });
     const newOperationSterelizer = {
       method: "get",
-      url: "http://localhost:1000/operation-sterlizer/get-all",
+      url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -276,7 +276,11 @@ function EffectiveElogs() {
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
-              style={{ border: "1px solid gray", padding: "2px 0px",height: "40px"  }}
+              style={{
+                border: "1px solid gray",
+                padding: "2px 0px",
+                height: "40px",
+              }}
             >
               <option value="All_Records">All Records</option>
               <option value="effective_diffrential_pressure">

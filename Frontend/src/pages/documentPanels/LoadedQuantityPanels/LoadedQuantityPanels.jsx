@@ -68,7 +68,7 @@ const LoadedQuantityPanels = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/loaded-quantity/update",
+    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -103,7 +103,7 @@ const LoadedQuantityPanels = () => {
 
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-for-review",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -121,7 +121,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -140,7 +140,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -156,7 +156,7 @@ const LoadedQuantityPanels = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/approve",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
           data,
           config
         )
@@ -174,7 +174,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -221,7 +221,7 @@ const LoadedQuantityPanels = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update",
+        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -379,7 +379,7 @@ const LoadedQuantityPanels = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; 
+    if (!dateString) return "";
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -411,7 +411,7 @@ const LoadedQuantityPanels = () => {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
   const handleReviewerFileChange = (e) => {
@@ -449,7 +449,7 @@ const LoadedQuantityPanels = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -638,7 +638,7 @@ const LoadedQuantityPanels = () => {
 
                   {/* Save Button */}
                   {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
+                    [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                         onClick={() => {
@@ -1096,8 +1096,9 @@ const LoadedQuantityPanels = () => {
                       {editData.additionalAttachment ? (
                         <div className="flex items-center gap-x-10">
                           <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            className="cursor-not-allowed py-1 bg-blue-500 hover:bg-blue-600 text-white"
                             type="button"
+                            disabled
                             onClick={() =>
                               document
                                 .getElementById("additionalAttachment")
@@ -1111,19 +1112,29 @@ const LoadedQuantityPanels = () => {
                               Selected File:{" "}
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
                             >
-                              View File
+                              {editData?.additionalAttachment?.name?.slice(
+                                0,
+                                30
+                              ) ||
+                                editData?.additionalAttachment?.slice(46)}{" "}
                             </a>
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
-                            className="py-1 scale-100 bg-blue-500 text-white ml-3 bg-opacity-70"
+                            className="py-1 cursor-not-allowed bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             disabled
                             type="button"
                             onClick={() =>
@@ -1214,15 +1225,16 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
                       <div>
                         {editData.initiatorAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1232,21 +1244,48 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
                             </button>
-                            <h3 className="ml-4">
-                              Selected File:{" "}
+                            <h3>
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.initiatorAttachment}
+                                href={
+                                  editData.initiatorAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.initiatorAttachment
+                                      )
+                                    : editData.initiatorAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.initiatorAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
+                              {editData.initiatorAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      initiatorAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1260,9 +1299,9 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1278,8 +1317,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
 
@@ -1330,15 +1367,16 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
                       <div>
                         {editData.reviewerAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1348,21 +1386,47 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.reviewerAttachment}
+                                href={
+                                  editData.reviewerAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.reviewerAttachment
+                                      )
+                                    : editData.reviewerAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.reviewerAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
+                              {editData.reviewerAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      reviewerAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1376,9 +1440,10 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1
+                              bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1394,8 +1459,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
 
@@ -1446,15 +1509,16 @@ const LoadedQuantityPanels = () => {
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
                       <div>
                         {editData.approverAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1464,21 +1528,48 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 hover:bg-blue-600 bg-blue-500 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.approverAttachment}
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.approverAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.approverAttachment?.slice(46)}{" "}
                               </a>
+                              {editData.approverAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      approverAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1492,9 +1583,9 @@ const LoadedQuantityPanels = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1510,8 +1601,6 @@ const LoadedQuantityPanels = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div className="form-flex"></div>
                 </>
               ) : null}
             </div>

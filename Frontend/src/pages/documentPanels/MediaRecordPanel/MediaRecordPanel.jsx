@@ -67,7 +67,7 @@ const MediaRecordPanel = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "http://localhost:1000/media-record/update",
+    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -101,7 +101,7 @@ const MediaRecordPanel = () => {
       }
       axios
         .put(
-          "http://localhost:1000/media-record/send-for-review",
+          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
           data,
           config
         )
@@ -119,7 +119,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
           data,
           config
         )
@@ -138,7 +138,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
           data,
           config
         )
@@ -154,7 +154,7 @@ const MediaRecordPanel = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/approve",
+          "https://elog-backend.mydemosoftware.com/media-record/approve",
           data,
           config
         )
@@ -172,7 +172,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/media-record/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
           data,
           config
         )
@@ -219,7 +219,7 @@ const MediaRecordPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/media-record/update",
+        url: "https://elog-backend.mydemosoftware.com/media-record/update",
       };
 
       axios(requestOptions)
@@ -396,7 +396,7 @@ const MediaRecordPanel = () => {
     setEditData({
       ...editData,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
   const handleReviewerFileChange = (e) => {
@@ -435,7 +435,7 @@ const MediaRecordPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/media-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -898,7 +898,7 @@ const MediaRecordPanel = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {editData?.MediaRecords.map((item, index) => (
+                        {/* {editData?.MediaRecords.map((item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{item.unique_id}</td>
@@ -1103,17 +1103,16 @@ const MediaRecordPanel = () => {
                               <DeleteIcon onClick={() => deleteRow(index)} />
                             </td>
                           </tr>
-                        ))}
+                        ))} */}
                       </tbody>
                     </table>
                   </div>
 
                   <div className="group-input mt-4">
                     <label
-                      htmlFor="additionalAttachment"
-                      className="color-label"
-                      name="additionalAttachment"
-                      disabled
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1123,44 +1122,52 @@ const MediaRecordPanel = () => {
                       {editData.additionalAttachment ? (
                         <div className="flex items-center gap-x-10">
                           <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
-                            // type="button"
-                            // onClick={() =>
-                            //   document
-                            //     .getElementById("additionalAttachment")
-                            //     .click()
-                            // }
+                            className="cursor-not-allowed py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            type="button"
                             disabled
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
                           >
                             Change File
                           </button>
                           <h3 className="">
-                            <span
-                              className="py-1 bg-zinc-300 px-2 rounded-md mr-2 "
-                              disabled
-                            >
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
                               Selected File:{" "}
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline"
-                              disabled
                             >
-                              View File
+                              {editData?.additionalAttachment?.name?.slice(
+                                0,
+                                30
+                              ) ||
+                                editData?.additionalAttachment?.slice(46)}{" "}
                             </a>
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
+                            className="py-1 cursor-not-allowed bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                            disabled
                             type="button"
-                            // onClick={() =>
-                            //   document
-                            //     .getElementById("additionalAttachment")
-                            //     .click()
-                            // }
+                            onClick={() =>
+                              document
+                                .getElementById("additionalAttachment")
+                                .click()
+                            }
                           >
                             Select File
                           </button>
@@ -1224,8 +1231,7 @@ const MediaRecordPanel = () => {
                       <label className="color-label">
                         Initiator Comment
                         {location.state?.stage === 1 &&
-                          location.state?.initiator_id ===
-                            userDetails.userId && (
+                          [1, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1238,21 +1244,22 @@ const MediaRecordPanel = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
+                          [2, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="initiatorAttachment"
-                        className="color-label"
-                        name="initiatorAttachment"
+                      // htmlFor="initiatorAttachment"
+                      // className="color-label"
+                      // name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
                       <div>
                         {editData.initiatorAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1262,21 +1269,48 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.initiatorAttachment}
+                                href={
+                                  editData.initiatorAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.initiatorAttachment
+                                      )
+                                    : editData.initiatorAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.initiatorAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
+                              {editData.initiatorAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      initiatorAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1290,9 +1324,9 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
+                                [2, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1341,8 +1375,7 @@ const MediaRecordPanel = () => {
                       <label className="color-label" htmlFor="reviewComment">
                         Review Comment
                         {location.state?.stage === 2 &&
-                          location.state?.reviewer_id ===
-                            userDetails.userId && (
+                          [2, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1355,21 +1388,22 @@ const MediaRecordPanel = () => {
                         onChange={handleInputChange1}
                         readOnly={
                           location.state?.stage !== 2 ||
-                          location.state?.reviewer_id !== userDetails.userId
+                          [1, 3].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="reviewerAttachment"
-                        className="color-label"
-                        name="reviewerAttachment"
+                      // htmlFor="reviewerAttachment"
+                      // className="color-label"
+                      // name="reviewerAttachment"
                       >
                         Reviewer Attachment
                       </label>
                       <div>
                         {editData.reviewerAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1379,21 +1413,47 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.reviewerAttachment}
+                                href={
+                                  editData.reviewerAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.reviewerAttachment
+                                      )
+                                    : editData.reviewerAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.reviewerAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
+                              {editData.reviewerAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      reviewerAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1407,9 +1467,10 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 2 ||
-                                location.state?.reviewer_id !==
-                                  userDetails.userId
+                                [1, 3].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1
+                              bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1458,8 +1519,7 @@ const MediaRecordPanel = () => {
                       <label className="color-label" htmlFor="approverComment">
                         Approver Comment
                         {location.state?.stage === 3 &&
-                          location.state?.approver_id ===
-                            userDetails.userId && (
+                          [3, 5].includes(userDetails.roles[0].role_id) && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
@@ -1472,21 +1532,22 @@ const MediaRecordPanel = () => {
                         onChange={handleInputChange1}
                         disabled={
                           location.state?.stage !== 3 ||
-                          location.state?.approver_id !== userDetails.userId
+                          [1, 2].includes(userDetails.roles[0].role_id)
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                        htmlFor="approverAttachment"
-                        className="color-label"
-                        name="approverAttachment"
+                      // htmlFor="approverAttachment"
+                      // className="color-label"
+                      // name="approverAttachment"
                       >
                         Approver Attachment
                       </label>
                       <div>
                         {editData.approverAttachment ? (
-                          <div>
+                          <div className="flex items-center gap-x-10">
+                            {" "}
                             <button
                               type="button"
                               onClick={() =>
@@ -1496,21 +1557,48 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 hover:bg-blue-600 bg-blue-500 text-white ml-3"
                             >
                               Change File
                             </button>
                             <h3>
-                              Selected File:{" "}
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
+                                Selected File:{" "}
+                              </span>
                               <a
-                                href={editData.approverAttachment}
+                                href={
+                                  editData.approverAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.approverAttachment
+                                      )
+                                    : editData.approverAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="text-blue-600 underline"
                               >
-                                View File
+                                {editData?.approverAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) ||
+                                  editData?.approverAttachment?.slice(46)}{" "}
                               </a>
+                              {editData.approverAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      approverAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
@@ -1524,9 +1612,9 @@ const MediaRecordPanel = () => {
                               }
                               disabled={
                                 location.state?.stage !== 3 ||
-                                location.state?.approver_id !==
-                                  userDetails.userId
+                                [1, 2].includes(userDetails.roles[0].role_id)
                               }
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>

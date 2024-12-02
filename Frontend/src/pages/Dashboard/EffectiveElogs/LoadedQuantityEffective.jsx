@@ -30,6 +30,13 @@ const LoadedQuantityEffective = () => {
 
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const UserName = JSON.parse(localStorage.getItem("Username"));
+
+  const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  useEffect(() => {
+    setReviewed_by(UserName?.name);
+  }, []);
+  // console.log(userdata, "dataaataat");
+
   // console.log(UserName.name);
 
   const [editData, setEditData] = useState({
@@ -109,7 +116,7 @@ const LoadedQuantityEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/loaded-quantity/update",
+    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -144,7 +151,7 @@ const LoadedQuantityEffective = () => {
 
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-for-review",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -162,7 +169,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -181,7 +188,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -196,7 +203,11 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/loaded-quantity/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -211,7 +222,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -258,7 +269,7 @@ const LoadedQuantityEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update",
+        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -319,6 +330,7 @@ const LoadedQuantityEffective = () => {
         yield: "",
         remarks: "",
         checked_by: location?.state?.initiator_name,
+        reviewed_by: "",
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -381,6 +393,15 @@ const LoadedQuantityEffective = () => {
       userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.LoadedQuantityRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -447,7 +468,7 @@ const LoadedQuantityEffective = () => {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };
@@ -473,7 +494,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/blank-report/${formId}`,
+        `https://elog-backend.mydemosoftware.com/loaded-quantity/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -521,7 +542,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/loaded-quantity/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -665,10 +686,10 @@ const LoadedQuantityEffective = () => {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Loaded Quantity",
                         },
                       })
                     }
@@ -682,7 +703,7 @@ const LoadedQuantityEffective = () => {
                   >
                     {isLoading1 ? (
                       <>
-                        <span>Print Paper</span>
+                        <span>Blank Draft</span>
                         <div
                           style={{
                             width: "20px",
@@ -696,7 +717,7 @@ const LoadedQuantityEffective = () => {
                         ></div>
                       </>
                     ) : (
-                      "Print Paper"
+                      "Blank Draft"
                     )}
                     <style>
                       {`
@@ -1061,8 +1082,8 @@ const LoadedQuantityEffective = () => {
                           <th>S no.</th>
                           <th>Unique Id</th>
                           <th>Date</th>
-                          <th>Product Name</th>
-                          <th>Batch No.</th>
+                          <th style={{ minWidth: "95px" }}>Product Name</th>
+                          <th style={{ minWidth: "110px" }}>Batch No.</th>
                           <th>Container Size (ml)</th>
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
@@ -1124,22 +1145,24 @@ const LoadedQuantityEffective = () => {
                                 )}
                               >
                                 {Array.isArray(editData.product_nameArray) &&
-                                editData.product_nameArray.length > 0 ? (
-                                  editData.product_nameArray.map(
-                                    (productNameArray, index) => (
-                                      <option
-                                        key={index}
-                                        value={productNameArray.productName}
-                                      >
-                                        {productNameArray.productName}
-                                      </option>
+                                editData.product_nameArray.length > 0
+                                  ? editData.product_nameArray.map(
+                                      (productNameArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={productNameArray.productName}
+                                        >
+                                          {productNameArray.productName}
+                                        </option>
+                                      )
                                     )
-                                  )
-                                ) : (
-                                  <option value="">
-                                    No Product Name available
-                                  </option>
-                                )}
+                                  : ["Product 1", "Product 2", "Product 3"].map(
+                                      (productName, index) => (
+                                        <option key={index} value={productName}>
+                                          {productName}
+                                        </option>
+                                      )
+                                    )}
                               </select>
                             </td>
 
@@ -1161,22 +1184,24 @@ const LoadedQuantityEffective = () => {
                                 )}
                               >
                                 {Array.isArray(editData.batch_noArray) &&
-                                editData.batch_noArray.length > 0 ? (
-                                  editData.batch_noArray.map(
-                                    (batchNoArray, index) => (
-                                      <option
-                                        key={index}
-                                        value={batchNoArray.batchNo}
-                                      >
-                                        {batchNoArray.batchNo}
-                                      </option>
+                                editData.batch_noArray.length > 0
+                                  ? editData.batch_noArray.map(
+                                      (batchNoArray, index) => (
+                                        <option
+                                          key={index}
+                                          value={batchNoArray.batchNo}
+                                        >
+                                          {batchNoArray.batchNo}
+                                        </option>
+                                      )
                                     )
-                                  )
-                                ) : (
-                                  <option value="">
-                                    No Batch No. available
-                                  </option>
-                                )}
+                                  : ["BatchNo1", "BatchNo2", "BatchNo3"].map(
+                                      (BatchNo, index) => (
+                                        <option key={index} value={BatchNo}>
+                                          {BatchNo}
+                                        </option>
+                                      )
+                                    )}
                               </select>
                             </td>
 
@@ -1277,7 +1302,13 @@ const LoadedQuantityEffective = () => {
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                   <input
-                                    className="h-4 w-4 cursor-pointer"
+                                    className={`h-4 w-4  ${
+                                      [1, 3].includes(
+                                        userDetails.roles[0].role_id
+                                      )
+                                        ? "cursor-not-allowed"
+                                        : "cursor-pointer"
+                                    }`}
                                     type="checkbox"
                                     checked={!!item.reviewed_by}
                                     onChange={(e) => {
@@ -1286,7 +1317,7 @@ const LoadedQuantityEffective = () => {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          UserName.name;
+                                          reviewed_by;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1308,6 +1339,11 @@ const LoadedQuantityEffective = () => {
                             <td>
                               <input
                                 value={item.remarks}
+                                className={`${
+                                  [1, 3].includes(userDetails.roles[0].role_id)
+                                    ? "cursor-not-allowed"
+                                    : ""
+                                }`}
                                 onChange={(e) => {
                                   const newData = [
                                     ...editData.LoadedQuantityRecords,
@@ -1373,8 +1409,10 @@ const LoadedQuantityEffective = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                              {editData.additionalAttachment.name ||
-                                "View File"}
+                              {editData?.additionalAttachment?.name?.slice(
+                                0,
+                                30
+                              ) || editData?.additionalAttachment?.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (
                               <button

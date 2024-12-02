@@ -18,17 +18,22 @@ export default function DPREffective() {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
+
+  const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  useEffect(() => {
+    setReviewed_by(UserName?.name);
+  }, []);
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
     description: "",
     department: "",
     compression_area: "",
-    additionalAttachment: "",
-    additionalInfo: "",
     additionalAttachment: "",
     additionalInfo: "",
     DifferentialPressureRecords: [],
@@ -74,7 +79,7 @@ export default function DPREffective() {
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -92,7 +97,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -111,7 +116,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -127,7 +132,7 @@ export default function DPREffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -145,7 +150,7 @@ export default function DPREffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -191,7 +196,7 @@ export default function DPREffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elog-backend.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -213,7 +218,10 @@ export default function DPREffective() {
   }, [location.state]);
 
   const addRow = () => {
-    if (userDetails.roles[0].role_id === 1 || userDetails.roles[0].role_id === 5) {
+    if (
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
+    ) {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
@@ -221,8 +229,7 @@ export default function DPREffective() {
         hour12: true, // Use 12-hour format
       };
       const nextIndex = editData?.DifferentialPressureRecords?.length || 0;
-     
-     
+
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: `DPR000${nextIndex + 1}`,
@@ -295,10 +302,19 @@ export default function DPREffective() {
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.DifferentialPressureRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -364,7 +380,7 @@ export default function DPREffective() {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };
@@ -377,6 +393,40 @@ export default function DPREffective() {
 
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
+  const EmptyreportData = {
+    title: "Differential Pressure",
+    status: location.state.status,
+    blankRows: 17,
+    form_id: location.state.form_id,
+    DifferentialPressureRecords: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `https://elog-backend.mydemosoftware.com/differential-pressure/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -404,7 +454,7 @@ export default function DPREffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/differential-pressure/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -494,7 +544,7 @@ export default function DPREffective() {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
                           process: "Differential Pressure",
@@ -503,6 +553,39 @@ export default function DPREffective() {
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -957,10 +1040,9 @@ export default function DPREffective() {
                                 type="number"
                                 value={item?.differential_pressure}
                                 className={`${
-                                  item?.differential_pressure < editData?.limit
+                                  Number(item?.differential_pressure) <= Number(editData?.limit)
                                     ? "text-green-500"
-                                    : item?.differential_pressure >
-                                      editData?.limit
+                                    : Number(item?.differential_pressure) > Number(editData?.limit)
                                     ? "text-red-600"
                                     : ""
                                 }`}
@@ -993,7 +1075,7 @@ export default function DPREffective() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
-                                disabled={[1,3].includes(
+                                disabled={[1, 3].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
@@ -1001,7 +1083,7 @@ export default function DPREffective() {
                             <td>
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                <input
+                                  <input
                                     className="h-4 w-4 cursor-pointer"
                                     type="checkbox"
                                     checked={!!item.reviewed_by}
@@ -1011,7 +1093,7 @@ export default function DPREffective() {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData.reviewer.name;
+                                          reviewed_by;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1020,7 +1102,7 @@ export default function DPREffective() {
                                         DifferentialPressureRecords: newData,
                                       });
                                     }}
-                                    disabled={[1,3].includes(
+                                    disabled={[1, 3].includes(
                                       userDetails.roles[0].role_id
                                     )}
                                   />
@@ -1115,13 +1197,13 @@ export default function DPREffective() {
                   </table>
 
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                    <div className="flex flex-col w-full">
+                    <div className="group-input mt-4">
                       <label
-                        htmlFor="additionalAttachment"
-                        className="color-label"
-                        name="additionalAttachment"
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
                       >
-                        Attachment{" "}
+                        Additional Attachment{" "}
                         <span className="text-sm text-zinc-600">
                           (If / Any)
                         </span>{" "}
@@ -1129,9 +1211,9 @@ export default function DPREffective() {
                       </label>
                       <div>
                         {editData.additionalAttachment ? (
-                          <div className="flex items-center gap-x-10">
+                          <div className="flex items-center gap-x-4 ml-3">
                             <button
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
                               type="button"
                               onClick={() =>
                                 document
@@ -1141,33 +1223,56 @@ export default function DPREffective() {
                             >
                               Change File
                             </button>
-                            <h3 className="">
-                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                                Selected File:{" "}
+                            <h3 className="flex items-center">
+                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                                Selected File:
                               </span>
                               <a
-                                href={editData.additionalAttachment}
+                                href={
+                                  editData.additionalAttachment instanceof File
+                                    ? URL.createObjectURL(
+                                        editData.additionalAttachment
+                                      )
+                                    : editData.additionalAttachment
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 underline"
+                                className="text-blue-600 underline mr-1"
                               >
-                                View File
+                                {editData?.additionalAttachment?.name?.slice(
+                                  0,
+                                  30
+                                ) || editData?.additionalAttachment?.slice(46)}
                               </a>
+                              {editData.additionalAttachment.name && (
+                                <button
+                                  className="text-red-500 hover:text-red-700 text-lg"
+                                  type="button"
+                                  onClick={() =>
+                                    setEditData({
+                                      ...editData,
+                                      additionalAttachment: null,
+                                    })
+                                  }
+                                >
+                                  ✖
+                                </button>
+                              )}
                             </h3>
                           </div>
                         ) : (
                           <div>
-                           <button
-                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                            type="button"
-                            onClick={() =>
-                              document
-                                .getElementById("additionalAttachment")
-                                .click()
-                            }
-                          >
-                            Select File
-                          </button>
+                            <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
+                              type="button"
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
+                            >
+                              Select File
+                            </button>
                           </div>
                         )}
                         <input

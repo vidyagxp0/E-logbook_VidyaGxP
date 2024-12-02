@@ -64,11 +64,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
       .json({ error: true, message: "Please provide email and password." });
   }
 
-  if (!initiatorComment) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an initiator comment." });
-  }
+  // if (!initiatorComment) {
+  //   return res
+  //     .status(400)
+  //     .json({ error: true, message: "Please provide an initiator comment." });
+  // }
 
   // Start a transaction
   const transaction = await sequelize.transaction();

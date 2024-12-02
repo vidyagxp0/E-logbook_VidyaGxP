@@ -19,11 +19,17 @@ const OperationOfSterilizerEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
   const [productNameArray, setProductNameArray] = useState([]);
   const [batchNoArray, setBatchNoArray] = useState([]);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
+  const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  useEffect(() => {
+    setReviewed_by(UserName?.name);
+  }, []);
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -43,14 +49,14 @@ const OperationOfSterilizerEffective = () => {
             ...productNameArray.map((itm) => ({ productName: itm })),
           ]
         : prevData.product_nameArray;
-  
+
       const updatedBatchNoArray = Array.isArray(batchNoArray)
         ? [
             ...(prevData.batch_noArray || []), // Retain previous values
             ...batchNoArray.map((itm) => ({ batchNo: itm })),
           ]
         : prevData.batch_noArray;
-  
+
       return {
         ...prevData,
         product_nameArray: updatedProductNameArray,
@@ -101,7 +107,7 @@ const OperationOfSterilizerEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/operation-sterlizer/update",
+    //     url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -140,7 +146,7 @@ const OperationOfSterilizerEffective = () => {
 
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-for-review",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -158,7 +164,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -177,7 +183,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -192,7 +198,11 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/operation-sterlizer/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -207,7 +217,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -254,7 +264,7 @@ const OperationOfSterilizerEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/operation-sterlizer/update",
+        url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
       };
 
       axios(requestOptions)
@@ -274,7 +284,7 @@ const OperationOfSterilizerEffective = () => {
     setEditData(location.state);
   }, [location.state]);
 
-  console.log(location.state.stage === 2);
+  // console.log(location.state.stage === 2);
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
@@ -298,7 +308,7 @@ const OperationOfSterilizerEffective = () => {
         second: "2-digit",
         hour12: false, // Use 24-hour format
       };
-      const nextIndex = editData?.LoadedQuantityRecords?.length || 0;
+      const nextIndex = editData?.OperationOfSterilizerRecords?.length || 0;
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         unique_id: `OS000${nextIndex + 1}`,
@@ -385,6 +395,15 @@ const OperationOfSterilizerEffective = () => {
       userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.OperationOfSterilizerRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -450,7 +469,7 @@ const OperationOfSterilizerEffective = () => {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };
@@ -465,17 +484,51 @@ const OperationOfSterilizerEffective = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
+  const EmptyreportData = {
+    title: "Operation Of Sterilizer",
+    status: location?.state?.status,
+    blankRows: 20,
+    form_id: location?.state?.form_id,
+    OperationOfSterilizerRecord: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `https://elog-backend.mydemosoftware.com/operation-sterlizer/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
+  };
+
   const reportData = {
     site:
-      location.state.site_id === 1
+      location?.state?.site_id === 1
         ? "India"
-        : location.state.site_id === 2
+        : location?.state?.site_id === 2
         ? "Malaysia"
-        : location.state.site_id === 3
+        : location?.state?.site_id === 3
         ? "EMEA"
         : "EU",
-    status: location.state.status,
-    initiator_name: location.state.initiator_name,
+    status: location?.state?.status,
+    initiator_name: location?.state?.initiator_name,
     title: "Operation Of Sterilizer",
     ...editData,
   };
@@ -490,7 +543,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/operation-sterlizer/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/operation-sterlizer/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -526,47 +579,52 @@ const OperationOfSterilizerEffective = () => {
     if (file) {
       const fileReader = new FileReader();
       let hasErrorOccurred = false;
-  
+
       fileReader.onload = (e) => {
         const workbook = XLSX.read(e.target.result, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
-  
-        const normalizedData = jsonData.map((item, index) => {
-          const normalizedItem = {};
-  
-          if (index === 0 && !hasErrorOccurred) {
-            const headers = Object.keys(item);
-            const isProductNamePresent = headers.includes("Product Name");
-            const isBatchNoPresent = headers.includes("Batch No") || headers.includes("Batch No.");
-  
-            if (!isProductNamePresent && !isBatchNoPresent) {
-              toast.error("Excel file headers do not match the required format!");
-              hasErrorOccurred = true;
-              return null; 
+
+        const normalizedData = jsonData
+          .map((item, index) => {
+            const normalizedItem = {};
+
+            if (index === 0 && !hasErrorOccurred) {
+              const headers = Object.keys(item);
+              const isProductNamePresent = headers.includes("Product Name");
+              const isBatchNoPresent =
+                headers.includes("Batch No") || headers.includes("Batch No.");
+
+              if (!isProductNamePresent && !isBatchNoPresent) {
+                toast.error(
+                  "Excel file headers do not match the required format!"
+                );
+                hasErrorOccurred = true;
+                return null;
+              }
             }
-          }
-  
-          Object.keys(item).forEach((key) => {
-            const normalizedKey = key.trim();
-            normalizedItem[normalizedKey] = item[key];
-          });
-  
-          return normalizedItem;
-        }).filter((item) => item !== null);
-  
+
+            Object.keys(item).forEach((key) => {
+              const normalizedKey = key.trim();
+              normalizedItem[normalizedKey] = item[key];
+            });
+
+            return normalizedItem;
+          })
+          .filter((item) => item !== null);
+
         if (hasErrorOccurred) {
           return;
         }
-  
+
         const importedProductName = normalizedData
           .map((item) => item["Product Name"])
-          .filter((name) => name); 
+          .filter((name) => name);
         const importedBatchNo = normalizedData
           .map((item) => item["Batch No"] || item["Batch No."])
           .filter((no) => no);
-  
+
         if (importedProductName.length > 0) {
           setProductNameArray((prev) => [...prev, ...importedProductName]);
         }
@@ -574,7 +632,7 @@ const OperationOfSterilizerEffective = () => {
           setBatchNoArray((prev) => [...prev, ...importedBatchNo]);
         }
       };
-  
+
       fileReader.readAsBinaryString(file);
     }
   };
@@ -629,15 +687,48 @@ const OperationOfSterilizerEffective = () => {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Operation Of Sterilizer",
                         },
                       })
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -1012,10 +1103,14 @@ const OperationOfSterilizerEffective = () => {
                           <th rowSpan={2}>Air Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Steam Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Printer Ok Yes/No</th>
-                          <th rowSpan={2}>Product Name</th>
+                          <th style={{ minWidth: "130px" }} rowSpan={2}>
+                            Product Name
+                          </th>
                           <th rowSpan={2}>Container size (ml)</th>
                           <th rowSpan={2}>Loaded quantity</th>
-                          <th rowSpan={2}>Batch No.</th>
+                          <th style={{ minWidth: "115px" }} rowSpan={2}>
+                            Batch No.
+                          </th>
                           <th rowSpan={2}>Loading Time</th>
                           <th rowSpan={1} colSpan={2}>
                             {" "}
@@ -1131,22 +1226,26 @@ const OperationOfSterilizerEffective = () => {
                                   )}
                                 >
                                   {Array.isArray(editData.product_nameArray) &&
-                                  editData.product_nameArray.length > 0 ? (
-                                    editData.product_nameArray.map(
-                                      (productNameArray, index) => (
-                                        <option
-                                          key={index}
-                                          value={productNameArray.productName}
-                                        >
-                                          {productNameArray.productName}
-                                        </option>
+                                  editData.product_nameArray.length > 0
+                                    ? editData.product_nameArray.map(
+                                        (productNameArray, index) => (
+                                          <option
+                                            key={index}
+                                            value={productNameArray.productName}
+                                          >
+                                            {productNameArray.productName}
+                                          </option>
+                                        )
                                       )
-                                    )
-                                  ) : (
-                                    <option value="">
-                                      No Product Name available
-                                    </option>
-                                  )}
+                                    : [
+                                        "Product 1",
+                                        "Product 2",
+                                        "Product 3",
+                                      ].map((productName, index) => (
+                                        <option key={index} value={productName}>
+                                          {productName}
+                                        </option>
+                                      ))}
                                 </select>
                               </td>
                               <td>
@@ -1195,7 +1294,8 @@ const OperationOfSterilizerEffective = () => {
                                     const newData = [
                                       ...editData.OperationOfSterilizerRecords,
                                     ];
-                                    newData[index].batch_no_lot_no = e.target.value;
+                                    newData[index].batch_no_lot_no =
+                                      e.target.value;
                                     setEditData({
                                       ...editData,
                                       OperationOfSterilizerRecords: newData,
@@ -1206,22 +1306,24 @@ const OperationOfSterilizerEffective = () => {
                                   )}
                                 >
                                   {Array.isArray(editData.batch_noArray) &&
-                                  editData.batch_noArray.length > 0 ? (
-                                    editData.batch_noArray.map(
-                                      (batchNoArray, index) => (
-                                        <option
-                                          key={index}
-                                          value={batchNoArray.batchNo}
-                                        >
-                                          {batchNoArray.batchNo}
-                                        </option>
+                                  editData.batch_noArray.length > 0
+                                    ? editData.batch_noArray.map(
+                                        (batchNoArray, index) => (
+                                          <option
+                                            key={index}
+                                            value={batchNoArray.batchNo}
+                                          >
+                                            {batchNoArray.batchNo}
+                                          </option>
+                                        )
                                       )
-                                    )
-                                  ) : (
-                                    <option value="">
-                                      No Batch No. available
-                                    </option>
-                                  )}
+                                    : ["BatchNo1", "BatchNo2", "BatchNo3"].map(
+                                        (BatchNo, index) => (
+                                          <option key={index} value={BatchNo}>
+                                            {BatchNo}
+                                          </option>
+                                        )
+                                      )}
                                 </select>
                               </td>
                               <td>
@@ -1370,7 +1472,7 @@ const OperationOfSterilizerEffective = () => {
                                         ];
                                         if (e.target.checked) {
                                           newData[index].reviewed_by =
-                                            editData.reviewer2.name;
+                                            reviewed_by;
                                         } else {
                                           newData[index].reviewed_by = "";
                                         }
@@ -1427,13 +1529,19 @@ const OperationOfSterilizerEffective = () => {
                               Selected File:
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
                               {editData.additionalAttachment.name ||
-                                "View File"}
+                                editData.additionalAttachment.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (
                               <button

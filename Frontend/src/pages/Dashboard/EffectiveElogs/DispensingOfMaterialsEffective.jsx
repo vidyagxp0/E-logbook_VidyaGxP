@@ -18,9 +18,17 @@ const DispensingOfMaterialsEffective = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
+
   const [checkby, setCheckby] = useState(null);
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
+
+  const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  useEffect(() => {
+    setReviewed_by(UserName?.name);
+  }, []);
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -79,7 +87,7 @@ const DispensingOfMaterialsEffective = () => {
       }
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-for-review",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
           data,
           config
         )
@@ -97,7 +105,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -116,7 +124,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -131,7 +139,11 @@ const DispensingOfMaterialsEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/dispensing-material/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -146,7 +158,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/dispensing-material/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -197,7 +209,7 @@ const DispensingOfMaterialsEffective = () => {
         },
         data: editData,
 
-        url: "http://localhost:1000/dispensing-material/update",
+        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -320,13 +332,25 @@ const DispensingOfMaterialsEffective = () => {
   function isObject(object) {
     return object != null && typeof object === "object";
   }
+  useEffect(() => {
+    console.log(location.state.record_id, "record id");
+  }, []);
 
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const updatedGridData = [...editData.DispenseOfMaterials];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
@@ -392,7 +416,7 @@ const DispensingOfMaterialsEffective = () => {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };
@@ -405,6 +429,40 @@ const DispensingOfMaterialsEffective = () => {
 
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
+  const EmptyreportData = {
+    title: "Dispensing Of Materials",
+    status: location.state.status,
+    blankRows: 12,
+    form_id: location.state.form_id,
+    DispenseOfMaterial: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `https://elog-backend.mydemosoftware.com/dispensing-material/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -439,7 +497,7 @@ const DispensingOfMaterialsEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/dispensing-material/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/dispensing-material/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -529,7 +587,7 @@ const DispensingOfMaterialsEffective = () => {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
                           process: "Differential Pressure",
@@ -538,6 +596,39 @@ const DispensingOfMaterialsEffective = () => {
                     }
                   >
                     Audit Trail
+                  </button>
+
+                  {/* Generate Empty Report Button */}
+                  <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
                   </button>
 
                   {/* Generate Report Button */}
@@ -1244,7 +1335,7 @@ const DispensingOfMaterialsEffective = () => {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
-                                          editData.reviewer4.name;
+                                          reviewed_by;
                                       } else {
                                         newData[index].reviewed_by = "";
                                       }
@@ -1311,9 +1402,9 @@ const DispensingOfMaterialsEffective = () => {
                   </div>
                   <div className="group-input mt-4">
                     <label
-                      htmlFor="additionalAttachment"
-                      className="color-label"
-                      name="additionalAttachment"
+                    // htmlFor="additionalAttachment"
+                    // className="color-label"
+                    // name="additionalAttachment"
                     >
                       Additional Attachment{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
@@ -1321,9 +1412,9 @@ const DispensingOfMaterialsEffective = () => {
                     </label>
                     <div>
                       {editData.additionalAttachment ? (
-                        <div className="flex items-center gap-x-10">
+                        <div className="flex items-center gap-x-4 ml-3">
                           <button
-                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
+                            className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
                             type="button"
                             onClick={() =>
                               document
@@ -1333,23 +1424,45 @@ const DispensingOfMaterialsEffective = () => {
                           >
                             Change File
                           </button>
-                          <h3 className="">
-                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                              Selected File:{" "}
+                          <h3 className="flex items-center">
+                            <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                              Selected File:
                             </span>
                             <a
-                              href={editData.additionalAttachment}
+                              href={
+                                editData.additionalAttachment instanceof File
+                                  ? URL.createObjectURL(
+                                      editData.additionalAttachment
+                                    )
+                                  : editData.additionalAttachment
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 underline"
+                              className="text-blue-600 underline mr-1"
                             >
-                              View File
+                              {editData.additionalAttachment.name ||
+                                editData?.additionalAttachment?.slice(46)}
                             </a>
+                            {editData.additionalAttachment.name && (
+                              <button
+                                className="text-red-500 hover:text-red-700 text-lg"
+                                type="button"
+                                onClick={() =>
+                                  setEditData({
+                                    ...editData,
+                                    additionalAttachment: null,
+                                  })
+                                }
+                              >
+                                ✖
+                              </button>
+                            )}
                           </h3>
                         </div>
                       ) : (
                         <div>
                           <button
+                            className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                             type="button"
                             onClick={() =>
                               document
