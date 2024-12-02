@@ -135,7 +135,7 @@ function HeaderTop() {
                 </button>
               </div>
             </div> */}
-            <h1 className="text-4xl font-bold font-serif">elog-Book</h1>
+            <h1 className="text-4xl font-bold font-serif">eLog-Book</h1>
           </div>
           <div className="right">
             <div className="bellLeft">
