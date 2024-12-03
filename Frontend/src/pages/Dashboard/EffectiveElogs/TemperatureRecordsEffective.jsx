@@ -23,6 +23,11 @@ export default function TempretureRecordsEffective() {
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const UserName = JSON.parse(localStorage.getItem("Username"));
+
+  const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  useEffect(() => {
+    setReviewed_by(UserName?.name);
+  }, []);
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -73,7 +78,7 @@ export default function TempretureRecordsEffective() {
       }
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -91,7 +96,7 @@ export default function TempretureRecordsEffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -111,7 +116,7 @@ export default function TempretureRecordsEffective() {
 
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -127,7 +132,7 @@ export default function TempretureRecordsEffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/approve-TR-elog",
+          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -145,7 +150,7 @@ export default function TempretureRecordsEffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -192,7 +197,7 @@ export default function TempretureRecordsEffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -281,7 +286,7 @@ export default function TempretureRecordsEffective() {
   };
 
   const EmptyreportData = {
-    title: "Temprature Process",
+    title: "Temperature Process",
     status: location.state.status,
     blankRows: 17,
     form_id: location.state.form_id,
@@ -291,7 +296,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/blank-report/${formId}`,
+        `https://elog-backend.mydemosoftware.com/temprature-record/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -339,7 +344,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/temprature-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -443,7 +448,7 @@ export default function TempretureRecordsEffective() {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };
@@ -1039,8 +1044,7 @@ export default function TempretureRecordsEffective() {
                                       ...editData.TempratureRecords,
                                     ];
                                     if (e?.target?.checked) {
-                                      newData[index].reviewed_by =
-                                      UserName.name;
+                                      newData[index].reviewed_by = reviewed_by;
                                     } else {
                                       newData[index].reviewed_by = "";
                                     }
@@ -1059,28 +1063,25 @@ export default function TempretureRecordsEffective() {
                           </td>
 
                           <td style={{ width: "250px" }}>
-                            <div className="d-flex align-items-center">
-                              <button
-                                type="button"
-                                className="btn-upload"
-                                onClick={() =>
-                                  document
-                                    .getElementsByName("supporting_docs")
-                                    [index].click()
-                                }
-                                style={{ marginRight: "10px" }}
-                                disabled={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              >
-                                {item.supporting_docs
-                                  ? "Change File"
-                                  : "Select File"}
-                              </button>
-                              {item.supporting_docs && (
-                                <div>
+                            <div className="d-flex">
+                              {item.supporting_docs ? (
+                                <div className="file-upload-wrapper">
+                                  <button
+                                    type="button"
+                                    className="btn-upload"
+                                    onClick={() =>
+                                      document
+                                        .getElementsByName("supporting_docs")
+                                        [index].click()
+                                    }
+                                    disabled={
+                                      location.state?.stage !== 1 ||
+                                      location.state?.initiator_id !==
+                                        userDetails.userId
+                                    }
+                                  >
+                                    Change File
+                                  </button>
                                   <h3>
                                     Selected File:{" "}
                                     <a
@@ -1090,7 +1091,28 @@ export default function TempretureRecordsEffective() {
                                     >
                                       View File
                                     </a>
+                                    {/* <DeleteIcon
+                                    style={{ color: "red", cursor: "pointer" }}
+                                    onClick={() => handleDeleteFile(index)}
+                                  /> */}
                                   </h3>
+                                </div>
+                              ) : (
+                                <div className="file-upload-wrapper">
+                                  <button
+                                    type="button"
+                                    className="btn-upload"
+                                    onClick={() =>
+                                      document
+                                        .getElementsByName("supporting_docs")
+                                        [index].click()
+                                    }
+                                    readOnly={[3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
+                                  >
+                                    Select File
+                                  </button>
                                 </div>
                               )}
                               <input
@@ -1100,9 +1122,6 @@ export default function TempretureRecordsEffective() {
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
-                                disabled={[1, 3].includes(
-                                  userDetails.roles[0].role_id
-                                )}
                               />
                             </div>
                           </td>

@@ -26,6 +26,10 @@ const OperationOfSterilizerEffective = () => {
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const UserName = JSON.parse(localStorage.getItem("Username"));
+  const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  useEffect(() => {
+    setReviewed_by(UserName?.name);
+  }, []);
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -103,7 +107,7 @@ const OperationOfSterilizerEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/operation-sterlizer/update",
+    //     url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
     //   };
 
     //   axios(requestOptions)
@@ -142,7 +146,7 @@ const OperationOfSterilizerEffective = () => {
 
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-for-review",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-for-review",
           data,
           config
         )
@@ -160,7 +164,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-approval",
           data,
           config
         )
@@ -179,7 +183,7 @@ const OperationOfSterilizerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-review-to-open",
           data,
           config
         )
@@ -194,7 +198,11 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/operation-sterlizer/approve", data, config)
+        .put(
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/approve",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -209,7 +217,7 @@ const OperationOfSterilizerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/operation-sterlizer/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/operation-sterlizer/send-approval-to-open",
           data,
           config
         )
@@ -256,7 +264,7 @@ const OperationOfSterilizerEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/operation-sterlizer/update",
+        url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/update",
       };
 
       axios(requestOptions)
@@ -276,7 +284,7 @@ const OperationOfSterilizerEffective = () => {
     setEditData(location.state);
   }, [location.state]);
 
-  console.log(location.state.stage === 2);
+  // console.log(location.state.stage === 2);
   const object = getCurrentDateTime();
   let date = object.currentDate;
   function getCurrentDateTime() {
@@ -461,7 +469,7 @@ const OperationOfSterilizerEffective = () => {
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
+      // initiatorAttachment: e.target.files[0],
       additionalAttachment: e.target.files[0],
     });
   };
@@ -478,16 +486,16 @@ const OperationOfSterilizerEffective = () => {
 
   const EmptyreportData = {
     title: "Operation Of Sterilizer",
-    status: location.state.status,
+    status: location?.state?.status,
     blankRows: 20,
-    form_id: location.state.form_id,
+    form_id: location?.state?.form_id,
     OperationOfSterilizerRecord: [],
   };
   const generateEmptyReport = async () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/operation-sterlizer/blank-report/${formId}`,
+        `https://elog-backend.mydemosoftware.com/operation-sterlizer/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -512,15 +520,15 @@ const OperationOfSterilizerEffective = () => {
 
   const reportData = {
     site:
-      location.state.site_id === 1
+      location?.state?.site_id === 1
         ? "India"
-        : location.state.site_id === 2
+        : location?.state?.site_id === 2
         ? "Malaysia"
-        : location.state.site_id === 3
+        : location?.state?.site_id === 3
         ? "EMEA"
         : "EU",
-    status: location.state.status,
-    initiator_name: location.state.initiator_name,
+    status: location?.state?.status,
+    initiator_name: location?.state?.initiator_name,
     title: "Operation Of Sterilizer",
     ...editData,
   };
@@ -535,7 +543,7 @@ const OperationOfSterilizerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/operation-sterlizer/effective-chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/operation-sterlizer/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -682,7 +690,7 @@ const OperationOfSterilizerEffective = () => {
                       navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Differential Pressure",
+                          process: "Operation Of Sterilizer",
                         },
                       })
                     }
@@ -1095,10 +1103,14 @@ const OperationOfSterilizerEffective = () => {
                           <th rowSpan={2}>Air Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Steam Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Printer Ok Yes/No</th>
-                          <th style={{minWidth:"130px"}} rowSpan={2}>Product Name</th>
+                          <th style={{ minWidth: "130px" }} rowSpan={2}>
+                            Product Name
+                          </th>
                           <th rowSpan={2}>Container size (ml)</th>
                           <th rowSpan={2}>Loaded quantity</th>
-                          <th style={{minWidth:"115px"}} rowSpan={2}>Batch No.</th>
+                          <th style={{ minWidth: "115px" }} rowSpan={2}>
+                            Batch No.
+                          </th>
                           <th rowSpan={2}>Loading Time</th>
                           <th rowSpan={1} colSpan={2}>
                             {" "}
@@ -1460,7 +1472,7 @@ const OperationOfSterilizerEffective = () => {
                                         ];
                                         if (e.target.checked) {
                                           newData[index].reviewed_by =
-                                            UserName.name;
+                                            reviewed_by;
                                         } else {
                                           newData[index].reviewed_by = "";
                                         }
@@ -1528,7 +1540,7 @@ const OperationOfSterilizerEffective = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 underline mr-1"
                             >
-                             {editData.additionalAttachment.name ||
+                              {editData.additionalAttachment.name ||
                                 editData.additionalAttachment.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (

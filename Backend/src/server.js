@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 
 // OR set a specific value for 'Content-Security-Policy'
 // app.use((req, res, next) => {
-//   res.setHeader("Content-Security-Policy", "frame-ancestors 'self' http://localhost:1000");
+//   res.setHeader("Content-Security-Policy", "frame-ancestors 'self' https://elog-backend.mydemosoftware.com");
 //   next();
 // });
 

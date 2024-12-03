@@ -29,7 +29,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function TemperatureRecords() {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -153,7 +153,7 @@ export default function TemperatureRecords() {
 
     axios
       .post(
-        "http://localhost:1000/temprature-record/post-temprature-record",
+        "https://elog-backend.mydemosoftware.com/temprature-record/post-temprature-record",
         tempratureRecord,
         config
       )
@@ -256,7 +256,7 @@ export default function TemperatureRecords() {
     setTempratureRecord({
       ...tempratureRecord,
       initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[1],
     });
   };
 
@@ -777,19 +777,19 @@ export default function TemperatureRecords() {
                     </tbody>
                   </table>
                   <div className="group-input">
-                    <label className="color-label">
+                    <label className="color-label mt-4">
                       Additional Attachment
                       <span className="text-sm text-zinc-600">
                         (If / Any)
                       </span>{" "}
-                      :{" "}
+                      :
                     </label>
                     <div>
                       <input
-                        type="file"
                         disabled
+                        type="file"
                         name="additionalAttachment"
-                        onChange={handleFileChangeAttchment}
+                        onChange={handleFileChange}
                       />
                     </div>
                   </div>
