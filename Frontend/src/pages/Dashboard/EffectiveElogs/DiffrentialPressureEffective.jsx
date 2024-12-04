@@ -50,7 +50,16 @@ export default function DPREffective() {
   };
 
   const handlePopupSubmit = (credentials) => {
+    const cleanedData = editData.DifferentialPressureRecords.filter(
+      (record) => record.differential_pressure.trim() !== "" || record.remarks.trim() !== ""
+    );
+  
+    const updatedEditData = {
+      ...editData,
+      DifferentialPressureRecords: cleanedData,
+    };
     const data = {
+      ...updatedEditData,
       site_id: location.state?.site_id,
       form_id: location.state?.form_id,
       email: credentials?.email,
@@ -359,7 +368,7 @@ export default function DPREffective() {
 
     return utcDate.toLocaleString("en-GB", {
       day: "2-digit",
-      month: "2-digit",
+      month: "short",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
@@ -748,7 +757,7 @@ export default function DPREffective() {
                   </div>
                 </div>
               </div> */}
-              <div className="outerDiv4 invisible">
+              <div className="">
                 <div className="btn-forms">
                   {/* <div
                     className={`${
@@ -766,7 +775,7 @@ export default function DPREffective() {
                   >
                     General Information
                   </div> */}
-                  <div
+                  {/* <div
                     className={`${
                       isSelectedDetails === true
                         ? "btn-forms-isSelected"
@@ -781,7 +790,7 @@ export default function DPREffective() {
                     }}
                   >
                     Details
-                  </div>
+                  </div> */}
                   {/* <div
                     className={`${
                       initiatorRemarks === true
@@ -859,6 +868,36 @@ export default function DPREffective() {
                     Analytics
                   </button>
                 </div> */}
+              </div>
+              <div className="flex gap-2">
+              <div className="flex gap-2">
+               
+                <div >
+                <label> Start Date</label>
+                <input  type="date" />
+                </div>
+                <div >
+                <label> End Date</label>
+                <input  type="date" />
+                </div>
+              
+                
+              </div>
+              <div className="flex gap-2">
+               
+                <div >
+                <label> Start Date and Time</label>
+                <input  type="datetime-local" />
+                </div>
+                <div >
+                <label> End Date and Time</label>
+                <input  type="datetime-local" />
+                </div>
+              </div>
+              <div>
+              <label htmlFor="">Shift Vise</label>
+              <input type="text" />
+              </div>
               </div>
 
               {/* {isSelectedGeneral === true ? (
