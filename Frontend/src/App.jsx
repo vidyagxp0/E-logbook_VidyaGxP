@@ -47,6 +47,8 @@ import DispensingOfMaterialsEffective from "./pages/Dashboard/EffectiveElogs/Dis
 import ExcelSelectWithFileInput from "./pages/TestPages/ExcelImport.jsx";
 import Effective_ViewReport from "./components/viewReport/Effective_ViewReport.jsx";
 import Effective_AuditTrail from "./pages/AuditTrail/Effective_AuditTrail.jsx";
+import DifferentialPressureAnalytics from "./pages/Dashboard/EffectiveElogs/DifferentialPressureAnalytics.jsx";
+import TempratureRecordAnalytics from "./pages/Dashboard/EffectiveElogs/TempratureRecordAnalytics.jsx";
 
 function App() {
   return (
@@ -219,10 +221,12 @@ function App() {
             />
             <Route path="/view-report" element={<ViewReport />} />
             <Route path="/effective-view-report" element={<Effective_ViewReport />} />
+            <Route path="/dpr-analytics" element={<DifferentialPressureAnalytics/>}/>
+            <Route path="/tr-analytics" element={<TempratureRecordAnalytics/>}/>
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={2000} pauseOnHover={false} />
-      </Provider>
+      </Provider> 
     </>
   );
 }

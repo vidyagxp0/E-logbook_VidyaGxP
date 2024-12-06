@@ -266,13 +266,13 @@ export default function TempretureRecordsPanel() {
     title: "Temperature Record",
     ...editData,
   };
-  console.log(reportData, "8888888888888");
+  // console.log(reportData, "8888888888888");
 
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
-      console.log(reportData.form_id, "hjjjjj");
-      console.log(formId, "formidddd");
+      // console.log(reportData.form_id, "hjjjjj");
+      // console.log(formId, "formidddd");
     }
   }, [reportData]);
 
@@ -515,7 +515,7 @@ export default function TempretureRecordsPanel() {
                         Send for Review
                       </button>
                     )}
-
+                    
                   {location.state?.stage === 2 &&
                     location.state?.reviewer_id === userDetails.userId && (
                       <>

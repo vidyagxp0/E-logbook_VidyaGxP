@@ -594,6 +594,12 @@ export default function TempretureRecordsEffective() {
         `}
                     </style>
                   </button>
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() =>navigate("/tr-analytics",{state:editData})}
+                  >
+                    Analytics
+                  </button>
 
                   {/* Conditional Buttons Based on Stages */}
                   {/* {location.state?.stage === 1 &&
@@ -660,6 +666,7 @@ export default function TempretureRecordsEffective() {
                   {/* Save Button */}
                   {/* {location.state?.stage === 1 &&
                     userDetails.userId === location.state?.initiator_id && ( */}
+                    
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() => {

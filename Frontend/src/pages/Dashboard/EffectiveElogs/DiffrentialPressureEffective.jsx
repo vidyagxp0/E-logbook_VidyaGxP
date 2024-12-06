@@ -620,6 +620,12 @@ export default function DPREffective() {
         `}
                     </style>
                   </button>
+                  <button
+                  onClick={()=>navigate("/dpr-analytics",{state:editData})}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                    >
+                    Analytics
+                  </button>
 
                   {/* Conditional Buttons Based on Stages */}
                   {/* {location.state?.stage === 1 &&
@@ -1002,7 +1008,7 @@ export default function DPREffective() {
                       value={editData?.limit}
                       onChange={handleInputChange1}
                       readOnly={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
+                        userDetails?.roles[0]?.role_id
                       )}
                     />
                   </div>
@@ -1058,7 +1064,7 @@ export default function DPREffective() {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails?.roles[0]?.role_id
                                 )}
                               />
                             </td>
@@ -1076,7 +1082,7 @@ export default function DPREffective() {
                                   });
                                 }}
                                 disabled={[1, 3].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails?.roles[0]?.role_id
                                 )}
                               />
                             </td>
@@ -1103,7 +1109,7 @@ export default function DPREffective() {
                                       });
                                     }}
                                     disabled={[1, 3].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails?.roles[0]?.role_id
                                     )}
                                   />
                                   {item.reviewed_by && (
@@ -1158,7 +1164,7 @@ export default function DPREffective() {
                                           [index].click()
                                       }
                                       readOnly={[3, 2, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails?.roles[0]?.role_id
                                       )}
                                     >
                                       Select File
