@@ -11,39 +11,31 @@ const TempratureRecordAnalytics = () => {
     { label: "Checked By", value: "reviewed_by" },
     { label: "Time", value: "time" },
   ];
-  
- 
 
   // Function to filter data based on selected filter and time period
-  const getFilteredData = (records, filterBy) => {  
+  const getFilteredData = (records, filterBy) => {
     return records
       ?.map((item) => {
-      
-        
         if (filterBy === "time") {
           return {
             "Batch No.": item.time,
             "Observed Value": item.temprature_record,
           };
-        } else  {
+        } else {
           return {
             "Batch No.": item.checked_by,
             "Observed Value": item.temprature_record,
           };
-        } 
-     
+        }
       })
       .filter(Boolean); // Remove null or undefined values
   };
 
   useEffect(() => {
     // Update filtered data whenever `dataFiltered`, `startDate`, `endDate`, `startTime`, or `endTime` changes
-    const updatedFilteredData = getFilteredData(
-      location.state.TempratureRecords,
-      dataFiltered
-    );
+    const updatedFilteredData = getFilteredData(location.state.TempratureRecords, dataFiltered);
     setFilteredData(updatedFilteredData);
-  }, [dataFiltered, location.state,]);
+  }, [dataFiltered, location.state]);
 
   const dPPlotLines = [
     {
@@ -62,26 +54,22 @@ const TempratureRecordAnalytics = () => {
     <div>
       <HeaderTop />
       <div className=" flex justify-end p-3">
-        <label className="mt-2">Filter : &nbsp;</label>
-      <select
-  className="border  border-gray-400 focus:outline-none focus:ring-2  appearance-none py-2 px-3 rounded bg-white text-gray-700 shadow-sm w-full"
-  value={dataFiltered}
-  onChange={(e) => setDataFiltered(e.target.value)}
-  style={{ height: '40px' ,width:'150px', padding:"10px"}}  /* Set a fixed height */
->
-    <option value={"select"}>--Select--</option>
-  {filterValueArray.map((itm) => (
-    <option key={itm.value} value={itm.value}>
-      {itm.label}
-    </option>
-  ))}
-</select>
-
-
-        
+        F<label className="mt-2">Filter : &nbsp;</label>
+        <select
+          className="border  border-gray-400 focus:outline-none focus:ring-2  appearance-none py-2 px-3 rounded bg-white text-gray-700 shadow-sm w-full"
+          value={dataFiltered}
+          onChange={(e) => setDataFiltered(e.target.value)}
+          style={{ height: "40px", width: "150px", padding: "10px" }} /* Set a fixed height */
+        >
+          <option value={"select"}>--Select--</option>
+          {filterValueArray.map((itm) => (
+            <option key={itm.value} value={itm.value}>
+              {itm.label}
+            </option>
+          ))}
+        </select>
         {/* Show time period pickers if 'Time Period' filter is selected */}
-       
-          {/* <div className="flex space-x-3 mt-3">
+        {/* <div className="flex space-x-3 mt-3">
             <div>
               <input
                 type="date"
@@ -115,22 +103,21 @@ const TempratureRecordAnalytics = () => {
               />
             </div>
           </div> */}
-    
       </div>
 
-     <div className=" p-4 shadow-lg">
-     <LineChart
-        heading={"Temprature Records Analysis"}
-        xHeading={dataFiltered==="reviewed_by"?"Checked By":"Time"}
-        yHeading={"Temprature"}
-        yMin={10}
-        yMax={location?.state?.limit + 2 / 10}
-        yTickInterval={5}
-        plotLines={dPPlotLines}
-        zones={""}
-        highchartData={filteredData}
-      />
-     </div>
+      <div className=" p-4 shadow-lg">
+        <LineChart
+          heading={"Temprature Records Analysis"}
+          xHeading={dataFiltered === "reviewed_by" ? "Checked By" : "Time"}
+          yHeading={"Temprature"}
+          yMin={10}
+          yMax={location?.state?.limit + 2 / 10}
+          yTickInterval={5}
+          plotLines={dPPlotLines}
+          zones={""}
+          highchartData={filteredData}
+        />
+      </div>
     </div>
   );
 };
