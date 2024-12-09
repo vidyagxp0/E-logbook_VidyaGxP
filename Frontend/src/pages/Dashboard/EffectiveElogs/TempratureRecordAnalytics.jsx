@@ -54,7 +54,7 @@ const TempratureRecordAnalytics = () => {
     <div>
       <HeaderTop />
       <div className=" flex justify-end p-3">
-        F<label className="mt-2">Filter : &nbsp;</label>
+        <label className="mt-2">Filter : &nbsp;</label>
         <select
           className="border  border-gray-400 focus:outline-none focus:ring-2  appearance-none py-2 px-3 rounded bg-white text-gray-700 shadow-sm w-full"
           value={dataFiltered}
