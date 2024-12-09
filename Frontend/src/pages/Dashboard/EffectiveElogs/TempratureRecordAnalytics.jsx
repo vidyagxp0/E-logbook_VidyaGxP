@@ -7,16 +7,15 @@ const TempratureRecordAnalytics = () => {
   const [dataFiltered, setDataFiltered] = useState("select"); // Default filter
   const [filteredData, setFilteredData] = useState([]);
   const location = useLocation();
-console.log(location.state,"filteredData")
   const filterValueArray = [
-    { label: "Reviewed By", value: "reviewed_by" },
+    { label: "Checked By", value: "reviewed_by" },
     { label: "Time", value: "time" },
   ];
-
+  
  
 
   // Function to filter data based on selected filter and time period
-  const getFilteredData = (records, filterBy) => {
+  const getFilteredData = (records, filterBy) => {  
     return records
       ?.map((item) => {
       
@@ -28,7 +27,7 @@ console.log(location.state,"filteredData")
           };
         } else  {
           return {
-            "Batch No.": item.reviewed_by,
+            "Batch No.": item.checked_by,
             "Observed Value": item.temprature_record,
           };
         } 

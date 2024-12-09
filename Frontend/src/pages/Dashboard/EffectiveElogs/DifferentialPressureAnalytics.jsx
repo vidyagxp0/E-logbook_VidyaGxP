@@ -6,12 +6,8 @@ import LineChart from "../../analytics/LineChart";
 const DifferentialPressureAnalytics = () => {
   const [dataFiltered, setDataFiltered] = useState("select"); // Default filter
   const [filteredData, setFilteredData] = useState([]);
-  const [startTime, setStartTime] = useState(""); // State for start time
-  const [endTime, setEndTime] = useState(""); // State for end time
-  const [startDate, setStartDate] = useState(""); // State for start date
-  const [endDate, setEndDate] = useState(""); // State for end date
   const location = useLocation();
-console.log(filteredData,"filteredData")
+  console.log(filteredData, "filteredData");
   const filterValueArray = [
     { label: "Checked By", value: "checked_by" },
     { label: "Time", value: "time" },
@@ -25,23 +21,23 @@ console.log(filteredData,"filteredData")
 
   // Function to filter data based on selected filter and time period
   const getFilteredData = (records, filterBy) => {
-    return records    
+    return records
       ?.map((item) => {
         const { date, time: itemTime } = splitDateTime(item.time); // Split time into date and time
-        
+
         if (filterBy === "time") {
           return {
             "Batch No.": item.time,
             "Observed Value": item.differential_pressure,
-            "Date": date, // Date part
-            "Time": itemTime, // Time part
+            Date: date, // Date part
+            Time: itemTime, // Time part
           };
-        } else  {
+        } else {
           return {
             "Batch No.": item.checked_by,
             "Observed Value": item.differential_pressure,
           };
-        } 
+        }
         return null; // Return null for invalid filters
       })
       .filter(Boolean); // Remove null or undefined values
@@ -54,7 +50,7 @@ console.log(filteredData,"filteredData")
       dataFiltered
     );
     setFilteredData(updatedFilteredData);
-  }, [dataFiltered, location.state, startDate, endDate, startTime, endTime]);
+  }, [dataFiltered, location.state]);
 
   const dPPlotLines = [
     {
@@ -74,25 +70,23 @@ console.log(filteredData,"filteredData")
       <HeaderTop />
       <div className=" flex justify-end p-3">
         <label className="mt-2">Filter : &nbsp;</label>
-      <select
-  className="border  border-gray-400 focus:outline-none focus:ring-2  appearance-none py-2 px-3 rounded bg-white text-gray-700 shadow-sm w-full"
-  value={dataFiltered}
-  onChange={(e) => setDataFiltered(e.target.value)}
-  style={{ height: '40px' ,width:'150px', padding:"10px"}}  /* Set a fixed height */
->
-    <option value={"select"}>--Select--</option>
-  {filterValueArray.map((itm) => (
-    <option key={itm.value} value={itm.value}>
-      {itm.label}
-    </option>
-  ))}
-</select>
+        <select
+          className="border  border-gray-400 focus:outline-none focus:ring-2  appearance-none py-2 px-3 rounded bg-white text-gray-700 shadow-sm w-full"
+          value={dataFiltered}
+          onChange={(e) => setDataFiltered(e.target.value)}
+          style={{ height: "40px", width: "150px", padding: "10px" }} /* Set a fixed height */
+        >
+          <option value={"select"}>--Select--</option>
+          {filterValueArray.map((itm) => (
+            <option key={itm.value} value={itm.value}>
+              {itm.label}
+            </option>
+          ))}
+        </select>
 
-
-        
         {/* Show time period pickers if 'Time Period' filter is selected */}
-       
-          {/* <div className="flex space-x-3 mt-3">
+
+        {/* <div className="flex space-x-3 mt-3">
             <div>
               <input
                 type="date"
@@ -126,22 +120,21 @@ console.log(filteredData,"filteredData")
               />
             </div>
           </div> */}
-    
       </div>
 
-     <div className=" p-4 shadow-lg">
-     <LineChart
-        heading={"Differential Pressure Analysis"}
-        xHeading={dataFiltered==="checked_by"?"Checked By":"Time"}
-        yHeading={"DP"}
-        yMin={10}
-        yMax={location?.state?.limit + 2 / 10}
-        yTickInterval={5}
-        plotLines={dPPlotLines}
-        zones={""}
-        highchartData={filteredData}
-      />
-     </div>
+      <div className=" p-4 shadow-lg">
+        <LineChart
+          heading={"Differential Pressure Analysis"}
+          xHeading={dataFiltered === "checked_by" ? "Checked By" : "Time"}
+          yHeading={"DP"}
+          yMin={10}
+          yMax={location?.state?.limit + 2 / 10}
+          yTickInterval={5}
+          plotLines={dPPlotLines}
+          zones={""}
+          highchartData={filteredData}
+        />
+      </div>
     </div>
   );
 };
