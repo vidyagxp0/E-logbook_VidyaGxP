@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import HeaderTop from "../../components/Header/HeaderTop";
+import { useSelector } from "react-redux";
+
 
 function Effective_AuditTrail() {
   const [auditTrails, setAuditTrails] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -112,6 +115,104 @@ function Effective_AuditTrail() {
     fetchAuditTrail();
   }, [location.state?.formId, location.state?.process]);
 
+  const formId = location.state?.formId
+// console.log(formId,"FormIDDD")
+  const [User, setUser] = useState(null);
+
+
+  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
+
+useEffect(() => {
+  const requestOptions = {
+    method: "GET",
+    url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+    headers: {}, // You can add any necessary headers here
+  };
+
+  axios(requestOptions)
+    .then((response) => {
+      setUser(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}, []);
+// console.log(User?.user_id,"User me")
+
+
+const generateReport = async () => {
+  // Validate process state
+  const process = location.state?.process;
+  if (!process) {
+    console.error("Process is not defined.");
+    return;
+  }
+
+  // Map process names to their API base paths and types
+  const processRouteMap = {
+    "Differential Pressure": {
+      route: "differential-pressure",
+      type: "DifferentialPressureAuditTrail",
+    },
+    "Temperature Record": {
+      route: "temperature-record",
+      type: "TemperatureRecordsAuditTrail",
+    },
+    "Loaded Quantity": {
+      route: "loaded-quantity",
+      type: "LoadedQuantityProcessAuditTrail",
+    },
+    "Operation Of Sterilizer": {
+      route: "operation-of-sterilizer",
+      type: "OperationOfSterilizerProcessAuditTrail",
+    },
+    "Dispensing Of Materials": {
+      route: "dispensing-of-materials",
+      type: "DispenseOfMatrialAuditTrail",
+    },
+    "Media Record": {
+      route: "media-record",
+      type: "MediaRecordAuditTrail",
+    },
+  };
+
+  const processDetails = processRouteMap[process];
+  if (!processDetails) {
+    console.error("Invalid process type.");
+    return;
+  }
+
+  const { route, type } = processDetails;
+
+  setIsLoading(true);
+  try {
+    // Dynamic API route with process-specific path
+    const response = await fetch(
+      `http://localhost:1000/${route}/get-audit-report/${formId}/${type}/${User.user_id}`
+    );
+
+    // Handle response and download PDF
+    if (!response.ok) {
+      throw new Error(`Failed to fetch audit report: ${response.statusText}`);
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${type}_audit_report.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+
   return (
     <>
       <style>
@@ -156,6 +257,41 @@ function Effective_AuditTrail() {
           <h3 style={{ textAlign: "center", fontSize: "2em" }}>
             <strong>Audit Trail</strong>
           </h3>
+          <div className="flex flex-wrap gap-3 items-center justify-center">
+                
+                {/* Generate Report Button */}
+                <button
+                  onClick={generateReport}
+                  className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                >
+                  {isLoading ? (
+                    <>
+                      <span>Generate Report</span>
+                      <div
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          border: "3px solid #f3f3f3",
+                          borderTop: "3px solid black",
+                          borderRadius: "50%",
+                          animation: "spin 1s linear infinite",
+                          marginLeft: "10px",
+                        }}
+                      ></div>
+                    </>
+                  ) : (
+                    "Generate Audit Trail Report"
+                  )}
+                  <style>
+                    {`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}
+                  </style>
+                </button>
+                </div>
           <br />
           <hr />
           {auditTrails?.length === 0 ? (
