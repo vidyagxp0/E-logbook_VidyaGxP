@@ -117,6 +117,11 @@ router.get(
   DifferentialPressureProcess.getAuditTrailForAnElog
 );
 
+router.get(
+  "/get-audit-report/:id",
+  DifferentialPressureProcess.generateAuditPdfbyId
+);
+
 router.post(
   "/generate-pdf",
   Auth.checkUserJwtToken,

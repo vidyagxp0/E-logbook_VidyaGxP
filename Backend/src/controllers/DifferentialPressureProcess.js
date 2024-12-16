@@ -2038,3 +2038,108 @@ exports.sendReportOnMail = async (req, res) => {
     });
   }
 };
+
+exports.generateAuditPdfbyId = async (req, res) => {
+  const formId = req.params.id;
+  const date = new Date();
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  let browser;
+
+  const user = await getUserById(1);
+
+  try {
+    const getData = await DifferentialPressureAuditTrail.findAll({
+      where: { form_id: formId },
+      include: {
+        model: User,
+        attributes: ["user_id", "name"],
+      },
+      order: [["auditTrail_id", "DESC"]],
+    });
+    console.log(getData);
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+    const data = {
+      title: "Differential Pressure Audit Report",
+      form_id: formId,
+      status: "status",
+      auditTrail: getData,
+    };
+
+    // Render audit report content using EJS
+    const htmlContent = await new Promise((resolve, reject) => {
+      req.app.render("auditReport", { reportData: data }, (err, html) => {
+        if (err) reject(err);
+        resolve(html);
+      });
+    });
+
+    const headerHtml = await new Promise((resolve, reject) => {
+      req.app.render(
+        "header",
+        { reportData: data, logoDataUri: logoDataUri },
+        (err, html) => {
+          if (err) return reject(err);
+          resolve(html);
+        }
+      );
+    });
+
+    const footerHtml = await new Promise((resolve, reject) => {
+      req.app.render(
+        "footer",
+        { userName: user?.name, date: formattedDate },
+        (err, html) => {
+          if (err) return reject(err);
+          resolve(html);
+        }
+      );
+    });
+
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // executablePath: '/usr/bin/chromium-browser',
+    });
+    const page = await browser.newPage();
+    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: headerHtml,
+      footerTemplate: footerHtml,
+      margin: {
+        top: "200px",
+        right: "52px",
+        bottom: "70px",
+        left: "52px",
+      },
+    });
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=Elog_Audit_Report.pdf"
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Error generating PDF", error });
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
+};
