@@ -12,6 +12,7 @@ const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -23,6 +24,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
   const {
     site_id,
     description,
+    department,
+    compression_area,
+    limit,
     reviewer_id,
     approver_id,
     initiatorComment,
@@ -32,8 +36,6 @@ exports.InsertLoadedQuantity = async (req, res) => {
     initiatorDeclaration,
     additionalAttachment,
     additionalInfo,
-    batch_noArray,
-    product_nameArray,
   } = req.body;
 
   if (!approver_id) {
@@ -99,14 +101,15 @@ exports.InsertLoadedQuantity = async (req, res) => {
         description: description,
         status: "Opened",
         stage: 1,
+        department: department,
+        compression_area: compression_area,
+        limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
-        batch_noArray,
-        product_nameArray,
       },
 
       { transaction }
@@ -115,14 +118,15 @@ exports.InsertLoadedQuantity = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
+      department,
+      compression_area,
+      limit,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
       additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
-      // console.log(field,value,"FIELDVALUE");
-
       if (value !== undefined && value !== null && value !== "") {
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -141,7 +145,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
     if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "initiatorAttachment",
+        field_name: "Initiator Attachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
@@ -344,6 +348,9 @@ exports.EditLoadedQuantity = async (req, res) => {
     form_id,
     site_id,
     description,
+    department,
+    compression_area,
+    limit,
     reviewer_id,
     approver_id,
     LoadedQuantityRecords,
@@ -352,9 +359,8 @@ exports.EditLoadedQuantity = async (req, res) => {
     initiatorComment,
     initiatorDeclaration,
     additionalInfo,
-    product_nameArray,
-    batch_noArray,
   } = req.body;
+ 
   if (!form_id) {
     return res
       .status(400)
@@ -421,6 +427,9 @@ exports.EditLoadedQuantity = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
+      department,
+      compression_area,
+      limit,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -449,27 +458,21 @@ exports.EditLoadedQuantity = async (req, res) => {
         });
       }
     }
-      // Ensure product_nameArray and batch_noArray are valid arrays
-const validArray = Array.isArray(product_nameArray) 
-? product_nameArray.map((item) => ({ ...item })) 
-: [];
-const validBatch = Array.isArray(batch_noArray) 
-? batch_noArray.map((item) => ({ ...item })) 
-: [];
 
     // Update the form details
     await form.update(
       {
         site_id,
         description,
+        department,
+        compression_area,
+        limit,
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment,
         additionalInfo,
-        product_nameArray: validArray,
-        batch_noArray: validBatch,
       },
       { transaction }
     );
@@ -752,14 +755,24 @@ exports.SendDPElogForReview = async (req, res) => {
     // }
 
     const auditTrailEntries = [];
+    let initiatorAttachment = null;
+    let additionalAttachment = null;
+    // Process files
+    req?.files?.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
+      }
+    });
 
     // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
+    if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "initiatorAttachment",
+        field_name: "Initiator Attachment",
         previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -767,12 +780,12 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
-    if (req?.file) {
+    if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "additionalAttachment",
+        field_name: "Additional Attachment",
         previous_value: form.additionalAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -783,7 +796,7 @@ exports.SendDPElogForReview = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "stage Change",
+      field_name: "Stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -798,13 +811,9 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.initiatorAttachment,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         initiatorComment: initiatorComment,
-        additionalAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.additionalAttachment,
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
       },
       { transaction }
     );
@@ -899,7 +908,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Reviewer Attachment",
+        field_name: "reviewerAttachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -912,7 +921,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1027,7 +1036,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (reviewComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Review Comment",
+        field_name: "reviewComment",
         previous_value: form.reviewComment || null,
         new_value: reviewComment,
         changed_by: user.user_id,
@@ -1042,7 +1051,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Reviewer Attachment",
+        field_name: "reviewerAttachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1055,7 +1064,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1170,7 +1179,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Attachment",
+        field_name: "approverAttachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1183,7 +1192,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1299,7 +1308,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (approverComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Comment",
+        field_name: "approverComment",
         previous_value: form.approverComment || null,
         new_value: approverComment,
         changed_by: user.user_id,
@@ -1314,7 +1323,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Attachment",
+        field_name: "approverAttachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1327,7 +1336,7 @@ exports.ApproveDPElog = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1632,11 +1641,12 @@ exports.chatByPdf = async (req, res) => {
 
     // Close the browser
     await browser.close();
+    const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    return res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+    return res.status(200).json({ filename: `Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res.status(500).json({
@@ -1672,6 +1682,7 @@ exports.viewReport = async (req, res) => {
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
+
     const formId = req.params.form_id;
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)

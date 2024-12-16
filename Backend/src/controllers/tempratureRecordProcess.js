@@ -11,6 +11,7 @@ const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -81,7 +82,7 @@ exports.InsertTempratureRecord = async (req, res) => {
     let initiatorAttachment = null;
     let additionalAttachment = null;
     const supportingDocs = {};
-
+    
     // Process files
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
@@ -153,7 +154,7 @@ exports.InsertTempratureRecord = async (req, res) => {
     if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "Initiator Attachment",
+        field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
@@ -166,7 +167,7 @@ exports.InsertTempratureRecord = async (req, res) => {
     if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "Additional Attachment",
+        field_name: "additionalAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
@@ -217,7 +218,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Temperature Record",
+          field_name: "DifferentialPressure",
           previous_value: null,
           new_value: record.temprature_record,
           changed_by: user.user_id,
@@ -239,7 +240,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Checked By",
+          field_name: "CheckedBy",
           previous_value: null,
           new_value: record.checked_by,
           changed_by: user.user_id,
@@ -251,7 +252,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         if (supportingDocs[index]) {
           auditTrailEntries.push({
             form_id: newForm.form_id,
-            field_name: "Supporting Docs",
+            field_name: "SupportingDocs",
             previous_value: null,
             new_value: getElogDocsUrl(supportingDocs[index]),
             changed_by: user.user_id,
@@ -477,7 +478,7 @@ exports.EditTempratureRecord = async (req, res) => {
             ) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}[${index}]`,
+                field_name: `${field}`,
                 previous_value: oldValue || null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -707,14 +708,23 @@ exports.SendTRElogForReview = async (req, res) => {
     // }
 
     const auditTrailEntries = [];
-
+     let initiatorAttachment = null;
+     let additionalAttachment = null;
+     // Process files
+     req?.files?.forEach((file) => {
+       if (file.fieldname === "initiatorAttachment") {
+         initiatorAttachment = file;
+       } else if (file.fieldname === "additionalAttachment") {
+         additionalAttachment = file;
+       }
+     });
     // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
+    if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Initiator Attachment",
+        field_name: "initiatorAttachment",
         previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -722,12 +732,12 @@ exports.SendTRElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
-    if (req?.file) {
+    if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Additional Attachment",
+        field_name: "additionalAttachment",
         previous_value: form.additionalAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -738,7 +748,7 @@ exports.SendTRElogForReview = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -753,13 +763,9 @@ exports.SendTRElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.initiatorAttachment,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         initiatorComment: initiatorComment,
-        additionalAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.additionalAttachment,
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
       },
       { transaction }
     );
@@ -776,6 +782,7 @@ exports.SendTRElogForReview = async (req, res) => {
       error: false,
       message: "E-log successfully sent for review",
     });
+   
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -854,7 +861,7 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Reviewer Attachment",
+        field_name: "reviewerAttachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -867,7 +874,7 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -895,10 +902,28 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
+    // try {
+    //   const initiator = await getUserById(form.initiator_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderInitiator", {
+    //     initiatorName: initiator.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Opened",
+    //     recipients: initiator.email,
+    //   });
+
     return res.status(200).json({
       error: false,
       message: "E-log status successfully changed from review to Opened",
     });
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -982,7 +1007,7 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
     if (reviewComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Review Comment",
+        field_name: "reviewComment",
         previous_value: form.reviewComment || null,
         new_value: reviewComment,
         changed_by: user.user_id,
@@ -997,7 +1022,7 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Reviewer Attachment",
+        field_name: "reviewerAttachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1010,7 +1035,7 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1041,11 +1066,30 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
+    try {
+      const approver = await getUserById(form.approver_id);
+      // Send emails
+      await Mailer.sendEmail("reminderApprover", {
+        approverName: approver.name,
+        dateOfInitiation: new Date().toISOString().split("T")[0],
+        description: form.description,
+        reviewer: user.name,
+        status: "Under Approval",
+        recipients: approver.email,
+      });
+
       return res.status(200).json({
         error: false,
         message:
           "E-log status successfully changed from review to under-approval",
       });
+    } catch (emailError) {
+      console.error("Failed to send emails:", emailError.message);
+      return res.json({
+        error: true,
+        message: "E-log Created but failed to send emails.",
+      });
+    }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1124,7 +1168,7 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Attachment",
+        field_name: "approverAttachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1137,7 +1181,7 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1165,11 +1209,29 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
+    // try {
+    //   const initiator = await getUserById(form.initiator_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderInitiator", {
+    //     initiatorName: initiator.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Opened",
+    //     recipients: initiator.email,
+    //   });
+
     return res.status(200).json({
       error: false,
       message:
         "E-log status successfully changed from under-approval to under-review",
     });
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1253,7 +1315,7 @@ exports.ApproveTRElog = async (req, res) => {
     if (approverComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Comment",
+        field_name: "approverComment",
         previous_value: form.approverComment || null,
         new_value: approverComment,
         changed_by: user.user_id,
@@ -1268,7 +1330,7 @@ exports.ApproveTRElog = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Attachment",
+        field_name: "approverAttachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1281,7 +1343,7 @@ exports.ApproveTRElog = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1567,11 +1629,12 @@ exports.chatByPdf = async (req, res) => {
 
     // Close the browser
     await browser.close();
+    const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

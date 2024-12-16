@@ -61,7 +61,7 @@ router.get(
 router.put(
   "/send-DP-elog-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(1, 1),
   DifferentialPressureProcess.SendDPElogForReview
 );
@@ -137,14 +137,21 @@ router.post(
 );
 
 router.post(
-  "/effective-view-report",
-  DifferentialPressureProcess.effetiveViewReport
-);
-router.post(
   "/blank-report/:form_id",
   Auth.checkUserJwtToken,
   DifferentialPressureProcess.blankReport
 );
-router.get("/search", DifferentialPressureProcess.GetAll);
+
+router.post(
+  "/effective-view-report",
+  DifferentialPressureProcess.effetiveViewReport
+);
+router.post(
+  "/send-report-on-mail/:id",
+  upload.any(),
+  DifferentialPressureProcess.sendReportOnMail
+);
+
+// router.get("/search", DifferentialPressureProcess.GetAll);
 
 module.exports = router;

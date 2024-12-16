@@ -12,6 +12,7 @@ const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -740,14 +741,23 @@ exports.SendDPElogForReview = async (req, res) => {
     // }
 
     const auditTrailEntries = [];
-
+    let initiatorAttachment = null;
+    let additionalAttachment = null;
+    // Process files
+    req?.files?.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
+      }
+    });
     // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
+    if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "initiatorAttachment",
         previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -755,12 +765,12 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
-    if (req?.file) {
+    if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "additionalAttachment",
         previous_value: form.additionalAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -786,13 +796,9 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.initiatorAttachment,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         initiatorComment: initiatorComment,
-        additionalAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.additionalAttachment,
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
       },
       { transaction }
     );
@@ -1616,11 +1622,12 @@ exports.chatByPdf = async (req, res) => {
 
     // Close the browser
     await browser.close();
+    const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     res.status(500).json({
