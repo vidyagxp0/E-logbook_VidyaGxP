@@ -14,6 +14,11 @@ const fs = require("fs");
 const path = require("path");
 const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
+const DispenseOfMatrialAuditTrail = require("../models/dispensingOfMaterialAuditTrail");
+const LoadedQuantityProcessAuditTrail = require("../models/loadedQuantityProcessAuditTrail");
+const MediaRecordAuditTrail = require("../models/mediaRecordAuditTrail");
+const OperationOfSterilizerProcessAuditTrail = require("../models/OperationOfSterilizerProcessAuditTrail");
+const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -1569,7 +1574,7 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
-    
+
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
 
@@ -2043,7 +2048,7 @@ console.log(fileExists,"fileExists")
 };
 
 exports.generateAuditPdfbyId = async (req, res) => {
-  const formId = req.params.id;
+  const { formId, type, userId } = req.params;
   const date = new Date();
   const formattedDate = date.toLocaleDateString("en-US", {
     year: "numeric",
@@ -2055,23 +2060,91 @@ exports.generateAuditPdfbyId = async (req, res) => {
   });
   let browser;
 
-  const user = await getUserById(1);
+  const user = await getUserById(userId);
 
   try {
-    const getData = await DifferentialPressureAuditTrail.findAll({
-      where: { form_id: formId },
-      include: {
-        model: User,
-        attributes: ["user_id", "name"],
-      },
-      order: [["auditTrail_id", "DESC"]],
-    });
-    console.log(getData);
+    let getData;
+
+    switch (type) {
+      case "DifferentialPressureAuditTrail":
+        getData = await DifferentialPressureAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "DispenseOfMatrialAuditTrail":
+        getData = await DispenseOfMatrialAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "LoadedQuantityProcessAuditTrail":
+        getData = await LoadedQuantityProcessAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "MediaRecordAuditTrail":
+        getData = await MediaRecordAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "OperationOfSterilizerProcessAuditTrail":
+        getData = await OperationOfSterilizerProcessAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "TemperatureRecordsAuditTrail":
+        getData = await TemperatureRecordsAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      default:
+        return res.status(400).json({
+          error: true,
+          message: `Invalid type: ${type}`,
+        });
+    }
+
+    // console.log(getData);
     const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
     const data = {
-      title: "Differential Pressure Audit Report",
+      title: `${type.replace(/([A-Z])/g, " $1")} Audit Report`,
       form_id: formId,
       status: "status",
       auditTrail: getData,
@@ -2131,7 +2204,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
 
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=Elog_Audit_Report.pdf"
+      `attachment; filename=${type}_Audit_Report.pdf`
     );
     res.setHeader("Content-Type", "application/pdf");
     res.send(pdfBuffer);

@@ -118,7 +118,7 @@ router.get(
 );
 
 router.get(
-  "/get-audit-report/:id",
+  "/get-audit-report/:formId/:type/:userId",
   DifferentialPressureProcess.generateAuditPdfbyId
 );
 
