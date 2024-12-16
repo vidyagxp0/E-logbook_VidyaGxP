@@ -27,6 +27,7 @@ const ViewReport = () => {
   const url = new URL(window.location.href);
 
   const elogIdValue = url.searchParams.get("filename") || NA;
+  console.log(elogIdValue,"'elogIdValue")
 
   // console.log(elogIdValue, "elogvalue");
 

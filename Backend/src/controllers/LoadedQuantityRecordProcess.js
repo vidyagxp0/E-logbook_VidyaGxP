@@ -1758,11 +1758,12 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Close the browser
     await browser.close();
+    const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `LQ_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `LQ_Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `LQ_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `LQ_Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

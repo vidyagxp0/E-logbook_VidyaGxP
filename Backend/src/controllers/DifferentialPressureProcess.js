@@ -1753,11 +1753,12 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Close the browser
     await browser.close();
+    const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `DP_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `DP_Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `DP_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `DP_Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
@@ -1988,10 +1989,12 @@ exports.blankReport = async (req, res) => {
 exports.sendReportOnMail = async (req, res) => {
   const { to, cc, bcc, subject, message } = req.body;
   const elogId = req.params.id;
+  console.log(elogId,"elogId")
 
-  const filePath = path.resolve("public", `Elog_Report_${elogId}.pdf`);
+  const filePath = path.resolve("public",elogId);
+
   const fileExists = fs.existsSync(filePath);
-
+console.log(fileExists,"fileExists")
   if (!fileExists) {
     return res.status(404).json({
       status: 404,

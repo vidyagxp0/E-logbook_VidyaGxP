@@ -27,9 +27,10 @@ const Effective_ViewReport = () => {
   const url = new URL(window.location.href);
 
   const elogIdValue = url.searchParams.get("filename") || NA;
-  const elogfilename = url.searchParams.get("filename") || NA;
-  const dynamicPattern = new RegExp(`_${elogIdValue}\\.pdf$`);
-  const filteredfilename = elogfilename.replace(dynamicPattern, "");
+  // const elogfilename = url.searchParams.get("filename") || NA;
+  console.log(elogIdValue,"filename effe")
+  // const dynamicPattern = new RegExp(`_${elogIdValue}\\.pdf$`);
+  // const filteredfilename = elogfilename.replace(dynamicPattern, "");
   //   console.log(elogIdValue, "elogvalue");
 
   const pdfUrl = `http://localhost:1000/public/${elogIdValue}`;
@@ -359,7 +360,7 @@ const Effective_ViewReport = () => {
 
       {!isChatOpen && (
         <div
-          className="absolute bottom-5 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg cursor-pointer z-50"
+          className="absolute bottom-14 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg cursor-pointer z-50"
           onClick={() => setIsChatOpen(true)}
         >
           <FaComments size={34} /> {/* Chat icon */}
@@ -368,7 +369,7 @@ const Effective_ViewReport = () => {
 
       {/* Chatbox */}
       {isChatOpen && (
-        <div className="absolute bottom-5 right-5 w-[450px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-y-0">
+        <div className="absolute bottom-14 right-5 w-[450px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-y-0">
           <div className="bg-blue-500 text-white flex justify-between items-center p-2 rounded-t-lg">
             <span>Chat with PDF</span>
             <FaTimes
