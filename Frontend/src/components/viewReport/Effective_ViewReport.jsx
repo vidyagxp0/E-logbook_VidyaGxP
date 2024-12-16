@@ -2,27 +2,37 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaComments, FaTimes } from "react-icons/fa"; // Icon for chat button and close button
 import { useLocation } from "react-router-dom";
+import Select from "react-select";
+import { toast, ToastContainer } from "react-toastify";
 
 const Effective_ViewReport = () => {
+    const [data, setData] = useState([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [awaitingResponse, setAwaitingResponse] = useState(false);
   const [srcId, setSrcId] = useState("");
+  const [showModal, setShowModal] = useState(false);
+    const [emailData, setEmailData] = useState({
+      to: "",
+      cc: "",
+      bcc: "",
+      subject: "",
+      message: "",
+      attachment: "",
+    });
+    const [loading, setLoading] = useState(false);
+  
 
-  // const { pqrId, filename } = useLocation().state || {};
-  // useEffect(() => {
-  //   console.log("pqrId", pqrId || 1, "filename", filename || "APQR_Report.pdf");
-  // }, [pqrId || filename]);
   const url = new URL(window.location.href);
 
-  const elogIdValue = url.searchParams.get("formId") || NA;
+  const elogIdValue = url.searchParams.get("filename") || NA;
   const elogfilename = url.searchParams.get("filename") || NA;
   const dynamicPattern = new RegExp(`_${elogIdValue}\\.pdf$`);
   const filteredfilename = elogfilename.replace(dynamicPattern, "");
   //   console.log(elogIdValue, "elogvalue");
 
-  const pdfUrl = `https://elog-backend.mydemosoftware.com/public/${filteredfilename}_${elogIdValue}.pdf`;
+  const pdfUrl = `http://localhost:1000/public/${elogIdValue}`;
 
   const initializeChatModal = async (data) => {
     try {
@@ -87,7 +97,253 @@ const Effective_ViewReport = () => {
     }
   };
 
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleHideModal = () => {
+    setShowModal(false);
+  };
+
+  const handleSelectChange = (selectedOptions, field) => {
+    if (selectedOptions.some((option) => option.value === "select-all")) {
+      setEmailData((prev) => ({
+        ...prev,
+        [field]: data.map((option) => option.value).join(","),
+      }));
+    } else {
+      setEmailData((prev) => ({
+        ...prev,
+        [field]: selectedOptions.map((option) => option.value).join(","),
+      }));
+    }
+  };
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:1000/user/get-all-users",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const emailOptions = response.data.response.map((user) => ({
+        value: user.email,
+        label: user.email,
+      }));
+      setData(emailOptions);
+    } catch (error) {
+      console.error("There was a problem with the API call:", error);
+    }
+  };
+ 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+   const handleSendEmail = async () => {
+    setLoading(true);
+
+    const emailPayload = {
+      to: emailData.to,
+      cc: emailData.cc,
+      bcc: emailData.bcc,
+      subject: emailData.subject,
+      message: emailData.message,
+      attachment: emailData.attachment,
+    };
+    console.log(emailPayload, "emailPayload");
+    
+
+    if (!emailPayload.message || !emailPayload.subject || !emailPayload.to) {
+      toast.error("Required fields can't be empty!");
+      setLoading(false);
+      return;
+    }
+
+    const emailPromise = axios.post(
+      `http://localhost:1000/differential-pressure/send-report-on-mail/${elogIdValue}`,
+      emailPayload,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    toast.promise(emailPromise, {
+      pending: "Sending email...",
+      success: "Email sent successfully!",
+      error: "Failed to send email. Please try again.",
+    });
+
+    try {
+      const response = await emailPromise;
+      if (response.status === 200) {
+        setShowModal(false);
+        setEmailData({ to: "", cc: "", bcc: "", subject: "", message: "" });
+      }
+    } catch (err) {
+      console.error("Error sending email:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
+    <>
+      <div className="h-12 bg-zinc-800 w-full">
+        <button
+          className="absolute top-2 right-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+          onClick={() => setShowModal(true)}
+        >
+          Send as Email
+        </button>
+      </div>
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center !bg-black !bg-opacity-50 overflow-auto">
+          <div className="scrollbar-custom bg-white w-full sm:w-[90%] md:w-[70%] lg:w-[50%] xl:w-[35%] max-h-[calc(100vh-40px)] overflow-y-auto rounded-lg p-6">
+            <h2 className="text-2xl font-bold mb-4 text-center">
+              Send as Email
+            </h2>
+
+            <label htmlFor="to" className="block mb-2 font-medium">
+              To: <span className="text-red-500 font-bold">*</span>
+            </label>
+            <Select
+              isMulti
+              options={data}
+              value={
+                emailData.to
+                  ? emailData.to
+                      .split(",")
+                      .filter(Boolean)
+                      .map((value) => ({
+                        value,
+                        label: value,
+                      }))
+                  : []
+              }
+              onChange={(selectedOptions) =>
+                handleSelectChange(selectedOptions, "to")
+              }
+              className="w-full mb-4 rounded"
+              placeholder="Select To email addresses"
+            />
+
+            <label htmlFor="cc" className="block mb-2 font-medium">
+              CC: (optional)
+            </label>
+            <Select
+              isMulti
+              options={data}
+              value={
+                emailData.cc
+                  ? emailData.cc
+                      .split(",")
+                      .filter(Boolean)
+                      .map((value) => ({
+                        value,
+                        label: value,
+                      }))
+                  : []
+              }
+              onChange={(selectedOptions) =>
+                handleSelectChange(selectedOptions, "cc")
+              }
+              className="mb-4"
+              placeholder="Select CC email addresses"
+            />
+
+            <label htmlFor="bcc" className="block mb-2 font-medium">
+              BCC: (optional)
+            </label>
+            <Select
+              isMulti
+              options={data}
+              value={
+                emailData.bcc
+                  ? emailData.bcc
+                      .split(",")
+                      .filter(Boolean)
+                      .map((value) => ({
+                        value,
+                        label: value,
+                      }))
+                  : []
+              }
+              onChange={(selectedOptions) =>
+                handleSelectChange(selectedOptions, "bcc")
+              }
+              className="mb-4"
+              placeholder="Select BCC email addresses"
+            />
+
+            <label htmlFor="subject" className="block mb-2 font-medium">
+              Subject: <span className="text-red-500 font-bold">*</span>
+            </label>  
+            <input
+              type="text"
+              id="subject"
+              value={emailData.subject}
+              onChange={(e) =>
+                setEmailData((prev) => ({ ...prev, subject: e.target.value }))
+              }
+              className="w-full p-2 mb-4 border-2 border-gray-300 rounded"
+              placeholder="Subject"
+            />
+
+            <label htmlFor="message" className="block mb-2 font-medium">
+              Message: <span className="text-red-500 font-bold">*</span>
+            </label>
+            <textarea
+              id="message"
+              value={emailData.message}
+              onChange={(e) =>
+                setEmailData((prev) => ({ ...prev, message: e.target.value }))
+              }
+              className="w-full p-2 mb-4 border-2 border-gray-300 rounded"
+              style={{border:"1px solid black"}}
+              placeholder="Write your message..."
+              rows={4}
+            />
+            <label htmlFor="attachment" className="block mb-2 font-medium">
+            Attachment: (optional)
+            </label>
+            <input
+              type="file"
+              id="attachment"
+              onChange={(e) =>
+                setEmailData((prev) => ({
+                  ...prev,
+                  attachment: e.target.files[0],
+                }))
+              }
+              className="w-full p-2 mb-4 border-2 border-gray-300 rounded"
+            />
+
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-4 rounded"
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendEmail}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+                disabled={loading}
+              >
+                {loading ? "Sending..." : "Send"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     <div className="relative h-screen">
       {/* PDF iframe */}
       <iframe
@@ -175,6 +431,7 @@ const Effective_ViewReport = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

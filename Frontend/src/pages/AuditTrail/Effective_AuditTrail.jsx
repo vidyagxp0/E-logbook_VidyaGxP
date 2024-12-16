@@ -17,7 +17,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
+            `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -33,7 +33,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `http://localhost:1000/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -49,7 +49,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
+            `http://localhost:1000/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -65,7 +65,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
+            `http://localhost:1000/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -81,7 +81,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `http://localhost:1000/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -97,7 +97,7 @@ function Effective_AuditTrail() {
 
         try {
           const response = await axios.get(
-            `https://elog-backend.mydemosoftware.com/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
+            `http://localhost:1000/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }

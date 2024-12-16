@@ -87,7 +87,7 @@ const DispensingOfMaterialsEffective = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
+          "http://localhost:1000/dispensing-material/send-for-review",
           data,
           config
         )
@@ -105,7 +105,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
+          "http://localhost:1000/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -124,7 +124,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
+          "http://localhost:1000/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -140,7 +140,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
+          "http://localhost:1000/dispensing-material/approve",
           data,
           config
         )
@@ -158,7 +158,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
+          "http://localhost:1000/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -209,7 +209,7 @@ const DispensingOfMaterialsEffective = () => {
         },
         data: editData,
 
-        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
+        url: "http://localhost:1000/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -442,7 +442,7 @@ const DispensingOfMaterialsEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/dispensing-material/blank-report/${formId}`,
+        `http://localhost:1000/dispensing-material/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -497,7 +497,7 @@ const DispensingOfMaterialsEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/dispensing-material/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/dispensing-material/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

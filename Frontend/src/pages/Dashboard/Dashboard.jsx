@@ -31,7 +31,7 @@ function Dashboard() {
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-all-differential-pressure",
+      url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -63,7 +63,7 @@ function Dashboard() {
 
     const newConfigTemp = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-all-temprature-record",
+      url: "http://localhost:1000/temprature-record/get-all-temprature-record",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ function Dashboard() {
 
     const newConfigloaded = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/loaded-quantity/get-all",
+      url: "http://localhost:1000/loaded-quantity/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -119,7 +119,7 @@ function Dashboard() {
 
     const newConfigMedia = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/media-record/get-all",
+      url: "http://localhost:1000/media-record/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -147,7 +147,7 @@ function Dashboard() {
 
     const newConfigDispensing = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/dispensing-material/get-all",
+      url: "http://localhost:1000/dispensing-material/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -174,7 +174,7 @@ function Dashboard() {
       });
     const newOperationSterelizer = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/get-all",
+      url: "http://localhost:1000/operation-sterlizer/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",

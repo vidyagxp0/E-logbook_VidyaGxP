@@ -497,7 +497,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/operation-sterlizer/blank-report/1",
+              "raw": "http://localhost:1000/operation-sterlizer/blank-report/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -973,7 +973,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/loaded-quantity/blank-report/1",
+              "raw": "http://localhost:1000/loaded-quantity/blank-report/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -1475,7 +1475,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/media-record/blank-report/1",
+              "raw": "http://localhost:1000/media-record/blank-report/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -1958,7 +1958,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/dispensing-material/chat-pdf/1",
+              "raw": "http://localhost:1000/dispensing-material/chat-pdf/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -1973,7 +1973,7 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/dispensing-material/view-report",
+              "raw": "http://localhost:1000/dispensing-material/view-report",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -2007,7 +2007,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/dispensing-material/blank-report/1",
+              "raw": "http://localhost:1000/dispensing-material/blank-report/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -2401,7 +2401,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/differential-pressure/chat-pdf/1",
+              "raw": "http://localhost:1000/differential-pressure/chat-pdf/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -2435,7 +2435,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/differential-pressure/effective-chat-pdf/1",
+              "raw": "http://localhost:1000/differential-pressure/effective-chat-pdf/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -2469,7 +2469,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/differential-pressure/blank-report/1",
+              "raw": "http://localhost:1000/differential-pressure/blank-report/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -2484,7 +2484,7 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/differential-pressure/view-report",
+              "raw": "http://localhost:1000/differential-pressure/view-report",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -2835,7 +2835,7 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/temprature-record/view-report",
+              "raw": "http://localhost:1000/temprature-record/view-report",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -2901,7 +2901,7 @@
               }
             },
             "url": {
-              "raw": "https://elog-backend.mydemosoftware.com/temprature-record/blank-report/1",
+              "raw": "http://localhost:1000/temprature-record/blank-report/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "1000",
@@ -3067,7 +3067,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://elog-backend.mydemosoftware.com/differential-pressure/search?search=Initiator",
+          "raw": "http://localhost:1000/differential-pressure/search?search=Initiator",
           "protocol": "http",
           "host": ["localhost"],
           "port": "1000",
