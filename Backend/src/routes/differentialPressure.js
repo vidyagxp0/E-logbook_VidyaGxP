@@ -146,6 +146,11 @@ router.post(
   "/effective-view-report",
   DifferentialPressureProcess.effetiveViewReport
 );
+router.post(
+  "/send-report-on-mail/:id",
+  upload.any(),
+  DifferentialPressureProcess.sendReportOnMail
+);
 
 // router.get("/search", DifferentialPressureProcess.GetAll);
 

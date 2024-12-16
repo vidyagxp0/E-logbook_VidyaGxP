@@ -25,7 +25,8 @@ Role.addHook('afterSync', async () => {
                 { role: 'Reviewer' },
                 { role: 'Approver' },
                 { role: 'Viewonly' },
-                { role: 'Fullpermission' }
+                { role: 'Fullpermission' },
+                { role: 'Mailonly' }
             ]);
             console.log('Roles created');
         } else {

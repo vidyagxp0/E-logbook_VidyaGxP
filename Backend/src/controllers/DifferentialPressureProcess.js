@@ -12,6 +12,8 @@ const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { sendEmail } = require("../utils/mailer");
+const { v4: uuidv4 } = require("uuid");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -1642,10 +1644,12 @@ exports.chatByPdf = async (req, res) => {
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    // Generate a unique UUID
+    const uniqueId = uuidv4();
+    const filePath = path.resolve("public", `Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
@@ -1980,3 +1984,57 @@ exports.blankReport = async (req, res) => {
 //       .json({ error: true, message: `Error: ${error.message}` });
 //   }
 // };
+
+exports.sendReportOnMail = async (req, res) => {
+  const { to, cc, bcc, subject, message } = req.body;
+  const elogId = req.params.id;
+
+  const filePath = path.resolve("public", `Elog_Report_${elogId}.pdf`);
+  const fileExists = fs.existsSync(filePath);
+
+  if (!fileExists) {
+    return res.status(404).json({
+      status: 404,
+      error: true,
+      message: "Attachment file not found",
+    });
+  }
+
+  const attachments = req.files?.map((file) => ({
+    filename: file.originalname,
+    path: file.path,
+  }));
+
+  const additionalAttachments = [
+    {
+      filename: `Elog_Report_${elogId}.pdf`,
+      path: filePath,
+    },
+    ...attachments,
+  ];
+
+  const mailData = {
+    to: to,
+    cc: cc || undefined,
+    bcc: bcc || undefined,
+    subject: subject,
+    message: message,
+    additionalAttachments,
+  };
+
+  try {
+    const result = await sendEmail(mailData);
+    return res.status(200).json({
+      status: 200,
+      error: false,
+      message: "Report email sent successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      error: true,
+      message: `Internal Server Error${error}`,
+    });
+  }
+};
