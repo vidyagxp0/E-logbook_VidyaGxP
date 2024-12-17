@@ -185,8 +185,10 @@ exports.InsertTempratureRecord = async (req, res) => {
         time: record?.time, // Assuming time was meant here instead of unique_id again
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
+        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
         supporting_docs: record?.supporting_docs
           ? record.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -462,7 +464,9 @@ exports.EditTempratureRecord = async (req, res) => {
           const recordFields = {
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
+            approver_remarks: newRecord?.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),
@@ -470,7 +474,7 @@ exports.EditTempratureRecord = async (req, res) => {
 
           for (const [field, newValue] of Object.entries(recordFields)) {
             const oldValue = existingRecord[field];
-            if (
+            if ( 
               newValue !== undefined &&
               ((typeof newValue === "number" &&
                 !areFloatsEqual(oldValue, newValue)) ||
@@ -506,7 +510,9 @@ exports.EditTempratureRecord = async (req, res) => {
             checked_by: newRecord?.checked_by,
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
+            approver_remarks: newRecord?.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
@@ -542,8 +548,10 @@ exports.EditTempratureRecord = async (req, res) => {
         time: record?.time,
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
+        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -1794,7 +1802,9 @@ exports.blankReport = async (req, res) => {
       time: record?.time || "",
       temprature_record: record?.temprature_record || "",
       remarks: record?.remarks || "",
+      approver_remarks: record?.approver_remarks ||"",
       reviewed_by: record?.reviewed_by || "",
+      approved_by: record?.approved_by ||"",
       supporting_docs: record?.supporting_docs || "",
     }));
 

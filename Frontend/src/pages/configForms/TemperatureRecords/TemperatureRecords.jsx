@@ -622,13 +622,15 @@ export default function TemperatureRecords() {
                   <table>
                     <thead>
                       <tr>
-                        <th>S no.</th>
+                      <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
                         <th>Temperature Record</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
-                        <th style={{ width: "300px" }}>Supporting Documents</th>
+                        <th>Reviewer Remark</th>
+                        <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th>
+                        <th>Checked By Approver</th>
+                        <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
