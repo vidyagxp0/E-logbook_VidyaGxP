@@ -193,8 +193,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
         time: record?.time, // Assuming time was meant here instead of unique_id again
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
+        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
@@ -466,7 +468,9 @@ exports.EditDifferentialPressure = async (req, res) => {
           const recordFields = {
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
+            approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),
@@ -510,7 +514,9 @@ exports.EditDifferentialPressure = async (req, res) => {
             checked_by: newRecord?.checked_by,
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
+            approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
@@ -546,8 +552,10 @@ exports.EditDifferentialPressure = async (req, res) => {
         time: record?.time,
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
+        approver_remarks:record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),

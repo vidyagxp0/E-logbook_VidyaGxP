@@ -25,9 +25,16 @@ export default function DPREffective() {
   const UserName = JSON.parse(localStorage.getItem("Username"));
 
   const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  const [approved_by, setApproved_by] = useState(UserName?.name)
+
   useEffect(() => {
     setReviewed_by(UserName?.name);
   }, []);
+
+  useEffect(()=>{
+    setApproved_by(UserName?.name)
+  },[])
+
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -236,6 +243,9 @@ export default function DPREffective() {
         time: currentTime,
         differential_pressure: "",
         remarks: "",
+        reviewed_by:"",
+        approver_remarks:"",
+        approved_by:"",
         checked_by: location?.state?.initiator_name,
         supporting_docs: null,
       };
@@ -1020,8 +1030,10 @@ export default function DPREffective() {
                         <th>Unique Id</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
+                        <th>Reviewer Remark</th>
+                        <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th>
+                        <th>Checked By Approver</th>
                         <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
@@ -1108,6 +1120,56 @@ export default function DPREffective() {
                                   />
                                   {item.reviewed_by && (
                                     <p>{item.reviewed_by}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <input
+                                value={item.approver_remarks}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DifferentialPressureRecords,
+                                  ];
+                                  newData[index].approver_remarks = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DifferentialPressureRecords: newData,
+                                  });
+                                }}
+                                disabled={[1, 2].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              />
+                            </td>
+                            <td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.approved_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.DifferentialPressureRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].approved_by =
+                                        approved_by;
+                                      } else {
+                                        newData[index].approved_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        DifferentialPressureRecords: newData,
+                                      });
+                                    }}
+                                    disabled={[1, 2].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
+                                  />
+                                  {item.approved_by && (
+                                    <p>{item.approved_by}</p>
                                   )}
                                 </div>
                               </div>

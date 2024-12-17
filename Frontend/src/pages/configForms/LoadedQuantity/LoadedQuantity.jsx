@@ -478,10 +478,10 @@ const LoadedQuantity = () => {
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
                           <th>% Yield</th>
-                          <th>Checked By</th>
-                          {/* <th>Product Name</th> */}
-                          <th>Remark</th>
-                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th>Reviewer Remark</th>
+                          <th>Checked By Reviewer</th>
+                          <th>Approver Remark</th>
+                          <th>Checked By Approver</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
