@@ -32,9 +32,15 @@ const LoadedQuantityEffective = () => {
   const UserName = JSON.parse(localStorage.getItem("Username"));
 
   const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  const [approved_by, setApproved_by] = useState(UserName?.name);
+
   useEffect(() => {
     setReviewed_by(UserName?.name);
   }, []);
+
+  useEffect(()=>{
+    setApproved_by(UserName?.name)
+  },[])
   // console.log(userdata, "dataaataat");
 
   // console.log(UserName.name);
@@ -329,8 +335,10 @@ const LoadedQuantityEffective = () => {
         loaded_quantity: "",
         yield: "",
         remarks: "",
+        approver_remarks:"",
         checked_by: location?.state?.initiator_name,
         reviewed_by: "",
+        approved_by:"",
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -1089,8 +1097,10 @@ const LoadedQuantityEffective = () => {
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
                           <th>% Yield</th>
-                          <th>Checked By</th>
-                          <th>Remarks</th>
+                          <th>Reviewer Remark</th>
+                          <th>Checked By Reviewer</th>
+                          <th>Approver Remark</th>
+                          <th>Checked By Approver</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -1299,6 +1309,30 @@ const LoadedQuantityEffective = () => {
                               />
                             </td>
                             <td>
+                              <input
+                                value={item.remarks}
+                                className={`${
+                                  [1, 3].includes(userDetails.roles[0].role_id)
+                                    ? "cursor-not-allowed"
+                                    : ""
+                                }`}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].remarks = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                // readOnly={!location.state?.reviewer_id}
+                                disabled={[1, 3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              />
+                            </td>
+                            <td>
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                   <input
@@ -1338,9 +1372,9 @@ const LoadedQuantityEffective = () => {
                             </td>
                             <td>
                               <input
-                                value={item.remarks}
+                                value={item.approver_remarks}
                                 className={`${
-                                  [1, 3].includes(userDetails.roles[0].role_id)
+                                  [1, 2].includes(userDetails.roles[0].role_id)
                                     ? "cursor-not-allowed"
                                     : ""
                                 }`}
@@ -1348,18 +1382,57 @@ const LoadedQuantityEffective = () => {
                                   const newData = [
                                     ...editData.LoadedQuantityRecords,
                                   ];
-                                  newData[index].remarks = e.target.value;
+                                  newData[index].approver_remarks = e.target.value;
                                   setEditData({
                                     ...editData,
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
                                 // readOnly={!location.state?.reviewer_id}
-                                disabled={[1, 3].includes(
+                                disabled={[1, 2].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
                             </td>
+                            <td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className={`h-4 w-4  ${
+                                      [1, 2].includes(
+                                        userDetails.roles[0].role_id
+                                      )
+                                        ? "cursor-not-allowed"
+                                        : "cursor-pointer"
+                                    }`}
+                                    type="checkbox"
+                                    checked={!!item.approved_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.LoadedQuantityRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].approved_by =
+                                        approved_by;
+                                      } else {
+                                        newData[index].approved_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        LoadedQuantityRecords: newData,
+                                      });
+                                    }}
+                                    disabled={[1, 2].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
+                                  />
+                                  {item.approved_by && (
+                                    <p>{item.approved_by}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                         
 
                             <td>
                               <DeleteIcon onClick={() => deleteRow(index)} />

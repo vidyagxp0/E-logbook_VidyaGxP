@@ -877,18 +877,20 @@ const LoadedQuantityPanels = () => {
                     <table>
                       <thead className=" text-white" style={{ color: "white" }}>
                         <tr>
-                          <th>S no.</th>
-                          <th>Unique Id</th>
+                        <th>S no.</th>
                           <th>Date</th>
+                          <th>Unique ID</th>
                           <th>Product Name</th>
                           <th>Batch No.</th>
                           <th>Container Size (ml)</th>
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
-                          <th>Checked By</th>
                           <th>% Yield</th>
-                          <th>Remarks</th>
+                          <th>Reviewer Remark</th>
+                          <th>Checked By Reviewer</th>
+                          <th>Approver Remark</th>
+                          <th>Checked By Approver</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
