@@ -945,12 +945,14 @@ export default function DPRpanel() {
                   <table>
                     <thead>
                       <tr>
-                        <th>S no.</th>
+                      <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
+                        <th>Reviewer Remark</th>
+                        <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th>
+                        <th>Checked By Approver</th>
                         <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
