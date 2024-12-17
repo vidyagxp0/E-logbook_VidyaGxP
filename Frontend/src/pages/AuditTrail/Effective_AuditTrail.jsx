@@ -117,7 +117,6 @@ function Effective_AuditTrail() {
   }, [location.state?.formId, location.state?.process]);
 
   const formId = location.state?.formId
-   // console.log(formId,"FormIDDD")
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
 useEffect(() => {
@@ -135,7 +134,6 @@ useEffect(() => {
       console.error(error);
     });
 }, []);
-// console.log(User?.user_id,"User me")
 
 
 const generateReport = async () => {
@@ -177,12 +175,10 @@ const generateReport = async () => {
 
   setIsLoading(true);
   try {
-    // Dynamic API route with process-specific path
     const response = await fetch(
       `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`
     );
 
-    // Handle response and download PDF
     if (!response.ok) {
       throw new Error(`Failed to fetch audit report: ${response.statusText}`);
     }
