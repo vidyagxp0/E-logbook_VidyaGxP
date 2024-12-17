@@ -958,7 +958,7 @@ export default function DPRpanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.DifferentialPressureRecords.map(
+                    {/*  {editData?.DifferentialPressureRecords.map(
                         (item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
@@ -1066,7 +1066,7 @@ export default function DPRpanel() {
                                     style={{ color: "red", cursor: "pointer" }}
                                     onClick={() => handleDeleteFile(index)}
                                   /> */}
-                                    </h3>
+                                   {/* </h3>
                                   </div>
                                 ) : (
                                   <div className="file-upload-wrapper">
@@ -1117,6 +1117,7 @@ export default function DPRpanel() {
                           </tr>
                         )
                       )}
+                      */}
                     </tbody>
                   </table>
 
