@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 function Effective_AuditTrail() {
   const [auditTrails, setAuditTrails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [User, setUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -116,17 +117,14 @@ function Effective_AuditTrail() {
   }, [location.state?.formId, location.state?.process]);
 
   const formId = location.state?.formId
-// console.log(formId,"FormIDDD")
-  const [User, setUser] = useState(null);
-
-
+   // console.log(formId,"FormIDDD")
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
 useEffect(() => {
   const requestOptions = {
     method: "GET",
-    url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
-    headers: {}, // You can add any necessary headers here
+    url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, 
+    headers: {}, 
   };
 
   axios(requestOptions)
@@ -141,37 +139,30 @@ useEffect(() => {
 
 
 const generateReport = async () => {
-  // Validate process state
+
   const process = location.state?.process;
   if (!process) {
     console.error("Process is not defined.");
     return;
   }
 
-  // Map process names to their API base paths and types
   const processRouteMap = {
     "Differential Pressure": {
-      route: "differential-pressure",
       type: "DifferentialPressureAuditTrail",
     },
     "Temperature Record": {
-      route: "temperature-record",
       type: "TemperatureRecordsAuditTrail",
     },
     "Loaded Quantity": {
-      route: "loaded-quantity",
       type: "LoadedQuantityProcessAuditTrail",
     },
     "Operation Of Sterilizer": {
-      route: "operation-of-sterilizer",
       type: "OperationOfSterilizerProcessAuditTrail",
     },
     "Dispensing Of Materials": {
-      route: "dispensing-of-materials",
       type: "DispenseOfMatrialAuditTrail",
     },
     "Media Record": {
-      route: "media-record",
       type: "MediaRecordAuditTrail",
     },
   };
@@ -182,13 +173,13 @@ const generateReport = async () => {
     return;
   }
 
-  const { route, type } = processDetails;
+  const {  type } = processDetails;
 
   setIsLoading(true);
   try {
     // Dynamic API route with process-specific path
     const response = await fetch(
-      `http://localhost:1000/${route}/get-audit-report/${formId}/${type}/${User.user_id}`
+      `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`
     );
 
     // Handle response and download PDF
@@ -254,15 +245,16 @@ const generateReport = async () => {
       <div className="admin-dashboard">
         <HeaderTop />
         <div id="body-container" style={{ margin: "20px" }}>
-          <h3 style={{ textAlign: "center", fontSize: "2em" }}>
+        <div className="flex justify-between items-center bg-slate-300 p-2">
+          <h3 style={{ textAlign: "center", fontSize: "2em",margin:"auto" }}>
             <strong>Audit Trail</strong>
           </h3>
-          <div className="flex flex-wrap gap-3 items-center justify-center">
+          <div className="flex flex-col gap-3 items-center justify-center">
                 
                 {/* Generate Report Button */}
                 <button
                   onClick={generateReport}
-                  className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-slate-400 text-sm  cursor-pointer text-black font-normal"
                 >
                   {isLoading ? (
                     <>
@@ -280,7 +272,7 @@ const generateReport = async () => {
                       ></div>
                     </>
                   ) : (
-                    "Generate Audit Trail Report"
+                    "Generate Report"
                   )}
                   <style>
                     {`
@@ -292,6 +284,7 @@ const generateReport = async () => {
                   </style>
                 </button>
                 </div>
+          </div>
           <br />
           <hr />
           {auditTrails?.length === 0 ? (
