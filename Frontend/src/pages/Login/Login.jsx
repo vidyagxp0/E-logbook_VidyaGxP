@@ -29,7 +29,7 @@ function Login() {
     };
 
     axios
-      .post("http://localhost:1000/user/user-login", data, {
+      .post("https://elog-backend.mydemosoftware.com/user/user-login", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -42,7 +42,7 @@ function Login() {
 
         // Now fetch the permissions using the user ID from decodedData
         return axios.get(
-          `http://localhost:1000/user/get-user-roles/${decodedData.userId}`,
+          `https://elog-backend.mydemosoftware.com/user/get-user-roles/${decodedData.userId}`,
           {
             headers: {
               Authorization: `Bearer ${response.data.token}`,

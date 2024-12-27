@@ -55,7 +55,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const LoadedQuantity = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -157,7 +157,7 @@ const LoadedQuantity = () => {
 
     axios
       .post(
-        "http://localhost:1000/loaded-quantity/post",
+        "https://elog-backend.mydemosoftware.com/loaded-quantity/post",
         loadedQuantity,
         config
       )
@@ -266,7 +266,7 @@ const LoadedQuantity = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/medicef-logo-new1.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>

@@ -68,7 +68,7 @@ const LoadedQuantityPanels = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/loaded-quantity/update",
+    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -103,7 +103,7 @@ const LoadedQuantityPanels = () => {
 
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-for-review",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -121,7 +121,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-approval",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -140,7 +140,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -156,7 +156,7 @@ const LoadedQuantityPanels = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/approve",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
           data,
           config
         )
@@ -174,7 +174,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-approval-to-open",
+          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -221,7 +221,7 @@ const LoadedQuantityPanels = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update",
+        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -449,7 +449,7 @@ const LoadedQuantityPanels = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
+        `https://elog-backend.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -514,7 +514,7 @@ const LoadedQuantityPanels = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/medicef-logo-new1.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
