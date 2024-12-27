@@ -79,7 +79,7 @@ function Login() {
         <div className="top-block">
           <div className="logo">
             {/* <img src="https://connexo.io/assets/img/logo/logo.png" alt="Logo" /> */}
-            <img src="vidyalogo2.png" alt="Logo" />
+            <img src="medicef-logo-new1.png" alt="Logo" />
           </div>
           <div className="head">Welcome to eLogBook</div>
         </div>

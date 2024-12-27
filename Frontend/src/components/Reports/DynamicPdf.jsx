@@ -141,7 +141,7 @@
 //         <View style={styles.header}>
 //           <View style={styles.head}><Text style={styles.head1}>{elog.process}</Text></View>
 //           <View style={styles.headImg}>
-//             <Image src="vidyalogo2.png" style={{ width: "100%", height: "100%" }} />
+//             <Image src="medicef-logo-new1.png" style={{ width: "100%", height: "100%" }} />
 //           </View>
 //         </View>
 //       )}
@@ -398,7 +398,7 @@ const Header = ({ process }) => (
       <Text style={styles.head1}>{process}</Text>
     </View>
     <View style={styles.headImg}>
-      <Image src="vidyalogo2.png" style={{ width: "100%", height: "100%" }} />
+      <Image src="medicef-logo-new1.png" style={{ width: "100%", height: "100%" }} />
     </View>
   </View>
 );

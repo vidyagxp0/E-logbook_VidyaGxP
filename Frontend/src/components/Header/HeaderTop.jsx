@@ -102,7 +102,7 @@ function HeaderTop() {
               <img
                 onClick={() => navigate("/dashboard")}
                 style={{ cursor: "pointer" }}
-                src="/vidyalogo2.png"
+                src="/medicef-logo-new1.png"
                 alt="..."
               />
             </div>
