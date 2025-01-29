@@ -77,7 +77,7 @@ const MediaRecordEffective = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "http://localhost:1000/media-record/update",
+    //   url: "https://elog-api.mydemosoftware.com/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -111,7 +111,7 @@ const MediaRecordEffective = () => {
       }
       axios
         .put(
-          "http://localhost:1000/media-record/send-for-review",
+          "https://elog-api.mydemosoftware.com/media-record/send-for-review",
           data,
           config
         )
@@ -129,7 +129,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-approval",
+          "https://elog-api.mydemosoftware.com/media-record/send-review-to-approval",
           data,
           config
         )
@@ -148,7 +148,7 @@ const MediaRecordEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/send-review-to-open",
+          "https://elog-api.mydemosoftware.com/media-record/send-review-to-open",
           data,
           config
         )
@@ -164,7 +164,7 @@ const MediaRecordEffective = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/media-record/approve",
+          "https://elog-api.mydemosoftware.com/media-record/approve",
           data,
           config
         )
@@ -182,7 +182,7 @@ const MediaRecordEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/media-record/send-approval-to-open",
+          "https://elog-api.mydemosoftware.com/media-record/send-approval-to-open",
           data,
           config
         )
@@ -202,10 +202,10 @@ const MediaRecordEffective = () => {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       if (
         editData?.MediaRecords?.some(
           (record) =>
@@ -229,7 +229,7 @@ const MediaRecordEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/media-record/update",
+        url: "https://elog-api.mydemosoftware.com/media-record/update",
       };
 
       axios(requestOptions)
@@ -461,7 +461,7 @@ const MediaRecordEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/media-record/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -509,7 +509,7 @@ const MediaRecordEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/media-record/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/media-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

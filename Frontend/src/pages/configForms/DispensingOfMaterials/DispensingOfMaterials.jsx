@@ -54,7 +54,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ const DispensingOfMaterials = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -100,7 +100,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -116,7 +116,7 @@ const DispensingOfMaterials = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -141,14 +141,14 @@ const DispensingOfMaterials = () => {
       return;
     }
 
-    if (dispensingOfMaterials.initiatorComment === "") {
-      toast.error("Please provide an initiator comment!");
-      return;
-    }
-    if (dispensingOfMaterials.description === "") {
-      toast.error("Please provide a short description!");
-      return;
-    }
+    // if (dispensingOfMaterials.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
+    // if (dispensingOfMaterials.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
     // if (
     //   loadedQuantity?.FormRecordsArray?.some(
     //     (record) => record.differential_pressure === "" || record.remarks === ""
@@ -171,7 +171,7 @@ const DispensingOfMaterials = () => {
 
     axios
       .post(
-        "http://localhost:1000/dispensing-material/post",
+        "https://elog-api.mydemosoftware.com/dispensing-material/post",
         dispensingOfMaterials,
         config
       )

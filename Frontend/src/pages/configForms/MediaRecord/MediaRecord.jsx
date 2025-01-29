@@ -57,7 +57,7 @@ const MediaRecord = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const MediaRecord = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ const MediaRecord = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -128,14 +128,14 @@ const MediaRecord = () => {
       return;
     }
 
-    if (mediaRecords.initiatorComment === "") {
-      toast.error("Please provide an initiator comment!");
-      return;
-    }
-    if (mediaRecords.description === "") {
-      toast.error("Please provide a short description!");
-      return;
-    }
+    // if (mediaRecords.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
+    // if (mediaRecords.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
     // if (
     //   loadedQuantity?.FormRecordsArray?.some(
     //     (record) => record.differential_pressure === "" || record.remarks === ""
@@ -158,7 +158,7 @@ const MediaRecord = () => {
 
     axios
       .post(
-        "http://localhost:1000/media-record/post",
+        "https://elog-api.mydemosoftware.com/media-record/post",
         mediaRecords,
         config
       )

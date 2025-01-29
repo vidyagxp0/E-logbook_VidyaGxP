@@ -68,7 +68,7 @@ const LoadedQuantityPanels = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "http://localhost:1000/loaded-quantity/update",
+    //     url: "https://elog-api.mydemosoftware.com/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -103,7 +103,7 @@ const LoadedQuantityPanels = () => {
 
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-for-review",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -121,7 +121,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-approval",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -140,7 +140,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-review-to-open",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -156,7 +156,7 @@ const LoadedQuantityPanels = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/approve",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/approve",
           data,
           config
         )
@@ -174,7 +174,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/loaded-quantity/send-approval-to-open",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -194,10 +194,10 @@ const LoadedQuantityPanels = () => {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
@@ -221,7 +221,7 @@ const LoadedQuantityPanels = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/loaded-quantity/update",
+        url: "https://elog-api.mydemosoftware.com/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -449,7 +449,7 @@ const LoadedQuantityPanels = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/loaded-quantity/chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

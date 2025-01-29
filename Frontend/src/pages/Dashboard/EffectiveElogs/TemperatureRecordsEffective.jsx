@@ -85,7 +85,7 @@ export default function TempretureRecordsEffective() {
       }
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -103,7 +103,7 @@ export default function TempretureRecordsEffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -123,7 +123,7 @@ export default function TempretureRecordsEffective() {
 
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -139,7 +139,7 @@ export default function TempretureRecordsEffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/approve-TR-elog",
+          "https://elog-api.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -157,7 +157,7 @@ export default function TempretureRecordsEffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -178,10 +178,10 @@ export default function TempretureRecordsEffective() {
       //   return;
       // }
 
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       
       if (
         editData?.TempratureRecords?.some(
@@ -205,7 +205,7 @@ export default function TempretureRecordsEffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "https://elog-api.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -307,7 +307,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/temprature-record/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -355,7 +355,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/temprature-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

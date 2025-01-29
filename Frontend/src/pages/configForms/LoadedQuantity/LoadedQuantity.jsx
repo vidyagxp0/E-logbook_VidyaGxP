@@ -55,7 +55,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const LoadedQuantity = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -126,14 +126,14 @@ const LoadedQuantity = () => {
       return;
     }
 
-    if (loadedQuantity.initiatorComment === "") {
-      toast.error("Please provide an initiator comment!");
-      return;
-    }
-    if (loadedQuantity.description === "") {
-      toast.error("Please provide a short description!");
-      return;
-    }
+    // if (loadedQuantity.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
+    // if (loadedQuantity.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
     // if (
     //   loadedQuantity?.FormRecordsArray?.some(
     //     (record) => record.differential_pressure === "" || record.remarks === ""
@@ -157,7 +157,7 @@ const LoadedQuantity = () => {
 
     axios
       .post(
-        "http://localhost:1000/loaded-quantity/post",
+        "https://elog-api.mydemosoftware.com/loaded-quantity/post",
         loadedQuantity,
         config
       )
