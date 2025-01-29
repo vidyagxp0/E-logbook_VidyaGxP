@@ -1505,6 +1505,7 @@ exports.generateReport = async (req, res) => {
     const browser = await puppeteer.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     const page = await browser.newPage();
@@ -1601,6 +1602,7 @@ exports.chatByPdf = async (req, res) => {
     const browser = await puppeteer.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     const page = await browser.newPage();
@@ -1718,6 +1720,7 @@ exports.effetiveChatByPdf = async (req, res) => {
     const browser = await puppeteer.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     const page = await browser.newPage();
@@ -1851,6 +1854,7 @@ exports.blankReport = async (req, res) => {
     const browser = await puppeteer.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     const page = await browser.newPage();

@@ -22,17 +22,22 @@ const pdfsFolder = path.resolve("public");
 
 app.use("/public", express.static(pdfsFolder));
 
-app.use(express.json());
+// Enable CORS
+app.use(cors({ origin: "*" }));
+
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["*"],
-        frameAncestors: ["self"], // Allow iframe embedding from any source
+        defaultSrc: ["'self'"],
+        frameAncestors: ["*"], // Allow iframe embedding from any source
       },
     },
-    crossOriginResourcePolicy: true,
-    crossOriginEmbedderPolicy: true,
+    crossOriginResourcePolicy: false,
+    crossOriginEmbedderPolicy: false,
   })
 );
 
@@ -42,12 +47,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
 app.use("/feedback", vidyagxpFeedback);
 app.use("/differential-pressure", differentialPressureRoutes);
