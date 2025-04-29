@@ -38,9 +38,9 @@ const LoadedQuantityEffective = () => {
     setReviewed_by(UserName?.name);
   }, []);
 
-  useEffect(()=>{
-    setApproved_by(UserName?.name)
-  },[])
+  useEffect(() => {
+    setApproved_by(UserName?.name);
+  }, []);
   // console.log(userdata, "dataaataat");
 
   // console.log(UserName.name);
@@ -248,10 +248,10 @@ const LoadedQuantityEffective = () => {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
@@ -335,10 +335,10 @@ const LoadedQuantityEffective = () => {
         loaded_quantity: "",
         yield: "",
         remarks: "",
-        approver_remarks:"",
+        approver_remarks: "",
         checked_by: location?.state?.initiator_name,
         reviewed_by: "",
-        approved_by:"",
+        approved_by: "",
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -677,7 +677,12 @@ const LoadedQuantityEffective = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img
+                    src="/vidyalogo21.png"
+                    style={{ objectFit: "cover" }}
+                    className="w-1/2"
+                    alt="..."
+                  />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -1382,7 +1387,8 @@ const LoadedQuantityEffective = () => {
                                   const newData = [
                                     ...editData.LoadedQuantityRecords,
                                   ];
-                                  newData[index].approver_remarks = e.target.value;
+                                  newData[index].approver_remarks =
+                                    e.target.value;
                                   setEditData({
                                     ...editData,
                                     LoadedQuantityRecords: newData,
@@ -1413,7 +1419,7 @@ const LoadedQuantityEffective = () => {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].approved_by =
-                                        approved_by;
+                                          approved_by;
                                       } else {
                                         newData[index].approved_by = "";
                                       }
@@ -1432,7 +1438,6 @@ const LoadedQuantityEffective = () => {
                                 </div>
                               </div>
                             </td>
-                         
 
                             <td>
                               <DeleteIcon onClick={() => deleteRow(index)} />

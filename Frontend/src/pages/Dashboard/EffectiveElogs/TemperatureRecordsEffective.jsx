@@ -25,15 +25,15 @@ export default function TempretureRecordsEffective() {
   const UserName = JSON.parse(localStorage.getItem("Username"));
 
   const [reviewed_by, setReviewed_by] = useState(UserName?.name);
-  const [approved_by, setApproved_by] = useState(UserName?.name)
+  const [approved_by, setApproved_by] = useState(UserName?.name);
 
   useEffect(() => {
     setReviewed_by(UserName?.name);
   }, []);
 
-  useEffect(()=>{
-    setApproved_by(UserName?.name)
-  },[])
+  useEffect(() => {
+    setApproved_by(UserName?.name);
+  }, []);
 
   const [editData, setEditData] = useState({
     initiator_name: "",
@@ -182,7 +182,7 @@ export default function TempretureRecordsEffective() {
       //   toast.error("description is required");
       //   return;
       // }
-      
+
       if (
         editData?.TempratureRecords?.some(
           (record) => record.temprature_record === ""
@@ -254,9 +254,9 @@ export default function TempretureRecordsEffective() {
         time: currentTime,
         temprature_record: "",
         remarks: "",
-        reviewed_by:"",
-        approver_remarks:"",
-        approved_by:"",
+        reviewed_by: "",
+        approver_remarks: "",
+        approved_by: "",
         checked_by: location?.state?.initiator_name,
         supporting_docs: null,
       };
@@ -513,7 +513,7 @@ export default function TempretureRecordsEffective() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -1079,7 +1079,8 @@ export default function TempretureRecordsEffective() {
                               value={item.approver_remarks}
                               onChange={(e) => {
                                 const newData = [...editData.TempratureRecords];
-                                newData[index].approver_remarks = e.target.value;
+                                newData[index].approver_remarks =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   TempratureRecords: newData,

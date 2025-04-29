@@ -468,7 +468,7 @@ export default function DPRpanel() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -476,7 +476,7 @@ export default function DPRpanel() {
               </div>
               {/* <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -945,7 +945,7 @@ export default function DPRpanel() {
                   <table>
                     <thead>
                       <tr>
-                      <th>S no.</th>
+                        <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
@@ -958,7 +958,7 @@ export default function DPRpanel() {
                       </tr>
                     </thead>
                     <tbody>
-                    {/*  {editData?.DifferentialPressureRecords.map(
+                      {/*  {editData?.DifferentialPressureRecords.map(
                         (item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
@@ -1066,7 +1066,7 @@ export default function DPRpanel() {
                                     style={{ color: "red", cursor: "pointer" }}
                                     onClick={() => handleDeleteFile(index)}
                                   /> */}
-                                   {/* </h3>
+                      {/* </h3>
                                   </div>
                                 ) : (
                                   <div className="file-upload-wrapper">

@@ -11,6 +11,7 @@ function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -22,6 +23,7 @@ function Login() {
     }
   };
   const handleSubmit = (e) => {
+    setLoading(true);
     e.preventDefault();
     const data = {
       email: username,
@@ -33,7 +35,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-      })
+      }) 
       .then((response) => {
         localStorage.setItem("user-token", response.data.token);
         const decodedData = jwtDecode(response.data.token);
@@ -61,8 +63,12 @@ function Login() {
         toast.success("Login Successful");
       })
       .catch((error) => {
+        setLoading(false);
         toast.error(error.response?.data?.message || "Login failed");
         console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -79,7 +85,8 @@ function Login() {
         <div className="top-block">
           <div className="logo">
             {/* <img src="https://connexo.io/assets/img/logo/logo.png" alt="Logo" /> */}
-            <img src="vidyalogo2.png" alt="Logo" />
+            <img src="vidyalogo21.png" alt="Logo" className="!w-64" />
+            <img src="vb-shilpa.png" alt="Logo" />
           </div>
           <div className="head">Welcome to eLogBook</div>
         </div>
@@ -107,7 +114,12 @@ function Login() {
             />
           </div>
           <div>
-            <input type="submit" value="Login" className="submit-btn" />
+            {/* <input type="submit" value="Login" className="submit-btn" /> */}
+            <input
+              type="submit"
+              className="submit-btn"
+              value={loading ? "Logging in..." : "Login"}
+            />
           </div>
         </form>
       </div>

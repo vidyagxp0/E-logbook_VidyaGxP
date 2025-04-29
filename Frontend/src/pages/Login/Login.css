@@ -27,13 +27,16 @@
 }
 
 #admin-console-login-page .login-form-block .logo {
-  width: 250px;
+  width: 100px;
   margin: 0 auto 30px;
 }
 
 #admin-console-login-page .login-form-block .logo img {
   /* filter: brightness(0) invert(1); */
-  width: 250px;
+  width: 245px;
+  height: auto;
+  margin: 0 auto;
+  object-fit: cover;
 }
 
 #admin-console-login-page .login-form-block .head {

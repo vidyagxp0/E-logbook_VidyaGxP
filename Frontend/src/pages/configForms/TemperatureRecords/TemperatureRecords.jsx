@@ -291,7 +291,7 @@ export default function TemperatureRecords() {
             <div className="details-form-data">
               {/* <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -299,7 +299,7 @@ export default function TemperatureRecords() {
               </div> */}
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -622,7 +622,7 @@ export default function TemperatureRecords() {
                   <table>
                     <thead>
                       <tr>
-                      <th>S no.</th>
+                        <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
                         <th>Temperature Record</th>

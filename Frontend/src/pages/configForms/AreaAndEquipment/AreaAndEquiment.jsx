@@ -86,7 +86,7 @@ export default function AreaAndEquiment() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited </div>
@@ -218,7 +218,6 @@ export default function AreaAndEquiment() {
                       />
                     </div>
                   </div>
-                 
                   <table>
                     <thead>
                       <tr>
@@ -1386,11 +1385,25 @@ export default function AreaAndEquiment() {
                   Save
                 </button>
 
-                {isSelectedGeneral===true?<button className="themeBtn"  onClick={() => {
+                {isSelectedGeneral === true ? (
+                  <button
+                    className="themeBtn"
+                    onClick={() => {
                       setIsSelectedDetails(true), setIsSelectedGeneral(false);
-                    }}>Next</button>:<button className="themeBtn" onClick={() => {
+                    }}
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    className="themeBtn"
+                    onClick={() => {
                       setIsSelectedGeneral(true), setIsSelectedDetails(false);
-                    }}>Back</button>}
+                    }}
+                  >
+                    Back
+                  </button>
+                )}
                 <button
                   className="themeBtn"
                   onClick={() => navigate("/dashboard")}

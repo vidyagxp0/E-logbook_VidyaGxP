@@ -25,15 +25,15 @@ export default function DPREffective() {
   const UserName = JSON.parse(localStorage.getItem("Username"));
 
   const [reviewed_by, setReviewed_by] = useState(UserName?.name);
-  const [approved_by, setApproved_by] = useState(UserName?.name)
+  const [approved_by, setApproved_by] = useState(UserName?.name);
 
   useEffect(() => {
     setReviewed_by(UserName?.name);
   }, []);
 
-  useEffect(()=>{
-    setApproved_by(UserName?.name)
-  },[])
+  useEffect(() => {
+    setApproved_by(UserName?.name);
+  }, []);
 
   const [editData, setEditData] = useState({
     initiator_name: "",
@@ -243,9 +243,9 @@ export default function DPREffective() {
         time: currentTime,
         differential_pressure: "",
         remarks: "",
-        reviewed_by:"",
-        approver_remarks:"",
-        approved_by:"",
+        reviewed_by: "",
+        approver_remarks: "",
+        approved_by: "",
         checked_by: location?.state?.initiator_name,
         supporting_docs: null,
       };
@@ -529,7 +529,7 @@ export default function DPREffective() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -537,7 +537,7 @@ export default function DPREffective() {
               </div>
               {/* <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -1052,9 +1052,11 @@ export default function DPREffective() {
                                 type="number"
                                 value={item?.differential_pressure}
                                 className={`${
-                                  Number(item?.differential_pressure) <= Number(editData?.limit)
+                                  Number(item?.differential_pressure) <=
+                                  Number(editData?.limit)
                                     ? "text-green-500"
-                                    : Number(item?.differential_pressure) > Number(editData?.limit)
+                                    : Number(item?.differential_pressure) >
+                                      Number(editData?.limit)
                                     ? "text-red-600"
                                     : ""
                                 }`}
@@ -1131,7 +1133,8 @@ export default function DPREffective() {
                                   const newData = [
                                     ...editData.DifferentialPressureRecords,
                                   ];
-                                  newData[index].approver_remarks = e.target.value;
+                                  newData[index].approver_remarks =
+                                    e.target.value;
                                   setEditData({
                                     ...editData,
                                     DifferentialPressureRecords: newData,
@@ -1155,7 +1158,7 @@ export default function DPREffective() {
                                       ];
                                       if (e.target.checked) {
                                         newData[index].approved_by =
-                                        approved_by;
+                                          approved_by;
                                       } else {
                                         newData[index].approved_by = "";
                                       }

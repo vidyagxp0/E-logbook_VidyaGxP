@@ -295,7 +295,7 @@ export default function DiffrentialPressure() {
             <div className="details-form-data">
               {/* <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -303,7 +303,7 @@ export default function DiffrentialPressure() {
               </div> */}
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." width={20} />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -647,7 +647,7 @@ export default function DiffrentialPressure() {
                   <table>
                     <thead>
                       <tr>
-                      <th>S no.</th>
+                        <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
@@ -656,7 +656,7 @@ export default function DiffrentialPressure() {
                         <th>Approver Remark</th>
                         <th>Checked By Approver</th>
                         <th>Supporting Documents</th>
-                        <th>Actions</th>  
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>

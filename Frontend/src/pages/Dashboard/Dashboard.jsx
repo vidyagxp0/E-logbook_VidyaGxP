@@ -25,7 +25,6 @@ function Dashboard() {
     []
   );
   const [filteredRecords, setFilteredRecords] = useState([]);
-  console.log(operationOfSterilizerElogs, "operationOfSterilizerElogs");
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -41,10 +40,6 @@ function Dashboard() {
     axios(newConfig)
       .then((response) => {
         const allDifferentialPressureElogs = response.data.message;
-        console.log(
-          allDifferentialPressureElogs,
-          "allDifferentialPressureElogs"
-        );
         let filteredArray = allDifferentialPressureElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -201,7 +196,6 @@ function Dashboard() {
   }, []);
 
   const [combinedRecords, setCombinedRecords] = useState([]);
-  console.log(combinedRecords, "combinedRecords");
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
       navigate("/dpr-panel", { state: item });
@@ -379,9 +373,11 @@ function Dashboard() {
           <tbody>
             {eLogSelect === "diffrential_pressure"
               ? differentialPressureElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
                     <tr key={item.index}>
-                      <td> {index + 1}</td>
+                      <td>{index + 1}</td>
                       <td
                         style={{
                           cursor: "pointer",
@@ -409,7 +405,7 @@ function Dashboard() {
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
-                          __html: item.description,
+                          __html: cleanHTML,
                         }}
                       ></td>
                       <td>{item.initiator_name}</td>
@@ -458,6 +454,8 @@ function Dashboard() {
 
             {eLogSelect === "temperature_records"
               ? tempratureRecordElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -488,7 +486,7 @@ function Dashboard() {
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
-                          __html: item.description,
+                          __html: item.cleanHTML,
                         }}
                       ></td>
                       <td>{item.initiator_name}</td>
@@ -500,6 +498,8 @@ function Dashboard() {
               : null}
             {eLogSelect === "loaded_quantity"
               ? loadedQuantityElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -532,7 +532,7 @@ function Dashboard() {
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
-                          __html: item.description,
+                          __html: item.cleanHTML,
                         }}
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
@@ -545,6 +545,8 @@ function Dashboard() {
 
             {eLogSelect === "operation_of_sterilizer"
               ? operationOfSterilizerElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
                     <>
                       <tr key={item.index}>
@@ -580,7 +582,7 @@ function Dashboard() {
                         </td>
                         <td
                           dangerouslySetInnerHTML={{
-                            __html: item.description,
+                            __html: item.cleanHTML,
                           }}
                         ></td>
                         <td>{item.initiator_name}</td>
@@ -594,6 +596,8 @@ function Dashboard() {
 
             {eLogSelect === "media_record"
               ? mediaRecordElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -626,7 +630,7 @@ function Dashboard() {
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
-                          __html: item.description,
+                          __html: item.cleanHTML,
                         }}
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
@@ -639,6 +643,8 @@ function Dashboard() {
 
             {eLogSelect === "dispensing_of_material"
               ? dispensingOfMaterialsElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -673,7 +679,7 @@ function Dashboard() {
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
-                          __html: item.description,
+                          __html: item.cleanHTML,
                         }}
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
@@ -692,23 +698,18 @@ function Dashboard() {
                     new Date(a.date_of_initiation)
                 )
 
-                .map((item, index) => (
-                  <>
-                    {/* {console.log(item, "item")} */}
+                .map((item, index) => {
+                  const cleanHTML = (html) =>
+                    html?.replace(/^"|"$/g, "").trim() || "NA";
+
+                  return (
                     <tr key={item.eLogId}>
                       <td>{index + 1}</td>
                       <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
+                        style={{ cursor: "pointer", color: "black" }}
                         onClick={() => handleNavigation(item)}
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
+                        onMouseEnter={(e) => (e.target.style.color = "blue")}
+                        onMouseLeave={(e) => (e.target.style.color = "black")}
                       >
                         {item.DifferentialPressureRecords
                           ? `DP${item.form_id}`
@@ -739,7 +740,6 @@ function Dashboard() {
                           ? "Dispensing of Material"
                           : null}
                       </td>
-
                       <td>
                         {item.site_id === 1
                           ? "India"
@@ -750,15 +750,16 @@ function Dashboard() {
                           : "EU"}
                       </td>
                       <td
-                        dangerouslySetInnerHTML={{ __html: item.description }}
+                        dangerouslySetInnerHTML={{
+                          __html: cleanHTML(item.description),
+                        }}
                       ></td>
-
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
                     </tr>
-                  </>
-                ))}
+                  );
+                })}
           </tbody>
         </table>
       </div>
