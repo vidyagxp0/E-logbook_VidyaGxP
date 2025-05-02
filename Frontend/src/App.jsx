@@ -47,6 +47,7 @@ import DispensingOfMaterialsEffective from "./pages/Dashboard/EffectiveElogs/Dis
 import ExcelSelectWithFileInput from "./pages/TestPages/ExcelImport.jsx";
 import Effective_ViewReport from "./components/viewReport/Effective_ViewReport.jsx";
 import Effective_AuditTrail from "./pages/AuditTrail/Effective_AuditTrail.jsx";
+import AdvancedAnalytics from "./pages/analytics/AdvancedAnalytics.jsx";
 
 function App() {
   return (
@@ -91,7 +92,7 @@ function App() {
             />
             <Route
               path="/analytics2"
-              element={<ProtectedRoute element={<Analytics2 />} />}
+              element={<ProtectedRoute element={<AdvancedAnalytics />} />}
             />
             <Route
               path="/analytics"
