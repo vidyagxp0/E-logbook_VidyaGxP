@@ -92,7 +92,7 @@ function App() {
             />
             <Route
               path="/analytics2"
-              element={<ProtectedRoute element={<AdvancedAnalytics />} />}
+              element={<ProtectedRoute element={<Analytics />} />}
             />
             <Route
               path="/analytics"

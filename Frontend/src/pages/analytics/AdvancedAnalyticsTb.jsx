@@ -120,6 +120,8 @@ const AdvancedAnalyticsTb = ({ data }) => {
         };
       }
     );
+const chart=[{"Batch No.":"TPR001","Observed Value":10}]
+
     const waterContentS3Data3 = data?.gridDatas?.manufacturingPartARStageI?.data?.map(
       (item, i) => {
         return {
