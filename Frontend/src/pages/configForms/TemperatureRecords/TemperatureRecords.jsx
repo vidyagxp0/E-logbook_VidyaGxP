@@ -29,7 +29,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function TemperatureRecords() {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -122,15 +122,15 @@ export default function TemperatureRecords() {
       return;
     }
 
-    if (tempratureRecord.initiatorComment === "") {
-      toast.error("Please provide an initiator comment!");
-      return;
-    }
+    // if (tempratureRecord.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
 
-    if (tempratureRecord.description === "") {
-      toast.error("Please provide a short description!");
-      return;
-    }
+    // if (tempratureRecord.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
     if (
       tempratureRecord?.FormRecordsArray?.some(
         (record) => record.temprature_record === "" || record.remarks === ""
@@ -153,7 +153,7 @@ export default function TemperatureRecords() {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com/temprature-record/post-temprature-record",
+        "https://elog-api.mydemosoftware.com/temprature-record/post-temprature-record",
         tempratureRecord,
         config
       )
@@ -291,7 +291,7 @@ export default function TemperatureRecords() {
             <div className="details-form-data">
               {/* <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -299,7 +299,7 @@ export default function TemperatureRecords() {
               </div> */}
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -626,9 +626,11 @@ export default function TemperatureRecords() {
                         <th>Unique Id</th>
                         <th>Time</th>
                         <th>Temperature Record</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
-                        <th style={{ width: "300px" }}>Supporting Documents</th>
+                        <th>Reviewer Remark</th>
+                        <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th>
+                        <th>Checked By Approver</th>
+                        <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
                     </thead>

@@ -61,7 +61,7 @@ router.get(
 router.put(
   "/send-TR-elog-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(2, 1),
   TempratureProcess.SendTRElogForReview
 );
@@ -133,6 +133,11 @@ router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,
   TempratureProcess.effetiveChatByPdf
+);
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  TempratureProcess.blankReport
 );
 
 router.post("/effective-view-report", TempratureProcess.effetiveViewReport);

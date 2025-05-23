@@ -55,7 +55,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const OperationOfSterilizer = () => {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -126,14 +126,14 @@ const OperationOfSterilizer = () => {
       return;
     }
 
-    if (operationOfSterilizer.initiatorComment === "") {
-      toast.error("Please provide an initiator comment!");
-      return;
-    }
-    if (operationOfSterilizer.description === "") {
-      toast.error("Please provide a short description!");
-      return;
-    }
+    // if (operationOfSterilizer.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
+    // if (operationOfSterilizer.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
     // if (
     //   operationOfSterilizer?.FormRecordsArray?.some(
     //     (record) => record.differential_pressure === "" || record.remarks === ""
@@ -156,7 +156,7 @@ const OperationOfSterilizer = () => {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com/operation-sterlizer/post",
+        "https://elog-api.mydemosoftware.com/operation-sterlizer/post",
         operationOfSterilizer,
         config
       )

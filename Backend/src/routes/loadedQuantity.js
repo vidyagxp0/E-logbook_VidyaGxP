@@ -61,7 +61,7 @@ router.get(
 router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(3, 1),
   LoadedQuantityRecordProcess.SendDPElogForReview
 );
@@ -139,11 +139,9 @@ router.post(
   "/effective-view-report",
   LoadedQuantityRecordProcess.effetiveViewReport
 );
-
 router.post(
   "/blank-report/:form_id",
   Auth.checkUserJwtToken,
   LoadedQuantityRecordProcess.blankReport
 );
-
 module.exports = router;

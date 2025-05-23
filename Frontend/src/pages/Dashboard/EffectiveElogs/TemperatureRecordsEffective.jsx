@@ -25,9 +25,16 @@ export default function TempretureRecordsEffective() {
   const UserName = JSON.parse(localStorage.getItem("Username"));
 
   const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  const [approved_by, setApproved_by] = useState(UserName?.name);
+
   useEffect(() => {
     setReviewed_by(UserName?.name);
   }, []);
+
+  useEffect(() => {
+    setApproved_by(UserName?.name);
+  }, []);
+
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -78,7 +85,7 @@ export default function TempretureRecordsEffective() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -96,7 +103,7 @@ export default function TempretureRecordsEffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -116,7 +123,7 @@ export default function TempretureRecordsEffective() {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -132,7 +139,7 @@ export default function TempretureRecordsEffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
+          "https://elog-api.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -150,7 +157,7 @@ export default function TempretureRecordsEffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -171,10 +178,11 @@ export default function TempretureRecordsEffective() {
       //   return;
       // }
 
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
+
       if (
         editData?.TempratureRecords?.some(
           (record) => record.temprature_record === ""
@@ -197,7 +205,7 @@ export default function TempretureRecordsEffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
+        url: "https://elog-api.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -246,6 +254,9 @@ export default function TempretureRecordsEffective() {
         time: currentTime,
         temprature_record: "",
         remarks: "",
+        reviewed_by: "",
+        approver_remarks: "",
+        approved_by: "",
         checked_by: location?.state?.initiator_name,
         supporting_docs: null,
       };
@@ -296,7 +307,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/temprature-record/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/temprature-record/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -344,7 +355,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/temprature-record/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/temprature-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -502,7 +513,7 @@ export default function TempretureRecordsEffective() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -976,9 +987,11 @@ export default function TempretureRecordsEffective() {
                         <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
-                        <th>temperature Record</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
+                        <th>Temperature Record</th>
+                        <th>Reviewer Remark</th>
+                        <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th>
+                        <th>Checked By Approver</th>
                         <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
@@ -1058,6 +1071,52 @@ export default function TempretureRecordsEffective() {
                                   )}
                                 />
                                 {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <input
+                              value={item.approver_remarks}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].approver_remarks =
+                                  e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              disabled={[1, 2].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                            />
+                          </td>
+                          <td>
+                            <div>
+                              <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                <input
+                                  className="h-4 w-4 cursor-pointer"
+                                  type="checkbox"
+                                  checked={!!item.approved_by}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.TempratureRecords,
+                                    ];
+                                    if (e?.target?.checked) {
+                                      newData[index].approved_by = approved_by;
+                                    } else {
+                                      newData[index].approved_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      TempratureRecords: newData,
+                                    });
+                                  }}
+                                  disabled={[1, 2].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
+                                />
+                                {item.approved_by && <p>{item.approved_by}</p>}
                               </div>
                             </div>
                           </td>

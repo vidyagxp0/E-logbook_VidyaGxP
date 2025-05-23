@@ -69,7 +69,7 @@ export default function TempretureRecordsPanel() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -87,7 +87,7 @@ export default function TempretureRecordsPanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -107,7 +107,7 @@ export default function TempretureRecordsPanel() {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -123,7 +123,7 @@ export default function TempretureRecordsPanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/approve-TR-elog",
+          "https://elog-api.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -141,7 +141,7 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -162,10 +162,11 @@ export default function TempretureRecordsPanel() {
       //   return;
       // }
 
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
+
       if (
         editData?.TempratureRecords?.some(
           (record) => record.temprature_record === "" || record.remarks === ""
@@ -188,7 +189,7 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/temprature-record/update-temprature-record",
+        url: "https://elog-api.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -282,7 +283,7 @@ export default function TempretureRecordsPanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -442,7 +443,7 @@ export default function TempretureRecordsPanel() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -886,9 +887,11 @@ export default function TempretureRecordsPanel() {
                         <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
-                        <th>temperature Record</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
+                        <th>Temperature Record</th>
+                        <th>Reviewer Remark</th>
+                        <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th>
+                        <th>Checked By Approver</th>
                         <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>

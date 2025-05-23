@@ -12,16 +12,13 @@ const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
-const DispenseOfMaterialForm = require("../models/dispensingOfMaterialForm");
-const DispenseOfMaterialRecord = require("../models/dispensingOfMaterialRecords");
-const LoadedQuantityProcessForm = require("../models/loadedQuantityProcessForm");
-const LoadedQuantityRecord = require("../models/loadedQuantityRecords");
-const MediaRecordProcessForm = require("../models/mediaRrecordForm");
-const MediaRecord = require("../models/mediaRecords");
-const OperationOfSterilizerProcessForm = require("../models/OperationOfSterilizerProcessForm");
-const OperationOfSterilizerRecord = require("../models/operationOfSterilizerRecords");
-const TempratureProcessForm = require("../models/tempratureProcessForm");
-const TempratureProcessRecord = require("../models/tempratureProcessRecords");
+const { sendEmail } = require("../utils/mailer");
+const { v4: uuidv4 } = require("uuid");
+const DispenseOfMatrialAuditTrail = require("../models/dispensingOfMaterialAuditTrail");
+const LoadedQuantityProcessAuditTrail = require("../models/loadedQuantityProcessAuditTrail");
+const MediaRecordAuditTrail = require("../models/mediaRecordAuditTrail");
+const OperationOfSterilizerProcessAuditTrail = require("../models/OperationOfSterilizerProcessAuditTrail");
+const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -63,12 +60,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide email and password." });
   }
-
-  // if (!initiatorComment) {
-  //   return res
-  //     .status(400)
-  //     .json({ error: true, message: "Please provide an initiator comment." });
-  // }
 
   // Start a transaction
   const transaction = await sequelize.transaction();
@@ -170,7 +161,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "Initiator Attachment",
+        field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
@@ -184,7 +175,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "Additional Attachment",
+        field_name: "additionalAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
@@ -202,9 +193,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
         time: record?.time, // Assuming time was meant here instead of unique_id again
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
+        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
-        supporting_docs: getElogDocsUrl(supportingDocs[index]),
+        approved_by: record?.approved_by,
+        supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
@@ -270,7 +263,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
             form_id: newForm.form_id,
             field_name: "SupportingDocs",
             previous_value: null,
-            new_value: getElogDocsUrl(supportingDocs[index]),
+            new_value: getElogDocsUrl(supportingDocs),
             changed_by: user.user_id,
             previous_status: "Not Applicable",
             new_status: "Opened",
@@ -475,7 +468,9 @@ exports.EditDifferentialPressure = async (req, res) => {
           const recordFields = {
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
+            approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),
@@ -491,7 +486,7 @@ exports.EditDifferentialPressure = async (req, res) => {
             ) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}`,
+                field_name: `${field}[${index}]`,
                 previous_value: oldValue || null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -519,7 +514,9 @@ exports.EditDifferentialPressure = async (req, res) => {
             checked_by: newRecord?.checked_by,
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
+            approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
@@ -528,7 +525,7 @@ exports.EditDifferentialPressure = async (req, res) => {
             if (newValue !== undefined) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}`,
+                field_name: `${field}[${i}]`,
                 previous_value: null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -555,8 +552,10 @@ exports.EditDifferentialPressure = async (req, res) => {
         time: record?.time,
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
+        approver_remarks:record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -660,7 +659,8 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
 
 //send differential pressure elog for review
 exports.SendDPElogForReview = async (req, res) => {
-  const { form_id, email, password, initiatorDeclaration } = req.body;
+  const { form_id, email, password, initiatorDeclaration, initiatorComment } =
+    req.body;
 
   // Check for required fields and provide specific error messages
   if (!form_id) {
@@ -720,14 +720,23 @@ exports.SendDPElogForReview = async (req, res) => {
     // }
 
     const auditTrailEntries = [];
-
+    let initiatorAttachment = null;
+    let additionalAttachment = null;
+    // Process files
+    req?.files?.forEach((file) => {
+      if (file.fieldname === "initiatorAttachment") {
+        initiatorAttachment = file;
+      } else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
+      }
+    });
     // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
+    if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Initiator Attachment",
+        field_name: "initiatorAttachment",
         previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -736,12 +745,12 @@ exports.SendDPElogForReview = async (req, res) => {
       });
     }
 
-    if (req?.file) {
+    if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Additional Attachment",
+        field_name: "additionalAttachment",
         previous_value: form.additionalAttachment || null,
-        new_value: getElogDocsUrl(req.file),
+        new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -752,7 +761,7 @@ exports.SendDPElogForReview = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -767,12 +776,9 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.initiatorAttachment,
-        additionalAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.additionalAttachment,
+        initiatorComment: initiatorComment,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
       },
       { transaction }
     );
@@ -867,7 +873,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Reviewer Attachment",
+        field_name: "reviewerAttachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -880,7 +886,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -908,10 +914,28 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
+    // try {
+    //   const initiator = await getUserById(form.initiator_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderInitiator", {
+    //     initiatorName: initiator.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Opened",
+    //     recipients: initiator.email,
+    //   });
+
     return res.status(200).json({
       error: false,
       message: "E-log status successfully changed from review to Opened",
     });
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -995,7 +1019,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (reviewComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Review Comment",
+        field_name: "reviewComment",
         previous_value: form.reviewComment || null,
         new_value: reviewComment,
         changed_by: user.user_id,
@@ -1010,7 +1034,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Reviewer Attachment",
+        field_name: "reviewerAttachment",
         previous_value: form.reviewerAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1023,7 +1047,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1055,11 +1079,30 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
+    // try {
+    //   const approver = await getUserById(form.approver_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderApprover", {
+    //     approverName: approver.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     reviewer: user.name,
+    //     status: "Under Approval",
+    //     recipients: approver.email,
+    //   });
+
     return res.status(200).json({
       error: false,
       message:
         "E-log status successfully changed from review to under-approval",
     });
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1138,7 +1181,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Attachment",
+        field_name: "approverAttachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1151,7 +1194,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1178,11 +1221,30 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 
     // Commit the transaction
     await transaction.commit();
+
+    // try {
+    //   const initiator = await getUserById(form.initiator_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderInitiator", {
+    //     initiatorName: initiator.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Opened",
+    //     recipients: initiator.email,
+    //   });
+
     return res.status(200).json({
       error: false,
       message:
         "E-log status successfully changed from under-approval to under-review",
     });
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1266,7 +1328,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (approverComment) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Comment",
+        field_name: "approverComment",
         previous_value: form.approverComment || null,
         new_value: approverComment,
         changed_by: user.user_id,
@@ -1281,7 +1343,7 @@ exports.ApproveDPElog = async (req, res) => {
     if (req?.file) {
       auditTrailEntries.push({
         form_id: form.form_id,
-        field_name: "Approver Attachment",
+        field_name: "approverAttachment",
         previous_value: form.approverAttachment || null,
         new_value: getElogDocsUrl(req.file),
         changed_by: user.user_id,
@@ -1294,7 +1356,7 @@ exports.ApproveDPElog = async (req, res) => {
 
     auditTrailEntries.push({
       form_id: form.form_id,
-      field_name: "Stage Change",
+      field_name: "stage Change",
       previous_value: "Not Applicable",
       new_value: "Not Applicable",
       changed_by: user.user_id,
@@ -1520,6 +1582,7 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
+
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
 
@@ -1594,10 +1657,12 @@ exports.chatByPdf = async (req, res) => {
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    // Generate a unique UUID
+    const uniqueId = uuidv4();
+    const filePath = path.resolve("public", `Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
@@ -1701,11 +1766,12 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Close the browser
     await browser.close();
+    const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `DP_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `DP_Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `DP_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `DP_Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
@@ -1731,7 +1797,6 @@ exports.effetiveViewReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
-
 exports.blankReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
@@ -1832,105 +1897,333 @@ exports.blankReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
+// exports.GetAll = async (req, res) => {
+//   try {
+//     const { search } = req.query; // Capture search keyword from query parameters
 
-exports.GetAll = async (req, res) => {
+//     const searchCondition = search
+//       ? {
+//           [Op.or]: [
+//             { site_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
+//             { form_id: { [Op.like]: `%${search}%` } }, // Example: Search by form_id
+//             { initiator_name: { [Op.like]: `%${search}%` } }, // Example: Search by initiator_name
+//           ],
+//         }
+//       : {};
+
+//     // Use Promise.all to run all queries concurrently
+//     const [
+//       differentialPressureForms,
+//       dispenseOfMaterialForms,
+//       loadedQuantityForms,
+//       mediaRecordForms,
+//       operationOfSterilizerForms,
+//       temperatureForms,
+//     ] = await Promise.all([
+//       DifferentialPressureForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: DifferentialPressureRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       DispenseOfMaterialForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: DispenseOfMaterialRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       LoadedQuantityProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: LoadedQuantityRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       MediaRecordProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: MediaRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       OperationOfSterilizerProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: OperationOfSterilizerRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       TempratureProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: TempratureProcessRecord },
+//           { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
+//           { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//     ]);
+
+//     // Combine all results into a single object
+//     const data = {
+//       differentialPressureForms,
+//       dispenseOfMaterialForms,
+//       loadedQuantityForms,
+//       mediaRecordForms,
+//       operationOfSterilizerForms,
+//       temperatureForms,
+//     };
+
+//     return res.status(200).json({
+//       error: false,
+//       message: "Data fetched successfully",
+//       data: data,
+//     });
+//   } catch (error) {
+//     console.error("Error:", error);
+//     return res
+//       .status(500)
+//       .json({ error: true, message: `Error: ${error.message}` });
+//   }
+// };
+
+exports.sendReportOnMail = async (req, res) => {
+  const { to, cc, bcc, subject, message } = req.body;
+  const elogId = req.params.id;
+  console.log(elogId,"elogId")
+
+  const filePath = path.resolve("public",elogId);
+
+  const fileExists = fs.existsSync(filePath);
+console.log(fileExists,"fileExists")
+  if (!fileExists) {
+    return res.status(404).json({
+      status: 404,
+      error: true,
+      message: "Attachment file not found",
+    });
+  }
+
+  const attachments = req.files?.map((file) => ({
+    filename: file.originalname,
+    path: file.path,
+  }));
+
+  const additionalAttachments = [
+    {
+      filename: `Elog_Report_${elogId}.pdf`,
+      path: filePath,
+    },
+    ...attachments,
+  ];
+
+  const mailData = {
+    to: to,
+    cc: cc || undefined,
+    bcc: bcc || undefined,
+    subject: subject,
+    message: message,
+    additionalAttachments,
+  };
+
   try {
-    const { search } = req.query; // Capture search keyword from query parameters
-
-    const searchCondition = search
-      ? {
-          [Op.or]: [
-            { site_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
-            { form_id: { [Op.like]: `%${search}%` } }, // Example: Search by form_id
-            { initiator_name: { [Op.like]: `%${search}%` } }, // Example: Search by initiator_name
-          ],
-        }
-      : {};
-
-    // Use Promise.all to run all queries concurrently
-    const [
-      differentialPressureForms,
-      dispenseOfMaterialForms,
-      loadedQuantityForms,
-      mediaRecordForms,
-      operationOfSterilizerForms,
-      temperatureForms,
-    ] = await Promise.all([
-      DifferentialPressureForm.findAll({
-        where: searchCondition,
-        include: [
-          { model: DifferentialPressureRecord },
-          { model: User, as: "reviewer", attributes: ["user_id", "name"] },
-          { model: User, as: "approver", attributes: ["user_id", "name"] },
-        ],
-        order: [["form_id", "DESC"]],
-      }),
-      DispenseOfMaterialForm.findAll({
-        where: searchCondition,
-        include: [
-          { model: DispenseOfMaterialRecord },
-          { model: User, as: "reviewer4", attributes: ["user_id", "name"] },
-          { model: User, as: "approver4", attributes: ["user_id", "name"] },
-        ],
-        order: [["form_id", "DESC"]],
-      }),
-      LoadedQuantityProcessForm.findAll({
-        where: searchCondition,
-        include: [
-          { model: LoadedQuantityRecord },
-          { model: User, as: "reviewer1", attributes: ["user_id", "name"] },
-          { model: User, as: "approver1", attributes: ["user_id", "name"] },
-        ],
-        order: [["form_id", "DESC"]],
-      }),
-      MediaRecordProcessForm.findAll({
-        where: searchCondition,
-        include: [
-          { model: MediaRecord },
-          { model: User, as: "reviewer3", attributes: ["user_id", "name"] },
-          { model: User, as: "approver3", attributes: ["user_id", "name"] },
-        ],
-        order: [["form_id", "DESC"]],
-      }),
-      OperationOfSterilizerProcessForm.findAll({
-        where: searchCondition,
-        include: [
-          { model: OperationOfSterilizerRecord },
-          { model: User, as: "reviewer2", attributes: ["user_id", "name"] },
-          { model: User, as: "approver2", attributes: ["user_id", "name"] },
-        ],
-        order: [["form_id", "DESC"]],
-      }),
-      TempratureProcessForm.findAll({
-        where: searchCondition,
-        include: [
-          { model: TempratureProcessRecord },
-          { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
-          { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
-        ],
-        order: [["form_id", "DESC"]],
-      }),
-    ]);
-
-    // Combine all results into a single object
-    const data = {
-      differentialPressureForms,
-      dispenseOfMaterialForms,
-      loadedQuantityForms,
-      mediaRecordForms,
-      operationOfSterilizerForms,
-      temperatureForms,
-    };
-
+    const result = await sendEmail(mailData);
     return res.status(200).json({
+      status: 200,
       error: false,
-      message: "Data fetched successfully",
-      data: data,
+      message: "Report email sent successfully",
+      data: result,
     });
   } catch (error) {
-    console.error("Error:", error);
+    return res.status(500).json({
+      status: 500,
+      error: true,
+      message: `Internal Server Error${error}`,
+    });
+  }
+};
+
+exports.generateAuditPdfbyId = async (req, res) => {
+  const { formId, type, userId } = req.params;
+  const date = new Date();
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  let browser;
+
+  const user = await getUserById(userId);
+
+  try {
+    let getData;
+
+    switch (type) {
+      case "DifferentialPressureAuditTrail":
+        getData = await DifferentialPressureAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "DispenseOfMatrialAuditTrail":
+        getData = await DispenseOfMatrialAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "LoadedQuantityProcessAuditTrail":
+        getData = await LoadedQuantityProcessAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "MediaRecordAuditTrail":
+        getData = await MediaRecordAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "OperationOfSterilizerProcessAuditTrail":
+        getData = await OperationOfSterilizerProcessAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      case "TemperatureRecordsAuditTrail":
+        getData = await TemperatureRecordsAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      
+      default:
+        return res.status(400).json({
+          error: true,
+          message: `Invalid type: ${type}`,
+        });
+    }
+
+    // console.log(getData);
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+    const data = {
+      title: `${type.replace(/([A-Z])/g, " $1")} Audit Report`,
+      form_id: formId,
+      status: "status",
+      auditTrail: getData,
+    };
+
+    // Render audit report content using EJS
+    const htmlContent = await new Promise((resolve, reject) => {
+      req.app.render("auditReport", { reportData: data }, (err, html) => {
+        if (err) reject(err);
+        resolve(html);
+      });
+    });
+
+    const headerHtml = await new Promise((resolve, reject) => {
+      req.app.render(
+        "header",
+        { reportData: data, logoDataUri: logoDataUri },
+        (err, html) => {
+          if (err) return reject(err);
+          resolve(html);
+        }
+      );
+    });
+
+    const footerHtml = await new Promise((resolve, reject) => {
+      req.app.render(
+        "footer",
+        { userName: user?.name, date: formattedDate },
+        (err, html) => {
+          if (err) return reject(err);
+          resolve(html);
+        }
+      );
+    });
+
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // executablePath: '/usr/bin/chromium-browser',
+    });
+    const page = await browser.newPage();
+    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: headerHtml,
+      footerTemplate: footerHtml,
+      margin: {
+        top: "200px",
+        right: "52px",
+        bottom: "70px",
+        left: "52px",
+      },
+    });
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${type}_Audit_Report.pdf`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
     return res
       .status(500)
-      .json({ error: true, message: `Error: ${error.message}` });
+      .json({ error: true, message: "Error generating PDF", error });
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 };

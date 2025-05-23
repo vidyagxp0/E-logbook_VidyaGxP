@@ -28,7 +28,7 @@ function EffectiveElogs() {
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-all-differential-pressure",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ function EffectiveElogs() {
 
     const newConfigTemp = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/temprature-record/get-all-temprature-record",
+      url: "https://elog-api.mydemosoftware.com/temprature-record/get-all-temprature-record",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ function EffectiveElogs() {
 
     const newConfigloaded = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/loaded-quantity/get-all",
+      url: "https://elog-api.mydemosoftware.com/loaded-quantity/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -122,7 +122,7 @@ function EffectiveElogs() {
 
     const newConfigMedia = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/media-record/get-all",
+      url: "https://elog-api.mydemosoftware.com/media-record/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -153,7 +153,7 @@ function EffectiveElogs() {
 
     const newConfigDispensing = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/dispensing-material/get-all",
+      url: "https://elog-api.mydemosoftware.com/dispensing-material/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -183,7 +183,7 @@ function EffectiveElogs() {
       });
     const newOperationSterelizer = {
       method: "get",
-      url: "https://elog-backend.mydemosoftware.com/operation-sterlizer/get-all",
+      url: "https://elog-api.mydemosoftware.com/operation-sterlizer/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -206,7 +206,6 @@ function EffectiveElogs() {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        console.log(filteredArray, "filteredArray");
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -324,6 +323,9 @@ function EffectiveElogs() {
           <tbody>
             {eLogSelect === "effective_diffrential_pressure"
               ? differentialPressureElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -355,7 +357,7 @@ function EffectiveElogs() {
                           : "EU"}
                       </td>
                       <td
-                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                        dangerouslySetInnerHTML={{ __html:cleanHTML  }}
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
@@ -407,6 +409,9 @@ function EffectiveElogs() {
 
             {eLogSelect === "effective_temperature_records"
               ? tempratureRecordElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -438,7 +443,7 @@ function EffectiveElogs() {
                           : "EU"}
                       </td>
                       <td
-                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
@@ -449,6 +454,9 @@ function EffectiveElogs() {
               : null}
             {eLogSelect === "effective_loaded_quantity"
               ? loadedQuantityElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -482,7 +490,7 @@ function EffectiveElogs() {
                           : "EU"}
                       </td>
                       <td
-                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
@@ -494,6 +502,9 @@ function EffectiveElogs() {
 
             {eLogSelect === "effective_operation_of_sterilizer"
               ? operationOfSterilizerElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
                   return (
                     <>
                       <tr key={item.index}>
@@ -529,7 +540,7 @@ function EffectiveElogs() {
                         </td>
                         <td
                           dangerouslySetInnerHTML={{
-                            __html: item?.description,
+                            __html: cleanHTML,
                           }}
                         ></td>{" "}
                         <td>{item.initiator_name}</td>
@@ -543,6 +554,9 @@ function EffectiveElogs() {
 
             {eLogSelect === "effective_media_record"
               ? mediaRecordElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -574,7 +588,7 @@ function EffectiveElogs() {
                           : "EU"}
                       </td>
                       <td
-                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
@@ -586,6 +600,9 @@ function EffectiveElogs() {
 
             {eLogSelect === "effective_dispensing_of_material"
               ? dispensingOfMaterialsElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
                   return (
                     <tr key={item.index}>
                       <td> {index + 1}</td>
@@ -619,7 +636,7 @@ function EffectiveElogs() {
                           : "EU"}
                       </td>
                       <td
-                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
@@ -636,9 +653,11 @@ function EffectiveElogs() {
                     new Date(b.date_of_initiation) -
                     new Date(a.date_of_initiation)
                 ) // Sorting in descending order
-                .map((item, index) => (
-                  <>
-                    {/* {console.log(item, "item")} */}
+                .map((item, index) => {
+                  const cleanHTML = item?.description
+                  .replace(/^"|"$/g, "")
+                  .trim() || "NA";
+                  return (
                     <tr key={item.eLogId}>
                       <td>{index + 1}</td>
                       <td
@@ -693,14 +712,14 @@ function EffectiveElogs() {
                           : "EU"}
                       </td>
                       <td
-                        dangerouslySetInnerHTML={{ __html: item?.description }}
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
                       <td>{item.status}</td>
                     </tr>
-                  </>
-                ))}
+                  )
+})}
           </tbody>
         </table>
       </div>

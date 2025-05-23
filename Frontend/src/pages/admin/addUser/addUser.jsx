@@ -30,7 +30,7 @@ function AddNewUser() {
 
   useEffect(() => {
     const url =
-      "https://elog-backend.mydemosoftware.com/user/get-all-rolegroups";
+      "https://elog-api.mydemosoftware.com/user/get-all-rolegroups";
     axios
       .get(url)
       .then((response) => {
@@ -47,7 +47,7 @@ function AddNewUser() {
 
   useEffect(() => {
     const url =
-      "https://elog-backend.mydemosoftware.com/user/get-all-effective-roles";
+      "https://elog-api.mydemosoftware.com/user/get-all-effective-roles";
     axios
       .get(url)
       .then((response) => {
@@ -132,7 +132,7 @@ function AddNewUser() {
     };
 
     axios
-      .post("https://elog-backend.mydemosoftware.com/user/add-user", formData, {
+      .post("https://elog-api.mydemosoftware.com/user/add-user", formData, {
         headers: myHeaders,
       })
       .then(() => {

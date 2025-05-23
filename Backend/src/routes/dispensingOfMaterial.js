@@ -61,7 +61,7 @@ router.get(
 router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(6, 1),
   DispenseOfMaterial.SendDPElogForReview
 );
@@ -136,7 +136,11 @@ router.post(
   Auth.checkUserJwtToken,
   DispenseOfMaterial.effetiveChatByPdf
 );
-
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  DispenseOfMaterial.blankReport
+);
 router.post("/effective-view-report", DispenseOfMaterial.effetiveViewReport);
 
 router.post(

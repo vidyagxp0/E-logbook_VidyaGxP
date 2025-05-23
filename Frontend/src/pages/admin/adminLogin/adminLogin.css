@@ -38,8 +38,10 @@
 }
 
 #admin-console-login-page .login-form-block .logo img {
-
-  width: 250px;
+  margin: 0 auto 10px;
+  width: 230px;
+  height: auto;
+  object-fit: cover;
 }
 
 #admin-console-login-page .login-form-block .head {

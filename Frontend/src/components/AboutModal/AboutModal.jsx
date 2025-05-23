@@ -10,7 +10,7 @@ const AboutModal = ({ open, onClose, logo, details, footerText }) => {
 
         <hr className="mb-4" />
         <div className="flex justify-center mb-4">
-          <img src={logo} alt="Logo" className="w-24" />
+          <img src={logo} alt="Logo" className="w-44" />
         </div>
 
         <div className="space-y-2">

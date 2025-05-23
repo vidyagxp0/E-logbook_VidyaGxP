@@ -32,8 +32,14 @@ const LoadedQuantityEffective = () => {
   const UserName = JSON.parse(localStorage.getItem("Username"));
 
   const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  const [approved_by, setApproved_by] = useState(UserName?.name);
+
   useEffect(() => {
     setReviewed_by(UserName?.name);
+  }, []);
+
+  useEffect(() => {
+    setApproved_by(UserName?.name);
   }, []);
   // console.log(userdata, "dataaataat");
 
@@ -116,7 +122,7 @@ const LoadedQuantityEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+    //     url: "https://elog-api.mydemosoftware.com/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -151,7 +157,7 @@ const LoadedQuantityEffective = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -169,7 +175,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -188,7 +194,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -204,7 +210,7 @@ const LoadedQuantityEffective = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/approve",
           data,
           config
         )
@@ -222,7 +228,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -242,10 +248,10 @@ const LoadedQuantityEffective = () => {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
@@ -269,7 +275,7 @@ const LoadedQuantityEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+        url: "https://elog-api.mydemosoftware.com/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -329,8 +335,10 @@ const LoadedQuantityEffective = () => {
         loaded_quantity: "",
         yield: "",
         remarks: "",
+        approver_remarks: "",
         checked_by: location?.state?.initiator_name,
         reviewed_by: "",
+        approved_by: "",
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -494,7 +502,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/loaded-quantity/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/loaded-quantity/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -542,7 +550,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/loaded-quantity/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/loaded-quantity/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -669,7 +677,12 @@ const LoadedQuantityEffective = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img
+                    src="/vidyalogo21.png"
+                    style={{ objectFit: "cover" }}
+                    className="w-1/2"
+                    alt="..."
+                  />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -1089,8 +1102,10 @@ const LoadedQuantityEffective = () => {
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
                           <th>% Yield</th>
-                          <th>Checked By</th>
-                          <th>Remarks</th>
+                          <th>Reviewer Remark</th>
+                          <th>Checked By Reviewer</th>
+                          <th>Approver Remark</th>
+                          <th>Checked By Approver</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -1299,6 +1314,30 @@ const LoadedQuantityEffective = () => {
                               />
                             </td>
                             <td>
+                              <input
+                                value={item.remarks}
+                                className={`${
+                                  [1, 3].includes(userDetails.roles[0].role_id)
+                                    ? "cursor-not-allowed"
+                                    : ""
+                                }`}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.LoadedQuantityRecords,
+                                  ];
+                                  newData[index].remarks = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    LoadedQuantityRecords: newData,
+                                  });
+                                }}
+                                // readOnly={!location.state?.reviewer_id}
+                                disabled={[1, 3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              />
+                            </td>
+                            <td>
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                   <input
@@ -1338,9 +1377,9 @@ const LoadedQuantityEffective = () => {
                             </td>
                             <td>
                               <input
-                                value={item.remarks}
+                                value={item.approver_remarks}
                                 className={`${
-                                  [1, 3].includes(userDetails.roles[0].role_id)
+                                  [1, 2].includes(userDetails.roles[0].role_id)
                                     ? "cursor-not-allowed"
                                     : ""
                                 }`}
@@ -1348,17 +1387,56 @@ const LoadedQuantityEffective = () => {
                                   const newData = [
                                     ...editData.LoadedQuantityRecords,
                                   ];
-                                  newData[index].remarks = e.target.value;
+                                  newData[index].approver_remarks =
+                                    e.target.value;
                                   setEditData({
                                     ...editData,
                                     LoadedQuantityRecords: newData,
                                   });
                                 }}
                                 // readOnly={!location.state?.reviewer_id}
-                                disabled={[1, 3].includes(
+                                disabled={[1, 2].includes(
                                   userDetails.roles[0].role_id
                                 )}
                               />
+                            </td>
+                            <td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className={`h-4 w-4  ${
+                                      [1, 2].includes(
+                                        userDetails.roles[0].role_id
+                                      )
+                                        ? "cursor-not-allowed"
+                                        : "cursor-pointer"
+                                    }`}
+                                    type="checkbox"
+                                    checked={!!item.approved_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.LoadedQuantityRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].approved_by =
+                                          approved_by;
+                                      } else {
+                                        newData[index].approved_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        LoadedQuantityRecords: newData,
+                                      });
+                                    }}
+                                    disabled={[1, 2].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
+                                  />
+                                  {item.approved_by && (
+                                    <p>{item.approved_by}</p>
+                                  )}
+                                </div>
+                              </div>
                             </td>
 
                             <td>

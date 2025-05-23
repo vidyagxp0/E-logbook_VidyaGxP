@@ -30,7 +30,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export default function DiffrentialPressure() {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -109,10 +109,10 @@ export default function DiffrentialPressure() {
     //   toast.error("Please provide an initiator comment!");
     //   return;
     // }
-    if (differentialPRecord.description === "") {
-      toast.error("Please provide a short description!");
-      return;
-    }
+    // if (differentialPRecord.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
     if (
       differentialPRecord?.FormRecordsArray?.some(
         (record) => record.differential_pressure === "" || record.remarks === ""
@@ -135,7 +135,7 @@ export default function DiffrentialPressure() {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com/differential-pressure/post-differential-pressure",
+        "https://elog-api.mydemosoftware.com/differential-pressure/post-differential-pressure",
         differentialPRecord,
         config
       )
@@ -295,7 +295,7 @@ export default function DiffrentialPressure() {
             <div className="details-form-data">
               {/* <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -303,7 +303,7 @@ export default function DiffrentialPressure() {
               </div> */}
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." width={20} />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -649,12 +649,13 @@ export default function DiffrentialPressure() {
                       <tr>
                         <th>S no.</th>
                         <th>Unique Id</th>
-                        <th>Date</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
-                        <th style={{ width: "300px" }}>Supporting Documents</th>
+                        <th>Reviewer Remark</th>
+                        <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th>
+                        <th>Checked By Approver</th>
+                        <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
                     </thead>

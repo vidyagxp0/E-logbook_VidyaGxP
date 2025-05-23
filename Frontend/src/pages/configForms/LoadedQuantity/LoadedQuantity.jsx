@@ -55,7 +55,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const LoadedQuantity = () => {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const LoadedQuantity = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -126,14 +126,14 @@ const LoadedQuantity = () => {
       return;
     }
 
-    if (loadedQuantity.initiatorComment === "") {
-      toast.error("Please provide an initiator comment!");
-      return;
-    }
-    if (loadedQuantity.description === "") {
-      toast.error("Please provide a short description!");
-      return;
-    }
+    // if (loadedQuantity.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
+    // if (loadedQuantity.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
     // if (
     //   loadedQuantity?.FormRecordsArray?.some(
     //     (record) => record.differential_pressure === "" || record.remarks === ""
@@ -157,7 +157,7 @@ const LoadedQuantity = () => {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com/loaded-quantity/post",
+        "https://elog-api.mydemosoftware.com/loaded-quantity/post",
         loadedQuantity,
         config
       )
@@ -266,7 +266,7 @@ const LoadedQuantity = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -478,10 +478,10 @@ const LoadedQuantity = () => {
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
                           <th>% Yield</th>
-                          <th>Checked By</th>
-                          {/* <th>Product Name</th> */}
-                          <th>Remark</th>
-                          {/* <th style={{ width: "300px" }}>Supporting Documents</th> */}
+                          <th>Reviewer Remark</th>
+                          <th>Checked By Reviewer</th>
+                          <th>Approver Remark</th>
+                          <th>Checked By Approver</th>
                           <th>Actions</th>
                         </tr>
                       </thead>

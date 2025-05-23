@@ -87,7 +87,7 @@ const DispensingOfMaterialsEffective = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-for-review",
+          "https://elog-api.mydemosoftware.com/dispensing-material/send-for-review",
           data,
           config
         )
@@ -105,7 +105,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-approval",
+          "https://elog-api.mydemosoftware.com/dispensing-material/send-review-to-approval",
           data,
           config
         )
@@ -124,7 +124,7 @@ const DispensingOfMaterialsEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-review-to-open",
+          "https://elog-api.mydemosoftware.com/dispensing-material/send-review-to-open",
           data,
           config
         )
@@ -140,7 +140,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/approve",
+          "https://elog-api.mydemosoftware.com/dispensing-material/approve",
           data,
           config
         )
@@ -158,7 +158,7 @@ const DispensingOfMaterialsEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/dispensing-material/send-approval-to-open",
+          "https://elog-api.mydemosoftware.com/dispensing-material/send-approval-to-open",
           data,
           config
         )
@@ -178,10 +178,10 @@ const DispensingOfMaterialsEffective = () => {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
@@ -209,7 +209,7 @@ const DispensingOfMaterialsEffective = () => {
         },
         data: editData,
 
-        url: "https://elog-backend.mydemosoftware.com/dispensing-material/update",
+        url: "https://elog-api.mydemosoftware.com/dispensing-material/update",
       };
 
       axios(requestOptions)
@@ -442,7 +442,7 @@ const DispensingOfMaterialsEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/dispensing-material/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/dispensing-material/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -497,7 +497,7 @@ const DispensingOfMaterialsEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/dispensing-material/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/dispensing-material/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -570,7 +570,7 @@ const DispensingOfMaterialsEffective = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>

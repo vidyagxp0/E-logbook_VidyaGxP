@@ -74,7 +74,7 @@ export default function DPRpanel() {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -92,7 +92,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -111,7 +111,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -127,7 +127,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/approve-DP-elog",
+          "https://elog-api.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -145,7 +145,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -165,10 +165,10 @@ export default function DPRpanel() {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
@@ -192,7 +192,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/differential-pressure/update-differential-pressure",
+        url: "https://elog-api.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -403,7 +403,7 @@ export default function DPRpanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/differential-pressure/chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/differential-pressure/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -468,7 +468,7 @@ export default function DPRpanel() {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -476,7 +476,7 @@ export default function DPRpanel() {
               </div>
               {/* <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -949,14 +949,16 @@ export default function DPRpanel() {
                         <th>Unique Id</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
-                        <th>Remark</th>
-                        <th>Checked By</th>
+                        <th>Reviewer Remark</th>
+                        <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th>
+                        <th>Checked By Approver</th>
                         <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.DifferentialPressureRecords.map(
+                      {/*  {editData?.DifferentialPressureRecords.map(
                         (item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
@@ -1064,7 +1066,7 @@ export default function DPRpanel() {
                                     style={{ color: "red", cursor: "pointer" }}
                                     onClick={() => handleDeleteFile(index)}
                                   /> */}
-                                    </h3>
+                      {/* </h3>
                                   </div>
                                 ) : (
                                   <div className="file-upload-wrapper">
@@ -1115,6 +1117,7 @@ export default function DPRpanel() {
                           </tr>
                         )
                       )}
+                      */}
                     </tbody>
                   </table>
 

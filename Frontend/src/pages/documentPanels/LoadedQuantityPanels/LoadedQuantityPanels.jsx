@@ -68,7 +68,7 @@ const LoadedQuantityPanels = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+    //     url: "https://elog-api.mydemosoftware.com/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -103,7 +103,7 @@ const LoadedQuantityPanels = () => {
 
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-for-review",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -121,7 +121,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-approval",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -140,7 +140,7 @@ const LoadedQuantityPanels = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-review-to-open",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -156,7 +156,7 @@ const LoadedQuantityPanels = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/approve",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/approve",
           data,
           config
         )
@@ -174,7 +174,7 @@ const LoadedQuantityPanels = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/loaded-quantity/send-approval-to-open",
+          "https://elog-api.mydemosoftware.com/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -194,10 +194,10 @@ const LoadedQuantityPanels = () => {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
@@ -221,7 +221,7 @@ const LoadedQuantityPanels = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/loaded-quantity/update",
+        url: "https://elog-api.mydemosoftware.com/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -449,7 +449,7 @@ const LoadedQuantityPanels = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/loaded-quantity/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -514,7 +514,7 @@ const LoadedQuantityPanels = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
@@ -878,17 +878,19 @@ const LoadedQuantityPanels = () => {
                       <thead className=" text-white" style={{ color: "white" }}>
                         <tr>
                           <th>S no.</th>
-                          <th>Unique Id</th>
                           <th>Date</th>
+                          <th>Unique ID</th>
                           <th>Product Name</th>
                           <th>Batch No.</th>
                           <th>Container Size (ml)</th>
                           <th>Batch Size (Ltr)</th>
                           <th>Theoretical Production</th>
                           <th>Loaded Quantity</th>
-                          <th>Checked By</th>
                           <th>% Yield</th>
-                          <th>Remarks</th>
+                          <th>Reviewer Remark</th>
+                          <th>Checked By Reviewer</th>
+                          <th>Approver Remark</th>
+                          <th>Checked By Approver</th>
                           <th>Actions</th>
                         </tr>
                       </thead>

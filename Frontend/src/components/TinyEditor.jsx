@@ -173,10 +173,11 @@ export default function TinyEditor({
       setTemp(false);
     }
   }, 250);
+  console.log(editorContent.replace(/^"|"$/g, "").trim() || "NA","editor")
   return (
     <div style={{ padding: "15px 0px" }} className="shadow-lg">
       {/* Textarea ref where TinyMCE will be initialized */}
-      <textarea ref={editorRef} defaultValue={editorContent} key={tinyNo} />
+      <textarea ref={editorRef} defaultValue={editorContent?.replace(/^"|"$/g, "")?.trim()} key={tinyNo} />
     </div>
   );
 }

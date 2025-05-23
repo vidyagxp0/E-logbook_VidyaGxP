@@ -67,7 +67,7 @@ const MediaRecordPanel = () => {
     //     "Content-Type": "multipart/form-data",
     //   },
     //   data: editData,
-    //   url: "https://elog-backend.mydemosoftware.com/media-record/update",
+    //   url: "https://elog-api.mydemosoftware.com/media-record/update",
     // };
 
     // axios(requestOptions)
@@ -101,7 +101,7 @@ const MediaRecordPanel = () => {
       }
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-for-review",
+          "https://elog-api.mydemosoftware.com/media-record/send-for-review",
           data,
           config
         )
@@ -119,7 +119,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-approval",
+          "https://elog-api.mydemosoftware.com/media-record/send-review-to-approval",
           data,
           config
         )
@@ -138,7 +138,7 @@ const MediaRecordPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-review-to-open",
+          "https://elog-api.mydemosoftware.com/media-record/send-review-to-open",
           data,
           config
         )
@@ -154,7 +154,7 @@ const MediaRecordPanel = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/approve",
+          "https://elog-api.mydemosoftware.com/media-record/approve",
           data,
           config
         )
@@ -172,7 +172,7 @@ const MediaRecordPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-backend.mydemosoftware.com/media-record/send-approval-to-open",
+          "https://elog-api.mydemosoftware.com/media-record/send-approval-to-open",
           data,
           config
         )
@@ -192,10 +192,10 @@ const MediaRecordPanel = () => {
       //   toast.error("The limit value must be between 0.6 and 2.6.");
       //   return;
       // }
-      if (editData.description === "") {
-        toast.error("description is required");
-        return;
-      }
+      // if (editData.description === "") {
+      //   toast.error("description is required");
+      //   return;
+      // }
       if (
         editData?.MediaRecords?.some(
           (record) =>
@@ -219,7 +219,7 @@ const MediaRecordPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-backend.mydemosoftware.com/media-record/update",
+        url: "https://elog-api.mydemosoftware.com/media-record/update",
       };
 
       axios(requestOptions)
@@ -435,7 +435,7 @@ const MediaRecordPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-backend.mydemosoftware.com/media-record/chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/media-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -501,7 +501,7 @@ const MediaRecordPanel = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/vidyalogo2.png" alt="..." />
+                  <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>

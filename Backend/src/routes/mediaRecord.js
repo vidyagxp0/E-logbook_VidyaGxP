@@ -53,7 +53,7 @@ router.get("/get-all", Auth.checkUserJwtToken, MediaRecord.GetAllMediaRecord);
 router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
+  upload.any(),
   Auth.authorizeUserRole(5, 1),
   MediaRecord.SendDPElogForReview
 );
@@ -131,7 +131,11 @@ router.post(
   Auth.checkUserJwtToken,
   MediaRecord.effetiveChatByPdf
 );
-
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  MediaRecord.blankReport
+);
 router.post("/effective-view-report", MediaRecord.effetiveViewReport);
 
 router.post(
