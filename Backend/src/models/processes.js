@@ -27,6 +27,10 @@ Process.addHook('afterSync', async () => {
                 { process: 'Operation Of Sterilizer' },
                 { process: 'Media Record' },
                 { process: 'Dispensing Of Materials' },
+                { process: 'Analytical Balance' },
+                { process: 'Karl Fischer' },
+                { process: 'HPLC' },
+              
             ]);
             console.log('Processes created');
         } else {

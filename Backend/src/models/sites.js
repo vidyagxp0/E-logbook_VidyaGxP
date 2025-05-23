@@ -25,6 +25,7 @@ Site.addHook('afterSync', async () => {
                 { site: 'Malaysia' },
                 { site: 'EMEA' },
                 { site: 'EU' },
+                { site: 'IPC'}
             ]);
             console.log('Sites created');
         } else {
