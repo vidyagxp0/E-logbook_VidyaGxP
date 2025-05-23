@@ -172,7 +172,7 @@ const rolesArray4 = [
 ];
 
 
-User.addHook("afterSync", async () => {
+ User.addHook("afterSync", async () => {
   const assignInitiatorRoles = async () => {
     try {
       const initiatorUser = await User.findOne({
