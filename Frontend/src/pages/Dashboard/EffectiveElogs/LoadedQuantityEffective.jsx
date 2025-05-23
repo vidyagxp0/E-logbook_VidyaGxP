@@ -122,7 +122,7 @@ const LoadedQuantityEffective = () => {
     //       "Content-Type": "multipart/form-data",
     //     },
     //     data: editData,
-    //     url: "https://elog-api.mydemosoftware.com/loaded-quantity/update",
+    //     url: "http://localhost:1000/loaded-quantity/update",
     //   };
 
     //   axios(requestOptions)
@@ -157,7 +157,7 @@ const LoadedQuantityEffective = () => {
 
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/loaded-quantity/send-for-review",
+          "http://localhost:1000/loaded-quantity/send-for-review",
           data,
           config
         )
@@ -175,7 +175,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/loaded-quantity/send-review-to-approval",
+          "http://localhost:1000/loaded-quantity/send-review-to-approval",
           data,
           config
         )
@@ -194,7 +194,7 @@ const LoadedQuantityEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/loaded-quantity/send-review-to-open",
+          "http://localhost:1000/loaded-quantity/send-review-to-open",
           data,
           config
         )
@@ -210,7 +210,7 @@ const LoadedQuantityEffective = () => {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/loaded-quantity/approve",
+          "http://localhost:1000/loaded-quantity/approve",
           data,
           config
         )
@@ -228,7 +228,7 @@ const LoadedQuantityEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/loaded-quantity/send-approval-to-open",
+          "http://localhost:1000/loaded-quantity/send-approval-to-open",
           data,
           config
         )
@@ -275,7 +275,7 @@ const LoadedQuantityEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-api.mydemosoftware.com/loaded-quantity/update",
+        url: "http://localhost:1000/loaded-quantity/update",
       };
 
       axios(requestOptions)
@@ -502,7 +502,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `https://elog-api.mydemosoftware.com/loaded-quantity/blank-report/${formId}`,
+        `http://localhost:1000/loaded-quantity/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -550,7 +550,7 @@ const LoadedQuantityEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-api.mydemosoftware.com/loaded-quantity/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/loaded-quantity/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },

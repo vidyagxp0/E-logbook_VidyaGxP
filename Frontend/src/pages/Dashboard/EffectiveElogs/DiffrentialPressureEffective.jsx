@@ -86,7 +86,7 @@ export default function DPREffective() {
       }
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
+          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -104,7 +104,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
+          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -123,7 +123,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -139,7 +139,7 @@ export default function DPREffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/differential-pressure/approve-DP-elog",
+          "http://localhost:1000/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -157,7 +157,7 @@ export default function DPREffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
+          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -203,7 +203,7 @@ export default function DPREffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "https://elog-api.mydemosoftware.com/differential-pressure/update-differential-pressure",
+        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -416,7 +416,7 @@ export default function DPREffective() {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `https://elog-api.mydemosoftware.com/differential-pressure/blank-report/${formId}`,
+        `http://localhost:1000/differential-pressure/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -464,7 +464,7 @@ export default function DPREffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-api.mydemosoftware.com/differential-pressure/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/differential-pressure/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
