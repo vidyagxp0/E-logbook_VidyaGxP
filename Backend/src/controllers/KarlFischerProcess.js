@@ -1,5 +1,5 @@
-const AnalyticalBalanceProcessForm = require("../models/AnalyticalBalanceForm");
-const AnalyticalBalanceRecords = require("../models/AnalyticalBalanceRecords");
+const karlFischerForm = require("../models/karlFischerForm");
+const karlFischerRecord = require("../models/karlFischerRecords");
 const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
@@ -7,12 +7,18 @@ const UserRole = require("../models/userRoles");
 const { Op, ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
-const AnalyticalBalanceAuditTrail = require("../models/AnalyticalBalanceAuditTrail");
+const karlFischerAuditTrail = require("../models/karlFischerAuditTrail");
 const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
+const DispenseOfMatrialAuditTrail = require("../models/dispensingOfMaterialAuditTrail");
+const LoadedQuantityProcessAuditTrail = require("../models/loadedQuantityProcessAuditTrail");
+const MediaRecordAuditTrail = require("../models/mediaRecordAuditTrail");
+const OperationOfSterilizerProcessAuditTrail = require("../models/OperationOfSterilizerProcessAuditTrail");
+const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -20,10 +26,13 @@ const getUserById = async (user_id) => {
 };
 
 // Fill Differential pressure form and insert its records.
-exports.InsertAnalyticalBalance = async (req, res) => {
+exports.InsertKarlFischer = async (req, res) => {
   const {
     site_id,
     description,
+    department,
+    compression_area,
+    limit,
     reviewer_id,
     approver_id,
     initiatorComment,
@@ -74,23 +83,32 @@ exports.InsertAnalyticalBalance = async (req, res) => {
       await transaction.rollback();
       return res
         .status(401)
-        .json({ error: true, message: "Invalid e-signature Password." });
+        .json({ error: true, message: "Invalid e-signature." });
     }
 
     let initiatorAttachment = null;
     let additionalAttachment = null;
+    const supportingDocs = {};
 
     // Process files
-    req?.files?.forEach((file) => {
+    req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
+      } else if (file.fieldname.startsWith("FormRecordsArray[")) {
+        // Extract the index from the fieldname
+        const match = file.fieldname.match(
+          /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
+        );
+        if (match) {
+          const index = match[1];
+          supportingDocs[index] = file;
+        }
       }
     });
-
     // Create new Differential Pressure Form
-    const newForm = await AnalyticalBalanceProcessForm.create(
+    const newForm = await karlFischerForm.create(
       {
         site_id: site_id,
         initiator_id: user.user_id,
@@ -98,6 +116,9 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         description: description,
         status: "Opened",
         stage: 1,
+        department: department,
+        compression_area: compression_area,
+        limit: limit,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -112,11 +133,15 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
+      department,
+      compression_area,
+      limit,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
       additionalInfo,
     };
+
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
         auditTrailEntries.push({
@@ -136,7 +161,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
-        field_name: "Initiator Attachment",
+        field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
         changed_by: user.user_id,
@@ -146,180 +171,123 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         action: "Opened",
       });
     }
-
+    if (additionalAttachment) {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+        field_name: "additionalAttachment",
+        previous_value: null,
+        new_value: getElogDocsUrl(additionalAttachment),
+        changed_by: user.user_id,
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+        declaration: initiatorDeclaration,
+        action: "Opened",
+      });
+    }
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
-        date:
-          record?.date && !isNaN(new Date(record?.date))
-            ? new Date(record?.date).toISOString()
-            : null,
-        name_medium: record?.name_medium,
-        date_of_preparation: record?.date_of_preparation,
-        date_of_use: record?.date_of_use,
-        lot_no: record?.lot_no,
-        no_of_plate_prepared: record?.no_of_plate_prepared,
-        no_of_plate_used: record?.no_of_plate_used,
-        used_for: record?.used_for,
-        balance_no_plate: record?.balance_no_plate,
-        signature: record?.signature,
+        time: record?.time, // Assuming time was meant here instead of unique_id again
+        karl_fischer: record?.karl_fischer,
+        remarks: record?.remarks,
+        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
+        supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
-      await AnalyticalBalanceRecords.bulkCreate(formRecords, {
-        transaction,
-      });
+      await karlFischerRecord.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
           field_name: "Unique Id",
           previous_value: null,
-          new_value: record.unique_id,
+          new_value: record?.unique_id,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           declaration: initiatorDeclaration,
           action: "Opened",
         });
+          
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Date",
+          field_name: "Time",
           previous_value: null,
-          new_value: record.date,
+          new_value: record?.time,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           declaration: initiatorDeclaration,
           action: "Opened",
         });
+          
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Name Medium",
+          field_name: "KarlFischer",
           previous_value: null,
-          new_value: record.name_medium,
+          new_value: record?.karl_fischer,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           declaration: initiatorDeclaration,
           action: "Opened",
         });
+          
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Date Of Preparation",
+          field_name: "Remarks",
           previous_value: null,
-          new_value: record.date_of_preparation,
+          new_value: record?.remarks,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           declaration: initiatorDeclaration,
           action: "Opened",
         });
+          
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Date Of Use",
+          field_name: "CheckedBy",
           previous_value: null,
-          new_value: record.date_of_use,
+          new_value: record?.checked_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           declaration: initiatorDeclaration,
           action: "Opened",
         });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Lot No",
-          previous_value: null,
-          new_value: record.lot_no,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "No Of Plate Prepared",
-          previous_value: null,
-          new_value: record.no_of_plate_prepared,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "No Of Plate Used",
-          previous_value: null,
-          new_value: record.no_of_plate_used,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Used For",
-          previous_value: null,
-          new_value: record.used_for,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Balance No Plate",
-          previous_value: null,
-          new_value: record.balance_no_plate,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Signature",
-          previous_value: null,
-          new_value: record.signature,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Checked By",
-          previous_value: null,
-          new_value: record.checked_by,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
+          
+        if (supportingDocs[index]) {
+          auditTrailEntries.push({
+            form_id: newForm.form_id,
+            field_name: "SupportingDocs",
+            previous_value: null,
+            new_value: getElogDocsUrl(supportingDocs),
+            changed_by: user.user_id,
+            previous_status: "Not Applicable",
+            new_status: "Opened",
+            declaration: initiatorDeclaration,
+            action: "Opened",
+          });
+        }
+         
       });
     }
 
-    await AnalyticalBalanceAuditTrail.bulkCreate(auditTrailEntries, {
+    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
     await transaction.commit();
-
     return res.status(200).json({
       error: false,
       message: "E-log Created successfully",
     });
   } catch (error) {
-    // console.log("error",error)
     // Rollback the transaction in case of error
     await transaction.rollback();
 
@@ -336,14 +304,17 @@ exports.InsertAnalyticalBalance = async (req, res) => {
 };
 
 // edit differential pressure elog details
-exports.EditAnalyticalBalance = async (req, res) => {
+exports.EditKarlFischer = async (req, res) => {
   const {
     form_id,
     site_id,
     description,
+    department,
+    compression_area,
+    limit,
     reviewer_id,
     approver_id,
-    MediaRecords,
+    KarlFischerRecords,
     email,
     password,
     initiatorComment,
@@ -388,16 +359,23 @@ exports.EditAnalyticalBalance = async (req, res) => {
 
     let initiatorAttachment = null;
     let additionalAttachment = null;
-
-    req?.files?.forEach((file) => {
+    const supportingDocs = {};
+    req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
+      } else if (file.fieldname.startsWith("KarlFischerRecords[")) {
+        const match = file.fieldname.match(
+          /KarlFischerRecords\[(\d+)\]\[supporting_docs\]/
+        );
+        if (match) {
+          const index = match[1];
+          supportingDocs[index] = file;
+        }
       }
     });
-
-    const form = await AnalyticalBalanceProcessForm.findOne({
+    const form = await karlFischerForm.findOne({
       where: { form_id: form_id },
       transaction,
     });
@@ -417,10 +395,16 @@ exports.EditAnalyticalBalance = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
+      department,
+      compression_area,
+      limit,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalAttachment: additionalAttachment
+        ? getElogDocsUrl(additionalAttachment)
+        : form.additionalAttachment,
       additionalInfo,
     };
 
@@ -451,6 +435,9 @@ exports.EditAnalyticalBalance = async (req, res) => {
       {
         site_id,
         description,
+        department,
+        compression_area,
+        limit,
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -462,37 +449,34 @@ exports.EditAnalyticalBalance = async (req, res) => {
     );
 
     // Update the Form Records if provided
-    if (Array.isArray(MediaRecords) && MediaRecords.length > 0) {
-      const existingRecords = await AnalyticalBalanceRecords.findAll({
+    if (
+      Array.isArray(KarlFischerRecords) &&
+      KarlFischerRecords.length > 0
+    ) {
+      const existingRecords = await karlFischerRecord.findAll({
         where: { form_id: form_id },
         raw: true,
         // order: [["record_id", "DESC"]],
         transaction,
       });
+      
 
       // Track changes for existing records
       existingRecords.forEach((existingRecord, index) => {
-        MediaRecords.sort(
+        KarlFischerRecords.sort(
           (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
         );
-        const newRecord = MediaRecords[index];
+        const newRecord = KarlFischerRecords[index];
         if (newRecord) {
           const recordFields = {
-            unique_id: newRecord?.unique_id,
-            date:
-              newRecord?.date && !isNaN(new Date(newRecord?.date))
-                ? new Date(newRecord?.date).toISOString()
-                : null,
-            name_medium: newRecord?.name_medium,
-            date_of_preparation: newRecord?.date_of_preparation,
-            date_of_use: newRecord?.date_of_use,
-            lot_no: newRecord?.lot_no,
-            no_of_plate_prepared: newRecord?.no_of_plate_prepared,
-            no_of_plate_used: newRecord?.no_of_plate_used,
-            used_for: newRecord?.used_for,
-            balance_no_plate: newRecord?.balance_no_plate,
-            signature: newRecord?.signature,
+            karl_fischer: newRecord.karl_fischer,
+            remarks: newRecord.remarks,
+            approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
+            supporting_docs:
+              newRecord.supporting_docs ||
+              getElogDocsUrl(supportingDocs[index]),
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -505,7 +489,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
             ) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}`,
+                field_name: `${field}[${index}]`,
                 previous_value: oldValue || null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -520,27 +504,31 @@ exports.EditAnalyticalBalance = async (req, res) => {
       });
 
       // Handle new records added
-      if (MediaRecords.length > existingRecords.length) {
-        for (let i = existingRecords.length; i < MediaRecords.length; i++) {
-          const newRecord = MediaRecords[i];
+      if (KarlFischerRecords.length > existingRecords.length) {
+        for (
+          let i = existingRecords.length;
+          i < KarlFischerRecords.length;
+          i++
+        ) {
+          const newRecord = KarlFischerRecords[i];
           const recordFields = {
             unique_id: newRecord?.unique_id,
-            product_name: newRecord.product_name,
-            batch_no: newRecord.batch_no,
-            container_size: newRecord.container_size,
-            batch_size: newRecord.batch_size,
-            theoretical_production: newRecord.theoretical_production,
-            loaded_quantity: newRecord.loaded_quantity,
+            time: newRecord?.time,
+            checked_by: newRecord?.checked_by,
+            karl_fischer: newRecord.karl_fischer,
             remarks: newRecord.remarks,
-            yield: newRecord.yield,
+            approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
+            supporting_docs:
+              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
             if (newValue !== undefined) {
               auditTrailEntries.push({
                 form_id: form.form_id,
-                field_name: `${field}`,
+                field_name: `${field}[${i}]`,
                 previous_value: null,
                 new_value: newValue,
                 changed_by: user.user_id,
@@ -555,37 +543,31 @@ exports.EditAnalyticalBalance = async (req, res) => {
       }
 
       // Delete existing records for the form
-      await AnalyticalBalanceRecords.destroy({
+      await karlFischerRecord.destroy({
         where: { form_id: form_id },
         transaction,
       });
 
       // Create new records
-      const formRecords = MediaRecords.map((record, index) => ({
+      const formRecords = KarlFischerRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
-        date:
-          record?.date && !isNaN(new Date(record?.date))
-            ? new Date(record?.date).toISOString()
-            : null,
-        name_medium: record?.name_medium,
-        date_of_preparation: record?.date_of_preparation,
-        date_of_use: record?.date_of_use,
-        lot_no: record?.lot_no,
-        no_of_plate_prepared: record?.no_of_plate_prepared,
-        no_of_plate_used: record?.no_of_plate_used,
-        used_for: record?.used_for,
-        balance_no_plate: record?.balance_no_plate,
-        signature: record?.signature,
+        time: record?.time,
+        karl_fischer: record?.karl_fischer,
+        remarks: record?.remarks,
+        approver_remarks:record?.approver_remarks,
+        checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
+        supporting_docs: record?.supporting_docs
+          ? record?.supporting_docs
+          : getElogDocsUrl(supportingDocs[index]),
       }));
 
-      await AnalyticalBalanceRecords.bulkCreate(formRecords, {
-        transaction,
-      });
+      await karlFischerRecord.bulkCreate(formRecords, { transaction });
     }
 
-    await AnalyticalBalanceAuditTrail.bulkCreate(auditTrailEntries, {
+    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -597,6 +579,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
     });
   } catch (error) {
     await transaction.rollback();
+
     let errorMessage = "Error during updating elog";
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
@@ -604,14 +587,13 @@ exports.EditAnalyticalBalance = async (req, res) => {
 
     return res.status(500).json({
       error: true,
-      message: `${errorMessage}: ${error}`,
+      message: `${errorMessage}: ${error.message}`,
     });
   }
 };
 
-
 //get a differential pressure elog by id
-exports.GetAnalyticalBalance = async (req, res) => {
+exports.GetKarlFischerElog = async (req, res) => {
   const form_id = req.params.id;
 
   if (!form_id) {
@@ -620,13 +602,13 @@ exports.GetAnalyticalBalance = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }
 
-  AnalyticalBalanceProcessForm.findOne({
+  karlFischerForm.findOne({
     where: {
       form_id: form_id,
     },
     include: [
       {
-        model: AnalyticalBalanceRecords,
+        model: karlFischerRecord,
       },
     ],
   })
@@ -645,20 +627,20 @@ exports.GetAnalyticalBalance = async (req, res) => {
 };
 
 //get all the differential pressure elogs
-exports.GetAllAnalyticalBalance = async (req, res) => {
-  AnalyticalBalanceProcessForm.findAll({
+exports.GetAllKarlFischerElog = async (req, res) => {
+  karlFischerForm.findAll({
     include: [
       {
-        model: AnalyticalBalanceRecords,
+        model: karlFischerRecord,
       },
       {
         model: User,
-        as: "reviewer6", // Use the consistent alias 'reviewer'
+        as: "reviewers", // Use the consistent alias 'reviewer'
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
       {
         model: User,
-        as: "approver6", // Use the consistent alias 'approver'
+        as: "approvers", // Use the consistent alias 'approver'
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
@@ -679,7 +661,7 @@ exports.GetAllAnalyticalBalance = async (req, res) => {
 };
 
 //send differential pressure elog for review
-exports.SendDPElogForReview = async (req, res) => {
+exports.SendKFElogForReview = async (req, res) => {
   const { form_id, email, password, initiatorDeclaration, initiatorComment } =
     req.body;
 
@@ -722,7 +704,7 @@ exports.SendDPElogForReview = async (req, res) => {
     }
 
     // Find the form
-    const form = await AnalyticalBalanceProcessForm.findOne({
+    const form = await karlFischerForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -765,6 +747,7 @@ exports.SendDPElogForReview = async (req, res) => {
         action: "Send For Review",
       });
     }
+
     if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: form.form_id,
@@ -796,15 +779,15 @@ exports.SendDPElogForReview = async (req, res) => {
       {
         status: "Under Review",
         stage: 2,
-        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         initiatorComment: initiatorComment,
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
       },
       { transaction }
     );
 
     // Insert audit trail entries
-    await AnalyticalBalanceAuditTrail.bulkCreate(auditTrailEntries, {
+    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -827,7 +810,7 @@ exports.SendDPElogForReview = async (req, res) => {
 };
 
 // change status of differential pressure elog from review to open
-exports.SendDPElogfromReviewToOpen = async (req, res) => {
+exports.SendKFElogfromReviewToOpen = async (req, res) => {
   const { form_id, email, password, reviewerDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -869,7 +852,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     }
 
     // Find the form
-    const form = await AnalyticalBalanceProcessForm.findOne({
+    const form = await karlFischerForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -927,17 +910,35 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await AnalyticalBalanceAuditTrail.bulkCreate(auditTrailEntries, {
+    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
     // Commit the transaction
     await transaction.commit();
 
+    // try {
+    //   const initiator = await getUserById(form.initiator_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderInitiator", {
+    //     initiatorName: initiator.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Opened",
+    //     recipients: initiator.email,
+    //   });
+
     return res.status(200).json({
       error: false,
       message: "E-log status successfully changed from review to Opened",
     });
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -950,7 +951,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 };
 
 // send differential pressure elog from review to approval
-exports.SendDPfromReviewToApproval = async (req, res) => {
+exports.SendKFfromReviewToApproval = async (req, res) => {
   const { form_id, reviewComment, email, password, reviewerDeclaration } =
     req.body;
 
@@ -998,7 +999,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     }
 
     // Find the form
-    const form = await AnalyticalBalanceProcessForm.findOne({
+    const form = await karlFischerForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1074,18 +1075,37 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await AnalyticalBalanceAuditTrail.bulkCreate(auditTrailEntries, {
+    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
     // Commit the transaction
     await transaction.commit();
 
+    // try {
+    //   const approver = await getUserById(form.approver_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderApprover", {
+    //     approverName: approver.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     reviewer: user.name,
+    //     status: "Under Approval",
+    //     recipients: approver.email,
+    //   });
+
     return res.status(200).json({
       error: false,
       message:
         "E-log status successfully changed from review to under-approval",
     });
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1098,7 +1118,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 };
 
 // send differential pressure elog from under approval to open
-exports.SendDPfromApprovalToOpen = async (req, res) => {
+exports.SendKFfromApprovalToOpen = async (req, res) => {
   const { form_id, email, password, approverDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -1140,7 +1160,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     }
 
     // Find the form
-    const form = await AnalyticalBalanceProcessForm.findOne({
+    const form = await karlFischerForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1198,18 +1218,36 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await AnalyticalBalanceAuditTrail.bulkCreate(auditTrailEntries, {
+    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
     // Commit the transaction
     await transaction.commit();
 
+    // try {
+    //   const initiator = await getUserById(form.initiator_id);
+    //   // Send emails
+    //   await Mailer.sendEmail("reminderInitiator", {
+    //     initiatorName: initiator.name,
+    //     dateOfInitiation: new Date().toISOString().split("T")[0],
+    //     description: form.description,
+    //     status: "Opened",
+    //     recipients: initiator.email,
+    //   });
+
     return res.status(200).json({
       error: false,
       message:
         "E-log status successfully changed from under-approval to under-review",
     });
+    // } catch (emailError) {
+    //   console.error("Failed to send emails:", emailError.message);
+    //   return res.json({
+    //     error: true,
+    //     message: "E-log Created but failed to send emails.",
+    //   });
+    // }
   } catch (error) {
     // Rollback the transaction in case of error
     await transaction.rollback();
@@ -1222,7 +1260,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 };
 
 // APPROVE differential pressure elog
-exports.ApproveDPElog = async (req, res) => {
+exports.ApproveKFElog = async (req, res) => {
   const { form_id, approverComment, email, password, approverDeclaration } =
     req.body;
 
@@ -1270,7 +1308,7 @@ exports.ApproveDPElog = async (req, res) => {
     }
 
     // Find the form
-    const form = await AnalyticalBalanceProcessForm.findOne({
+    const form = await karlFischerForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1346,7 +1384,7 @@ exports.ApproveDPElog = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await AnalyticalBalanceAuditTrail.bulkCreate(auditTrailEntries, {
+    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -1355,7 +1393,7 @@ exports.ApproveDPElog = async (req, res) => {
 
     return res.status(200).json({
       error: false,
-      message: "E-log successfully Closed!!",
+      message: "E-log successfully closed",
     });
   } catch (error) {
     // Rollback the transaction in case of error
@@ -1371,6 +1409,7 @@ exports.ApproveDPElog = async (req, res) => {
 // get users based on roles, sites and processes
 exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
   const { role_id, site_id, process_id } = req.body;
+
   try {
     // Fetch users based on role, site, and process
     const selectedUsers = await UserRole.findAll({
@@ -1430,7 +1469,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     }
 
     // Find all audit trail entries for the given form_id
-    const auditTrail = await AnalyticalBalanceAuditTrail.findAll({
+    const auditTrail = await karlFischerAuditTrail.findAll({
       where: { form_id: formId },
       include: {
         model: User,
@@ -1472,7 +1511,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 
 //     // Render HTML using EJS template
 //     const html = await new Promise((resolve, reject) => {
-//       res.render("AnalyticalBalanceRecords", { reportData }, (err, html) => {
+//       res.render("report", { reportData }, (err, html) => {
 //         if (err) return reject(err);
 //         resolve(html);
 //       });
@@ -1520,10 +1559,10 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //         );
 //       }),
 //       margin: {
-//         top: "150px",
-//         right: "50px",
-//         bottom: "50px",
-//         left: "50px",
+//         top: "120px",
+//         bottom: "60px",
+//         right: "30px",
+//         left: "30px",
 //       },
 //     });
 
@@ -1535,19 +1574,18 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //     res.send(pdf);
 //   } catch (error) {
 //     console.error("Error generating PDF:", error);
-//     res.status(500).json({
-//       error: true,
-//       message: `Error generating PDF: ${error.message}`,
-//     });
+//     return res
+//       .status(500)
+//       .json({ error: true, message: `Error generating PDF: ${error.message}` });
 //   }
 // };
-
 // const removeHtmlTags = (htmlString) => {
 //   return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
 // };
 // exports.chatByPdf = async (req, res) => {
 //   try {
 //     const reportData = req.body.reportData;
+
 //     const formId = req.params.form_id;
 //     reportData.description = removeHtmlTags(reportData.description);
 
@@ -1564,7 +1602,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 
 //     // Render HTML using EJS template
 //     const html = await new Promise((resolve, reject) => {
-//       req.app.render("AnalyticalBalanceRecords", { reportData }, (err, html) => {
+//       req.app.render("report", { reportData }, (err, html) => {
 //         if (err) return reject(err);
 //         resolve(html);
 //       });
@@ -1621,26 +1659,25 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 
 //     // Close the browser
 //     await browser.close();
-//     const uniqueId = uuidv4();
 
+//     // Generate a unique UUID
+//     const uniqueId = uuidv4();
 //     const filePath = path.resolve("public", `Elog_Report_${uniqueId}.pdf`);
 //     fs.writeFileSync(filePath, pdf);
 
 //     res.status(200).json({ filename: `Elog_Report_${uniqueId}.pdf` });
 //   } catch (error) {
 //     console.error("Error generating PDF:", error);
-//     res.status(500).json({
-//       error: true,
-//       message: `Error generating PDF: ${error.message}`,
-//     });
+//     return res
+//       .status(500)
+//       .json({ error: true, message: `Error generating PDF: ${error.message}` });
 //   }
 // };
-
 // exports.viewReport = async (req, res) => {
 //   try {
 //     let reportData = req.body.reportData;
 //     // Render HTML using EJS template
-//     req.app.render("AnalyticalBalanceRecords", { reportData }, (err, html) => {
+//     req.app.render("report", { reportData }, (err, html) => {
 //       if (err) {
 //         console.error("Error rendering HTML:", err);
 //         return res.status(500).send("Error rendering HTML", err);
@@ -1649,10 +1686,9 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //     });
 //   } catch (error) {
 //     console.error("Error generating PDF:", error);
-//     res.status(500).json({
-//       error: true,
-//       message: `Error generating PDF: ${error.message}`,
-//     });
+//     return res
+//       .status(500)
+//       .json({ error: true, message: `Error generating PDF: ${error.message}` });
 //   }
 // };
 // exports.effetiveChatByPdf = async (req, res) => {
@@ -1676,7 +1712,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 
 //     // Render HTML using EJS template
 //     const html = await new Promise((resolve, reject) => {
-//       req.app.render("effectiveMRReport", { reportData }, (err, html) => {
+//       req.app.render("effectiveDPReport", { reportData }, (err, html) => {
 //         if (err) return reject(err);
 //         resolve(html);
 //       });
@@ -1735,10 +1771,10 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //     await browser.close();
 //     const uniqueId = uuidv4();
 
-//     const filePath = path.resolve("public", `MR_Elog_Report_${uniqueId}.pdf`);
+//     const filePath = path.resolve("public", `DP_Elog_Report_${uniqueId}.pdf`);
 //     fs.writeFileSync(filePath, pdf);
 
-//     res.status(200).json({ filename: `MR_Elog_Report_${uniqueId}.pdf` });
+//     res.status(200).json({ filename: `DP_Elog_Report_${uniqueId}.pdf` });
 //   } catch (error) {
 //     console.error("Error generating PDF:", error);
 //     return res
@@ -1750,7 +1786,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //   try {
 //     let reportData = req.body.reportData;
 //     // Render HTML using EJS template
-//     req.app.render("effectiveMRReport", { reportData }, (err, html) => {
+//     req.app.render("effectiveDPReport", { reportData }, (err, html) => {
 //       if (err) {
 //         console.error("Error rendering HTML:", err);
 //         return res.status(500).send("Error rendering HTML", err);
@@ -1764,11 +1800,11 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //       .json({ error: true, message: `Error generating PDF: ${error.message}` });
 //   }
 // };
-
 // exports.blankReport = async (req, res) => {
 //   try {
-//     const reportData = req.body.reportData;
+//     let reportData = req.body.reportData;
 //     const formId = req.params.form_id;
+//     // reportData.title = "RUSOMA LABORATORIES PRIVATE LIMITED";
 
 //     const date = new Date();
 //     const formattedDate = date.toLocaleString("en-US", {
@@ -1783,24 +1819,19 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 
 //     const blankRows = Array(reportData?.blankRows);
 
-//     const data = reportData?.MediaRecords?.map((record) => ({
+//     const data = reportData?.KarlFischerRecords?.map((record) => ({
 //       unique_id: record?.unique_id || "",
-//       date: record?.date || "",
-//       name_medium: record?.name_medium || "",
-//       date_of_preparation: record?.date_of_preparation || "",
-//       date_of_use: record?.date_of_use || "",
-//       lot_no: record?.lot_no || "",
-//       no_of_plate_prepared: record?.no_of_plate_prepared || "",
-//       no_of_plate_used: record?.no_of_plate_used || "",
-//       used_for: record?.used_for || "",
-//       balance_no_plate: record?.balance_no_plate || "",
-//       signature: record?.signature || "",
+//       time: record?.time || "",
+//       karl_fischer: record?.karl_fischer || "",
+//       remarks: record?.remarks || "",
+//       checked_by: record?.checked_by || "",
+//       supporting_docs: record?.supporting_docs || "",
 //     }));
 
 //     const arrayData = [...data, ...blankRows];
 //     // Render HTML using EJS template
 //     const html = await new Promise((resolve, reject) => {
-//       req.app.render("blankMRReport", { arrayData }, (err, html) => {
+//       req.app.render("blankDPReport", { arrayData }, (err, html) => {
 //         if (err) return reject(err);
 //         resolve(html);
 //       });
@@ -1858,14 +1889,344 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //     // Close the browser
 //     await browser.close();
 
-//     const filePath = path.resolve("public", `MR_Elog_Report_${formId}.pdf`);
+//     const filePath = path.resolve("public", `DP_Elog_Report_${formId}.pdf`);
 //     fs.writeFileSync(filePath, pdf);
 
-//     res.status(200).json({ filename: `MR_Elog_Report_${formId}.pdf` });
+//     res.status(200).json({ filename: `DP_Elog_Report_${formId}.pdf` });
 //   } catch (error) {
 //     console.error("Error generating PDF:", error);
 //     return res
 //       .status(500)
 //       .json({ error: true, message: `Error generating PDF: ${error.message}` });
+//   }
+// };
+// exports.GetAll = async (req, res) => {
+//   try {
+//     const { search } = req.query; // Capture search keyword from query parameters
+
+//     const searchCondition = search
+//       ? {
+//           [Op.or]: [
+//             { site_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
+//             { form_id: { [Op.like]: `%${search}%` } }, // Example: Search by form_id
+//             { initiator_name: { [Op.like]: `%${search}%` } }, // Example: Search by initiator_name
+//           ],
+//         }
+//       : {};
+
+//     // Use Promise.all to run all queries concurrently
+//     const [
+//       karlFischerForms,
+//       dispenseOfMaterialForms,
+//       loadedQuantityForms,
+//       mediaRecordForms,
+//       operationOfSterilizerForms,
+//       temperatureForms,
+//     ] = await Promise.all([
+//       karlFischerForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: karlFischerRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       DispenseOfMaterialForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: DispenseOfMaterialRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       LoadedQuantityProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: LoadedQuantityRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       MediaRecordProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: MediaRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       OperationOfSterilizerProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: OperationOfSterilizerRecord },
+//           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
+//           { model: User, as: "approvers", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//       TempratureProcessForm.findAll({
+//         where: searchCondition,
+//         include: [
+//           { model: TempratureProcessRecord },
+//           { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
+//           { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
+//         ],
+//         order: [["form_id", "DESC"]],
+//       }),
+//     ]);
+
+//     // Combine all results into a single object
+//     const data = {
+//       karlFischerForms,
+//       dispenseOfMaterialForms,
+//       loadedQuantityForms,
+//       mediaRecordForms,
+//       operationOfSterilizerForms,
+//       temperatureForms,
+//     };
+
+//     return res.status(200).json({
+//       error: false,
+//       message: "Data fetched successfully",
+//       data: data,
+//     });
+//   } catch (error) {
+//     console.error("Error:", error);
+//     return res
+//       .status(500)
+//       .json({ error: true, message: `Error: ${error.message}` });
+//   }
+// };
+
+// exports.sendReportOnMail = async (req, res) => {
+//   const { to, cc, bcc, subject, message } = req.body;
+//   const elogId = req.params.id;
+//   console.log(elogId,"elogId")
+
+//   const filePath = path.resolve("public",elogId);
+
+//   const fileExists = fs.existsSync(filePath);
+// console.log(fileExists,"fileExists")
+//   if (!fileExists) {
+//     return res.status(404).json({
+//       status: 404,
+//       error: true,
+//       message: "Attachment file not found",
+//     });
+//   }
+
+//   const attachments = req.files?.map((file) => ({
+//     filename: file.originalname,
+//     path: file.path,
+//   }));
+
+//   const additionalAttachments = [
+//     {
+//       filename: `Elog_Report_${elogId}.pdf`,
+//       path: filePath,
+//     },
+//     ...attachments,
+//   ];
+
+//   const mailData = {
+//     to: to,
+//     cc: cc || undefined,
+//     bcc: bcc || undefined,
+//     subject: subject,
+//     message: message,
+//     additionalAttachments,
+//   };
+
+//   try {
+//     const result = await sendEmail(mailData);
+//     return res.status(200).json({
+//       status: 200,
+//       error: false,
+//       message: "Report email sent successfully",
+//       data: result,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       status: 500,
+//       error: true,
+//       message: `Internal Server Error${error}`,
+//     });
+//   }
+// };
+
+// exports.generateAuditPdfbyId = async (req, res) => {
+//   const { formId, type, userId } = req.params;
+//   const date = new Date();
+//   const formattedDate = date.toLocaleDateString("en-US", {
+//     year: "numeric",
+//     month: "2-digit",
+//     day: "2-digit",
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     second: "2-digit",
+//   });
+//   let browser;
+
+//   const user = await getUserById(userId);
+
+//   try {
+//     let getData;
+
+//     switch (type) {
+//       case "karlFischerAuditTrail":
+//         getData = await karlFischerAuditTrail.findAll({
+//           where: { form_id: formId },
+//           include: {
+//             model: User,
+//             attributes: ["user_id", "name"],
+//           },
+//           order: [["auditTrail_id", "DESC"]],
+//         });
+//         break;
+      
+//       case "DispenseOfMatrialAuditTrail":
+//         getData = await DispenseOfMatrialAuditTrail.findAll({
+//           where: { form_id: formId },
+//           include: {
+//             model: User,
+//             attributes: ["user_id", "name"],
+//           },
+//           order: [["auditTrail_id", "DESC"]],
+//         });
+//         break;
+      
+//       case "LoadedQuantityProcessAuditTrail":
+//         getData = await LoadedQuantityProcessAuditTrail.findAll({
+//           where: { form_id: formId },
+//           include: {
+//             model: User,
+//             attributes: ["user_id", "name"],
+//           },
+//           order: [["auditTrail_id", "DESC"]],
+//         });
+//         break;
+      
+//       case "MediaRecordAuditTrail":
+//         getData = await MediaRecordAuditTrail.findAll({
+//           where: { form_id: formId },
+//           include: {
+//             model: User,
+//             attributes: ["user_id", "name"],
+//           },
+//           order: [["auditTrail_id", "DESC"]],
+//         });
+//         break;
+      
+//       case "OperationOfSterilizerProcessAuditTrail":
+//         getData = await OperationOfSterilizerProcessAuditTrail.findAll({
+//           where: { form_id: formId },
+//           include: {
+//             model: User,
+//             attributes: ["user_id", "name"],
+//           },
+//           order: [["auditTrail_id", "DESC"]],
+//         });
+//         break;
+      
+//       case "TemperatureRecordsAuditTrail":
+//         getData = await TemperatureRecordsAuditTrail.findAll({
+//           where: { form_id: formId },
+//           include: {
+//             model: User,
+//             attributes: ["user_id", "name"],
+//           },
+//           order: [["auditTrail_id", "DESC"]],
+//         });
+//         break;
+      
+//       default:
+//         return res.status(400).json({
+//           error: true,
+//           message: `Invalid type: ${type}`,
+//         });
+//     }
+
+//     // console.log(getData);
+//     const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+//     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+//     const logoDataUri = `data:image/png;base64,${logoBase64}`;
+//     const data = {
+//       title: `${type.replace(/([A-Z])/g, " $1")} Audit Report`,
+//       form_id: formId,
+//       status: "status",
+//       auditTrail: getData,
+//     };
+
+//     // Render audit report content using EJS
+//     const htmlContent = await new Promise((resolve, reject) => {
+//       req.app.render("auditReport", { reportData: data }, (err, html) => {
+//         if (err) reject(err);
+//         resolve(html);
+//       });
+//     });
+
+//     const headerHtml = await new Promise((resolve, reject) => {
+//       req.app.render(
+//         "header",
+//         { reportData: data, logoDataUri: logoDataUri },
+//         (err, html) => {
+//           if (err) return reject(err);
+//           resolve(html);
+//         }
+//       );
+//     });
+
+//     const footerHtml = await new Promise((resolve, reject) => {
+//       req.app.render(
+//         "footer",
+//         { userName: user?.name, date: formattedDate },
+//         (err, html) => {
+//           if (err) return reject(err);
+//           resolve(html);
+//         }
+//       );
+//     });
+
+//     browser = await puppeteer.launch({
+//       headless: true,
+//       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+//       // executablePath: '/usr/bin/chromium-browser',
+//     });
+//     const page = await browser.newPage();
+//     await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+
+//     const pdfBuffer = await page.pdf({
+//       format: "A4",
+//       printBackground: true,
+//       displayHeaderFooter: true,
+//       headerTemplate: headerHtml,
+//       footerTemplate: footerHtml,
+//       margin: {
+//         top: "200px",
+//         right: "52px",
+//         bottom: "70px",
+//         left: "52px",
+//       },
+//     });
+
+//     res.setHeader(
+//       "Content-Disposition",
+//       `attachment; filename=${type}_Audit_Report.pdf`
+//     );
+//     res.setHeader("Content-Type", "application/pdf");
+//     res.send(pdfBuffer);
+//   } catch (error) {
+//     console.error("Error generating PDF:", error);
+//     return res
+//       .status(500)
+//       .json({ error: true, message: "Error generating PDF", error });
+//   } finally {
+//     if (browser) {
+//       await browser.close();
+//     }
 //   }
 // };
