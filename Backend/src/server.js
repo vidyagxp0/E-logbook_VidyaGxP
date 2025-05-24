@@ -10,6 +10,7 @@ const mediaRecordRoutes = require("./routes/mediaRecord");
 const dispensingOfMaterialRoutes = require("./routes/dispensingOfMaterial");
 const operationOfSterlizerRoutes = require("./routes/operationOfSterlizer");
 const analyticalBalanceRoutes = require("./routes/AnalyticalBalance")
+const karlFischerRoutes = require("./routes/karlFischer")
 const vidyagxpFeedback = require("./config/vidyagxp_feedback");
 const siteRoutes = require("./routes/sites");
 const cors = require("cors");
@@ -58,7 +59,8 @@ app.use("/operation-sterlizer", operationOfSterlizerRoutes);
 app.use("/media-record", mediaRecordRoutes);
 app.use("/dispensing-material", dispensingOfMaterialRoutes);
 app.use("/site", siteRoutes);
-app.use("/analytical-balance",analyticalBalanceRoutes)
+app.use("/analytical-balance",analyticalBalanceRoutes);
+app.use("/karl-fischer",karlFischerRoutes);
 app.use(express.static(path.join(__dirname, "documents")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));

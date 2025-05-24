@@ -30,7 +30,7 @@ router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(5, 1),
+  Auth.authorizeUserRole(7, 1),
   AnalyticalBalance.InsertAnalyticalBalance
 );
 
@@ -39,7 +39,7 @@ router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
-  // Auth.authorizeUserRole(5, 1),
+  // Auth.authorizeUserRole(7, 1),
   AnalyticalBalance.EditAnalyticalBalance
 );
 
@@ -54,7 +54,7 @@ router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(5, 1),
+  Auth.authorizeUserRole(7, 1),
   AnalyticalBalance.SendDPElogForReview
 );
 
@@ -63,7 +63,7 @@ router.put(
   "/send-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(5, 2),
+  Auth.authorizeUserRole(7, 2),
   AnalyticalBalance.SendDPElogfromReviewToOpen
 );
 
@@ -72,7 +72,7 @@ router.put(
   "/send-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(5, 2),
+  Auth.authorizeUserRole(7, 2),
   AnalyticalBalance.SendDPfromReviewToApproval
 );
 
@@ -81,7 +81,7 @@ router.put(
   "/send-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(5, 3),
+  Auth.authorizeUserRole(7, 3),
   AnalyticalBalance.SendDPfromApprovalToOpen
 );
 
@@ -90,24 +90,24 @@ router.put(
   "/approve",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(5, 3),
+  Auth.authorizeUserRole(7, 3),
   AnalyticalBalance.ApproveDPElog
 );
 
-// // get users based on roles, sites and processes
-// // router.post(
-// //   "/get-user-roleGroups",
-// //   Auth.checkUserJwtToken,
-// //   AnalyticalBalance.GetUserOnBasisOfRoleGroup
-// // );
+// get users based on roles, sites and processes
+router.post(
+  "/get-user-roleGroups",
+  Auth.checkUserJwtToken,
+  AnalyticalBalance.GetUserOnBasisOfRoleGroup
+);
 
-// // router.get("/get-processes", AnalyticalBalance.getAllProcesses);
+router.get("/get-processes", AnalyticalBalance.getAllProcesses);
 
-// router.get(
-//   "/get-audit-trail-for-elog/:id",
-//   Auth.checkUserJwtToken,
-//   AnalyticalBalance.getAuditTrailForAnElog
-// );
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  AnalyticalBalance.getAuditTrailForAnElog
+);
 
 // router.post(
 //   "/generate-pdf",

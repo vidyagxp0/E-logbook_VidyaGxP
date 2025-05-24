@@ -51,13 +51,11 @@ function authorizeUserRole(processId, roleId) {
       },
       attributes: { exclude: ["createdAt", "updatedAt"] },
     });
-
     if (!req.body.site_id) {
       return res
         .status(400)
         .json({ error: true, message: "Please provide a site ID." });
     }
-
     if (hasAccess(userRoles, Number(req.body?.site_id), processId, roleId)) {
       next(); // User has access, proceed to the next middleware or route handler
     } else {
@@ -77,7 +75,7 @@ function hasAccess(userRoles, site_id, processId, roleId) {
       (role.site_id === site_id &&
         role.process_id === processId &&
         role.role_id === roleId)
-  );
+  );  
 }
 
 const getFileUrl = (file) => {
