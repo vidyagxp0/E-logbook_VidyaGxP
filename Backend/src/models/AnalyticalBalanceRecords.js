@@ -18,46 +18,30 @@ const AnalyticalBalance = sequelize.define(
         key: "form_id",
       },
     },
-    unique_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     date: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    name_medium: {
-      type: DataTypes.STRING,
+    reg_no: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
     },
-    date_of_preparation: {
-      type: DataTypes.STRING,
+     sample_name: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
     },
-    date_of_use: {
-      type: DataTypes.STRING,
+    weight_taken: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
     },
-    lot_no: {
-      type: DataTypes.STRING,
-    },
-    no_of_plate_prepared: {
-      type: DataTypes.STRING,
-    },
-    no_of_plate_used: {
-      type: DataTypes.STRING,
-    },
-    used_for: {
-      type: DataTypes.STRING,
-    },
-    balance_no_plate: {
-      type: DataTypes.STRING,
-    },
-    signature: {
-      type: DataTypes.STRING,
-    },
+    done_by: { 
+      type: DataTypes.STRING
+     },
     checked_by: {
-      type: DataTypes.STRING,
-    },
-    reviewed_by: {
-      type: DataTypes.STRING,
+       type: DataTypes.STRING
+       },
+    remarks: { 
+      type: DataTypes.TEXT 
     },
   }
 );
