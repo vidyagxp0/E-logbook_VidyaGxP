@@ -13,6 +13,7 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+const { formatNamedParameters } = require("sequelize/lib/utils");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -115,7 +116,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
-      additionalInfo,
+      // additionalInfo,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -148,24 +149,18 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     }
 
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-      const formRecords = FormRecordsArray.map((record, index) => ({
+      const formRecords = FormRecordsArray.map((record, index) => ({   
         form_id: newForm?.form_id,
-        unique_id: record?.unique_id,
         date:
           record?.date && !isNaN(new Date(record?.date))
             ? new Date(record?.date).toISOString()
             : null,
-        name_medium: record?.name_medium,
-        date_of_preparation: record?.date_of_preparation,
-        date_of_use: record?.date_of_use,
-        lot_no: record?.lot_no,
-        no_of_plate_prepared: record?.no_of_plate_prepared,
-        no_of_plate_used: record?.no_of_plate_used,
-        used_for: record?.used_for,
-        balance_no_plate: record?.balance_no_plate,
-        signature: record?.signature,
+        reg_no: record?.reg_no,
+        sample_name: record?.sample_name,
+        weight_taken: record?.weight_taken,
+        done_by: record?.done_by,
         checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
+        remarks: record?.remarks,
       }));
 
       await AnalyticalBalanceRecords.bulkCreate(formRecords, {
@@ -175,9 +170,9 @@ exports.InsertAnalyticalBalance = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Unique Id",
+          field_name: "reg_no",
           previous_value: null,
-          new_value: record.unique_id,
+          new_value: record.reg_no,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -199,40 +194,40 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Name Medium",
           previous_value: null,
-          new_value: record.name_medium,
+          new_value: record.sample_name,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           declaration: initiatorDeclaration,
           action: "Opened",
         });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Date Of Preparation",
-          previous_value: null,
-          new_value: record.date_of_preparation,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Date Of Use",
-          previous_value: null,
-          new_value: record.date_of_use,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
+        // auditTrailEntries.push({
+        //   form_id: newForm.form_id,
+        //   field_name: "Date Of Preparation",
+        //   previous_value: null,
+        //   new_value: record.date_of_use,
+        //   changed_by: user.user_id,
+        //   previous_status: "Not Applicable",
+        //   new_status: "Opened",
+        //   declaration: initiatorDeclaration,
+        //   action: "Opened",
+        // });
+        // auditTrailEntries.push({
+        //   form_id: newForm.form_id,
+        //   field_name: "Date Of Use",
+        //   previous_value: null,
+        //   new_value: record.date_of_use,
+        //   changed_by: user.user_id,
+        //   previous_status: "Not Applicable",
+        //   new_status: "Opened",
+        //   declaration: initiatorDeclaration,
+        //   action: "Opened",
+        // });
         auditTrailEntries.push({
           form_id: newForm.form_id,
           field_name: "Lot No",
           previous_value: null,
-          new_value: record.lot_no,
+          new_value: record.weight_taken,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -243,7 +238,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "No Of Plate Prepared",
           previous_value: null,
-          new_value: record.no_of_plate_prepared,
+          new_value: record.done_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -254,46 +249,46 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "No Of Plate Used",
           previous_value: null,
-          new_value: record.no_of_plate_used,
+          new_value: record.checked_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           declaration: initiatorDeclaration,
           action: "Opened",
         });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Used For",
-          previous_value: null,
-          new_value: record.used_for,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Balance No Plate",
-          previous_value: null,
-          new_value: record.balance_no_plate,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Signature",
-          previous_value: null,
-          new_value: record.signature,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
+        // auditTrailEntries.push({
+        //   form_id: newForm.form_id,
+        //   field_name: "Used For",
+        //   previous_value: null,
+        //   new_value: record.used_for,
+        //   changed_by: user.user_id,
+        //   previous_status: "Not Applicable",
+        //   new_status: "Opened",
+        //   declaration: initiatorDeclaration,
+        //   action: "Opened",
+        // });
+        // auditTrailEntries.push({
+        //   form_id: newForm.form_id,
+        //   field_name: "Balance No Plate",
+        //   previous_value: null,
+        //   new_value: record.balance_no_plate,
+        //   changed_by: user.user_id,
+        //   previous_status: "Not Applicable",
+        //   new_status: "Opened",
+        //   declaration: initiatorDeclaration,
+        //   action: "Opened",
+        // });
+        // auditTrailEntries.push({
+        //   form_id: newForm.form_id,
+        //   field_name: "Signature",
+        //   previous_value: null,
+        //   new_value: record.signature,
+        //   changed_by: user.user_id,
+        //   previous_status: "Not Applicable",
+        //   new_status: "Opened",
+        //   declaration: initiatorDeclaration,
+        //   action: "Opened",
+        // });
         auditTrailEntries.push({
           form_id: newForm.form_id,
           field_name: "Checked By",
@@ -343,7 +338,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
     description,
     reviewer_id,
     approver_id,
-    MediaRecords,
+    AnalyticalBalances,
     email,
     password,
     initiatorComment,
@@ -462,7 +457,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
     );
 
     // Update the Form Records if provided
-    if (Array.isArray(MediaRecords) && MediaRecords.length > 0) {
+    if (Array.isArray(AnalyticalBalances) && AnalyticalBalances.length > 0) {
       const existingRecords = await AnalyticalBalanceRecords.findAll({
         where: { form_id: form_id },
         raw: true,
@@ -472,27 +467,27 @@ exports.EditAnalyticalBalance = async (req, res) => {
 
       // Track changes for existing records
       existingRecords.forEach((existingRecord, index) => {
-        MediaRecords.sort(
+        AnalyticalBalances.sort(
           (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
         );
-        const newRecord = MediaRecords[index];
+        const newRecord = AnalyticalBalances[index];
         if (newRecord) {
           const recordFields = {
-            unique_id: newRecord?.unique_id,
+            reg_no: newRecord?.reg_no,
             date:
               newRecord?.date && !isNaN(new Date(newRecord?.date))
                 ? new Date(newRecord?.date).toISOString()
                 : null,
-            name_medium: newRecord?.name_medium,
-            date_of_preparation: newRecord?.date_of_preparation,
-            date_of_use: newRecord?.date_of_use,
-            lot_no: newRecord?.lot_no,
-            no_of_plate_prepared: newRecord?.no_of_plate_prepared,
-            no_of_plate_used: newRecord?.no_of_plate_used,
-            used_for: newRecord?.used_for,
-            balance_no_plate: newRecord?.balance_no_plate,
-            signature: newRecord?.signature,
-            reviewed_by: newRecord?.reviewed_by,
+            sample_name: newRecord?.sample_name,
+            weight_taken: newRecord?.weight_taken,
+            done_by: newRecord?.done_by,
+            checked_by: newRecord?.checked_by,
+            remarks: newRecord?.remarks,
+            // no_of_plate_used: newRecord?.no_of_plate_used,
+            // used_for: newRecord?.used_for,
+            // balance_no_plate: newRecord?.balance_no_plate,
+            // signature: newRecord?.signature,
+            // reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -518,13 +513,14 @@ exports.EditAnalyticalBalance = async (req, res) => {
           }
         }
       });
-
+      
       // Handle new records added
-      if (MediaRecords.length > existingRecords.length) {
-        for (let i = existingRecords.length; i < MediaRecords.length; i++) {
-          const newRecord = MediaRecords[i];
+      if (AnalyticalBalances.length > existingRecords.length) {
+        for (let i = existingRecords.length; i < AnalyticalBalances.length; i++) {
+          const newRecord = AnalyticalBalances[i];
+
           const recordFields = {
-            unique_id: newRecord?.unique_id,
+            // unique_id: newRecord?.unique_id,
             product_name: newRecord.product_name,
             batch_no: newRecord.batch_no,
             container_size: newRecord.container_size,
@@ -561,23 +557,18 @@ exports.EditAnalyticalBalance = async (req, res) => {
       });
 
       // Create new records
-      const formRecords = MediaRecords.map((record, index) => ({
+      const formRecords = AnalyticalBalances.map((record, index) => ({
         form_id: form_id,
-        unique_id: record?.unique_id,
         date:
           record?.date && !isNaN(new Date(record?.date))
             ? new Date(record?.date).toISOString()
             : null,
-        name_medium: record?.name_medium,
-        date_of_preparation: record?.date_of_preparation,
-        date_of_use: record?.date_of_use,
-        lot_no: record?.lot_no,
-        no_of_plate_prepared: record?.no_of_plate_prepared,
-        no_of_plate_used: record?.no_of_plate_used,
-        used_for: record?.used_for,
-        balance_no_plate: record?.balance_no_plate,
-        signature: record?.signature,
-        reviewed_by: record?.reviewed_by,
+        reg_no: record?.reg_no,
+        sample_name: record?.sample_name,
+        weight_taken: record?.weight_taken,
+        done_by: record?.done_by,
+        checked_by: record?.checked_by,
+        remarks: record?.remarks,
       }));
 
       await AnalyticalBalanceRecords.bulkCreate(formRecords, {
@@ -1783,7 +1774,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 
 //     const blankRows = Array(reportData?.blankRows);
 
-//     const data = reportData?.MediaRecords?.map((record) => ({
+//     const data = reportData?.AnalyticalBalances?.map((record) => ({
 //       unique_id: record?.unique_id || "",
 //       date: record?.date || "",
 //       name_medium: record?.name_medium || "",

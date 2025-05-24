@@ -1,6 +1,6 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
-const karlFischerForm = require("./karlFischerForm")
+const karlFischerForm = require("./karlFischerForm");
 
 const karlFischerRecord = sequelize.define(
   "karlFischerRecord",
@@ -16,40 +16,36 @@ const karlFischerRecord = sequelize.define(
       references: {
         model: karlFischerForm,
         key: 'form_id',
-      }
+      },
     },
-    unique_id: {
+    date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    lot_no: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    time: {
+    sample_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    differential_pressure: {
-      type: DataTypes.FLOAT,
-    },
-    remarks: {
+    factor_percent_water: {
       type: DataTypes.STRING,
     },
-    approver_remarks: {
+    done_by: {
       type: DataTypes.STRING,
     },
     checked_by: {
       type: DataTypes.STRING,
     },
-    reviewed_by: {
-      type: DataTypes.STRING,
-    },
-    approved_by: {
-      type: DataTypes.STRING,
-    },
-    supporting_docs: {
-      type: DataTypes.STRING,
+    remarks: {
+      type: DataTypes.TEXT,
     },
   }
 );
 
+// Associations
 karlFischerRecord.belongsTo(karlFischerForm, { foreignKey: 'form_id' });
 karlFischerForm.hasMany(karlFischerRecord, { foreignKey: 'form_id' });
 
