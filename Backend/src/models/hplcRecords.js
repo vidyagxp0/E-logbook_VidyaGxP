@@ -1,0 +1,63 @@
+const { sequelize } = require("../config/db");
+const { DataTypes } = require("sequelize");
+const hplcForm = require("./hplcForm");
+
+const hplcRecord = sequelize.define(
+  "hplcRecord",
+  {
+    record_id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    form_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: hplcForm,
+        key: "form_id",
+      },
+    },
+    date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    sample_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    reg_no: {
+      type: DataTypes.STRING,
+    },
+    method_used: {
+      type: DataTypes.STRING,
+    },
+    parameter_or_activity: {
+      type: DataTypes.STRING,
+    },
+    start_time: {
+      type: DataTypes.TIME,
+    },
+    end_time: {
+      type: DataTypes.TIME,
+    },
+    no_of_injections: {
+      type: DataTypes.INTEGER,
+    },
+    done_by: {
+      type: DataTypes.STRING,
+    },
+    checked_by: {
+      type: DataTypes.STRING,
+    },
+    remarks: {
+      type: DataTypes.TEXT,
+    },
+  }
+);
+
+// Associations
+hplcRecord.belongsTo(hplcForm, { foreignKey: "form_id" });
+hplcForm.hasMany(hplcRecord, { foreignKey: "form_id" });
+
+module.exports = hplcRecord;
