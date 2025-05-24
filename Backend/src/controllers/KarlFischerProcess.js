@@ -184,7 +184,6 @@ exports.InsertKarlFischer = async (req, res) => {
         action: "Opened",
       });
     }
-    console.log("FormRecordsArray",FormRecordsArray)
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
@@ -199,9 +198,7 @@ exports.InsertKarlFischer = async (req, res) => {
         // approved_by: record?.approved_by,
         // supporting_docs: getElogDocsUrl(supportingDocs),
       }));
-     console.log("formRecords",formRecords)
       await karlFischerRecord.bulkCreate(formRecords, { transaction });
-      console.log(".................................")
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
@@ -323,7 +320,6 @@ exports.EditKarlFischer = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
-console.log("KarlFischerRecords",KarlFischerRecords)
   if (!form_id) {
     return res
       .status(400)

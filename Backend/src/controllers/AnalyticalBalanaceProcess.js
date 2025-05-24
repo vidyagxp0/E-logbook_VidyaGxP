@@ -118,7 +118,6 @@ exports.InsertAnalyticalBalance = async (req, res) => {
       initiatorComment,
       // additionalInfo,
     };
-    console.log("fields",fields)
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
         auditTrailEntries.push({
@@ -150,7 +149,6 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     }
 
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-           console.log("FormRecordsArray",FormRecordsArray)
       const formRecords = FormRecordsArray.map((record, index) => ({   
         form_id: newForm?.form_id,
         date:
@@ -164,7 +162,6 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         checked_by: record?.checked_by,
         remarks: record?.remarks,
       }));
-      console.log(formRecords,"formRecords");
 
       await AnalyticalBalanceRecords.bulkCreate(formRecords, {
         transaction,
@@ -474,7 +471,6 @@ exports.EditAnalyticalBalance = async (req, res) => {
           (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
         );
         const newRecord = AnalyticalBalances[index];
-        console.log(newRecord,"..........................`")
         if (newRecord) {
           const recordFields = {
             reg_no: newRecord?.reg_no,
