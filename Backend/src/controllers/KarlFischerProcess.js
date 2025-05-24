@@ -184,28 +184,30 @@ exports.InsertKarlFischer = async (req, res) => {
         action: "Opened",
       });
     }
+    console.log("FormRecordsArray",FormRecordsArray)
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
-        unique_id: record?.unique_id,
-        time: record?.time, // Assuming time was meant here instead of unique_id again
-        karl_fischer: record?.karl_fischer,
+        date:new Date().toISOString().split('T')[0],
+        lot_no: record?.lot_no,
+        done_by: record?.done_by, // Assuming time was meant here instead of unique_id again
+        factor_percent_water: record?.factor_percent_water,
         remarks: record?.remarks,
-        approver_remarks: record?.approver_remarks,
+        sample_name: record?.sample_name,
         checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
-        supporting_docs: getElogDocsUrl(supportingDocs),
+        // reviewed_by: record?.reviewed_by,
+        // approved_by: record?.approved_by,
+        // supporting_docs: getElogDocsUrl(supportingDocs),
       }));
-
+     console.log("formRecords",formRecords)
       await karlFischerRecord.bulkCreate(formRecords, { transaction });
-
+      console.log(".................................")
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Unique Id",
+          field_name: "lot_no",
           previous_value: null,
-          new_value: record?.unique_id,
+          new_value: record?.lot_no,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -215,9 +217,9 @@ exports.InsertKarlFischer = async (req, res) => {
           
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Time",
+          field_name: "done_by",
           previous_value: null,
-          new_value: record?.time,
+          new_value: record?.done_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -227,9 +229,9 @@ exports.InsertKarlFischer = async (req, res) => {
           
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "KarlFischer",
+          field_name: "factor_percent_water",
           previous_value: null,
-          new_value: record?.karl_fischer,
+          new_value: record?.factor_percent_water,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -251,9 +253,9 @@ exports.InsertKarlFischer = async (req, res) => {
           
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "CheckedBy",
+          field_name: "sample_name",
           previous_value: null,
-          new_value: record?.checked_by,
+          new_value: record?.sample_name,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -264,9 +266,9 @@ exports.InsertKarlFischer = async (req, res) => {
         if (supportingDocs[index]) {
           auditTrailEntries.push({
             form_id: newForm.form_id,
-            field_name: "SupportingDocs",
+            field_name: "checked_by",
             previous_value: null,
-            new_value: getElogDocsUrl(supportingDocs),
+            new_value: record?.checked_by,
             changed_by: user.user_id,
             previous_status: "Not Applicable",
             new_status: "Opened",
@@ -321,7 +323,7 @@ exports.EditKarlFischer = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
-
+console.log("KarlFischerRecords",KarlFischerRecords)
   if (!form_id) {
     return res
       .status(400)
@@ -469,14 +471,14 @@ exports.EditKarlFischer = async (req, res) => {
         const newRecord = KarlFischerRecords[index];
         if (newRecord) {
           const recordFields = {
-            karl_fischer: newRecord.karl_fischer,
+            date: newRecord.date,
             remarks: newRecord.remarks,
-            approver_remarks:newRecord.approver_remarks,
-            reviewed_by: newRecord?.reviewed_by,
-            approved_by: newRecord?.approved_by,
-            supporting_docs:
-              newRecord.supporting_docs ||
-              getElogDocsUrl(supportingDocs[index]),
+            lot_no:newRecord.lot_no,
+            done_by:newRecord.done_by,
+            sample_name: newRecord?.sample_name,
+            factor_percent_water: newRecord?.factor_percent_water,
+            checked_by: newRecord?.checked_by,
+
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -512,16 +514,13 @@ exports.EditKarlFischer = async (req, res) => {
         ) {
           const newRecord = KarlFischerRecords[i];
           const recordFields = {
-            unique_id: newRecord?.unique_id,
-            time: newRecord?.time,
-            checked_by: newRecord?.checked_by,
-            karl_fischer: newRecord.karl_fischer,
+            date: newRecord.date,
             remarks: newRecord.remarks,
-            approver_remarks:newRecord.approver_remarks,
-            reviewed_by: newRecord?.reviewed_by,
-            approved_by: newRecord?.approved_by,
-            supporting_docs:
-              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+            lot_no:newRecord.lot_no,
+            done_by:newRecord.done_by,
+            sample_name: newRecord?.sample_name,
+            factor_percent_water: newRecord?.factor_percent_water,
+            checked_by: newRecord?.checked_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -551,17 +550,13 @@ exports.EditKarlFischer = async (req, res) => {
       // Create new records
       const formRecords = KarlFischerRecords.map((record, index) => ({
         form_id: form_id,
-        unique_id: record?.unique_id,
-        time: record?.time,
-        karl_fischer: record?.karl_fischer,
-        remarks: record?.remarks,
-        approver_remarks:record?.approver_remarks,
+        date: record.date,
+        remarks: record.remarks,
+        lot_no:record.lot_no,
+        done_by:record.done_by,
+        sample_name: record?.sample_name,
+        factor_percent_water: record?.factor_percent_water,
         checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
-        supporting_docs: record?.supporting_docs
-          ? record?.supporting_docs
-          : getElogDocsUrl(supportingDocs[index]),
       }));
 
       await karlFischerRecord.bulkCreate(formRecords, { transaction });
