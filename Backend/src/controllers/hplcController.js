@@ -1737,24 +1737,24 @@ exports.chatByPdf = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
-// exports.viewReport = async (req, res) => {
-//   try {
-//     let reportData = req.body.reportData;
-//     // Render HTML using EJS template
-//     req.app.render("report", { reportData }, (err, html) => {
-//       if (err) {
-//         console.error("Error rendering HTML:", err);
-//         return res.status(500).send("Error rendering HTML", err);
-//       }
-//       res.send(html);
-//     });
-//   } catch (error) {
-//     console.error("Error generating PDF:", error);
-//     return res
-//       .status(500)
-//       .json({ error: true, message: `Error generating PDF: ${error.message}` });
-//   }
-// };
+exports.viewReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+    // Render HTML using EJS template
+    req.app.render("hplc", { reportData }, (err, html) => {
+      if (err) {
+        console.error("Error rendering HTML:", err);
+        return res.status(500).send("Error rendering HTML", err);
+      }
+      res.send(html);
+    });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
@@ -2073,61 +2073,61 @@ exports.blankReport = async (req, res) => {
 // //   }
 // // };
 
-// exports.sendReportOnMail = async (req, res) => {
-//   const { to, cc, bcc, subject, message } = req.body;
-//   const elogId = req.params.id;
-//   console.log(elogId,"elogId")
+exports.sendReportOnMail = async (req, res) => {
+  const { to, cc, bcc, subject, message } = req.body;
+  const elogId = req.params.id;
+  console.log(elogId,"elogId")
 
-//   const filePath = path.resolve("public",elogId);
+  const filePath = path.resolve("public",elogId);
 
-//   const fileExists = fs.existsSync(filePath);
-// console.log(fileExists,"fileExists")
-//   if (!fileExists) {
-//     return res.status(404).json({
-//       status: 404,
-//       error: true,
-//       message: "Attachment file not found",
-//     });
-//   }
+  const fileExists = fs.existsSync(filePath);
+console.log(fileExists,"fileExists")
+  if (!fileExists) {
+    return res.status(404).json({
+      status: 404,
+      error: true,
+      message: "Attachment file not found",
+    });
+  }
 
-//   const attachments = req.files?.map((file) => ({
-//     filename: file.originalname,
-//     path: file.path,
-//   }));
+  const attachments = req.files?.map((file) => ({
+    filename: file.originalname,
+    path: file.path,
+  }));
 
-//   const additionalAttachments = [
-//     {
-//       filename: `Elog_Report_${elogId}.pdf`,
-//       path: filePath,
-//     },
-//     ...attachments,
-//   ];
+  const additionalAttachments = [
+    {
+      filename: `Elog_Report_${elogId}.pdf`,
+      path: filePath,
+    },
+    ...attachments,
+  ];
 
-//   const mailData = {
-//     to: to,
-//     cc: cc || undefined,
-//     bcc: bcc || undefined,
-//     subject: subject,
-//     message: message,
-//     additionalAttachments,
-//   };
+  const mailData = {
+    to: to,
+    cc: cc || undefined,
+    bcc: bcc || undefined,
+    subject: subject,
+    message: message,
+    additionalAttachments,
+  };
 
-//   try {
-//     const result = await sendEmail(mailData);
-//     return res.status(200).json({
-//       status: 200,
-//       error: false,
-//       message: "Report email sent successfully",
-//       data: result,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       status: 500,
-//       error: true,
-//       message: `Internal Server Error${error}`,
-//     });
-//   }
-// };
+  try {
+    const result = await sendEmail(mailData);
+    return res.status(200).json({
+      status: 200,
+      error: false,
+      message: "Report email sent successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      error: true,
+      message: `Internal Server Error${error}`,
+    });
+  }
+};
 
 // exports.generateAuditPdfbyId = async (req, res) => {
 //   const { formId, type, userId } = req.params;

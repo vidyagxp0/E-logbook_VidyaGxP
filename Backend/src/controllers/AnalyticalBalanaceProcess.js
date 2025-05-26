@@ -1628,25 +1628,25 @@ exports.chatByPdf = async (req, res) => {
   }
 };
 
-// exports.viewReport = async (req, res) => {
-//   try {
-//     let reportData = req.body.reportData;
-//     // Render HTML using EJS template
-//     req.app.render("AnalyticalBalanceRecords", { reportData }, (err, html) => {
-//       if (err) {
-//         console.error("Error rendering HTML:", err);
-//         return res.status(500).send("Error rendering HTML", err);
-//       }
-//       res.send(html);
-//     });
-//   } catch (error) {
-//     console.error("Error generating PDF:", error);
-//     res.status(500).json({
-//       error: true,
-//       message: `Error generating PDF: ${error.message}`,
-//     });
-//   }
-// };
+exports.viewReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+    // Render HTML using EJS template
+    req.app.render("AnalyticalBalance", { reportData }, (err, html) => {
+      if (err) {
+        console.error("Error rendering HTML:", err);
+        return res.status(500).send("Error rendering HTML", err);
+      }
+      res.send(html);
+    });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
+  }
+};
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;

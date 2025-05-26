@@ -134,7 +134,7 @@ router.post(
   KarlFischerProcess.chatByPdf
 );
 
-// router.post("/view-report", KarlFischerProcess.viewReport);
+router.post("/view-report", KarlFischerProcess.viewReport);
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,

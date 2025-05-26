@@ -134,7 +134,7 @@ router.post(
   hplc.chatByPdf
 );
 
-// router.post("/view-report", hplc.viewReport);
+router.post("/view-report", hplc.viewReport);
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,
@@ -147,10 +147,10 @@ router.post(
   hplc.blankReport
 );
 
-// router.post(
-//   "/effective-view-report",
-//   hplc.effetiveViewReport
-// );
+router.post(
+  "/effective-view-report",
+  hplc.effetiveViewReport
+);
 // router.post(
 //   "/send-report-on-mail/:id",
 //   upload.any(),
