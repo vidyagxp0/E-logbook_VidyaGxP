@@ -23,6 +23,15 @@ function EffectiveElogs() {
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
   );
+  const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState(
+    []
+  );
+  const [karlFischerElogs, setKarlFischerElogs] = useState(
+    []
+  );
+  const [hplcElogs, setHplcElogs] = useState(
+    []
+  );
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -210,6 +219,93 @@ function EffectiveElogs() {
       .catch((error) => {
         console.error("Error: ", error);
       });
+    const newAnalyticalBalance = {
+      method: "get",
+      url: "http://localhost:1000/analytical-balance/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newAnalyticalBalance)
+      .then((response) => {
+        const temp = response.data.message;
+        const allAnalyticalBalance = temp.filter(
+          (log) => log.status === "Closed"
+        );
+        setAnalyticalBalanceElogs(allAnalyticalBalance);
+        let filteredArray = allAnalyticalBalance.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+    const newKarlFischer = {
+      method: "get",
+      url: "http://localhost:1000/karl-fischer/get-all-karl-fischer",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newKarlFischer)
+      .then((response) => {
+        const temp = response.data.message;
+        const allKarlFischer = temp.filter(
+          (log) => log.status === "Closed"
+        );
+        setKarlFischerElogs(allKarlFischer);
+        let filteredArray = allKarlFischer.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+    const newHplc = {
+      method: "get",
+      url: "http://localhost:1000/hplc/get-all-hplc",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newHplc)
+      .then((response) => {
+        const temp = response.data.message;
+        const allHplc = temp.filter(
+          (log) => log.status === "Closed"
+        );
+        setHplcElogs(allHplc);
+        let filteredArray = allHplc.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const combinedRecords = [
@@ -221,6 +317,9 @@ function EffectiveElogs() {
     ...mediaRecordElogs.filter((log) => log.status === "Closed"),
     ...dispensingOfMaterialsElogs.filter((log) => log.status === "Closed"),
     ...operationOfSterilizerElogs.filter((log) => log.status === "Closed"),
+    ...analyticalBalanceElogs.filter((log) => log.status === "Closed"),
+    ...karlFischerElogs.filter((log) => log.status === "Closed"),
+    ...hplcElogs.filter((log) => log.status === "Closed"),
   ];
 
   const handleNavigation = (item) => {
@@ -238,8 +337,14 @@ function EffectiveElogs() {
       navigate("/effective-media-record", { state: item });
     } else if (item.OperationOfSterilizerRecords) {
       navigate("/effective-operation-of-sterilizer", { state: item });
+    } else if (item.AnalyticalBalances) {
+      navigate("/effective-analytical-balance", { state: item });
     } else if (item.DispenseOfMaterials) {
       navigate("/effective-dispensing-of-material", { state: item });
+    } else if (item.karlFischerRecords) {
+      navigate("/effective-karl-fischer", { state: item });
+    } else if (item.hplcRecords) {
+      navigate("/effective-hplc", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
@@ -301,6 +406,12 @@ function EffectiveElogs() {
               </option>
               <option value="effective_dispensing_of_material">
                 Dispensing Of Materials
+              </option>
+              <option value="analytical_balance">
+                Analytical Balance
+              </option>
+              <option value="karl_fischer">
+                KARL Fischer
               </option>
             </select>
           </div>
@@ -645,6 +756,147 @@ function EffectiveElogs() {
                   );
                 })
               : null}
+            {eLogSelect === "analytical_balance"
+              ? analyticalBalanceElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/effective-analytical-balance", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`AB${item.form_id}`}
+                      </td>
+                      <td>Analytical Balance </td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "karl_fischer"
+              ? karlFischerElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/effective-analytical-balance", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`KF${item.form_id}`}
+                      </td>
+                      <td>Karl Fischer </td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "hplc"
+              ? hplcElogs?.map((item, index) => {
+                const cleanHTML = item?.description
+                .replace(/^"|"$/g, "")
+                .trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/effective-analytical-balance", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`HP${item.form_id}`}
+                      </td>
+                      <td>HPLC </td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
 
             {eLogSelect === "All_Records" &&
               combinedRecords
@@ -685,6 +937,13 @@ function EffectiveElogs() {
                           ? `MR${item.form_id}`
                           : item.DispenseOfMaterials
                           ? `DM${item.form_id}`
+                          : item.AnalyticalBalances
+                          ? `AB${item.form_id}`
+                          : item.karlFischerRecords
+                          ? `KF${item.form_id}`
+                          : item.hplcRecords
+                          ? `HP${item.form_id}`
+
                           : null}
                       </td>
                       <td>
@@ -700,6 +959,12 @@ function EffectiveElogs() {
                           ? "Media Record"
                           : item.DispenseOfMaterials
                           ? "Dispensing of Material"
+                          : item.AnalyticalBalances
+                          ? "Analytical Balance"
+                          : item.karlFischerRecords
+                          ? "KARL Fischer"
+                          : item.hplcRecords
+                          ? "HPLC"
                           : null}
                       </td>
                       <td>

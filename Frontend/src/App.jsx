@@ -48,6 +48,15 @@ import ExcelSelectWithFileInput from "./pages/TestPages/ExcelImport.jsx";
 import Effective_ViewReport from "./components/viewReport/Effective_ViewReport.jsx";
 import Effective_AuditTrail from "./pages/AuditTrail/Effective_AuditTrail.jsx";
 import AdvancedAnalytics from "./pages/analytics/AdvancedAnalytics.jsx";
+import AnalyticalBalance from "./pages/configForms/AnalyticalBalance/AnalyticalBalance.jsx";
+import Karl from "./pages/configForms/Karl/Karl.jsx";
+import Hplc from "./pages/configForms/HPLC/Hplc.jsx";
+import AnalitycalBalancePanel from "./pages/documentPanels/AnalitycalBalance/AnalitycalBalancePanel.jsx";
+import AnalyticalBalanceEffective from "./pages/Dashboard/EffectiveElogs/AnalyticalBalanceEffective.jsx";
+import KarlFischerPanel from "./pages/documentPanels/KarlFischerPanel/KarlFischerPanel.jsx";
+import KarlFischerEffective from "./pages/Dashboard/EffectiveElogs/KarlFischerEffective.jsx";
+import HplcPanel from "./pages/documentPanels/HPLC/HplcPanel.jsx";
+import HplcEffective from "./pages/Dashboard/EffectiveElogs/HplcEffective.jsx";
 
 function App() {
   return (
@@ -151,6 +160,18 @@ function App() {
               path="/effective-dpr"
               element={<ProtectedRoute element={<DPREffective />} />}
             />
+            <Route
+              path="/effective-analytical-balance"
+              element={<ProtectedRoute element={<AnalyticalBalanceEffective />} />}
+            />
+            <Route
+              path="/effective-karl-fischer"
+              element={<ProtectedRoute element={<KarlFischerEffective />} />}
+            />
+            <Route
+              path="/effective-hplc"
+              element={<ProtectedRoute element={<HplcEffective />} />}
+            />
 
             <Route
               path="/area-and-equipment-panel"
@@ -176,6 +197,24 @@ function App() {
                 <ProtectedRoute element={<DispensingOfMaterialsPanel />} />
               }
             />
+              <Route
+              path="/analytical-balance-panel"
+              element={
+                <ProtectedRoute element={<AnalitycalBalancePanel />} />
+              }
+            />
+              <Route
+              path="/karl-fischer-panel"
+              element={
+                <ProtectedRoute element={<KarlFischerPanel />} />
+              }
+            />
+              <Route
+              path="/hplc-panel"
+              element={
+                <ProtectedRoute element={<HplcPanel />} />
+              }
+            />
             <Route
               path="/dashboard"
               element={<ProtectedRoute element={<Dashboard />} />}
@@ -187,6 +226,18 @@ function App() {
             <Route
               path="/differential-pressure-record"
               element={<ProtectedRoute element={<DiffrentialPressure />} />}
+            />
+            <Route
+              path="/analytical-balance"
+              element={<ProtectedRoute element={<AnalyticalBalance />} />}
+            />
+            <Route
+              path="/karl-fischer"
+              element={<ProtectedRoute element={<Karl />} />}
+            />
+            <Route
+              path="/hplc"
+              element={<ProtectedRoute element={<Hplc/>} />}
             />
             <Route
               path="/area-and-equiment-usage-log"

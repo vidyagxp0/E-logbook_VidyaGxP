@@ -107,12 +107,17 @@ function CreateRecordModal(_props) {
         });
         break;
       case 7:
-        navigate("/media-record", {
+        navigate("/analytical-balance", {
           state: division,
         });
         break;
       case 8:
-        navigate("/dispensing-of-material", {
+        navigate("/karl-fischer", {
+          state: division,
+        });
+        break;
+      case 9:
+        navigate("/hplc", {
           state: division,
         });
         break;
