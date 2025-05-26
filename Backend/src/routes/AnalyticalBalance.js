@@ -138,10 +138,10 @@ router.get(
 // );
 // router.post("/effective-view-report", AnalyticalBalance.effetiveViewReport);
 
-// router.post(
-//   "/blank-report/:form_id",
-//   Auth.checkUserJwtToken,
-//   AnalyticalBalance.blankReport
-// );
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  AnalyticalBalance.blankReport
+);
 
 module.exports = router;

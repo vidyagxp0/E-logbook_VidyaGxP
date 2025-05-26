@@ -141,11 +141,11 @@ router.get(
 //   KarlFischerProcess.effetiveChatByPdf
 // );
 
-// router.post(
-//   "/blank-report/:form_id",
-//   Auth.checkUserJwtToken,
-//   KarlFischerProcess.blankReport
-// );
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  KarlFischerProcess.blankReport
+);
 
 // router.post(
 //   "/effective-view-report",

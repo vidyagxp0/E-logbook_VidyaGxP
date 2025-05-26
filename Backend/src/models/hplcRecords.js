@@ -35,6 +35,9 @@ const hplcRecord = sequelize.define(
     parameter_or_activity: {
       type: DataTypes.STRING,
     },
+    column_no:{
+      type: DataTypes.STRING,
+    },
     start_time: {
       type: DataTypes.TIME,
     },
