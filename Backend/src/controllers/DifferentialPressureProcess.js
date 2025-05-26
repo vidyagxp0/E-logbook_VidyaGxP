@@ -19,6 +19,9 @@ const LoadedQuantityProcessAuditTrail = require("../models/loadedQuantityProcess
 const MediaRecordAuditTrail = require("../models/mediaRecordAuditTrail");
 const OperationOfSterilizerProcessAuditTrail = require("../models/OperationOfSterilizerProcessAuditTrail");
 const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
+const AnalyticalBalanceAuditTrail = require("../models/AnalyticalBalanceAuditTrail")
+const hplcAuditTrails = require("../models/hplcAuditTrails")
+const karlFischer = require("../models/karlFischerAuditTrail")
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -2131,6 +2134,36 @@ exports.generateAuditPdfbyId = async (req, res) => {
       
       case "TemperatureRecordsAuditTrail":
         getData = await TemperatureRecordsAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      case "AnalyticalBalanceAuditTrail":
+        getData = await AnalyticalBalanceAuditTrail.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      case "hplcAuditTrails":
+        getData = await hplcAuditTrails.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      case "karlFischer":
+        getData = await karlFischer.findAll({
           where: { form_id: formId },
           include: {
             model: User,

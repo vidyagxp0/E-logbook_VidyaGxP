@@ -1446,92 +1446,92 @@ exports.getAuditTrailForAnElog = async (req, res) => {
   }
 };
 
-// exports.generateReport = async (req, res) => {
-//   try {
-//     let reportData = req.body.reportData;
+exports.generateReport = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
 
-//     const date = new Date();
-//     const formattedDate = date.toLocaleString("en-US", {
-//       year: "numeric",
-//       month: "2-digit",
-//       day: "2-digit",
-//       hour: "2-digit",
-//       minute: "2-digit",
-//       second: "2-digit",
-//       hour12: false, // Specify using 24-hour format
-//     });
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
 
-//     // Render HTML using EJS template
-//     const html = await new Promise((resolve, reject) => {
-//       res.render("AnalyticalBalanceRecords", { reportData }, (err, html) => {
-//         if (err) return reject(err);
-//         resolve(html);
-//       });
-//     });
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      res.render("AnalyticalBalanceRecords", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
 
-//     const browser = await puppeteer.launch({
-//       headless: true,
-//       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-//     });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
 
-//     const page = await browser.newPage();
-//     const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
-//     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
-//     const logoDataUri = `data:image/png;base64,${logoBase64}`;
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
-//     const user = await getUserById(req.user.userId);
+    const user = await getUserById(req.user.userId);
 
-//     // Set HTML content
-//     await page.setContent(html, { waitUntil: "networkidle0" });
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
 
-//     // Generate PDF
-//     const pdf = await page.pdf({
-//       format: "A4",
-//       printBackground: true,
-//       displayHeaderFooter: true,
-//       headerTemplate: await new Promise((resolve, reject) => {
-//         req.app.render(
-//           "header",
-//           { reportData: reportData, logoDataUri: logoDataUri },
-//           (err, html) => {
-//             if (err) return reject(err);
-//             resolve(html);
-//           }
-//         );
-//       }),
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "ipcHeader",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
 
-//       footerTemplate: await new Promise((resolve, reject) => {
-//         req.app.render(
-//           "footer",
-//           { userName: user?.name, date: formattedDate },
-//           (err, html) => {
-//             if (err) return reject(err);
-//             resolve(html);
-//           }
-//         );
-//       }),
-//       margin: {
-//         top: "150px",
-//         right: "50px",
-//         bottom: "50px",
-//         left: "50px",
-//       },
-//     });
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "120px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
 
-//     // Close the browser
-//     await browser.close();
+    // Close the browser
+    await browser.close();
 
-//     // Set response headers and send PDF
-//     res.set("Content-Type", "application/pdf");
-//     res.send(pdf);
-//   } catch (error) {
-//     console.error("Error generating PDF:", error);
-//     res.status(500).json({
-//       error: true,
-//       message: `Error generating PDF: ${error.message}`,
-//     });
-//   }
-// };
+    // Set response headers and send PDF
+    res.set("Content-Type", "application/pdf");
+    res.send(pdf);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    res.status(500).json({
+      error: true,
+      message: `Error generating PDF: ${error.message}`,
+    });
+  }
+};
 
 // const removeHtmlTags = (htmlString) => {
 //   return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
@@ -1756,107 +1756,107 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //   }
 // };
 
-// exports.blankReport = async (req, res) => {
-//   try {
-//     const reportData = req.body.reportData;
-//     const formId = req.params.form_id;
+exports.blankReport = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
 
-//     const date = new Date();
-//     const formattedDate = date.toLocaleString("en-US", {
-//       year: "numeric",
-//       month: "2-digit",
-//       day: "2-digit",
-//       hour: "2-digit",
-//       minute: "2-digit",
-//       second: "2-digit",
-//       hour12: false, // Specify using 24-hour format
-//     });
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
 
-//     const blankRows = Array(reportData?.blankRows);
+    const blankRows = Array(reportData?.blankRows);
 
-//     const data = reportData?.AnalyticalBalances?.map((record) => ({
-//       unique_id: record?.unique_id || "",
-//       date: record?.date || "",
-//       name_medium: record?.name_medium || "",
-//       date_of_preparation: record?.date_of_preparation || "",
-//       date_of_use: record?.date_of_use || "",
-//       lot_no: record?.lot_no || "",
-//       no_of_plate_prepared: record?.no_of_plate_prepared || "",
-//       no_of_plate_used: record?.no_of_plate_used || "",
-//       used_for: record?.used_for || "",
-//       balance_no_plate: record?.balance_no_plate || "",
-//       signature: record?.signature || "",
-//     }));
+const data = Array.isArray(reportData?.AnalyticalBalances)
+  ? reportData.AnalyticalBalances.map((record) => ({
+      s_no: record?.s_no || "",
+      date: record?.date || "",
+      reg_no: record?.reg_no || "",
+      sample_name: record?.sample_name || "",
+      weight_taken: record?.weight_taken || "",
+      done_by: record?.done_by || "",
+      checked_by: record?.checked_by || "",
+      remarks: record?.remarks || "",
+    }))
+  : [];
 
-//     const arrayData = [...data, ...blankRows];
-//     // Render HTML using EJS template
-//     const html = await new Promise((resolve, reject) => {
-//       req.app.render("blankMRReport", { arrayData }, (err, html) => {
-//         if (err) return reject(err);
-//         resolve(html);
-//       });
-//     });
+    console.log(data)
+    const arrayData = [...data, ...blankRows];
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("blankABReport", { arrayData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
 
-//     const browser = await puppeteer.launch({
-//       headless: true,
-//       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-//     });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
 
-//     const page = await browser.newPage();
-//     const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
-//     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
-//     const logoDataUri = `data:image/png;base64,${logoBase64}`;
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
-//     const user = await getUserById(req.user.userId);
+    const user = await getUserById(req.user.userId);
 
-//     // Set HTML content
-//     await page.setContent(html, { waitUntil: "networkidle0" });
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
 
-//     // Generate PDF
-//     const pdf = await page.pdf({
-//       format: "A4",
-//       printBackground: true,
-//       displayHeaderFooter: true,
-//       headerTemplate: await new Promise((resolve, reject) => {
-//         req.app.render(
-//           "header",
-//           { reportData: reportData, logoDataUri: logoDataUri },
-//           (err, html) => {
-//             if (err) return reject(err);
-//             resolve(html);
-//           }
-//         );
-//       }),
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "ipcHeader",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
 
-//       footerTemplate: await new Promise((resolve, reject) => {
-//         req.app.render(
-//           "footer",
-//           { userName: user?.name, date: formattedDate },
-//           (err, html) => {
-//             if (err) return reject(err);
-//             resolve(html);
-//           }
-//         );
-//       }),
-//       margin: {
-//         top: "145px",
-//         right: "50px",
-//         bottom: "50px",
-//         left: "50px",
-//       },
-//     });
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "145px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
 
-//     // Close the browser
-//     await browser.close();
+    // Close the browser
+    await browser.close();
 
-//     const filePath = path.resolve("public", `MR_Elog_Report_${formId}.pdf`);
-//     fs.writeFileSync(filePath, pdf);
+    const filePath = path.resolve("public", `AB_ElogBlank_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
 
-//     res.status(200).json({ filename: `MR_Elog_Report_${formId}.pdf` });
-//   } catch (error) {
-//     console.error("Error generating PDF:", error);
-//     return res
-//       .status(500)
-//       .json({ error: true, message: `Error generating PDF: ${error.message}` });
-//   }
-// };
+    res.status(200).json({ filename: `AB_ElogBlank_Report_${formId}.pdf` });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};

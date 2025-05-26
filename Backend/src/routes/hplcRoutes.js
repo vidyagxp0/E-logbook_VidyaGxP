@@ -50,72 +50,72 @@ router.get(
   hplc.GethplcElog
 );
 
-// //get all the hplc elogs
-// router.get(
-//   "/get-all-hplc",
-//   Auth.checkUserJwtToken,
-//   hplc.GetAllDifferentialPressureElog
-// );
+//get all the hplc elogs
+router.get(
+  "/get-all-hplc",
+  Auth.checkUserJwtToken,
+  hplc.GetAllhplcElog
+);
 
-// //send hplc elog for review
-// router.put(
-//   "/send-DP-elog-for-review",
-//   Auth.checkUserJwtToken,
-//   upload.any(),
-//   Auth.authorizeUserRole(9, 1),
-//   hplc.SendDPElogForReview
-// );
+//send hplc elog for review
+router.put(
+  "/send-HP-elog-for-review",
+  Auth.checkUserJwtToken,
+  upload.any(),
+  Auth.authorizeUserRole(9, 1),
+  hplc.SendHPElogForReview
+);
 
-// // change status of hplc elog from review to open
-// router.put(
-//   "/send-DP-elog-from-review-to-open",
-//   Auth.checkUserJwtToken,
-//   upload.single("reviewerAttachment"),
-//   Auth.authorizeUserRole(9, 2),
-//   hplc.SendDPElogfromReviewToOpen
-// );
+// change status of hplc elog from review to open
+router.put(
+  "/send-HP-elog-from-review-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(9, 2),
+  hplc.SendHPElogfromReviewToOpen
+);
 
-// // send hplc elog from review to approval
-// router.put(
-//   "/send-DP-from-review-to-approval",
-//   Auth.checkUserJwtToken,
-//   upload.single("reviewerAttachment"),
-//   Auth.authorizeUserRole(9, 2),
-//   hplc.SendDPfromReviewToApproval
-// );
+// send hplc elog from review to approval
+router.put(
+  "/send-HP-from-review-to-approval",
+  Auth.checkUserJwtToken,
+  upload.single("reviewerAttachment"),
+  Auth.authorizeUserRole(9, 2),
+  hplc.SendHPfromReviewToApproval
+);
 
-// // send hplc elog from under-approval to open
-// router.put(
-//   "/send-DP-elog-from-approval-to-open",
-//   Auth.checkUserJwtToken,
-//   upload.single("approverAttachment"),
-//   Auth.authorizeUserRole(9, 3),
-//   hplc.SendDPfromApprovalToOpen
-// );
+// send hplc elog from under-approval to open
+router.put(
+  "/send-HP-elog-from-approval-to-open",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(9, 3),
+  hplc.SendHPfromApprovalToOpen
+);
 
-// // APPROVE hplc elog
-// router.put(
-//   "/approve-DP-elog",
-//   Auth.checkUserJwtToken,
-//   upload.single("approverAttachment"),
-//   Auth.authorizeUserRole(9, 3),
-//   hplc.ApproveDPElog
-// );
+// APPROVE hplc elog
+router.put(
+  "/approve-HP-elog",
+  Auth.checkUserJwtToken,
+  upload.single("approverAttachment"),
+  Auth.authorizeUserRole(9, 3),
+  hplc.ApproveHPElog
+);
 
-// // get users based on roles, sites and processes
-// router.post(
-//   "/get-user-roleGroups",
-//   Auth.checkUserJwtToken,
-//   hplc.GetUserOnBasisOfRoleGroup
-// );
+// get users based on roles, sites and processes
+router.post(
+  "/get-user-roleGroups",
+  Auth.checkUserJwtToken,
+  hplc.GetUserOnBasisOfRoleGroup
+);
 
-// router.get("/get-processes", hplc.getAllProcesses);
+router.get("/get-processes", hplc.getAllProcesses);
 
-// router.get(
-//   "/get-audit-trail-for-elog/:id",
-//   Auth.checkUserJwtToken,
-//   hplc.getAuditTrailForAnElog
-// );
+router.get(
+  "/get-audit-trail-for-elog/:id",
+  Auth.checkUserJwtToken,
+  hplc.getAuditTrailForAnElog
+);
 
 // router.get(
 //   "/get-audit-report/:formId/:type/:userId",
@@ -141,11 +141,11 @@ router.get(
 //   hplc.effetiveChatByPdf
 // );
 
-// router.post(
-//   "/blank-report/:form_id",
-//   Auth.checkUserJwtToken,
-//   hplc.blankReport
-// );
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  hplc.blankReport
+);
 
 // router.post(
 //   "/effective-view-report",
