@@ -1773,24 +1773,24 @@ exports.effetiveChatByPdf = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
-// exports.effetiveViewReport = async (req, res) => {
-//   try {
-//     let reportData = req.body.reportData;
-//     // Render HTML using EJS template
-//     req.app.render("effectiveDPReport", { reportData }, (err, html) => {
-//       if (err) {
-//         console.error("Error rendering HTML:", err);
-//         return res.status(500).send("Error rendering HTML", err);
-//       }
-//       res.send(html);
-//     });
-//   } catch (error) {
-//     console.error("Error generating PDF:", error);
-//     return res
-//       .status(500)
-//       .json({ error: true, message: `Error generating PDF: ${error.message}` });
-//   }
-// };
+exports.sendReportOnMail = async (req, res) => {
+  try {
+    let reportData = req.body.reportData;
+    // Render HTML using EJS template
+    req.app.render("effectiveDPReport", { reportData }, (err, html) => {
+      if (err) {
+        console.error("Error rendering HTML:", err);
+        return res.status(500).send("Error rendering HTML", err);
+      }
+      res.send(html);
+    });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
 exports.blankReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
