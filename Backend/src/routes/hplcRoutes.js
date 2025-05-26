@@ -122,24 +122,24 @@ router.get(
 //   hplc.generateAuditPdfbyId
 // );
 
-// router.post(
-//   "/generate-pdf",
-//   Auth.checkUserJwtToken,
-//   hplc.generateReport
-// );
+router.post(
+  "/generate-pdf",
+  Auth.checkUserJwtToken,
+  hplc.generateReport
+);
 
-// router.post(
-//   "/chat-pdf/:form_id",
-//   Auth.checkUserJwtToken,
-//   hplc.chatByPdf
-// );
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  hplc.chatByPdf
+);
 
 // router.post("/view-report", hplc.viewReport);
-// router.post(
-//   "/effective-chat-pdf/:form_id",
-//   Auth.checkUserJwtToken,
-//   hplc.effetiveChatByPdf
-// );
+router.post(
+  "/effective-chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  hplc.effetiveChatByPdf
+);
 
 router.post(
   "/blank-report/:form_id",

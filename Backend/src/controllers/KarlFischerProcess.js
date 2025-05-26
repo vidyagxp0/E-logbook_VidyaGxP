@@ -1570,100 +1570,100 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //       .json({ error: true, message: `Error generating PDF: ${error.message}` });
 //   }
 // };
-// const removeHtmlTags = (htmlString) => {
-//   return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
-// };
-// exports.chatByPdf = async (req, res) => {
-//   try {
-//     const reportData = req.body.reportData;
+const removeHtmlTags = (htmlString) => {
+  return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
+};
+exports.chatByPdf = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
 
-//     const formId = req.params.form_id;
-//     reportData.description = removeHtmlTags(reportData.description);
+    const formId = req.params.form_id;
+    reportData.description = removeHtmlTags(reportData.description);
 
-//     const date = new Date();
-//     const formattedDate = date.toLocaleString("en-US", {
-//       year: "numeric",
-//       month: "2-digit",
-//       day: "2-digit",
-//       hour: "2-digit",
-//       minute: "2-digit",
-//       second: "2-digit",
-//       hour12: false, // Specify using 24-hour format
-//     });
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
 
-//     // Render HTML using EJS template
-//     const html = await new Promise((resolve, reject) => {
-//       req.app.render("report", { reportData }, (err, html) => {
-//         if (err) return reject(err);
-//         resolve(html);
-//       });
-//     });
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("KarlFischer", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
 
-//     const browser = await puppeteer.launch({
-//       headless: true,
-//       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-//     });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
 
-//     const page = await browser.newPage();
-//     const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
-//     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
-//     const logoDataUri = `data:image/png;base64,${logoBase64}`;
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
-//     const user = await getUserById(req.user.userId);
+    const user = await getUserById(req.user.userId);
 
-//     // Set HTML content
-//     await page.setContent(html, { waitUntil: "networkidle0" });
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
 
-//     // Generate PDF
-//     const pdf = await page.pdf({
-//       format: "A4",
-//       printBackground: true,
-//       displayHeaderFooter: true,
-//       headerTemplate: await new Promise((resolve, reject) => {
-//         req.app.render(
-//           "header",
-//           { reportData: reportData, logoDataUri: logoDataUri },
-//           (err, html) => {
-//             if (err) return reject(err);
-//             resolve(html);
-//           }
-//         );
-//       }),
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "ipcHeader",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
 
-//       footerTemplate: await new Promise((resolve, reject) => {
-//         req.app.render(
-//           "footer",
-//           { userName: user?.name, date: formattedDate },
-//           (err, html) => {
-//             if (err) return reject(err);
-//             resolve(html);
-//           }
-//         );
-//       }),
-//       margin: {
-//         top: "150px",
-//         right: "50px",
-//         bottom: "50px",
-//         left: "50px",
-//       },
-//     });
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "120px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
 
-//     // Close the browser
-//     await browser.close();
+    // Close the browser
+    await browser.close();
 
-//     // Generate a unique UUID
-//     const uniqueId = uuidv4();
-//     const filePath = path.resolve("public", `Elog_Report_${uniqueId}.pdf`);
-//     fs.writeFileSync(filePath, pdf);
+    // Generate a unique UUID
+    // const uniqueId = uuidv4();
+    const filePath = path.resolve("public", `KF_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
 
-//     res.status(200).json({ filename: `Elog_Report_${uniqueId}.pdf` });
-//   } catch (error) {
-//     console.error("Error generating PDF:", error);
-//     return res
-//       .status(500)
-//       .json({ error: true, message: `Error generating PDF: ${error.message}` });
-//   }
-// };
+    res.status(200).json({ filename: `KF_Elog_Report_${formId}.pdf` });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
 // exports.viewReport = async (req, res) => {
 //   try {
 //     let reportData = req.body.reportData;
@@ -1682,97 +1682,97 @@ exports.getAuditTrailForAnElog = async (req, res) => {
 //       .json({ error: true, message: `Error generating PDF: ${error.message}` });
 //   }
 // };
-// exports.effetiveChatByPdf = async (req, res) => {
-//   try {
-//     const reportData = req.body.reportData;
-//     const formId = req.params.form_id;
-//     reportData.addtionalInfo = reportData?.addtionalInfo
-//       ? removeHtmlTags(reportData?.addtionalInfo)
-//       : "Not Applicable";
+exports.effetiveChatByPdf = async (req, res) => {
+  try {
+    const reportData = req.body.reportData;
+    const formId = req.params.form_id;
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
 
-//     const date = new Date();
-//     const formattedDate = date.toLocaleString("en-US", {
-//       year: "numeric",
-//       month: "2-digit",
-//       day: "2-digit",
-//       hour: "2-digit",
-//       minute: "2-digit",
-//       second: "2-digit",
-//       hour12: false, // Specify using 24-hour format
-//     });
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
 
-//     // Render HTML using EJS template
-//     const html = await new Promise((resolve, reject) => {
-//       req.app.render("effectiveDPReport", { reportData }, (err, html) => {
-//         if (err) return reject(err);
-//         resolve(html);
-//       });
-//     });
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("effectiveKFReport", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
 
-//     const browser = await puppeteer.launch({
-//       headless: true,
-//       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-//     });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
 
-//     const page = await browser.newPage();
-//     const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
-//     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
-//     const logoDataUri = `data:image/png;base64,${logoBase64}`;
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
-//     const user = await getUserById(req.user.userId);
+    const user = await getUserById(req.user.userId);
 
-//     // Set HTML content
-//     await page.setContent(html, { waitUntil: "networkidle0" });
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
 
-//     // Generate PDF
-//     const pdf = await page.pdf({
-//       format: "A4",
-//       printBackground: true,
-//       displayHeaderFooter: true,
-//       headerTemplate: await new Promise((resolve, reject) => {
-//         req.app.render(
-//           "header",
-//           { reportData: reportData, logoDataUri: logoDataUri },
-//           (err, html) => {
-//             if (err) return reject(err);
-//             resolve(html);
-//           }
-//         );
-//       }),
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "ipcHeader",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
 
-//       footerTemplate: await new Promise((resolve, reject) => {
-//         req.app.render(
-//           "footer",
-//           { userName: user?.name, date: formattedDate },
-//           (err, html) => {
-//             if (err) return reject(err);
-//             resolve(html);
-//           }
-//         );
-//       }),
-//       margin: {
-//         top: "150px",
-//         right: "50px",
-//         bottom: "50px",
-//         left: "50px",
-//       },
-//     });
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          }
+        );
+      }),
+      margin: {
+        top: "150px",
+        right: "50px",
+        bottom: "50px",
+        left: "50px",
+      },
+    });
 
-//     // Close the browser
-//     await browser.close();
-//     const uniqueId = uuidv4();
+    // Close the browser
+    await browser.close();
+    const uniqueId = uuidv4();
 
-//     const filePath = path.resolve("public", `DP_Elog_Report_${uniqueId}.pdf`);
-//     fs.writeFileSync(filePath, pdf);
+    const filePath = path.resolve("public", `KFEffective_Elog_Report_${formId}.pdf`);
+    fs.writeFileSync(filePath, pdf);
 
-//     res.status(200).json({ filename: `DP_Elog_Report_${uniqueId}.pdf` });
-//   } catch (error) {
-//     console.error("Error generating PDF:", error);
-//     return res
-//       .status(500)
-//       .json({ error: true, message: `Error generating PDF: ${error.message}` });
-//   }
-// };
+    res.status(200).json({ filename: `KFEffective_Elog_Report_${formId }.pdf` });
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
 // exports.effetiveViewReport = async (req, res) => {
 //   try {
 //     let reportData = req.body.reportData;

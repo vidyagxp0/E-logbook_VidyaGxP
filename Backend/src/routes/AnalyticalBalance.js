@@ -115,27 +115,18 @@ router.get(
 //   AnalyticalBalance.generateReport
 // );
 
-// router.post(
-//   "/chat-pdf/:form_id",
-//   Auth.checkUserJwtToken,
-//   AnalyticalBalance.chatByPdf
-// );
-// router.post(
-//   "/generate-pdf",
-//   Auth.checkUserJwtToken,
-//   AnalyticalBalance.generateReport
-// );
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  AnalyticalBalance.chatByPdf
+);
 
-// router.post(
-//   "/effective-chat-pdf/:form_id",
-//   Auth.checkUserJwtToken,
-//   AnalyticalBalance.effetiveChatByPdf
-// );
-// router.post(
-//   "/blank-report/:form_id",
-//   Auth.checkUserJwtToken,
-//   AnalyticalBalance.blankReport
-// );
+router.post(
+  "/effective-chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  AnalyticalBalance.effetiveChatByPdf
+);
+
 // router.post("/effective-view-report", AnalyticalBalance.effetiveViewReport);
 
 router.post(
