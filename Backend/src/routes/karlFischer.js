@@ -128,18 +128,18 @@ router.get(
 //   KarlFischerProcess.generateReport
 // );
 
-// router.post(
-//   "/chat-pdf/:form_id",
-//   Auth.checkUserJwtToken,
-//   KarlFischerProcess.chatByPdf
-// );
+router.post(
+  "/chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  KarlFischerProcess.chatByPdf
+);
 
-// router.post("/view-report", KarlFischerProcess.viewReport);
-// router.post(
-//   "/effective-chat-pdf/:form_id",
-//   Auth.checkUserJwtToken,
-//   KarlFischerProcess.effetiveChatByPdf
-// );
+router.post("/view-report", KarlFischerProcess.viewReport);
+router.post(
+  "/effective-chat-pdf/:form_id",
+  Auth.checkUserJwtToken,
+  KarlFischerProcess.effetiveChatByPdf
+);
 
 router.post(
   "/blank-report/:form_id",
