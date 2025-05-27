@@ -1797,7 +1797,6 @@ exports.sendReportOnMail = async (req, res) => {
 exports.blankReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
-    console.log(reportData,";kljhbljkbljb")
     const formId = req.params.form_id;
     // reportData.title = "RUSOMA LABORATORIES PRIVATE LIMITED";
 
