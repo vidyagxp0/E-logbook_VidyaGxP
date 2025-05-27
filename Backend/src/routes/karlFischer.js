@@ -147,10 +147,10 @@ router.post(
   KarlFischerProcess.blankReport
 );
 
-router.post(
-  "/effective-view-report",
-  KarlFischerProcess.effetiveViewReport
-);
+// router.post(
+//   "/effective-view-report",
+//   KarlFischerProcess.effetiveViewReport
+// );
 // router.post(
 //   "/send-report-on-mail/:id",
 //   upload.any(),
