@@ -555,7 +555,7 @@ exports.EditKarlFischer = async (req, res) => {
         sample_name: record?.sample_name,
         factor_percent_water: record?.factor_percent_water,
         checked_by: record?.checked_by,
-        reviewed_by:newRecord?.reviewed_by,
+        reviewed_by:record?.reviewed_by,
       }));
 
       await karlFischerRecord.bulkCreate(formRecords, { transaction });
