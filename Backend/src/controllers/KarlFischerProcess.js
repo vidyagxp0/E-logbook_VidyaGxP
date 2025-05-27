@@ -313,7 +313,7 @@ exports.EditKarlFischer = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    KarlFischerRecords,
+    karlFischerRecords,
     email,
     password,
     initiatorComment,
@@ -363,9 +363,9 @@ exports.EditKarlFischer = async (req, res) => {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } else if (file.fieldname.startsWith("KarlFischerRecords[")) {
+      } else if (file.fieldname.startsWith("karlFischerRecords[")) {
         const match = file.fieldname.match(
-          /KarlFischerRecords\[(\d+)\]\[supporting_docs\]/
+          /karlFischerRecords\[(\d+)\]\[supporting_docs\]/
         );
         if (match) {
           const index = match[1];
@@ -448,8 +448,8 @@ exports.EditKarlFischer = async (req, res) => {
 
     // Update the Form Records if provided
     if (
-      Array.isArray(KarlFischerRecords) &&
-      KarlFischerRecords.length > 0
+      Array.isArray(karlFischerRecords) &&
+      karlFischerRecords.length > 0
     ) {
       const existingRecords = await karlFischerRecord.findAll({
         where: { form_id: form_id },
@@ -461,10 +461,10 @@ exports.EditKarlFischer = async (req, res) => {
 
       // Track changes for existing records
       existingRecords.forEach((existingRecord, index) => {
-        KarlFischerRecords.sort(
+        karlFischerRecords.sort(
           (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
         );
-        const newRecord = KarlFischerRecords[index];
+        const newRecord = karlFischerRecords[index];
         if (newRecord) {
           const recordFields = {
             date: newRecord.date,
@@ -502,13 +502,13 @@ exports.EditKarlFischer = async (req, res) => {
       });
 
       // Handle new records added
-      if (KarlFischerRecords.length > existingRecords.length) {
+      if (karlFischerRecords.length > existingRecords.length) {
         for (
           let i = existingRecords.length;
-          i < KarlFischerRecords.length;
+          i < karlFischerRecords.length;
           i++
         ) {
-          const newRecord = KarlFischerRecords[i];
+          const newRecord = karlFischerRecords[i];
           const recordFields = {
             date: newRecord.date,
             remarks: newRecord.remarks,
@@ -544,7 +544,7 @@ exports.EditKarlFischer = async (req, res) => {
       });
 
       // Create new records
-      const formRecords = KarlFischerRecords.map((record, index) => ({
+      const formRecords = karlFischerRecords.map((record, index) => ({
         form_id: form_id,
         date: record.date,
         remarks: record.remarks,
@@ -1811,8 +1811,8 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-const data = Array.isArray(reportData?.KarlFischerRecords)
-  ? reportData.KarlFischerRecords.map((record) => ({
+const data = Array.isArray(reportData?.karlFischerRecords)
+  ? reportData.karlFischerRecords.map((record) => ({
       date: record?.date || "",
       lot_no: record?.lot_no || "",
       sample_name: record?.sample_name || "",

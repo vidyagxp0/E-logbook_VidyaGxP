@@ -2152,7 +2152,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
-      case "hplcAuditTrails":
+      case "hplcAuditTrail":
         getData = await hplcAuditTrails.findAll({
           where: { form_id: formId },
           include: {
@@ -2162,7 +2162,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
-      case "karlFischer":
+      case "karlFischerAuditTrail":
         getData = await karlFischer.findAll({
           where: { form_id: formId },
           include: {
