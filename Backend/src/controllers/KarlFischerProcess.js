@@ -194,7 +194,7 @@ exports.InsertKarlFischer = async (req, res) => {
         remarks: record?.remarks,
         sample_name: record?.sample_name,
         checked_by: record?.checked_by,
-        // reviewed_by: record?.reviewed_by,
+        reviewed_by: record?.reviewed_by
         // approved_by: record?.approved_by,
         // supporting_docs: getElogDocsUrl(supportingDocs),
       }));
@@ -473,6 +473,7 @@ exports.EditKarlFischer = async (req, res) => {
             done_by:newRecord.done_by,
             sample_name: newRecord?.sample_name,
             factor_percent_water: newRecord?.factor_percent_water,
+            reviewed_by: newRecord?.reviewed_by,
             checked_by: newRecord?.checked_by,
 
           };
@@ -517,6 +518,7 @@ exports.EditKarlFischer = async (req, res) => {
             sample_name: newRecord?.sample_name,
             factor_percent_water: newRecord?.factor_percent_water,
             checked_by: newRecord?.checked_by,
+            reviewed_by:newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -553,6 +555,7 @@ exports.EditKarlFischer = async (req, res) => {
         sample_name: record?.sample_name,
         factor_percent_water: record?.factor_percent_water,
         checked_by: record?.checked_by,
+        reviewed_by:newRecord?.reviewed_by,
       }));
 
       await karlFischerRecord.bulkCreate(formRecords, { transaction });
@@ -1819,6 +1822,7 @@ const data = Array.isArray(reportData?.karlFischerRecords)
       factor_percent_water: record?.factor_percent_water || "",
       done_by: record?.done_by || "",
       checked_by: record?.checked_by || "",
+      reviewed_by:record?.reviewed_by || "",
       remarks: record?.remarks || "",
     }))
   : [];
