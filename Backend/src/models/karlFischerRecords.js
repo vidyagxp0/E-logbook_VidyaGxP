@@ -43,7 +43,7 @@ const karlFischerRecord = sequelize.define(
       type: DataTypes.STRING,
     },
     remarks: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
     },
   }
 );
