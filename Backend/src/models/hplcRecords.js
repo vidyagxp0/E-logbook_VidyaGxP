@@ -45,7 +45,7 @@ const hplcRecord = sequelize.define(
       type: DataTypes.TIME,
     },
     no_of_injections: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     done_by: {
       type: DataTypes.STRING,
@@ -54,7 +54,7 @@ const hplcRecord = sequelize.define(
       type: DataTypes.STRING,
     },
     remarks: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
     },
   }
 );
