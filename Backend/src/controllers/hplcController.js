@@ -253,6 +253,17 @@ exports.InsertHPLC = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
+          field_name: "Column No",
+          previous_value: null,
+          new_value: record?.column_no,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
           field_name: "Start Time",
           previous_value: null,
           new_value: record?.start_time,
@@ -579,6 +590,7 @@ exports.EditHPLC = async (req, res) => {
             reg_no: newRecord.reg_no,
             method_used:newRecord.method_used,
             parameter_or_activity: newRecord?.parameter_or_activity,
+            column_no:newRecord?.column_no,
             start_time: newRecord?.start_time,
             end_time: newRecord.end_time,
             no_of_injections:newRecord.no_of_injections,
