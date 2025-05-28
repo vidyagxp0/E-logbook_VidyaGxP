@@ -19,7 +19,7 @@ const AnalyticalBalance = sequelize.define(
       },
     },
     date: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
     reg_no: { 
