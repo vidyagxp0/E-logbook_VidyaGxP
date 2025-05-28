@@ -368,7 +368,7 @@ exports.EditHPLC = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    HPLCRecords,
+    hplcRecords,
     email,
     password,
     initiatorComment,
@@ -420,9 +420,9 @@ exports.EditHPLC = async (req, res) => {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } else if (file.fieldname.startsWith("HPLCRecords[")) {
+      } else if (file.fieldname.startsWith("hplcRecords[")) {
         const match = file.fieldname.match(
-          /HPLCRecords\[(\d+)\]\[supporting_docs\]/
+          /hplcRecords\[(\d+)\]\[supporting_docs\]/
         );
         if (match) {
           const index = match[1];
@@ -506,8 +506,8 @@ exports.EditHPLC = async (req, res) => {
 
     // Update the Form Records if provided
     if (
-      Array.isArray(HPLCRecords) &&
-      HPLCRecords.length > 0
+      Array.isArray(hplcRecords) &&
+      hplcRecords.length > 0
     ) {
       const existingRecords = await hplcRecord.findAll({
         where: { form_id: form_id },
@@ -518,10 +518,10 @@ exports.EditHPLC = async (req, res) => {
 
       // Track changes for existing records
       existingRecords.forEach((existingRecord, index) => {
-        HPLCRecords.sort(
+        hplcRecords.sort(
           (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
         );
-        const newRecord = HPLCRecords[index];
+        const newRecord = hplcRecords[index];
         if (newRecord) {
           const recordFields = {
             date:newRecord.date,
@@ -564,13 +564,13 @@ exports.EditHPLC = async (req, res) => {
       });
 
       // Handle new records added
-      if (HPLCRecords.length > existingRecords.length) {
+      if (hplcRecords.length > existingRecords.length) {
         for (
           let i = existingRecords.length;
-          i < HPLCRecords.length;
+          i < hplcRecords.length;
           i++
         ) {
-          const newRecord = HPLCRecords[i];
+          const newRecord = hplcRecords[i];
           const recordFields = {
             date:newRecord.date,
             sample_name: newRecord.sample_name,
@@ -611,7 +611,7 @@ exports.EditHPLC = async (req, res) => {
       });
 
       // Create new records
-      const formRecords = HPLCRecords.map((record, index) => ({
+      const formRecords = hplcRecords.map((record, index) => ({
         form_id: form_id,
             date:record.date,
             sample_name: record.sample_name,
@@ -1883,7 +1883,7 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-    const data = reportData?.HPLCRecords?.map((record) => ({
+    const data = reportData?.hplcRecords?.map((record) => ({
       s_no: record?.s_no || "",
       date: record?.date || "",
       sample_name: record?.sample_name || "",
