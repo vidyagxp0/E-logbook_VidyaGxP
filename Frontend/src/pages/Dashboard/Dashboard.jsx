@@ -14,6 +14,9 @@ function Dashboard() {
     []
   );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
+  const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState([]);
+  const [karlFischerElogs, setKarlFischerElogs] = useState([]);
+  const [hplcElogs, setHplcElogs] = useState([]);
   // const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
   const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
@@ -193,9 +196,88 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error: ", error);
       });
+    const newAnalyticalBalance = {
+      method: "get",
+      url: "http://localhost:1000/analytical-balance/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newAnalyticalBalance)
+      .then((response) => {
+        const allAnalyticalBalance = response.data.message;
+        let filteredArray = allAnalyticalBalance.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setAnalyticalBalanceElogs(allAnalyticalBalance);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+    const newKarlFischer = {
+      method: "get",
+      url: "http://localhost:1000/karl-fischer/get-all-karl-fischer",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newKarlFischer)
+      .then((response) => {
+        const allKarlFischer = response.data.message;
+        let filteredArray = allKarlFischer.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setKarlFischerElogs(allKarlFischer);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+    const newHplc = {
+      method: "get",
+      url: "http://localhost:1000/hplc/get-all-hplc",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newHplc)
+      .then((response) => {
+        const allHplc = response.data.message;
+        let filteredArray = allHplc.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setHplcElogs(allHplc);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const [combinedRecords, setCombinedRecords] = useState([]);
+  console.log(combinedRecords,"combinedRecords")
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
       navigate("/dpr-panel", { state: item });
@@ -211,9 +293,20 @@ function Dashboard() {
       navigate("/media-record-panel", { state: item });
     } else if (item.OperationOfSterilizerRecords) {
       navigate("/operation-of-sterilizer-panel", { state: item });
-    } else if (item.DispenseOfMaterials) {
+    }
+     else if (item.DispenseOfMaterials) {
       navigate("/dispensing-of-material-panel", { state: item });
-    } else {
+    }
+     else if (item.AnalyticalBalances) {
+      navigate("/analytical-balance-panel", { state: item });
+    }
+     else if (item.karlFischerRecords) {
+      navigate("/karl-fischer-panel", { state: item });
+    }
+     else if (item.hplcRecords) {
+      navigate("/hplc-panel", { state: item });
+    }
+     else {
       // Handle default or fallback navigation if needed
     }
   };
@@ -222,13 +315,14 @@ function Dashboard() {
     const utcDate = new Date(dateString);
     return utcDate.toLocaleString("en-GB", {
       day: "2-digit",
-      month: "2-digit",
+      month: "short", 
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
   };
+  
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -241,6 +335,9 @@ function Dashboard() {
       ...mediaRecordElogs,
       ...dispensingOfMaterialsElogs,
       ...operationOfSterilizerElogs,
+      ...analyticalBalanceElogs,
+      ...karlFischerElogs,
+      ...hplcElogs,
     ].filter((item) => {
       const matchesSearchTerm =
         item.date_of_initiation
@@ -261,7 +358,14 @@ function Dashboard() {
           ? `MR${item.form_id}`
           : item?.DispenseOfMaterials
           ? `DM${item.form_id}`
-          : `DP${item.form_id}`
+          : item?.DifferentialPressureRecords
+          ? `DP${item.form_id}`
+          : item?.AnalyticalBalances
+          ? `AB${item.form_id}`
+          : item?.karlFischerRecords
+          ? `KF${item.form_id}`
+          : `HP${item.form_id}`
+
         )
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
@@ -285,6 +389,9 @@ function Dashboard() {
     mediaRecordElogs,
     dispensingOfMaterialsElogs,
     operationOfSterilizerElogs,
+    analyticalBalanceElogs,
+    karlFischerElogs,
+    hplcElogs,  
   ]);
 
   return (
@@ -337,6 +444,15 @@ function Dashboard() {
               </option>
               <option value="dispensing_of_material">
                 Dispensing Of Materials
+              </option>
+              <option value="analytical_balance">
+                Analytical Balance
+              </option>
+              <option value="karl_fischer">
+                KARL Fischer
+              </option>
+              <option value="hplc">
+                hplc
               </option>
             </select>
           </div>
@@ -689,6 +805,153 @@ function Dashboard() {
                   );
                 })
               : null}
+            {eLogSelect === "analytical_balance"
+              ? analyticalBalanceElogs?.map((item, index) => {
+                
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/analytical-balance-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`AB${item?.form_id}`}
+                      </td>
+                      <td>Analytical Balance</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "karl_fischer"
+              ? karlFischerElogs?.map((item, index) => {
+                
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/analytical-balance-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`KF${item?.form_id}`}
+                      </td>
+                      <td>KARL Fischer</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "hplc"
+              ? hplcElogs?.map((item, index) => {
+                
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/hplc-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`HP${item?.form_id}`}
+                      </td>
+                      <td>HPLC</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
 
             {eLogSelect === "All_Records" &&
               combinedRecords
@@ -698,6 +961,7 @@ function Dashboard() {
                     new Date(a.date_of_initiation)
                 )
 
+                
                 .map((item, index) => {
                   const cleanHTML = (html) =>
                     html?.replace(/^"|"$/g, "").trim() || "NA";
@@ -711,7 +975,8 @@ function Dashboard() {
                         onMouseEnter={(e) => (e.target.style.color = "blue")}
                         onMouseLeave={(e) => (e.target.style.color = "black")}
                       >
-                        {item.DifferentialPressureRecords
+                        {
+                          item.DifferentialPressureRecords
                           ? `DP${item.form_id}`
                           : item.TempratureRecords
                           ? `TR${item.form_id}`
@@ -723,6 +988,12 @@ function Dashboard() {
                           ? `MR${item.form_id}`
                           : item.DispenseOfMaterials
                           ? `DM${item.form_id}`
+                          : item.AnalyticalBalances
+                          ? `AB${item.form_id}`
+                          : item.karlFischerRecords
+                          ? `KF${item.form_id}`
+                          : item.hplcRecords
+                          ? `HP${item.form_id}`
                           : null}
                       </td>
                       <td>
@@ -738,6 +1009,12 @@ function Dashboard() {
                           ? "Media Record"
                           : item.DispenseOfMaterials
                           ? "Dispensing of Material"
+                          : item.AnalyticalBalances
+                          ? "Analytical Balance"
+                          : item.karlFischerRecords
+                          ? "KARL Fischer"
+                          : item.hplcRecords
+                          ? "HPLC"
                           : null}
                       </td>
                       <td>
