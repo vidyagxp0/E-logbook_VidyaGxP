@@ -111,6 +111,57 @@ function Effective_AuditTrail() {
           console.error(error);
         }
       }
+      else if (location.state?.process === "Analytical Balance") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/analytical-balance/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      else if (location.state?.process === "KARL Fischer") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/karl-fischer/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      else if (location.state?.process === "HPLC") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/hplc/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      }
     };
 
     fetchAuditTrail();
@@ -162,6 +213,15 @@ const generateReport = async () => {
     },
     "Media Record": {
       type: "MediaRecordAuditTrail",
+    },
+    "Analytical Balance": {
+      type: "AnalyticalBalanceAuditTrail",
+    },
+    "HPLC": {
+      type: "hplcAuditTrail",
+    },
+    "KARL Fischer": {
+      type: "karlFischerAuditTrail",
     },
   };
 

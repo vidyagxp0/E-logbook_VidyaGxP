@@ -404,7 +404,7 @@ const AnalitycalBalancePanel = () => {
      setIsLoading(true);
      try {
        const response = await axios.post(
-         `http://localhost:1000/differential-pressure/chat-pdf/${formId}`,
+         `http://localhost:1000/analytical-balance/chat-pdf/${formId}`,
          {
            reportData: reportData,
          },

@@ -278,8 +278,6 @@ export default function TempretureRecordsPanel() {
   }, [reportData]);
 
   const generateReport = async () => {
-    console.log(formId, "gu");
-
     setIsLoading(true);
     try {
       const response = await axios.post(

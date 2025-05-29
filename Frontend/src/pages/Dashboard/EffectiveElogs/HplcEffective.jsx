@@ -55,7 +55,7 @@ const HplcEffective = () => {
     compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
-    hplcRecords: [],
+    // hplcRecords: [],
     limit: "",
   });
   console.log(editData, "editdata");
