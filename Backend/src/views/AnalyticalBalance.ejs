@@ -77,6 +77,7 @@
     <body>
     <div class="report-content">
         <h2 class="heading">General Information</h2>
+         <hr />
         <table>
             <tr>
                 <th>Site</th>
@@ -96,11 +97,11 @@
                 <td><%- reportData?.description || "Not Applicable" %></td>
             </tr>
         </table>
-        <hr />
 
-        <h2 class="heading">Analytical Balance Records</h2>
-        <% if (reportData.AnalyticalBalances && reportData.AnalyticalBalances.length > 0) { %>
-            <% reportData.AnalyticalBalances.forEach(record => { %>
+        <!-- <h2 class="heading">Analytical Balance Records</h2>
+         <hr />
+        <% if (reportData?.AnalyticalBalances && reportData?.AnalyticalBalances.length > 0) { %>
+            <% reportData?.AnalyticalBalances.forEach(record => { %>
             <div class="listItem">
                 <table>
                     <tr>
@@ -123,15 +124,16 @@
                     </tr>
                 </table>
             </div>
-            <hr />
+           
             <% }) %>
         <% } else { %>
             <p>No Analytical Balance Records Found.</p>
             <hr />
-        <% } %>
+        <% } %> -->
 
         <div class="remarks">
             <h2 class="heading">Initiator Remarks</h2>
+            <hr />
             <table>
                 <tr>
                     <th>Initiator</th>
@@ -158,10 +160,11 @@
                 
             </table>
         </div>
-        <hr />
+        
 
         <div class="remarks">
             <h2 class="heading">Reviewer Remarks</h2>
+             <hr />
             <table>
                 <tr>
                     <th>Reviewer</th>
@@ -188,10 +191,11 @@
                 
             </table>
         </div>
-        <hr />
+       
 
         <div class="remarks">
             <h2 class="heading">Approver Remarks</h2>
+             <hr />
             <table>
                 <tr>
                     <th>Approver</th>
@@ -218,7 +222,7 @@
                 
             </table>
         </div>
-        <hr />
+       
     </div>
 </body>
 </html>
