@@ -30,10 +30,10 @@ const HplcPanel = () => {
       additionalInfo: "",
       additionalAttachment: "",
       additionalInfo: "",
-      KarlFischer: [],
+      HPLCRecords: [],
       limit: "",
     });
-    console.log(editData, "0000000000000000");
+    console.log(editData, "111");
   
     const navigate = useNavigate();
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -1323,7 +1323,7 @@ const HplcPanel = () => {
                           <input
                             type="text"
                             name="reviewer"
-                            value={editData?.reviewer?.name}
+                            value={editData?.reviewerss?.name}
                             readOnly
                           />
                         </div>
@@ -1467,7 +1467,7 @@ const HplcPanel = () => {
                           <input
                             type="text"
                             name="approver"
-                            value={editData?.approver?.name}
+                            value={editData?.approverss?.name}
                             readOnly
                           />
                         </div>

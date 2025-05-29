@@ -9,6 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import dayjs from "dayjs";
 const HplcEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(true);
@@ -18,8 +19,20 @@ const HplcEffective = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
   const [isLoading1, setIsLoading1] = useState(false);
-
+  const [User, setUser] = useState(null);
+  const object = getCurrentDateTime();
+  let date = object.currentDate;
   const location = useLocation();
+  function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(0);
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${year}/${month}/${day}`;
+    return {
+      currentDate: currentDate,
+    };
+  }
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const UserName = JSON.parse(localStorage.getItem("Username"));
 
@@ -93,11 +106,7 @@ const HplcEffective = () => {
         return;
       }
       axios
-        .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
-          data,
-          config
-        )
+        .put("http://localhost:1000/hplc/send-HP-elog-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -112,7 +121,7 @@ const HplcEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "http://localhost:1000/hplc/send-HP-from-review-to-approval",
           data,
           config
         )
@@ -131,7 +140,7 @@ const HplcEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "http://localhost:1000/hplc/send-HP-elog-from-review-to-open",
           data,
           config
         )
@@ -146,11 +155,7 @@ const HplcEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
-          data,
-          config
-        )
+        .put("http://localhost:1000/hplc/approve-HP-elog", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -165,7 +170,7 @@ const HplcEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "http://localhost:1000/hplc/send-HP-elog-from-approval-to-open",
           data,
           config
         )
@@ -211,7 +216,7 @@ const HplcEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/karl-fischer/update-karl-fischer",
+        url: "http://localhost:1000/hplc/update-hplc",
       };
 
       axios(requestOptions)
@@ -247,15 +252,18 @@ const HplcEffective = () => {
 
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        unique_id: `DPR000${nextIndex + 1}`,
-        time: currentTime,
-        hplc: "",
-        remarks: "",
-        reviewed_by: "",
-        approver_remarks: "",
-        approved_by: "",
+        date: dayjs().format("YYYY-MM-DD"),
+        sample_name: "",
+        reg_no: "",
+        method_used: "",
+        parameter_or_activity: "",
+        column_no: "",
+        start_time: "",
+        end_time: "",
+        no_of_injections: "",
+        done_by: User?.name,
         checked_by: location?.state?.initiator_name,
-        supporting_docs: null,
+        remarks: "",
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -411,7 +419,7 @@ const HplcEffective = () => {
   };
 
   const EmptyreportData = {
-    title: "KARL Fischer",
+    title: "HPLC",
     status: location.state.status,
     blankRows: 17,
     form_id: location.state.form_id,
@@ -421,7 +429,7 @@ const HplcEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/blank-report/${formId}`,
+        `http://localhost:1000/hplc/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -455,7 +463,7 @@ const HplcEffective = () => {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title: "KARL Fischer Record",
+    title: "HPLC Record",
     ...editData,
   };
 
@@ -469,7 +477,7 @@ const HplcEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/hplc/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -508,7 +516,7 @@ const HplcEffective = () => {
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>KARL Fischer
+              <strong> Record Name:&nbsp;</strong>HPLC
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
@@ -551,7 +559,7 @@ const HplcEffective = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  KARL Fischer Record
+                  HPLC Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -562,7 +570,7 @@ const HplcEffective = () => {
                       navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "KARL Fischer",
+                          process: "HPLC",
                         },
                       })
                     }
@@ -851,7 +859,7 @@ const HplcEffective = () => {
                          navigate("/audit-trail", {
                            state: {
                              formId: location.state?.form_id,
-                             process: "KARL Fischer",
+                             process: "HPLC",
                            },
                          })
                        }
@@ -1057,13 +1065,19 @@ const HplcEffective = () => {
                       {editData?.hplcRecords?.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>
-                            <input
+                           <td>
+                                       <input
                               value={item?.date}
-                              type="date"
+                              type="text"
+                              readOnly
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.sample_name}
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].sample_name = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1076,26 +1090,10 @@ const HplcEffective = () => {
                           </td>
                           <td>
                             <input
-                              value={item.sampleName}
+                              value={item.reg_no}
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.regNo}
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].reg_no = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1109,11 +1107,11 @@ const HplcEffective = () => {
 
                           <td>
                             <input
-                              value={item.methodUsed}
+                              value={item.method_used}
                               // disabled
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].method_used = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1126,11 +1124,11 @@ const HplcEffective = () => {
                           </td>
                           <td>
                             <input
-                              value={item.parameterActivity}
+                              value={item.parameter_or_activity}
                               // disabled
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].parameter_or_activity = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1143,11 +1141,11 @@ const HplcEffective = () => {
                           </td>
                           <td>
                             <input
-                              value={item.columnNo}
+                              value={item.column_no}
                               // disabled
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].column_no = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1160,12 +1158,12 @@ const HplcEffective = () => {
                           </td>
                           <td>
                             <input
-                                type="time"
-                              value={item.startTime}
+                              type="time"
+                              value={item.start_time}
                               // disabled
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].start_time = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1178,12 +1176,12 @@ const HplcEffective = () => {
                           </td>
                           <td>
                             <input
-                                type="time"
-                              value={item.endTime}
+                              type="time"
+                              value={item.end_time}
                               // disabled
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].end_time = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1196,11 +1194,11 @@ const HplcEffective = () => {
                           </td>
                           <td>
                             <input
-                              value={item.noOfInjections}
+                              value={item.no_of_injections}
                               // disabled
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].no_of_injections = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1213,11 +1211,11 @@ const HplcEffective = () => {
                           </td>
                           <td>
                             <input
-                              value={item.doneBy}
+                              value={item.done_by}
                               // disabled
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].done_by = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,
@@ -1228,29 +1226,41 @@ const HplcEffective = () => {
                               )}
                             />
                           </td>
-                          <td>
-                            <input
-                              value={item.checkedBy}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
+                              <td>
+                              <div>
+                              <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                <input
+                                  className="h-4 w-4 cursor-pointer"
+                                  type="checkbox"
+                                  checked={!!item.reviewed_by}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.hplcRecords,
+                                    ];
+                                    if (e?.target?.checked) {
+                                      newData[index].reviewed_by = reviewed_by;
+                                    } else {
+                                      newData[index].reviewed_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      hplcRecords: newData,
+                                    });
+                                  }}
+                                  disabled={[1, 3].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
+                                />
+                                {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                              </div>
+                            </div>
                           </td>
                           <td>
                             <input
                               value={item.remarks}
                               onChange={(e) => {
                                 const newData = [...editData.hplcRecords];
-                                newData[index].hplc = e.target.value;
+                                newData[index].remarks = e.target.value;
                                 setEditData({
                                   ...editData,
                                   hplcRecords: newData,

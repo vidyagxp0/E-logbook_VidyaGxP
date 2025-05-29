@@ -35,7 +35,7 @@ const AnalitycalBalancePanel = () => {
      AnalyticalBalance: [],
      limit: "",
    });
-   console.log(editData, "0000000000000000");
+   console.log(editData, "bhai");
  
    const navigate = useNavigate();
    const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -171,7 +171,7 @@ const AnalitycalBalancePanel = () => {
        //   return;
        // }
        if (
-         editData?.DifferentialPressureRecords?.some(
+         editData?.AnalyticalBalances?.some(
            (record) =>
              record.differential_pressure === "" || record.remarks === ""
          )
@@ -238,8 +238,8 @@ const AnalitycalBalancePanel = () => {
        setEditData((prevState) => ({
          ...prevState,
  
-         DifferentialPressureRecords: [
-           ...prevState.DifferentialPressureRecords,
+         AnalyticalBalances: [
+           ...prevState.AnalyticalBalances,
            newRow,
          ],
        }));
@@ -298,11 +298,11 @@ const AnalitycalBalancePanel = () => {
        location.state?.stage === 1 &&
        location.state?.initiator_id === userDetails.userId
      ) {
-       const updatedGridData = [...editData.DifferentialPressureRecords];
+       const updatedGridData = [...editData.AnalyticalBalances];
        updatedGridData.splice(index, 1);
        setEditData((prevState) => ({
          ...prevState,
-         DifferentialPressureRecords: updatedGridData,
+         AnalyticalBalances: updatedGridData,
        }));
      }
    };
@@ -317,7 +317,7 @@ const AnalitycalBalancePanel = () => {
    //     location.state?.stage === 1 &&
    //     location.state?.initiator_id === userDetails.userId
    //   ) {
-   //     const updatedGridData = editData.DifferentialPressureRecords.map(
+   //     const updatedGridData = editData.AnalyticalBalances.map(
    //       (item, i) => {
    //         if (i === index) {
    //           return { ...item, supporting_docs: null };
@@ -327,7 +327,7 @@ const AnalitycalBalancePanel = () => {
    //     );
    //     setEditData((prevState) => ({
    //       ...prevState,
-   //       DifferentialPressureRecords: updatedGridData,
+   //       AnalyticalBalances: updatedGridData,
    //     }));
    //   }
    // };
@@ -353,11 +353,11 @@ const AnalitycalBalancePanel = () => {
    };
  
    const handleFileChange = (index, file) => {
-     const updatedGridData = [...editData.DifferentialPressureRecords];
+     const updatedGridData = [...editData.AnalyticalBalances];
      updatedGridData[index].supporting_docs = file;
      setEditData((prevState) => ({
        ...prevState,
-       DifferentialPressureRecords: updatedGridData,
+       AnalyticalBalances: updatedGridData,
      }));
    };
  
@@ -916,7 +916,7 @@ const AnalitycalBalancePanel = () => {
                        </tr>
                      </thead>
                      <tbody>
-                       {/*  {editData?.DifferentialPressureRecords.map(
+                       {/*  {editData?.AnalyticalBalances.map(
                          (item, index) => (
                            <tr key={index}>
                              <td>{index + 1}</td>
@@ -937,13 +937,13 @@ const AnalitycalBalancePanel = () => {
                                  }`}
                                  onChange={(e) => {
                                    const newData = [
-                                     ...editData.DifferentialPressureRecords,
+                                     ...editData.AnalyticalBalances,
                                    ];
                                    newData[index].differential_pressure =
                                      e.target.value;
                                    setEditData({
                                      ...editData,
-                                     DifferentialPressureRecords: newData,
+                                     AnalyticalBalances: newData,
                                    });
                                  }}
                                  readOnly={
@@ -958,12 +958,12 @@ const AnalitycalBalancePanel = () => {
                                  value={item.remarks}
                                  onChange={(e) => {
                                    const newData = [
-                                     ...editData.DifferentialPressureRecords,
+                                     ...editData.AnalyticalBalances,
                                    ];
                                    newData[index].remarks = e.target.value;
                                    setEditData({
                                      ...editData,
-                                     DifferentialPressureRecords: newData,
+                                     AnalyticalBalances: newData,
                                    });
                                  }}
                                  readOnly={
@@ -979,12 +979,12 @@ const AnalitycalBalancePanel = () => {
                                  disabled
                                  onChange={(e) => {
                                    const newData = [
-                                     ...editData.DifferentialPressureRecords,
+                                     ...editData.AnalyticalBalances,
                                    ];
                                    newData[index].checked_by = e.target.value;
                                    setEditData({
                                      ...editData,
-                                     DifferentialPressureRecords: newData,
+                                     AnalyticalBalances: newData,
                                    });
                                  }}
                                  readOnly
@@ -1320,7 +1320,7 @@ const AnalitycalBalancePanel = () => {
                          <input
                            type="text"
                            name="reviewer"
-                           value={editData?.reviewer?.name}
+                           value={editData?.reviewer6?.name}
                            readOnly
                          />
                        </div>
@@ -1464,7 +1464,7 @@ const AnalitycalBalancePanel = () => {
                          <input
                            type="text"
                            name="approver"
-                           value={editData?.approver?.name}
+                           value={editData?.approver6?.name}
                            readOnly
                          />
                        </div>

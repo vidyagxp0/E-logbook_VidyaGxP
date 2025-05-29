@@ -594,7 +594,7 @@ const AnalyticalBalance = () => {
                             <div>
                               <div className="AddRows d-flex ">
                                 <NoteAdd
-                                onClick={addRow}
+                                onClick={""}
                                 className="cursor-pointer"
                                 />
                                 <div className="addrowinstruction"></div>

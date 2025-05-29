@@ -258,6 +258,7 @@ function EffectiveElogs() {
     };
     axios(newKarlFischer)
       .then((response) => {
+        console.log(response, "karl fischer");
         const temp = response.data.message;
         const allKarlFischer = temp.filter(
           (log) => log.status === "Closed"
@@ -323,6 +324,7 @@ function EffectiveElogs() {
   ];
 
   const handleNavigation = (item) => {
+    console.log(item,"itme")
     if (item.DifferentialPressureRecords) {
       navigate("/effective-dpr", { state: item });
       // } else if (item.process === "Area and equipment") {
@@ -465,6 +467,8 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -551,6 +555,8 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -598,6 +604,8 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -696,6 +704,8 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -744,6 +754,8 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -791,6 +803,8 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -838,6 +852,8 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -885,6 +901,8 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -974,7 +992,7 @@ function EffectiveElogs() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
-                          : "EU"}
+                          : item.site_id === 5 ? "IPC" : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{ __html: cleanHTML }}

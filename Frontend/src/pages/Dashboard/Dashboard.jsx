@@ -517,6 +517,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -598,6 +600,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -644,6 +648,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -742,6 +748,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -791,6 +799,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -840,6 +850,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -889,6 +901,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -938,6 +952,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
@@ -1024,6 +1040,8 @@ function Dashboard() {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
+                          : item.site_id === 5
+                          ? "IPC"
                           : "EU"}
                       </td>
                       <td
