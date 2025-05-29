@@ -78,6 +78,7 @@
     <body>
     <div class="report-content">
         <h2 class="heading">HPLC Records</h2>
+         <hr />
         <% if (reportData.hplcRecords && reportData.hplcRecords.length > 0) { %>
             <% reportData.hplcRecords.forEach(record => { %>
             <div class="listItem">
@@ -129,7 +130,6 @@
                     </tr>
                 </table>
             </div>
-            <hr />
             <% }) %>
         <% } else { %>
             <p>No Records Found.</p>
