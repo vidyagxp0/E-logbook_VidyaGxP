@@ -34,7 +34,7 @@ const KarlFischerPanel = () => {
      KarlFischer: [],
      limit: "",
    });
-   console.log(editData, "0000000000000000");
+   console.log(editData, "editData");
  
    const navigate = useNavigate();
    const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -237,8 +237,8 @@ const KarlFischerPanel = () => {
        setEditData((prevState) => ({
          ...prevState,
  
-         DifferentialPressureRecords: [
-           ...prevState.DifferentialPressureRecords,
+         KarlFischerRecords: [
+           ...prevState.KarlFischerRecords,
            newRow,
          ],
        }));
@@ -386,6 +386,8 @@ const KarlFischerPanel = () => {
          ? "Malaysia"
          : location.state.site_id === 3
          ? "EMEA"
+         : location.state.site_id === 5
+         ? "IPC"
          : "EU",
      status: location.state.status,
      initiator_name: location.state.initiator_name,
@@ -403,7 +405,7 @@ const KarlFischerPanel = () => {
      setIsLoading(true);
      try {
        const response = await axios.post(
-         `http://localhost:1000/differential-pressure/chat-pdf/${formId}`,
+         `http://localhost:1000/karl-fischer/chat-pdf/${formId}`,
          {
            reportData: reportData,
          },
@@ -1319,7 +1321,7 @@ const KarlFischerPanel = () => {
                          <input
                            type="text"
                            name="reviewer"
-                           value={editData?.reviewer?.name}
+                           value={editData?.reviewers?.name}
                            readOnly
                          />
                        </div>
@@ -1463,7 +1465,7 @@ const KarlFischerPanel = () => {
                          <input
                            type="text"
                            name="approver"
-                           value={editData?.approver?.name}
+                           value={editData?.approvers?.name}
                            readOnly
                          />
                        </div>

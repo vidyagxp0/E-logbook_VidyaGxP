@@ -9,6 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import dayjs from "dayjs";
 
 const AnalyticalBalancesEffective = () => {
    const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -19,8 +20,20 @@ const AnalyticalBalancesEffective = () => {
    const [isLoading, setIsLoading] = useState(false);
    const [formId, setFormId] = useState(null);
    const [isLoading1, setIsLoading1] = useState(false);
- 
+     const [User, setUser] = useState(null);
+   const object = getCurrentDateTime();
+  let date = object.currentDate;
    const location = useLocation();
+     function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(0);
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${year}/${month}/${day}`;
+    return {
+      currentDate: currentDate,
+    };
+  }
    const userDetails = JSON.parse(localStorage.getItem("user-details"));
    const UserName = JSON.parse(localStorage.getItem("Username"));
  
@@ -95,7 +108,7 @@ const AnalyticalBalancesEffective = () => {
        }
        axios
          .put(
-           "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+           "http://localhost:1000/analytical-balance/send-for-review",
            data,
            config
          )
@@ -113,7 +126,7 @@ const AnalyticalBalancesEffective = () => {
        data.reviewerAttachment = editData.reviewerAttachment;
        axios
          .put(
-           "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+           "http://localhost:1000/analytical-balance/send-review-to-approval",
            data,
            config
          )
@@ -132,7 +145,7 @@ const AnalyticalBalancesEffective = () => {
        data.reviewerAttachment = editData.reviewerAttachment;
        axios
          .put(
-           "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+           "http://localhost:1000/analytical-balance/send-review-to-open",
            data,
            config
          )
@@ -148,7 +161,7 @@ const AnalyticalBalancesEffective = () => {
        data.approverAttachment = editData.approverAttachment;
        axios
          .put(
-           "http://localhost:1000/differential-pressure/approve-DP-elog",
+           "http://localhost:1000/analytical-balance/approve",
            data,
            config
          )
@@ -166,7 +179,7 @@ const AnalyticalBalancesEffective = () => {
        data.approverDeclaration = credentials?.declaration;
        axios
          .put(
-           "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+           "http://localhost:1000/analytical-balance/send-approval-to-open",
            data,
            config
          )
@@ -192,7 +205,7 @@ const AnalyticalBalancesEffective = () => {
        // }
        if (
          editData?.AnalyticalBalances?.some(
-           (record) => record.differential_pressure === ""
+           (record) => record.analytical_balance === ""
          )
        ) {
          toast.error("Please provide grid details!");
@@ -248,15 +261,13 @@ const AnalyticalBalancesEffective = () => {
  
        const currentTime = new Date().toLocaleTimeString("en-US", options);
        const newRow = {
-         unique_id: `DPR000${nextIndex + 1}`,
-         time: currentTime,
-         analytical_balance: "",
-         remarks: "",
-         reviewed_by: "",
-         approver_remarks: "",
-         approved_by: "",
-         checked_by: location?.state?.initiator_name,
-         supporting_docs: null,
+                 date: dayjs().format("YYYY-MM-DD"),
+                 reg_no: "",
+                 sample_name: "",
+                 weight_taken: "",
+                 done_by: User?.name,
+                 checked_by: location?.state?.initiator_name,
+                 remarks: "",
        };
        setEditData((prevState) => ({
          ...prevState,
@@ -415,7 +426,7 @@ const AnalyticalBalancesEffective = () => {
    };
  
    const EmptyreportData = {
-     title: "Differential Pressure",
+     title: "Analytical Balance",
      status: location.state.status,
      blankRows: 17,
      form_id: location.state.form_id,
@@ -459,7 +470,7 @@ const AnalyticalBalancesEffective = () => {
          : "EU",
      status: location.state.status,
      initiator_name: location.state.initiator_name,
-     title: "Differential Pressure Record",
+     title: "Analytical Balance Record",
      ...editData,
    };
  
@@ -512,7 +523,7 @@ const AnalyticalBalancesEffective = () => {
          <div id="config-form-document-page" className="min-w-full">
            <div className="top-block">
              <div>
-               <strong> Record Name:&nbsp;</strong>Differential Pressure
+               <strong> Record Name:&nbsp;</strong>Analytical Balance
              </div>
              <div>
                <strong> Site:&nbsp;</strong>
@@ -555,7 +566,7 @@ const AnalyticalBalancesEffective = () => {
  
                <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                  <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                   Differential Pressure Record
+                   Analytical Balance Record
                  </span>
  
                  <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -566,7 +577,7 @@ const AnalyticalBalancesEffective = () => {
                        navigate("/effective-audit-trail", {
                          state: {
                            formId: location.state?.form_id,
-                           process: "Differential Pressure",
+                           process: "Analytical Balance",
                          },
                        })
                      }
@@ -855,7 +866,7 @@ const AnalyticalBalancesEffective = () => {
                        navigate("/audit-trail", {
                          state: {
                            formId: location.state?.form_id,
-                           process: "Differential Pressure",
+                           process: "Analytical Balance",
                          },
                        })
                      }
@@ -1065,78 +1076,58 @@ const AnalyticalBalancesEffective = () => {
                              <td>{index + 1}</td>
                              <td>
                                        <input
-                                        value={item?.date}
-                                        type="date"
-                                       onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].analytical_balance =
-                                     e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly={[3, 2, 4].includes(
-                                   userDetails.roles[0].role_id
-                                 )}
-                                      />
-                                      </td>
-                         
-                           <td>
-                                      <input
-                                        value={item.regNo}
-                                        
-                                         onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].analytical_balance =
-                                     e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly={[3, 2, 4].includes(
-                                   userDetails.roles[0].role_id
-                                 )}
-                                      />
-                                    </td>
- <td>
-                                      <input
-                                        value={item.sampleName}
-                                       
-                                         onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].analytical_balance =
-                                     e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly={[3, 2, 4].includes(
-                                   userDetails.roles[0].role_id
-                                 )}
-                                      />
-                                    </td>
-
-
+                              value={item?.date}
+                              type="text"
+                              readOnly
+                            />
+                          </td>
+                                   <td>
+                                     <input
+                              value={item.reg_no}
+                              onChange={(e) => {
+                                const newData = [
+                                  ...editData.AnalyticalBalances,
+                                ];
+                                newData[index].reg_no = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  AnalyticalBalances: newData,
+                                });
+                              }}
+                              readOnly={[3, 2, 4].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                            />
+                                   </td>
+                                   <td>
+                                     <input
+                              value={item.sample_name}
+                              onChange={(e) => {
+                                const newData = [
+                                  ...editData.AnalyticalBalances,
+                                ];
+                                newData[index].sample_name = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  AnalyticalBalances: newData,
+                                });
+                              }}
+                              readOnly={[3, 2, 4].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                            />
+                                   </td>
 
 
                                     <td>
                                       <input
-                                        value={item.weightTaken}
+                                        value={item.weight_taken}
                                         // disabled
                                          onChange={(e) => {
                                    const newData = [
                                      ...editData.AnalyticalBalances,
                                    ];
-                                   newData[index].analytical_balance =
+                                   newData[index].weight_taken =
                                      e.target.value;
                                    setEditData({
                                      ...editData,
@@ -1150,13 +1141,13 @@ const AnalyticalBalancesEffective = () => {
                                     </td>
                                     <td>
                                       <input
-                                        value={item.doneBy}
+                                        value={item.done_by}
                                         // disabled
                                           onChange={(e) => {
                                    const newData = [
                                      ...editData.AnalyticalBalances,
                                    ];
-                                   newData[index].analytical_balance =
+                                   newData[index].done_by =
                                      e.target.value;
                                    setEditData({
                                      ...editData,
@@ -1169,25 +1160,34 @@ const AnalyticalBalancesEffective = () => {
                                       />
                                     </td>
                                     <td>
-                                      <input
-                                        value={item.checkedBy}
-                                        // disabled
-                                        onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].analytical_balance =
-                                     e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly={[3, 2, 4].includes(
-                                   userDetails.roles[0].role_id
-                                 )}
-                                      />
-                                    </td>
+                              <div>
+                              <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                <input
+                                  className="h-4 w-4 cursor-pointer"
+                                  type="checkbox"
+                                  checked={!!item.reviewed_by}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.AnalyticalBalances,
+                                    ];
+                                    if (e?.target?.checked) {
+                                      newData[index].reviewed_by = reviewed_by;
+                                    } else {
+                                      newData[index].reviewed_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      AnalyticalBalances: newData,
+                                    });
+                                  }}
+                                  disabled={[1, 3].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
+                                />
+                                {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                              </div>
+                            </div>
+                          </td>
                                     <td>
                                       <input
                                         value={item.remarks}
@@ -1195,7 +1195,7 @@ const AnalyticalBalancesEffective = () => {
                                    const newData = [
                                      ...editData.AnalyticalBalances,
                                    ];
-                                   newData[index].analytical_balance =
+                                   newData[index].remarks =
                                      e.target.value;
                                    setEditData({
                                      ...editData,

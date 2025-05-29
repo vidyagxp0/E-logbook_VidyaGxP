@@ -177,7 +177,6 @@ const Karl = () => {
             done_by: User?.name,
             checked_by: User?.name,
             remarks: "",
-            supporting_docs: null,
           };
           setAllTableData([...allTableData, newRow]);
         };
@@ -594,8 +593,7 @@ const Karl = () => {
                               <div>
                                 <div className="AddRows d-flex ">
                                   <NoteAdd
-                                  onClick={addRow}
-                                  className="cursor-pointer"
+                                  onClick={""}
                                   />
                                   <div className="addrowinstruction"></div>
                                 </div>

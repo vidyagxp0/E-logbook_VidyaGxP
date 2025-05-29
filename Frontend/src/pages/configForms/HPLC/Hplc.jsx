@@ -172,11 +172,15 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
             date: date,
             reg_no: "",
             sample_name: "",
-            weight_taken: "",
+            method_used: "", 
+            parameter_or_activity: "", 
+            column_no: "", 
+            start_time: "", 
+            end_time: "", 
+            no_of_injections: "", 
             done_by: User?.name,
             checked_by: User?.name,
             remarks: "",
-            supporting_docs: null,
           };
           setAllTableData([...allTableData, newRow]);
         };
@@ -276,7 +280,7 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
             <div id="config-form-document-pages" className="min-w-full">
   <div className="top-blocks">
               <div>
-                <strong> Record Name:&nbsp;</strong>KARL Fischer
+                <strong> Record Name:&nbsp;</strong>HPLC
               </div>
               <div>
                 <strong> Site:&nbsp;</strong>
@@ -308,8 +312,8 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
                               <div>VidyaGxP Private Limited</div>
                             </div>
                           </div>
-                          <div className="sub-head-2"> KARL Fischer</div>
-            
+                          <div className="sub-head-2"> HPLC</div>
+
                           <div className="outerDiv4">
                             <div className="btn-forms">
                               <div
