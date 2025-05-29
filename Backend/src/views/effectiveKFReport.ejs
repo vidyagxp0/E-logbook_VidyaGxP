@@ -78,33 +78,40 @@
     <body>
     <div class="report-content">
         <h2 class="heading">Karl Fischer Records</h2>
+        <hr />
         <% if (reportData.KarlFischerRecords && reportData.KarlFischerRecords.length > 0) { %>
             <% reportData.KarlFischerRecords.forEach(record => { %>
             <div class="listItem">
                 <table>
                     <tr>
-                        <th>Remark</th>
+                        <th>Date</th>
+                        <td><%= record?.date || "Not Applicable" %></td>
+                        <th>Lot No./Batch No.</th>
+                        <td><%= record?.lot_no || "Not Applicable" %></td>
+                    </tr>
+                    <tr>
+                        <th>Sample Name</th>
+                        <td><%= record?.sample_name || "Not Applicable" %></td>
+                        <th>Factor/ % water	</th>
+                        <td><%= record?.factor_percent_water   || "Not Applicable" %></td>
+                    </tr>
+                    <tr>
+                        <th>Done by</th>
                         <td><%= record?.remarks || "Not Applicable" %></td>
-                        <th>Time</th>
+                        <th>Checked by</th>
                         <td><%= record?.time || "Not Applicable" %></td>
                     </tr>
                     <tr>
-                        <th>Checked By</th>
+                        <th>Remark</th>
+                        <td><%= record?.remarks || "Not Applicable" %></td>
+                        <th>Reviewed By</th>
                         <td>
-                                <%= record?.reviewed_by || "Not Applicable" %>
-                        </td>
-                        <th>Supporting Documents</th>
-                        <td>
-                            <% if (record?.supporting_docs) { %>
-                                <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
-                            <% } else { %>
-                                Not Applicable
-                            <% } %>
+                         <%= record?.reviewed_by || "Not Applicable" %>
                         </td>
                     </tr>
                 </table>
             </div>
-            <hr />
+            
             <% }) %>
         <% } else { %>
             <p>No Records Found.</p>
