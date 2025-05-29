@@ -436,7 +436,7 @@ const AnalyticalBalancesEffective = () => {
      setIsLoading1(true);
      try {
        const response = await axios.post(
-         `http://localhost:1000/differential-pressure/blank-report/${formId}`,
+         `http://localhost:1000/analytical-balance/blank-report/${formId}`,
          {
            reportData: EmptyreportData,
          },
@@ -484,7 +484,7 @@ const AnalyticalBalancesEffective = () => {
      setIsLoading(true);
      try {
        const response = await axios.post(
-         `http://localhost:1000/differential-pressure/effective-chat-pdf/${formId}`,
+         `http://localhost:1000/analytical-balance/effective-chat-pdf/${formId}`,
          {
            reportData: reportData,
          },
