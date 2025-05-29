@@ -83,24 +83,54 @@
             <div class="listItem">
                 <table>
                     <tr>
+                        <th>Date</th>
+                        <td><%= record?.date || "Not Applicable" %></td>
+                        <th>Sample Name</th>
+                        <td><%= record?.sample_name || "Not Applicable" %></td>
+                        <th>Reg No./ Lot No.</th>
+                        <td><%= record?.reg_no || "Not Applicable" %></td>
+                    </tr>
+                    <tr>
+                        <th>Method Used</th>
+                        <td><%= record?.method_used || "Not Applicable" %></td>
+                        <th>Parameter/Activity</th>
+                        <td><%= record?.parameter_or_activity || "Not Applicable" %></td>
+                        <th>Column No.</th>
+                        <td><%= record?.column_no || "Not Applicable" %></td>
+                    </tr>
+
+                    <tr>
+                        <th>Start Time</th>
+                        <td><%= record?.start_time || "Not Applicable" %></td>
+                        <th>End Time</th>
+                        <td><%= record?.end_time || "Not Applicable" %></td>
+                        <th>No. of Injections</th>
+                        <td><%= record?.no_of_injections || "Not Applicable" %></td>
+                    </tr>
+                    <tr>
+                        <th>Done by</th>
+                        <td><%= record?.done_by || "Not Applicable" %></td>
                         <th>Remark</th>
                         <td><%= record?.remarks || "Not Applicable" %></td>
                         <th>Time</th>
                         <td><%= record?.time || "Not Applicable" %></td>
                     </tr>
                     <tr>
+
+                    </tr>
+                    <tr>
                         <th>Checked By</th>
                         <td>
                                 <%= record?.reviewed_by || "Not Applicable" %>
                             </td>
-                        <th>Supporting Documents</th>
+                        <!-- <th>Supporting Documents</th>
                         <td>
                             <% if (record?.supporting_docs) { %>
                                 <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
                             <% } else { %>
                                 Not Applicable
                             <% } %>
-                        </td>
+                        </td> -->
                     </tr>
                 </table>
             </div>
