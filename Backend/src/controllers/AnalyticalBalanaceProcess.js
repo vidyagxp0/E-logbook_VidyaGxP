@@ -1539,8 +1539,6 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
-    console.log(reportData,"reportData")
-    console.log(req.body,"req.body")
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
 
@@ -1789,7 +1787,6 @@ const data = Array.isArray(reportData?.AnalyticalBalances)
     }))
   : [];
 
-    console.log(data)
     const arrayData = [...data, ...blankRows];
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
