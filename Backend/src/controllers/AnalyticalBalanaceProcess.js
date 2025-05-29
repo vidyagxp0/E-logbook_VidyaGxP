@@ -1475,7 +1475,7 @@ exports.generateReport = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1491,7 +1491,7 @@ exports.generateReport = async (req, res) => {
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
         req.app.render(
-          "ipcHeader",
+          "header",
           { reportData: reportData, logoDataUri: logoDataUri },
           (err, html) => {
             if (err) return reject(err);
@@ -1540,6 +1540,7 @@ exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
     console.log(reportData,"reportData")
+    console.log(req.body,"req.body")
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
 
@@ -1568,7 +1569,7 @@ exports.chatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1584,7 +1585,7 @@ exports.chatByPdf = async (req, res) => {
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
         req.app.render(
-          "ipcHeader",
+          "header",
           { reportData: reportData, logoDataUri: logoDataUri },
           (err, html) => {
             if (err) return reject(err);
@@ -1680,7 +1681,7 @@ exports.effetiveChatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1696,7 +1697,7 @@ exports.effetiveChatByPdf = async (req, res) => {
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
         req.app.render(
-          "ipcHeader",
+          "header",
           { reportData: reportData, logoDataUri: logoDataUri },
           (err, html) => {
             if (err) return reject(err);
@@ -1804,7 +1805,7 @@ const data = Array.isArray(reportData?.AnalyticalBalances)
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1820,7 +1821,7 @@ const data = Array.isArray(reportData?.AnalyticalBalances)
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
         req.app.render(
-          "ipcHeader",
+          "header",
           { reportData: reportData, logoDataUri: logoDataUri },
           (err, html) => {
             if (err) return reject(err);

@@ -1693,7 +1693,7 @@ exports.chatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1709,7 +1709,7 @@ exports.chatByPdf = async (req, res) => {
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
         req.app.render(
-          "ipcHeader",
+          "header",
           { reportData: reportData, logoDataUri: logoDataUri },
           (err, html) => {
             if (err) return reject(err);
@@ -1803,7 +1803,7 @@ exports.effetiveChatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1819,7 +1819,7 @@ exports.effetiveChatByPdf = async (req, res) => {
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
         req.app.render(
-          "ipcHeader",
+          "header",
           { reportData: reportData, logoDataUri: logoDataUri },
           (err, html) => {
             if (err) return reject(err);
@@ -1929,7 +1929,7 @@ exports.blankReport = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/ipc.png.png");
+    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1945,7 +1945,7 @@ exports.blankReport = async (req, res) => {
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
         req.app.render(
-          "ipcHeader",
+          "header",
           { reportData: reportData, logoDataUri: logoDataUri },
           (err, html) => {
             if (err) return reject(err);
