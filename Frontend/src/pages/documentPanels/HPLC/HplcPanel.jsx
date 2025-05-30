@@ -385,7 +385,9 @@ const HplcPanel = () => {
           ? "Malaysia"
           : location.state.site_id === 3
           ? "EMEA"
-          : "EU",
+          : location.state?.site_id === 4
+                 ? "EU"
+                 : "IPC",
       status: location.state.status,
       initiator_name: location.state.initiator_name,
       title: "HPLC",
@@ -444,13 +446,15 @@ const HplcPanel = () => {
                 <strong> Record Name:&nbsp;</strong>HPLC             </div>
               <div>
                 <strong> Site:&nbsp;</strong>
-                {location.state?.site_id === 1
-                  ? "India"
-                  : location.state?.site_id === 2
-                  ? "Malaysia"
-                  : location.state?.site_id === 3
-                  ? "EMEA"
-                  : "EU"}
+                 {location.state?.site_id === 1
+                 ? "India"
+                 : location.state?.site_id === 2
+                 ? "Malaysia"
+                 : location.state?.site_id === 3
+                 ? "EMEA"
+                 : location.state?.site_id === 4
+                 ? "EU"
+                 : "IPC"}
               </div>
               <div>
                 <strong> Current Status:&nbsp;</strong>

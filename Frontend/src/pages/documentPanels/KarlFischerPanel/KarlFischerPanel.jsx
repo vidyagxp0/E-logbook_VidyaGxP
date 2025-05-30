@@ -388,7 +388,9 @@ const KarlFischerPanel = () => {
          ? "EMEA"
          : location.state.site_id === 5
          ? "IPC"
-         : "EU",
+         : location.state?.site_id === 4
+                 ? "EU"
+                 : "IPC",
      status: location.state.status,
      initiator_name: location.state.initiator_name,
      title: "KARL Fischer",
@@ -453,7 +455,9 @@ const KarlFischerPanel = () => {
                  ? "Malaysia"
                  : location.state?.site_id === 3
                  ? "EMEA"
-                 : "EU"}
+                 : location.state?.site_id === 4
+                 ? "EU"
+                 : "IPC"}
              </div>
              <div>
                <strong> Current Status:&nbsp;</strong>
