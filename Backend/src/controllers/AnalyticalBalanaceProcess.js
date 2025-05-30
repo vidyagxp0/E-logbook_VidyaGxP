@@ -170,7 +170,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "reg_no",
+          field_name: "Reg No",
           previous_value: null,
           new_value: record.reg_no,
           changed_by: user.user_id,
@@ -192,7 +192,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Name Medium",
+          field_name: "Simple Name",
           previous_value: null,
           new_value: record.sample_name,
           changed_by: user.user_id,
