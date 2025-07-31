@@ -42,7 +42,8 @@ router.put(
   // Auth.authorizeUserRole(7, 1),
   AnalyticalBalance.EditAnalyticalBalance
 );
-
+// delete analytical balance elog attachment
+router.delete("/delete-analytical-balance/attachment/:record_id", AnalyticalBalance.deleteAnalyticalBalanceAttachment);
 // //get a AnalyticalBalance elog by id
 router.get("/get/:id", Auth.checkUserJwtToken, AnalyticalBalance.GetAnalyticalBalance);
 

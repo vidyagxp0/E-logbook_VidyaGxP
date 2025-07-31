@@ -43,6 +43,10 @@ router.put(
   KarlFischerProcess.EditKarlFischer
 );
 
+// delete karl fischer elog attachment
+router.delete("/delete-karl-fischer/attachment/:record_id", KarlFischerProcess.deleteKarlFischerAttachment);
+
+
 //get a differential pressure elog by id
 router.get(
   "/get-karl-fischer/:id",

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function LaunchQMS() {
+function LaunchQMS({ onClick, onExit }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -8,7 +8,51 @@ function LaunchQMS() {
       {" "}
       <div className="fixed top-[65%] right-0 z-10 flex flex-col">
         <div>
+          <div className="flex flex-col right-0 justify-end items-end">
+         
           <button
+            onClick={onClick}
+            className="
+            px-4
+            py-2
+            bg-teal-600
+            text-white
+            font-semibold
+            rounded-l-full
+            shadow-md
+            hover:bg-teal-700
+            focus:outline-none
+            focus:ring-2
+            focus:ring-offset-2
+            focus:ring-teal-500
+            mb-5
+            flex items-end justify-end
+          "
+          >
+            Save
+          </button>
+          <button
+            onClick={onExit}
+            className="
+            px-4
+            py-2
+            bg-teal-600
+            text-white
+            font-semibold
+            rounded-l-full
+            shadow-md
+            hover:bg-teal-700
+            focus:outline-none
+            focus:ring-2
+            focus:ring-offset-2
+            focus:ring-teal-500
+            mb-5
+            flex items-center justify-center
+          "
+          >
+            Exit
+          </button>
+           <button
             onClick={() => setIsModalOpen(true)}
             className="
             px-4
@@ -29,7 +73,7 @@ function LaunchQMS() {
           >
             Launch QMS
           </button>
-
+</div>
           {/* Modal */}
           {isModalOpen && (
             <>

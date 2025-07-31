@@ -61,7 +61,7 @@ function Login() {
           userDetails.roles = permissionsResponse.data.message;
           localStorage.setItem("user-details", JSON.stringify(userDetails));
         }
-        navigate("/dashboard");
+        navigate("/effectiveElogs");
         toast.success("Login Successful");
       })
       .catch((error) => {

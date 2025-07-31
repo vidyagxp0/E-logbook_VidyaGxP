@@ -14,6 +14,7 @@ const fs = require("fs");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { formatNamedParameters } = require("sequelize/lib/utils");
+const AnalyticalBalance = require("../models/AnalyticalBalanceRecords");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -350,15 +351,11 @@ exports.EditAnalyticalBalance = async (req, res) => {
     additionalInfo,
   } = req.body;
 
-  if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email and password." });
+  if (!form_id || !email || !password) {
+    return res.status(400).json({
+      error: true,
+      message: "Please provide form ID, email and password.",
+    });
   }
 
   const transaction = await sequelize.transaction();
@@ -369,67 +366,68 @@ exports.EditAnalyticalBalance = async (req, res) => {
       transaction,
     });
 
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature." });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature." });
+      return res.status(401).json({
+        error: true,
+        message: "Invalid e-signature.",
+      });
     }
 
     let initiatorAttachment = null;
     let additionalAttachment = null;
+    const supportingDocs = {};
 
     req?.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
+      } else {
+        const match = file.fieldname.match(/AnalyticalBalances\[(\d+)\]\[supporting_docs\]/);
+        if (match) {
+          const index = parseInt(match[1]);
+          supportingDocs[index] = file;
+        }
       }
     });
 
     const form = await AnalyticalBalanceProcessForm.findOne({
-      where: { form_id: form_id },
+      where: { form_id },
       transaction,
     });
 
     if (!form) {
       await transaction.rollback();
-      return res.status(404).json({ error: true, message: "Form not found." });
+      return res.status(404).json({
+        error: true,
+        message: "Form not found.",
+      });
     }
 
-    // Define epsilon for float comparison
     const EPSILON = 0.000001;
-
-    // Function to compare floats with epsilon
     const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
 
-    // Track changes for the form
     const auditTrailEntries = [];
-    const fields = {
+
+    const updatedFields = {
       description,
       department,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      additionalAttachment: additionalAttachment
+        ? getElogDocsUrl(additionalAttachment)
+        : form.additionalAttachment,
       additionalInfo,
     };
 
-    for (const [field, newValue] of Object.entries(fields)) {
+    for (const [field, newValue] of Object.entries(updatedFields)) {
       const oldValue = form[field];
       if (
         newValue !== undefined &&
-        ((typeof newValue === "number" &&
-          !areFloatsEqual(oldValue, newValue)) ||
+        ((typeof newValue === "number" && !areFloatsEqual(oldValue, newValue)) ||
           oldValue != newValue)
       ) {
         auditTrailEntries.push({
@@ -446,7 +444,6 @@ exports.EditAnalyticalBalance = async (req, res) => {
       }
     }
 
-    // Update the form details
     await form.update(
       {
         site_id,
@@ -462,132 +459,98 @@ exports.EditAnalyticalBalance = async (req, res) => {
       { transaction }
     );
 
-    // Update the Form Records if provided
-    if (Array.isArray(AnalyticalBalances) && AnalyticalBalances.length > 0) {
-      const existingRecords = await AnalyticalBalanceRecords.findAll({
-        where: { form_id: form_id },
-        raw: true,
-        // order: [["record_id", "DESC"]],
-        transaction,
-      });
-
-      // Track changes for existing records
-      existingRecords.forEach((existingRecord, index) => {
-        AnalyticalBalances.sort(
-          (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
-        );
-        const newRecord = AnalyticalBalances[index];
-        if (newRecord) {
-          const recordFields = {
-            reg_no: newRecord?.reg_no,
-            date:
-              newRecord?.date && !isNaN(new Date(newRecord?.date))
-                ? new Date(newRecord?.date).toISOString()
-                : null,
-            sample_name: newRecord?.sample_name,
-            weight_taken: newRecord?.weight_taken,
-            done_by: newRecord?.done_by,
-            checked_by: newRecord?.checked_by,
-            remarks: newRecord?.remarks,
-            // no_of_plate_used: newRecord?.no_of_plate_used,
-            // used_for: newRecord?.used_for,
-            // balance_no_plate: newRecord?.balance_no_plate,
-            // signature: newRecord?.signature,
-            reviewed_by: newRecord?.reviewed_by,
-          };
-
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            const oldValue = existingRecord[field];
-            if (
-              newValue !== undefined &&
-              ((typeof newValue === "number" &&
-                !areFloatsEqual(oldValue, newValue)) ||
-                oldValue != newValue)
-            ) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}`,
-                previous_value: oldValue || null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
-        }
-      });
-      
-      // Handle new records added
-      if (AnalyticalBalances.length > existingRecords.length) {
-        for (let i = existingRecords.length; i < AnalyticalBalances.length; i++) {
-          const newRecord = AnalyticalBalances[i];
-
-          const recordFields = {
-            // unique_id: newRecord?.unique_id,
-            product_name: newRecord.product_name,
-            batch_no: newRecord.batch_no,
-            container_size: newRecord.container_size,
-            batch_size: newRecord.batch_size,
-            theoretical_production: newRecord.theoretical_production,
-            loaded_quantity: newRecord.loaded_quantity,
-            remarks: newRecord.remarks,
-            yield: newRecord.yield,
-            reviewed_by: newRecord?.reviewed_by,
-          };
-
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            if (newValue !== undefined) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}`,
-                previous_value: null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
-        }
-      }
-
-      // Delete existing records for the form
-      await AnalyticalBalanceRecords.destroy({
-        where: { form_id: form_id },
-        transaction,
-      });
-
-      // Create new records
-      const formRecords = AnalyticalBalances.map((record, index) => ({
-        form_id: form_id,
-        date:
-          record?.date && !isNaN(new Date(record?.date))
-            ? new Date(record?.date).toISOString()
-            : null,
-        reg_no: record?.reg_no,
-        sample_name: record?.sample_name,
-        weight_taken: record?.weight_taken,
-        done_by: record?.done_by,
-        checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        remarks: record?.remarks,
-      }));
-
-      await AnalyticalBalanceRecords.bulkCreate(formRecords, {
-        transaction,
-      });
-    }
-
-    await AnalyticalBalanceAuditTrail.bulkCreate(auditTrailEntries, {
+    const existingRecords = await AnalyticalBalanceRecords.findAll({
+      where: { form_id },
       transaction,
     });
 
-    await transaction.commit();
+    const existingMap = {};
+    existingRecords.forEach((r) => {
+      existingMap[r.record_id] = r;
+    });
+
+    for (let i = 0; i < AnalyticalBalances.length; i++) {
+      const record = AnalyticalBalances[i];
+      const record_id = record.record_id || null;
+      const file = supportingDocs[i];
+
+      const supporting_docs_url = file
+        ? getElogDocsUrl(file)
+        : existingMap[record_id]?.supporting_docs || null;
+
+      const newData = {
+        form_id,
+        reg_no: record.reg_no,
+        date: record.date ? new Date(record.date).toISOString() : null,
+        sample_name: record.sample_name,
+        weight_taken: record.weight_taken,
+        done_by: record.done_by,
+        checked_by: record.checked_by,
+        reviewed_by: record.reviewed_by,
+        remarks: record.remarks,
+        supporting_docs: supporting_docs_url,
+      };
+
+      console.log(newData,"newData")
+
+      if (record_id && existingMap[record_id]) {
+        // Update existing record
+        await AnalyticalBalanceRecords.update(newData, {
+          where: { record_id },
+          transaction,
+        });
+
+        // Audit trail for updated fields
+        for (const [field, newValue] of Object.entries(newData)) {
+          const oldValue = existingMap[record_id][field];
+          if (
+            newValue !== undefined &&
+            ((typeof newValue === "number" && !areFloatsEqual(oldValue, newValue)) ||
+              oldValue != newValue)
+          ) {
+            auditTrailEntries.push({
+              form_id,
+              field_name: `${field}[${i}]`,
+              previous_value: oldValue || null,
+              new_value: newValue,
+              changed_by: user.user_id,
+              previous_status: form.status,
+              new_status: "Opened",
+              declaration: initiatorDeclaration,
+              action: "Update Elog",
+            });
+          }
+        }
+      } else {
+        // Create new record
+        const created = await AnalyticalBalanceRecords.create(newData, {
+          transaction,
+        });
+
+        // Audit trail for new rows
+        for (const [field, newValue] of Object.entries(newData)) {
+          if (field !== "form_id") {
+            auditTrailEntries.push({
+              form_id,
+              field_name: `${field}[${i}]`,
+              previous_value: null,
+              new_value: newValue,
+              changed_by: user.user_id,
+              previous_status: form.status,
+              new_status: "Opened",
+              declaration: initiatorDeclaration,
+              action: "Update Elog",
+            });
+          }
+        }
+      }
+    }
+    console.log("auditTrailEntries",auditTrailEntries)
+    const validAuditEntries = auditTrailEntries.filter(entry => entry.new_value !== null);
+if (validAuditEntries.length > 0) {
+  await AnalyticalBalanceAuditTrail.bulkCreate(validAuditEntries, { transaction });
+}await transaction.commit();
+    console.log("downnnn")
 
     return res.status(200).json({
       error: false,
@@ -595,18 +558,47 @@ exports.EditAnalyticalBalance = async (req, res) => {
     });
   } catch (error) {
     await transaction.rollback();
-    let errorMessage = "Error during updating elog";
-    if (error instanceof ValidationError) {
-      errorMessage = error.errors.map((e) => e.message).join(", ");
-    }
-
     return res.status(500).json({
       error: true,
-      message: `${errorMessage}: ${error}`,
+      message: `Error during updating elog: ${error.message}`,
     });
   }
 };
 
+exports.deleteAnalyticalBalanceAttachment = async (req, res) => {
+  const { record_id } = req.params;
+
+  if (!record_id) {
+    return res.status(400).json({ error: true, message: "Record ID is required." });
+  }
+
+  try {
+    const record = await AnalyticalBalanceRecords.findOne({ where: { record_id } });
+
+    if (!record) {
+      return res.status(404).json({ error: true, message: "Record not found." });
+    }
+
+    if (!record.supporting_docs) {
+      return res.status(400).json({ error: true, message: "No attachment to delete." });
+    }
+
+    await AnalyticalBalanceRecords.update(
+      { supporting_docs: null },
+      { where: { record_id } }
+    );
+
+    return res.status(200).json({
+      error: false,
+      message: "Attachment deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: "Internal server error: " + error.message,
+    });
+  }
+};
 
 //get a differential pressure elog by id
 exports.GetAnalyticalBalance = async (req, res) => {

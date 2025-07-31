@@ -265,9 +265,9 @@ const AnalyticalBalancesEffective = () => {
                  reg_no: "",
                  sample_name: "",
                  weight_taken: "",
-                 done_by: User?.name,
+                 done_by: User?.name || "",
                  reviewed_by: "",
-                 checked_by: location?.state?.initiator_name,
+                 checked_by: location?.state?.initiator_name || "",
                  remarks: "",
        };
        setEditData((prevState) => ({
@@ -407,6 +407,37 @@ const AnalyticalBalancesEffective = () => {
        AnalyticalBalances: updatedGridData,
      }));
    };
+
+   const handleDeleteFile = async (index) => {
+       const record = editData.AnalyticalBalances[index];
+   
+       if (!record?.record_id) {
+         console.error("Record ID not found for deletion");
+         return;
+       }
+   
+       try {
+         const res = await axios.delete(
+           `http://localhost:1000/analytical-balance/delete-analytical-balance/attachment/${record.record_id}`
+         );
+   
+         if (res.data?.error === false) {
+           // Clear file from UI state
+           const newData = [...editData.AnalyticalBalances];
+           newData[index].supporting_docs = null;
+   
+           setEditData((prev) => ({
+             ...prev,
+             AnalyticalBalances: newData,
+           }));
+         } else {
+           alert(res.data?.message || "Failed to delete attachment.");
+         }
+       } catch (err) {
+         console.error("Error deleting attachment:", err);
+         alert("Something went wrong while deleting the attachment.");
+       }
+     };
  
    const handleInitiatorFileChange = (e) => {
      setEditData({
@@ -519,13 +550,25 @@ const AnalyticalBalancesEffective = () => {
    return (
      <>
        <HeaderTop />
-       <LaunchQMS />
+        <LaunchQMS
+        onClick={() => {
+          setIsPopupOpen(true);
+          setPopupAction("updateElog");
+        }}
+        onExit={() => {
+          if (!deepEqual(location.state, editData)) {
+            toast.warn("Please Save the data before exiting");
+          } else {
+            navigate(-1);
+          }
+        }}
+      />
        <div id="main-form-container">
          <div id="config-form-document-page" className="min-w-full">
-           <div className="top-block">
-             <div>
+           <div className="top-block !grid !grid-cols-3">
+             {/* <div>
                <strong> Record Name:&nbsp;</strong>Analytical Balance
-             </div>
+             </div> */}
              <div>
                <strong> Site:&nbsp;</strong>
                {location.state?.site_id === 1
@@ -548,14 +591,14 @@ const AnalyticalBalancesEffective = () => {
  
            <div className="document-form">
              <div className="details-form-data">
-               <div className="sop-type-header">
+               {/* <div className="sop-type-header">
                  <div className="logo">
                    <img src="/vidyalogo21.png" alt="..." />
                  </div>
                  <div className="main-head">
-                   <div>VidyaGxP Private Limited</div>
+                   <div>Indian Pharmacopoeia Commission</div>
                  </div>
-               </div>
+               </div> */}
                {/* <div className="sop-type-header">
                  <div className="logo">
                    <img src="/vidyalogo21.png" alt="..." />
@@ -716,7 +759,7 @@ const AnalyticalBalancesEffective = () => {
  
                    {/* {location.state?.stage === 3 &&
                      userDetails.userId === location.state?.reviewer_id && ( */}
-                   <button
+                   {/* <button
                      className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                      onClick={() => {
                        setIsPopupOpen(true);
@@ -724,7 +767,7 @@ const AnalyticalBalancesEffective = () => {
                      }}
                    >
                      Save
-                   </button>
+                   </button> */}
                    {/* ) */}
                  </div>
                </div>
@@ -891,7 +934,7 @@ const AnalyticalBalancesEffective = () => {
                    </button>
                  </div> */}
                </div>
-               <div className="flex gap-2">
+               {/* <div className="flex gap-2">
                <div className="flex gap-2">
                 
                  <div >
@@ -920,7 +963,7 @@ const AnalyticalBalancesEffective = () => {
                <label htmlFor="">Shift Vise</label>
                <input type="text" />
                </div>
-               </div>
+               </div> */}
  
                {/* {isSelectedGeneral === true ? (
                  <>
@@ -1050,31 +1093,39 @@ const AnalyticalBalancesEffective = () => {
                  
  
                    <div>
-                     <div className="AddRows d-flex">
+                     <div className="AddRows d-flex !p-2">
                        <NoteAdd onClick={addRow} />
+                       <span>Click to add a new row</span>
                        <div className="addrowinstruction"></div>
                      </div>
                    </div>
                    <table>
                      <thead>
                        <tr>
-                        <th>S no.</th>
-                                  <th>Date</th>
-                                  <th>Reg. No./Lot no.</th>
-                                  <th>Sample Name</th>
-                                  <th>Weight Taken</th>
-                                  <th>Done by</th>
-                                  <th>Checked By</th>
-                                  <th>Remarks</th>
-                                  {/* <th>Supporting Documents</th> */}
-                                  <th>Actions</th>
+                        <th  className="text-center">S no.</th>
+                                  <th  className="text-center">Date</th>
+                                  <th  className="text-center">Reg. No./Lot no.</th>
+                                  <th  className="text-center">Sample Name</th>
+                                  <th  className="text-center">Weight Taken</th>
+                                  <th  className="text-center">Done by</th>
+                                  <th  className="text-center">Attachment</th>
+                                  <th  className="text-center">Checked By</th>
+                                  <th  className="text-center">Remarks</th>
+                                  {/* <th  className="text-center">Supporting Documents</th> */}
+                                  {/* <th  className="text-center">Actions</th> */}
                        </tr>
                      </thead>
                      <tbody>
                        {editData?.AnalyticalBalances?.map(
                          (item, index) => (
                            <tr key={index}>
-                             <td>{index + 1}</td>
+                            <td className="relative group">
+                              {index + 1}
+                              <DeleteIcon
+                                className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                onClick={() => deleteRow(index)}
+                              />
+                            </td>
                              <td>
                                        <input
                               value={item?.date}
@@ -1160,6 +1211,72 @@ const AnalyticalBalancesEffective = () => {
                                  )}
                                       />
                                     </td>
+                                     <td style={{ width: "250px" }}>
+                            <div className="d-flex">
+                              {item.supporting_docs ? (
+                                <div className="file-upload-wrapper">
+                                  <button
+                                    type="button"
+                                    className="btn-upload"
+                                    onClick={() =>
+                                      document
+                                        .getElementsByName("supporting_docs")
+                                        [index].click()
+                                    }
+                                    // disabled={
+                                    //   location.state?.stage !== 1 ||
+                                    //   location.state?.initiator_id !==
+                                    //     userDetails.userId
+                                    // }
+                                  >
+                                    Change File
+                                  </button>
+                                  <h3>
+                                    Selected File:{" "}
+                                    <a
+                                      href={item.supporting_docs}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      View File
+                                    </a>
+                                    <DeleteIcon
+                                      style={{
+                                        color: "red",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => handleDeleteFile(index)}
+                                    />
+                                  </h3>
+                                </div>
+                              ) : (
+                                <div className="file-upload-wrapper">
+                                  <button
+                                    type="button"
+                                    className="btn-upload"
+                                    onClick={() =>
+                                      document
+                                        .getElementsByName("supporting_docs")
+                                        [index].click()
+                                    }
+                                    // readOnly={[3, 2, 4].includes(
+                                    //   userDetails.roles[0].role_id
+                                    // )}
+                                  >
+                                    Select File
+                                  </button>
+                                </div>
+                              )}
+                              <input
+                                type="file"
+                                name="supporting_docs"
+                                style={{ display: "none" }}
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
+                              />
+                            </div>
+                          </td>
                                     <td>
                               <div>
                               <div className="flex text-nowrap items-center gap-x-2 justify-center">
@@ -1208,7 +1325,7 @@ const AnalyticalBalancesEffective = () => {
                                  )}
                                       />
                                     </td>
- 
+{/*  
                              <td>
                                <DeleteIcon onClick={() => deleteRow(index)} />
                                {item.limit !== "" &&
@@ -1222,19 +1339,19 @@ const AnalyticalBalancesEffective = () => {
                                      Launch Deviation
                                    </button>
                                  )}
-                             </td>
+                             </td> */}
                            </tr>
                          )
                        )}
                      </tbody>
                    </table>
  
-                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                   {/* <div className="group-input flex flex-col gap-4 mt-4 items-start">
                      <div className="group-input mt-4">
                        <label
-                       // htmlFor="additionalAttachment"
-                       // className="color-label"
-                       // name="additionalAttachment"
+                       htmlFor="additionalAttachment"
+                       className="color-label"
+                       name="additionalAttachment"
                        >
                          Additional Attachment{" "}
                          <span className="text-sm text-zinc-600">
@@ -1333,7 +1450,7 @@ const AnalyticalBalancesEffective = () => {
                          onChange={handleInputChange1}
                        ></textarea>
                      </div>
-                   </div>
+                   </div> */}
                  </>
                ) : null}
  
@@ -1761,7 +1878,7 @@ const AnalyticalBalancesEffective = () => {
                      </button>
                    )
                  : null} */}
-               <button
+               {/* <button
                  className="themeBtn"
                  onClick={() => {
                    if (!deepEqual(location.state, editData)) {
@@ -1772,7 +1889,7 @@ const AnalyticalBalancesEffective = () => {
                  }}
                >
                  Exit
-               </button>
+               </button> */}
              </div>
              {isPopupOpen && (
                <UserVerificationPopUp

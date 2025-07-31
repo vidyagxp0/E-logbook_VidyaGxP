@@ -89,7 +89,6 @@ exports.InsertKarlFischer = async (req, res) => {
     let initiatorAttachment = null;
     let additionalAttachment = null;
     const supportingDocs = {};
-
     // Process files
     req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
@@ -125,6 +124,7 @@ exports.InsertKarlFischer = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
+
       },
 
       { transaction }
@@ -194,10 +194,11 @@ exports.InsertKarlFischer = async (req, res) => {
         remarks: record?.remarks,
         sample_name: record?.sample_name,
         checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by
+        reviewed_by: record?.reviewed_by,
         // approved_by: record?.approved_by,
-        // supporting_docs: getElogDocsUrl(supportingDocs),
+        supporting_docs: getElogDocsUrl(supportingDocs),
       }));
+
       await karlFischerRecord.bulkCreate(formRecords, { transaction });
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
@@ -320,15 +321,12 @@ exports.EditKarlFischer = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
+
   if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
+    return res.status(400).json({ error: true, message: "Please provide a form ID." });
   }
   if (!email || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email and password." });
+    return res.status(400).json({ error: true, message: "Please provide email and password." });
   }
 
   const transaction = await sequelize.transaction();
@@ -341,40 +339,36 @@ exports.EditKarlFischer = async (req, res) => {
 
     if (!user) {
       await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature." });
+      return res.status(401).json({ error: true, message: "Invalid e-signature." });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
       await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature." });
+      return res.status(401).json({ error: true, message: "Invalid e-signature." });
     }
 
+    // Handle file attachments
     let initiatorAttachment = null;
     let additionalAttachment = null;
     const supportingDocs = {};
+
     req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } else if (file.fieldname.startsWith("karlFischerRecords[")) {
-        const match = file.fieldname.match(
-          /karlFischerRecords\[(\d+)\]\[supporting_docs\]/
-        );
+      } else {
+        const match = file.fieldname.match(/karlFischerRecords\[(\d+)\]\[supporting_docs\]/);
         if (match) {
-          const index = match[1];
+          const index = parseInt(match[1]);
           supportingDocs[index] = file;
         }
       }
     });
+
     const form = await karlFischerForm.findOne({
-      where: { form_id: form_id },
+      where: { form_id },
       transaction,
     });
 
@@ -383,15 +377,11 @@ exports.EditKarlFischer = async (req, res) => {
       return res.status(404).json({ error: true, message: "Form not found." });
     }
 
-    // Define epsilon for float comparison
     const EPSILON = 0.000001;
-
-    // Function to compare floats with epsilon
     const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
 
-    // Track changes for the form
     const auditTrailEntries = [];
-    const fields = {
+    const updatedFields = {
       description,
       department,
       compression_area,
@@ -406,12 +396,11 @@ exports.EditKarlFischer = async (req, res) => {
       additionalInfo,
     };
 
-    for (const [field, newValue] of Object.entries(fields)) {
+    for (const [field, newValue] of Object.entries(updatedFields)) {
       const oldValue = form[field];
       if (
         newValue !== undefined &&
-        ((typeof newValue === "number" &&
-          !areFloatsEqual(oldValue, newValue)) ||
+        ((typeof newValue === "number" && !areFloatsEqual(oldValue, newValue)) ||
           oldValue != newValue)
       ) {
         auditTrailEntries.push({
@@ -428,7 +417,6 @@ exports.EditKarlFischer = async (req, res) => {
       }
     }
 
-    // Update the form details
     await form.update(
       {
         site_id,
@@ -446,125 +434,73 @@ exports.EditKarlFischer = async (req, res) => {
       { transaction }
     );
 
-    // Update the Form Records if provided
-    if (
-      Array.isArray(karlFischerRecords) &&
-      karlFischerRecords.length > 0
-    ) {
-      const existingRecords = await karlFischerRecord.findAll({
-        where: { form_id: form_id },
-        raw: true,
-        // order: [["record_id", "DESC"]],
-        transaction,
-      });
-      
-
-      // Track changes for existing records
-      existingRecords.forEach((existingRecord, index) => {
-        karlFischerRecords.sort(
-          (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
-        );
-        const newRecord = karlFischerRecords[index];
-        if (newRecord) {
-          const recordFields = {
-            date: newRecord.date,
-            remarks: newRecord.remarks,
-            lot_no:newRecord.lot_no,
-            done_by:newRecord.done_by,
-            sample_name: newRecord?.sample_name,
-            factor_percent_water: newRecord?.factor_percent_water,
-            reviewed_by: newRecord?.reviewed_by,
-            checked_by: newRecord?.checked_by,
-
-          };
-
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            const oldValue = existingRecord[field];
-            if (
-              newValue !== undefined &&
-              ((typeof newValue === "number" &&
-                !areFloatsEqual(oldValue, newValue)) ||
-                oldValue != newValue)
-            ) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${index}]`,
-                previous_value: oldValue || null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
-        }
-      });
-
-      // Handle new records added
-      if (karlFischerRecords.length > existingRecords.length) {
-        for (
-          let i = existingRecords.length;
-          i < karlFischerRecords.length;
-          i++
-        ) {
-          const newRecord = karlFischerRecords[i];
-          const recordFields = {
-            date: newRecord.date,
-            remarks: newRecord.remarks,
-            lot_no:newRecord.lot_no,
-            done_by:newRecord.done_by,
-            sample_name: newRecord?.sample_name,
-            factor_percent_water: newRecord?.factor_percent_water,
-            checked_by: newRecord?.checked_by,
-            reviewed_by:newRecord?.reviewed_by,
-          };
-
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            if (newValue !== undefined) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${i}]`,
-                previous_value: null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
-        }
-      }
-
-      // Delete existing records for the form
-      await karlFischerRecord.destroy({
-        where: { form_id: form_id },
-        transaction,
-      });
-
-      // Create new records
-      const formRecords = karlFischerRecords.map((record, index) => ({
-        form_id: form_id,
-        date: record.date,
-        remarks: record.remarks,
-        lot_no:record.lot_no,
-        done_by:record.done_by,
-        sample_name: record?.sample_name,
-        factor_percent_water: record?.factor_percent_water,
-        checked_by: record?.checked_by,
-        reviewed_by:record?.reviewed_by,
-      }));
-
-      await karlFischerRecord.bulkCreate(formRecords, { transaction });
-    }
-
-    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, {
+    // Fetch existing records by record_id
+    const existingRecordsMap = {};
+    const existingRecords = await karlFischerRecord.findAll({
+      where: { form_id },
       transaction,
     });
 
+    existingRecords.forEach((rec) => {
+      existingRecordsMap[rec.record_id] = rec;
+    });
+
+    for (let i = 0; i < karlFischerRecords.length; i++) {
+      const record = karlFischerRecords[i];
+      const record_id = record.record_id || null;
+      const file = supportingDocs[i];
+
+      const supporting_docs_url = file
+        ? getElogDocsUrl(file)
+        : existingRecordsMap[record_id]?.supporting_docs || null;
+
+      const newData = {
+        form_id,
+        date: record.date,
+        remarks: record.remarks,
+        lot_no: record.lot_no,
+        done_by: record.done_by,
+        sample_name: record.sample_name,
+        factor_percent_water: record.factor_percent_water,
+        checked_by: record.checked_by,
+        reviewed_by: record.reviewed_by,
+        supporting_docs: supporting_docs_url,
+      };
+      console.log("newData",newData);
+      
+
+      if (record_id && existingRecordsMap[record_id]) {
+        // Update existing record
+        await karlFischerRecord.update(newData, {
+          where: { record_id },
+          transaction,
+        });
+      } else {
+        // Create new record
+        const created = await karlFischerRecord.create(newData, { transaction });
+
+        console.log("jjjjjjjjjjjjjjjjjjjjjjjjj")
+        // Add audit trail for new records
+        for (const [field, value] of Object.entries(newData)) {
+          if (field !== "form_id") {
+            auditTrailEntries.push({
+              form_id,
+              field_name: `${field}[${i}]`,
+              previous_value: null,
+              new_value: value,
+              changed_by: user.user_id,
+              previous_status: form.status,
+              new_status: "Opened",
+              declaration: initiatorDeclaration,
+              action: "Update Elog",
+            });
+          }
+        }
+      }
+    }
+
+    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, { transaction });
+    console.log("yyyyyyyyyyyyyyyyyyy")
     await transaction.commit();
 
     return res.status(200).json({
@@ -573,18 +509,53 @@ exports.EditKarlFischer = async (req, res) => {
     });
   } catch (error) {
     await transaction.rollback();
-
     let errorMessage = "Error during updating elog";
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
-
     return res.status(500).json({
       error: true,
       message: `${errorMessage}: ${error.message}`,
     });
   }
 };
+
+//deleting attachment
+exports.deleteKarlFischerAttachment = async (req, res) => {
+  const { record_id } = req.params;
+
+  if (!record_id) {
+    return res.status(400).json({ error: true, message: "Record ID is required." });
+  }
+
+  try {
+    const record = await karlFischerRecord.findOne({ where: { record_id } });
+
+    if (!record) {
+      return res.status(404).json({ error: true, message: "Record not found." });
+    }
+
+    if (!record.supporting_docs) {
+      return res.status(400).json({ error: true, message: "No attachment to delete." });
+    }
+
+    await karlFischerRecord.update(
+      { supporting_docs: null },
+      { where: { record_id } }
+    );
+
+    return res.status(200).json({
+      error: false,
+      message: "Attachment deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: "Internal server error: " + error.message,
+    });
+  }
+};
+
 
 //get a differential pressure elog by id
 exports.GetKarlFischerElog = async (req, res) => {

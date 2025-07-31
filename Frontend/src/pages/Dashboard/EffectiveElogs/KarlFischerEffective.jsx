@@ -239,11 +239,9 @@ const KarlFischerEffective = () => {
   };
 
   useEffect(() => {
-    console.log(location.state)
+    console.log(location.state);
     setEditData(location.state);
   }, [location.state]);
-
-
 
   const addRow = () => {
     if (
@@ -262,9 +260,10 @@ const KarlFischerEffective = () => {
         lot_no: "",
         sample_name: "",
         factor_percent_water: "",
-        done_by: User?.name,
-        checked_by: location?.state?.initiator_name,
+        done_by: User?.name || "",
+        checked_by: location?.state?.initiator_name || "",
         remarks: "",
+        reviewed_by: "",
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -509,16 +508,60 @@ const KarlFischerEffective = () => {
       description: content,
     }));
   };
+
+  const handleDeleteFile = async (index) => {
+    const record = editData.karlFischerRecords[index];
+
+    if (!record?.record_id) {
+      console.error("Record ID not found for deletion");
+      return;
+    }
+
+    try {
+      const res = await axios.delete(
+        `http://localhost:1000/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`
+      );
+
+      if (res.data?.error === false) {
+        // Clear file from UI state
+        const newData = [...editData.karlFischerRecords];
+        newData[index].supporting_docs = null;
+
+        setEditData((prev) => ({
+          ...prev,
+          karlFischerRecords: newData,
+        }));
+      } else {
+        alert(res.data?.message || "Failed to delete attachment.");
+      }
+    } catch (err) {
+      console.error("Error deleting attachment:", err);
+      alert("Something went wrong while deleting the attachment.");
+    }
+  };
+
   return (
     <>
       <HeaderTop />
-      <LaunchQMS />
+      <LaunchQMS
+        onClick={() => {
+          setIsPopupOpen(true);
+          setPopupAction("updateElog");
+        }}
+        onExit={() => {
+          if (!deepEqual(location.state, editData)) {
+            toast.warn("Please Save the data before exiting");
+          } else {
+            navigate(-1);
+          }
+        }}
+      />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
-          <div className="top-block">
-            <div>
+          <div className="top-block !grid !grid-cols-3">
+            {/* <div>
               <strong> Record Name:&nbsp;</strong>KARL Fischer
-            </div>
+            </div> */}
             <div>
               <strong> Site:&nbsp;</strong>
               {location.state?.site_id === 1
@@ -541,14 +584,14 @@ const KarlFischerEffective = () => {
 
           <div className="document-form">
             <div className="details-form-data">
-              <div className="sop-type-header">
+              {/* <div className="sop-type-header">
                 <div className="logo">
                   <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
-                  <div>VidyaGxP Private Limited</div>
+                  <div>Indian Pharmacopoeia Commission</div>
                 </div>
-              </div>
+              </div> */}
               {/* <div className="sop-type-header">
                   <div className="logo">
                     <img src="/vidyalogo21.png" alt="..." />
@@ -586,7 +629,7 @@ const KarlFischerEffective = () => {
                   >
                     {isLoading1 ? (
                       <>
-                        <span>Blank Draft</span>
+                        <span>Offline Entry</span>
                         <div
                           style={{
                             width: "20px",
@@ -600,7 +643,7 @@ const KarlFischerEffective = () => {
                         ></div>
                       </>
                     ) : (
-                      "Blank Draft"
+                      "Offline Entry"
                     )}
                     <style>
                       {`
@@ -709,7 +752,7 @@ const KarlFischerEffective = () => {
 
                   {/* {location.state?.stage === 3 &&
                       userDetails.userId === location.state?.reviewer_id && ( */}
-                  <button
+                  {/* <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() => {
                       setIsPopupOpen(true);
@@ -717,7 +760,7 @@ const KarlFischerEffective = () => {
                     }}
                   >
                     Save
-                  </button>
+                  </button> */}
                   {/* ) */}
                 </div>
               </div>
@@ -884,7 +927,7 @@ const KarlFischerEffective = () => {
                     </button>
                   </div> */}
               </div>
-              <div className="flex gap-2">
+              {/* <div className="flex gap-2">
                 <div className="flex gap-2">
                   <div>
                     <label> Start Date</label>
@@ -909,7 +952,7 @@ const KarlFischerEffective = () => {
                   <label htmlFor="">Shift Vise</label>
                   <input type="text" />
                 </div>
-              </div>
+              </div> */}
 
               {/* {isSelectedGeneral === true ? (
                   <>
@@ -1045,28 +1088,31 @@ const KarlFischerEffective = () => {
                   <table>
                     <thead>
                       <tr>
-                        <th>S no.</th>
-                        <th>Date</th>
-                        <th>Lot No./Batch No.</th>
-                        <th>Sample Name</th>
-                        <th>Factor/ % water</th>
-                        <th>Done by</th>
-                        <th>Checked By</th>
-                        <th>Remarks</th>
-                        {/* <th>Supporting Documents</th> */}
-                        <th>Actions</th>
+                        <th className="text-center">S no.</th>
+                        <th className="text-center">Date</th>
+                        <th className="text-center">Lot No./Batch No.</th>
+                        <th className="text-center">Sample Name</th>
+                        <th className="text-center">Factor/ % water</th>
+                        <th className="text-center">Done by</th>
+                        <th className="text-center">Attachment</th>
+                        <th className="text-center">Checked By</th>
+                        <th className="text-center">Remarks</th>
+                        {/* <th className="text-center">Supporting Documents</th> */}
+                        {/* <th className="text-center">Actions</th> */}
                       </tr>
                     </thead>
                     <tbody>
                       {editData?.karlFischerRecords?.map((item, index) => (
                         <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>
-                            <input
-                              value={item?.date}
-                              type="text"
-                              readOnly
+                          <td className="relative group">
+                            {index + 1}
+                            <DeleteIcon
+                              className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                              onClick={() => deleteRow(index)}
                             />
+                          </td>
+                          <td>
+                            <input value={item?.date} type="text" readOnly />
                           </td>
 
                           <td>
@@ -1114,7 +1160,8 @@ const KarlFischerEffective = () => {
                                 const newData = [
                                   ...editData.karlFischerRecords,
                                 ];
-                                newData[index].factor_percent_water = e.target.value;
+                                newData[index].factor_percent_water =
+                                  e.target.value;
                                 setEditData({
                                   ...editData,
                                   karlFischerRecords: newData,
@@ -1144,8 +1191,74 @@ const KarlFischerEffective = () => {
                               )}
                             />
                           </td>
+                          <td style={{ width: "250px" }}>
+                            <div className="d-flex">
+                              {item.supporting_docs ? (
+                                <div className="file-upload-wrapper">
+                                  <button
+                                    type="button"
+                                    className="btn-upload"
+                                    onClick={() =>
+                                      document
+                                        .getElementsByName("supporting_docs")
+                                        [index].click()
+                                    }
+                                    // disabled={
+                                    //   location.state?.stage !== 1 ||
+                                    //   location.state?.initiator_id !==
+                                    //     userDetails.userId
+                                    // }
+                                  >
+                                    Change File
+                                  </button>
+                                  <h3>
+                                    Selected File:{" "}
+                                    <a
+                                      href={item.supporting_docs}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      View File
+                                    </a>
+                                    <DeleteIcon
+                                      style={{
+                                        color: "red",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => handleDeleteFile(index)}
+                                    />
+                                  </h3>
+                                </div>
+                              ) : (
+                                <div className="file-upload-wrapper">
+                                  <button
+                                    type="button"
+                                    className="btn-upload"
+                                    onClick={() =>
+                                      document
+                                        .getElementsByName("supporting_docs")
+                                        [index].click()
+                                    }
+                                    // readOnly={[3, 2, 4].includes(
+                                    //   userDetails.roles[0].role_id
+                                    // )}
+                                  >
+                                    Select File
+                                  </button>
+                                </div>
+                              )}
+                              <input
+                                type="file"
+                                name="supporting_docs"
+                                style={{ display: "none" }}
+                                onChange={(e) =>
+                                  handleFileChange(index, e.target.files[0])
+                                }
+                              />
+                            </div>
+                          </td>
                           <td>
-                              <div>
+                            <div>
                               <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                 <input
                                   className="h-4 w-4 cursor-pointer"
@@ -1191,8 +1304,8 @@ const KarlFischerEffective = () => {
                               )}
                             />
                           </td>
- 
-                          <td>
+
+                          {/* <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.limit !== "" &&
                               (item.limit < 0.6 || item.limit > 2.6) && (
@@ -1205,18 +1318,16 @@ const KarlFischerEffective = () => {
                                   Launch Deviation
                                 </button>
                               )}
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                     </tbody>
                   </table>
-
+                  {/* 
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="group-input mt-4">
                       <label
-                      // htmlFor="additionalAttachment"
-                      // className="color-label"
-                      // name="additionalAttachment"
+                  
                       >
                         Additional Attachment{" "}
                         <span className="text-sm text-zinc-600">
@@ -1315,7 +1426,7 @@ const KarlFischerEffective = () => {
                         onChange={handleInputChange1}
                       ></textarea>
                     </div>
-                  </div>
+                  </div> */}
                 </>
               ) : null}
 
@@ -1743,7 +1854,7 @@ const KarlFischerEffective = () => {
                       </button>
                     )
                   : null} */}
-              <button
+              {/* <button
                 className="themeBtn"
                 onClick={() => {
                   if (!deepEqual(location.state, editData)) {
@@ -1754,7 +1865,7 @@ const KarlFischerEffective = () => {
                 }}
               >
                 Exit
-              </button>
+              </button> */}
             </div>
             {isPopupOpen && (
               <UserVerificationPopUp

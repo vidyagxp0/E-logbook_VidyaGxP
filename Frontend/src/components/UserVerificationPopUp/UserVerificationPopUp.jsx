@@ -41,7 +41,7 @@ const UserVerificationPopUp = ({ onClose, onSubmit }) => {
               required
             />
           </div>
-          <div className="form-group">
+          {/* <div className="form-group">
             <label className="color-label">
               Declaration{" "}
               <span className="required-asterisk text-red-500">*</span>
@@ -52,7 +52,7 @@ const UserVerificationPopUp = ({ onClose, onSubmit }) => {
               onChange={(e) => setDeclaration(e.target.value)}
               required
             />
-          </div>
+          </div> */}
           <div className="popup-buttons">
             <button type="submit" className="btn">
               Submit

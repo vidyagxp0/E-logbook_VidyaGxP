@@ -444,7 +444,7 @@ const KarlFischerPanel = () => {
        <LaunchQMS />
        <div id="main-form-container">
          <div id="config-form-document-page" className="min-w-full">
-           <div className="top-block">
+           {/* <div className="top-block">
              <div>
                <strong> Record Name:&nbsp;</strong>KARL Fischer             </div>
              <div>
@@ -467,7 +467,7 @@ const KarlFischerPanel = () => {
                <strong> Initiated By:&nbsp;</strong>
                {location.state?.initiator_name}
              </div>
-           </div>
+           </div> */}
  
            <div className="document-form">
              <div className="details-form-data">

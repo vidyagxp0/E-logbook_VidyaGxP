@@ -389,15 +389,15 @@ function EffectiveElogs() {
               }}
             >
               <option value="All_Records">All Records</option>
-              <option value="effective_diffrential_pressure">
+              {/* <option value="effective_diffrential_pressure">
                 Diffrential Pressure Record
               </option>
-              {/* <option value="area_and_equipment">
+              <option value="area_and_equipment">
                 Area & Equipment Usage Log
-              </option> */}
-              {/* <option value="effective_equipment_cleaning">
+              </option>
+              <option value="effective_equipment_cleaning">
                 Equipment Cleaning Checklist
-              </option> */}
+              </option>
               <option value="effective_temperature_records">
                 Temperature Records
               </option>
@@ -408,7 +408,7 @@ function EffectiveElogs() {
               </option>
               <option value="effective_dispensing_of_material">
                 Dispensing Of Materials
-              </option>
+              </option> */}
               <option value="analytical_balance">
                 Analytical Balance
               </option>
