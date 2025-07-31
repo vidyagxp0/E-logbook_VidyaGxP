@@ -53,6 +53,8 @@ function Login() {
         );
       })
       .then((permissionsResponse) => {
+        console.log("Permissions Response:", permissionsResponse.data.message);
+        
         // Assuming permissionsResponse.data.message contains the permissions array
         const userDetails = JSON.parse(localStorage.getItem("user-details"));
         if (userDetails) {
@@ -86,7 +88,7 @@ function Login() {
           <div className="logo">
             {/* <img src="https://connexo.io/assets/img/logo/logo.png" alt="Logo" /> */}
             <img src="vidyalogo21.png" alt="Logo" className="!w-64" />
-            <img src="vb-shilpa.png" alt="Logo" />
+            <img src="image.png" alt="Logo" className="!w-10" />
           </div>
           <div className="head">Welcome to eLogBook</div>
         </div>

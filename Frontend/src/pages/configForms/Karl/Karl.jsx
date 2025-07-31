@@ -203,7 +203,7 @@ const Karl = () => {
             site_id: location.state?.site_id,
             reviewer_id: null,
             approver_id: null,
-            description: "",
+            description: "ok",
             department: "",
             review_comments: "",
             // compression_area: "",

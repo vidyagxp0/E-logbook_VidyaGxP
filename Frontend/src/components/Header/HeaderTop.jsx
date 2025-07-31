@@ -120,7 +120,7 @@ function HeaderTop() {
                   objectFit: "contain",
                   width: "255px",
                 }}
-                src="/vb-shilpa.png"
+                src="/image.png"
                 alt="Logo"
               />
             </div>
