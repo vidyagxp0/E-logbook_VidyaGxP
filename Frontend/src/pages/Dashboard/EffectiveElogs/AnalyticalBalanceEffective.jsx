@@ -266,6 +266,7 @@ const AnalyticalBalancesEffective = () => {
                  sample_name: "",
                  weight_taken: "",
                  done_by: User?.name,
+                 reviewed_by: "",
                  checked_by: location?.state?.initiator_name,
                  remarks: "",
        };

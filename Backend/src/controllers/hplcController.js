@@ -200,6 +200,7 @@ exports.InsertHPLC = async (req, res) => {
         no_of_injections: record?.no_of_injections,
         done_by: record?.done_by,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
         remarks: record?.remarks,
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
@@ -544,6 +545,7 @@ exports.EditHPLC = async (req, res) => {
             column_no: newRecord?.column_no,
             start_time: newRecord?.start_time,
             end_time: newRecord.end_time,
+            reviewed_by: newRecord?.reviewed_by,
             no_of_injections:newRecord.no_of_injections,
             done_by: newRecord?.done_by,
             remarks: newRecord?.remarks,
@@ -595,6 +597,7 @@ exports.EditHPLC = async (req, res) => {
             end_time: newRecord.end_time,
             no_of_injections:newRecord.no_of_injections,
             done_by: newRecord?.done_by,
+             reviewed_by: newRecord?.reviewed_by,
             remarks: newRecord?.remarks,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
@@ -637,6 +640,7 @@ exports.EditHPLC = async (req, res) => {
             end_time: record.end_time,
             no_of_injections:record.no_of_injections,
             done_by: record?.done_by,
+             reviewed_by: record?.reviewed_by,
             remarks: record?.remarks,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
@@ -1911,6 +1915,7 @@ exports.blankReport = async (req, res) => {
       no_of_injections: record?.no_of_injections || "",
       done_by: record?.done_by || "",
       checked_by: record?.checked_by || "",
+      reviewed_by: record?.reviewed_by || "",
       remarks: record?.remarks || "",
     }));
 

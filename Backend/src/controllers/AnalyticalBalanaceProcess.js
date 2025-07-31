@@ -36,7 +36,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     additionalAttachment,
     additionalInfo,
   } = req.body;
-
+console.log(FormRecordsArray,"FormRecordsArray")
   if (!approver_id) {
     return res
       .status(400)
@@ -493,7 +493,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
             // used_for: newRecord?.used_for,
             // balance_no_plate: newRecord?.balance_no_plate,
             // signature: newRecord?.signature,
-            // reviewed_by: newRecord?.reviewed_by,
+            reviewed_by: newRecord?.reviewed_by,
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -574,6 +574,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
         weight_taken: record?.weight_taken,
         done_by: record?.done_by,
         checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
         remarks: record?.remarks,
       }));
 
@@ -1789,6 +1790,7 @@ const data = Array.isArray(reportData?.AnalyticalBalances)
       weight_taken: record?.weight_taken || "",
       done_by: record?.done_by || "",
       checked_by: record?.checked_by || "",
+      reviewed_by: record?.reviewed_by || "",
       remarks: record?.remarks || "",
     }))
   : [];
