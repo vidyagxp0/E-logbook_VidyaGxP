@@ -1,145 +1,119 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
   <style>
     body {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        margin: 20px;
-        line-height: 1.6;
-      }
-      
-      .report-content {
-        margin-top: 30px; /* Increase margin top for more spacing */
-      }
-      
-      h1, h2 {
-        margin-bottom: 20px;
-        text-align: left; /* Align headings to the left */
-        clear: both; /* Clear floats to prevent overlap */
-      }
-      
-      h1 {
-        font-size: 24px;
-      }
-      
-      h2 {
-        font-size: 18px;
-        color: #0066CC;
-      }
-      
-      p {
-        font-size: 14px;
-        margin-bottom: 10px;
-      }
-      
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 30px; /* Increase margin bottom for more spacing */
-        border: 1px solid #000; /* Add border to the table */
-      }
-      
-      th, td {
-        border: 1px solid #000; /* Add border to table cells */
-        padding: 10px; /* Adjusted padding for better spacing */
-        text-align: left;
-      }
-      
-      th {
-        background-color: #f8f8f8;
-        font-weight: bold;
-      }
-      
-      .remarks {
-        page-break-inside: avoid;
-      }
-      .heading
-      {
-        padding-top: 35px;
-      }
-            .green {
-        color: green;
-        font-weight: bold;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      margin: 20px;
+      line-height: 1.6;
     }
+
+    .report-content {
+      margin-top: 30px;
+    }
+
+    h1, h2 {
+      margin-bottom: 20px;
+      text-align: left;
+      clear: both;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: #0066CC;
+    }
+
+    p {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      border: 1px solid #000;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8f8f8;
+      font-weight: bold;
+    }
+
+    .remarks {
+      page-break-inside: avoid;
+    }
+
+    .heading {
+      padding-top: 35px;
+    }
+
+    .green {
+      color: green;
+      font-weight: bold;
+    }
+
     .red {
-        color: red;
-        font-weight: bold;
+      color: red;
+      font-weight: bold;
     }
+
     .black {
-        color: black;
-        font-weight: bold;
+      color: black;
+      font-weight: bold;
     }
-
-      </style>
-      
+  </style>
+</head>
+<body>
+  <div class="report-content">
+    <h2 class="heading">Analytical Balance Records</h2>
     
-    <body>
-    <div class="report-content">
-        <h2 class="heading">Analytical Balance Records</h2>
-        <hr />
-        <% if (reportData.AnalyticalBalances && reportData.AnalyticalBalances.length > 0) { %>
-            <% reportData.AnalyticalBalances.forEach(record => { %>
-            <div class="listItem">
-                <table>
-                    <tr>
-                        <th>Date</th>
-                        <td><%= record?.date || "Not Applicable" %></td>
-                        <th>Reg. No./Lot no.</th>
-                        <td><%= record?.reg_no || "Not Applicable" %></td>
-                    </tr>
-                    <tr>
-                        <th>Sample Name</th>
-                        <td><%= record?.sample_name || "Not Applicable" %></td>
-                        <th>Weight Taken</th>
-                        <td><%= record?.weight_taken || "Not Applicable" %></td>
-                    </tr>
-                    <tr>
-                        <th>Done by</th>
-                        <td><%= record?.done_by || "Not Applicable" %></td>
-                        <th>Checked By</th>
-                        <td><%= record?.checked_by || "Not Applicable" %></td>
-                    </tr>
-                    <tr>
-                        <th>Remark</th>
-                        <td><%= record?.remarks|| "Not Applicable" %></td>
-                      <th>Reviewed By</th>
-                        <td>
-                           <%= record?.reviewed_by || "Not Applicable" %>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            
-            <% }) %>
-        <% } else { %>
-            <p>No Records Found.</p>
-            <hr />
-        <% } %>
-
-        <div class="remarks">
-            <h2 class="heading">Additional</h2>
-            <table>
-                <tr>
-                    <th>Additional Attachment</th>
-                    <td>
-                        <% if (reportData?.additionalAttachment) { %>
-                            <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
-                        <% } else { %>
-                            Not Applicable
-                        <% } %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Additional Info</th>
-                    <td><%= (reportData?.additionalInfo || "Not Applicable") %></td>
-                </tr>
-                
-            </table>
-        </div>
-    
-        <hr />
-    </div>
+    <% if (reportData.AnalyticalBalances && reportData.AnalyticalBalances.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Sr. No</th>
+            <th>Date</th>
+            <th>Reg. No./Lot No.</th>
+            <th>Sample Name</th>
+            <th>Weight Taken</th>
+            <th>Done By</th>
+            <th>Checked By</th>
+            <th>Remark</th>
+            <th>Reviewed By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% reportData.AnalyticalBalances.forEach((record, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= record?.date || "Not Applicable" %></td>
+              <td><%= record?.reg_no || "Not Applicable" %></td>
+              <td><%= record?.sample_name || "Not Applicable" %></td>
+              <td><%= record?.weight_taken || "Not Applicable" %></td>
+              <td><%= record?.done_by || "Not Applicable" %></td>
+              <td><%= record?.checked_by || "Not Applicable" %></td>
+              <td><%= record?.remarks || "Not Applicable" %></td>
+              <td><%= record?.reviewed_by || "Not Applicable" %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>No Records Found.</p>
+    <% } %>
+    <hr />
+  </div>
 </body>
 </html>
