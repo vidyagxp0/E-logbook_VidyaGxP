@@ -51,6 +51,9 @@ const AnalyticalBalanceProcessForm = sequelize.define("AnalyticalBalanceProcessF
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  department: {
+    type: DataTypes.STRING,
+  },
   reviewer_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
