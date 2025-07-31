@@ -25,6 +25,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
   const {
     site_id,
     description,
+    department,
     reviewer_id,
     approver_id,
     initiatorComment,
@@ -99,6 +100,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         description: description,
         status: "Opened",
         stage: 1,
+        department: department,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -113,6 +115,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
+      department,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -336,6 +339,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
     form_id,
     site_id,
     description,
+    department,
     reviewer_id,
     approver_id,
     AnalyticalBalances,
@@ -412,6 +416,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
+      department,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -446,6 +451,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
       {
         site_id,
         description,
+        department,
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
