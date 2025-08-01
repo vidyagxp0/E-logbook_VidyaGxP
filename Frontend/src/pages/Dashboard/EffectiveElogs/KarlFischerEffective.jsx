@@ -1261,53 +1261,85 @@ const KarlFischerEffective = () => {
                               />
                             </div>
                           </td>
-                          <td className="!text-center">
-                            <div>
-                              <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                <input
-                                  className="h-4 w-4 cursor-pointer"
-                                  type="checkbox"
-                                  checked={!!item.reviewed_by}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.karlFischerRecords,
-                                    ];
-                                    if (e?.target?.checked) {
-                                      newData[index].reviewed_by = reviewed_by;
-                                    } else {
-                                      newData[index].reviewed_by = "";
-                                    }
-                                    setEditData({
-                                      ...editData,
-                                      karlFischerRecords: newData,
-                                    });
-                                  }}
-                                  disabled={[1, 3].includes(
-                                    userDetails.roles[0].role_id
-                                  )}
-                                />
-                                {item.reviewed_by && <p>{item.reviewed_by}</p>}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="!text-center">
-                            <input
-                              value={item.remarks}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.karlFischerRecords,
-                                ];
-                                newData[index].remarks = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  karlFischerRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
+                        <td>
+  <div>
+    <div className="flex text-nowrap items-center gap-x-2 justify-center">
+      <input
+        className="h-4 w-4 cursor-pointer"
+        type="checkbox"
+        checked={!!item.reviewed_by}
+        onChange={(e) => {
+          const newData = [...editData.karlFischerRecords];
+          if (e.target.checked) {
+            newData[index].reviewed_by = reviewed_by;
+          } else {
+            newData[index].reviewed_by = "";
+            newData[index].remarks = "";
+            newData[index].remarksType = "";
+            newData[index].remarksOther = "";
+          }
+          setEditData({
+            ...editData,
+            karlFischerRecords: newData,
+          });
+        }}
+        disabled={[1, 3].includes(userDetails.roles[0].role_id)}
+      />
+      {item.reviewed_by && <p>{item.reviewed_by}</p>}
+    </div>
+  </div>
+</td>
+
+<td>
+  {item.reviewed_by && (
+    <div className="flex items-center gap-2">
+      <select
+        value={item.remarksType || ""}
+        onChange={(e) => {
+          const newData = [...editData.karlFischerRecords];
+          newData[index].remarksType = e.target.value;
+
+          // clear other if not selected
+          if (e.target.value !== "Others") {
+            newData[index].remarksOther = "";
+            newData[index].remarks = e.target.value;
+          } else {
+            newData[index].remarks = "";
+          }
+
+          setEditData({
+            ...editData,
+            karlFischerRecords: newData,
+          });
+        }}
+        className="border rounded px-2 py-1 w-auto"
+      >
+        <option value="">Select</option>
+        <option value="OK">OK</option>
+        <option value="Others">Others</option>
+      </select>
+
+      {item.remarksType === "Others" && (
+        <input
+          type="text"
+          placeholder="Enter remark"
+          value={item.remarksOther || ""}
+          onChange={(e) => {
+            const newData = [...editData.karlFischerRecords];
+            newData[index].remarksOther = e.target.value;
+            newData[index].remarks = e.target.value;
+            setEditData({
+              ...editData,
+              karlFischerRecords: newData,
+            });
+          }}
+          className="border rounded px-2 py-1 w-auto"
+        />
+      )}
+    </div>
+  )}
+</td>
+
 
                           {/* <td className="!text-center">
                             <DeleteIcon onClick={() => deleteRow(index)} />
