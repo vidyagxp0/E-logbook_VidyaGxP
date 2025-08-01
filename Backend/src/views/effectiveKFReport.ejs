@@ -79,17 +79,17 @@
 <body>
   <div class="report-content">
     <h2 class="heading">Karl Fischer Records</h2>
-    <hr />
     <% if (reportData.karlFischerRecords && reportData.karlFischerRecords.length > 0) { %>
       <table>
         <thead>
           <tr>
             <th>Sr. No.</th>
-            <th>Date</th>
+            <th style="text-align: center;">Date</th>
             <th>Lot No./Batch No.</th>
             <th>Sample Name</th>
             <th>Factor/ % Water</th>
             <th>Done By</th>
+            <th style="text-align: center;">Attachment</th>
             <th>Checked By</th>
             <th>Remark</th>
             <th>Reviewed By</th>
@@ -99,11 +99,21 @@
           <% reportData.karlFischerRecords.forEach((record, index) => { %>
             <tr>
               <td><%= index + 1 %></td>
-              <td><%= record?.date || "Not Applicable" %></td>
+              <td style="white-space: nowrap;"><%= record?.date || "Not Applicable" %></td>
               <td><%= record?.lot_no || "Not Applicable" %></td>
               <td><%= record?.sample_name || "Not Applicable" %></td>
               <td><%= record?.factor_percent_water || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
+              <td>
+                <% if (record?.supporting_docs) { %>
+                  <a href="<%= record.supporting_docs %>" target="_blank">
+                    <%= record.supporting_docs.split('/').pop() %>
+                  </a>
+                <% } else { %>
+                  Not Applicable
+                <% } %>
+              </td>
+
               <td><%= record?.checked_by || "Not Applicable" %></td>
               <td><%= record?.remarks || "Not Applicable" %></td>
               <td><%= record?.reviewed_by || "Not Applicable" %></td>
@@ -113,11 +123,8 @@
       </table>
     <% } else { %>
       <p>No Records Found.</p>
-      <hr />
     <% } %>
 
-
-    <hr />
   </div>
 </body>
 </html>

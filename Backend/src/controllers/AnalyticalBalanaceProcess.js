@@ -1715,9 +1715,9 @@ exports.effetiveChatByPdf = async (req, res) => {
       }),
       margin: {
         top: "150px",
-        right: "50px",
-        bottom: "50px",
-        left: "50px",
+        right: "40px",
+        bottom: "0px",
+        left: "40px",
       },
     });
 
