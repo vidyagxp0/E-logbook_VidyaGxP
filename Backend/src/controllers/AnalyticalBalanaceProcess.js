@@ -37,7 +37,6 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     additionalAttachment,
     additionalInfo,
   } = req.body;
-console.log(FormRecordsArray,"FormRecordsArray")
   if (!approver_id) {
     return res
       .status(400)
@@ -491,8 +490,6 @@ exports.EditAnalyticalBalance = async (req, res) => {
         supporting_docs: supporting_docs_url,
       };
 
-      console.log(newData,"newData")
-
       if (record_id && existingMap[record_id]) {
         // Update existing record
         await AnalyticalBalanceRecords.update(newData, {
@@ -545,12 +542,10 @@ exports.EditAnalyticalBalance = async (req, res) => {
         }
       }
     }
-    console.log("auditTrailEntries",auditTrailEntries)
     const validAuditEntries = auditTrailEntries.filter(entry => entry.new_value !== null);
 if (validAuditEntries.length > 0) {
   await AnalyticalBalanceAuditTrail.bulkCreate(validAuditEntries, { transaction });
 }await transaction.commit();
-    console.log("downnnn")
 
     return res.status(200).json({
       error: false,
