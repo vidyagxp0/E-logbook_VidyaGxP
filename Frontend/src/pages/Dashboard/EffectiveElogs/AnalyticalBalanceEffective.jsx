@@ -1133,10 +1133,10 @@ const AnalyticalBalancesEffective = () => {
                            <tr key={index} className="!text-center">
                             <td className="relative group">
                               {index + 1}
-                              <DeleteIcon
-                                className="absolute right-1 top-1 text-black cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                                onClick={() => deleteRow(index)}
-                              />
+                               <DeleteIcon
+                                                            className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                                            onClick={() => deleteRow(index)}
+                                                          />{" "}
                             </td>
                              <td>
                                        <input

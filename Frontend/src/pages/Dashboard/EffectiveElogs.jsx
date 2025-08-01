@@ -9,6 +9,8 @@ import { hasAccess } from "../../components/userAuth/userAuth";
 function EffectiveElogs() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
+  const [role , setRole] = useState("All_Records");
+  const [status, setStatus] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
     []
   );
@@ -352,6 +354,38 @@ function EffectiveElogs() {
     }
   };
 
+    const filterRecord = (item) => {
+    const roleMatch =
+      role === "All_Records" ||
+      (role === "analytical_balance" && item?.initiator_name) ||
+      (role === "karl_fischer" && item?.reviewed_by);
+
+    const statusMatch =
+      status === "All_Records" || item.status === status;
+
+    return roleMatch && statusMatch;
+  };
+
+  const getFilteredData = () => {
+    if (eLogSelect === "analytical_balance") {
+      return analyticalBalanceElogs?.filter(filterRecord);
+    } else if (eLogSelect === "karl_fischer") {
+      return karlFischerElogs?.filter(filterRecord);
+    } else if (eLogSelect === "hplc") {
+      return hplcElogs?.filter(filterRecord);
+    } else {
+      return combinedRecords
+        ?.filter(filterRecord)
+        ?.sort(
+          (a, b) =>
+            new Date(b.date_of_initiation) -
+            new Date(a.date_of_initiation)
+        );
+    }
+  };
+
+  const filteredData = getFilteredData();
+
   const formatDate = (dateString) => {
     const utcDate = new Date(dateString);
     return utcDate.toLocaleString("en-GB", {
@@ -364,648 +398,180 @@ function EffectiveElogs() {
     });
   };
 
+   const getFormPrefix = (item) => {
+    return item.DifferentialPressureRecords
+      ? "DP"
+      : item.TempratureRecords
+      ? "TR"
+      : item.LoadedQuantityRecords
+      ? "LQ"
+      : item.OperationOfSterilizerRecords
+      ? "OF"
+      : item.MediaRecords
+      ? "MR"
+      : item.DispenseOfMaterials
+      ? "DM"
+      : item.AnalyticalBalances
+      ? "AB"
+      : item.karlFischerRecords
+      ? "KF"
+      : item.hplcRecords
+      ? "HP"
+      : eLogSelect === "analytical_balance"
+      ? "AB"
+      : eLogSelect === "karl_fischer"
+      ? "KF"
+      : eLogSelect === "hplc"
+      ? "HP"
+      : "";
+  };
+
+  const getEquipmentType = (item) => {
+    return item.DifferentialPressureRecords
+      ? "Differential Pressure"
+      : item.TempratureRecords
+      ? "Temperature Records"
+      : item.LoadedQuantityRecords
+      ? "Loaded Quantity"
+      : item.OperationOfSterilizerRecords
+      ? "Operation of Sterilizer"
+      : item.MediaRecords
+      ? "Media Record"
+      : item.DispenseOfMaterials
+      ? "Dispensing of Material"
+      : item.AnalyticalBalances
+      ? "Analytical Balance"
+      : item.karlFischerRecords
+      ? "KARL Fischer"
+      : item.hplcRecords
+      ? "HPLC"
+      : eLogSelect === "analytical_balance"
+      ? "Analytical Balance"
+      : eLogSelect === "karl_fischer"
+      ? "KARL Fischer"
+      : eLogSelect === "hplc"
+      ? "HPLC"
+      : "NA";
+  };
+
   return (
     <>
       <HeaderTop />
       <HeaderBottom />
 
       <div className="desktop-input-table-wrapper">
-        <div
-          className="input-wrapper"
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          <div
-            className="group-input-2"
-            style={{ width: "70%", display: "flex", justifyContent: "center" }}
-          >
-            {/* <label>eLog</label> */}
-            <select
-              value={eLogSelect}
-              onChange={(e) => setELogSelect(e.target.value)}
+      {/* Filters */}
+      <div className="flex justify-end pb-4 gap-4">
+        {/* Equipment Filter */}
+        <div className="flex flex-col items-start">
+          <label className="mb-1">Equipment</label>
+          <select
+            value={eLogSelect}
+            onChange={(e) => setELogSelect(e.target.value)}
+            className="border border-gray-400 h-10 px-2"
               style={{
                 border: "1px solid gray",
                 padding: "2px 0px",
                 height: "40px",
               }}
-            >
-              <option value="All_Records">All Records</option>
-              {/* <option value="effective_diffrential_pressure">
-                Diffrential Pressure Record
-              </option>
-              <option value="area_and_equipment">
-                Area & Equipment Usage Log
-              </option>
-              <option value="effective_equipment_cleaning">
-                Equipment Cleaning Checklist
-              </option>
-              <option value="effective_temperature_records">
-                Temperature Records
-              </option>
-              <option value="effective_loaded_quantity">Loaded Quantity</option>
-              <option value="effective_media_record">Media Record</option>
-              <option value="effective_operation_of_sterilizer">
-                Operation Of Sterilizer
-              </option>
-              <option value="effective_dispensing_of_material">
-                Dispensing Of Materials
-              </option> */}
-              <option value="analytical_balance">
-                Analytical Balance
-              </option>
-              <option value="karl_fischer">
-                KARL Fischer
-              </option>
-            </select>
-          </div>
-          {/* <button className="btn">Print</button> */}
+          >
+            <option value="All_Records">All Records</option>
+            <option value="analytical_balance">Analytical Balance</option>
+            <option value="karl_fischer">KARL Fischer</option>
+            {/* <option value="hplc">HPLC</option> */}
+          </select>
         </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>S no</th>
-              <th>E.Log no</th>
-              <th>Process</th>
-              <th>Site</th>
-              <th>Short description</th>
-              <th>Initiator</th>
-              <th>Date of initiation</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {eLogSelect === "effective_diffrential_pressure"
-              ? differentialPressureElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/effective-dpr", { state: item })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`DP${item.form_id}`}
-                      </td>
-                      <td>Differential Pressure</td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "IPC"
-                          : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html:cleanHTML  }}
-                      ></td>
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
+        {/* Role Filter */}
+        <div className="flex flex-col items-start">
+          <label className="mb-1">Role</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="border border-gray-400 h-10 px-2"
+              style={{
+                border: "1px solid gray",
+                padding: "2px 0px",
+                height: "40px",
+              }}
+          >
+            <option value="All_Records">All Records</option>
+            <option value="analytical_balance">Initiator</option>
+            <option value="karl_fischer">Reviewer</option>
+          </select>
+        </div>
 
-            {/* {eLogSelect === "area_and_equipment"
-              ? areaAndERecordElogs?.map((item, index) => {
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td onClick={() => navigate("/area-and-equipment-panel")}>
-                        {item.eLogId}
-                      </td>
-                      <td>{item.process}</td>
-                      <td>{item.shortDescription}</td>
-                      <td>{item.initiator}</td>
-                      <td>{item.dateOfInitiation}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null} */}
-
-            {/* {eLogSelect === "effective_equipment_cleaning"
-              ? equipmentCRecordElogs?.map((item, index) => {
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td onClick={() => navigate("/effective-ecc")}>
-                        {item.eLogId}
-                      </td>
-                      <td>{item.process}</td>
-                      <td>{item.initiator}</td>
-                      <td>{item.dateOfInitiation}</td>
-                      <td
-                        dangerouslySetInnerHTML={{
-                          __html: item?.shortDescription,
-                        }}
-                      ></td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null} */}
-
-            {eLogSelect === "effective_temperature_records"
-              ? tempratureRecordElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/effective-tpr", { state: item })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`TR${item.form_id}`}
-                      </td>
-                      <td>Temperature Records</td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "IPC"
-                          : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                      ></td>
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
-            {eLogSelect === "effective_loaded_quantity"
-              ? loadedQuantityElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/effective-loaded-quantity", {
-                            state: item,
-                          })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`LQ${item?.form_id}`}
-                      </td>
-                      <td>Loaded Quantity</td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "IPC"
-                          : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                      ></td>
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
-
-            {eLogSelect === "effective_operation_of_sterilizer"
-              ? operationOfSterilizerElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <>
-                      <tr key={item.index}>
-                        <td> {index + 1}</td>
-                        <td
-                          style={{
-                            cursor: "pointer",
-                            color: "black",
-                          }}
-                          onClick={() =>
-                            navigate("/effective-operation-of-sterilizer", {
-                              state: item,
-                            })
-                          }
-                          onMouseEnter={(e) => {
-                            e.target.style.color = "blue";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.color = "black";
-                          }}
-                        >
-                          {`OF${item.form_id}`}
-                        </td>
-                        <td>Operation of sterilizer</td>
-                        <td>
-                          {item.site_id === 1
-                            ? "India"
-                            : item.site_id === 2
-                            ? "Malaysia"
-                            : item.site_id === 3
-                            ? "EMEA"
-                            : "EU"}
-                        </td>
-                        <td
-                          dangerouslySetInnerHTML={{
-                            __html: cleanHTML,
-                          }}
-                        ></td>{" "}
-                        <td>{item.initiator_name}</td>
-                        <td>{formatDate(item.date_of_initiation)}</td>
-                        <td>{item.status}</td>
-                      </tr>
-                    </>
-                  );
-                })
-              : null}
-
-            {eLogSelect === "effective_media_record"
-              ? mediaRecordElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/effective-media-record", { state: item })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`MR${item.form_id}`}
-                      </td>
-                      <td>Media Record</td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "IPC"
-                          : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                      ></td>{" "}
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
-
-            {eLogSelect === "effective_dispensing_of_material"
-              ? dispensingOfMaterialsElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/effective-dispensing-of-material", {
-                            state: item,
-                          })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`DM${item.form_id}`}
-                      </td>
-                      <td>Dispensing of Material </td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "IPC"
-                          : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                      ></td>{" "}
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
-            {eLogSelect === "analytical_balance"
-              ? analyticalBalanceElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/effective-analytical-balance", {
-                            state: item,
-                          })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`AB${item.form_id}`}
-                      </td>
-                      <td>Analytical Balance </td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "IPC"
-                          : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                      ></td>{" "}
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
-            {eLogSelect === "karl_fischer"
-              ? karlFischerElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/effective-analytical-balance", {
-                            state: item,
-                          })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`KF${item.form_id}`}
-                      </td>
-                      <td>Karl Fischer </td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "IPC"
-                          : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                      ></td>{" "}
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
-            {eLogSelect === "hplc"
-              ? hplcElogs?.map((item, index) => {
-                const cleanHTML = item?.description
-                .replace(/^"|"$/g, "")
-                .trim() || "NA";
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() =>
-                          navigate("/effective-analytical-balance", {
-                            state: item,
-                          })
-                        }
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {`HP${item.form_id}`}
-                      </td>
-                      <td>HPLC </td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "IPC"
-                          : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                      ></td>{" "}
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
-
-            {eLogSelect === "All_Records" &&
-              combinedRecords
-                ?.sort(
-                  (a, b) =>
-                    new Date(b.date_of_initiation) -
-                    new Date(a.date_of_initiation)
-                ) // Sorting in descending order
-                .map((item, index) => {
-                  const cleanHTML = item?.description
-                  .replace(/^"|"$/g, "")
-                  .trim() || "NA";
-                  return (
-                    <tr key={item.eLogId}>
-                      <td>{index + 1}</td>
-                      <td
-                        style={{
-                          cursor: "pointer",
-                          color: "black",
-                        }}
-                        onClick={() => handleNavigation(item)}
-                        onMouseEnter={(e) => {
-                          e.target.style.color = "blue";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = "black";
-                        }}
-                      >
-                        {item.DifferentialPressureRecords
-                          ? `DP${item.form_id}`
-                          : item.TempratureRecords
-                          ? `TR${item.form_id}`
-                          : item.LoadedQuantityRecords
-                          ? `LQ${item.form_id}`
-                          : item.OperationOfSterilizerRecords
-                          ? `OF${item.form_id}`
-                          : item.MediaRecords
-                          ? `MR${item.form_id}`
-                          : item.DispenseOfMaterials
-                          ? `DM${item.form_id}`
-                          : item.AnalyticalBalances
-                          ? `AB${item.form_id}`
-                          : item.karlFischerRecords
-                          ? `KF${item.form_id}`
-                          : item.hplcRecords
-                          ? `HP${item.form_id}`
-
-                          : null}
-                      </td>
-                      <td>
-                        {item.DifferentialPressureRecords
-                          ? "Differential Pressure"
-                          : item.TempratureRecords
-                          ? "Temperature Records"
-                          : item.LoadedQuantityRecords
-                          ? "Loaded Quantity"
-                          : item.OperationOfSterilizerRecords
-                          ? "Operation of Sterilizer"
-                          : item.MediaRecords
-                          ? "Media Record"
-                          : item.DispenseOfMaterials
-                          ? "Dispensing of Material"
-                          : item.AnalyticalBalances
-                          ? "Analytical Balance"
-                          : item.karlFischerRecords
-                          ? "KARL Fischer"
-                          : item.hplcRecords
-                          ? "HPLC"
-                          : null}
-                      </td>
-                      <td>
-                        {item.site_id === 1
-                          ? "India"
-                          : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5 ? "IPC" : "EU"}
-                      </td>
-                      <td
-                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                      ></td>{" "}
-                      <td>{item.initiator_name}</td>
-                      <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  )
-})}
-          </tbody>
-        </table>
+        {/* Status Filter */}
+        <div className="flex flex-col items-start">
+          <label className="mb-1">Status</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="border border-gray-400 h-10 px-2"
+              style={{
+                border: "1px solid gray",
+                padding: "2px 0px",
+                height: "40px",
+              }}
+          >
+            <option value="All_Records">All Records</option>
+            <option value="Opened">Opened</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
       </div>
+
+      {/* Table */}
+      <table className="w-full border border-collapse">
+        <thead>
+          <tr>
+            <th>S no</th>
+            <th>E.Log no</th>
+            <th>Instrument / Equipment</th>
+            <th>Site</th>
+            <th>Short description</th>
+            <th>Initiator</th>
+            <th>Date of initiation</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData?.map((item, index) => {
+            const cleanHTML =
+              item?.description?.replace(/^"|"$/g, "").trim() || "NA";
+            return (
+              <tr key={item.form_id || item.eLogId}>
+                <td>{index + 1}</td>
+                <td
+                  style={{ cursor: "pointer", color: "black" }}
+                  onClick={() => handleNavigation(item)}
+                  onMouseEnter={(e) => (e.target.style.color = "blue")}
+                  onMouseLeave={(e) => (e.target.style.color = "black")}
+                >
+                  {`${getFormPrefix(item)}${item.form_id}`}
+                </td>
+                <td>{getEquipmentType(item)}</td>
+                <td>
+                  {item.site_id === 1
+                    ? "India"
+                    : item.site_id === 2
+                    ? "Malaysia"
+                    : item.site_id === 3
+                    ? "EMEA"
+                    : item.site_id === 5
+                    ? "IPC"
+                    : "EU"}
+                </td>
+                <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
+                <td>{item.initiator_name}</td>
+                <td>{formatDate(item.date_of_initiation)}</td>
+                <td>{item.status}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
     </>
   );
 }
