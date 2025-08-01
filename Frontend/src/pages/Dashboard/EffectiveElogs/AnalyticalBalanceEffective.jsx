@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 // import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from '@mui/icons-material/Close';
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
@@ -265,7 +266,7 @@ const AnalyticalBalancesEffective = () => {
                  reg_no: "",
                  sample_name: "",
                  weight_taken: "",
-                 done_by: User?.name || "",
+                 done_by: location?.state?.initiator_name || "",
                  reviewed_by: "",
                  checked_by: location?.state?.initiator_name || "",
                  remarks: "",
@@ -547,6 +548,15 @@ const AnalyticalBalancesEffective = () => {
        description: content,
      }));
    };
+
+
+     const isRowEditable = (item) => {
+  const isInitiator = userDetails.userId == location.state?.initiator_id;
+  const isNewRow = !item.form_id; // ya item.isNew === true if you manually add it
+  return isInitiator ? isNewRow : true;
+};
+
+
    return (
      <>
        <HeaderTop />
@@ -1108,9 +1118,9 @@ const AnalyticalBalancesEffective = () => {
                                   <th  className="text-center">Sample Name</th>
                                   <th  className="text-center">Weight Taken</th>
                                   <th  className="text-center">Done by</th>
-                                  <th  className="text-center">Attachment</th>
                                   <th  className="text-center">Checked By</th>
                                   <th  className="text-center">Remarks</th>
+                                  <th  className="text-center">Attachment</th>
                                   {/* <th  className="text-center">Supporting Documents</th> */}
                                   {/* <th  className="text-center">Actions</th> */}
                        </tr>
@@ -1118,11 +1128,11 @@ const AnalyticalBalancesEffective = () => {
                      <tbody>
                        {editData?.AnalyticalBalances?.map(
                          (item, index) => (
-                           <tr key={index}>
+                           <tr key={index} className="!text-center">
                             <td className="relative group">
                               {index + 1}
                               <DeleteIcon
-                                className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                className="absolute right-1 top-1 text-black cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                 onClick={() => deleteRow(index)}
                               />
                             </td>
@@ -1148,7 +1158,7 @@ const AnalyticalBalancesEffective = () => {
                               }}
                               readOnly={[3, 2, 4].includes(
                                 userDetails.roles[0].role_id
-                              )}
+                              ) || !isRowEditable(item)}
                             />
                                    </td>
                                    <td>
@@ -1166,7 +1176,7 @@ const AnalyticalBalancesEffective = () => {
                               }}
                               readOnly={[3, 2, 4].includes(
                                 userDetails.roles[0].role_id
-                              )}
+                              ) || !isRowEditable(item)}
                             />
                                    </td>
 
@@ -1188,46 +1198,125 @@ const AnalyticalBalancesEffective = () => {
                                  }}
                                  readOnly={[3, 2, 4].includes(
                                    userDetails.roles[0].role_id
-                                 )}
+                                 ) || !isRowEditable(item)}
                                       />
                                     </td>
                                     <td>
                                       <input
                                         value={item.done_by}
                                         // disabled
-                                          onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].done_by =
-                                     e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly={[3, 2, 4].includes(
-                                   userDetails.roles[0].role_id
-                                 )}
+                                //           onChange={(e) => {
+                                //    const newData = [
+                                //      ...editData.AnalyticalBalances,
+                                //    ];
+                                //    newData[index].done_by =
+                                //      e.target.value;
+                                //    setEditData({
+                                //      ...editData,
+                                //      AnalyticalBalances: newData,
+                                //    });
+                                //  }}
+                                 readOnly={true}
                                       />
                                     </td>
-                                     <td style={{ width: "250px" }}>
+                               
+                                                          <td>
+  <div>
+    <div className="flex text-nowrap items-center gap-x-2 justify-center">
+      <input
+        className="h-4 w-4 cursor-pointer"
+        type="checkbox"
+        checked={!!item.reviewed_by}
+        onChange={(e) => {
+          const newData = [...editData.AnalyticalBalances];
+          if (e.target.checked) {
+            newData[index].reviewed_by = reviewed_by;
+          } else {
+            newData[index].reviewed_by = "";
+            newData[index].remarks = "";
+            newData[index].remarksType = "";
+            newData[index].remarksOther = "";
+          }
+          setEditData({
+            ...editData,
+            AnalyticalBalances: newData,
+          });
+        }}
+        disabled={[1, 3].includes(userDetails.roles[0].role_id)}
+      />
+      {item.reviewed_by && <p>{item.reviewed_by}</p>}
+    </div>
+  </div>
+</td>
+
+<td>
+  {item.reviewed_by && (
+    <div className="flex items-center gap-2">
+      <select
+        value={item.remarksType || ""}
+        onChange={(e) => {
+          const newData = [...editData.AnalyticalBalances];
+          newData[index].remarksType = e.target.value;
+
+          // clear other if not selected
+          if (e.target.value !== "Others") {
+            newData[index].remarksOther = "";
+            newData[index].remarks = e.target.value;
+          } else {
+            newData[index].remarks = "";
+          }
+
+          setEditData({
+            ...editData,
+            AnalyticalBalances: newData,
+          });
+        }}
+        className="border rounded px-2 py-1 w-auto"
+        disabled={[1, 3].includes(userDetails.roles[0].role_id)}
+
+      >
+        <option value="OK">OK</option>
+        <option value="Others">Others</option>
+      </select>
+
+      {item.remarksType === "Others" && (
+        <input
+          type="text"
+          placeholder="Enter remark"
+          value={item.remarksOther || ""}
+          onChange={(e) => {
+            const newData = [...editData.AnalyticalBalances];
+            newData[index].remarksOther = e.target.value;
+            newData[index].remarks = e.target.value;
+            setEditData({
+              ...editData,
+              AnalyticalBalances: newData,
+            });
+          }}
+          className="border rounded px-2 py-1 w-auto"
+        />
+      )}
+    </div>
+  )}
+</td>
+
+                                          <td style={{ width: "200px" }}>
                             <div className="d-flex">
-                              {item.supporting_docs ? (
+                              {(()=>{
+                                 const isDisabled =
+        [3, 2, 4].includes(userDetails.roles[0].role_id) ||
+        !isRowEditable(item);
+
+         return  item.supporting_docs ? (
                                 <div className="file-upload-wrapper">
                                   <button
                                     type="button"
                                     className="btn-upload"
                                     onClick={() =>
-                                      document
-                                        .getElementsByName("supporting_docs")
-                                        [index].click()
-                                    }
-                                    // disabled={
-                                    //   location.state?.stage !== 1 ||
-                                    //   location.state?.initiator_id !==
-                                    //     userDetails.userId
-                                    // }
+              !isDisabled &&
+              document.getElementsByName("supporting_docs")[index].click()
+            }
+            disabled={isDisabled}
                                   >
                                     Change File
                                   </button>
@@ -1240,13 +1329,13 @@ const AnalyticalBalancesEffective = () => {
                                     >
                                       View File
                                     </a>
-                                    <DeleteIcon
+                                   {!isDisabled && (<CloseIcon
                                       style={{
-                                        color: "red",
+                                        color: "black",
                                         cursor: "pointer",
                                       }}
                                       onClick={() => handleDeleteFile(index)}
-                                    />
+                                    />)}
                                   </h3>
                                 </div>
                               ) : (
@@ -1254,19 +1343,17 @@ const AnalyticalBalancesEffective = () => {
                                   <button
                                     type="button"
                                     className="btn-upload"
-                                    onClick={() =>
-                                      document
-                                        .getElementsByName("supporting_docs")
-                                        [index].click()
-                                    }
-                                    // readOnly={[3, 2, 4].includes(
-                                    //   userDetails.roles[0].role_id
-                                    // )}
+                                     onClick={() =>
+              !isDisabled &&
+              document.getElementsByName("supporting_docs")[index].click()
+            }
+                                    disabled={isDisabled}
                                   >
                                     Select File
                                   </button>
                                 </div>
-                              )}
+                              );
+                              })()}
                               <input
                                 type="file"
                                 name="supporting_docs"
@@ -1274,57 +1361,13 @@ const AnalyticalBalancesEffective = () => {
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
+                                disabled={
+        [3, 2, 4].includes(userDetails.roles[0].role_id) ||
+        !isRowEditable(item)
+      }
                               />
                             </div>
                           </td>
-                                    <td>
-                              <div>
-                              <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                <input
-                                  className="h-4 w-4 cursor-pointer"
-                                  type="checkbox"
-                                  checked={!!item.reviewed_by}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.AnalyticalBalances,
-                                    ];
-                                    if (e?.target?.checked) {
-                                      newData[index].reviewed_by = reviewed_by;
-                                    } else {
-                                      newData[index].reviewed_by = "";
-                                    }
-                                    setEditData({
-                                      ...editData,
-                                      AnalyticalBalances: newData,
-                                    });
-                                  }}
-                                  disabled={[1, 3].includes(
-                                    userDetails.roles[0].role_id
-                                  )}
-                                />
-                                {item.reviewed_by && <p>{item.reviewed_by}</p>}
-                              </div>
-                            </div>
-                          </td>
-                                    <td>
-                                      <input
-                                        value={item.remarks}
-                                         onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].remarks =
-                                     e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly={[3, 2, 4].includes(
-                                   userDetails.roles[0].role_id
-                                 )}
-                                      />
-                                    </td>
 {/*  
                              <td>
                                <DeleteIcon onClick={() => deleteRow(index)} />

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 // import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from '@mui/icons-material/Close';
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
@@ -59,6 +60,7 @@ const KarlFischerEffective = () => {
     limit: "",
   });
   console.log(editData, "editdata");
+
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -243,6 +245,7 @@ const KarlFischerEffective = () => {
     setEditData(location.state);
   }, [location.state]);
 
+console.log(location.state,"location.state")
   const addRow = () => {
     if (
       userDetails.roles[0].role_id === 1 ||
@@ -260,19 +263,21 @@ const KarlFischerEffective = () => {
         lot_no: "",
         sample_name: "",
         factor_percent_water: "",
-        done_by: User?.name || "",
+        done_by: location?.state?.initiator_name || "",
         checked_by: location?.state?.initiator_name || "",
         remarks: "",
         reviewed_by: "",
+        remarksOther:"",
+        remarksType:""
       };
       setEditData((prevState) => ({
         ...prevState,
         karlFischerRecords: [...prevState?.karlFischerRecords, newRow],
       }));
-    } else if (location.state == reviewer_id) {
-      console.warn("Only Initiator can add new Row here");
-    } else if (location.state == approver_id) {
-      console.warn("Only Initiator can add new Row here");
+    } else if (location.state.reviewer_id == 4) {
+      toast.warn("Only the Initiator has permission to add a new row.");
+    } else if (location.state.approver_id == 5) {
+      toast.warn("Only the Initiator has permission to add a new row.");
     }
   };
 
@@ -539,6 +544,14 @@ const KarlFischerEffective = () => {
       alert("Something went wrong while deleting the attachment.");
     }
   };
+
+  const isRowEditable = (item) => {
+  const isInitiator = userDetails.userId == location.state?.initiator_id;
+  const isNewRow = !item.form_id; // ya item.isNew === true if you manually add it
+  return isInitiator ? isNewRow : true;
+};
+
+
 
   return (
     <>
@@ -1080,8 +1093,9 @@ const KarlFischerEffective = () => {
                     </div> */}
 
                   <div>
-                    <div className="AddRows d-flex">
+                    <div className="AddRows d-flex !p-2">
                       <NoteAdd onClick={addRow} />
+                      <span>Click to add a new row</span>
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1094,9 +1108,9 @@ const KarlFischerEffective = () => {
                         <th className="text-center">Sample Name</th>
                         <th className="text-center">Factor/ % water</th>
                         <th className="text-center">Done by</th>
-                        <th className="text-center">Attachment</th>
                         <th className="text-center">Checked By</th>
                         <th className="text-center">Remarks</th>
+                        <th className="text-center">Attachment</th>
                         {/* <th className="text-center">Supporting Documents</th> */}
                         {/* <th className="text-center">Actions</th> */}
                       </tr>
@@ -1107,7 +1121,7 @@ const KarlFischerEffective = () => {
                           <td className="relative group">
                             {index + 1}
                             <DeleteIcon
-                              className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                              className="absolute right-1 top-1 text-black cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                               onClick={() => deleteRow(index)}
                             />
                           </td>
@@ -1130,7 +1144,8 @@ const KarlFischerEffective = () => {
                               }}
                               readOnly={[3, 2, 4].includes(
                                 userDetails.roles[0].role_id
-                              )}
+                              ) || !isRowEditable(item)}
+                              //  readOnly={!isRowEditable(item)}
                             />
                           </td>
                           <td>
@@ -1148,7 +1163,7 @@ const KarlFischerEffective = () => {
                               }}
                               readOnly={[3, 2, 4].includes(
                                 userDetails.roles[0].role_id
-                              )}
+                              ) || !isRowEditable(item)}
                             />
                           </td>
 
@@ -1169,94 +1184,28 @@ const KarlFischerEffective = () => {
                               }}
                               readOnly={[3, 2, 4].includes(
                                 userDetails.roles[0].role_id
-                              )}
+                              ) || !isRowEditable(item)}
                             />
                           </td>
                           <td>
                             <input
                               value={item.done_by}
                               // disabled
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.karlFischerRecords,
-                                ];
-                                newData[index].done_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  karlFischerRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              // onChange={(e) => {
+                              //   const newData = [
+                              //     ...editData.karlFischerRecords,
+                              //   ];
+                              //   newData[index].done_by = e.target.value;
+                              //   setEditData({
+                              //     ...editData,
+                              //     karlFischerRecords: newData,
+                              //   });
+                              // }}
+                               readOnly={true}
                             />
                           </td>
-                          <td style={{ width: "250px" }}>
-                            <div className="d-flex">
-                              {item.supporting_docs ? (
-                                <div className="file-upload-wrapper">
-                                  <button
-                                    type="button"
-                                    className="btn-upload"
-                                    onClick={() =>
-                                      document
-                                        .getElementsByName("supporting_docs")
-                                        [index].click()
-                                    }
-                                    // disabled={
-                                    //   location.state?.stage !== 1 ||
-                                    //   location.state?.initiator_id !==
-                                    //     userDetails.userId
-                                    // }
-                                  >
-                                    Change File
-                                  </button>
-                                  <h3>
-                                    Selected File:{" "}
-                                    <a
-                                      href={item.supporting_docs}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      View File
-                                    </a>
-                                    <DeleteIcon
-                                      style={{
-                                        color: "red",
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() => handleDeleteFile(index)}
-                                    />
-                                  </h3>
-                                </div>
-                              ) : (
-                                <div className="file-upload-wrapper">
-                                  <button
-                                    type="button"
-                                    className="btn-upload"
-                                    onClick={() =>
-                                      document
-                                        .getElementsByName("supporting_docs")
-                                        [index].click()
-                                    }
-                                    // readOnly={[3, 2, 4].includes(
-                                    //   userDetails.roles[0].role_id
-                                    // )}
-                                  >
-                                    Select File
-                                  </button>
-                                </div>
-                              )}
-                              <input
-                                type="file"
-                                name="supporting_docs"
-                                style={{ display: "none" }}
-                                onChange={(e) =>
-                                  handleFileChange(index, e.target.files[0])
-                                }
-                              />
-                            </div>
-                          </td>
+                
+
                         <td>
   <div>
     <div className="flex text-nowrap items-center gap-x-2 justify-center">
@@ -1309,8 +1258,9 @@ const KarlFischerEffective = () => {
           });
         }}
         className="border rounded px-2 py-1 w-auto"
+        disabled={[1, 3].includes(userDetails.roles[0].role_id)}
+
       >
-        <option value="">Select</option>
         <option value="OK">OK</option>
         <option value="Others">Others</option>
       </select>
@@ -1334,6 +1284,72 @@ const KarlFischerEffective = () => {
       )}
     </div>
   )}
+</td>
+
+          <td style={{ width: "200px" }}>
+  <div className="d-flex">
+    {(() => {
+      const isDisabled =
+        [3, 2, 4].includes(userDetails.roles[0].role_id) ||
+        !isRowEditable(item);
+
+      return item.supporting_docs ? (
+        <div className="file-upload-wrapper">
+          <button
+            type="button"
+            className="btn-upload"
+            onClick={() =>
+              !isDisabled &&
+              document.getElementsByName("supporting_docs")[index].click()
+            }
+            disabled={isDisabled}
+          >
+            Change File
+          </button>
+          <h3>
+            Selected File:{" "}
+            <a
+              href={item.supporting_docs}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View File
+            </a>
+            {!isDisabled && (
+              <CloseIcon
+                style={{ color: "black", cursor: "pointer", marginLeft: 5 }}
+                onClick={() => handleDeleteFile(index)}
+              />
+            )}
+          </h3>
+        </div>
+      ) : (
+        <div className="file-upload-wrapper">
+          <button
+            type="button"
+            className="btn-upload"
+            onClick={() =>
+              !isDisabled &&
+              document.getElementsByName("supporting_docs")[index].click()
+            }
+            disabled={isDisabled}
+          >
+            Select File
+          </button>
+        </div>
+      );
+    })()}
+    <input
+      type="file"
+      name="supporting_docs"
+      style={{ display: "none" }}
+      onChange={(e) => handleFileChange(index, e.target.files[0])}
+      disabled={
+        [3, 2, 4].includes(userDetails.roles[0].role_id) ||
+        !isRowEditable(item)
+      }
+    />
+  </div>
 </td>
 
 
