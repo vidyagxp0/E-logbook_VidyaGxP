@@ -577,7 +577,9 @@ const AnalyticalBalancesEffective = () => {
                  ? "Malaysia"
                  : location.state?.site_id === 3
                  ? "EMEA"
-                 : "EU"}
+                 : location.state?.site_id === 4
+                 ? "EU"
+                 : "IPC"}
              </div>
              <div>
                <strong> Current Status:&nbsp;</strong>
@@ -636,7 +638,7 @@ const AnalyticalBalancesEffective = () => {
                    >
                      {isLoading1 ? (
                        <>
-                         <span>Blank Draft</span>
+                         <span>Offline Entry</span>
                          <div
                            style={{
                              width: "20px",
@@ -650,7 +652,7 @@ const AnalyticalBalancesEffective = () => {
                          ></div>
                        </>
                      ) : (
-                       "Blank Draft"
+                       "Offline Entry"
                      )}
                      <style>
                        {`

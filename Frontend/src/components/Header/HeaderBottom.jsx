@@ -49,7 +49,7 @@ function HeaderBottom() {
                     : "bg-white text-blue-500 border border-blue-500 "
                 } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
-                Effective E-Logs
+                 E-Logs
               </Link>
               <Link
                 to="/analytics2"

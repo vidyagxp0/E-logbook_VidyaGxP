@@ -120,7 +120,7 @@ export default function Analytics() {
       )} */}
       <div className="flex items-center justify-center h-screen animate-fadeIn">
   <h1 className="text-4xl font-bold text-center text-blue-700">
-    Analytics Dashboard
+    Will be available in the final version
   </h1>
 </div>
     </div>

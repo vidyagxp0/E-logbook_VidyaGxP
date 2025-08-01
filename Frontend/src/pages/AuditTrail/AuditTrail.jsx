@@ -387,6 +387,7 @@ const generateReport = async () => {
                         borderBottom: "1px solid #ccc",
                         width: "10%",
                       }}
+                      
                     >
                       {/* Previous Value */}
                       Data Fields

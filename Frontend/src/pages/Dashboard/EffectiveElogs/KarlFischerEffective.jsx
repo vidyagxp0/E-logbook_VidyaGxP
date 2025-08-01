@@ -460,7 +460,9 @@ const KarlFischerEffective = () => {
         ? "Malaysia"
         : location.state.site_id === 3
         ? "EMEA"
-        : "EU",
+        : location.state.site_id === 4
+        ? "EU"
+        : "IPC",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "KARL Fischer Record",
@@ -563,21 +565,23 @@ const KarlFischerEffective = () => {
               <strong> Record Name:&nbsp;</strong>KARL Fischer
             </div> */}
             <div>
-              <strong> Site:&nbsp;</strong>
+              <strong> Department :&nbsp;</strong>
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
                 ? "Malaysia"
                 : location.state?.site_id === 3
                 ? "EMEA"
-                : "EU"}
+                : location.state?.site_id === 3
+                ? "EU"
+                : "IPC"}
             </div>
             <div>
-              <strong> Current Status:&nbsp;</strong>
+              <strong> Current Status :&nbsp;</strong>
               {location.state?.status}
             </div>
             <div>
-              <strong> Initiated By:&nbsp;</strong>
+              <strong> Initiated By :&nbsp;</strong>
               {location.state?.initiator_name}
             </div>
           </div>
@@ -1081,7 +1085,7 @@ const KarlFischerEffective = () => {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd onClick={addRow} className="!text-[#5899f3]" />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -1104,18 +1108,18 @@ const KarlFischerEffective = () => {
                     <tbody>
                       {editData?.karlFischerRecords?.map((item, index) => (
                         <tr key={index}>
-                          <td className="relative group">
+                          <td className=" !text-center">
                             {index + 1}
                             <DeleteIcon
                               className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                               onClick={() => deleteRow(index)}
                             />
                           </td>
-                          <td>
+                          <td className="!text-center !justify-center">
                             <input value={item?.date} type="text" readOnly />
                           </td>
 
-                          <td>
+                          <td className="!text-center !justify-center">
                             <input
                               value={item.lot_no}
                               onChange={(e) => {
@@ -1133,7 +1137,7 @@ const KarlFischerEffective = () => {
                               )}
                             />
                           </td>
-                          <td>
+                          <td className="!text-center !justify-center">
                             <input
                               value={item.sample_name}
                               onChange={(e) => {
@@ -1152,7 +1156,7 @@ const KarlFischerEffective = () => {
                             />
                           </td>
 
-                          <td>
+                          <td className="!text-center">
                             <input
                               value={item.factor_percent_water}
                               // disabled
@@ -1172,7 +1176,7 @@ const KarlFischerEffective = () => {
                               )}
                             />
                           </td>
-                          <td>
+                          <td className="!text-center">
                             <input
                               value={item.done_by}
                               // disabled
@@ -1257,7 +1261,7 @@ const KarlFischerEffective = () => {
                               />
                             </div>
                           </td>
-                          <td>
+                          <td className="!text-center">
                             <div>
                               <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                 <input
@@ -1286,7 +1290,7 @@ const KarlFischerEffective = () => {
                               </div>
                             </div>
                           </td>
-                          <td>
+                          <td className="!text-center">
                             <input
                               value={item.remarks}
                               onChange={(e) => {
@@ -1305,7 +1309,7 @@ const KarlFischerEffective = () => {
                             />
                           </td>
 
-                          {/* <td>
+                          {/* <td className="!text-center">
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.limit !== "" &&
                               (item.limit < 0.6 || item.limit > 2.6) && (
