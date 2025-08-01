@@ -57,6 +57,7 @@
 
     .heading {
       padding-top: 35px;
+      text-align: center;
     }
 
     .green {
@@ -77,7 +78,7 @@
 </head>
 <body>
   <div class="report-content">
-    <h2 class="heading">Analytical Balance Records</h2>
+    <h2 class="heading">Analytical Balance Record</h2>
 
     <% if (reportData.AnalyticalBalances && reportData.AnalyticalBalances.length > 0) { %>
       <table>
@@ -89,10 +90,10 @@
             <th>Sample Name</th>
             <th>Weight Taken</th>
             <th>Done By</th>
-            <th style="text-align: center;">Attachment</th>
             <th>Checked By</th>
-            <th>Remark</th>
             <th>Reviewed By</th>
+            <th>Remark</th>
+            <th style="text-align: center;">Attachment</th>
           </tr>
         </thead>
         <tbody>
@@ -104,18 +105,19 @@
               <td><%= record?.sample_name || "Not Applicable" %></td>
               <td><%= record?.weight_taken || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
+              <td><%= record?.checked_by || "Not Applicable" %></td>
+              <td><%= record?.reviewed_by || "Not Applicable" %></td>
+              <td><%= record?.remarks || "Not Applicable" %></td>
               <td>
                 <% if (record?.supporting_docs) { %>
                   <a href="<%= record.supporting_docs %>" target="_blank">
                     <%= record.supporting_docs.split('/').pop() %>
                   </a>
-                <% } else { %>
-                  Not Applicable
-                <% } %>
-              </td>
-              <td><%= record?.checked_by || "Not Applicable" %></td>
-              <td><%= record?.remarks || "Not Applicable" %></td>
-              <td><%= record?.reviewed_by || "Not Applicable" %></td>
+                  <% } else { %>
+                    Not Applicable
+                    <% } %>
+                  </td>
+                  
             </tr>
           <% }) %>
         </tbody>
