@@ -11,12 +11,17 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 import dayjs from "dayjs";
+import { useMemo } from "react";
 const KarlFischerEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
+  const [selectedInitiator, setSelectedInitiator] = useState("");
+  const [selectedReviewer, setSelectedReviewer] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  console.log(selectedReviewer,"selectedReviewer")
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
   const [User, setUser] = useState(null);
@@ -352,10 +357,55 @@ console.log(location.state,"location.state")
   };
 
   const handleInputChange1 = (e) => {
-    const { name, value } = e?.target;
-    setEditData({ ...editData, [name]: value });
-  };
+  const { name, value } = e.target;
+  
+    const val = value === "All Records" ? "" : value;
 
+  if (name === "initiator") {
+    setSelectedInitiator(val);
+    setSelectedReviewer("")
+  }
+  if (name === "reviewer") {
+    setSelectedReviewer(val);
+        setSelectedInitiator("");
+  }
+
+  if (name === "status") {
+    setSelectedStatus(value);
+  }
+
+  setEditData((prev) => ({
+    ...prev,
+    [name]: val,
+  }));
+};
+
+
+
+const filteredGridData = useMemo(() => {
+  const records = editData?.karlFischerRecords || [];
+
+  return records.filter((record) => {
+    const matchInitiator = selectedInitiator && selectedInitiator !== "All Records"
+      ? record.done_by === selectedInitiator
+      : true;
+
+    const matchReviewer = selectedReviewer && selectedReviewer !== "All Records"
+      ? record.reviewed_by === selectedReviewer
+      : true;
+
+    const matchStatus =
+      selectedStatus === "Open"
+        ? !record.reviewed_by
+        : selectedStatus === "Closed"
+        ? !!record.reviewed_by
+        : true;
+
+    return matchInitiator && matchReviewer && matchStatus;
+  });
+}, [editData?.karlFischerRecords, selectedInitiator, selectedReviewer, selectedStatus]);
+
+console.log(filteredGridData,"filteredGridData")
   // const handleDeleteFile = (index) => {
   //   if (
   //     location.state?.stage === 1 &&
@@ -573,7 +623,7 @@ console.log(location.state,"location.state")
       />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
-          <div className="top-block !grid !grid-cols-3">
+          <div className="top-block !grid !grid-cols-2">
             {/* <div>
               <strong> Record Name:&nbsp;</strong>KARL Fischer
             </div> */}
@@ -589,14 +639,10 @@ console.log(location.state,"location.state")
                 ? "EU"
                 : "IPC"}
             </div>
-            <div>
-              <strong> Current Status :&nbsp;</strong>
-              {location.state?.status}
-            </div>
-            <div>
+            {/* <div>
               <strong> Initiated By :&nbsp;</strong>
               {location.state?.initiator_name}
-            </div>
+            </div> */}
           </div>
 
           <div className="document-form">
@@ -640,7 +686,7 @@ console.log(location.state,"location.state")
                   </button>
 
                   {/* Generate Empty Report Button */}
-                  <button
+                  {/* <button
                     onClick={generateEmptyReport}
                     className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
                   >
@@ -670,7 +716,7 @@ console.log(location.state,"location.state")
             }
           `}
                     </style>
-                  </button>
+                  </button> */}
 
                   {/* Generate Report Button */}
                   <button
@@ -1028,74 +1074,54 @@ console.log(location.state,"location.state")
 
               {isSelectedDetails === true ? (
                 <>
-                  {/* <div className="group-input">
-                      <label className="color-label">Department</label>
-  
-                      <div className="instruction">&nbsp;</div>
-                      <select
-                        className="form-control"
-                        name="department"
-                        value={editData?.department}
-                        onChange={handleInputChange1}
-                        disabled={
-                          location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
-                        }
-                      >
-                        <option value="">-- Select --</option>
-                        <option value="Corporate Quality Assurance">
-                          Corporate Quality Assurance
-                        </option>
-                        <option value="Quality Assurance Bio-Pharma">
-                          Quality Assurance Bio-Pharma
-                        </option>
-                        <option value="Central Quality Control">
-                          Central Quality Control
-                        </option>
-                        <option value="Manufacturing">Manufacturing</option>
-                        <option value="Plasma Sourcing Grou">
-                          Plasma Sourcing Group
-                        </option>
-                        <option value="Central Stores">Central Stores</option>
-                        <option value="Information Technology Group">
-                          Information Technology Group
-                        </option>
-                        <option value="Molecular Medicine">
-                          Molecular Medicine
-                        </option>
-                        <option value="Central Laboratory">
-                          Central Laboratory
-                        </option>
-                        <option value="Tech team">Tech team</option>
-                      </select>
-                    </div>
-  
-                    <div className="group-input">
-                      <label className="color-label">
-                        Compression Area with respect to Corridor
-                      </label>
-  
-                      <div className="instruction">&nbsp;</div>
-                      <select
-                        className="form-control"
-                        name="compression_area"
-                        value={editData?.compression_area}
-                        onChange={handleInputChange1}
-                        disabled={
-                          location.state?.stage !== 1 ||
-                          location.state?.initiator_id !== userDetails.userId
-                        }
-                      >
-                        <option value="Select a value">Select a value</option>
-                        <option value="Area 1">Area 1</option>
-                        <option value="Area 2">Area 2</option>
-                        <option value="Area 3">Area 3</option>
-                        <option value="Area 4">Area 4</option>
-                        <option value="Area 5">Area 5</option>
-                        <option value="Area 6">Area 6</option>
-                      </select>
-                    </div> */}
+                 <div className="filter-row" style={{ display: "flex",justifyContent:"end", gap: "50px", flexWrap: "wrap" }}>
+  <div className="group-input">
+    <label className="color-label !p-0">Status</label>
+      <select
+      className="form-control"
+      name="status"
+      value={editData?.status}
+      onChange={handleInputChange1}
+    >
+      <option value="All Records">All Records</option>
+      <option value="Open">Open</option>
+      <option value="Closed">Closed</option>
+    </select>
+  </div>
 
+<div className="group-input">
+  <label className="color-label !p-0">Initiator</label>
+  <select
+    className="form-control"
+    name="initiator"
+    value={editData?.initiator}
+    onChange={handleInputChange1}
+  >
+    <option value="All Records">All Records</option>
+
+  {[...new Set(editData?.karlFischerRecords?.map(r => r.done_by))].map((done_by, index) => (
+  done_by && <option key={index} value={done_by}>{done_by}</option>
+))}
+
+  </select>
+</div>
+
+
+
+  <div className="group-input">
+    <label className="color-label !p-0">Reviewer</label>
+    <select
+      className="form-control"
+      name="reviewer"
+      value={editData?.reviewer}
+      onChange={handleInputChange1}
+    >
+      <option value="All Records">All Records</option>
+{[...new Set(editData?.karlFischerRecords?.map(r => r.reviewed_by))].map((reviewed_by, index) => (
+  reviewed_by && <option key={index} value={reviewed_by}>{reviewed_by}</option>
+))}    </select>
+  </div>
+</div>
                   <div>
                     <div className="AddRows d-flex">
                       <NoteAdd onClick={addRow} className="!text-[#5899f3]" />
@@ -1114,12 +1140,13 @@ console.log(location.state,"location.state")
                         <th className="text-center">Checked By</th>
                         <th className="text-center">Remarks</th>
                         <th className="text-center">Attachment</th>
+                        <th className="text-center">Status</th>
                         {/* <th className="text-center">Supporting Documents</th> */}
                         {/* <th className="text-center">Actions</th> */}
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.karlFischerRecords?.map((item, index) => (
+                      {filteredGridData?.map((item, index) => (
                         <tr key={index}>
                           <td className=" !text-center">
                             {index + 1}
@@ -1354,6 +1381,13 @@ console.log(location.state,"location.state")
     />
   </div>
 </td>
+
+<td>
+  {(editData?.karlFischerRecords?.find(r => r.record_id === item.record_id)?.reviewed_by)
+    ? "Closed"
+    : "Open"}
+</td>
+
 
 
                           {/* <td className="!text-center">

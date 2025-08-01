@@ -70,7 +70,7 @@ function HeaderBottom() {
           !["/effectiveElogs", "/analytics2"].includes(location.pathname) ? (
             <div className="headerBottomRgt">
               <div className="themeBtn" onClick={() => setRecordModal(true)}>
-                Initiate eLog
+                Create eLogbook
               </div>
             </div>
           ) : null}

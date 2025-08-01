@@ -482,43 +482,8 @@ function EffectiveElogs() {
           </select>
         </div>
 
-        {/* Role Filter */}
-        <div className="flex flex-col items-start">
-          <label className="mb-1">Role</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="border border-gray-400 h-10 px-2"
-              style={{
-                border: "1px solid gray",
-                padding: "2px 0px",
-                height: "40px",
-              }}
-          >
-            <option value="All_Records">All Records</option>
-            <option value="analytical_balance">Initiator</option>
-            <option value="karl_fischer">Reviewer</option>
-          </select>
-        </div>
-
-        {/* Status Filter */}
-        <div className="flex flex-col items-start">
-          <label className="mb-1">Status</label>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="border border-gray-400 h-10 px-2"
-              style={{
-                border: "1px solid gray",
-                padding: "2px 0px",
-                height: "40px",
-              }}
-          >
-            <option value="All_Records">All Records</option>
-            <option value="Opened">Opened</option>
-            <option value="Closed">Closed</option>
-          </select>
-        </div>
+    
+       
       </div>
 
       {/* Table */}
@@ -528,11 +493,10 @@ function EffectiveElogs() {
             <th>S no</th>
             <th>E.Log no</th>
             <th>Instrument / Equipment</th>
-            <th>Site</th>
+            <th>Department</th>
             <th>Short description</th>
-            <th>Initiator</th>
+            {/* <th>Initiator</th> */}
             <th>Date of initiation</th>
-            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -563,9 +527,8 @@ function EffectiveElogs() {
                     : "EU"}
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
-                <td>{item.initiator_name}</td>
+                {/* <td>{item.initiator_name}</td> */}
                 <td>{formatDate(item.date_of_initiation)}</td>
-                <td>{item.status}</td>
               </tr>
             );
           })}

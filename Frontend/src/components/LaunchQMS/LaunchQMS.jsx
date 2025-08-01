@@ -16,6 +16,7 @@ function LaunchQMS({ onClick, onExit }) {
             px-4
             py-2
             bg-teal-600
+            opacity-70
             text-white
             font-semibold
             rounded-l-full
@@ -37,6 +38,7 @@ function LaunchQMS({ onClick, onExit }) {
             px-4
             py-2
             bg-teal-600
+            opacity-70
             text-white
             font-semibold
             rounded-l-full
@@ -58,6 +60,7 @@ function LaunchQMS({ onClick, onExit }) {
             px-4
             py-2
             bg-teal-600
+            opacity-70
             text-white
             font-semibold
             rounded-l-full

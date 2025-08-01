@@ -565,7 +565,7 @@ const AnalitycalBalancePanel = () => {
                              setPopupAction("sendFromReviewToApproval");
                            }}
                          >
-                           Review Completed
+                           Send for Approval
                          </button>
                          <button
                            className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -574,7 +574,7 @@ const AnalitycalBalancePanel = () => {
                              setPopupAction("sendFromReviewToOpen");
                            }}
                          >
-                           More Info Required
+                           Additional Information Required
                          </button>
                        </>
                      )}
@@ -718,7 +718,7 @@ const AnalitycalBalancePanel = () => {
                          setApproverRemarks(false);
                      }}
                    >
-                     Initiator Remarks
+                     Initiator
                    </div>
                    <div
                      className={`${
@@ -734,7 +734,7 @@ const AnalitycalBalancePanel = () => {
                          setApproverRemarks(false);
                      }}
                    >
-                     Reviewer Remarks
+                     Reviewer
                    </div>
                    <div
                      className={`${
@@ -750,7 +750,7 @@ const AnalitycalBalancePanel = () => {
                          setApproverRemarks(true);
                      }}
                    >
-                     Approver Remarks
+                     Approver
                    </div>
                    {/* <div
                      className="btn-forms-select"

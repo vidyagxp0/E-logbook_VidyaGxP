@@ -138,7 +138,7 @@ function CreateRecordModal(_props) {
             <div className="selection-block">
               <div className="division">
                 <div className="head text-lg font-semibold mb-2">
-                  Site/Location
+                  Department
                 </div>
                 <div className="select-list division-list flex flex-col gap-2">
                   {sites?.map((item) => (
@@ -162,7 +162,7 @@ function CreateRecordModal(_props) {
               </div>
 
               <div className="project">
-                <div className="head gap-2 mb-3">Process</div>
+                <div className="head gap-2 mb-3">Equipment/Instrument</div>
                 <div className="select-list division-list gap-2">
                   {processes.map((item, index) => (
                     <div
