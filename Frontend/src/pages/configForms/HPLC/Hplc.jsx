@@ -35,7 +35,7 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
             data: {
               site_id: location.state?.site_id,
               role_id: 2,
-              process_id: 1,
+              process_id: 9,
             },
           };
       
@@ -57,7 +57,7 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
             data: {
               site_id: location.state?.site_id,
               role_id: 3,
-              process_id: 1,
+              process_id: 9,
             },
           };
       

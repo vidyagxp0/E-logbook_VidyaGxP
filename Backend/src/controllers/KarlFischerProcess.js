@@ -205,7 +205,7 @@ exports.InsertKarlFischer = async (req, res) => {
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "lot_no",
+          field_name: "Lot no",
           previous_value: null,
           new_value: record?.lot_no,
           changed_by: user.user_id,
@@ -217,7 +217,7 @@ exports.InsertKarlFischer = async (req, res) => {
           
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "done_by",
+          field_name: "Done by",
           previous_value: null,
           new_value: record?.done_by,
           changed_by: user.user_id,
@@ -229,7 +229,7 @@ exports.InsertKarlFischer = async (req, res) => {
           
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "factor_percent_water",
+          field_name: "Factor/ % water",
           previous_value: null,
           new_value: record?.factor_percent_water,
           changed_by: user.user_id,
@@ -275,7 +275,7 @@ exports.InsertKarlFischer = async (req, res) => {
           
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "sample_name",
+          field_name: "Sample name",
           previous_value: null,
           new_value: record?.sample_name,
           changed_by: user.user_id,
@@ -288,7 +288,7 @@ exports.InsertKarlFischer = async (req, res) => {
         if (supportingDocs[index]) {
           auditTrailEntries.push({
             form_id: newForm.form_id,
-            field_name: "checked_by",
+            field_name: "Checked by",
             previous_value: null,
             new_value: record?.checked_by,
             changed_by: user.user_id,
@@ -327,7 +327,7 @@ exports.InsertKarlFischer = async (req, res) => {
   }
 };
 
-// edit differential pressure elog details
+// edit Karl Fischer elog details
 exports.EditKarlFischer = async (req, res) => {
   const {
     form_id,
@@ -480,7 +480,7 @@ exports.EditKarlFischer = async (req, res) => {
 
       const newData = {
         form_id,
-        date: record.date,
+        date: record.date ? new Date(record.date).toISOString() : null,
         remarks: record.remarks,
         remarksOther: record.remarksOther,
         remarksType: record.remarksType,
@@ -492,7 +492,6 @@ exports.EditKarlFischer = async (req, res) => {
         reviewed_by: record.reviewed_by,
         supporting_docs: supporting_docs_url,
       };
-      console.log("newData",newData);
       
 
       if (record_id && existingRecordsMap[record_id]) {
@@ -504,8 +503,6 @@ exports.EditKarlFischer = async (req, res) => {
       } else {
         // Create new record
         const created = await karlFischerRecord.create(newData, { transaction });
-
-        console.log("jjjjjjjjjjjjjjjjjjjjjjjjj")
         // Add audit trail for new records
         for (const [field, value] of Object.entries(newData)) {
           if (field !== "form_id") {
@@ -524,10 +521,14 @@ exports.EditKarlFischer = async (req, res) => {
         }
       }
     }
-
+   console.log("111111111111111111")
+    const validAuditEntries = auditTrailEntries.filter(entry => {
+      return entry.new_value !== null && entry.new_value !== '' && entry.new_value !== undefined;
+    });
+   console.log("validAuditEntries",validAuditEntries)
+    if (validAuditEntries.length > 0) {
     await karlFischerAuditTrail.bulkCreate(auditTrailEntries, { transaction });
-    console.log("yyyyyyyyyyyyyyyyyyy")
-    await transaction.commit();
+    }await transaction.commit();
 
     return res.status(200).json({
       error: false,
@@ -1725,39 +1726,33 @@ exports.effetiveChatByPdf = async (req, res) => {
     await page.setContent(html, { waitUntil: "networkidle0" });
 
     // Generate PDF
-    const pdf = await page.pdf({
-      format: "A4",
-      landscape:true,
-      printBackground: true,
-      displayHeaderFooter: true,
-      headerTemplate: await new Promise((resolve, reject) => {
-        req.app.render(
-          "header",
-          { reportData: reportData, logoDataUri: logoDataUri },
-          (err, html) => {
-            if (err) return reject(err);
-            resolve(html);
-          }
-        );
-      }),
-
-      footerTemplate: await new Promise((resolve, reject) => {
-        req.app.render(
-          "footer",
-          { userName: user?.name, date: formattedDate },
-          (err, html) => {
-            if (err) return reject(err);
-            resolve(html);
-          }
-        );
-      }),
-      margin: {
-        top: "150px",
-        right: "50px",
-        bottom: "50px",
-        left: "50px",
-      },
+const pdf = await page.pdf({
+  format: "A4",
+  landscape: true,
+  printBackground: true,
+  displayHeaderFooter: true,
+  scale: 0.85,
+  headerTemplate: await new Promise((resolve, reject) => {
+    req.app.render("header", { reportData, logoDataUri }, (err, html) => {
+      if (err) return reject(err);
+      resolve(html);
     });
+  }),
+
+  footerTemplate: await new Promise((resolve, reject) => {
+    req.app.render("footer", { userName: user?.name, date: formattedDate }, (err, html) => {
+      if (err) return reject(err);
+      resolve(html);
+    });
+  }),
+
+  margin: {
+    top: "180px",
+    bottom: "50px",
+    left: "30px",
+    right: "30px"
+  }
+});
 
     // Close the browser
     await browser.close();

@@ -85,8 +85,6 @@ const getFileUrl = (file) => {
 };
 
 const getElogDocsUrl = (file) => {
-  console.log(file, "file in getElogDocsUrl");
-
   if (file && typeof file === 'object' && !file.filename) {
     const firstValue = Object.values(file)[0];
     if (firstValue?.filename) {

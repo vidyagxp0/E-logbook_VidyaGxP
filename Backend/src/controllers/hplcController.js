@@ -189,9 +189,9 @@ exports.InsertHPLC = async (req, res) => {
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
-        date:record?.date,
+        date: record?.date,
         sample_name: record?.sample_name,
-        reg_no: record?.reg_no, 
+        reg_no: record?.reg_no,
         method_used: record?.method_used,
         parameter_or_activity: record?.parameter_or_activity,
         column_no: record?.column_no,
@@ -326,7 +326,7 @@ exports.InsertHPLC = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,  
+          declaration: initiatorDeclaration,
           action: "Opened",
         });
         if (supportingDocs[index]) {
@@ -518,10 +518,7 @@ exports.EditHPLC = async (req, res) => {
     );
 
     // Update the Form Records if provided
-    if (
-      Array.isArray(hplcRecords) &&
-      hplcRecords.length > 0
-    ) {
+    if (Array.isArray(hplcRecords) && hplcRecords.length > 0) {
       const existingRecords = await hplcRecord.findAll({
         where: { form_id: form_id },
         raw: true,
@@ -537,16 +534,16 @@ exports.EditHPLC = async (req, res) => {
         const newRecord = hplcRecords[index];
         if (newRecord) {
           const recordFields = {
-            date:newRecord.date,
+            date: newRecord.date,
             sample_name: newRecord.sample_name,
             reg_no: newRecord.reg_no,
-            method_used:newRecord.method_used,
+            method_used: newRecord.method_used,
             parameter_or_activity: newRecord?.parameter_or_activity,
             column_no: newRecord?.column_no,
             start_time: newRecord?.start_time,
             end_time: newRecord.end_time,
             reviewed_by: newRecord?.reviewed_by,
-            no_of_injections:newRecord.no_of_injections,
+            no_of_injections: newRecord.no_of_injections,
             done_by: newRecord?.done_by,
             remarks: newRecord?.remarks,
             supporting_docs:
@@ -580,24 +577,20 @@ exports.EditHPLC = async (req, res) => {
 
       // Handle new records added
       if (hplcRecords.length > existingRecords.length) {
-        for (
-          let i = existingRecords.length;
-          i < hplcRecords.length;
-          i++
-        ) {
+        for (let i = existingRecords.length; i < hplcRecords.length; i++) {
           const newRecord = hplcRecords[i];
           const recordFields = {
-            date:newRecord.date,
+            date: newRecord.date,
             sample_name: newRecord.sample_name,
             reg_no: newRecord.reg_no,
-            method_used:newRecord.method_used,
+            method_used: newRecord.method_used,
             parameter_or_activity: newRecord?.parameter_or_activity,
-            column_no:newRecord?.column_no,
+            column_no: newRecord?.column_no,
             start_time: newRecord?.start_time,
             end_time: newRecord.end_time,
-            no_of_injections:newRecord.no_of_injections,
+            no_of_injections: newRecord.no_of_injections,
             done_by: newRecord?.done_by,
-             reviewed_by: newRecord?.reviewed_by,
+            reviewed_by: newRecord?.reviewed_by,
             remarks: newRecord?.remarks,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
@@ -630,18 +623,18 @@ exports.EditHPLC = async (req, res) => {
       // Create new records
       const formRecords = hplcRecords.map((record, index) => ({
         form_id: form_id,
-            date:record.date,
-            sample_name: record.sample_name,
-            reg_no: record.reg_no,
-            method_used:record.method_used,
-            parameter_or_activity: record?.parameter_or_activity,
-            column_no: record?.column_no,
-            start_time: record?.start_time,
-            end_time: record.end_time,
-            no_of_injections:record.no_of_injections,
-            done_by: record?.done_by,
-             reviewed_by: record?.reviewed_by,
-            remarks: record?.remarks,
+        date: record.date,
+        sample_name: record.sample_name,
+        reg_no: record.reg_no,
+        method_used: record.method_used,
+        parameter_or_activity: record?.parameter_or_activity,
+        column_no: record?.column_no,
+        start_time: record?.start_time,
+        end_time: record.end_time,
+        no_of_injections: record.no_of_injections,
+        done_by: record?.done_by,
+        reviewed_by: record?.reviewed_by,
+        remarks: record?.remarks,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -649,11 +642,17 @@ exports.EditHPLC = async (req, res) => {
 
       await hplcRecord.bulkCreate(formRecords, { transaction });
     }
-
-    await hplcAudittrail.bulkCreate(auditTrailEntries, {
-      transaction,
+    const validAuditEntries = auditTrailEntries.filter((entry) => {
+      return (
+        entry.new_value !== null &&
+        entry.new_value !== "" &&
+        entry.new_value !== undefined
+      );
     });
 
+    if (validAuditEntries.length > 0) {
+      await hplcAudittrail.bulkCreate(validAuditEntries, { transaction });
+    }
     await transaction.commit();
 
     return res.status(200).json({
@@ -685,16 +684,17 @@ exports.GethplcElog = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }
 
-  hplcForm.findOne({
-    where: {
-      form_id: form_id,
-    },
-    include: [
-      {
-        model: hplcRecord,
+  hplcForm
+    .findOne({
+      where: {
+        form_id: form_id,
       },
-    ],
-  })
+      include: [
+        {
+          model: hplcRecord,
+        },
+      ],
+    })
     .then((result) => {
       res.json({
         error: false,
@@ -711,24 +711,25 @@ exports.GethplcElog = async (req, res) => {
 
 //get all the differential pressure elogs
 exports.GetAllhplcElog = async (req, res) => {
-  hplcForm.findAll({
-    include: [
-      {
-        model: hplcRecord,
-      },
-      {
-        model: User,
-        as: "reviewerss", // Use the consistent alias 'reviewer'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-      {
-        model: User,
-        as: "approverss", // Use the consistent alias 'approver'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-    ],
-    order: [["form_id", "DESC"]],
-  })
+  hplcForm
+    .findAll({
+      include: [
+        {
+          model: hplcRecord,
+        },
+        {
+          model: User,
+          as: "reviewerss", // Use the consistent alias 'reviewer'
+          attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+        },
+        {
+          model: User,
+          as: "approverss", // Use the consistent alias 'approver'
+          attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+        },
+      ],
+      order: [["form_id", "DESC"]],
+    })
     .then((result) => {
       res.json({
         error: false,
@@ -1807,7 +1808,7 @@ exports.effetiveChatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1819,6 +1820,7 @@ exports.effetiveChatByPdf = async (req, res) => {
     // Generate PDF
     const pdf = await page.pdf({
       format: "A4",
+      landscape: true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
@@ -1843,10 +1845,10 @@ exports.effetiveChatByPdf = async (req, res) => {
         );
       }),
       margin: {
-        top: "150px",
-        right: "50px",
+        top: "180px",
         bottom: "50px",
-        left: "50px",
+        left: "30px",
+        right: "30px",
       },
     });
 
@@ -1854,7 +1856,10 @@ exports.effetiveChatByPdf = async (req, res) => {
     await browser.close();
     // const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `HPEffective_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve(
+      "public",
+      `HPEffective_Elog_Report_${formId}.pdf`
+    );
     fs.writeFileSync(filePath, pdf);
 
     res.status(200).json({ filename: `HPEffective_Elog_Report_${formId}.pdf` });
@@ -2096,12 +2101,12 @@ exports.blankReport = async (req, res) => {
 exports.sendReportOnMail = async (req, res) => {
   const { to, cc, bcc, subject, message } = req.body;
   const elogId = req.params.id;
-  console.log(elogId,"elogId")
+  console.log(elogId, "elogId");
 
-  const filePath = path.resolve("public",elogId);
+  const filePath = path.resolve("public", elogId);
 
   const fileExists = fs.existsSync(filePath);
-console.log(fileExists,"fileExists")
+  console.log(fileExists, "fileExists");
   if (!fileExists) {
     return res.status(404).json({
       status: 404,
@@ -2178,7 +2183,7 @@ console.log(fileExists,"fileExists")
 //           order: [["auditTrail_id", "DESC"]],
 //         });
 //         break;
-      
+
 //       case "DispenseOfMatrialAuditTrail":
 //         getData = await DispenseOfMatrialAuditTrail.findAll({
 //           where: { form_id: formId },
@@ -2189,7 +2194,7 @@ console.log(fileExists,"fileExists")
 //           order: [["auditTrail_id", "DESC"]],
 //         });
 //         break;
-      
+
 //       case "LoadedQuantityProcessAuditTrail":
 //         getData = await LoadedQuantityProcessAuditTrail.findAll({
 //           where: { form_id: formId },
@@ -2200,7 +2205,7 @@ console.log(fileExists,"fileExists")
 //           order: [["auditTrail_id", "DESC"]],
 //         });
 //         break;
-      
+
 //       case "MediaRecordAuditTrail":
 //         getData = await MediaRecordAuditTrail.findAll({
 //           where: { form_id: formId },
@@ -2211,7 +2216,7 @@ console.log(fileExists,"fileExists")
 //           order: [["auditTrail_id", "DESC"]],
 //         });
 //         break;
-      
+
 //       case "OperationOfSterilizerProcessAuditTrail":
 //         getData = await OperationOfSterilizerProcessAuditTrail.findAll({
 //           where: { form_id: formId },
@@ -2222,7 +2227,7 @@ console.log(fileExists,"fileExists")
 //           order: [["auditTrail_id", "DESC"]],
 //         });
 //         break;
-      
+
 //       case "TemperatureRecordsAuditTrail":
 //         getData = await TemperatureRecordsAuditTrail.findAll({
 //           where: { form_id: formId },
@@ -2233,7 +2238,7 @@ console.log(fileExists,"fileExists")
 //           order: [["auditTrail_id", "DESC"]],
 //         });
 //         break;
-      
+
 //       default:
 //         return res.status(400).json({
 //           error: true,

@@ -135,5 +135,11 @@ router.post(
   Auth.checkUserJwtToken,
   AnalyticalBalance.blankReport
 );
+// get users based on roles, sites and processes
+router.post(
+  "/get-user-roleGroups",
+  Auth.checkUserJwtToken,
+  AnalyticalBalance.GetUserOnBasisOfRoleGroup
+);
 
 module.exports = router;

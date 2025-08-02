@@ -52,6 +52,12 @@ const karlFischerRecord = sequelize.define(
     remarksOther: {
       type: DataTypes.STRING,
     },
+    remarksType: {
+      type: DataTypes.STRING,
+    },
+    status: {
+      type: DataTypes.STRING
+    }
   }
 );
 

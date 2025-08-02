@@ -21,12 +21,12 @@ Process.addHook('afterSync', async () => {
         const processesCount = await Process.count();
         if (processesCount === 0) {
             await Process.bulkCreate([
-                { process: 'Differential Pressure Record' },
-                { process: 'Temperature Records' },
-                { process: 'Loaded Quantity' },
-                { process: 'Operation Of Sterilizer' },
-                { process: 'Media Record' },
-                { process: 'Dispensing Of Materials' },
+                // { process: 'Differential Pressure Record' },
+                // { process: 'Temperature Records' },
+                // { process: 'Loaded Quantity' },
+                // { process: 'Operation Of Sterilizer' },
+                // { process: 'Media Record' },
+                // { process: 'Dispensing Of Materials' },
                 { process: 'Analytical Balance' },
                 { process: 'Karl Fischer' },
                 { process: 'HPLC' },

@@ -152,7 +152,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     }
 
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-      const formRecords = FormRecordsArray.map((record, index) => ({   
+      const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         date:
           record?.date && !isNaN(new Date(record?.date))
@@ -164,6 +164,8 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         done_by: record?.done_by,
         checked_by: record?.checked_by,
         remarks: record?.remarks,
+        remarksOther: record?.remarksOther,
+        remarksType: record?.remarksType,
       }));
 
       await AnalyticalBalanceRecords.bulkCreate(formRecords, {
@@ -195,7 +197,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Simple Name",
+          field_name: "Sample Name",
           previous_value: null,
           new_value: record.sample_name,
           changed_by: user.user_id,
@@ -204,31 +206,9 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           declaration: initiatorDeclaration,
           action: "Opened",
         });
-        // auditTrailEntries.push({
-        //   form_id: newForm.form_id,
-        //   field_name: "Date Of Preparation",
-        //   previous_value: null,
-        //   new_value: record.date_of_use,
-        //   changed_by: user.user_id,
-        //   previous_status: "Not Applicable",
-        //   new_status: "Opened",
-        //   declaration: initiatorDeclaration,
-        //   action: "Opened",
-        // });
-        // auditTrailEntries.push({
-        //   form_id: newForm.form_id,
-        //   field_name: "Date Of Use",
-        //   previous_value: null,
-        //   new_value: record.date_of_use,
-        //   changed_by: user.user_id,
-        //   previous_status: "Not Applicable",
-        //   new_status: "Opened",
-        //   declaration: initiatorDeclaration,
-        //   action: "Opened",
-        // });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Lot No",
+          field_name: "Weight Taken",
           previous_value: null,
           new_value: record.weight_taken,
           changed_by: user.user_id,
@@ -239,7 +219,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "No Of Plate Prepared",
+          field_name: "Done by",
           previous_value: null,
           new_value: record.done_by,
           changed_by: user.user_id,
@@ -250,7 +230,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "No Of Plate Used",
+          field_name: "Checked By",
           previous_value: null,
           new_value: record.checked_by,
           changed_by: user.user_id,
@@ -259,44 +239,33 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           declaration: initiatorDeclaration,
           action: "Opened",
         });
-        // auditTrailEntries.push({
-        //   form_id: newForm.form_id,
-        //   field_name: "Used For",
-        //   previous_value: null,
-        //   new_value: record.used_for,
-        //   changed_by: user.user_id,
-        //   previous_status: "Not Applicable",
-        //   new_status: "Opened",
-        //   declaration: initiatorDeclaration,
-        //   action: "Opened",
-        // });
-        // auditTrailEntries.push({
-        //   form_id: newForm.form_id,
-        //   field_name: "Balance No Plate",
-        //   previous_value: null,
-        //   new_value: record.balance_no_plate,
-        //   changed_by: user.user_id,
-        //   previous_status: "Not Applicable",
-        //   new_status: "Opened",
-        //   declaration: initiatorDeclaration,
-        //   action: "Opened",
-        // });
-        // auditTrailEntries.push({
-        //   form_id: newForm.form_id,
-        //   field_name: "Signature",
-        //   previous_value: null,
-        //   new_value: record.signature,
-        //   changed_by: user.user_id,
-        //   previous_status: "Not Applicable",
-        //   new_status: "Opened",
-        //   declaration: initiatorDeclaration,
-        //   action: "Opened",
-        // });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Checked By",
+          field_name: "Remarks",
           previous_value: null,
-          new_value: record.checked_by,
+          new_value: record?.remarks,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Remarks Other",
+          previous_value: null,
+          new_value: record?.remarksOther,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Remarks Type",
+          previous_value: null,
+          new_value: record?.remarksType,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -383,7 +352,9 @@ exports.EditAnalyticalBalance = async (req, res) => {
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
       } else {
-        const match = file.fieldname.match(/AnalyticalBalances\[(\d+)\]\[supporting_docs\]/);
+        const match = file.fieldname.match(
+          /AnalyticalBalances\[(\d+)\]\[supporting_docs\]/
+        );
         if (match) {
           const index = parseInt(match[1]);
           supportingDocs[index] = file;
@@ -426,7 +397,8 @@ exports.EditAnalyticalBalance = async (req, res) => {
       const oldValue = form[field];
       if (
         newValue !== undefined &&
-        ((typeof newValue === "number" && !areFloatsEqual(oldValue, newValue)) ||
+        ((typeof newValue === "number" &&
+          !areFloatsEqual(oldValue, newValue)) ||
           oldValue != newValue)
       ) {
         auditTrailEntries.push({
@@ -487,6 +459,8 @@ exports.EditAnalyticalBalance = async (req, res) => {
         checked_by: record.checked_by,
         reviewed_by: record.reviewed_by,
         remarks: record.remarks,
+        remarksOther: record.remarksOther,
+        remarksType: record.remarksType,
         supporting_docs: supporting_docs_url,
       };
 
@@ -502,7 +476,8 @@ exports.EditAnalyticalBalance = async (req, res) => {
           const oldValue = existingMap[record_id][field];
           if (
             newValue !== undefined &&
-            ((typeof newValue === "number" && !areFloatsEqual(oldValue, newValue)) ||
+            ((typeof newValue === "number" &&
+              !areFloatsEqual(oldValue, newValue)) ||
               oldValue != newValue)
           ) {
             auditTrailEntries.push({
@@ -542,10 +517,20 @@ exports.EditAnalyticalBalance = async (req, res) => {
         }
       }
     }
-    const validAuditEntries = auditTrailEntries.filter(entry => entry.new_value !== null);
-if (validAuditEntries.length > 0) {
-  await AnalyticalBalanceAuditTrail.bulkCreate(validAuditEntries, { transaction });
-}await transaction.commit();
+    const validAuditEntries = auditTrailEntries.filter((entry) => {
+      return (
+        entry.new_value !== null &&
+        entry.new_value !== "" &&
+        entry.new_value !== undefined
+      );
+    });
+
+    if (validAuditEntries.length > 0) {
+      await AnalyticalBalanceAuditTrail.bulkCreate(validAuditEntries, {
+        transaction,
+      });
+    }
+    await transaction.commit();
 
     return res.status(200).json({
       error: false,
@@ -564,18 +549,26 @@ exports.deleteAnalyticalBalanceAttachment = async (req, res) => {
   const { record_id } = req.params;
 
   if (!record_id) {
-    return res.status(400).json({ error: true, message: "Record ID is required." });
+    return res
+      .status(400)
+      .json({ error: true, message: "Record ID is required." });
   }
 
   try {
-    const record = await AnalyticalBalanceRecords.findOne({ where: { record_id } });
+    const record = await AnalyticalBalanceRecords.findOne({
+      where: { record_id },
+    });
 
     if (!record) {
-      return res.status(404).json({ error: true, message: "Record not found." });
+      return res
+        .status(404)
+        .json({ error: true, message: "Record not found." });
     }
 
     if (!record.supporting_docs) {
-      return res.status(400).json({ error: true, message: "No attachment to delete." });
+      return res
+        .status(400)
+        .json({ error: true, message: "No attachment to delete." });
     }
 
     await AnalyticalBalanceRecords.update(
@@ -1685,20 +1678,16 @@ exports.effetiveChatByPdf = async (req, res) => {
     // Generate PDF
     const pdf = await page.pdf({
       format: "A4",
-      landscape:true,
+      landscape: true,
       printBackground: true,
       displayHeaderFooter: true,
+      scale: 0.85,
       headerTemplate: await new Promise((resolve, reject) => {
-        req.app.render(
-          "header",
-          { reportData: reportData, logoDataUri: logoDataUri },
-          (err, html) => {
-            if (err) return reject(err);
-            resolve(html);
-          }
-        );
+        req.app.render("header", { reportData, logoDataUri }, (err, html) => {
+          if (err) return reject(err);
+          resolve(html);
+        });
       }),
-
       footerTemplate: await new Promise((resolve, reject) => {
         req.app.render(
           "footer",
@@ -1710,10 +1699,10 @@ exports.effetiveChatByPdf = async (req, res) => {
         );
       }),
       margin: {
-        top: "120px",
-        right: "40px",
+        top: "180px",
         bottom: "50px",
-        left: "40px",
+        left: "30px",
+        right: "30px",
       },
     });
 
@@ -1721,7 +1710,10 @@ exports.effetiveChatByPdf = async (req, res) => {
     await browser.close();
     // const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `ABEffectice_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve(
+      "public",
+      `ABEffectice_Elog_Report_${formId}.pdf`
+    );
     fs.writeFileSync(filePath, pdf);
 
     res.status(200).json({ filename: `ABEffectice_Elog_Report_${formId}.pdf` });
@@ -1769,19 +1761,19 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-const data = Array.isArray(reportData?.AnalyticalBalances)
-  ? reportData.AnalyticalBalances.map((record) => ({
-      s_no: record?.s_no || "",
-      date: record?.date || "",
-      reg_no: record?.reg_no || "",
-      sample_name: record?.sample_name || "",
-      weight_taken: record?.weight_taken || "",
-      done_by: record?.done_by || "",
-      checked_by: record?.checked_by || "",
-      reviewed_by: record?.reviewed_by || "",
-      remarks: record?.remarks || "",
-    }))
-  : [];
+    const data = Array.isArray(reportData?.AnalyticalBalances)
+      ? reportData.AnalyticalBalances.map((record) => ({
+          s_no: record?.s_no || "",
+          date: record?.date || "",
+          reg_no: record?.reg_no || "",
+          sample_name: record?.sample_name || "",
+          weight_taken: record?.weight_taken || "",
+          done_by: record?.done_by || "",
+          checked_by: record?.checked_by || "",
+          reviewed_by: record?.reviewed_by || "",
+          remarks: record?.remarks || "",
+        }))
+      : [];
 
     const arrayData = [...data, ...blankRows];
     // Render HTML using EJS template
@@ -1844,7 +1836,10 @@ const data = Array.isArray(reportData?.AnalyticalBalances)
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("public", `AB_ElogBlank_Report_${formId}.pdf`);
+    const filePath = path.resolve(
+      "public",
+      `AB_ElogBlank_Report_${formId}.pdf`
+    );
     fs.writeFileSync(filePath, pdf);
 
     res.status(200).json({ filename: `AB_ElogBlank_Report_${formId}.pdf` });

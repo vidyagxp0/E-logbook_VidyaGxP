@@ -11,6 +11,7 @@
 
     .report-content {
       margin-top: 30px;
+      page-break-before: always;
     }
 
     h1, h2 {
@@ -56,7 +57,7 @@
     }
 
     .heading {
-      padding-top: 35px;
+      padding-top: 10px;
       text-align: center;
     }
 
@@ -81,7 +82,7 @@
     <h2 class="heading">Analytical Balance Record</h2>
 
     <% if (reportData.AnalyticalBalances && reportData.AnalyticalBalances.length > 0) { %>
-      <table>
+      <table >
         <thead>
           <tr>
             <th>Sr. No</th>
@@ -91,7 +92,7 @@
             <th>Weight Taken</th>
             <th>Done By</th>
             <th>Checked By</th>
-            <th>Reviewed By</th>
+            <!-- <th>Reviewed By</th> -->
             <th>Remark</th>
             <th style="text-align: center;">Attachment</th>
           </tr>
@@ -105,9 +106,9 @@
               <td><%= record?.sample_name || "Not Applicable" %></td>
               <td><%= record?.weight_taken || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
-              <td><%= record?.checked_by || "Not Applicable" %></td>
               <td><%= record?.reviewed_by || "Not Applicable" %></td>
-              <td><%= record?.remarks || "Not Applicable" %></td>
+              <!-- <td><%= record?.reviewed_by || "Not Applicable" %></td> -->
+              <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
               <td>
                 <% if (record?.supporting_docs) { %>
                   <a href="<%= record.supporting_docs %>" target="_blank">
@@ -118,7 +119,7 @@
                     <% } %>
                   </td>
                   
-            </tr>
+            </tr> 
           <% }) %>
         </tbody>
       </table>

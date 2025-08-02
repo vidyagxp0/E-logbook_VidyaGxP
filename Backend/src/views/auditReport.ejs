@@ -18,11 +18,32 @@
       th {
         background-color: #f2f2f2;
       }
+    .heading {
+      /* padding-top: 10px; */
+      text-align: center;
+    }
+  .report-content {
+    page-break-inside: avoid;
+  }
+
+  table, tr, td, th {
+    page-break-inside: avoid !important;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
     </style>
   </head>
   <body>
-    <h1>Audit Report</h1>
+    <h2 class="heading">Audit Report checl</h2>
 
+  <div class="report-content">
     <table>
       <thead>
         <tr>
@@ -64,5 +85,6 @@
         <% } %>
       </tbody>
     </table>
+  </div>
   </body>
 </html>

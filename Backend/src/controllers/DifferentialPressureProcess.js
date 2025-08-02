@@ -2181,7 +2181,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
     }
 
     // console.log(getData);
-    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
     const data = {
@@ -2231,15 +2231,16 @@ exports.generateAuditPdfbyId = async (req, res) => {
 
     const pdfBuffer = await page.pdf({
       format: "A4",
+      landscape:true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: headerHtml,
       footerTemplate: footerHtml,
       margin: {
-        top: "200px",
-        right: "52px",
-        bottom: "70px",
-        left: "52px",
+      top: "180px",
+      bottom: "60px",
+      left: "40px",
+      right: "40px"
       },
     });
 

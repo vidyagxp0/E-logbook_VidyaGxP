@@ -59,6 +59,15 @@ const hplcRecord = sequelize.define(
     remarks: {
       type: DataTypes.STRING,
     },
+    remarksOther: {
+      type: DataTypes.STRING,
+    },
+    remarksType: {
+      type: DataTypes.STRING,
+    },
+    status: {
+      type: DataTypes.STRING
+    }
   }
 );
 
