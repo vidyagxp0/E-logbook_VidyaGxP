@@ -521,13 +521,11 @@ exports.EditKarlFischer = async (req, res) => {
         }
       }
     }
-   console.log("111111111111111111")
     const validAuditEntries = auditTrailEntries.filter(entry => {
       return entry.new_value !== null && entry.new_value !== '' && entry.new_value !== undefined;
     });
-   console.log("validAuditEntries",validAuditEntries)
     if (validAuditEntries.length > 0) {
-    await karlFischerAuditTrail.bulkCreate(auditTrailEntries, { transaction });
+    await karlFischerAuditTrail.bulkCreate(validAuditEntries, { transaction });
     }await transaction.commit();
 
     return res.status(200).json({
