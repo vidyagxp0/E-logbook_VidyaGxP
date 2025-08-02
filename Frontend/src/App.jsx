@@ -273,7 +273,7 @@ function App() {
             <Route path="/effective-view-report" element={<Effective_ViewReport />} />
           </Routes>
         </BrowserRouter>
-        <ToastContainer autoClose={2000} pauseOnHover={false} />
+        <ToastContainer autoClose={3000} pauseOnHover={false} />
       </Provider>
     </>
   );

@@ -9,7 +9,7 @@ import { hasAccess } from "../../components/userAuth/userAuth";
 function EffectiveElogs() {
   const navigate = useNavigate();
   const [eLogSelect, setELogSelect] = useState("All_Records");
-  const [role , setRole] = useState("All_Records");
+  const [role, setRole] = useState("All_Records");
   const [status, setStatus] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
     []
@@ -25,15 +25,9 @@ function EffectiveElogs() {
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
   );
-  const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState(
-    []
-  );
-  const [karlFischerElogs, setKarlFischerElogs] = useState(
-    []
-  );
-  const [hplcElogs, setHplcElogs] = useState(
-    []
-  );
+  const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState([]);
+  const [karlFischerElogs, setKarlFischerElogs] = useState([]);
+  const [hplcElogs, setHplcElogs] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -262,9 +256,7 @@ function EffectiveElogs() {
       .then((response) => {
         console.log(response, "karl fischer");
         const temp = response.data.message;
-        const allKarlFischer = temp.filter(
-          (log) => log.status === "Closed"
-        );
+        const allKarlFischer = temp.filter((log) => log.status === "Closed");
         setKarlFischerElogs(allKarlFischer);
         let filteredArray = allKarlFischer.filter((elog) => {
           const userId = userDetails.userId;
@@ -291,9 +283,7 @@ function EffectiveElogs() {
     axios(newHplc)
       .then((response) => {
         const temp = response.data.message;
-        const allHplc = temp.filter(
-          (log) => log.status === "Closed"
-        );
+        const allHplc = temp.filter((log) => log.status === "Closed");
         setHplcElogs(allHplc);
         let filteredArray = allHplc.filter((elog) => {
           const userId = userDetails.userId;
@@ -326,7 +316,7 @@ function EffectiveElogs() {
   ];
 
   const handleNavigation = (item) => {
-    console.log(item,"itme")
+    console.log(item, "itme");
     if (item.DifferentialPressureRecords) {
       navigate("/effective-dpr", { state: item });
       // } else if (item.process === "Area and equipment") {
@@ -354,14 +344,13 @@ function EffectiveElogs() {
     }
   };
 
-    const filterRecord = (item) => {
+  const filterRecord = (item) => {
     const roleMatch =
       role === "All_Records" ||
       (role === "analytical_balance" && item?.initiator_name) ||
       (role === "karl_fischer" && item?.reviewed_by);
 
-    const statusMatch =
-      status === "All_Records" || item.status === status;
+    const statusMatch = status === "All_Records" || item.status === status;
 
     return roleMatch && statusMatch;
   };
@@ -378,8 +367,7 @@ function EffectiveElogs() {
         ?.filter(filterRecord)
         ?.sort(
           (a, b) =>
-            new Date(b.date_of_initiation) -
-            new Date(a.date_of_initiation)
+            new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
         );
     }
   };
@@ -398,7 +386,7 @@ function EffectiveElogs() {
     });
   };
 
-   const getFormPrefix = (item) => {
+  const getFormPrefix = (item) => {
     return item.DifferentialPressureRecords
       ? "DP"
       : item.TempratureRecords
@@ -460,81 +448,188 @@ function EffectiveElogs() {
       <HeaderBottom />
 
       <div className="desktop-input-table-wrapper">
-      {/* Filters */}
-      <div className="flex justify-end pb-4 gap-4">
-        {/* Equipment Filter */}
-        <div className="flex flex-col items-start">
-          <label className="mb-1">Equipment</label>
-          <select
-            value={eLogSelect}
-            onChange={(e) => setELogSelect(e.target.value)}
-            className="border border-gray-400 h-10 px-2"
-              style={{
-                border: "1px solid gray",
-                padding: "2px 0px",
-                height: "40px",
-              }}
+        {/* Filters */}
+        <div
+          className="filter-section"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "20px",
+            flexWrap: "wrap",
+            marginBottom: "15px",
+            padding: "10px",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "8px",
+            border: "1px solid #e9ecef",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "end",
+              gap: "20px",
+              flexWrap: "wrap",
+              flex: 1,
+            }}
           >
-            <option value="All_Records">All Records</option>
-            <option value="analytical_balance">Analytical Balance</option>
-            <option value="karl_fischer">KARL Fischer</option>
-            {/* <option value="hplc">HPLC</option> */}
-          </select>
+            {/* Equipment Filter */}
+            <div
+              className="group-input"
+              style={{ marginBottom: "0", minWidth: "200px" }}
+            >
+              <label
+                className="color-label"
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#495057",
+                  marginBottom: "8px",
+                  padding: "0",
+                }}
+              >
+                Instrument / Equipment
+              </label>
+              <select
+                value={eLogSelect}
+                onChange={(e) => setELogSelect(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All_Records">All Records</option>
+                <option value="analytical_balance">Analytical Balance</option>
+                <option value="karl_fischer">KARL Fischer</option>
+                <option value="hplc">HPLC</option>
+              </select>
+            </div>
+
+            {/* Role Filter */}
+            {/* <div
+              className="group-input"
+              style={{ marginBottom: "0", minWidth: "200px" }}
+            >
+              <label
+                className="color-label"
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#495057",
+                  marginBottom: "8px",
+                  padding: "0",
+                }}
+              >
+                Role
+              </label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All_Records">All Records</option>
+                <option value="analytical_balance">Analytical Balance</option>
+                <option value="karl_fischer">KARL Fischer</option>
+              </select>
+            </div> */}
+
+            {/* Status Filter */}
+            {/* <div
+              className="group-input"
+              style={{ marginBottom: "0", minWidth: "200px" }}
+            >
+              <label
+                className="color-label"
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#495057",
+                  marginBottom: "8px",
+                  padding: "0",
+                }}
+              >
+                Status
+              </label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All_Records">All Records</option>
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+              </select>
+            </div> */}
+          </div>
         </div>
 
-    
-       
+        {/* Table */}
+        <table className="w-full border border-collapse">
+          <thead>
+            <tr>
+              <th>S no</th>
+              <th>E.Log no</th>
+              <th>Instrument / Equipment</th>
+              <th>Department</th>
+              <th>Short description</th>
+              {/* <th>Initiator</th> */}
+              <th>Date of initiation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredData?.map((item, index) => {
+              const cleanHTML =
+                item?.description?.replace(/^"|"$/g, "").trim() || "NA";
+              return (
+                <tr key={item.form_id || item.eLogId}>
+                  <td>{index + 1}</td>
+                  <td
+                    style={{ cursor: "pointer", color: "black" }}
+                    onClick={() => handleNavigation(item)}
+                    onMouseEnter={(e) => (e.target.style.color = "blue")}
+                    onMouseLeave={(e) => (e.target.style.color = "black")}
+                  >
+                    {`${getFormPrefix(item)}${item.form_id}`}
+                  </td>
+                  <td>{getEquipmentType(item)}</td>
+                  <td>
+                    {item.site_id === 1
+                      ? "India"
+                      : item.site_id === 2
+                      ? "Malaysia"
+                      : item.site_id === 3
+                      ? "EMEA"
+                      : item.site_id === 5
+                      ? "IPC"
+                      : "EU"}
+                  </td>
+                  <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
+                  {/* <td>{item.initiator_name}</td> */}
+                  <td>{formatDate(item.date_of_initiation)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-
-      {/* Table */}
-      <table className="w-full border border-collapse">
-        <thead>
-          <tr>
-            <th>S no</th>
-            <th>E.Log no</th>
-            <th>Instrument / Equipment</th>
-            <th>Department</th>
-            <th>Short description</th>
-            {/* <th>Initiator</th> */}
-            <th>Date of initiation</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData?.map((item, index) => {
-            const cleanHTML =
-              item?.description?.replace(/^"|"$/g, "").trim() || "NA";
-            return (
-              <tr key={item.form_id || item.eLogId}>
-                <td>{index + 1}</td>
-                <td
-                  style={{ cursor: "pointer", color: "black" }}
-                  onClick={() => handleNavigation(item)}
-                  onMouseEnter={(e) => (e.target.style.color = "blue")}
-                  onMouseLeave={(e) => (e.target.style.color = "black")}
-                >
-                  {`${getFormPrefix(item)}${item.form_id}`}
-                </td>
-                <td>{getEquipmentType(item)}</td>
-                <td>
-                  {item.site_id === 1
-                    ? "India"
-                    : item.site_id === 2
-                    ? "Malaysia"
-                    : item.site_id === 3
-                    ? "EMEA"
-                    : item.site_id === 5
-                    ? "IPC"
-                    : "EU"}
-                </td>
-                <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
-                {/* <td>{item.initiator_name}</td> */}
-                <td>{formatDate(item.date_of_initiation)}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
     </>
   );
 }

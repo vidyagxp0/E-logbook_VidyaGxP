@@ -39,10 +39,10 @@ const hplcRecord = sequelize.define(
       type: DataTypes.STRING,
     },
     start_time: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
     },
     end_time: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
     },
     no_of_injections: {
       type: DataTypes.STRING,

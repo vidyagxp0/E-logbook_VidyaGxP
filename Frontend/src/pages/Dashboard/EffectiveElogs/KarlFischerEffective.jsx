@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 // import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
@@ -18,10 +18,9 @@ const KarlFischerEffective = () => {
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
-  const [selectedInitiator, setSelectedInitiator] = useState("");
-  const [selectedReviewer, setSelectedReviewer] = useState("");
+  const [selectedInitiator, setSelectedInitiator] = useState("All Records");
+  const [selectedReviewer, setSelectedReviewer] = useState("All Records");
   const [selectedStatus, setSelectedStatus] = useState("");
-  console.log(selectedReviewer,"selectedReviewer")
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
   const [User, setUser] = useState(null);
@@ -64,8 +63,6 @@ const KarlFischerEffective = () => {
     karlFischerRecords: [],
     limit: "",
   });
-  console.log(editData, "editdata");
-
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -76,15 +73,36 @@ const KarlFischerEffective = () => {
   };
 
   const handlePopupSubmit = (credentials) => {
-    const cleanedData = editData?.karlFischerRecords.filter(
-      (record) =>
-        record.karl_fischer?.trim() !== "" || record.remarks.trim() !== ""
-    );
+    const cleanedData = editData?.karlFischerRecords.filter((record) => {
+      // Check if record has required fields filled
+      const hasRequiredFields =
+        record.lot_no?.trim() !== "" &&
+        record.sample_name?.trim() !== "" &&
+        record.factor_percent_water?.trim() !== "";
+
+      // Only keep records that have required fields filled
+      // Even saved records (with record_id) must have required fields
+      return hasRequiredFields;
+    });
+
+    // Check if any empty rows will be removed
+    const emptyRowsCount =
+      editData?.karlFischerRecords.length - cleanedData.length;
+    if (emptyRowsCount > 0) {
+      toast.warn(
+        `${emptyRowsCount} empty row(s) will be removed before saving.`
+      );
+      console.log("Original records:", editData?.karlFischerRecords);
+      console.log("Cleaned records:", cleanedData);
+    }
 
     const updatedEditData = {
       ...editData,
       karlFischerRecords: cleanedData,
     };
+
+  
+
     const data = {
       ...updatedEditData,
       site_id: location.state?.site_id,
@@ -207,7 +225,7 @@ const KarlFischerEffective = () => {
       //   return;
       // }
       if (
-        editData?.karlFischerRecords?.some(
+        updatedEditData?.karlFischerRecords?.some(
           (record) => record.differential_pressure === ""
         )
       ) {
@@ -215,9 +233,9 @@ const KarlFischerEffective = () => {
         return;
       }
 
-      editData.email = credentials.email;
-      editData.password = credentials.password;
-      editData.initiatorDeclaration = credentials?.declaration;
+      updatedEditData.email = credentials.email;
+      updatedEditData.password = credentials.password;
+      updatedEditData.initiatorDeclaration = credentials?.declaration;
 
       const myHeaders = {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
@@ -227,7 +245,7 @@ const KarlFischerEffective = () => {
       const requestOptions = {
         method: "PUT",
         headers: myHeaders,
-        data: editData,
+        data: updatedEditData,
         url: "http://localhost:1000/karl-fischer/update-karl-fischer",
       };
 
@@ -246,11 +264,9 @@ const KarlFischerEffective = () => {
   };
 
   useEffect(() => {
-    console.log(location.state);
     setEditData(location.state);
   }, [location.state]);
 
-console.log(location.state,"location.state")
   const addRow = () => {
     if (
       userDetails.roles[0].role_id === 1 ||
@@ -272,8 +288,9 @@ console.log(location.state,"location.state")
         checked_by: location?.state?.initiator_name || "",
         remarks: "",
         reviewed_by: "",
-        remarksOther:"",
-        remarksType:""
+        remarksOther: "",
+        remarksType: "",
+        status: "Open",
       };
       setEditData((prevState) => ({
         ...prevState,
@@ -357,55 +374,63 @@ console.log(location.state,"location.state")
   };
 
   const handleInputChange1 = (e) => {
-  const { name, value } = e.target;
-  
+    const { name, value } = e.target;
+
     const val = value === "All Records" ? "" : value;
 
-  if (name === "initiator") {
-    setSelectedInitiator(val);
-    setSelectedReviewer("")
-  }
-  if (name === "reviewer") {
-    setSelectedReviewer(val);
-        setSelectedInitiator("");
-  }
+    if (name === "initiator") {
+      setSelectedInitiator(val);
+      setSelectedReviewer("");
+      setSelectedStatus("All Records");
+    }
+    if (name === "reviewer") {
+      setSelectedReviewer(val);
+      setSelectedInitiator("");
+      setSelectedStatus("All Records");
+    }
 
-  if (name === "status") {
-    setSelectedStatus(value);
-  }
+    if (name === "status") {
+      setSelectedStatus(value);
+      setSelectedInitiator("");
+      setSelectedReviewer("");
+    }
 
-  setEditData((prev) => ({
-    ...prev,
-    [name]: val,
-  }));
-};
+    setEditData((prev) => ({
+      ...prev,
+      [name]: val,
+    }));
+  };
 
+  const filteredGridData = useMemo(() => {
+    const records = editData?.karlFischerRecords || [];
 
+    return records.filter((record) => {
+      const matchInitiator =
+        selectedInitiator && selectedInitiator !== "All Records"
+          ? record.done_by === selectedInitiator
+          : true;
 
-const filteredGridData = useMemo(() => {
-  const records = editData?.karlFischerRecords || [];
+      const matchReviewer =
+        selectedReviewer && selectedReviewer !== "All Records"
+          ? record.reviewed_by === selectedReviewer
+          : true;
 
-  return records.filter((record) => {
-    const matchInitiator = selectedInitiator && selectedInitiator !== "All Records"
-      ? record.done_by === selectedInitiator
-      : true;
+      const matchStatus =
+        selectedStatus === "Open"
+          ? record.status === "Open"
+          : selectedStatus === "Closed"
+          ? record.status === "Closed"
+          : true;
 
-    const matchReviewer = selectedReviewer && selectedReviewer !== "All Records"
-      ? record.reviewed_by === selectedReviewer
-      : true;
+      return matchInitiator && matchReviewer && matchStatus;
+    });
+  }, [
+    editData?.karlFischerRecords,
+    selectedInitiator,
+    selectedReviewer,
+    selectedStatus,
+  ]);
 
-    const matchStatus =
-      selectedStatus === "Open"
-        ? !record.reviewed_by
-        : selectedStatus === "Closed"
-        ? !!record.reviewed_by
-        : true;
-
-    return matchInitiator && matchReviewer && matchStatus;
-  });
-}, [editData?.karlFischerRecords, selectedInitiator, selectedReviewer, selectedStatus]);
-
-console.log(filteredGridData,"filteredGridData")
   // const handleDeleteFile = (index) => {
   //   if (
   //     location.state?.stage === 1 &&
@@ -573,7 +598,7 @@ console.log(filteredGridData,"filteredGridData")
       console.error("Record ID not found for deletion");
       return;
     }
-
+    [];
     try {
       const res = await axios.delete(
         `http://localhost:1000/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`
@@ -598,12 +623,18 @@ console.log(filteredGridData,"filteredGridData")
   };
 
   const isRowEditable = (item) => {
-  const isInitiator = userDetails.userId == location.state?.initiator_id;
-  const isNewRow = !item.form_id; // ya item.isNew === true if you manually add it
-  return isInitiator ? isNewRow : true;
-};
+    const isInitiator = userDetails.userId == location.state?.initiator_id;
+    const isNewRow = !item.form_id; // ya item.isNew === true if you manually add it
+    return isInitiator ? isNewRow : true;
+  };
 
-
+  // Check if reviewer can edit a record (prevent changes after saving)
+  const canReviewerEdit = (item) => {
+    if (item.record_id && item.reviewed_by) {
+      return false;
+    }
+    return true;
+  };
 
   return (
     <>
@@ -625,8 +656,8 @@ console.log(filteredGridData,"filteredGridData")
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block !grid !grid-cols-2">
             {/* <div>
-              <strong> Record Name:&nbsp;</strong>KARL Fischer
-            </div> */}
+                <strong> Record Name:&nbsp;</strong>KARL Fischer
+              </div> */}
             <div>
               <strong> Department :&nbsp;</strong>
               {location.state?.site_id === 1
@@ -635,34 +666,34 @@ console.log(filteredGridData,"filteredGridData")
                 ? "Malaysia"
                 : location.state?.site_id === 3
                 ? "EMEA"
-                : location.state?.site_id === 3
+                : location.state?.site_id === 4
                 ? "EU"
                 : "IPC"}
             </div>
             {/* <div>
-              <strong> Initiated By :&nbsp;</strong>
-              {location.state?.initiator_name}
-            </div> */}
+                <strong> Initiated By :&nbsp;</strong>
+                {location.state?.initiator_name}
+              </div> */}
           </div>
 
           <div className="document-form">
             <div className="details-form-data">
               {/* <div className="sop-type-header">
-                <div className="logo">
-                  <img src="/vidyalogo21.png" alt="..." />
-                </div>
-                <div className="main-head">
-                  <div>Indian Pharmacopoeia Commission</div>
-                </div>
-              </div> */}
-              {/* <div className="sop-type-header">
                   <div className="logo">
                     <img src="/vidyalogo21.png" alt="..." />
                   </div>
                   <div className="main-head">
-                    <div>VidyaGxP Private Limited</div>
+                    <div>Indian Pharmacopoeia Commission</div>
                   </div>
                 </div> */}
+              {/* <div className="sop-type-header">
+                    <div className="logo">
+                      <img src="/vidyalogo21.png" alt="..." />
+                    </div>
+                    <div className="main-head">
+                      <div>VidyaGxP Private Limited</div>
+                    </div>
+                  </div> */}
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
@@ -687,36 +718,36 @@ console.log(filteredGridData,"filteredGridData")
 
                   {/* Generate Empty Report Button */}
                   {/* <button
-                    onClick={generateEmptyReport}
-                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
-                  >
-                    {isLoading1 ? (
-                      <>
-                        <span>Offline Entry</span>
-                        <div
-                          style={{
-                            width: "20px",
-                            height: "20px",
-                            border: "3px solid #f3f3f3",
-                            borderTop: "3px solid black",
-                            borderRadius: "50%",
-                            animation: "spin 1s linear infinite",
-                            marginLeft: "10px",
-                          }}
-                        ></div>
-                      </>
-                    ) : (
-                      "Offline Entry"
-                    )}
-                    <style>
-                      {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
-                    </style>
-                  </button> */}
+                      onClick={generateEmptyReport}
+                      className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                    >
+                      {isLoading1 ? (
+                        <>
+                          <span>Offline Entry</span>
+                          <div
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              border: "3px solid #f3f3f3",
+                              borderTop: "3px solid black",
+                              borderRadius: "50%",
+                              animation: "spin 1s linear infinite",
+                              marginLeft: "10px",
+                            }}
+                          ></div>
+                        </>
+                      ) : (
+                        "Offline Entry"
+                      )}
+                      <style>
+                        {`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}
+                      </style>
+                    </button> */}
 
                   {/* Generate Report Button */}
                   <button
@@ -743,389 +774,498 @@ console.log(filteredGridData,"filteredGridData")
                     )}
                     <style>
                       {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}
                     </style>
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
                   {/* {location.state?.stage === 1 &&
-                      location.state?.initiator_id === userDetails.userId && (
-                        <button
-                          className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                          onClick={() => {
-                            setIsPopupOpen(true);
-                            setPopupAction("sendFromOpenToReview");
-                          }}
-                        >
-                          Send for Review
-                        </button>
-                      )} */}
+                        location.state?.initiator_id === userDetails.userId && (
+                          <button
+                            className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                            onClick={() => {
+                              setIsPopupOpen(true);
+                              setPopupAction("sendFromOpenToReview");
+                            }}
+                          >
+                            Send for Review
+                          </button>
+                        )} */}
 
                   {/* {location.state?.stage === 2 &&
-                      location.state?.reviewer_id === userDetails.userId && (
-                        <>
-                          <button
-                            className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                            onClick={() => {
-                              setIsPopupOpen(true);
-                              setPopupAction("sendFromReviewToApproval");
-                            }}
-                          >
-                            Review Completed
-                          </button>
-                          <button
-                            className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                            onClick={() => {
-                              setIsPopupOpen(true);
-                              setPopupAction("sendFromReviewToOpen");
-                            }}
-                          >
-                            More Info Required
-                          </button>
-                        </>
-                      )} */}
+                        location.state?.reviewer_id === userDetails.userId && (
+                          <>
+                            <button
+                              className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                              onClick={() => {
+                                setIsPopupOpen(true);
+                                setPopupAction("sendFromReviewToApproval");
+                              }}
+                            >
+                              Review Completed
+                            </button>
+                            <button
+                              className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                              onClick={() => {
+                                setIsPopupOpen(true);
+                                setPopupAction("sendFromReviewToOpen");
+                              }}
+                            >
+                              More Info Required
+                            </button>
+                          </>
+                        )} */}
 
                   {/* {location.state?.stage === 3 &&
-                      location.state?.approver_id === userDetails.userId && (
-                        <>
-                          <button
-                            className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                            onClick={() => {
-                              setIsPopupOpen(true);
-                              setPopupAction("sendFromApprovalToClosedDone");
-                            }}
-                          >
-                            Approve elog
-                          </button>
-                          <button
-                            className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                            onClick={() => {
-                              setIsPopupOpen(true);
-                              setPopupAction("sendFromApprovalToOpen");
-                            }}
-                          >
-                            More Info Required
-                          </button>
-                        </>
-                      )} */}
+                        location.state?.approver_id === userDetails.userId && (
+                          <>
+                            <button
+                              className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                              onClick={() => {
+                                setIsPopupOpen(true);
+                                setPopupAction("sendFromApprovalToClosedDone");
+                              }}
+                            >
+                              Approve elog
+                            </button>
+                            <button
+                              className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                              onClick={() => {
+                                setIsPopupOpen(true);
+                                setPopupAction("sendFromApprovalToOpen");
+                              }}
+                            >
+                              More Info Required
+                            </button>
+                          </>
+                        )} */}
 
                   {/* {location.state?.stage === 3 &&
-                      userDetails.userId === location.state?.reviewer_id && ( */}
+                        userDetails.userId === location.state?.reviewer_id && ( */}
                   {/* <button
-                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                    onClick={() => {
-                      setIsPopupOpen(true);
-                      setPopupAction("updateElog");
-                    }}
-                  >
-                    Save
-                  </button> */}
+                      className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                      onClick={() => {
+                        setIsPopupOpen(true);
+                        setPopupAction("updateElog");
+                      }}
+                    >
+                      Save
+                    </button> */}
                   {/* ) */}
                 </div>
               </div>
               {/* <div className="outerDiv4 bg-slate-300 py-4">
-                  <div className="flex gap-3 ">
-                    <div
-                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                        location.state?.stage > 1
-                          ? "bg-green-500 text-white"
-                          : location.state?.stage === 1
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      OPENED
+                    <div className="flex gap-3 ">
+                      <div
+                        className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                          location.state?.stage > 1
+                            ? "bg-green-500 text-white"
+                            : location.state?.stage === 1
+                            ? "bg-orange-500 text-white"
+                            : "bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        OPENED
+                      </div>
+    
+                      <div
+                        className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                          location.state?.stage > 2
+                            ? "bg-green-500 text-white"
+                            : location.state?.stage === 2
+                            ? "bg-orange-500 text-white"
+                            : "bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        UNDER REVIEW
+                      </div>
+    
+                      <div
+                        className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                          location.state?.stage > 3
+                            ? "bg-green-500 text-white"
+                            : location.state?.stage === 3
+                            ? "bg-orange-500 text-white"
+                            : "bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        UNDER APPROVAL
+                      </div>
+    
+                      <div
+                        className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
+                          location.state?.stage > 4
+                            ? "bg-green-500 text-white"
+                            : location.state?.stage === 4
+                            ? "bg-red-500 text-white"
+                            : "bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        CLOSED DONE
+                      </div>
                     </div>
-  
-                    <div
-                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                        location.state?.stage > 2
-                          ? "bg-green-500 text-white"
-                          : location.state?.stage === 2
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      UNDER REVIEW
-                    </div>
-  
-                    <div
-                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                        location.state?.stage > 3
-                          ? "bg-green-500 text-white"
-                          : location.state?.stage === 3
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      UNDER APPROVAL
-                    </div>
-  
-                    <div
-                      className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                        location.state?.stage > 4
-                          ? "bg-green-500 text-white"
-                          : location.state?.stage === 4
-                          ? "bg-red-500 text-white"
-                          : "bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      CLOSED DONE
-                    </div>
-                  </div>
-                </div> */}
+                  </div> */}
               <div className="">
                 <div className="btn-forms">
                   {/* <div
-                      className={`${
-                        isSelectedGeneral === true
-                          ? "btn-forms-isSelected"
-                          : "btn-forms-select"
-                      }`}
-                      onClick={() => {
-                        setIsSelectedDetails(false),
-                          setIsSelectedGeneral(true),
-                          setInitiatorRemarks(false),
-                          setReviewerRemarks(false),
-                          setApproverRemarks(false);
-                      }}
-                    >
-                      General Information
-                    </div> */}
+                        className={`${
+                          isSelectedGeneral === true
+                            ? "btn-forms-isSelected"
+                            : "btn-forms-select"
+                        }`}
+                        onClick={() => {
+                          setIsSelectedDetails(false),
+                            setIsSelectedGeneral(true),
+                            setInitiatorRemarks(false),
+                            setReviewerRemarks(false),
+                            setApproverRemarks(false);
+                        }}
+                      >
+                        General Information
+                      </div> */}
                   {/* <div
-                      className={`${
-                        isSelectedDetails === true
-                          ? "btn-forms-isSelected"
-                          : "btn-forms-select"
-                      }`}
-                      onClick={() => {
-                        setIsSelectedDetails(true),
-                          setIsSelectedGeneral(false),
-                          setInitiatorRemarks(false),
-                          setReviewerRemarks(false),
-                          setApproverRemarks(false);
-                      }}
-                    >
-                      Details
-                    </div> */}
+                        className={`${
+                          isSelectedDetails === true
+                            ? "btn-forms-isSelected"
+                            : "btn-forms-select"
+                        }`}
+                        onClick={() => {
+                          setIsSelectedDetails(true),
+                            setIsSelectedGeneral(false),
+                            setInitiatorRemarks(false),
+                            setReviewerRemarks(false),
+                            setApproverRemarks(false);
+                        }}
+                      >
+                        Details
+                      </div> */}
                   {/* <div
-                      className={`${
-                        initiatorRemarks === true
-                          ? "btn-forms-isSelected"
-                          : "btn-forms-select"
-                      }`}
-                      onClick={() => {
-                        setIsSelectedDetails(false),
-                          setIsSelectedGeneral(false),
-                          setInitiatorRemarks(true),
-                          setReviewerRemarks(false),
-                          setApproverRemarks(false);
-                      }}
-                    >
-                      Initiator Remarks
-                    </div>
-                    <div
-                      className={`${
-                        reviewerRemarks === true
-                          ? "btn-forms-isSelected"
-                          : "btn-forms-select"
-                      }`}
-                      onClick={() => {
-                        setIsSelectedDetails(false),
-                          setIsSelectedGeneral(false),
-                          setInitiatorRemarks(false),
-                          setReviewerRemarks(true),
-                          setApproverRemarks(false);
-                      }}
-                    >
-                      Reviewer Remarks
-                    </div>
-                    <div
-                      className={`${
-                        approverRemarks === true
-                          ? "btn-forms-isSelected"
-                          : "btn-forms-select"
-                      }`}
-                      onClick={() => {
-                        setIsSelectedDetails(false),
-                          setIsSelectedGeneral(false),
-                          setInitiatorRemarks(false),
-                          setReviewerRemarks(false),
-                          setApproverRemarks(true);
-                      }}
-                    >
-                      Approver Remarks
-                    </div> */}
+                        className={`${
+                          initiatorRemarks === true
+                            ? "btn-forms-isSelected"
+                            : "btn-forms-select"
+                        }`}
+                        onClick={() => {
+                          setIsSelectedDetails(false),
+                            setIsSelectedGeneral(false),
+                            setInitiatorRemarks(true),
+                            setReviewerRemarks(false),
+                            setApproverRemarks(false);
+                        }}
+                      >
+                        Initiator Remarks
+                      </div>
+                      <div
+                        className={`${
+                          reviewerRemarks === true
+                            ? "btn-forms-isSelected"
+                            : "btn-forms-select"
+                        }`}
+                        onClick={() => {
+                          setIsSelectedDetails(false),
+                            setIsSelectedGeneral(false),
+                            setInitiatorRemarks(false),
+                            setReviewerRemarks(true),
+                            setApproverRemarks(false);
+                        }}
+                      >
+                        Reviewer Remarks
+                      </div>
+                      <div
+                        className={`${
+                          approverRemarks === true
+                            ? "btn-forms-isSelected"
+                            : "btn-forms-select"
+                        }`}
+                        onClick={() => {
+                          setIsSelectedDetails(false),
+                            setIsSelectedGeneral(false),
+                            setInitiatorRemarks(false),
+                            setReviewerRemarks(false),
+                            setApproverRemarks(true);
+                        }}
+                      >
+                        Approver Remarks
+                      </div> */}
                   {/* <div
-                      className="btn-forms-select"
-                      onClick={() =>
-                        navigate("/audit-trail", {
-                          state: {
-                            formId: location.state?.form_id,
-                            process: "KARL Fischer",
-                          },
-                        })
-                      }
-                    >
-                      Audit Trail
-                    </div> */}
+                        className="btn-forms-select"
+                        onClick={() =>
+                          navigate("/audit-trail", {
+                            state: {
+                              formId: location.state?.form_id,
+                              process: "KARL Fischer",
+                            },
+                          })
+                        }
+                      >
+                        Audit Trail
+                      </div> */}
                 </div>
                 {/* <button className="btn-forms-select" onClick={generateReport}>
-                    Generate Report
-                  </button> */}
+                      Generate Report
+                    </button> */}
                 {/* <div className="analytics-btn">
-                    <button
-                      className="btn-print"
-                      onClick={() =>
-                        navigate("/analytics", {
-                          state: { records: location.state, processId: 1 },
-                        })
-                      }
-                    >
-                      Analytics
-                    </button>
-                  </div> */}
+                      <button
+                        className="btn-print"
+                        onClick={() =>
+                          navigate("/analytics", {
+                            state: { records: location.state, processId: 1 },
+                          })
+                        }
+                      >
+                        Analytics
+                      </button>
+                    </div> */}
               </div>
               {/* <div className="flex gap-2">
-                <div className="flex gap-2">
-                  <div>
-                    <label> Start Date</label>
-                    <input type="date" />
+                  <div className="flex gap-2">
+                    <div>
+                      <label> Start Date</label>
+                      <input type="date" />
+                    </div>
+                    <div>
+                      <label> End Date</label>
+                      <input type="date" />
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <div>
+                      <label> Start Date and Time</label>
+                      <input type="datetime-local" />
+                    </div>
+                    <div>
+                      <label> End Date and Time</label>
+                      <input type="datetime-local" />
+                    </div>
                   </div>
                   <div>
-                    <label> End Date</label>
-                    <input type="date" />
+                    <label htmlFor="">Shift Vise</label>
+                    <input type="text" />
                   </div>
-                </div>
-                <div className="flex gap-2">
-                  <div>
-                    <label> Start Date and Time</label>
-                    <input type="datetime-local" />
-                  </div>
-                  <div>
-                    <label> End Date and Time</label>
-                    <input type="datetime-local" />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="">Shift Vise</label>
-                  <input type="text" />
-                </div>
-              </div> */}
+                </div> */}
 
               {/* {isSelectedGeneral === true ? (
-                  <>
-                    <div className="group-input">
-                      <label className="color-label">Initiator </label>
-                      <div>
-                        <input
-                          type="text"
-                          name="initiator"
-                          value={editData.initiator_name}
-                          readOnly
-                        />
+                    <>
+                      <div className="group-input">
+                        <label className="color-label">Initiator </label>
+                        <div>
+                          <input
+                            type="text"
+                            name="initiator"
+                            value={editData.initiator_name}
+                            readOnly
+                          />
+                        </div>
                       </div>
-                    </div>
-  
-                    <div className="group-input">
-                      <label className="color-label">Date of Initiation</label>
-                      <div>
-                        <input
-                          type="text"
-                          value={formatDate(editData.date_of_initiation)}
-                          readOnly
-                        />
+    
+                      <div className="group-input">
+                        <label className="color-label">Date of Initiation</label>
+                        <div>
+                          <input
+                            type="text"
+                            value={formatDate(editData.date_of_initiation)}
+                            readOnly
+                          />
+                        </div>
                       </div>
-                    </div>
-  
-                    <div className="group-input">
-                      <label className="color-label">
-                        Description{" "}
-                        <span className="required-asterisk text-red-500">*</span>
-                      </label>
-                      <div>
-                      
-  
-                        <TinyEditor
-                          editorContent={editData.description}
-                          setEditorContent={setTinyContent}
-                          tinyNo={1}
-                        />
+    
+                      <div className="group-input">
+                        <label className="color-label">
+                          Description{" "}
+                          <span className="required-asterisk text-red-500">*</span>
+                        </label>
+                        <div>
+                        
+    
+                          <TinyEditor
+                            editorContent={editData.description}
+                            setEditorContent={setTinyContent}
+                            tinyNo={1}
+                          />
+                        </div>
                       </div>
-                    </div>
-  
-                    <div className="group-input">
-                      <label className="color-label">Status</label>
-                      <div>
-                        <input
-                          name="status"
-                          type="text"
-                          value={editData?.status}
-                          readOnly
-                        />
+    
+                      <div className="group-input">
+                        <label className="color-label">Status</label>
+                        <div>
+                          <input
+                            name="status"
+                            type="text"
+                            value={editData?.status}
+                            readOnly
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </>
-                ) : null} */}
+                    </>
+                  ) : null} */}
 
               {isSelectedDetails === true ? (
                 <>
-                 <div className="filter-row" style={{ display: "flex",justifyContent:"end", gap: "50px", flexWrap: "wrap" }}>
-  <div className="group-input">
-    <label className="color-label !p-0">Status</label>
-      <select
-      className="form-control"
-      name="status"
-      value={editData?.status}
-      onChange={handleInputChange1}
-    >
-      <option value="All Records">All Records</option>
-      <option value="Open">Open</option>
-      <option value="Closed">Closed</option>
-    </select>
-  </div>
+                  <div
+                    className="filter-section"
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "20px",
+                      flexWrap: "wrap",
+                      marginBottom: "20px",
+                      padding: "15px",
+                      backgroundColor: "#f8f9fa",
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "end",
+                        gap: "20px",
+                        flexWrap: "wrap",
+                        flex: 1,
+                      }}
+                    >
+                      <div
+                        className="group-input"
+                        style={{ marginBottom: "0", minWidth: "200px" }}
+                      >
+                        <label
+                          className="color-label"
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#495057",
+                            marginBottom: "8px",
+                            padding: "0",
+                          }}
+                        >
+                          Status
+                        </label>
+                        <select
+                          className="form-control"
+                          name="status"
+                          value={selectedStatus}
+                          onChange={handleInputChange1}
+                          style={{
+                            padding: "8px 12px",
+                            border: "1px solid #ced4da",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="All Records">All Records</option>
+                          <option value="Open">Open</option>
+                          <option value="Closed">Closed</option>
+                        </select>
+                      </div>
 
-<div className="group-input">
-  <label className="color-label !p-0">Initiator</label>
-  <select
-    className="form-control"
-    name="initiator"
-    value={editData?.initiator}
-    onChange={handleInputChange1}
-  >
-    <option value="All Records">All Records</option>
+                      <div
+                        className="group-input"
+                        style={{ marginBottom: "0", minWidth: "200px" }}
+                      >
+                        <label
+                          className="color-label"
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#495057",
+                            marginBottom: "8px",
+                            padding: "0",
+                          }}
+                        >
+                          Initiator
+                        </label>
+                        <select
+                          className="form-control"
+                          name="initiator"
+                          value={selectedInitiator}
+                          onChange={handleInputChange1}
+                          style={{
+                            padding: "8px 12px",
+                            border: "1px solid #ced4da",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="All Records">All Records</option>
+                          {[
+                            ...new Set(
+                              editData?.karlFischerRecords?.map(
+                                (r) => r.done_by
+                              )
+                            ),
+                          ].map(
+                            (done_by, index) =>
+                              done_by && (
+                                <option key={index} value={done_by}>
+                                  {done_by}
+                                </option>
+                              )
+                          )}
+                        </select>
+                      </div>
 
-  {[...new Set(editData?.karlFischerRecords?.map(r => r.done_by))].map((done_by, index) => (
-  done_by && <option key={index} value={done_by}>{done_by}</option>
-))}
+                      <div
+                        className="group-input"
+                        style={{ marginBottom: "0", minWidth: "200px" }}
+                      >
+                        <label
+                          className="color-label"
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#495057",
+                            marginBottom: "8px",
+                            padding: "0",
+                          }}
+                        >
+                          Reviewer
+                        </label>
+                        <select
+                          className="form-control"
+                          name="reviewer"
+                          value={selectedReviewer}
+                          onChange={handleInputChange1}
+                          style={{
+                            padding: "8px 12px",
+                            border: "1px solid #ced4da",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="All Records">All Records</option>
+                          {[
+                            ...new Set(
+                              editData?.karlFischerRecords?.map(
+                                (r) => r.reviewed_by
+                              )
+                            ),
+                          ].map(
+                            (reviewed_by, index) =>
+                              reviewed_by && (
+                                <option key={index} value={reviewed_by}>
+                                  {reviewed_by}
+                                </option>
+                              )
+                          )}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
 
-  </select>
-</div>
-
-
-
-  <div className="group-input">
-    <label className="color-label !p-0">Reviewer</label>
-    <select
-      className="form-control"
-      name="reviewer"
-      value={editData?.reviewer}
-      onChange={handleInputChange1}
-    >
-      <option value="All Records">All Records</option>
-{[...new Set(editData?.karlFischerRecords?.map(r => r.reviewed_by))].map((reviewed_by, index) => (
-  reviewed_by && <option key={index} value={reviewed_by}>{reviewed_by}</option>
-))}    </select>
-  </div>
-</div>
                   <div>
-                    <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} className="!text-[#5899f3]" />
-                      <div className="addrowinstruction"></div>
+                    <div className="AddRows d-flex items-center">
+                      <NoteAdd onClick={addRow} className="cursor-pointer" />
+                      <div className="add-row-instruction text-sm">
+                        Click the icon to add a row
+                      </div>
                     </div>
                   </div>
                   <table>
@@ -1146,473 +1286,378 @@ console.log(filteredGridData,"filteredGridData")
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredGridData?.map((item, index) => (
-                        <tr key={index}>
-                          <td className=" !text-center">
-                            {index + 1}
-                            <DeleteIcon
-                              className="absolute right-1 top-1 text-black cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                              onClick={() => deleteRow(index)}
-                            />
-                          </td>
-                          <td className="!text-center !justify-center">
-                            <input value={item?.date} type="text" readOnly />
-                          </td>
+                      {filteredGridData.length > 0 ? (
+                        filteredGridData?.map((item, index) => (
+                          <tr key={index}>
+                            <td className=" !text-center">
+                              {index + 1}
+                              <DeleteIcon
+                                className="absolute right-1 top-1 text-black cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                onClick={() => deleteRow(index)}
+                              />
+                            </td>
+                            <td className="!text-center !justify-center">
+                              <input value={item?.date} type="text" readOnly />
+                            </td>
 
-                          <td className="!text-center !justify-center">
-                            <input
-                              value={item.lot_no}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.karlFischerRecords,
-                                ];
-                                newData[index].lot_no = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  karlFischerRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              ) || !isRowEditable(item)}
-                              //  readOnly={!isRowEditable(item)}
-                            />
-                          </td>
-                          <td className="!text-center !justify-center">
-                            <input
-                              value={item.sample_name}
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.karlFischerRecords,
-                                ];
-                                newData[index].sample_name = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  karlFischerRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              ) || !isRowEditable(item)}
-                            />
-                          </td>
+                            <td className="!text-center !justify-center">
+                              <input
+                                value={item.lot_no}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.karlFischerRecords,
+                                  ];
+                                  newData[index].lot_no = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    karlFischerRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                                //  readOnly={!isRowEditable(item)}
+                              />
+                            </td>
+                            <td className="!text-center !justify-center">
+                              <input
+                                value={item.sample_name}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.karlFischerRecords,
+                                  ];
+                                  newData[index].sample_name = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    karlFischerRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                              />
+                            </td>
 
-                          <td className="!text-center">
-                            <input
-                              value={item.factor_percent_water}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [
-                                  ...editData.karlFischerRecords,
-                                ];
-                                newData[index].factor_percent_water =
-                                  e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  karlFischerRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              ) || !isRowEditable(item)}
-                            />
-                          </td>
-                          <td className="!text-center">
-                            <input
-                              value={item.done_by}
-                              // disabled
-                              // onChange={(e) => {
-                              //   const newData = [
-                              //     ...editData.karlFischerRecords,
-                              //   ];
-                              //   newData[index].done_by = e.target.value;
-                              //   setEditData({
-                              //     ...editData,
-                              //     karlFischerRecords: newData,
-                              //   });
-                              // }}
-                               readOnly={true}
-                            />
-                          </td>
-                
+                            <td className="!text-center">
+                              <input
+                                value={item.factor_percent_water}
+                                // disabled
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.karlFischerRecords,
+                                  ];
+                                  newData[index].factor_percent_water =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    karlFischerRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                              />
+                            </td>
+                            <td className="!text-center">
+                              <input
+                                value={item.done_by}
+                                // disabled
+                                // onChange={(e) => {
+                                //   const newData = [
+                                //     ...editData.karlFischerRecords,
+                                //   ];
+                                //   newData[index].done_by = e.target.value;
+                                //   setEditData({
+                                //     ...editData,
+                                //     karlFischerRecords: newData,
+                                //   });
+                                // }}
+                                readOnly={true}
+                              />
+                            </td>
 
-                        <td>
-  <div>
-    <div className="flex text-nowrap items-center gap-x-2 justify-center">
-      <input
-        className="h-4 w-4 cursor-pointer"
-        type="checkbox"
-        checked={!!item.reviewed_by}
-        onChange={(e) => {
-          const newData = [...editData.karlFischerRecords];
-          if (e.target.checked) {
-            newData[index].reviewed_by = reviewed_by;
-          } else {
-            newData[index].reviewed_by = "";
-            newData[index].remarks = "";
-            newData[index].remarksType = "";
-            newData[index].remarksOther = "";
-          }
-          setEditData({
-            ...editData,
-            karlFischerRecords: newData,
-          });
-        }}
-        disabled={[1, 3].includes(userDetails.roles[0].role_id)}
-      />
-      {item.reviewed_by && <p>{item.reviewed_by}</p>}
-    </div>
-  </div>
-</td>
+                            <td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.karlFischerRecords,
+                                      ];
+                                      if (e.target.checked) {
+                                        newData[index].reviewed_by =
+                                          reviewed_by;
+                                        newData[index].status = "Closed";
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                        newData[index].status = "Open";
+                                        newData[index].remarks = "";
+                                        newData[index].remarksType = "";
+                                        newData[index].remarksOther = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        karlFischerRecords: newData,
+                                      });
+                                    }}
+                                    disabled={
+                                      [1, 3].includes(
+                                        userDetails.roles[0].role_id
+                                      ) || !canReviewerEdit(item)
+                                    }
+                                  />
+                                  {item.reviewed_by && (
+                                    <p>{item.reviewed_by}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
 
-<td>
-  {item.reviewed_by && (
-    <div className="flex items-center gap-2">
-      <select
-        value={item.remarksType || ""}
-        onChange={(e) => {
-          const newData = [...editData.karlFischerRecords];
-          newData[index].remarksType = e.target.value;
+                            <td>
+                              {item.reviewed_by && (
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={item.remarksType || ""}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.karlFischerRecords,
+                                      ];
+                                      newData[index].remarksType =
+                                        e.target.value;
 
-          // clear other if not selected
-          if (e.target.value !== "Others") {
-            newData[index].remarksOther = "";
-            newData[index].remarks = e.target.value;
-          } else {
-            newData[index].remarks = "";
-          }
+                                      // clear other if not selected
+                                      if (e.target.value !== "Others") {
+                                        newData[index].remarksOther = "";
+                                        newData[index].remarks = e.target.value;
+                                      } else {
+                                        newData[index].remarks = "";
+                                      }
 
-          setEditData({
-            ...editData,
-            karlFischerRecords: newData,
-          });
-        }}
-        className="border rounded px-2 py-1 w-auto"
-        disabled={[1, 3].includes(userDetails.roles[0].role_id)}
+                                      setEditData({
+                                        ...editData,
+                                        karlFischerRecords: newData,
+                                      });
+                                    }}
+                                    className="border rounded px-2 py-1 w-auto"
+                                    disabled={
+                                      [1, 3].includes(
+                                        userDetails.roles[0].role_id
+                                      ) || !canReviewerEdit(item)
+                                    }
+                                  >
+                                    <option value="OK">OK</option>
+                                    <option value="Others">Others</option>
+                                  </select>
 
-      >
-        <option value="OK">OK</option>
-        <option value="Others">Others</option>
-      </select>
-
-      {item.remarksType === "Others" && (
-        <input
-          type="text"
-          placeholder="Enter remark"
-          value={item.remarksOther || ""}
-          onChange={(e) => {
-            const newData = [...editData.karlFischerRecords];
-            newData[index].remarksOther = e.target.value;
-            newData[index].remarks = e.target.value;
-            setEditData({
-              ...editData,
-              karlFischerRecords: newData,
-            });
-          }}
-          className="border rounded px-2 py-1 w-auto"
-        />
-      )}
-    </div>
-  )}
-</td>
-
-          <td style={{ width: "200px" }}>
-  <div className="d-flex">
-    {(() => {
-      const isDisabled =
-        [3, 2, 4].includes(userDetails.roles[0].role_id) ||
-        !isRowEditable(item);
-
-      return item.supporting_docs ? (
-        <div className="file-upload-wrapper">
-          <button
-            type="button"
-            className="btn-upload"
-            onClick={() =>
-              !isDisabled &&
-              document.getElementsByName("supporting_docs")[index].click()
-            }
-            disabled={isDisabled}
-          >
-            Change File
-          </button>
-          <h3>
-            Selected File:{" "}
-            <a
-              href={item.supporting_docs}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View File
-            </a>
-            {!isDisabled && (
-              <CloseIcon
-                style={{ color: "black", cursor: "pointer", marginLeft: 5 }}
-                onClick={() => handleDeleteFile(index)}
-              />
-            )}
-          </h3>
-        </div>
-      ) : (
-        <div className="file-upload-wrapper">
-          <button
-            type="button"
-            className="btn-upload"
-            onClick={() =>
-              !isDisabled &&
-              document.getElementsByName("supporting_docs")[index].click()
-            }
-            disabled={isDisabled}
-          >
-            Select File
-          </button>
-        </div>
-      );
-    })()}
-    <input
-      type="file"
-      name="supporting_docs"
-      style={{ display: "none" }}
-      onChange={(e) => handleFileChange(index, e.target.files[0])}
-      disabled={
-        [3, 2, 4].includes(userDetails.roles[0].role_id) ||
-        !isRowEditable(item)
-      }
-    />
-  </div>
-</td>
-
-<td>
-  {(editData?.karlFischerRecords?.find(r => r.record_id === item.record_id)?.reviewed_by)
-    ? "Closed"
-    : "Open"}
-</td>
-
-
-
-                          {/* <td className="!text-center">
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" &&
-                              (item.limit < 0.6 || item.limit > 2.6) && (
-                                <button
-                                  className="deviation-btn"
-                                  onClick={() => {
-                                    navigate("/chart");
-                                  }}
-                                >
-                                  Launch Deviation
-                                </button>
+                                  {item.remarksType === "Others" && (
+                                    <input
+                                      type="text"
+                                      placeholder="Enter remark"
+                                      value={item.remarksOther || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.karlFischerRecords,
+                                        ];
+                                        newData[index].remarksOther =
+                                          e.target.value;
+                                        newData[index].remarks = e.target.value;
+                                        setEditData({
+                                          ...editData,
+                                          karlFischerRecords: newData,
+                                        });
+                                      }}
+                                      className="border rounded px-2 py-1 w-auto"
+                                      readOnly={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
+                                    />
+                                  )}
+                                </div>
                               )}
-                          </td> */}
+                            </td>
+
+                            <td style={{ width: "200px" }}>
+                              <div className="d-flex">
+                                {(() => {
+                                  const isDisabled =
+                                    [3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isRowEditable(item);
+
+                                  return item.supporting_docs ? (
+                                    <div className="file-upload-wrapper">
+                                      <button
+                                        type="button"
+                                        className="btn-upload"
+                                        onClick={() =>
+                                          !isDisabled &&
+                                          document
+                                            .getElementsByName(
+                                              "supporting_docs"
+                                            )
+                                            [index].click()
+                                        }
+                                        disabled={isDisabled}
+                                      >
+                                        Change File
+                                      </button>
+                                      <h3>
+                                        Selected File:{" "}
+                                        <a
+                                          href={item.supporting_docs}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          View File
+                                        </a>
+                                        {!isDisabled && (
+                                          <CloseIcon
+                                            style={{
+                                              color: "black",
+                                              cursor: "pointer",
+                                              marginLeft: 5,
+                                            }}
+                                            onClick={() =>
+                                              handleDeleteFile(index)
+                                            }
+                                          />
+                                        )}
+                                      </h3>
+                                    </div>
+                                  ) : (
+                                    <div className="file-upload-wrapper">
+                                      <button
+                                        type="button"
+                                        className="btn-upload"
+                                        onClick={() =>
+                                          !isDisabled &&
+                                          document
+                                            .getElementsByName(
+                                              "supporting_docs"
+                                            )
+                                            [index].click()
+                                        }
+                                        disabled={isDisabled}
+                                      >
+                                        Select File
+                                      </button>
+                                    </div>
+                                  );
+                                })()}
+                                <input
+                                  type="file"
+                                  name="supporting_docs"
+                                  style={{ display: "none" }}
+                                  onChange={(e) =>
+                                    handleFileChange(index, e.target.files[0])
+                                  }
+                                  disabled={
+                                    [3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isRowEditable(item)
+                                  }
+                                />
+                              </div>
+                            </td>
+
+                            <td>
+                              {item.status ||
+                                (item.reviewed_by ? "Closed" : "Open")}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={10} className="!text-center">
+                            Data Not Found
+                          </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                   {/* 
-                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
-                    <div className="group-input mt-4">
-                      <label
-                  
-                      >
-                        Additional Attachment{" "}
-                        <span className="text-sm text-zinc-600">
-                          (If / Any)
-                        </span>{" "}
-                        :
-                      </label>
-                      <div>
-                        {editData.additionalAttachment ? (
-                          <div className="flex items-center gap-x-4 ml-3">
-                            <button
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
-                            >
-                              Change File
-                            </button>
-                            <h3 className="flex items-center">
-                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
-                                Selected File:
-                              </span>
-                              <a
-                                href={
-                                  editData.additionalAttachment instanceof File
-                                    ? URL.createObjectURL(
-                                        editData.additionalAttachment
-                                      )
-                                    : editData.additionalAttachment
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline mr-1"
-                              >
-                                {editData?.additionalAttachment?.name?.slice(
-                                  0,
-                                  30
-                                ) || editData?.additionalAttachment?.slice(46)}
-                              </a>
-                              {editData.additionalAttachment.name && (
-                                <button
-                                  className="text-red-500 hover:text-red-700 text-lg"
-                                  type="button"
-                                  onClick={() =>
-                                    setEditData({
-                                      ...editData,
-                                      additionalAttachment: null,
-                                    })
-                                  }
-                                >
-                                  ✖
-                                </button>
-                              )}
-                            </h3>
-                          </div>
-                        ) : (
-                          <div>
-                            <button
-                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("additionalAttachment")
-                                  .click()
-                              }
-                            >
-                              Select File
-                            </button>
-                          </div>
-                        )}
-                        <input
-                          type="file"
-                          name="additionalAttachment"
-                          id="additionalAttachment"
-                          onChange={handleInitiatorFileChange}
-                          style={{ display: "none" }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col w-full">
-                      <label className="text-sm font-medium text-gray-900 mb-1">
-                        Additional Info{" "}
-                        <span className="text-sm text-zinc-600">
-                          (If / Any)
-                        </span>{" "}
-                      </label>
-                      <textarea
-                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                        rows="4"
-                        name="additionalInfo"
-                        value={editData?.additionalInfo}
-                        onChange={handleInputChange1}
-                      ></textarea>
-                    </div>
-                  </div> */}
-                </>
-              ) : null}
-
-              {/* {initiatorRemarks === true ? (
-                  <>
-                    <div className="form-flex">
-                      <div className="group-input">
-                        <label className="color-label">Initiator </label>
-                        <div>
-                          <input
-                            type="text"
-                            name="initiator"
-                            value={editData.initiator_name}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="group-input">
-                        <label className="color-label">Date of Initiation</label>
-                        <div>
-                          <input
-                            type="text"
-                            value={formatDate(editData.date_of_initiation)}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="form-flex">
-                      <div className="group-input">
-                        <label className="color-label">
-                          Initiator Comment
-                          {location.state?.stage === 1 &&
-                            location.state?.initiator_id ===
-                              userDetails.userId && (
-                              <span style={{ color: "red", marginLeft: "2px" }}>
-                                *
-                              </span>
-                            )}
-                        </label>
-                        <div className="instruction"></div>
-                        <input
-                          name="initiatorComment"
-                          value={editData?.initiatorComment}
-                          onChange={handleInputChange1}
-                          readOnly={
-                            location.state?.stage !== 1 ||
-                            location.state?.initiator_id !== userDetails.userId
-                          }
-                        />
-                      </div>
-                      <div className="group-input">
+                    <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                      <div className="group-input mt-4">
                         <label
-                          htmlFor="initiatorAttachment"
-                          className="color-label"
-                          name="initiatorAttachment"
+                    
                         >
-                          Initiator Attachment
+                          Additional Attachment{" "}
+                          <span className="text-sm text-zinc-600">
+                            (If / Any)
+                          </span>{" "}
+                          :
                         </label>
                         <div>
-                          {editData.initiatorAttachment ? (
-                            <div>
+                          {editData.additionalAttachment ? (
+                            <div className="flex items-center gap-x-4 ml-3">
                               <button
+                                className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
                                 type="button"
                                 onClick={() =>
                                   document
-                                    .getElementById("initiatorAttachment")
+                                    .getElementById("additionalAttachment")
                                     .click()
-                                }
-                                disabled={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
                                 }
                               >
                                 Change File
                               </button>
-                              <h3>
-                                Selected File:{" "}
+                              <h3 className="flex items-center">
+                                <span className="py-1 bg-zinc-300 px-2 rounded-md mr-3">
+                                  Selected File:
+                                </span>
                                 <a
-                                  href={editData.initiatorAttachment}
+                                  href={
+                                    editData.additionalAttachment instanceof File
+                                      ? URL.createObjectURL(
+                                          editData.additionalAttachment
+                                        )
+                                      : editData.additionalAttachment
+                                  }
                                   target="_blank"
                                   rel="noopener noreferrer"
+                                  className="text-blue-600 underline mr-1"
                                 >
-                                  View File
+                                  {editData?.additionalAttachment?.name?.slice(
+                                    0,
+                                    30
+                                  ) || editData?.additionalAttachment?.slice(46)}
                                 </a>
+                                {editData.additionalAttachment.name && (
+                                  <button
+                                    className="text-red-500 hover:text-red-700 text-lg"
+                                    type="button"
+                                    onClick={() =>
+                                      setEditData({
+                                        ...editData,
+                                        additionalAttachment: null,
+                                      })
+                                    }
+                                  >
+                                    ✖
+                                  </button>
+                                )}
                               </h3>
                             </div>
                           ) : (
                             <div>
                               <button
+                                className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                                 type="button"
                                 onClick={() =>
                                   document
-                                    .getElementById("initiatorAttachment")
+                                    .getElementById("additionalAttachment")
                                     .click()
-                                }
-                                disabled={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
                                 }
                               >
                                 Select File
@@ -1621,336 +1666,469 @@ console.log(filteredGridData,"filteredGridData")
                           )}
                           <input
                             type="file"
-                            name="initiatorAttachment"
-                            id="initiatorAttachment"
+                            name="additionalAttachment"
+                            id="additionalAttachment"
                             onChange={handleInitiatorFileChange}
                             style={{ display: "none" }}
                           />
                         </div>
                       </div>
-                    </div>
-                  </>
-                ) : null}
-  
-                {reviewerRemarks === true ? (
-                  <>
-                    <div className="form-flex">
-                      <div className="group-input">
-                        <label className="color-label">Reviewer </label>
-                        <div>
-                          <input
-                            type="text"
-                            name="reviewer"
-                            value={editData?.reviewer?.name}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="group-input">
-                        <label className="color-label">Date of Review</label>
-                        <div>
-                          <input
-                            type="text"
-                            value={formatDate(editData.date_of_review)}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="form-flex">
-                      <div className="group-input">
-                        <label className="color-label" htmlFor="reviewComment">
-                          Review Comment
-                          {location.state?.stage === 2 &&
-                            location.state?.reviewer_id ===
-                              userDetails.userId && (
-                              <span style={{ color: "red", marginLeft: "2px" }}>
-                                *
-                              </span>
-                            )}
+
+                      <div className="flex flex-col w-full">
+                        <label className="text-sm font-medium text-gray-900 mb-1">
+                          Additional Info{" "}
+                          <span className="text-sm text-zinc-600">
+                            (If / Any)
+                          </span>{" "}
                         </label>
-                        <input
-                          id="reviewComment"
-                          name="reviewComment"
-                          value={editData.reviewComment || ""}
+                        <textarea
+                          className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                          rows="4"
+                          name="additionalInfo"
+                          value={editData?.additionalInfo}
                           onChange={handleInputChange1}
-                          readOnly={
-                            location.state?.stage !== 2 ||
-                            location.state?.reviewer_id !== userDetails.userId
-                          }
-                        />
+                        ></textarea>
                       </div>
-                      <div className="group-input">
-                        <label
-                          htmlFor="reviewerAttachment"
-                          className="color-label"
-                          name="reviewerAttachment"
-                        >
-                          Reviewer Attachment
-                        </label>
-                        <div>
-                          {editData.reviewerAttachment ? (
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  document
-                                    .getElementById("reviewerAttachment")
-                                    .click()
-                                }
-                                disabled={
-                                  location.state?.stage !== 2 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
-                              >
-                                Change File
-                              </button>
-                              <h3>
-                                Selected File:{" "}
-                                <a
-                                  href={editData.reviewerAttachment}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  View File
-                                </a>
-                              </h3>
-                            </div>
-                          ) : (
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  document
-                                    .getElementById("reviewerAttachment")
-                                    .click()
-                                }
-                                disabled={
-                                  location.state?.stage !== 2 ||
-                                  location.state?.reviewer_id !==
-                                    userDetails.userId
-                                }
-                              >
-                                Select File
-                              </button>
-                            </div>
-                          )}
+                    </div> */}
+                </>
+              ) : null}
+
+              {/* {initiatorRemarks === true ? (
+                    <>
+                      <div className="form-flex">
+                        <div className="group-input">
+                          <label className="color-label">Initiator </label>
+                          <div>
+                            <input
+                              type="text"
+                              name="initiator"
+                              value={editData.initiator_name}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                        <div className="group-input">
+                          <label className="color-label">Date of Initiation</label>
+                          <div>
+                            <input
+                              type="text"
+                              value={formatDate(editData.date_of_initiation)}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="form-flex">
+                        <div className="group-input">
+                          <label className="color-label">
+                            Initiator Comment
+                            {location.state?.stage === 1 &&
+                              location.state?.initiator_id ===
+                                userDetails.userId && (
+                                <span style={{ color: "red", marginLeft: "2px" }}>
+                                  *
+                                </span>
+                              )}
+                          </label>
+                          <div className="instruction"></div>
                           <input
-                            type="file"
+                            name="initiatorComment"
+                            value={editData?.initiatorComment}
+                            onChange={handleInputChange1}
+                            readOnly={
+                              location.state?.stage !== 1 ||
+                              location.state?.initiator_id !== userDetails.userId
+                            }
+                          />
+                        </div>
+                        <div className="group-input">
+                          <label
+                            htmlFor="initiatorAttachment"
+                            className="color-label"
+                            name="initiatorAttachment"
+                          >
+                            Initiator Attachment
+                          </label>
+                          <div>
+                            {editData.initiatorAttachment ? (
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    document
+                                      .getElementById("initiatorAttachment")
+                                      .click()
+                                  }
+                                  disabled={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                >
+                                  Change File
+                                </button>
+                                <h3>
+                                  Selected File:{" "}
+                                  <a
+                                    href={editData.initiatorAttachment}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    View File
+                                  </a>
+                                </h3>
+                              </div>
+                            ) : (
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    document
+                                      .getElementById("initiatorAttachment")
+                                      .click()
+                                  }
+                                  disabled={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                >
+                                  Select File
+                                </button>
+                              </div>
+                            )}
+                            <input
+                              type="file"
+                              name="initiatorAttachment"
+                              id="initiatorAttachment"
+                              onChange={handleInitiatorFileChange}
+                              style={{ display: "none" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
+    
+                  {reviewerRemarks === true ? (
+                    <>
+                      <div className="form-flex">
+                        <div className="group-input">
+                          <label className="color-label">Reviewer </label>
+                          <div>
+                            <input
+                              type="text"
+                              name="reviewer"
+                              value={editData?.reviewer?.name}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                        <div className="group-input">
+                          <label className="color-label">Date of Review</label>
+                          <div>
+                            <input
+                              type="text"
+                              value={formatDate(editData.date_of_review)}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="form-flex">
+                        <div className="group-input">
+                          <label className="color-label" htmlFor="reviewComment">
+                            Review Comment
+                            {location.state?.stage === 2 &&
+                              location.state?.reviewer_id ===
+                                userDetails.userId && (
+                                <span style={{ color: "red", marginLeft: "2px" }}>
+                                  *
+                                </span>
+                              )}
+                          </label>
+                          <input
+                            id="reviewComment"
+                            name="reviewComment"
+                            value={editData.reviewComment || ""}
+                            onChange={handleInputChange1}
+                            readOnly={
+                              location.state?.stage !== 2 ||
+                              location.state?.reviewer_id !== userDetails.userId
+                            }
+                          />
+                        </div>
+                        <div className="group-input">
+                          <label
+                            htmlFor="reviewerAttachment"
+                            className="color-label"
                             name="reviewerAttachment"
-                            id="reviewerAttachment"
-                            onChange={handleReviewerFileChange}
-                            style={{ display: "none" }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : null}
-  
-                {approverRemarks === true ? (
-                  <>
-                    <div className="form-flex">
-                      <div className="group-input">
-                        <label className="color-label">Approver </label>
-                        <div>
-                          <input
-                            type="text"
-                            name="approver"
-                            value={editData?.approver?.name}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="group-input">
-                        <label className="color-label">Date of Approval</label>
-                        <div>
-                          <input
-                            type="text"
-                            value={formatDate(editData.date_of_approval)}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="form-flex">
-                      <div className="group-input">
-                        <label className="color-label" htmlFor="approverComment">
-                          Approver Comment
-                          {location.state?.stage === 3 &&
-                            location.state?.approver_id ===
-                              userDetails.userId && (
-                              <span style={{ color: "red", marginLeft: "2px" }}>
-                                *
-                              </span>
-                            )}
-                        </label>
-                        <input
-                          id="approverComment"
-                          name="approverComment"
-                          value={editData.approverComment || ""}
-                          onChange={handleInputChange1}
-                          disabled={
-                            location.state?.stage !== 3 ||
-                            location.state?.approver_id !== userDetails.userId
-                          }
-                        />
-                      </div>
-                      <div className="group-input">
-                        <label
-                          htmlFor="approverAttachment"
-                          className="color-label"
-                          name="approverAttachment"
-                        >
-                          Approver Attachment
-                        </label>
-                        <div>
-                          {editData.approverAttachment ? (
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  document
-                                    .getElementById("approverAttachment")
-                                    .click()
-                                }
-                                disabled={
-                                  location.state?.stage !== 3 ||
-                                  location.state?.approver_id !==
-                                    userDetails.userId
-                                }
-                              >
-                                Change File
-                              </button>
-                              <h3>
-                                Selected File:{" "}
-                                <a
-                                  href={editData.approverAttachment}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                          >
+                            Reviewer Attachment
+                          </label>
+                          <div>
+                            {editData.reviewerAttachment ? (
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    document
+                                      .getElementById("reviewerAttachment")
+                                      .click()
+                                  }
+                                  disabled={
+                                    location.state?.stage !== 2 ||
+                                    location.state?.reviewer_id !==
+                                      userDetails.userId
+                                  }
                                 >
-                                  View File
-                                </a>
-                              </h3>
-                            </div>
-                          ) : (
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  document
-                                    .getElementById("approverAttachment")
-                                    .click()
-                                }
-                                disabled={
-                                  location.state?.stage !== 3 ||
-                                  location.state?.approver_id !==
-                                    userDetails.userId
-                                }
-                              >
-                                Select File
-                              </button>
-                            </div>
-                          )}
-                          <input
-                            type="file"
-                            name="approverAttachment"
-                            id="approverAttachment"
-                            onChange={handleApproverFileChange}
-                            style={{ display: "none" }}
-                          />
+                                  Change File
+                                </button>
+                                <h3>
+                                  Selected File:{" "}
+                                  <a
+                                    href={editData.reviewerAttachment}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    View File
+                                  </a>
+                                </h3>
+                              </div>
+                            ) : (
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    document
+                                      .getElementById("reviewerAttachment")
+                                      .click()
+                                  }
+                                  disabled={
+                                    location.state?.stage !== 2 ||
+                                    location.state?.reviewer_id !==
+                                      userDetails.userId
+                                  }
+                                >
+                                  Select File
+                                </button>
+                              </div>
+                            )}
+                            <input
+                              type="file"
+                              name="reviewerAttachment"
+                              id="reviewerAttachment"
+                              onChange={handleReviewerFileChange}
+                              style={{ display: "none" }}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </>
-                ) : null} */}
+                    </>
+                  ) : null}
+    
+                  {approverRemarks === true ? (
+                    <>
+                      <div className="form-flex">
+                        <div className="group-input">
+                          <label className="color-label">Approver </label>
+                          <div>
+                            <input
+                              type="text"
+                              name="approver"
+                              value={editData?.approver?.name}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                        <div className="group-input">
+                          <label className="color-label">Date of Approval</label>
+                          <div>
+                            <input
+                              type="text"
+                              value={formatDate(editData.date_of_approval)}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="form-flex">
+                        <div className="group-input">
+                          <label className="color-label" htmlFor="approverComment">
+                            Approver Comment
+                            {location.state?.stage === 3 &&
+                              location.state?.approver_id ===
+                                userDetails.userId && (
+                                <span style={{ color: "red", marginLeft: "2px" }}>
+                                  *
+                                </span>
+                              )}
+                          </label>
+                          <input
+                            id="approverComment"
+                            name="approverComment"
+                            value={editData.approverComment || ""}
+                            onChange={handleInputChange1}
+                            disabled={
+                              location.state?.stage !== 3 ||
+                              location.state?.approver_id !== userDetails.userId
+                            }
+                          />
+                        </div>
+                        <div className="group-input">
+                          <label
+                            htmlFor="approverAttachment"
+                            className="color-label"
+                            name="approverAttachment"
+                          >
+                            Approver Attachment
+                          </label>
+                          <div>
+                            {editData.approverAttachment ? (
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    document
+                                      .getElementById("approverAttachment")
+                                      .click()
+                                  }
+                                  disabled={
+                                    location.state?.stage !== 3 ||
+                                    location.state?.approver_id !==
+                                      userDetails.userId
+                                  }
+                                >
+                                  Change File
+                                </button>
+                                <h3>
+                                  Selected File:{" "}
+                                  <a
+                                    href={editData.approverAttachment}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    View File
+                                  </a>
+                                </h3>
+                              </div>
+                            ) : (
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    document
+                                      .getElementById("approverAttachment")
+                                      .click()
+                                  }
+                                  disabled={
+                                    location.state?.stage !== 3 ||
+                                    location.state?.approver_id !==
+                                      userDetails.userId
+                                  }
+                                >
+                                  Select File
+                                </button>
+                              </div>
+                            )}
+                            <input
+                              type="file"
+                              name="approverAttachment"
+                              id="approverAttachment"
+                              onChange={handleApproverFileChange}
+                              style={{ display: "none" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1
-                  ? location.state?.initiator_id === userDetails.userId && (
-                      <button
-                        className="themeBtn"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
-                        }}
-                      >
-                        Send for Review
-                      </button>
-                    )
-                  : location.state?.stage === 2
-                  ? location.state?.reviewer_id === userDetails.userId && (
-                      <>
+                    ? location.state?.initiator_id === userDetails.userId && (
                         <button
                           className="themeBtn"
                           onClick={() => {
                             setIsPopupOpen(true);
-                            setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
+                            setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
                           }}
                         >
-                          Review Completed
+                          Send for Review
                         </button>
+                      )
+                    : location.state?.stage === 2
+                    ? location.state?.reviewer_id === userDetails.userId && (
+                        <>
+                          <button
+                            className="themeBtn"
+                            onClick={() => {
+                              setIsPopupOpen(true);
+                              setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
+                            }}
+                          >
+                            Review Completed
+                          </button>
+                          <button
+                            className="themeBtn"
+                            onClick={() => {
+                              setIsPopupOpen(true);
+                              setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
+                            }}
+                          >
+                            More Info Required
+                          </button>
+                        </>
+                      )
+                    : location.state?.stage === 3
+                    ? location.state?.approver_id === userDetails.userId && (
+                        <>
+                          <button
+                            className="themeBtn"
+                            onClick={() => {
+                              setIsPopupOpen(true);
+                              setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
+                            }}
+                          >
+                            Approve elog
+                          </button>
+                          <button
+                            className="themeBtn"
+                            onClick={() => {
+                              setIsPopupOpen(true);
+                              setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
+                            }}
+                          >
+                            More Info Required
+                          </button>
+                        </>
+                      )
+                    : null}
+                  {location.state?.stage === 1
+                    ? userDetails.userId === location.state?.initiator_id && (
                         <button
                           className="themeBtn"
                           onClick={() => {
                             setIsPopupOpen(true);
-                            setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
+                            setPopupAction("updateElog");
                           }}
                         >
-                          More Info Required
+                          Save
                         </button>
-                      </>
-                    )
-                  : location.state?.stage === 3
-                  ? location.state?.approver_id === userDetails.userId && (
-                      <>
-                        <button
-                          className="themeBtn"
-                          onClick={() => {
-                            setIsPopupOpen(true);
-                            setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
-                          }}
-                        >
-                          Approve elog
-                        </button>
-                        <button
-                          className="themeBtn"
-                          onClick={() => {
-                            setIsPopupOpen(true);
-                            setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
-                          }}
-                        >
-                          More Info Required
-                        </button>
-                      </>
-                    )
-                  : null}
-                {location.state?.stage === 1
-                  ? userDetails.userId === location.state?.initiator_id && (
-                      <button
-                        className="themeBtn"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    )
-                  : null} */}
+                      )
+                    : null} */}
               {/* <button
-                className="themeBtn"
-                onClick={() => {
-                  if (!deepEqual(location.state, editData)) {
-                    alert("Please Save the data before exiting");
-                  } else {
-                    navigate(-1);
-                  }
-                }}
-              >
-                Exit
-              </button> */}
+                  className="themeBtn"
+                  onClick={() => {
+                    if (!deepEqual(location.state, editData)) {
+                      alert("Please Save the data before exiting");
+                    } else {
+                      navigate(-1);
+                    }
+                  }}
+                >
+                  Exit
+                </button> */}
             </div>
             {isPopupOpen && (
               <UserVerificationPopUp

@@ -43,20 +43,20 @@ function HeaderBottom() {
               </Link> */}
               <Link
                 to="/effectiveElogs"
-                className={`tab py-2 px-3 min-w-fit rounded-md  ${
+                className={`tab py-1 px-3 min-w-fit rounded-md  ${
                   window.location.pathname === "/effectiveElogs"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-blue-500 border border-blue-500 "
+                    ? "bg-blue-600 text-white border border-blue-600"
+                    : "bg-white text-blue-500 border border-blue-600"
                 } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
                  E-Logs
               </Link>
               <Link
                 to="/analytics2"
-                className={`tab py-2 px-4 rounded-md  ${
+                className={`tab py-1 px-4 rounded-md  ${
                   window.location.pathname === "/analytics2"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-blue-500 border border-blue-500 "
+                    ? "bg-blue-600 text-white border border-blue-600"
+                    : "bg-white text-blue-500 border border-blue-600"
                 } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
                 Analytics

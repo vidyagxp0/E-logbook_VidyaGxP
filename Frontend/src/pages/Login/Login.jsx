@@ -35,7 +35,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-      }) 
+      })
       .then((response) => {
         localStorage.setItem("user-token", response.data.token);
         const decodedData = jwtDecode(response.data.token);
@@ -54,7 +54,7 @@ function Login() {
       })
       .then((permissionsResponse) => {
         console.log("Permissions Response:", permissionsResponse.data.message);
-        
+
         // Assuming permissionsResponse.data.message contains the permissions array
         const userDetails = JSON.parse(localStorage.getItem("user-details"));
         if (userDetails) {

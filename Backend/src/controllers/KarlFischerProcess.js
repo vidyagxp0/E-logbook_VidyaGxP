@@ -1834,7 +1834,7 @@ const data = Array.isArray(reportData?.karlFischerRecords)
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1846,6 +1846,7 @@ const data = Array.isArray(reportData?.karlFischerRecords)
     // Generate PDF
     const pdf = await page.pdf({
       format: "A4",
+      landScape:true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {

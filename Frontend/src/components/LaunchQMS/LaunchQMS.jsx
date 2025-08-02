@@ -26,8 +26,9 @@ function LaunchQMS({ onClick, onExit }) {
             focus:ring-2
             focus:ring-offset-2
             focus:ring-teal-500
-            mb-5
+            mb-3
             flex items-end justify-end
+            text-sm
           "
           >
             Save
@@ -48,8 +49,9 @@ function LaunchQMS({ onClick, onExit }) {
             focus:ring-2
             focus:ring-offset-2
             focus:ring-teal-500
-            mb-5
+            mb-3
             flex items-center justify-center
+            text-sm
           "
           >
             Main Page
@@ -72,6 +74,7 @@ function LaunchQMS({ onClick, onExit }) {
             focus:ring-teal-500
             mb-5
             flex items-center justify-center
+            text-sm
           "
           >
             Launch QMS

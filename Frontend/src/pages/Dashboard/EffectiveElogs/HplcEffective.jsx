@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 // import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,6 +16,10 @@ const HplcEffective = () => {
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
+  const [selectedInitiator, setSelectedInitiator] = useState("All Records");
+  const [selectedReviewer, setSelectedReviewer] = useState("All Records");
+  const [selectedStatus, setSelectedStatus] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
   const [isLoading1, setIsLoading1] = useState(false);
@@ -261,18 +265,19 @@ const HplcEffective = () => {
         start_time: "",
         end_time: "",
         no_of_injections: "",
-        done_by: User?.name,
+        done_by: location?.state?.initiator_name || "",
         checked_by: location?.state?.initiator_name,
         remarks: "",
+        status: "Open",
       };
       setEditData((prevState) => ({
         ...prevState,
         hplcRecords: [...prevState?.hplcRecords, newRow],
       }));
     } else if (location.state == reviewer_id) {
-      console.warn("Only Initiator can add new Row here");
+      toast.warn("Only Initiator can add new Row here");
     } else if (location.state == approver_id) {
-      console.warn("Only Initiator can add new Row here");
+      toast.warn("Only Initiator can add new Row here");
     }
   };
 
@@ -347,9 +352,62 @@ const HplcEffective = () => {
   };
 
   const handleInputChange1 = (e) => {
-    const { name, value } = e?.target;
-    setEditData({ ...editData, [name]: value });
+    const { name, value } = e.target;
+
+    const val = value === "All Records" ? "" : value;
+
+    if (name === "initiator") {
+      setSelectedInitiator(val);
+      setSelectedReviewer("");
+      setSelectedStatus("All Records");
+    }
+    if (name === "reviewer") {
+      setSelectedReviewer(val);
+      setSelectedInitiator("");
+      setSelectedStatus("All Records");
+    }
+
+    if (name === "status") {
+      setSelectedStatus(value);
+      setSelectedInitiator("");
+      setSelectedReviewer("");
+    }
+
+    setEditData((prev) => ({
+      ...prev,
+      [name]: val,
+    }));
   };
+
+  const filteredGridData = useMemo(() => {
+    const records = editData?.hplcRecords || [];
+
+    return records.filter((record) => {
+      const matchInitiator =
+        selectedInitiator && selectedInitiator !== "All Records"
+          ? record.done_by === selectedInitiator
+          : true;
+
+      const matchReviewer =
+        selectedReviewer && selectedReviewer !== "All Records"
+          ? record.reviewed_by === selectedReviewer
+          : true;
+
+      const matchStatus =
+        selectedStatus === "Open"
+          ? record.status === "Open"
+          : selectedStatus === "Closed"
+          ? record.status === "Closed"
+          : true;
+
+      return matchInitiator && matchReviewer && matchStatus;
+    });
+  }, [
+    editData?.hplcRecords,
+    selectedInitiator,
+    selectedReviewer,
+    selectedStatus,
+  ]);
 
   // const handleDeleteFile = (index) => {
   //   if (
@@ -508,46 +566,72 @@ const HplcEffective = () => {
       description: content,
     }));
   };
+
+  const isRowEditable = (item) => {
+    const isInitiator = userDetails.userId == location.state?.initiator_id;
+    const isNewRow = !item.form_id;
+    return isInitiator ? isNewRow : true;
+  };
+
+   // Check if reviewer can edit a record (prevent changes after saving)
+  const canReviewerEdit = (item) => {
+    if (item.record_id && item.reviewed_by) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <>
       <HeaderTop />
-      <LaunchQMS />
+      <LaunchQMS
+        onClick={() => {
+          setIsPopupOpen(true);
+          setPopupAction("updateElog");
+        }}
+        onExit={() => {
+          if (!deepEqual(location.state, editData)) {
+            toast.warn("Please Save the data before exiting");
+          } else {
+            navigate(-1);
+          }
+        }}
+      />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>HPLC
-            </div>
-            <div>
-              <strong> Site:&nbsp;</strong>
+              <strong> Department :&nbsp;</strong>
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
                 ? "Malaysia"
                 : location.state?.site_id === 3
                 ? "EMEA"
-                : "EU"}
+                : location.state?.site_id === 4
+                ? "EU"
+                : "IPC"}
             </div>
-            <div>
+            {/* <div>
               <strong> Current Status:&nbsp;</strong>
               {location.state?.status}
             </div>
             <div>
               <strong> Initiated By:&nbsp;</strong>
               {location.state?.initiator_name}
-            </div>
+            </div> */}
           </div>
 
           <div className="document-form">
             <div className="details-form-data">
-              <div className="sop-type-header">
+              {/* <div className="sop-type-header">
                 <div className="logo">
                   <img src="/vidyalogo21.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>
                 </div>
-              </div>
+              </div> */}
               {/* <div className="sop-type-header">
                    <div className="logo">
                      <img src="/vidyalogo21.png" alt="..." />
@@ -579,7 +663,7 @@ const HplcEffective = () => {
                   </button>
 
                   {/* Generate Empty Report Button */}
-                  <button
+                  {/* <button
                     onClick={generateEmptyReport}
                     className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
                   >
@@ -609,7 +693,7 @@ const HplcEffective = () => {
              }
            `}
                     </style>
-                  </button>
+                  </button> */}
 
                   {/* Generate Report Button */}
                   <button
@@ -708,7 +792,7 @@ const HplcEffective = () => {
 
                   {/* {location.state?.stage === 3 &&
                        userDetails.userId === location.state?.reviewer_id && ( */}
-                  <button
+                  {/* <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() => {
                       setIsPopupOpen(true);
@@ -716,7 +800,7 @@ const HplcEffective = () => {
                     }}
                   >
                     Save
-                  </button>
+                  </button> */}
                   {/* ) */}
                 </div>
               </div>
@@ -883,7 +967,7 @@ const HplcEffective = () => {
                      </button>
                    </div> */}
               </div>
-              <div className="flex gap-2">
+              {/* <div className="flex gap-2">
                 <div className="flex gap-2">
                   <div>
                     <label> Start Date</label>
@@ -908,7 +992,7 @@ const HplcEffective = () => {
                   <label htmlFor="">Shift Vise</label>
                   <input type="text" />
                 </div>
-              </div>
+              </div> */}
 
               {/* {isSelectedGeneral === true ? (
                    <>
@@ -1035,263 +1119,511 @@ const HplcEffective = () => {
                        </select>
                      </div> */}
 
-                  <div>
-                    <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
-                      <div className="addrowinstruction"></div>
+                  <div
+                    className="filter-section"
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "20px",
+                      flexWrap: "wrap",
+                      marginBottom: "20px",
+                      padding: "15px",
+                      backgroundColor: "#f8f9fa",
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "end",
+                        gap: "20px",
+                        flexWrap: "wrap",
+                        flex: 1,
+                      }}
+                    >
+                      <div
+                        className="group-input"
+                        style={{ marginBottom: "0", minWidth: "200px" }}
+                      >
+                        <label
+                          className="color-label"
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#495057",
+                            marginBottom: "8px",
+                            padding: "0",
+                          }}
+                        >
+                          Status
+                        </label>
+                        <select
+                          className="form-control"
+                          name="status"
+                          value={selectedStatus}
+                          onChange={handleInputChange1}
+                          style={{
+                            padding: "8px 12px",
+                            border: "1px solid #ced4da",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="All Records">All Records</option>
+                          <option value="Open">Open</option>
+                          <option value="Closed">Closed</option>
+                        </select>
+                      </div>
+
+                      <div
+                        className="group-input"
+                        style={{ marginBottom: "0", minWidth: "200px" }}
+                      >
+                        <label
+                          className="color-label"
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#495057",
+                            marginBottom: "8px",
+                            padding: "0",
+                          }}
+                        >
+                          Initiator
+                        </label>
+                        <select
+                          className="form-control"
+                          name="initiator"
+                          value={selectedInitiator}
+                          onChange={handleInputChange1}
+                          style={{
+                            padding: "8px 12px",
+                            border: "1px solid #ced4da",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="All Records">All Records</option>
+                          {[
+                            ...new Set(
+                              editData?.hplcRecords?.map((r) => r.done_by)
+                            ),
+                          ].map(
+                            (done_by, index) =>
+                              done_by && (
+                                <option key={index} value={done_by}>
+                                  {done_by}
+                                </option>
+                              )
+                          )}
+                        </select>
+                      </div>
+
+                      <div
+                        className="group-input"
+                        style={{ marginBottom: "0", minWidth: "200px" }}
+                      >
+                        <label
+                          className="color-label"
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#495057",
+                            marginBottom: "8px",
+                            padding: "0",
+                          }}
+                        >
+                          Reviewer
+                        </label>
+                        <select
+                          className="form-control"
+                          name="reviewer"
+                          value={selectedReviewer}
+                          onChange={handleInputChange1}
+                          style={{
+                            padding: "8px 12px",
+                            border: "1px solid #ced4da",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="All Records">All Records</option>
+                          {[
+                            ...new Set(
+                              editData?.hplcRecords?.map((r) => r.reviewed_by)
+                            ),
+                          ].map(
+                            (reviewed_by, index) =>
+                              reviewed_by && (
+                                <option key={index} value={reviewed_by}>
+                                  {reviewed_by}
+                                </option>
+                              )
+                          )}
+                        </select>
+                      </div>
                     </div>
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>S no.</th>
-                        <th>Date</th>
-                        <th>Sample Name</th>
-                        <th>Reg No./ Lot No.</th>
-                        <th>Method Used</th>
-                        <th>Parameter/Activity</th>
-                        <th>Column No.</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>No. of Injections</th>
-                        <th>Done by</th>
-                        <th>Checked By</th>
-                        <th>Remarks</th>
-                        {/* <th>Supporting Documents</th> */}
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {editData?.hplcRecords?.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                           <td>
-                                       <input
-                              value={item?.date}
-                              type="text"
-                              readOnly
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.sample_name}
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].sample_name = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.reg_no}
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].reg_no = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
 
-                          <td>
-                            <input
-                              value={item.method_used}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].method_used = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
+                  <div>
+                    <div className="AddRows d-flex items-center">
+                      <NoteAdd onClick={addRow} className="cursor-pointer" />
+                      <div className="add-row-instruction text-sm">
+                        Click the icon to add a row
+                      </div>
+                    </div>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>S.No.</th>
+                          <th>Date</th>
+                          <th>Sample Name</th>
+                          <th>Reg No./ Lot No.</th>
+                          <th>Method Used</th>
+                          <th>Parameter/Activity</th>
+                          <th>Column No.</th>
+                          <th className="text-nowrap">Start Time</th>
+                          <th className="text-nowrap">End Time</th>
+                          <th>No. of Injections</th>
+                          <th>Done by</th>
+                          <th>Checked By</th>
+                          <th>Remarks</th>
+                          {/* <th>Supporting Documents</th> */}
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredGridData?.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}.</td>
+
+                            <td className="w-24">
+                              <input value={item?.date} type="text" readOnly />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.sample_name}
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  newData[index].sample_name = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.reg_no}
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  newData[index].reg_no = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.method_used}
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  newData[index].method_used = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.parameter_or_activity}
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  newData[index].parameter_or_activity =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.column_no}
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  newData[index].column_no = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                              />
+                            </td>
+
+                            {/* ✅ Start Time */}
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={!!item.start_time}
+                                disabled={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  if (e.target.checked) {
+                                    newData[index].start_time =
+                                      new Date().toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      });
+                                  } else {
+                                    newData[index].start_time = "";
+                                    newData[index].end_time = "";
+                                    newData[index].reviewed_by = "";
+                                    newData[index].status = "Open";
+                                    newData[index].remarks = "";
+                                    newData[index].remarksType = "";
+                                    newData[index].remarksOther = "";
+                                  }
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                              />
+                              {item.start_time && (
+                                <span className="ml-2">{item.start_time}</span>
                               )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.parameter_or_activity}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].parameter_or_activity = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
+                            </td>
+
+                            {/* ✅ End Time */}
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={!!item.end_time}
+                                disabled={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                                onChange={(e) => {
+                                  if (!item.start_time) {
+                                    toast.warn(
+                                      "Please mark the Start Time first before setting End Time."
+                                    );
+                                    return;
+                                  }
+                                  const newData = [...editData.hplcRecords];
+                                  if (e.target.checked) {
+                                    newData[index].end_time =
+                                      new Date().toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      });
+                                  } else {
+                                    newData[index].end_time = "";
+                                    newData[index].reviewed_by = "";
+                                    newData[index].status = "Open";
+                                    newData[index].remarks = "";
+                                    newData[index].remarksType = "";
+                                    newData[index].remarksOther = "";
+                                  }
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                              />
+                              {item.end_time && (
+                                <span className="ml-2">{item.end_time}</span>
                               )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.column_no}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].column_no = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="time"
-                              value={item.start_time}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].start_time = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="time"
-                              value={item.end_time}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].end_time = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.no_of_injections}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].no_of_injections = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              value={item.done_by}
-                              // disabled
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].done_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
-                              <td>
-                              <div>
+                            </td>
+
+                            <td>
+                              <input
+                                value={item.no_of_injections}
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  newData[index].no_of_injections =
+                                    e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                                readOnly={
+                                  [3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isRowEditable(item)
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input value={item.done_by} readOnly={true} />
+                            </td>
+
+                            {/* ✅ Reviewer Checkbox with Validation */}
+                            <td>
                               <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                 <input
                                   className="h-4 w-4 cursor-pointer"
                                   type="checkbox"
                                   checked={!!item.reviewed_by}
                                   onChange={(e) => {
-                                    const newData = [
-                                      ...editData.hplcRecords,
-                                    ];
-                                    if (e?.target?.checked) {
+                                    if (!item.end_time) {
+                                      toast.warn(
+                                        "Initiator must mark the End Time before reviewer action."
+                                      );
+                                      return;
+                                    }
+                                    const newData = [...editData.hplcRecords];
+                                    if (e.target.checked) {
                                       newData[index].reviewed_by = reviewed_by;
+                                      newData[index].status = "Closed";
                                     } else {
                                       newData[index].reviewed_by = "";
+                                      newData[index].status = "Open";
+                                      newData[index].remarks = "";
+                                      newData[index].remarksType = "";
+                                      newData[index].remarksOther = "";
                                     }
                                     setEditData({
                                       ...editData,
                                       hplcRecords: newData,
                                     });
                                   }}
-                                  disabled={[1, 3].includes(
-                                    userDetails.roles[0].role_id
-                                  )}
+                                  disabled={
+                                    [1, 3].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !canReviewerEdit(item)
+                                  }
                                 />
                                 {item.reviewed_by && <p>{item.reviewed_by}</p>}
                               </div>
-                            </div>
-                          </td>
-                          <td>
-                            <input
-                              value={item.remarks}
-                              onChange={(e) => {
-                                const newData = [...editData.hplcRecords];
-                                newData[index].remarks = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  hplcRecords: newData,
-                                });
-                              }}
-                              readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
-                              )}
-                            />
-                          </td>
+                            </td>
 
-                          <td>
-                            <DeleteIcon onClick={() => deleteRow(index)} />
-                            {item.limit !== "" &&
-                              (item.limit < 0.6 || item.limit > 2.6) && (
-                                <button
-                                  className="deviation-btn"
-                                  onClick={() => {
-                                    navigate("/chart");
-                                  }}
-                                >
-                                  Launch Deviation
-                                </button>
-                              )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            {/* ✅ Remarks if reviewed */}
+                            <td>
+                              {item.reviewed_by && (
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={item.remarksType || ""}
+                                    onChange={(e) => {
+                                      const newData = [...editData.hplcRecords];
+                                      newData[index].remarksType =
+                                        e.target.value;
+                                      if (e.target.value !== "Others") {
+                                        newData[index].remarksOther = "";
+                                        newData[index].remarks = e.target.value;
+                                      } else {
+                                        newData[index].remarks = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        hplcRecords: newData,
+                                      });
+                                    }}
+                                    className="border rounded px-2 py-1 w-auto"
+                                    disabled={
+                                      [1, 3].includes(
+                                        userDetails.roles[0].role_id
+                                      ) || !canReviewerEdit(item)
+                                    }
+                                  >
+                                    <option value="OK">OK</option>
+                                    <option value="Others">Others</option>
+                                  </select>
 
-                  <div className="group-input flex flex-col gap-4 mt-4 items-start">
+                                  {item.remarksType === "Others" && (
+                                    <input
+                                      type="text"
+                                      placeholder="Enter remark"
+                                      value={item.remarksOther || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.hplcRecords,
+                                        ];
+                                        newData[index].remarksOther =
+                                          e.target.value;
+                                        newData[index].remarks = e.target.value;
+                                        setEditData({
+                                          ...editData,
+                                          hplcRecords: newData,
+                                        });
+                                      }}
+                                      className="border rounded px-2 py-1 w-auto"
+                                      readOnly={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
+                                    />
+                                  )}
+                                </div>
+                              )}
+                            </td>
+
+                            <td>
+                              {editData?.hplcRecords?.find(
+                                (r) => r.record_id === item.record_id
+                              )?.reviewed_by
+                                ? "Closed"
+                                : "Open"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="group-input mt-4">
                       <label
                       // htmlFor="additionalAttachment"
@@ -1395,7 +1727,7 @@ const HplcEffective = () => {
                         onChange={handleInputChange1}
                       ></textarea>
                     </div>
-                  </div>
+                  </div> */}
                 </>
               ) : null}
 
@@ -1823,18 +2155,18 @@ const HplcEffective = () => {
                        </button>
                      )
                    : null} */}
-              <button
+              {/* <button
                 className="themeBtn"
                 onClick={() => {
                   if (!deepEqual(location.state, editData)) {
-                    alert("Please Save the data before exiting");
+                    toast.warn("Please Save the data before exiting");
                   } else {
                     navigate(-1);
                   }
                 }}
               >
                 Exit
-              </button>
+              </button> */}
             </div>
             {isPopupOpen && (
               <UserVerificationPopUp
