@@ -92,6 +92,7 @@
             <th>Done by</th>
             <th>Remark</th>
             <th>Checked By</th>
+            <th>status</th>
           </tr>
         </thead>
         <tbody>
@@ -108,10 +109,11 @@
               <td><%= record?.end_time || "Not Applicable" %></td>
               <td><%= record?.no_of_injections || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
-              <td><%= record?.remarks || "Not Applicable" %></td>
+              <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
               <td><%= record?.reviewed_by || "Not Applicable" %></td>
+              <td><%= record?.status || "Not Applicable" %></td>
             </tr>
-          <% }) %>
+          <% }) %>  
         </tbody>
       </table>
     <% } else { %>

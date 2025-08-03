@@ -94,6 +94,7 @@
             <th>Reviewed By</th>
             <th>Remark</th>
             <th style="text-align: center;">Attachment</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -119,6 +120,7 @@
                 Not Applicable
               <% } %>
             </td>
+            <td><%= record?.status || "Not Applicable" %></td>
             </tr>
           <% }) %>
         </tbody>

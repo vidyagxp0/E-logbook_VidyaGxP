@@ -192,6 +192,7 @@ exports.InsertKarlFischer = async (req, res) => {
         done_by: record?.done_by, // Assuming time was meant here instead of unique_id again
         factor_percent_water: record?.factor_percent_water,
         remarks: record?.remarks,
+        status:record?.status,
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         sample_name: record?.sample_name,
@@ -244,6 +245,17 @@ exports.InsertKarlFischer = async (req, res) => {
           field_name: "Remarks",
           previous_value: null,
           new_value: record?.remarks,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Status",
+          previous_value: null,
+          new_value: record?.status,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -482,6 +494,7 @@ exports.EditKarlFischer = async (req, res) => {
         form_id,
         date: record.date ? new Date(record.date).toISOString() : null,
         remarks: record.remarks,
+        status:record?.status,
         remarksOther: record.remarksOther,
         remarksType: record.remarksType,
         lot_no: record.lot_no,
@@ -1684,6 +1697,7 @@ exports.viewReport = async (req, res) => {
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
+    console.log(reportData,"reportData")
     const formId = req.params.form_id;
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)
@@ -1814,6 +1828,7 @@ const data = Array.isArray(reportData?.karlFischerRecords)
       checked_by: record?.checked_by || "",
       reviewed_by:record?.reviewed_by || "",
       remarks: record?.remarks || "",
+      status: record?.status || "",
       remarksOther: record?.remarksOther || "",
       remarksType: record?.remarksType || "",
     }))

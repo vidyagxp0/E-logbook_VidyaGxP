@@ -202,6 +202,7 @@ exports.InsertHPLC = async (req, res) => {
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         remarks: record?.remarks,
+        status:record?.status,
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
@@ -323,6 +324,17 @@ exports.InsertHPLC = async (req, res) => {
           field_name: "Remarks",
           previous_value: null,
           new_value: record?.remarks,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Status",
+          previous_value: null,
+          new_value: record?.status,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -546,6 +558,7 @@ exports.EditHPLC = async (req, res) => {
             no_of_injections: newRecord.no_of_injections,
             done_by: newRecord?.done_by,
             remarks: newRecord?.remarks,
+            status: newRecord?.status,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),
@@ -592,6 +605,7 @@ exports.EditHPLC = async (req, res) => {
             done_by: newRecord?.done_by,
             reviewed_by: newRecord?.reviewed_by,
             remarks: newRecord?.remarks,
+            status: newRecord?.status,
             supporting_docs:
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
@@ -635,6 +649,7 @@ exports.EditHPLC = async (req, res) => {
         done_by: record?.done_by,
         reviewed_by: record?.reviewed_by,
         remarks: record?.remarks,
+        status:record?.status,
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -1922,6 +1937,7 @@ exports.blankReport = async (req, res) => {
       checked_by: record?.checked_by || "",
       reviewed_by: record?.reviewed_by || "",
       remarks: record?.remarks || "",
+      status: record?.status || "",
     }));
 
     const arrayData = [...data, ...blankRows];

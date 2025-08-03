@@ -166,6 +166,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         remarks: record?.remarks,
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
+        status:record?.status
       }));
 
       await AnalyticalBalanceRecords.bulkCreate(formRecords, {
@@ -244,6 +245,17 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           field_name: "Remarks",
           previous_value: null,
           new_value: record?.remarks,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Status",
+          previous_value: null,
+          new_value: record?.status,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -459,6 +471,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
         checked_by: record.checked_by,
         reviewed_by: record.reviewed_by,
         remarks: record.remarks,
+        status:record?.status,
         remarksOther: record.remarksOther,
         remarksType: record.remarksType,
         supporting_docs: supporting_docs_url,
@@ -1772,6 +1785,7 @@ exports.blankReport = async (req, res) => {
           checked_by: record?.checked_by || "",
           reviewed_by: record?.reviewed_by || "",
           remarks: record?.remarks || "",
+          status: record?.status || "",
         }))
       : [];
 
