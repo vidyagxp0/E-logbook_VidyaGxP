@@ -91,7 +91,7 @@
             <th>Factor/ % Water</th>
             <th>Done By</th>
             <th>Checked By</th>
-            <th>Reviewed By</th>
+            <!-- <th>Reviewed By</th> -->
             <th>Remark</th>
             <th style="text-align: center;">Attachment</th>
             <th>Status</th>
@@ -107,8 +107,8 @@
               <td><%= record?.factor_percent_water || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
               
-              <td><%= record?.checked_by || "Not Applicable" %></td>
               <td><%= record?.reviewed_by || "Not Applicable" %></td>
+              <!-- <td><%= record?.reviewed_by || "Not Applicable" %></td> -->
               <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
             
             <td>

@@ -90,9 +90,9 @@
             <th>End Time</th>
             <th>No. of Injections</th>
             <th>Done by</th>
-            <th>Remark</th>
             <th>Checked By</th>
-            <th>status</th>
+            <th>Remark</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -105,12 +105,12 @@
               <td><%= record?.method_used || "Not Applicable" %></td>
               <td><%= record?.parameter_or_activity || "Not Applicable" %></td>
               <td><%= record?.column_no || "Not Applicable" %></td>
-              <td><%= record?.start_time || "Not Applicable" %></td>
-              <td><%= record?.end_time || "Not Applicable" %></td>
+              <td><%= record?.start_time?.split(':').slice(0, 2).join(':') || "Not Applicable" %></td>
+              <td><%= record?.end_time?.split(':').slice(0, 2).join(':') || "Not Applicable" %></td>
               <td><%= record?.no_of_injections || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
-              <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
               <td><%= record?.reviewed_by || "Not Applicable" %></td>
+              <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
               <td><%= record?.status || "Not Applicable" %></td>
             </tr>
           <% }) %>  
