@@ -444,9 +444,9 @@ const KarlFischerPanel = () => {
        <LaunchQMS />
        <div id="main-form-container">
          <div id="config-form-document-page" className="min-w-full">
-           {/* <div className="top-block">
-             <div>
-               <strong> Record Name:&nbsp;</strong>KARL Fischer             </div>
+           <div className="top-block !grid !grid-cols-3">
+             {/* <div>
+               <strong> Record Name:&nbsp;</strong>KARL Fischer             </div> */}
              <div>
                <strong> Site:&nbsp;</strong>
                {location.state?.site_id === 1
@@ -467,7 +467,7 @@ const KarlFischerPanel = () => {
                <strong> Initiated By:&nbsp;</strong>
                {location.state?.initiator_name}
              </div>
-           </div> */}
+           </div>
  
            <div className="document-form">
              <div className="details-form-data">
@@ -566,7 +566,7 @@ const KarlFischerPanel = () => {
                              setPopupAction("sendFromReviewToApproval");
                            }}
                          >
-                           Review Completed
+                           Send for Approval
                          </button>
                          <button
                            className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -667,7 +667,7 @@ const KarlFischerPanel = () => {
                          : "bg-gray-200 text-gray-700"
                      }`}
                    >
-                     CLOSED DONE
+                     Approved
                    </div>
                  </div>
                </div>
@@ -719,7 +719,7 @@ const KarlFischerPanel = () => {
                          setApproverRemarks(false);
                      }}
                    >
-                     Initiator Remarks
+                     Initiator
                    </div>
                    <div
                      className={`${
@@ -735,7 +735,7 @@ const KarlFischerPanel = () => {
                          setApproverRemarks(false);
                      }}
                    >
-                     Reviewer Remarks
+                     Reviewer
                    </div>
                    <div
                      className={`${
@@ -751,7 +751,7 @@ const KarlFischerPanel = () => {
                          setApproverRemarks(true);
                      }}
                    >
-                     Approver Remarks
+                     Approver
                    </div>
                    {/* <div
                      className="btn-forms-select"

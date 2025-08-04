@@ -636,7 +636,7 @@ const AnalyticalBalancesEffective = () => {
   // Check if reviewer can edit a record (prevent changes after saving)
   const canReviewerEdit = (item) => {
     if (item.record_id && item.reviewed_by) {
-      return false;
+      return true;
     }
     return true;
   };

@@ -268,6 +268,8 @@ const HplcEffective = () => {
         done_by: location?.state?.initiator_name || "",
         checked_by: location?.state?.initiator_name,
         remarks: "",
+        remarksType: "",
+        remarksOther: "",
         status: "Open",
       };
       setEditData((prevState) => ({
@@ -576,7 +578,7 @@ const HplcEffective = () => {
    // Check if reviewer can edit a record (prevent changes after saving)
   const canReviewerEdit = (item) => {
     if (item.record_id && item.reviewed_by) {
-      return false;
+      return true;
     }
     return true;
   };
@@ -1421,6 +1423,8 @@ const HplcEffective = () => {
                                       new Date().toLocaleTimeString([], {
                                         hour: "2-digit",
                                         minute: "2-digit",
+                                        second: "2-digit",
+                                        hour12: false,
                                       });
                                   } else {
                                     newData[index].start_time = "";
@@ -1465,6 +1469,8 @@ const HplcEffective = () => {
                                       new Date().toLocaleTimeString([], {
                                         hour: "2-digit",
                                         minute: "2-digit",
+                                        second: "2-digit",
+                                        hour12: false,
                                       });
                                   } else {
                                     newData[index].end_time = "";

@@ -274,10 +274,10 @@ const Karl = () => {
           <HeaderTop />
           <div id="main-form-container">
             <div id="config-form-document-pages" className="min-w-full">
-  <div className="top-blocks">
-              <div>
+  <div className="top-blocks !grid !grid-cols-3">
+              {/* <div>
                 <strong> Record Name:&nbsp;</strong>KARL Fischer
-              </div>
+              </div> */}
               <div>
                 <strong> Site:&nbsp;</strong>
                 {location.state?.site}
@@ -300,14 +300,14 @@ const Karl = () => {
                               <div>VidyaGxP Private Limited</div>
                             </div>
                           </div> */}
-                          <div className="sop-type-header">
+                          {/* <div className="sop-type-header">
                             <div className="logo">
                               <img src="/vidyalogo21.png" alt="..." width={20} />
                             </div>
                             <div className="main-head">
                               <div>VidyaGxP Private Limited</div>
                             </div>
-                          </div>
+                          </div> */}
                           <div className="sub-head-2"> KARL Fischer</div>
             
                           <div className="outerDiv4">

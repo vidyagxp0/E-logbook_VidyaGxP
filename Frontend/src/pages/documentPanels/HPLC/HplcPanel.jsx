@@ -441,9 +441,9 @@ const HplcPanel = () => {
         <LaunchQMS />
         <div id="main-form-container">
           <div id="config-form-document-page" className="min-w-full">
-            <div className="top-block">
-              <div>
-                <strong> Record Name:&nbsp;</strong>HPLC             </div>
+            <div className="top-block !grid !grid-cols-3">
+              {/* <div>
+                <strong> Record Name:&nbsp;</strong>HPLC             </div> */}
               <div>
                 <strong> Site:&nbsp;</strong>
                  {location.state?.site_id === 1
@@ -468,14 +468,14 @@ const HplcPanel = () => {
   
             <div className="document-form">
               <div className="details-form-data">
-                <div className="sop-type-header">
+                {/* <div className="sop-type-header">
                   <div className="logo">
                     <img src="/vidyalogo21.png" alt="..." />
                   </div>
                   <div className="main-head">
                     <div>VidyaGxP Private Limited</div>
                   </div>
-                </div>
+                </div> */}
                 {/* <div className="sop-type-header">
                   <div className="logo">
                     <img src="/vidyalogo21.png" alt="..." />
@@ -563,7 +563,7 @@ const HplcPanel = () => {
                               setPopupAction("sendFromReviewToApproval");
                             }}
                           >
-                            Review Completed
+                            Send for Approval
                           </button>
                           <button
                             className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -664,7 +664,7 @@ const HplcPanel = () => {
                           : "bg-gray-200 text-gray-700"
                       }`}
                     >
-                      CLOSED DONE
+                      Approved
                     </div>
                   </div>
                 </div>
@@ -716,7 +716,7 @@ const HplcPanel = () => {
                           setApproverRemarks(false);
                       }}
                     >
-                      Initiator Remarks
+                      Initiator 
                     </div>
                     <div
                       className={`${
@@ -732,7 +732,7 @@ const HplcPanel = () => {
                           setApproverRemarks(false);
                       }}
                     >
-                      Reviewer Remarks
+                      Reviewer 
                     </div>
                     <div
                       className={`${
@@ -748,7 +748,7 @@ const HplcPanel = () => {
                           setApproverRemarks(true);
                       }}
                     >
-                      Approver Remarks
+                      Approver 
                     </div>
                     {/* <div
                       className="btn-forms-select"
