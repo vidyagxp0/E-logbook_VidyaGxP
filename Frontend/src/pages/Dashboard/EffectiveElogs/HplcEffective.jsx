@@ -60,7 +60,7 @@ const HplcEffective = () => {
     compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
-    // hplcRecords: [],
+    hplcRecords: [],
     limit: "",
   });
   console.log(editData, "editdata");
@@ -77,6 +77,17 @@ const HplcEffective = () => {
     const cleanedData = editData?.hplcRecords.filter(
       (record) => record.hplc?.trim() !== "" || record.remarks.trim() !== ""
     );
+
+        const emptyRowsCount =
+          editData?.hplcRecords.length - cleanedData.length;
+        if (emptyRowsCount > 0) {
+          toast.warn(
+            `${emptyRowsCount} empty row(s) will be removed before saving.`
+          );
+          console.log("Original records:", editData?.hplcRecords);
+          console.log("Cleaned records:", cleanedData);
+        }
+  
 
     const updatedEditData = {
       ...editData,
@@ -585,7 +596,7 @@ const HplcEffective = () => {
   };
 
     const handleDeleteFile = async (index) => {
-      const record = editData.karlFischerRecords[index];
+      const record = editData.hplcRecords[index];
   
       if (!record?.record_id) {
         console.error("Record ID not found for deletion");
@@ -594,17 +605,17 @@ const HplcEffective = () => {
       [];
       try {
         const res = await axios.delete(
-          `http://localhost:1000/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`
+          `http://localhost:1000/hplc/delete-hplc/attachment/${record.record_id}`
         );
   
         if (res.data?.error === false) {
           // Clear file from UI state
-          const newData = [...editData.karlFischerRecords];
+          const newData = [...editData.hplcRecords];
           newData[index].supporting_docs = null;
   
           setEditData((prev) => ({
             ...prev,
-            karlFischerRecords: newData,
+            hplcRecords: newData,
           }));
         } else {
           alert(res.data?.message || "Failed to delete attachment.");
