@@ -401,15 +401,10 @@ exports.EditHPLC = async (req, res) => {
     additionalInfo,
   } = req.body;
 
-  if (!form_id) {
+  if (!form_id || !email || !password) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email and password." });
+      .json({ error: true, message: "Please provide form ID, email and password." });
   }
 
   const transaction = await sequelize.transaction();
@@ -420,20 +415,9 @@ exports.EditHPLC = async (req, res) => {
       transaction,
     });
 
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature." });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature." });
+      return res.status(401).json({ error: true, message: "Invalid e-signature." });
     }
 
     let initiatorAttachment = null;
@@ -445,36 +429,27 @@ exports.EditHPLC = async (req, res) => {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } else if (file.fieldname.startsWith("hplcRecords[")) {
-        const match = file.fieldname.match(
-          /hplcRecords\[(\d+)\]\[supporting_docs\]/
-        );
+      } else {
+        const match = file.fieldname.match(/hplcRecords\[(\d+)\]\[supporting_docs\]/);
         if (match) {
-          const index = match[1];
+          const index = parseInt(match[1]);
           supportingDocs[index] = file;
         }
       }
     });
 
-    const form = await hplcForm.findOne({
-      where: { form_id: form_id },
-      transaction,
-    });
+    const form = await hplcForm.findOne({ where: { form_id }, transaction });
 
     if (!form) {
       await transaction.rollback();
       return res.status(404).json({ error: true, message: "Form not found." });
     }
 
-    // Define epsilon for float comparison
     const EPSILON = 0.000001;
-
-    // Function to compare floats with epsilon
     const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
 
-    // Track changes for the form
     const auditTrailEntries = [];
-    const fields = {
+    const updatedFields = {
       description,
       department,
       compression_area,
@@ -489,16 +464,15 @@ exports.EditHPLC = async (req, res) => {
       additionalInfo,
     };
 
-    for (const [field, newValue] of Object.entries(fields)) {
+    for (const [field, newValue] of Object.entries(updatedFields)) {
       const oldValue = form[field];
       if (
         newValue !== undefined &&
-        ((typeof newValue === "number" &&
-          !areFloatsEqual(oldValue, newValue)) ||
+        ((typeof newValue === "number" && !areFloatsEqual(oldValue, newValue)) ||
           oldValue != newValue)
       ) {
         auditTrailEntries.push({
-          form_id: form.form_id,
+          form_id,
           field_name: field,
           previous_value: oldValue || null,
           new_value: newValue,
@@ -511,7 +485,6 @@ exports.EditHPLC = async (req, res) => {
       }
     }
 
-    // Update the form details
     await form.update(
       {
         site_id,
@@ -529,114 +502,27 @@ exports.EditHPLC = async (req, res) => {
       { transaction }
     );
 
-    // Update the Form Records if provided
-    if (Array.isArray(hplcRecords) && hplcRecords.length > 0) {
-      const existingRecords = await hplcRecord.findAll({
-        where: { form_id: form_id },
-        raw: true,
-        // order: [["record_id", "DESC"]],
-        transaction,
-      });
+    const existingRecords = await hplcRecord.findAll({
+      where: { form_id },
+      transaction,
+    });
 
-      // Track changes for existing records
-      existingRecords.forEach((existingRecord, index) => {
-        hplcRecords.sort(
-          (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
-        );
-        const newRecord = hplcRecords[index];
-        if (newRecord) {
-          const recordFields = {
-            date: newRecord.date,
-            sample_name: newRecord.sample_name,
-            reg_no: newRecord.reg_no,
-            method_used: newRecord.method_used,
-            parameter_or_activity: newRecord?.parameter_or_activity,
-            column_no: newRecord?.column_no,
-            start_time: newRecord?.start_time,
-            end_time: newRecord.end_time,
-            reviewed_by: newRecord?.reviewed_by,
-            no_of_injections: newRecord.no_of_injections,
-            done_by: newRecord?.done_by,
-            remarks: newRecord?.remarks,
-            status: newRecord?.status,
-            supporting_docs:
-              newRecord.supporting_docs ||
-              getElogDocsUrl(supportingDocs[index]),
-          };
+    const existingMap = {};
+    existingRecords.forEach((rec) => {
+      existingMap[rec.record_id] = rec;
+    });
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            const oldValue = existingRecord[field];
-            if (
-              newValue !== undefined &&
-              ((typeof newValue === "number" &&
-                !areFloatsEqual(oldValue, newValue)) ||
-                oldValue != newValue)
-            ) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${index}]`,
-                previous_value: oldValue || null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
-        }
-      });
+    for (let i = 0; i < hplcRecords.length; i++) {
+      const record = hplcRecords[i];
+      const record_id = record.record_id || null;
+      const file = supportingDocs[i];
 
-      // Handle new records added
-      if (hplcRecords.length > existingRecords.length) {
-        for (let i = existingRecords.length; i < hplcRecords.length; i++) {
-          const newRecord = hplcRecords[i];
-          const recordFields = {
-            date: newRecord.date,
-            sample_name: newRecord.sample_name,
-            reg_no: newRecord.reg_no,
-            method_used: newRecord.method_used,
-            parameter_or_activity: newRecord?.parameter_or_activity,
-            column_no: newRecord?.column_no,
-            start_time: newRecord?.start_time,
-            end_time: newRecord.end_time,
-            no_of_injections: newRecord.no_of_injections,
-            done_by: newRecord?.done_by,
-            reviewed_by: newRecord?.reviewed_by,
-            remarks: newRecord?.remarks,
-            status: newRecord?.status,
-            supporting_docs:
-              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
-          };
+      const supporting_docs_url = file
+        ? getElogDocsUrl(file)
+        : existingMap[record_id]?.supporting_docs || null;
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            if (newValue !== undefined) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${i}]`,
-                previous_value: null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
-        }
-      }
-
-      // Delete existing records for the form
-      await hplcRecord.destroy({
-        where: { form_id: form_id },
-        transaction,
-      });
-
-      // Create new records
-      const formRecords = hplcRecords.map((record, index) => ({
-        form_id: form_id,
+      const newData = {
+        form_id,
         date: record.date,
         sample_name: record.sample_name,
         reg_no: record.reg_no,
@@ -649,14 +535,57 @@ exports.EditHPLC = async (req, res) => {
         done_by: record?.done_by,
         reviewed_by: record?.reviewed_by,
         remarks: record?.remarks,
-        status:record?.status,
-        supporting_docs: record?.supporting_docs
-          ? record?.supporting_docs
-          : getElogDocsUrl(supportingDocs[index]),
-      }));
+        status: record?.status,
+        supporting_docs: supporting_docs_url,
+      };
 
-      await hplcRecord.bulkCreate(formRecords, { transaction });
+      if (record_id && existingMap[record_id]) {
+        await hplcRecord.update(newData, {
+          where: { record_id },
+          transaction,
+        });
+
+        for (const [field, newValue] of Object.entries(newData)) {
+          const oldValue = existingMap[record_id][field];
+          if (
+            newValue !== undefined &&
+            ((typeof newValue === "number" && !areFloatsEqual(oldValue, newValue)) ||
+              oldValue != newValue)
+          ) {
+            auditTrailEntries.push({
+              form_id,
+              field_name: `${field}[${i}]`,
+              previous_value: oldValue || null,
+              new_value: newValue,
+              changed_by: user.user_id,
+              previous_status: form.status,
+              new_status: "Opened",
+              declaration: initiatorDeclaration,
+              action: "Update Elog",
+            });
+          }
+        }
+      } else {
+        const created = await hplcRecord.create(newData, { transaction });
+
+        for (const [field, newValue] of Object.entries(newData)) {
+          if (field !== "form_id") {
+            auditTrailEntries.push({
+              form_id,
+              field_name: `${field}[${i}]`,
+              previous_value: null,
+              new_value: newValue,
+              changed_by: user.user_id,
+              previous_status: form.status,
+              new_status: "Opened",
+              declaration: initiatorDeclaration,
+              action: "Update Elog",
+            });
+          }
+        }
+      }
     }
+
     const validAuditEntries = auditTrailEntries.filter((entry) => {
       return (
         entry.new_value !== null &&
@@ -668,26 +597,21 @@ exports.EditHPLC = async (req, res) => {
     if (validAuditEntries.length > 0) {
       await hplcAudittrail.bulkCreate(validAuditEntries, { transaction });
     }
-    await transaction.commit();
 
+    await transaction.commit();
     return res.status(200).json({
       error: false,
       message: "E-log Updated successfully",
     });
   } catch (error) {
     await transaction.rollback();
-
-    let errorMessage = "Error during updating elog";
-    if (error instanceof ValidationError) {
-      errorMessage = error.errors.map((e) => e.message).join(", ");
-    }
-
     return res.status(500).json({
       error: true,
-      message: `${errorMessage}: ${error.message}`,
+      message: `Error during updating elog: ${error.message}`,
     });
   }
 };
+
 
 //get a differential pressure elog by id
 exports.GethplcElog = async (req, res) => {
