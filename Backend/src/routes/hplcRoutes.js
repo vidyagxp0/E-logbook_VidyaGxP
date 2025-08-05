@@ -128,6 +128,9 @@ router.post(
   hplc.generateReport
 );
 
+// delete hplc elog attachment
+router.delete("/delete-hplc/attachment/:record_id", hplc.deleteHplcAttachment);
+
 router.post(
   "/chat-pdf/:form_id",
   Auth.checkUserJwtToken,

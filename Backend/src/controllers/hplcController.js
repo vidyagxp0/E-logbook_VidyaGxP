@@ -612,7 +612,41 @@ exports.EditHPLC = async (req, res) => {
   }
 };
 
+//deleting attachment
+exports.deleteHplcAttachment = async (req, res) => {
+  const { record_id } = req.params;
 
+  if (!record_id) {
+    return res.status(400).json({ error: true, message: "Record ID is required." });
+  }
+
+  try {
+    const record = await hplcRecord.findOne({ where: { record_id } });
+
+    if (!record) {
+      return res.status(404).json({ error: true, message: "Record not found." });
+    }
+
+    if (!record.supporting_docs) {
+      return res.status(400).json({ error: true, message: "No attachment to delete." });
+    }
+
+    await hplcRecord.update(
+      { supporting_docs: null },
+      { where: { record_id } }
+    );
+
+    return res.status(200).json({
+      error: false,
+      message: "Attachment deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: "Internal server error: " + error.message,
+    });
+  }
+};
 //get a differential pressure elog by id
 exports.GethplcElog = async (req, res) => {
   const form_id = req.params.id;
