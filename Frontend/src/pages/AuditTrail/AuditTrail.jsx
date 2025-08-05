@@ -21,7 +21,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -37,7 +37,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -53,7 +53,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -69,7 +69,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -85,7 +85,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -101,7 +101,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -118,7 +118,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/analytical-balance/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/analytical-balance/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -135,7 +135,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/karl-fischer/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/karl-fischer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -152,7 +152,7 @@ function AuditTrail() {
 
         try {
           const response = await axios.get(
-            `http://localhost:1000/hplc/get-audit-trail-for-elog/${location.state?.formId}`,
+            `https://elog-api.mydemosoftware.com/hplc/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
             }
@@ -173,7 +173,7 @@ function AuditTrail() {
 useEffect(() => {
  const requestOptions = {
    method: "GET",
-   url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, 
+   url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, 
    headers: {}, 
  };
 
@@ -236,7 +236,7 @@ const generateReport = async () => {
  setIsLoading(true);
  try {
    const response = await fetch(
-     `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`
+     `https://elog-api.mydemosoftware.com/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`
    );
 
    if (!response.ok) {
@@ -526,7 +526,7 @@ const generateReport = async () => {
                         <div className="text-nowrap flex">
                           New Value :{" "}
                           {auditTrail?.new_value?.includes(
-                            "http://localhost:1000/"
+                            "https://elog-api.mydemosoftware.com/"
                           ) ? (
                             <a
                               href={auditTrail.new_value}

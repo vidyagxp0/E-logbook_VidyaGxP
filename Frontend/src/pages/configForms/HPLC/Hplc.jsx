@@ -27,7 +27,7 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
         useEffect(() => {
           const config = {
             method: "post",
-            url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+            url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("user-token")}`,
               "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
       
           const newConfig = {
             method: "post",
-            url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+            url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("user-token")}`,
               "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
         useEffect(() => {
           const requestOptions = {
             method: "GET",
-            url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+            url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
             headers: {}, // You can add any necessary headers here
           };
       
@@ -132,7 +132,7 @@ const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
       
           axios
             .post(
-              "http://localhost:1000/hplc/post-hplc",
+              "https://elog-api.mydemosoftware.com/hplc/post-hplc",
               hplc,
               config
             )

@@ -28,7 +28,7 @@ const Karl = () => {
         useEffect(() => {
           const config = {
             method: "post",
-            url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+            url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("user-token")}`,
               "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const Karl = () => {
       
           const newConfig = {
             method: "post",
-            url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+            url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("user-token")}`,
               "Content-Type": "application/json",
@@ -74,7 +74,7 @@ const Karl = () => {
         useEffect(() => {
           const requestOptions = {
             method: "GET",
-            url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+            url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
             headers: {}, // You can add any necessary headers here
           };
       
@@ -133,7 +133,7 @@ const Karl = () => {
       
           axios
             .post(
-              "http://localhost:1000/karl-fischer/post-karl-fischer",
+              "https://elog-api.mydemosoftware.com/karl-fischer/post-karl-fischer",
               analyticalBalance,
               config
             )

@@ -74,7 +74,7 @@ const KarlFischerPanel = () => {
        }
        axios
          .put(
-           "http://localhost:1000/karl-fischer/send-KF-elog-for-review",
+           "https://elog-api.mydemosoftware.com/karl-fischer/send-KF-elog-for-review",
            data,
            config
          )
@@ -92,7 +92,7 @@ const KarlFischerPanel = () => {
        data.reviewerAttachment = editData.reviewerAttachment;
        axios
          .put(
-           "http://localhost:1000/karl-fischer/send-KF-from-review-to-approval",
+           "https://elog-api.mydemosoftware.com/karl-fischer/send-KF-from-review-to-approval",
            data,
            config
          )
@@ -111,7 +111,7 @@ const KarlFischerPanel = () => {
        data.reviewerAttachment = editData.reviewerAttachment;
        axios
          .put(
-           "http://localhost:1000/karl-fischer/send-KF-elog-from-review-to-open",
+           "https://elog-api.mydemosoftware.com/karl-fischer/send-KF-elog-from-review-to-open",
            data,
            config
          )
@@ -127,7 +127,7 @@ const KarlFischerPanel = () => {
        data.approverAttachment = editData.approverAttachment;
        axios
          .put(
-           "http://localhost:1000/karl-fischer/approve-KF-elog",
+           "https://elog-api.mydemosoftware.com/karl-fischer/approve-KF-elog",
            data,
            config
          )
@@ -145,7 +145,7 @@ const KarlFischerPanel = () => {
        data.approverDeclaration = credentials?.declaration;
        axios
          .put(
-           "http://localhost:1000/karl-fischer/send-KF-elog-from-approval-to-open",
+           "https://elog-api.mydemosoftware.com/karl-fischer/send-KF-elog-from-approval-to-open",
            data,
            config
          )
@@ -192,7 +192,7 @@ const KarlFischerPanel = () => {
          method: "PUT",
          headers: myHeaders,
          data: editData,
-         url: "http://localhost:1000/karl-fischer/update-karl-fischer",
+         url: "https://elog-api.mydemosoftware.com/karl-fischer/update-karl-fischer",
        };
  
        axios(requestOptions)
@@ -407,7 +407,7 @@ const KarlFischerPanel = () => {
      setIsLoading(true);
      try {
        const response = await axios.post(
-         `http://localhost:1000/karl-fischer/chat-pdf/${formId}`,
+         `https://elog-api.mydemosoftware.com/karl-fischer/chat-pdf/${formId}`,
          {
            reportData: reportData,
          },

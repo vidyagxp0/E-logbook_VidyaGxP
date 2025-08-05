@@ -133,7 +133,7 @@ console.log(updatedEditData, "updatedEditData");
         return;
       }
       axios
-        .put("http://localhost:1000/hplc/send-HP-elog-for-review", data, config)
+        .put("https://elog-api.mydemosoftware.com/hplc/send-HP-elog-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -148,7 +148,7 @@ console.log(updatedEditData, "updatedEditData");
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/hplc/send-HP-from-review-to-approval",
           data,
           config
         )
@@ -167,7 +167,7 @@ console.log(updatedEditData, "updatedEditData");
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/hplc/send-HP-elog-from-review-to-open",
           data,
           config
         )
@@ -182,7 +182,7 @@ console.log(updatedEditData, "updatedEditData");
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/hplc/approve-HP-elog", data, config)
+        .put("https://elog-api.mydemosoftware.com/hplc/approve-HP-elog", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -197,7 +197,7 @@ console.log(updatedEditData, "updatedEditData");
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/hplc/send-HP-elog-from-approval-to-open",
           data,
           config
         )
@@ -245,7 +245,7 @@ console.log(updatedEditData, "updatedEditData");
         method: "PUT",
         headers: myHeaders,
         data: updatedEditData,
-        url: "http://localhost:1000/hplc/update-hplc",
+        url: "https://elog-api.mydemosoftware.com/hplc/update-hplc",
       };
 
       axios(requestOptions)
@@ -514,7 +514,7 @@ console.log(updatedEditData, "updatedEditData");
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/hplc/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/hplc/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -562,7 +562,7 @@ console.log(updatedEditData, "updatedEditData");
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/hplc/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/hplc/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -619,7 +619,7 @@ console.log(updatedEditData, "updatedEditData");
       [];
       try {
         const res = await axios.delete(
-          `http://localhost:1000/hplc/delete-hplc/attachment/${record.record_id}`
+          `https://elog-api.mydemosoftware.com/hplc/delete-hplc/attachment/${record.record_id}`
         );
   
         if (res.data?.error === false) {

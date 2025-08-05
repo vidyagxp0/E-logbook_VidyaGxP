@@ -133,7 +133,7 @@ const KarlFischerEffective = () => {
       }
       axios
         .put(
-          "http://localhost:1000/karl-fischer/send-KF-elog-for-review",
+          "https://elog-api.mydemosoftware.com/karl-fischer/send-KF-elog-for-review",
           data,
           config
         )
@@ -151,7 +151,7 @@ const KarlFischerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/karl-fischer/send-KF-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/karl-fischer/send-KF-from-review-to-approval",
           data,
           config
         )
@@ -170,7 +170,7 @@ const KarlFischerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/karl-fischer/send-KF-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/karl-fischer/send-KF-elog-from-review-to-open",
           data,
           config
         )
@@ -185,7 +185,7 @@ const KarlFischerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/karl-fischer/approve-KF-elog", data, config)
+        .put("https://elog-api.mydemosoftware.com/karl-fischer/approve-KF-elog", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -200,7 +200,7 @@ const KarlFischerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/karl-fischer/send-KF-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/karl-fischer/send-KF-elog-from-approval-to-open",
           data,
           config
         )
@@ -246,7 +246,7 @@ const KarlFischerEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: updatedEditData,
-        url: "http://localhost:1000/karl-fischer/update-karl-fischer",
+        url: "https://elog-api.mydemosoftware.com/karl-fischer/update-karl-fischer",
       };
 
       axios(requestOptions)
@@ -509,7 +509,7 @@ const KarlFischerEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/karl-fischer/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/karl-fischer/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -559,7 +559,7 @@ const KarlFischerEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/karl-fischer/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/karl-fischer/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -601,7 +601,7 @@ const KarlFischerEffective = () => {
     [];
     try {
       const res = await axios.delete(
-        `http://localhost:1000/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`
+        `https://elog-api.mydemosoftware.com/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`
       );
 
       if (res.data?.error === false) {

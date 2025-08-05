@@ -18,7 +18,7 @@ function HeaderTop() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 

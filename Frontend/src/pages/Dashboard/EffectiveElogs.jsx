@@ -33,7 +33,7 @@ function EffectiveElogs() {
   useEffect(() => {
     const newConfig = {
       method: "get",
-      url: "http://localhost:1000/differential-pressure/get-all-differential-pressure",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-all-differential-pressure",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ function EffectiveElogs() {
 
     const newConfigTemp = {
       method: "get",
-      url: "http://localhost:1000/temprature-record/get-all-temprature-record",
+      url: "https://elog-api.mydemosoftware.com/temprature-record/get-all-temprature-record",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -96,7 +96,7 @@ function EffectiveElogs() {
 
     const newConfigloaded = {
       method: "get",
-      url: "http://localhost:1000/loaded-quantity/get-all",
+      url: "https://elog-api.mydemosoftware.com/loaded-quantity/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -127,7 +127,7 @@ function EffectiveElogs() {
 
     const newConfigMedia = {
       method: "get",
-      url: "http://localhost:1000/media-record/get-all",
+      url: "https://elog-api.mydemosoftware.com/media-record/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -158,7 +158,7 @@ function EffectiveElogs() {
 
     const newConfigDispensing = {
       method: "get",
-      url: "http://localhost:1000/dispensing-material/get-all",
+      url: "https://elog-api.mydemosoftware.com/dispensing-material/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -188,7 +188,7 @@ function EffectiveElogs() {
       });
     const newOperationSterelizer = {
       method: "get",
-      url: "http://localhost:1000/operation-sterlizer/get-all",
+      url: "https://elog-api.mydemosoftware.com/operation-sterlizer/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -217,7 +217,7 @@ function EffectiveElogs() {
       });
     const newAnalyticalBalance = {
       method: "get",
-      url: "http://localhost:1000/analytical-balance/get-all",
+      url: "https://elog-api.mydemosoftware.com/analytical-balance/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -246,7 +246,7 @@ function EffectiveElogs() {
       });
     const newKarlFischer = {
       method: "get",
-      url: "http://localhost:1000/karl-fischer/get-all-karl-fischer",
+      url: "https://elog-api.mydemosoftware.com/karl-fischer/get-all-karl-fischer",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -274,7 +274,7 @@ function EffectiveElogs() {
       });
     const newHplc = {
       method: "get",
-      url: "http://localhost:1000/hplc/get-all-hplc",
+      url: "https://elog-api.mydemosoftware.com/hplc/get-all-hplc",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",

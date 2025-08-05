@@ -73,7 +73,7 @@ const HplcPanel = () => {
         }
         axios
           .put(
-            "http://localhost:1000/hplc/send-HP-elog-for-review",
+            "https://elog-api.mydemosoftware.com/hplc/send-HP-elog-for-review",
             data,
             config
           )
@@ -91,7 +91,7 @@ const HplcPanel = () => {
         data.reviewerAttachment = editData.reviewerAttachment;
         axios
           .put(
-            "http://localhost:1000/hplc/send-HP-from-review-to-approval",
+            "https://elog-api.mydemosoftware.com/hplc/send-HP-from-review-to-approval",
             data,
             config
           )
@@ -110,7 +110,7 @@ const HplcPanel = () => {
         data.reviewerAttachment = editData.reviewerAttachment;
         axios
           .put(
-            "http://localhost:1000/hplc/send-HP-elog-from-review-to-open",
+            "https://elog-api.mydemosoftware.com/hplc/send-HP-elog-from-review-to-open",
             data,
             config
           )
@@ -126,7 +126,7 @@ const HplcPanel = () => {
         data.approverAttachment = editData.approverAttachment;
         axios
           .put(
-            "http://localhost:1000/hplc/approve-HP-elog",
+            "https://elog-api.mydemosoftware.com/hplc/approve-HP-elog",
             data,
             config
           )
@@ -144,7 +144,7 @@ const HplcPanel = () => {
         data.approverDeclaration = credentials?.declaration;
         axios
           .put(
-            "http://localhost:1000/hplc/send-HP-elog-from-approval-to-open",
+            "https://elog-api.mydemosoftware.com/hplc/send-HP-elog-from-approval-to-open",
             data,
             config
           )
@@ -191,7 +191,7 @@ const HplcPanel = () => {
           method: "PUT",
           headers: myHeaders,
           data: editData,
-          url: "http://localhost:1000/hplc/update-hplc",
+          url: "https://elog-api.mydemosoftware.com/hplc/update-hplc",
         };
   
         axios(requestOptions)
@@ -404,7 +404,7 @@ const HplcPanel = () => {
       setIsLoading(true);
       try {
         const response = await axios.post(
-          `http://localhost:1000/hplc/chat-pdf/${formId}`,
+          `https://elog-api.mydemosoftware.com/hplc/chat-pdf/${formId}`,
           {
             reportData: reportData,
           },
