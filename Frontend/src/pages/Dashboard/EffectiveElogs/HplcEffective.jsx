@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 // import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
@@ -582,6 +583,37 @@ const HplcEffective = () => {
     }
     return true;
   };
+
+    const handleDeleteFile = async (index) => {
+      const record = editData.karlFischerRecords[index];
+  
+      if (!record?.record_id) {
+        console.error("Record ID not found for deletion");
+        return;
+      }
+      [];
+      try {
+        const res = await axios.delete(
+          `http://localhost:1000/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`
+        );
+  
+        if (res.data?.error === false) {
+          // Clear file from UI state
+          const newData = [...editData.karlFischerRecords];
+          newData[index].supporting_docs = null;
+  
+          setEditData((prev) => ({
+            ...prev,
+            karlFischerRecords: newData,
+          }));
+        } else {
+          alert(res.data?.message || "Failed to delete attachment.");
+        }
+      } catch (err) {
+        console.error("Error deleting attachment:", err);
+        alert("Something went wrong while deleting the attachment.");
+      }
+    };
 
   return (
     <>
@@ -1297,6 +1329,7 @@ const HplcEffective = () => {
                           <th>Done by</th>
                           <th>Checked By</th>
                           <th>Remarks</th>
+                          <th className="text-center">Attachment</th>
                           {/* <th>Supporting Documents</th> */}
                           <th>Status</th>
                         </tr>
@@ -1615,6 +1648,90 @@ const HplcEffective = () => {
                                 </div>
                               )}
                             </td>
+
+                            <td style={{ width: "200px" }}>
+                                                          <div className="d-flex">
+                                                            {(() => {
+                                                              const isDisabled =
+                                                                [3, 2, 4].includes(
+                                                                  userDetails.roles[0].role_id
+                                                                ) || !isRowEditable(item);
+                            
+                                                              return item.supporting_docs ? (
+                                                                <div className="file-upload-wrapper">
+                                                                  <button
+                                                                    type="button"
+                                                                    className="btn-upload"
+                                                                    onClick={() =>
+                                                                      !isDisabled &&
+                                                                      document
+                                                                        .getElementsByName(
+                                                                          "supporting_docs"
+                                                                        )
+                                                                        [index].click()
+                                                                    }
+                                                                    disabled={isDisabled}
+                                                                  >
+                                                                    Change File
+                                                                  </button>
+                                                                  <h3>
+                                                                    Selected File:{" "}
+                                                                    <a
+                                                                      href={item.supporting_docs}
+                                                                      target="_blank"
+                                                                      rel="noopener noreferrer"
+                                                                    >
+                                                                      View File
+                                                                    </a>
+                                                                    {!isDisabled && (
+                                                                      <CloseIcon
+                                                                        style={{
+                                                                          color: "black",
+                                                                          cursor: "pointer",
+                                                                          marginLeft: 5,
+                                                                        }}
+                                                                        onClick={() =>
+                                                                          handleDeleteFile(index)
+                                                                        }
+                                                                      />
+                                                                    )}
+                                                                  </h3>
+                                                                </div>
+                                                              ) : (
+                                                                <div className="file-upload-wrapper">
+                                                                  <button
+                                                                    type="button"
+                                                                    className="btn-upload"
+                                                                    onClick={() =>
+                                                                      !isDisabled &&
+                                                                      document
+                                                                        .getElementsByName(
+                                                                          "supporting_docs"
+                                                                        )
+                                                                        [index].click()
+                                                                    }
+                                                                    disabled={isDisabled}
+                                                                  >
+                                                                    Select File
+                                                                  </button>
+                                                                </div>
+                                                              );
+                                                            })()}
+                                                            <input
+                                                              type="file"
+                                                              name="supporting_docs"
+                                                              style={{ display: "none" }}
+                                                              onChange={(e) =>
+                                                                handleFileChange(index, e.target.files[0])
+                                                              }
+                                                              disabled={
+                                                                [3, 2, 4].includes(
+                                                                  userDetails.roles[0].role_id
+                                                                ) || !isRowEditable(item)
+                                                              }
+                                                            />
+                                                          </div>
+                                                        </td>
 
                             <td>
                               {editData?.hplcRecords?.find(
