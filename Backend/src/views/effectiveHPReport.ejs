@@ -77,24 +77,29 @@
 
     <% if (reportData.hplcRecords && reportData.hplcRecords.length > 0) { %>
       <table>
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>Date</th>
-            <th>Sample Name</th>
-            <th>Reg No./Lot No.</th>
-            <th>Method Used</th>
-            <th>Parameter/Activity</th>
-            <th>Column No.</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>No. of Injections</th>
-            <th>Done by</th>
-            <th>Checked By</th>
-            <th>Remark</th>
-            <th>Status</th>
-          </tr>
-        </thead>
+ <thead>
+  <tr>
+    <th>S.No</th>
+    <th>Date</th>
+    <th>Sample Name</th>
+    <th>Reg No./Lot No.</th>
+    <th>Method Used</th>
+    <th>Parameter/Activity</th>
+    <th>Column No.</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+  </tr>
+  <tr>
+    <th ></th>
+    <th >No. of Injections</th>
+    <th >Done by</th>
+    <th >Checked By</th>
+    <th >Remark</th>
+    <th style="text-align: center;">Attachment</th>
+    <th >Status</th>
+  </tr>
+</thead>
+
         <tbody>
           <% reportData.hplcRecords.forEach((record, index) => { %>
             <tr>
@@ -107,10 +112,22 @@
               <td><%= record?.column_no || "Not Applicable" %></td>
               <td><%= record?.start_time?.split(':').slice(0, 2).join(':') || "Not Applicable" %></td>
               <td><%= record?.end_time?.split(':').slice(0, 2).join(':') || "Not Applicable" %></td>
+            </tr>
+            <tr>
+              <td></td>
               <td><%= record?.no_of_injections || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
               <td><%= record?.reviewed_by || "Not Applicable" %></td>
               <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
+            <td>
+              <% if (record?.supporting_docs) { %>
+                <a href="<%= record.supporting_docs %>" target="_blank">
+                  <%= record.supporting_docs.split('/').pop() %>
+                </a>
+              <% } else { %>
+                Not Applicable
+              <% } %>
+            </td>
               <td><%= record?.status || "Not Applicable" %></td>
             </tr>
           <% }) %>  
