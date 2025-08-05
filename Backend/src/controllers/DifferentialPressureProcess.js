@@ -2201,7 +2201,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
 
     const headerHtml = await new Promise((resolve, reject) => {
       req.app.render(
-        "header",
+        "auditHeader",
         { reportData: data, logoDataUri: logoDataUri },
         (err, html) => {
           if (err) return reject(err);
