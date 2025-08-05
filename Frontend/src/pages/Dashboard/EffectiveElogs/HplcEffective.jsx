@@ -74,9 +74,17 @@ const HplcEffective = () => {
   };
 
   const handlePopupSubmit = (credentials) => {
-    const cleanedData = editData?.hplcRecords.filter(
-      (record) => record.hplc?.trim() !== "" || record.remarks.trim() !== ""
-    );
+    const cleanedData = editData?.hplcRecords.filter((record) => {
+      const hasRequiredFields =
+        record.sample_name?.trim() !== "" &&
+        record.reg_no.trim() !== "" &&
+        record.no_of_injections?.trim() !== "" &&
+        record.end_time?.trim() !== ""&&
+        record.start_time?.trim() !== "";
+      return hasRequiredFields;
+    });
+
+    console.log("Cleaned records:", cleanedData);
 
         const emptyRowsCount =
           editData?.hplcRecords.length - cleanedData.length;
@@ -93,6 +101,9 @@ const HplcEffective = () => {
       ...editData,
       hplcRecords: cleanedData,
     };
+
+console.log(updatedEditData, "updatedEditData");
+
     const data = {
       ...updatedEditData,
       site_id: location.state?.site_id,
@@ -211,7 +222,7 @@ const HplcEffective = () => {
       //   return;
       // }
       if (
-        editData?.hplcRecords?.some(
+        updatedEditData?.hplcRecords?.some(
           (record) => record.differential_pressure === ""
         )
       ) {
@@ -219,19 +230,21 @@ const HplcEffective = () => {
         return;
       }
 
-      editData.email = credentials.email;
-      editData.password = credentials.password;
-      editData.initiatorDeclaration = credentials?.declaration;
+      updatedEditData.email = credentials.email;
+      updatedEditData.password = credentials.password;
+      updatedEditData.initiatorDeclaration = credentials?.declaration;
 
       const myHeaders = {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "multipart/form-data",
       };
 
+      console.log("Updated Edit Data:", updatedEditData);
+
       const requestOptions = {
         method: "PUT",
         headers: myHeaders,
-        data: editData,
+        data: updatedEditData,
         url: "http://localhost:1000/hplc/update-hplc",
       };
 
@@ -597,6 +610,7 @@ const HplcEffective = () => {
 
     const handleDeleteFile = async (index) => {
       const record = editData.hplcRecords[index];
+      
   
       if (!record?.record_id) {
         console.error("Record ID not found for deletion");

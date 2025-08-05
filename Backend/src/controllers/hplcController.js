@@ -186,7 +186,7 @@ exports.InsertHPLC = async (req, res) => {
       });
     }
 
-    if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
+    if (Array.isArray(FormRecordsArray) && FormRecordsArray?.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         date: record?.date,
@@ -512,7 +512,7 @@ exports.EditHPLC = async (req, res) => {
       existingMap[rec.record_id] = rec;
     });
 
-    for (let i = 0; i < hplcRecords.length; i++) {
+    for (let i = 0; i < hplcRecords?.length; i++) {
       const record = hplcRecords[i];
       const record_id = record.record_id || null;
       const file = supportingDocs[i];
@@ -594,7 +594,7 @@ exports.EditHPLC = async (req, res) => {
       );
     });
 
-    if (validAuditEntries.length > 0) {
+    if (validAuditEntries?.length > 0) {
       await hplcAudittrail.bulkCreate(validAuditEntries, { transaction });
     }
 
