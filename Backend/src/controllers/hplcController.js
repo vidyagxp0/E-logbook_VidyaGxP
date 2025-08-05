@@ -202,6 +202,8 @@ exports.InsertHPLC = async (req, res) => {
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         remarks: record?.remarks,
+        remarksOther: record?.remarksOther,
+        remarksType: record?.remarksType,
         status:record?.status,
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
@@ -335,6 +337,28 @@ exports.InsertHPLC = async (req, res) => {
           field_name: "Status",
           previous_value: null,
           new_value: record?.status,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Remarks Other",
+          previous_value: null,
+          new_value: record?.remarksOther,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Remarks Type",
+          previous_value: null,
+          new_value: record?.remarksType,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -536,6 +560,8 @@ exports.EditHPLC = async (req, res) => {
         reviewed_by: record?.reviewed_by,
         remarks: record?.remarks,
         status: record?.status,
+        remarksOther: record?.remarksOther,
+        remarksType: record?.remarksType,
         supporting_docs: supporting_docs_url,
       };
 
