@@ -166,6 +166,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         remarks: record?.remarks,
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
+        remarksSubType: record?.remarksSubType,
         status:record?.status
       }));
 
@@ -278,6 +279,17 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           field_name: "Remarks Type",
           previous_value: null,
           new_value: record?.remarksType,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Remarks Sub Type",
+          previous_value: null,
+          new_value: record?.remarksSubType,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -474,6 +486,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
         status:record?.status,
         remarksOther: record.remarksOther,
         remarksType: record.remarksType,
+        remarksSubType: record.remarksSubType,
         supporting_docs: supporting_docs_url,
       };
 

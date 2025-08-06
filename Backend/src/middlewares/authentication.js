@@ -88,13 +88,13 @@ const getElogDocsUrl = (file) => {
   if (file && typeof file === 'object' && !file.filename) {
     const firstValue = Object.values(file)[0];
     if (firstValue?.filename) {
-      const url = `https://elog-api.mydemosoftware.com/elog_docs/${firstValue.filename}`;
+      const url = `http://localhost:1000/elog_docs/${firstValue.filename}`;
       return url;
     }
   }
 
   if (file?.filename) {
-    const url = `https://elog-api.mydemosoftware.com/elog_docs/${file.filename}`;
+    const url = `http://localhost:1000/elog_docs/${file.filename}`;
     return url;
   }
 

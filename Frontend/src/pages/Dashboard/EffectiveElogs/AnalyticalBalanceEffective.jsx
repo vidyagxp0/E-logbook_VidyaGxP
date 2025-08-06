@@ -137,7 +137,7 @@ const AnalyticalBalancesEffective = () => {
       }
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/analytical-balance/send-for-review",
+          "http://localhost:1000/analytical-balance/send-for-review",
           data,
           config
         )
@@ -155,7 +155,7 @@ const AnalyticalBalancesEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/analytical-balance/send-review-to-approval",
+          "http://localhost:1000/analytical-balance/send-review-to-approval",
           data,
           config
         )
@@ -174,7 +174,7 @@ const AnalyticalBalancesEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/analytical-balance/send-review-to-open",
+          "http://localhost:1000/analytical-balance/send-review-to-open",
           data,
           config
         )
@@ -189,7 +189,7 @@ const AnalyticalBalancesEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("https://elog-api.mydemosoftware.com/analytical-balance/approve", data, config)
+        .put("http://localhost:1000/analytical-balance/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -204,7 +204,7 @@ const AnalyticalBalancesEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "https://elog-api.mydemosoftware.com/analytical-balance/send-approval-to-open",
+          "http://localhost:1000/analytical-balance/send-approval-to-open",
           data,
           config
         )
@@ -250,7 +250,7 @@ const AnalyticalBalancesEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: updatedEditData,
-        url: "https://elog-api.mydemosoftware.com/analytical-balance/update",
+        url: "http://localhost:1000/analytical-balance/update",
       };
 
       axios(requestOptions)
@@ -497,7 +497,7 @@ const AnalyticalBalancesEffective = () => {
 
     try {
       const res = await axios.delete(
-        `https://elog-api.mydemosoftware.com/analytical-balance/delete-analytical-balance/attachment/${record.record_id}`
+        `http://localhost:1000/analytical-balance/delete-analytical-balance/attachment/${record.record_id}`
       );
 
       if (res.data?.error === false) {
@@ -547,7 +547,7 @@ const AnalyticalBalancesEffective = () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `https://elog-api.mydemosoftware.com/analytical-balance/blank-report/${formId}`,
+        `http://localhost:1000/analytical-balance/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -595,7 +595,7 @@ const AnalyticalBalancesEffective = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://elog-api.mydemosoftware.com/analytical-balance/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/analytical-balance/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
