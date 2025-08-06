@@ -690,7 +690,9 @@ const AnalyticalBalancesEffective = () => {
   
       const response = await axios.post(
         `http://localhost:1000/analytical-balance/effective-chat-pdf/${formId}`,
-        payload,
+        {
+          reportData: reportData,
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,

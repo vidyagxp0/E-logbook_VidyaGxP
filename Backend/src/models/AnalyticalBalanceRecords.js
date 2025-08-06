@@ -56,6 +56,9 @@ const AnalyticalBalance = sequelize.define(
     remarksType: {
       type: DataTypes.STRING,
     },
+    remarksSubType: {
+      type: DataTypes.STRING,
+    },
     status: {
       type: DataTypes.STRING
     }

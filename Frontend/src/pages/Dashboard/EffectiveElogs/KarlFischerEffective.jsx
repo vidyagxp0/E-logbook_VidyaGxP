@@ -623,7 +623,9 @@ if (emptyRowsCount > 0) {
   
       const response = await axios.post(
         `http://localhost:1000/karl-fischer/effective-chat-pdf/${formId}`,
-        payload,
+        {
+          reportData: reportData,
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
