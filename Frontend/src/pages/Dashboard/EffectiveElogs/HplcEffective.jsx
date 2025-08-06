@@ -87,10 +87,6 @@ const HplcEffective = () => {
   const handlePopupSubmit = (credentials) => {
     const cleanedData = editData?.hplcRecords.filter((record) => {
       const hasRequiredFields =
-        record.sample_name?.trim() !== "" &&
-        record.reg_no.trim() !== "" &&
-        record.no_of_injections?.trim() !== "" &&
-        record.end_time?.trim() !== ""&&
         record.start_time?.trim() !== "";
       return hasRequiredFields;
     });
