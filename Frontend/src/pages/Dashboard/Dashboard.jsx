@@ -287,6 +287,7 @@ function Dashboard() {
       navigate("/tpr-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
       navigate("/ecc-panel", { state: item });
+      
     } else if (item.LoadedQuantityRecords) {
       navigate("/loaded-quantity-panel", { state: item });
     } else if (item.MediaRecords) {
@@ -430,12 +431,12 @@ function Dashboard() {
               style={{ border: "1px solid gray", padding: "2px 0px" }}
             >
               <option value="All_Records">All Records</option>
-              <option value="diffrential_pressure">
+              {/* <option value="diffrential_pressure">
                 Differential Pressure Record
               </option>
-              {/* <option value="equipment_cleaning">
+              <option value="equipment_cleaning">
                 Equipment Cleaning Checklist
-              </option> */}
+              </option>
               <option value="temperature_records">Temperature Records</option>
               <option value="loaded_quantity">Loaded Quantity</option>
               <option value="media_record">Media Record</option>
@@ -444,7 +445,7 @@ function Dashboard() {
               </option>
               <option value="dispensing_of_material">
                 Dispensing Of Materials
-              </option>
+              </option> */}
               <option value="analytical_balance">
                 Analytical Balance
               </option>

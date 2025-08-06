@@ -11,6 +11,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 import dayjs from "dayjs";
+import { Autocomplete, TextField } from "@mui/material";
 
 const AnalyticalBalancesEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -315,7 +316,7 @@ const AnalyticalBalancesEffective = () => {
         remarks: "",
         remarksOther: "",
         remarksType: "",
-
+        remarksSubType: "",
         status: "Open",
       };
       setEditData((prevState) => ({
@@ -1475,16 +1476,16 @@ const AnalyticalBalancesEffective = () => {
                   <table>
                     <thead>
                       <tr>
-                        <th className="text-center">S no.</th>
-                        <th className="text-center">Date</th>
-                        <th className="text-center">Reg. No./Lot no.</th>
-                        <th className="text-center">Sample Name</th>
-                        <th className="text-center">Weight Taken</th>
-                        <th className="text-center">Done by</th>
-                        <th className="text-center">Checked By</th>
-                        <th className="text-center">Remarks</th>
-                        <th className="text-center">Attachment</th>
-                        <th className="text-center">Status</th>
+                        <th className="text-center !text-wrap ">S no.</th>
+                        <th className="text-center !text-wrap">Date</th>
+                        <th className="text-center !text-wrap ">Reg. No./Lot no.</th>
+                        <th className="text-center !text-wrap ">Sample Name</th>
+                        <th className="text-center !text-wrap ">Weight Taken</th>
+                        <th className="text-center !text-wrap ">Done by</th>
+                        <th className="text-center !text-wrap ">Checked By</th>
+                        <th className="text-center !text-wrap ">Remarks</th>
+                        <th className="text-center !text-wrap ">Attachment</th>
+                        <th className="text-center !text-wrap ">Status</th>
                         {/* <th  className="text-center">Supporting Documents</th> */}
                         {/* <th  className="text-center">Actions</th> */}
                       </tr>
@@ -1605,6 +1606,7 @@ const AnalyticalBalancesEffective = () => {
                                         newData[index].remarks = "";
                                         newData[index].remarksType = "";
                                         newData[index].remarksOther = "";
+                                        newData[index].remarksSubType = "";
                                       }
                                       setEditData({
                                         ...editData,
@@ -1624,70 +1626,106 @@ const AnalyticalBalancesEffective = () => {
                               </div>
                             </td>
 
-                            <td>
-                              {item.reviewed_by && (
-                                <div className="flex items-center gap-2">
-                                  <select
-                                    value={item.remarksType || ""}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.AnalyticalBalances,
-                                      ];
-                                      newData[index].remarksType =
-                                        e.target.value;
+                           <td>
+  {item.reviewed_by && (
+    <div className="flex flex-col gap-2">
+      {/* First Dropdown: OK / Action Needed */}
+      <select
+        value={item.remarksType || ""}
+        onChange={(e) => {
+          const newData = [...editData.AnalyticalBalances];
+          newData[index].remarksType = e.target.value;
 
-                                      // clear other if not selected
-                                      if (e.target.value !== "Others") {
-                                        newData[index].remarksOther = "";
-                                        newData[index].remarks = e.target.value;
-                                      } else {
-                                        newData[index].remarks = "";
-                                      }
+          // Clear related fields when not "action-needed"
+          if (e.target.value !== "action-needed") {
+            newData[index].remarksSubType = "";
+            newData[index].remarksOther = "";
+            newData[index].remarks = e.target.value;
+          } else {
+            newData[index].remarks = "";
+          }
 
-                                      setEditData({
-                                        ...editData,
-                                        AnalyticalBalances: newData,
-                                      });
-                                    }}
-                                    className="border rounded px-2 py-1 w-auto"
-                                    disabled={
-                                      [1, 3].includes(
-                                        userDetails.roles[0].role_id
-                                      ) || !canReviewerEdit(item)
-                                    }
-                                  >
-                                    <option value="OK">OK</option>
-                                    <option value="Others">Others</option>
-                                  </select>
+          setEditData({
+            ...editData,
+            AnalyticalBalances: newData,
+          });
+        }}
+        className="border rounded px-2 py-1 w-auto"
+        disabled={
+          [1, 3].includes(userDetails.roles[0].role_id) ||
+          !canReviewerEdit(item)
+        }
+      >
+        <option value="OK">OK</option>
+        <option value="action-needed">Action Needed</option>
+      </select>
 
-                                  {item.remarksType === "Others" && (
-                                    <input
-                                      type="text"
-                                      placeholder="Enter remark"
-                                      value={item.remarksOther || ""}
-                                      onChange={(e) => {
-                                        const newData = [
-                                          ...editData.AnalyticalBalances,
-                                        ];
-                                        newData[index].remarksOther =
-                                          e.target.value;
-                                        newData[index].remarks = e.target.value;
-                                        setEditData({
-                                          ...editData,
-                                          AnalyticalBalances: newData,
-                                        });
-                                      }}
-                                      className="border rounded px-2 py-1 w-auto"
-                                      readOnly={
-                                        [1, 3].includes(
-                                          userDetails.roles[0].role_id
-                                        ) || !canReviewerEdit(item)
-                                      }
-                                    />
-                                  )}
-                                </div>
-                              )}
-                            </td>
+      {/* Show Second Dropdown if "action-needed" */}
+      {item.remarksType === "action-needed" && (
+        <div className="flex flex-col gap-2">
+          <select
+            value={item.remarksSubType || ""}
+            onChange={(e) => {
+              const newData = [...editData.AnalyticalBalances];
+              newData[index].remarksSubType = e.target.value;
+
+              if (e.target.value !== "Others") {
+                newData[index].remarksOther = "";
+                newData[index].remarks = e.target.value;
+              } else {
+                newData[index].remarks = newData[index].remarksOther || "";
+              }
+
+              setEditData({
+                ...editData,
+                AnalyticalBalances: newData,
+              });
+            }}
+            className="border rounded px-2 py-1 w-auto"
+            disabled={
+              [1, 3].includes(userDetails.roles[0].role_id) ||
+              !canReviewerEdit(item)
+            }
+          >
+            <option value="">Select Issue</option>
+            <option value="Incorrect Sample Name">Incorrect Sample Name</option>
+            <option value="Incorrect Reg No./ Lot No.">Incorrect Reg No./ Lot No.</option>
+            <option value="Incorrect Method Used">Incorrect Method Used</option>
+            <option value="Incorrect Parameter/Activity">Incorrect Parameter/Activity</option>
+            <option value="Incorrect Column No.">Incorrect Column No.</option>
+            <option value="Incorrect No. of Injections">Incorrect No. of Injections</option>
+            <option value="Others">Others</option>
+          </select>
+
+          {/* Show Input if "Others" is selected */}
+          {item.remarksSubType === "Others" && (
+            <input
+              type="text"
+              placeholder="Enter custom remark"
+              value={item.remarksOther || ""}
+              onChange={(e) => {
+                const newData = [...editData.AnalyticalBalances];
+                newData[index].remarksOther = e.target.value;
+                newData[index].remarks = e.target.value;
+
+                setEditData({
+                  ...editData,
+                  AnalyticalBalances: newData,
+                });
+              }}
+              className="border rounded px-2 py-1 w-auto"
+              readOnly={
+                [1, 3].includes(userDetails.roles[0].role_id) ||
+                !canReviewerEdit(item)
+              }
+            />
+          )}
+        </div>
+      )}
+    </div>
+  )}
+</td>
+
 
                             <td style={{ width: "200px" }}>
                               <div className="d-flex">
