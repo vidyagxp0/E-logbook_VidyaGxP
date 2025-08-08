@@ -75,7 +75,7 @@ const AnalitycalBalancePanel = () => {
        }
        axios
          .put(
-           "https://elog-api.mydemosoftware.com/analytical-balance/send-for-review",
+           "http://localhost:1000/analytical-balance/send-for-review",
            data,
            config
          )
@@ -93,7 +93,7 @@ const AnalitycalBalancePanel = () => {
        data.reviewerAttachment = editData.reviewerAttachment;
        axios
          .put(
-           "https://elog-api.mydemosoftware.com/analytical-balance/send-review-to-approval",
+           "http://localhost:1000/analytical-balance/send-review-to-approval",
            data,
            config
          )
@@ -112,7 +112,7 @@ const AnalitycalBalancePanel = () => {
        data.reviewerAttachment = editData.reviewerAttachment;
        axios
          .put(
-           "https://elog-api.mydemosoftware.com/analytical-balance/send-review-to-open",
+           "http://localhost:1000/analytical-balance/send-review-to-open",
            data,
            config
          )
@@ -128,7 +128,7 @@ const AnalitycalBalancePanel = () => {
        data.approverAttachment = editData.approverAttachment;
        axios
          .put(
-           "https://elog-api.mydemosoftware.com/analytical-balance/approve",
+           "http://localhost:1000/analytical-balance/approve",
            data,
            config
          )
@@ -146,7 +146,7 @@ const AnalitycalBalancePanel = () => {
        data.approverDeclaration = credentials?.declaration;
        axios
          .put(
-           "https://elog-api.mydemosoftware.com/analytical-balance/send-approval-to-open",
+           "http://localhost:1000/analytical-balance/send-approval-to-open",
            data,
            config
          )
@@ -193,7 +193,7 @@ const AnalitycalBalancePanel = () => {
          method: "PUT",
          headers: myHeaders,
          data: editData,
-         url: "https://elog-api.mydemosoftware.com/analytical-balance/update",
+         url: "http://localhost:1000/analytical-balance/update",
        };
  
        axios(requestOptions)
@@ -406,7 +406,7 @@ const AnalitycalBalancePanel = () => {
      setIsLoading(true);
      try {
        const response = await axios.post(
-         `https://elog-api.mydemosoftware.com/analytical-balance/chat-pdf/${formId}`,
+         `http://localhost:1000/analytical-balance/chat-pdf/${formId}`,
          {
            reportData: reportData,
          },
