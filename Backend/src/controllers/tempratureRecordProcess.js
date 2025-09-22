@@ -182,7 +182,8 @@ exports.InsertTempratureRecord = async (req, res) => {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
-        time: record?.time, // Assuming time was meant here instead of unique_id again
+        time: record?.time, 
+        date: record?.date, 
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         approver_remarks: record?.approver_remarks,
@@ -212,6 +213,17 @@ exports.InsertTempratureRecord = async (req, res) => {
           field_name: "Time",
           previous_value: null,
           new_value: record.time,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Date",
+          previous_value: null,
+          new_value: record.date,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -507,6 +519,7 @@ exports.EditTempratureRecord = async (req, res) => {
           const recordFields = {
             unique_id: newRecord?.unique_id,
             time: newRecord?.time,
+            date: newRecord?.date,
             checked_by: newRecord?.checked_by,
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
@@ -546,6 +559,7 @@ exports.EditTempratureRecord = async (req, res) => {
         form_id: form_id,
         unique_id: record?.unique_id,
         time: record?.time,
+        date: record?.date,
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
         approver_remarks: record?.approver_remarks,
@@ -1800,6 +1814,7 @@ exports.blankReport = async (req, res) => {
     const data = reportData?.temprature_record?.map((record) => ({
       unique_id: record?.unique_id || "",
       time: record?.time || "",
+      date: record?.date || "",
       temprature_record: record?.temprature_record || "",
       remarks: record?.remarks || "",
       approver_remarks: record?.approver_remarks ||"",
