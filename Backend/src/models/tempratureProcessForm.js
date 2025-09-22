@@ -60,6 +60,9 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   limit: {
     type: DataTypes.FLOAT,
   },
+  upper_limit: {
+    type: DataTypes.FLOAT,
+  },
   reviewer_id: {
     type: DataTypes.INTEGER,
     allowNull: false,

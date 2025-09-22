@@ -30,6 +30,10 @@ const TempraturePressureRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    shift: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     temprature_record: {
       type: DataTypes.FLOAT,
     },
