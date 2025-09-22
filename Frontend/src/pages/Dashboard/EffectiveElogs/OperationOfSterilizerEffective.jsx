@@ -1100,6 +1100,7 @@ const OperationOfSterilizerEffective = () => {
                           <th rowSpan={2}>S no.</th>
                           <th rowSpan={2}>Unique Id</th>
                           <th rowSpan={2}>Date</th>
+                          <th rowSpan={2}>Time</th>
                           <th rowSpan={2}>Air Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Steam Pressure (4-6 kg)</th>
                           <th rowSpan={2}>Printer Ok Yes/No</th>
@@ -1145,6 +1146,17 @@ const OperationOfSterilizerEffective = () => {
                                   onChange={(e) => {
                                     const newData = [...allTableData];
                                     newData[index].date = e.target.value;
+                                    setAllTableData(newData);
+                                  }}
+                                  readOnly
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.time}
+                                  onChange={(e) => {
+                                    const newData = [...allTableData];
+                                    newData[index].time = e.target.value;
                                     setAllTableData(newData);
                                   }}
                                   readOnly

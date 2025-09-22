@@ -1007,6 +1007,7 @@ const MediaRecordEffective = () => {
                           <th>S no.</th>
                           <th>Unique Id</th>
                           <th>Date</th>
+                          <th>Time</th>
                           <th>Name of the Medium</th>
                           <th>Date of Preparation</th>
                           <th>Date of Use</th>
@@ -1032,6 +1033,20 @@ const MediaRecordEffective = () => {
                                 onChange={(e) => {
                                   const newData = [...editData.MediaRecords];
                                   newData[index].date = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    MediaRecords: newData,
+                                  });
+                                }}
+                                readOnly
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.time}
+                                onChange={(e) => {
+                                  const newData = [...editData.MediaRecords];
+                                  newData[index].time = e.target.value;
                                   setEditData({
                                     ...editData,
                                     MediaRecords: newData,

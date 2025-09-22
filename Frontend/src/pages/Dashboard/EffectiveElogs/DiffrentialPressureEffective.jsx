@@ -244,6 +244,7 @@ export default function DPREffective() {
         unique_id: `DPR000${nextIndex + 1}`,
         time: currentTime,
         date: currentDate,
+        shift: "",
         differential_pressure: "",
         remarks: "",
         reviewed_by: "",
@@ -498,6 +499,14 @@ export default function DPREffective() {
       description: content,
     }));
   };
+const handleShiftChange = (value, index) => {
+  const newData = [...editData.DifferentialPressureRecords];
+  newData[index].shift = value;
+  setEditData({
+    ...editData,
+    DifferentialPressureRecords: newData,
+  });
+};
   return (
     <>
       <HeaderTop />
@@ -1033,6 +1042,7 @@ export default function DPREffective() {
                         <th>Unique Id</th>
                         <th>Date</th>
                         <th>Time</th>
+                        <th>Shift</th>
                         <th>Differential Pressure</th>
                         <th>Reviewer Remark</th>
                         <th>Checked By Reviewer</th>
@@ -1054,6 +1064,23 @@ export default function DPREffective() {
                             <td>
                               <input value={item.time} readOnly />
                             </td>
+                            <td>
+  <select 
+    value={item.shift} 
+    onChange={(e) => handleShiftChange(e.target.value, index)} // index pass karo agar row based hai
+    className="border rounded px-2 py-1"
+     disabled={[3, 2, 4].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+  >
+    <option value="">-- Select Shift --</option>
+    <option value="Shift 1">Shift 1</option>
+    <option value="Shift 2">Shift 2</option>
+    <option value="Shift 3">Shift 3</option>
+    <option value="Shift 4">Shift 4</option>
+  </select>
+</td>
+
                             <td>
                               <input
                                 type="number"
