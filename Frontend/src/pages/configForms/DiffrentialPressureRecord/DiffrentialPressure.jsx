@@ -30,7 +30,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export default function DiffrentialPressure() {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -135,7 +135,7 @@ export default function DiffrentialPressure() {
 
     axios
       .post(
-        "https://elog-api.mydemosoftware.com/differential-pressure/post-differential-pressure",
+        "http://localhost:1000/differential-pressure/post-differential-pressure",
         differentialPRecord,
         config
       )
@@ -205,7 +205,7 @@ export default function DiffrentialPressure() {
       site_id: location.state?.site_id,
       reviewer_id: null,
       approver_id: null,
-      description: "",
+      description: "ok",
       department: "",
       review_comments: "",
       compression_area: "",

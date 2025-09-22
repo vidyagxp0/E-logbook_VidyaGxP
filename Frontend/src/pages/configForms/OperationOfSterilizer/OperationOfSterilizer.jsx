@@ -28,7 +28,7 @@ const OperationOfSterilizer = () => {
       site_id: location.state?.site_id,
       reviewer_id: 2,
       approver_id: 2,
-      description: "",
+      description: "ok",
       department: "",
       review_comments: "",
       compression_area: "",
@@ -55,7 +55,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const OperationOfSterilizer = () => {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const OperationOfSterilizer = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -156,7 +156,7 @@ const OperationOfSterilizer = () => {
 
     axios
       .post(
-        "https://elog-api.mydemosoftware.com/operation-sterlizer/post",
+        "http://localhost:1000/operation-sterlizer/post",
         operationOfSterilizer,
         config
       )

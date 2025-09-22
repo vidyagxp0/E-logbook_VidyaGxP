@@ -190,7 +190,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
-        time: record?.time, // Assuming time was meant here instead of unique_id again
+        date: record?.date,
+        time: record?.time,
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         approver_remarks: record?.approver_remarks,
@@ -219,6 +220,17 @@ exports.InsertDifferentialPressure = async (req, res) => {
           field_name: "Time",
           previous_value: null,
           new_value: record.time,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Date",
+          previous_value: null,
+          new_value: record.date,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -510,6 +522,7 @@ exports.EditDifferentialPressure = async (req, res) => {
           const newRecord = DifferentialPressureRecords[i];
           const recordFields = {
             unique_id: newRecord?.unique_id,
+            date: newRecord?.date,
             time: newRecord?.time,
             checked_by: newRecord?.checked_by,
             differential_pressure: newRecord.differential_pressure,
@@ -549,6 +562,7 @@ exports.EditDifferentialPressure = async (req, res) => {
       const formRecords = DifferentialPressureRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
+        date: record?.date,
         time: record?.time,
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
@@ -1818,6 +1832,7 @@ exports.blankReport = async (req, res) => {
 
     const data = reportData?.DifferentialPressureRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
+      date: record?.date || "",
       time: record?.time || "",
       differential_pressure: record?.differential_pressure || "",
       remarks: record?.remarks || "",
