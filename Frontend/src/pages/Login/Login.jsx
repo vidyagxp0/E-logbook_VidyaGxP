@@ -31,7 +31,7 @@ function Login() {
     };
 
     axios
-      .post("http://localhost:1000/user/user-login", data, {
+      .post("https://elog-api.mydemosoftware.com/user/user-login", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -44,7 +44,7 @@ function Login() {
 
         // Now fetch the permissions using the user ID from decodedData
         return axios.get(
-          `http://localhost:1000/user/get-user-roles/${decodedData.userId}`,
+          `https://elog-api.mydemosoftware.com/user/get-user-roles/${decodedData.userId}`,
           {
             headers: {
               Authorization: `Bearer ${response.data.token}`,
@@ -88,7 +88,7 @@ function Login() {
             <img src="vidyalogo21.png" alt="Logo" className="!w-64" />
             <img src="vb-shilpa.png" alt="Logo" />
           </div>
-          <div className="head">Welcome to eLogBook</div>
+          <div className="text-center font-bold text-2xl">Welcome to eLogBook</div>
         </div>
         <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
           <div className="group-input">

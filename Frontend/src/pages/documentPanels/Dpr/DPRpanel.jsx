@@ -33,6 +33,7 @@ export default function DPRpanel() {
     additionalInfo: "",
     DifferentialPressureRecords: [],
     limit: "",
+    upper_limit: "",
   });
   console.log(editData, "0000000000000000");
 
@@ -74,7 +75,7 @@ export default function DPRpanel() {
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -92,7 +93,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -111,7 +112,7 @@ export default function DPRpanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -127,7 +128,7 @@ export default function DPRpanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-api.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -145,7 +146,7 @@ export default function DPRpanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -192,7 +193,7 @@ export default function DPRpanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elog-api.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -403,7 +404,7 @@ export default function DPRpanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/differential-pressure/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -911,17 +912,18 @@ export default function DPRpanel() {
                     </select>
                   </div>
 
+                
                   <div className="group-input">
-                    <label className="color-label">Limit</label>
+                    <label className="color-label">Lower Limit</label>
                     <div className="instruction"></div>
                     <input
                       name="limit"
                       disabled
                       type="number"
                       // className={`${
-                      //   editData?.limit < 0.6
+                      //   editData?.upper_limit < 0.6
                       //     ? "limit"
-                      //     : editData?.limit > 2.6
+                      //     : editData?.upper_limit > 2.6
                       //     ? "limit"
                       //     : ""
                       // }`}
@@ -933,7 +935,28 @@ export default function DPRpanel() {
                       }
                     />
                   </div>
-
+  <div className="group-input">
+                    <label className="color-label">Upper Limit</label>
+                    <div className="instruction"></div>
+                    <input
+                      name="upper_limit"
+                      disabled
+                      type="number"
+                      // className={`${
+                      //   editData?.upper_limit < 0.6
+                      //     ? "limit"
+                      //     : editData?.upper_limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                      value={editData?.upper_limit}
+                      onChange={handleInputChange1}
+                      readOnly={
+                        location.state?.stage !== 1 ||
+                        location.state?.initiator_id !== userDetails.userId
+                      }
+                    />
+                  </div>
                   <div>
                     <div className="AddRows d-flex">
                       <NoteAdd

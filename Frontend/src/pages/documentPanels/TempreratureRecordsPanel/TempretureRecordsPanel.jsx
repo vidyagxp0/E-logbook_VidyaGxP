@@ -30,6 +30,8 @@ export default function TempretureRecordsPanel() {
     additionalInfo: "",
     compression_area: "",
     limit: "",
+    upper_limit: "",
+
   });
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -69,7 +71,7 @@ export default function TempretureRecordsPanel() {
       }
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -87,7 +89,7 @@ export default function TempretureRecordsPanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -107,7 +109,7 @@ export default function TempretureRecordsPanel() {
 
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -123,7 +125,7 @@ export default function TempretureRecordsPanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/approve-TR-elog",
+          "https://elog-api.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -141,7 +143,7 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -189,7 +191,7 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "https://elog-api.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -283,7 +285,7 @@ export default function TempretureRecordsPanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/temprature-record/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -853,7 +855,7 @@ export default function TempretureRecordsPanel() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Limit</label>
+                    <label className="color-label">Lower Limit</label>
                     <div className="instruction"></div>
                     <input
                       name="limit"
@@ -867,6 +869,28 @@ export default function TempretureRecordsPanel() {
                       //     : ""
                       // }`}
                       value={editData?.limit}
+                      onChange={handleInputChange1}
+                      readOnly={
+                        location.state?.stage !== 1 ||
+                        location.state?.initiator_id !== userDetails.userId
+                      }
+                    />
+                  </div>
+                  <div className="group-input">
+                    <label className="color-label">Upper Limit</label>
+                    <div className="instruction"></div>
+                    <input
+                      name="upper_limit"
+                      disabled
+                      type="number"
+                      // className={`${
+                      //   editData?.limit < 23
+                      //     ? "limit"
+                      //     : editData?.limit > 27
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                      value={editData?.upper_limit}
                       onChange={handleInputChange1}
                       readOnly={
                         location.state?.stage !== 1 ||

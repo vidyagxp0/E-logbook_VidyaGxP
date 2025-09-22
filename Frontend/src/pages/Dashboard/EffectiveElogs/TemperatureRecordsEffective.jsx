@@ -9,6 +9,8 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import TinyEditor from "../../../components/TinyEditor";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
 
 export default function TempretureRecordsEffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -45,6 +47,7 @@ export default function TempretureRecordsEffective() {
     compression_area: "",
     TempratureRecords: [],
     limit: "",
+    upper_limit: "",
   });
   console.log(editData, "Edit Dataaa");
   const navigate = useNavigate();
@@ -85,7 +88,7 @@ export default function TempretureRecordsEffective() {
       }
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-for-review",
           data,
           config
         )
@@ -103,7 +106,7 @@ export default function TempretureRecordsEffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-from-review-to-approval",
           data,
           config
         )
@@ -123,7 +126,7 @@ export default function TempretureRecordsEffective() {
 
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-review-to-open",
           data,
           config
         )
@@ -139,7 +142,7 @@ export default function TempretureRecordsEffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/approve-TR-elog",
+          "https://elog-api.mydemosoftware.com/temprature-record/approve-TR-elog",
           data,
           config
         )
@@ -157,7 +160,7 @@ export default function TempretureRecordsEffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/temprature-record/send-TR-elog-from-approval-to-open",
           data,
           config
         )
@@ -205,7 +208,7 @@ export default function TempretureRecordsEffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "https://elog-api.mydemosoftware.com/temprature-record/update-temprature-record",
       };
 
       axios(requestOptions)
@@ -310,7 +313,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/temprature-record/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -358,7 +361,7 @@ export default function TempretureRecordsEffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/temprature-record/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -958,7 +961,7 @@ export default function TempretureRecordsEffective() {
                   </div> */}
 
                   <div className="group-input">
-                    <label className="color-label">Limit</label>
+                    <label className="color-label">Lower Limit</label>
                     <div className="instruction"></div>
                     <input
                       name="limit"
@@ -971,6 +974,26 @@ export default function TempretureRecordsEffective() {
                           : ""
                       }`}
                       value={editData?.limit}
+                      onChange={handleInputChange1}
+                      readOnly={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
+                    />
+                  </div>
+                  <div className="group-input">
+                    <label className="color-label">Upper Limit</label>
+                    <div className="instruction"></div>
+                    <input
+                      name="upper_limit"
+                      type="number"
+                      className={`${
+                        editData?.upper_limit < 23
+                          ? "upper_limit"
+                          : editData?.upper_limit > 27
+                          ? "upper_limit"
+                          : ""
+                      }`}
+                      value={editData?.upper_limit}
                       onChange={handleInputChange1}
                       readOnly={[3, 2, 4].includes(
                         userDetails.roles[0].role_id
@@ -1015,13 +1038,12 @@ export default function TempretureRecordsEffective() {
                             <input
                               type="number"
                               value={item.temprature_record}
-                              className={`${
-                                item.temprature_record < editData.limit
-                                  ? "text-green-500"
-                                  : item.temprature_record > editData.limit
-                                  ? "text-red-600"
-                                  : ""
-                              }`}
+                             className={`${
+      Number(item?.temprature_record) >= Number(editData?.limit) &&
+      Number(item?.temprature_record) <= Number(editData?.upper_limit)
+        ? "text-green-500"
+        : "text-red-600"
+    }`}
                               onChange={(e) => {
                                 const newData = [...editData.TempratureRecords];
                                 newData[index].temprature_record =
@@ -1210,6 +1232,169 @@ export default function TempretureRecordsEffective() {
                       ))}
                     </tbody>
                   </table>
+                  <HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "line", height: 400 },
+    title: { text: "Temperature - Line Chart" },
+    xAxis: { categories: editData.TempratureRecords.map(item => `${item.date} ${item.time}`) },
+    yAxis: {
+      title: { text: "Temperature" },
+      plotLines: [{
+        value: Number(editData?.limit) || 0,
+        color: "red",
+        dashStyle: "Dash",
+        width: 2,
+        label: { text: `Limit (${editData?.limit})`, style: { color: "red" } }
+      }]
+    },
+    series: [{
+      name: "Temperature",
+      data: editData.TempratureRecords.map(item => {
+        const val = Number(item.temprature_record) || 0;
+        return { y: val, color: val > Number(editData?.limit) ? "red" : "green" };
+      }),
+      marker: { enabled: true, radius: 5 }
+    }]
+  }}
+/>
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "pie", height: 400 },
+    title: { text: "Temperature Records - Pie Chart" },
+    series: [{
+      name: "Records",
+      colorByPoint: true,
+      data: [
+        {
+          name: "Safe (≤ Limit)",
+          y: editData.TempratureRecords.filter(
+            item => Number(item.temprature_record) <= Number(editData.limit)
+          ).length,
+          color: "green",
+        },
+        {
+          name: "Exceed (> Limit)",
+          y: editData.TempratureRecords.filter(
+            item => Number(item.temprature_record) > Number(editData.limit)
+          ).length,
+          color: "red",
+        },
+      ],
+    }],
+  }}
+/>
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "pie", height: 400 },
+    title: { text: "Temperature Records - Donut Chart" },
+    plotOptions: {
+      pie: { innerSize: "50%", dataLabels: { enabled: true, format: "{point.name}: {point.y}" } }
+    },
+    series: [{
+      name: "Records",
+      colorByPoint: true,
+      data: [
+        {
+          name: "Safe",
+          y: editData.TempratureRecords.filter(
+            item => Number(item.temprature_record) <= Number(editData.limit)
+          ).length,
+          color: "green",
+        },
+        {
+          name: "Exceed",
+          y: editData.TempratureRecords.filter(
+            item => Number(item.temprature_record) > Number(editData.limit)
+          ).length,
+          color: "red",
+        },
+      ],
+    }],
+  }}
+/>
+
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "column", height: 400 },
+    title: { text: "Temperature - Column Chart" },
+    xAxis: { categories: editData.TempratureRecords.map(item => `${item.date} ${item.time}`) },
+    yAxis: {
+      title: { text: "Temperature" },
+      plotLines: [{
+        value: Number(editData?.limit) || 0,
+        color: "red",
+        dashStyle: "Dash",
+        width: 2,
+        label: { text: `Limit (${editData?.limit})`, style: { color: "red" } }
+      }]
+    },
+    series: [{
+      name: "Temperature",
+      data: editData.TempratureRecords.map(item => {
+        const val = Number(item.temprature_record) || 0;
+        return { y: val, color: val > Number(editData?.limit) ? "red" : "green" };
+      })
+    }]
+  }}
+/>
+
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "spline", height: 400 },
+    title: { text: "Temperature - Spline Chart" },
+    xAxis: { categories: editData.TempratureRecords.map(item => `${item.date} ${item.time}`) },
+    yAxis: {
+      title: { text: "Temperature" },
+      plotLines: [{
+        value: Number(editData?.limit) || 0,
+        color: "red",
+        dashStyle: "Dash",
+        width: 2,
+        label: { text: `Limit (${editData?.limit})`, style: { color: "red" } }
+      }]
+    },
+    series: [{
+      name: "Temperature",
+      data: editData.TempratureRecords.map(item => {
+        const val = Number(item.temprature_record) || 0;
+        return { y: val, color: val > Number(editData?.limit) ? "red" : "green" };
+      }),
+      marker: { enabled: true, radius: 4 }
+    }]
+  }}
+/>
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "scatter", height: 400 },
+    title: { text: "Temperature - Scatter Chart" },
+    xAxis: { categories: editData.TempratureRecords.map(item => `${item.date} ${item.time}`) },
+    yAxis: {
+      title: { text: "Temperature" },
+      plotLines: [{
+        value: Number(editData?.limit) || 0,
+        color: "red",
+        dashStyle: "Dash",
+        width: 2,
+        label: { text: `Limit (${editData?.limit})`, style: { color: "red" } }
+      }]
+    },
+    series: [{
+      name: "Temperature",
+      data: editData.TempratureRecords.map((item, idx) => {
+        const val = Number(item.temprature_record) || 0;
+        return { x: idx, y: val, color: val > Number(editData?.limit) ? "red" : "green", marker: { radius: 6 } };
+      }),
+    }]
+  }}
+/>
+
+
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="flex flex-col w-full">
                       <label

@@ -30,7 +30,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export default function DiffrentialPressure() {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export default function DiffrentialPressure() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -135,7 +135,7 @@ export default function DiffrentialPressure() {
 
     axios
       .post(
-        "http://localhost:1000/differential-pressure/post-differential-pressure",
+        "https://elog-api.mydemosoftware.com/differential-pressure/post-differential-pressure",
         differentialPRecord,
         config
       )
@@ -212,6 +212,7 @@ export default function DiffrentialPressure() {
       additionalAttachment: "",
       additionalInfo: "",
       limit: null,
+      upper_limit: null,
       initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
@@ -548,7 +549,7 @@ export default function DiffrentialPressure() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Limit</label>
+                    <label className="color-label">Lower Limit</label>
                     <div className="instruction"></div>
                     <input
                       type="number"
@@ -562,6 +563,27 @@ export default function DiffrentialPressure() {
                       value={differentialPRecord.limit}
                       onChange={(e) =>
                         setDifferentialPRecord({ limit: e.target.value })
+                      }
+                      disabled={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
+                    />
+                  </div>
+                  <div className="group-input">
+                    <label className="color-label">Upper Limit</label>
+                    <div className="instruction"></div>
+                    <input
+                      type="number"
+                      // className={`${
+                      //   differentialPRecord.limit < 0.6
+                      //     ? "limit"
+                      //     : differentialPRecord.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                      value={differentialPRecord.upper_limit}
+                      onChange={(e) =>
+                        setDifferentialPRecord({ upper_limit: e.target.value })
                       }
                       disabled={[3, 2, 4].includes(
                         userDetails.roles[0].role_id

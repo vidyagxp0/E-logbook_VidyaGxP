@@ -11,6 +11,7 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import * as XLSX from "xlsx";
 
 export default function DPREffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -21,7 +22,8 @@ export default function DPREffective() {
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
   const [isLoading1, setIsLoading1] = useState(false);
-
+  const [productNameArray, setProductNameArray] = useState([]);
+  const [batchNoArray, setBatchNoArray] = useState([]);
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const UserName = JSON.parse(localStorage.getItem("Username"));
@@ -47,6 +49,7 @@ export default function DPREffective() {
     additionalInfo: "",
     DifferentialPressureRecords: [],
     limit: "",
+    upper_limit: "",
   });
   console.log(editData, "editdata");
 
@@ -88,7 +91,7 @@ export default function DPREffective() {
       }
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-for-review",
           data,
           config
         )
@@ -106,7 +109,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-from-review-to-approval",
           data,
           config
         )
@@ -125,7 +128,7 @@ export default function DPREffective() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-from-review-to-open",
           data,
           config
         )
@@ -141,7 +144,7 @@ export default function DPREffective() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/approve-DP-elog",
+          "https://elog-api.mydemosoftware.com/differential-pressure/approve-DP-elog",
           data,
           config
         )
@@ -159,7 +162,7 @@ export default function DPREffective() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
+          "https://elog-api.mydemosoftware.com/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
           config
         )
@@ -205,7 +208,7 @@ export default function DPREffective() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/differential-pressure/update-differential-pressure",
+        url: "https://elog-api.mydemosoftware.com/differential-pressure/update-differential-pressure",
       };
 
       axios(requestOptions)
@@ -422,7 +425,7 @@ export default function DPREffective() {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/blank-report/${formId}`,
+        `https://elog-api.mydemosoftware.com/differential-pressure/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -470,7 +473,7 @@ export default function DPREffective() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/differential-pressure/effective-chat-pdf/${formId}`,
+        `https://elog-api.mydemosoftware.com/differential-pressure/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -509,6 +512,47 @@ export default function DPREffective() {
       DifferentialPressureRecords: newData,
     });
   };
+
+    
+  
+  const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const workbook = XLSX.read(e.target.result, { type: "binary" });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+    const normalizedData = jsonData.map((item, index) => ({
+      unique_id: item["Unique Id"] || "",
+      date: item["Date"] || "",
+      time: item["Time"] || "",
+      shift: item["Shift"] || "",
+      differential_pressure: item["Differential Pressure"] || "",
+      remarks: item["Reviewer Remark"] || "",
+      reviewed_by: item["Checked By Reviewer"] || "",
+      approver_remarks: item["Approver Remark"] || "",
+      approved_by: item["Checked By Approver"] || "",
+      supporting_docs: item["Supporting Documents"] || null,
+    }));
+
+    console.log(normalizedData,"normalizedData")
+
+    // Update state
+    setEditData((prev) => ({
+      ...prev,
+      DifferentialPressureRecords: [
+        ...prev.DifferentialPressureRecords,
+        ...normalizedData,
+      ],
+    }));
+  };
+
+  reader.readAsBinaryString(file);
+};
   return (
     <>
       <HeaderTop />
@@ -1011,7 +1055,7 @@ export default function DPREffective() {
                   </div> */}
 
                   <div className="group-input">
-                    <label className="color-label">Limit</label>
+                    <label className="color-label">Lower Limit</label>
                     {/* <div className="instruction"></div> */}
                     <input
                       name="limit"
@@ -1030,11 +1074,48 @@ export default function DPREffective() {
                       )}
                     />
                   </div>
+                  <div className="group-input">
+                    <label className="color-label">Upper Limit</label>
+                    {/* <div className="instruction"></div> */}
+                    <input
+                      name="upper_limit"
+                      type="number"
+                      // className={`${
+                      //   editData?.limit < 0.6
+                      //     ? "limit"
+                      //     : editData?.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                      value={editData?.upper_limit}
+                      onChange={handleInputChange1}
+                      readOnly={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
+                    />
+                  </div>
 
                   <div>
-                    <div className="AddRows d-flex">
+                    <div className="AddRows d-flex items-center">
                       <NoteAdd onClick={addRow} />
                       <div className="addrowinstruction"></div>
+                       <div className="flex flex-col items-start space-y-2 ml-auto">
+                        {/* Added ml-auto to push to the right */}
+                        <label
+                          htmlFor="file-upload"
+                          className="block text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2 m-0"
+                        >
+                          Fetch
+                        </label>
+                      <input
+  id="file-upload"
+  type="file"
+  accept=".xlsx, .xls"
+  onChange={handleFileUpload}  // <- Ye function handle karega excel import
+  className="hidden"
+/>
+
+                      </div>
                     </div>
                   </div>
                   <table>
@@ -1086,33 +1167,25 @@ export default function DPREffective() {
                             </td>
 
                             <td>
-                              <input
-                                type="number"
-                                value={item?.differential_pressure}
-                                className={`${
-                                  Number(item?.differential_pressure) <=
-                                  Number(editData?.limit)
-                                    ? "text-green-500"
-                                    : Number(item?.differential_pressure) >
-                                      Number(editData?.limit)
-                                    ? "text-red-600"
-                                    : ""
-                                }`}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].differential_pressure =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
-                                )}
-                              />
+                            <input
+    type="number"
+    value={item?.differential_pressure}
+    className={`${
+      Number(item?.differential_pressure) >= Number(editData?.limit) &&
+      Number(item?.differential_pressure) <= Number(editData?.upper_limit)
+        ? "text-green-500"
+        : "text-red-600"
+    }`}
+    onChange={(e) => {
+      const newData = [...editData.DifferentialPressureRecords];
+      newData[index].differential_pressure = e.target.value;
+      setEditData({
+        ...editData,
+        DifferentialPressureRecords: newData,
+      });
+    }}
+    readOnly={[3, 2, 4].includes(userDetails.roles[0].role_id)}
+  />
                             </td>
                             <td>
                               <input

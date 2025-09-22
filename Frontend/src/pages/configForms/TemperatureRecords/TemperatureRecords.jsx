@@ -29,7 +29,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function TemperatureRecords() {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/temprature-record/get-user-roleGroups",
+      url: "https://elog-api.mydemosoftware.com/temprature-record/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export default function TemperatureRecords() {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `https://elog-api.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -153,7 +153,7 @@ export default function TemperatureRecords() {
 
     axios
       .post(
-        "http://localhost:1000/temprature-record/post-temprature-record",
+        "https://elog-api.mydemosoftware.com/temprature-record/post-temprature-record",
         tempratureRecord,
         config
       )
@@ -222,6 +222,7 @@ export default function TemperatureRecords() {
       review_comments: "",
       compression_area: "",
       limit: null,
+      upper_limit: null,
       initiatorComment: " ",
       initiatorAttachment: null,
       initiatorDeclaration: "",
@@ -529,7 +530,7 @@ export default function TemperatureRecords() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">Limit</label>
+                    <label className="color-label">Lower Limit</label>
                     <div className="instruction"></div>
                     <input
                       type="number"
@@ -543,6 +544,24 @@ export default function TemperatureRecords() {
                       value={tempratureRecord.limit}
                       onChange={(e) =>
                         setTempratureRecord({ limit: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="group-input">
+                    <label className="color-label">Upper Limit</label>
+                    <div className="instruction"></div>
+                    <input
+                      type="number"
+                      // className={`${
+                      //   tempratureRecord.limit < 23
+                      //     ? "limit"
+                      //     : tempratureRecord.limit > 27
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                      value={tempratureRecord.upper_limit}
+                      onChange={(e) =>
+                        setTempratureRecord({ upper_limit: e.target.value })
                       }
                     />
                   </div>
