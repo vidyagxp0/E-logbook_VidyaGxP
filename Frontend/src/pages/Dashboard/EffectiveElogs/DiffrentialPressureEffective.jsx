@@ -9,6 +9,8 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
 
 export default function DPREffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -499,14 +501,14 @@ export default function DPREffective() {
       description: content,
     }));
   };
-const handleShiftChange = (value, index) => {
-  const newData = [...editData.DifferentialPressureRecords];
-  newData[index].shift = value;
-  setEditData({
-    ...editData,
-    DifferentialPressureRecords: newData,
-  });
-};
+  const handleShiftChange = (value, index) => {
+    const newData = [...editData.DifferentialPressureRecords];
+    newData[index].shift = value;
+    setEditData({
+      ...editData,
+      DifferentialPressureRecords: newData,
+    });
+  };
   return (
     <>
       <HeaderTop />
@@ -1065,21 +1067,23 @@ const handleShiftChange = (value, index) => {
                               <input value={item.time} readOnly />
                             </td>
                             <td>
-  <select 
-    value={item.shift} 
-    onChange={(e) => handleShiftChange(e.target.value, index)} // index pass karo agar row based hai
-    className="border rounded px-2 py-1"
-     disabled={[3, 2, 4].includes(
+                              <select
+                                value={item.shift}
+                                onChange={(e) =>
+                                  handleShiftChange(e.target.value, index)
+                                }
+                                className="border rounded px-2 py-1"
+                                disabled={[3, 2, 4].includes(
                                   userDetails.roles[0].role_id
                                 )}
-  >
-    <option value="">-- Select Shift --</option>
-    <option value="Shift 1">Shift 1</option>
-    <option value="Shift 2">Shift 2</option>
-    <option value="Shift 3">Shift 3</option>
-    <option value="Shift 4">Shift 4</option>
-  </select>
-</td>
+                              >
+                                <option value="">-- Select Shift --</option>
+                                <option value="Shift 1">Shift 1</option>
+                                <option value="Shift 2">Shift 2</option>
+                                <option value="Shift 3">Shift 3</option>
+                                <option value="Shift 4">Shift 4</option>
+                              </select>
+                            </td>
 
                             <td>
                               <input
@@ -1294,6 +1298,266 @@ const handleShiftChange = (value, index) => {
                       )}
                     </tbody>
                   </table>
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: {
+      type: "line",
+      height: 400,
+    },
+    title: {
+      text: "Differential Pressure Trend",
+    },
+    xAxis: {
+      categories: editData.DifferentialPressureRecords.map(
+        (item) => `${item.date} ${item.time}`
+      ), // X-axis = Date + Time
+      title: { text: "Records" },
+    },
+    yAxis: {
+      title: { text: "Differential Pressure" },
+      plotLines: [
+        {
+          value: Number(editData?.limit) || 0,
+          color: "red",
+          dashStyle: "Dash",
+          width: 2,
+          label: {
+            text: `Limit (${editData?.limit})`,
+            align: "right",
+            style: { color: "red" },
+          },
+        },
+      ],
+    },
+    series: [
+      {
+        name: "Differential Pressure",
+        data: editData.DifferentialPressureRecords.map((item) => ({
+          y: Number(item.differential_pressure) || 0,
+          color:
+            Number(item.differential_pressure) > Number(editData?.limit)
+              ? "red"
+              : "green",
+        })),
+      },
+    ],
+  }}
+/>
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "column", height: 400 },
+    title: { text: "Differential Pressure - Column Chart" },
+    xAxis: {
+      categories: editData.DifferentialPressureRecords.map(
+        (item) => `${item.date} ${item.time}`
+      ),
+    },
+    yAxis: {
+      title: { text: "Differential Pressure" },
+      plotLines: [
+        {
+          value: Number(editData?.limit) || 0,
+          color: "red",
+          dashStyle: "Dash",
+          width: 2,
+          label: { text: `Limit (${editData?.limit})`, style: { color: "red" } },
+        },
+      ],
+    },
+    series: [
+      {
+        name: "Differential Pressure",
+        data: editData.DifferentialPressureRecords.map((item) => ({
+          y: Number(item.differential_pressure) || 0,
+          color:
+            Number(item.differential_pressure) > Number(editData?.limit)
+              ? "red"
+              : "green",
+        })),
+      },
+    ],
+  }}
+/>
+  <HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "pie", height: 400 },
+    title: { text: "Differential Pressure - Pie Chart" },
+    series: [
+      {
+        name: "Records",
+        colorByPoint: true,
+        data: [
+          {
+            name: "Safe (≤ Limit)",
+            y: editData.DifferentialPressureRecords.filter(
+              (item) => Number(item.differential_pressure) <= Number(editData.limit)
+            ).length,
+            color: "green",
+          },
+          {
+            name: "Exceed ( > Limit)",
+            y: editData.DifferentialPressureRecords.filter(
+              (item) => Number(item.differential_pressure) > Number(editData.limit)
+            ).length,
+            color: "red",
+          },
+        ],
+      },
+    ],
+  }}
+/>
+
+  <HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "area", height: 400 },
+    title: { text: "Differential Pressure - Area Chart" },
+    xAxis: {
+      categories: editData.DifferentialPressureRecords.map(
+        (item) => `${item.date} ${item.time}`
+      ),
+    },
+    yAxis: {
+      title: { text: "Differential Pressure" },
+      plotLines: [
+        {
+          value: Number(editData?.limit) || 0,
+          color: "red",
+          dashStyle: "Dash",
+          width: 2,
+          label: { text: `Limit (${editData?.limit})`, style: { color: "red" } },
+        },
+      ],
+    },
+    series: [
+      {
+        name: "Differential Pressure",
+        data: editData.DifferentialPressureRecords.map((item) =>
+          Number(item.differential_pressure) || 0
+        ),
+        color: "rgba(0,123,255,0.6)", // light blue fill
+        marker: { enabled: true },
+      },
+    ],
+  }}
+/>
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "pie", height: 400 },
+    title: { text: "Differential Pressure - Donut Chart" },
+    plotOptions: {
+      pie: {
+        innerSize: "50%", // Donut hole
+        dataLabels: { enabled: true, format: "{point.name}: {point.y}" },
+      },
+    },
+    series: [
+      {
+        name: "Records",
+        colorByPoint: true,
+        data: [
+          {
+            name: "Safe",
+            y: editData.DifferentialPressureRecords.filter(
+              (item) => Number(item.differential_pressure) <= Number(editData.limit)
+            ).length,
+            color: "green",
+          },
+          {
+            name: "Exceed",
+            y: editData.DifferentialPressureRecords.filter(
+              (item) => Number(item.differential_pressure) > Number(editData.limit)
+            ).length,
+            color: "red",
+          },
+        ],
+      },
+    ],
+  }}
+/>
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "spline", height: 400 },
+    title: { text: "Differential Pressure - Spline Chart" },
+    xAxis: {
+      categories: editData.DifferentialPressureRecords.map(
+        (item) => `${item.date} ${item.time}`
+      ),
+    },
+    yAxis: {
+      title: { text: "Differential Pressure" },
+      plotLines: [
+        {
+          value: Number(editData?.limit) || 0,
+          color: "red",
+          dashStyle: "Dash",
+          width: 2,
+          label: { text: `Limit (${editData?.limit})`, style: { color: "red" } },
+        },
+      ],
+    },
+    series: [
+      {
+        name: "Differential Pressure",
+        data: editData.DifferentialPressureRecords.map((item) => ({
+          y: Number(item.differential_pressure) || 0,
+          color:
+            Number(item.differential_pressure) > Number(editData?.limit)
+              ? "red"
+              : "green",
+        })),
+        marker: { enabled: true, radius: 4 },
+      },
+    ],
+  }}
+/>
+
+<HighchartsReact
+  highcharts={Highcharts}
+  options={{
+    chart: { type: "scatter", height: 400 },
+    title: { text: "Differential Pressure - Scatter Chart" },
+    xAxis: {
+      categories: editData.DifferentialPressureRecords.map(
+        (item) => `${item.date} ${item.time}`
+      ),
+    },
+    yAxis: {
+      title: { text: "Differential Pressure" },
+      plotLines: [
+        {
+          value: Number(editData?.limit) || 0,
+          color: "red",
+          dashStyle: "Dash",
+          width: 2,
+          label: { text: `Limit (${editData?.limit})`, style: { color: "red" } },
+        },
+      ],
+    },
+    series: [
+      {
+        name: "Differential Pressure",
+        data: editData.DifferentialPressureRecords.map((item, idx) => ({
+          x: idx,
+          y: Number(item.differential_pressure) || 0,
+          color:
+            Number(item.differential_pressure) > Number(editData?.limit)
+              ? "red"
+              : "green",
+          marker: { radius: 6 },
+        })),
+      },
+    ],
+  }}
+/>
+
+
+
 
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="group-input mt-4">
