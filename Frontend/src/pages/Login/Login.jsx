@@ -29,7 +29,7 @@ function Login() {
     };
 
     axios
-      .post("https://elog-backend.mydemosoftware.com/user/user-login", data, {
+      .post("http://localhost:1000/user/user-login", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -42,7 +42,7 @@ function Login() {
 
         // Now fetch the permissions using the user ID from decodedData
         return axios.get(
-          `https://elog-backend.mydemosoftware.com/user/get-user-roles/${decodedData.userId}`,
+          `http://localhost:1000/user/get-user-roles/${decodedData.userId}`,
           {
             headers: {
               Authorization: `Bearer ${response.data.token}`,
@@ -79,7 +79,7 @@ function Login() {
         <div className="top-block">
           <div className="logo">
             {/* <img src="https://connexo.io/assets/img/logo/logo.png" alt="Logo" /> */}
-            <img src="medicef-logo-new1.png" alt="Logo" />
+            <img src="shilpa.png" alt="Logo" />
           </div>
           <div className="head">Welcome to eLogBook</div>
         </div>

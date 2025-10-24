@@ -28,7 +28,7 @@ const MediaRecord = () => {
       site_id: location.state?.site_id,
       reviewer_id: 2,
       approver_id: 2,
-      description: "",
+      description: "ok",
       department: 1,
       review_comments: "",
       compression_area: "",
@@ -57,7 +57,7 @@ const MediaRecord = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const MediaRecord = () => {
 
     const newConfig = {
       method: "post",
-      url: "https://elog-backend.mydemosoftware.com/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ const MediaRecord = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      url: `https://elog-backend.mydemosoftware.com/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
       headers: {}, // You can add any necessary headers here
     };
 
@@ -158,7 +158,7 @@ const MediaRecord = () => {
 
     axios
       .post(
-        "https://elog-backend.mydemosoftware.com/media-record/post",
+        "http://localhost:1000/media-record/post",
         mediaRecords,
         config
       )
@@ -263,7 +263,7 @@ const MediaRecord = () => {
             <div className="details-form-data">
               <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/medicef-logo-new1.png" alt="..." />
+                  <img src="/shilpa.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <div>VidyaGxP Private Limited</div>

@@ -31,7 +31,7 @@ const ViewReport = () => {
 
   // console.log(elogIdValue, "elogvalue");
 
-  const pdfUrl = `https://elog-backend.mydemosoftware.com/public/${elogIdValue}`;
+  const pdfUrl = `http://localhost:1000/public/${elogIdValue}`;
 
   const initializeChatModal = async (data) => {
     try {
@@ -121,7 +121,7 @@ const ViewReport = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://elog-backend.mydemosoftware.com/user/get-all-users",
+        "http://localhost:1000/user/get-all-users",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -163,7 +163,7 @@ const ViewReport = () => {
     }
 
     const emailPromise = axios.post(
-      `https://elog-backend.mydemosoftware.com/differential-pressure/send-report-on-mail/${elogIdValue}`,
+      `http://localhost:1000/differential-pressure/send-report-on-mail/${elogIdValue}`,
       emailPayload,
       {
         headers: {

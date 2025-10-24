@@ -113,7 +113,7 @@ export default function AreaAndEquipmentPanel() {
             <div className="details-form-data">
               {/* <div className="sop-type-header">
                 <div className="logo">
-                  <img src="/medicef-logo-new1.png" alt="..." />
+                  <img src="/shilpa.png" alt="..." />
                 </div>
                 <div className="main-head">
                   <di-v>VidyaGxP Private Limited </di-v>

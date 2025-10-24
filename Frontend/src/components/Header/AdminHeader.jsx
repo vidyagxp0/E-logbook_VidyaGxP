@@ -22,7 +22,7 @@ export default function AdminHeaderTop() {
       <header className="main-header  bg-white h-16">
         <div className="inner-grid h-16">
           <div className="logo">
-            <img src="/medicef-logo-new1.png" alt="..." />
+            <img src="/shilpa.png" alt="..." />
           </div>
           <div className="drop-container">
             <div className="drop-btn name-btn">
