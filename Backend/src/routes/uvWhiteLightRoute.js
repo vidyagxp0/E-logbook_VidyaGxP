@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Auth = require("../middlewares/authentication");
-const gelDocIGene = require("../controllers/gelDocIGeneProcess");
+const uvWhiteLight = require("../controllers/uvWhiteLightProcess");
 const multer = require("multer");
 const path = require("path");
 
@@ -31,7 +31,7 @@ router.post(
   Auth.checkUserJwtToken,
   upload.any(),
   Auth.authorizeUserRole(13, 1),
-  gelDocIGene.Insert
+  uvWhiteLight.Insert
 );
 
 // edit  elog details
@@ -40,21 +40,21 @@ router.put(
   Auth.checkUserJwtToken,
   upload.any(),
   // Auth.authorizeUserRole(9, 1),
-  gelDocIGene.Edit
+  uvWhiteLight.Edit
 );
 
 //get a  elog by id
 router.get(
   "/get/:id",
   Auth.checkUserJwtToken,
-  gelDocIGene.GetElog
+  uvWhiteLight.GetElog
 );
 
 //get all the  elogs
 router.get(
   "/get-all",
   Auth.checkUserJwtToken,
-  gelDocIGene.GetAllElog
+  uvWhiteLight.GetAllElog
 );
 
 //send  elog for review
@@ -63,7 +63,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.any(),
   Auth.authorizeUserRole(13, 1),
-  gelDocIGene.SendElogForReview
+  uvWhiteLight.SendElogForReview
 );
 
 // change status of  elog from review to open
@@ -72,7 +72,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(14, 2),
-  gelDocIGene.SendElogfromReviewToOpen
+  uvWhiteLight.SendElogfromReviewToOpen
 );
 
 // send  elog from review to approval
@@ -81,7 +81,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(14, 2),
-  gelDocIGene.SendfromReviewToApproval
+  uvWhiteLight.SendfromReviewToApproval
 );
 
 // send  elog from under-approval to open
@@ -90,7 +90,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
   Auth.authorizeUserRole(14, 3),
-  gelDocIGene.SendfromApprovalToOpen
+  uvWhiteLight.SendfromApprovalToOpen
 );
 
 // APPROVE  elog
@@ -99,67 +99,67 @@ router.put(
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
   Auth.authorizeUserRole(14, 3),
-  gelDocIGene.ApproveElog
+  uvWhiteLight.ApproveElog
 );
 
 // get users based on roles, sites and processes
 router.post(
   "/get-user-roleGroups",
   Auth.checkUserJwtToken,
-  gelDocIGene.GetUserOnBasisOfRoleGroup
+  uvWhiteLight.GetUserOnBasisOfRoleGroup
 );
 
-router.get("/get-processes", gelDocIGene.getAllProcesses);
+router.get("/get-processes", uvWhiteLight.getAllProcesses);
 
 router.get(
   "/get-audit-trail-for-elog/:id",
   Auth.checkUserJwtToken,
-  gelDocIGene.getAuditTrailForAnElog
+  uvWhiteLight.getAuditTrailForAnElog
 );
 
 // router.get(
 //   "/get-audit-report/:formId/:type/:userId",
-//   gelDocIGene.generateAuditPdfbyId
+//   uvWhiteLight.generateAuditPdfbyId
 // );
 
 router.post(
   "/generate-pdf",
   Auth.checkUserJwtToken,
-  gelDocIGene.generateReport
+  uvWhiteLight.generateReport
 );
 
-// delete gelDocIGene elog attachment
-router.delete("/delete/attachment/:record_id", gelDocIGene.deleteAttachment);
+// delete uvWhiteLight elog attachment
+router.delete("/delete/attachment/:record_id", uvWhiteLight.deleteAttachment);
 
 router.post(
   "/chat-pdf/:form_id",
   Auth.checkUserJwtToken,
-  gelDocIGene.chatByPdf
+  uvWhiteLight.chatByPdf
 );
 
-router.post("/view-report", gelDocIGene.viewReport);
+router.post("/view-report", uvWhiteLight.viewReport);
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,
-  gelDocIGene.effetiveChatByPdf
+  uvWhiteLight.effetiveChatByPdf
 );
 
 router.post(
   "/blank-report/:form_id",
   Auth.checkUserJwtToken,
-  gelDocIGene.blankReport
+  uvWhiteLight.blankReport
 );
 
 router.post(
   "/effective-view-report",
-  gelDocIGene.effetiveViewReport
+  uvWhiteLight.effetiveViewReport
 );
 // router.post(
 //   "/send-report-on-mail/:id",
 //   upload.any(),
-//   gelDocIGene.sendReportOnMail
+//   uvWhiteLight.sendReportOnMail
 // );
 
-// // router.get("/search", gelDocIGene.GetAll);
+// // router.get("/search", uvWhiteLight.GetAll);
 
 module.exports = router;
