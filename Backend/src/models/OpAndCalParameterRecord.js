@@ -1,0 +1,55 @@
+const { sequelize } = require("../config/db");
+const { DataTypes } = require("sequelize");
+const OpAndCalMultiParameterProcessForm = require("./OpAndCalParameterForm")
+
+const OpAndCalMultiParameterProcessRecord = sequelize.define(
+  "OpAndCalMultiParameterProcessRecord",
+  {
+    record_id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    form_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: OpAndCalMultiParameterProcessForm,
+        key: "form_id",
+      },
+    },
+    date: { 
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+     nameOfSolution: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
+     adjustPH: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
+    done_by: { 
+      type: DataTypes.STRING
+     },
+    supporting_docs: { 
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    checked_by: { 
+       type: DataTypes.STRING
+       },
+    remarks: { 
+      type: DataTypes.STRING 
+    },
+    status: {
+      type: DataTypes.STRING
+    }
+  }
+);
+
+OpAndCalMultiParameterProcessRecord.belongsTo(OpAndCalMultiParameterProcessForm, { foreignKey: 'form_id' });
+OpAndCalMultiParameterProcessForm.hasMany(OpAndCalMultiParameterProcessRecord, { foreignKey: 'form_id' });
+
+module.exports = OpAndCalMultiParameterProcessRecord;

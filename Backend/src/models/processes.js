@@ -30,6 +30,7 @@ Process.addHook('afterSync', async () => {
                 { process: 'Analytical Balance' },
                 { process: 'Karl Fischer' },
                 { process: 'HPLC' },
+                { process: 'pH Meter Op/Cal' },
               
             ]);
             console.log('Processes created');
