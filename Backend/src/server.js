@@ -14,6 +14,7 @@ const opAndCalParamterRoute = require("./routes/OpAndCalProcessRoute")
 const OpAndCalUvVisRoute = require("./routes/OpAndCalUvVisRoute")
 const sdsPage = require("./routes/sdsPageRoute")
 const igeneProcess = require("./routes/gelDocIGeneRoute")
+const whiteLightTransilliminator = require("./routes/uvWhiteLightRoute")
 const karlFischerRoutes = require("./routes/karlFischer")
 const hplcRoutes = require("./routes/hplcRoutes")
 const vidyagxpFeedback = require("./config/vidyagxp_feedback");
@@ -69,6 +70,7 @@ app.use("/op-and-calParameter",opAndCalParamterRoute);
 app.use("/uv-vis-calib",OpAndCalUvVisRoute);
 app.use("/sds-page",sdsPage);
 app.use("/gel-doc-igene",igeneProcess);
+app.use("/uv-wl-transi",whiteLightTransilliminator);
 app.use("/karl-fischer",karlFischerRoutes);
 app.use("/hplc",hplcRoutes)
 app.use(express.static(path.join(__dirname, "documents")));
