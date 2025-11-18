@@ -1,5 +1,5 @@
 const sdsPageForm = require("../models/sdsPageForm");
-const sdsPageRecords = require("../models/sdsPageRecords");
+const sdsPageRecordss = require("../models/sdsPageRecords");
 const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
@@ -203,7 +203,7 @@ exports.InsertsdsPage = async (req, res) => {
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
-      await sdsPageRecords.bulkCreate(formRecords, { transaction });
+      await sdsPageRecordss.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
@@ -423,7 +423,7 @@ exports.EditsdsPage = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    UvVisRecords,
+    sdsPageRecords,
     email,
     password,
     initiatorComment,
@@ -460,7 +460,7 @@ exports.EditsdsPage = async (req, res) => {
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
       } else {
-        const match = file.fieldname.match(/UvVisRecords\[(\d+)\]\[supporting_docs\]/);
+        const match = file.fieldname.match(/sdsPageRecords\[(\d+)\]\[supporting_docs\]/);
         if (match) {
           const index = parseInt(match[1]);
           supportingDocs[index] = file;
@@ -532,7 +532,7 @@ exports.EditsdsPage = async (req, res) => {
       { transaction }
     );
 
-    const existingRecords = await sdsPageRecords.findAll({
+    const existingRecords = await sdsPageRecordss.findAll({
       where: { form_id },
       transaction,
     });
@@ -542,8 +542,8 @@ exports.EditsdsPage = async (req, res) => {
       existingMap[rec.record_id] = rec;
     });
 
-    for (let i = 0; i < UvVisRecords?.length; i++) {
-      const record = UvVisRecords[i];
+    for (let i = 0; i < sdsPageRecords?.length; i++) {
+      const record = sdsPageRecords[i];
       const record_id = record.record_id || null;
       const file = supportingDocs[i];
 
@@ -573,7 +573,7 @@ exports.EditsdsPage = async (req, res) => {
       };
 
       if (record_id && existingMap[record_id]) {
-        await sdsPageRecords.update(newData, {
+        await sdsPageRecordss.update(newData, {
           where: { record_id },
           transaction,
         });
@@ -599,7 +599,7 @@ exports.EditsdsPage = async (req, res) => {
           }
         }
       } else {
-        const created = await sdsPageRecords.create(newData, { transaction });
+        const created = await sdsPageRecordss.create(newData, { transaction });
 
         for (const [field, newValue] of Object.entries(newData)) {
           if (field !== "form_id") {
@@ -654,7 +654,7 @@ exports.deletesdsPageAttachment = async (req, res) => {
   }
 
   try {
-    const record = await sdsPageRecords.findOne({ where: { record_id } });
+    const record = await sdsPageRecordss.findOne({ where: { record_id } });
 
     if (!record) {
       return res.status(404).json({ error: true, message: "Record not found." });
@@ -664,7 +664,7 @@ exports.deletesdsPageAttachment = async (req, res) => {
       return res.status(400).json({ error: true, message: "No attachment to delete." });
     }
 
-    await sdsPageRecords.update(
+    await sdsPageRecordss.update(
       { supporting_docs: null },
       { where: { record_id } }
     );
@@ -697,7 +697,7 @@ exports.GetsdsPageElog = async (req, res) => {
       },
       include: [
         {
-          model: sdsPageRecords,
+          model: sdsPageRecordss,
         },
       ],
     })
@@ -721,7 +721,7 @@ exports.GetAllsdsPageElog = async (req, res) => {
     .findAll({
       include: [
         {
-          model: sdsPageRecords,
+          model: sdsPageRecordss,
         },
         {
           model: User,
@@ -2029,7 +2029,7 @@ exports.blankReport = async (req, res) => {
 // //       sdsPageForm.findAll({
 // //         where: searchCondition,
 // //         include: [
-// //           { model: sdsPageRecords },
+// //           { model: sdsPageRecordss },
 // //           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
 // //           { model: User, as: "approvers", attributes: ["user_id", "name"] },
 // //         ],
