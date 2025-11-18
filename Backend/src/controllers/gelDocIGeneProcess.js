@@ -435,7 +435,7 @@ exports.Edit = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    sdsPageRecords,
+    gelDocIGeneRecords,
     email,
     password,
     initiatorComment,
@@ -472,7 +472,7 @@ exports.Edit = async (req, res) => {
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
       } else {
-        const match = file.fieldname.match(/sdsPageRecords\[(\d+)\]\[supporting_docs\]/);
+        const match = file.fieldname.match(/gelDocIGeneRecords\[(\d+)\]\[supporting_docs\]/);
         if (match) {
           const index = parseInt(match[1]);
           supportingDocs[index] = file;
@@ -554,8 +554,8 @@ exports.Edit = async (req, res) => {
       existingMap[rec.record_id] = rec;
     });
 
-    for (let i = 0; i < sdsPageRecords?.length; i++) {
-      const record = sdsPageRecords[i];
+    for (let i = 0; i < gelDocIGeneRecords?.length; i++) {
+      const record = gelDocIGeneRecords[i];
       const record_id = record.record_id || null;
       const file = supportingDocs[i];
 
