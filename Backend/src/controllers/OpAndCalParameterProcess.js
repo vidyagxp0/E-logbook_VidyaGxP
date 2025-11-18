@@ -1,5 +1,5 @@
 const OpAndCalMultiParameterProcessForm = require("../models/OpAndCalParameterForm");
-const OpAndCalMultiParameterProcessForm = require("../models/OpAndCalParameterRecord");
+const OpAndCalParameterRecord = require("../models/OpAndCalParameterRecord");
 const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
@@ -169,7 +169,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
         status:record?.status
       }));
 
-      await OpAndCalMultiParameterProcessForm.bulkCreate(formRecords, {
+      await OpAndCalParameterRecord.bulkCreate(formRecords, {
         transaction,
       });
 
@@ -453,7 +453,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
       { transaction }
     );
 
-    const existingRecords = await OpAndCalMultiParameterProcessForm.findAll({
+    const existingRecords = await OpAndCalParameterRecord.findAll({
       where: { form_id },
       transaction,
     });
@@ -491,7 +491,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
 
       if (record_id && existingMap[record_id]) {
         // Update existing record
-        await OpAndCalMultiParameterProcessForm.update(newData, {
+        await OpAndCalParameterRecord.update(newData, {
           where: { record_id },
           transaction,
         });
@@ -520,7 +520,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
         }
       } else {
         // Create new record
-        const created = await OpAndCalMultiParameterProcessForm.create(newData, {
+        const created = await OpAndCalParameterRecord.create(newData, {
           transaction,
         });
 
@@ -580,7 +580,7 @@ exports.deleteAnalyticalBalanceAttachment = async (req, res) => {
   }
 
   try {
-    const record = await OpAndCalMultiParameterProcessForm.findOne({
+    const record = await OpAndCalParameterRecord.findOne({
       where: { record_id },
     });
 
@@ -596,7 +596,7 @@ exports.deleteAnalyticalBalanceAttachment = async (req, res) => {
         .json({ error: true, message: "No attachment to delete." });
     }
 
-    await OpAndCalMultiParameterProcessForm.update(
+    await OpAndCalParameterRecord.update(
       { supporting_docs: null },
       { where: { record_id } }
     );
@@ -629,7 +629,7 @@ exports.GetAnalyticalBalance = async (req, res) => {
     },
     include: [
       {
-        model: OpAndCalMultiParameterProcessForm,
+        model: OpAndCalParameterRecord,
       },
     ],
   })
@@ -652,7 +652,7 @@ exports.GetAllAnalyticalBalance = async (req, res) => {
   OpAndCalMultiParameterProcessForm.findAll({
     include: [
       {
-        model: OpAndCalMultiParameterProcessForm,
+        model: OpAndCalParameterRecord,
       },
       {
         model: User,
@@ -1475,7 +1475,7 @@ exports.generateReport = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      res.render("OpAndCalMultiParameterProcessForm", { reportData }, (err, html) => {
+      res.render("OpAndCalParameterRecord", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
