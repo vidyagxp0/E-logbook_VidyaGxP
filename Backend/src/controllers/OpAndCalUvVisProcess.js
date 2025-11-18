@@ -429,7 +429,7 @@ exports.EditUvVis = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    UVvisCalibProcessRecords,
+    UvVisRecords,
     email,
     password,
     initiatorComment,
@@ -466,7 +466,7 @@ exports.EditUvVis = async (req, res) => {
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
       } else {
-        const match = file.fieldname.match(/UVvisCalibProcessRecords\[(\d+)\]\[supporting_docs\]/);
+        const match = file.fieldname.match(/UvVisRecords\[(\d+)\]\[supporting_docs\]/);
         if (match) {
           const index = parseInt(match[1]);
           supportingDocs[index] = file;
@@ -548,8 +548,8 @@ exports.EditUvVis = async (req, res) => {
       existingMap[rec.record_id] = rec;
     });
 
-    for (let i = 0; i < UVvisCalibProcessRecords?.length; i++) {
-      const record = UVvisCalibProcessRecords[i];
+    for (let i = 0; i < UvVisRecords?.length; i++) {
+      const record = UvVisRecords[i];
       const record_id = record.record_id || null;
       const file = supportingDocs[i];
 
