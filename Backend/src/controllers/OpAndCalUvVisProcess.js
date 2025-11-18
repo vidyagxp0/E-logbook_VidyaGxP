@@ -1,5 +1,5 @@
-const UvVisForm = require("../models/OpAndCalUvVisForm");
-const UvVisRecords = require("../models/OpAndCalUvVisRecords");
+const OpAndCalUvVisForm = require("../models/OpAndCalUvVisForm");
+const OpAndCalUvVisRecords = require("../models/OpAndCalUvVisRecords");
 const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
@@ -109,7 +109,7 @@ exports.InsertUvVis = async (req, res) => {
     });
 
     // Create new Differential Pressure Form
-    const newForm = await UvVisForm.create(
+    const newForm = await OpAndCalUvVisForm.create(
       {
         site_id: site_id,
         initiator_id: user.user_id,
@@ -209,7 +209,7 @@ exports.InsertUvVis = async (req, res) => {
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
-      await UvVisRecords.bulkCreate(formRecords, { transaction });
+      await OpAndCalUvVisRecords.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
@@ -429,7 +429,7 @@ exports.EditUvVis = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    UvVisCalibRecords,
+    UvVisRecords,
     email,
     password,
     initiatorComment,
@@ -466,7 +466,7 @@ exports.EditUvVis = async (req, res) => {
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
       } else {
-        const match = file.fieldname.match(/UvVisCalibRecords\[(\d+)\]\[supporting_docs\]/);
+        const match = file.fieldname.match(/UvVisRecords\[(\d+)\]\[supporting_docs\]/);
         if (match) {
           const index = parseInt(match[1]);
           supportingDocs[index] = file;
@@ -474,7 +474,7 @@ exports.EditUvVis = async (req, res) => {
       }
     });
 
-    const form = await UvVisForm.findOne({ where: { form_id }, transaction });
+    const form = await OpAndCalUvVisForm.findOne({ where: { form_id }, transaction });
 
     if (!form) {
       await transaction.rollback();
@@ -538,7 +538,7 @@ exports.EditUvVis = async (req, res) => {
       { transaction }
     );
 
-    const existingRecords = await UvVisRecords.findAll({
+    const existingRecords = await OpAndCalUvVisRecords.findAll({
       where: { form_id },
       transaction,
     });
@@ -548,8 +548,8 @@ exports.EditUvVis = async (req, res) => {
       existingMap[rec.record_id] = rec;
     });
 
-    for (let i = 0; i < UvVisCalibRecords?.length; i++) {
-      const record = UvVisCalibRecords[i];
+    for (let i = 0; i < UvVisRecords?.length; i++) {
+      const record = UvVisRecords[i];
       const record_id = record.record_id || null;
       const file = supportingDocs[i];
 
@@ -579,7 +579,7 @@ exports.EditUvVis = async (req, res) => {
       };
 
       if (record_id && existingMap[record_id]) {
-        await UvVisRecords.update(newData, {
+        await OpAndCalUvVisRecords.update(newData, {
           where: { record_id },
           transaction,
         });
@@ -605,7 +605,7 @@ exports.EditUvVis = async (req, res) => {
           }
         }
       } else {
-        const created = await UvVisRecords.create(newData, { transaction });
+        const created = await OpAndCalUvVisRecords.create(newData, { transaction });
 
         for (const [field, newValue] of Object.entries(newData)) {
           if (field !== "form_id") {
@@ -660,7 +660,7 @@ exports.deleteUvVisAttachment = async (req, res) => {
   }
 
   try {
-    const record = await UvVisRecords.findOne({ where: { record_id } });
+    const record = await OpAndCalUvVisRecords.findOne({ where: { record_id } });
 
     if (!record) {
       return res.status(404).json({ error: true, message: "Record not found." });
@@ -670,7 +670,7 @@ exports.deleteUvVisAttachment = async (req, res) => {
       return res.status(400).json({ error: true, message: "No attachment to delete." });
     }
 
-    await UvVisRecords.update(
+    await OpAndCalUvVisRecords.update(
       { supporting_docs: null },
       { where: { record_id } }
     );
@@ -696,14 +696,14 @@ exports.GetUvVisElog = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }
 
-  UvVisForm
+  OpAndCalUvVisForm
     .findOne({
       where: {
         form_id: form_id,
       },
       include: [
         {
-          model: UvVisRecords,
+          model: OpAndCalUvVisRecords,
         },
       ],
     })
@@ -723,11 +723,11 @@ exports.GetUvVisElog = async (req, res) => {
 
 //get all the differential pressure elogs
 exports.GetAllUvVisElog = async (req, res) => {
-  UvVisForm
+  OpAndCalUvVisForm
     .findAll({
       include: [
         {
-          model: UvVisRecords,
+          model: OpAndCalUvVisRecords,
         },
         {
           model: User,
@@ -800,7 +800,7 @@ exports.SendUVElogForReview = async (req, res) => {
     }
 
     // Find the form
-    const form = await UvVisForm.findOne({
+    const form = await OpAndCalUvVisForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -948,7 +948,7 @@ exports.SendUVElogfromReviewToOpen = async (req, res) => {
     }
 
     // Find the form
-    const form = await UvVisForm.findOne({
+    const form = await OpAndCalUvVisForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1095,7 +1095,7 @@ exports.SendUVfromReviewToApproval = async (req, res) => {
     }
 
     // Find the form
-    const form = await UvVisForm.findOne({
+    const form = await OpAndCalUvVisForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1256,7 +1256,7 @@ exports.SendUVfromApprovalToOpen = async (req, res) => {
     }
 
     // Find the form
-    const form = await UvVisForm.findOne({
+    const form = await OpAndCalUvVisForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1404,7 +1404,7 @@ exports.ApproveUVElog = async (req, res) => {
     }
 
     // Find the form
-    const form = await UvVisForm.findOne({
+    const form = await OpAndCalUvVisForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -2032,10 +2032,10 @@ exports.blankReport = async (req, res) => {
 // //       operationOfSterilizerForms,
 // //       temperatureForms,
 // //     ] = await Promise.all([
-// //       UvVisForm.findAll({
+// //       OpAndCalUvVisForm.findAll({
 // //         where: searchCondition,
 // //         include: [
-// //           { model: UvVisRecords },
+// //           { model: OpAndCalUvVisRecords },
 // //           { model: User, as: "reviewers", attributes: ["user_id", "name"] },
 // //           { model: User, as: "approvers", attributes: ["user_id", "name"] },
 // //         ],
