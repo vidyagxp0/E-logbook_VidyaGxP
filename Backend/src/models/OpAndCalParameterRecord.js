@@ -40,6 +40,9 @@ const OpAndCalMultiParameterProcessRecord = sequelize.define(
     checked_by: { 
        type: DataTypes.STRING
        },
+    reviewed_by: { 
+       type: DataTypes.STRING
+       },
     remarks: { 
       type: DataTypes.STRING 
     },

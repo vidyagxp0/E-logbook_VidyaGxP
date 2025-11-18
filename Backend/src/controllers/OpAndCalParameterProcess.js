@@ -162,6 +162,9 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
         done_by: record?.done_by,
         checked_by: record?.checked_by,
         remarks: record?.remarks,
+        remarksOther: record?.remarksOther,
+        remarksType: record?.remarksType,
+        remarksSubType: record?.remarksSubType,
         status:record?.status
       }));
 
@@ -241,6 +244,39 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           field_name: "Remarks",
           previous_value: null,
           new_value: record?.remarks || "",
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Other Remarks",
+          previous_value: null,
+          new_value: record?.remarksOther || "",
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Remarks Type",
+          previous_value: null,
+          new_value: record?.remarksType || "",
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Remark Sub Type",
+          previous_value: null,
+          new_value: record?.remarksSubType || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -443,6 +479,9 @@ exports.EditOpAndCalMultiParameter = async (req, res) => {
         checked_by: record.checked_by,
         reviewed_by: record.reviewed_by,
         remarks: record.remarks,
+        remarksOther: record?.remarksOther,
+        remarksType: record?.remarksType,
+        remarksSubType: record?.remarksSubType,
         status:record?.status,
         supporting_docs: supporting_docs_url,
       };
