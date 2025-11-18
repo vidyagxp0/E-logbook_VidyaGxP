@@ -149,7 +149,6 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
         action: "Opened",
       });
     }
-
     if (Array.isArray(pHOpCalRecords) && pHOpCalRecords.length > 0) {
       const formRecords = pHOpCalRecords.map((record, index) => ({
         form_id: newForm?.form_id,
@@ -157,15 +156,12 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           record?.date && !isNaN(new Date(record?.date))
             ? new Date(record?.date).toISOString()
             : null,
-        reg_no: record?.reg_no,
-        sample_name: record?.sample_name,
-        weight_taken: record?.weight_taken,
+        nameOfSolution: record?.nameOfSolution,
+        date: record?.date,
+        adjustPH: record?.adjustPH,
         done_by: record?.done_by,
         checked_by: record?.checked_by,
         remarks: record?.remarks,
-        remarksOther: record?.remarksOther,
-        remarksType: record?.remarksType,
-        remarksSubType: record?.remarksSubType,
         status:record?.status
       }));
 
@@ -189,7 +185,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Date",
           previous_value: null,
-          new_value: record.date,
+          new_value: record.date || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -200,7 +196,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Name of Solution",
           previous_value: null,
-          new_value: record.nameOfSolution,
+          new_value: record.nameOfSolution || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -211,7 +207,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Adjusted PH",
           previous_value: null,
-          new_value: record.adjustPH,
+          new_value: record.adjustPH || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -222,7 +218,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Done by",
           previous_value: null,
-          new_value: record.done_by,
+          new_value: record.done_by || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -233,7 +229,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Checked By",
           previous_value: null,
-          new_value: record.checked_by,
+          new_value: record.checked_by || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -244,7 +240,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Remarks",
           previous_value: null,
-          new_value: record?.remarks,
+          new_value: record?.remarks || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -255,7 +251,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Status",
           previous_value: null,
-          new_value: record?.status,
+          new_value: record?.status || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -264,7 +260,6 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
         });
       });
     }
-
     await OpAndCalParameterAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
@@ -301,7 +296,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
     department,
     reviewer_id,
     approver_id,
-    AnalyticalBalances,
+    OpAndCalMultiParameterProcessRecords,
     email,
     password,
     initiatorComment,
@@ -343,7 +338,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
         additionalAttachment = file;
       } else {
         const match = file.fieldname.match(
-          /AnalyticalBalances\[(\d+)\]\[supporting_docs\]/
+          /OpAndCalMultiParameterProcessRecords\[(\d+)\]\[supporting_docs\]/
         );
         if (match) {
           const index = parseInt(match[1]);
@@ -430,8 +425,8 @@ exports.EditAnalyticalBalance = async (req, res) => {
       existingMap[r.record_id] = r;
     });
 
-    for (let i = 0; i < AnalyticalBalances.length; i++) {
-      const record = AnalyticalBalances[i];
+    for (let i = 0; i < OpAndCalMultiParameterProcessRecords.length; i++) {
+      const record = OpAndCalMultiParameterProcessRecords[i];
       const record_id = record.record_id || null;
       const file = supportingDocs[i];
 

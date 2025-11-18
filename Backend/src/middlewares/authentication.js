@@ -43,6 +43,18 @@ function checkUserJwtToken(req, res, next) {
   });
 }
 
+function hasAccess(userRoles, site_id, processId, roleId) {
+  return userRoles.some(
+    (role) =>
+      (role.role_id === 5 && // Grant access if role_id is 5 (full permissions)
+        role.site_id === site_id &&
+        role.process_id === processId) ||
+      (role.site_id === site_id &&
+        role.process_id === processId &&
+        role.role_id === roleId)
+  );  
+}
+
 function authorizeUserRole(processId, roleId) {
   return async (req, res, next) => {
     const userRoles = await UserRole.findAll({
@@ -64,18 +76,6 @@ function authorizeUserRole(processId, roleId) {
         .json({ message: "Forbidden: You do not have required permissions." });
     }
   };
-}
-
-function hasAccess(userRoles, site_id, processId, roleId) {
-  return userRoles.some(
-    (role) =>
-      (role.role_id === 5 && // Grant access if role_id is 5 (full permissions)
-        role.site_id === site_id &&
-        role.process_id === processId) ||
-      (role.site_id === site_id &&
-        role.process_id === processId &&
-        role.role_id === roleId)
-  );  
 }
 
 const getFileUrl = (file) => {
