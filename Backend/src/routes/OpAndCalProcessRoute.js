@@ -40,15 +40,15 @@ router.put(
   Auth.checkUserJwtToken,
   upload.any(),
   // Auth.authorizeUserRole(10, 1),
-  OpAndCalParameterProcess.EditAnalyticalBalance
+  OpAndCalParameterProcess.EditOpAndCalMultiParameter
 );
 // delete analytical balance elog attachment
-router.delete("/delete-analytical-balance/attachment/:record_id", OpAndCalParameterProcess.deleteAnalyticalBalanceAttachment);
+router.delete("/delete-analytical-balance/attachment/:record_id", OpAndCalParameterProcess.deleteOpAndCalMultiParameterAttachment);
 // //get a OpAndCalParameterProcess elog by id
-router.get("/get/:id", Auth.checkUserJwtToken, OpAndCalParameterProcess.GetAnalyticalBalance);
+router.get("/get/:id", Auth.checkUserJwtToken, OpAndCalParameterProcess.GetOpAndCalMultiParameter);
 
 // //get all the OpAndCalParameterProcess elogs
-router.get("/get-all", Auth.checkUserJwtToken, OpAndCalParameterProcess.GetAllAnalyticalBalance);
+router.get("/get-all", Auth.checkUserJwtToken, OpAndCalParameterProcess.GetAllOpAndCalMultiParameter);
 
 //send OpAndCalParameterProcess elog for review
 router.put(

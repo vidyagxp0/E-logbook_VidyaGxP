@@ -288,7 +288,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
 };
 
 // edit differential pressure elog details
-exports.EditAnalyticalBalance = async (req, res) => {
+exports.EditOpAndCalMultiParameter = async (req, res) => {
   const {
     form_id,
     site_id,
@@ -436,18 +436,14 @@ exports.EditAnalyticalBalance = async (req, res) => {
 
       const newData = {
         form_id,
-        reg_no: record.reg_no,
+        nameOfSolution: record.nameOfSolution,
         date: record.date ? new Date(record.date).toISOString() : null,
-        sample_name: record.sample_name,
-        weight_taken: record.weight_taken,
+        adjustPH: record.adjustPH,
         done_by: record.done_by,
         checked_by: record.checked_by,
         reviewed_by: record.reviewed_by,
         remarks: record.remarks,
         status:record?.status,
-        remarksOther: record.remarksOther,
-        remarksType: record.remarksType,
-        remarksSubType: record.remarksSubType,
         supporting_docs: supporting_docs_url,
       };
 
@@ -532,7 +528,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
   }
 };
 
-exports.deleteAnalyticalBalanceAttachment = async (req, res) => {
+exports.deleteOpAndCalMultiParameterAttachment = async (req, res) => {
   const { record_id } = req.params;
 
   if (!record_id) {
@@ -576,7 +572,7 @@ exports.deleteAnalyticalBalanceAttachment = async (req, res) => {
 };
 
 //get a differential pressure elog by id
-exports.GetAnalyticalBalance = async (req, res) => {
+exports.GetOpAndCalMultiParameter = async (req, res) => {
   const form_id = req.params.id;
 
   if (!form_id) {
@@ -610,7 +606,7 @@ exports.GetAnalyticalBalance = async (req, res) => {
 };
 
 //get all the differential pressure elogs
-exports.GetAllAnalyticalBalance = async (req, res) => {
+exports.GetAllOpAndCalMultiParameter = async (req, res) => {
   OpAndCalMultiParameterProcessForm.findAll({
     include: [
       {
