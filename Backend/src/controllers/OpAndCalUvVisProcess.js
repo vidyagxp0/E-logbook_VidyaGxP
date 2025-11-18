@@ -731,12 +731,12 @@ exports.GetAllUvVisElog = async (req, res) => {
         },
         {
           model: User,
-          as: "reviewerss", // Use the consistent alias 'reviewer'
+          as: "reviewerss8", // Use the consistent alias 'reviewer'
           attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
         },
         {
           model: User,
-          as: "approverss", // Use the consistent alias 'approver'
+          as: "approverss8", // Use the consistent alias 'approver'
           attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
         },
       ],
