@@ -24,6 +24,11 @@ function Dashboard() {
   const [dispensingOfMaterialsElogs, setDispensingOfMaterialsElogs] = useState(
     []
   );
+  const [pHMeterOPCalElogs, setPHMeterOPCalElogs] = useState([]);
+  const [UVVisCalibElogs, setUVVisCalibElogs] = useState([]);
+  const [sdsPage, setSdsPage] = useState([]);
+  const [gelDociGene, setGelDociGene] = useState([]);
+  const [uVWhiteLightTrans, setUVWlTrans] = useState([]);
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
   );
@@ -274,10 +279,142 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error: ", error);
       });
+
+      const newpHMeterOPCal = {
+      method: "get",
+      url: "http://localhost:1000/op-and-calParameter/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newpHMeterOPCal)
+      .then((response) => {
+        const pHMeterOPCal = response.data.message;
+        let filteredArray = pHMeterOPCal.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setPHMeterOPCalElogs(pHMeterOPCal);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+      const newUVvisCal = {
+      method: "get",
+      url: "http://localhost:1000/uv-vis-calib/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newUVvisCal)
+      .then((response) => {
+        const UVvisCalib = response.data.message;
+        let filteredArray = UVvisCalib.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setUVVisCalibElogs(UVvisCalib);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+      const newSdSPage = {
+      method: "get",
+      url: "http://localhost:1000/sds-page/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newSdSPage)
+      .then((response) => {
+        const sDsPage = response.data.message;
+        let filteredArray = sDsPage.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setSdsPage(sDsPage);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+       const newGelDociGene = {
+      method: "get",
+      url: "http://localhost:1000/gel-doc-igene/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newGelDociGene)
+      .then((response) => {
+        const gelDociGene = response.data.message;
+        let filteredArray = gelDociGene.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setGelDociGene(gelDociGene);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+      const newUVwlTrans = {
+      method: "get",
+      url: "http://localhost:1000/uv-wl-transi/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newUVwlTrans)
+      .then((response) => {
+        const uvWlTrans = response.data.message;
+        let filteredArray = uvWlTrans.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setUVWlTrans(uvWlTrans);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const [combinedRecords, setCombinedRecords] = useState([]);
-  console.log(combinedRecords,"combinedRecords")
+  console.log(combinedRecords, "combinedRecords");
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
       navigate("/dpr-panel", { state: item });
@@ -287,27 +424,31 @@ function Dashboard() {
       navigate("/tpr-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
       navigate("/ecc-panel", { state: item });
-      
     } else if (item.LoadedQuantityRecords) {
       navigate("/loaded-quantity-panel", { state: item });
     } else if (item.MediaRecords) {
       navigate("/media-record-panel", { state: item });
     } else if (item.OperationOfSterilizerRecords) {
       navigate("/operation-of-sterilizer-panel", { state: item });
-    }
-     else if (item.DispenseOfMaterials) {
+    } else if (item.DispenseOfMaterials) {
       navigate("/dispensing-of-material-panel", { state: item });
-    }
-     else if (item.AnalyticalBalances) {
+    } else if (item.AnalyticalBalances) {
       navigate("/analytical-balance-panel", { state: item });
-    }
-     else if (item.karlFischerRecords) {
+    } else if (item.karlFischerRecords) {
       navigate("/karl-fischer-panel", { state: item });
-    }
-     else if (item.hplcRecords) {
+    } else if (item.hplcRecords) {
       navigate("/hplc-panel", { state: item });
-    }
-     else {
+    } else if (item.OpAndCalMultiParameterProcessRecords) {
+      navigate("/PhMeterOpCal-panel", { state: item });
+    }else if (item.UvVisRecords) {
+      navigate("/uv-vis-calibration-panel", { state: item });
+    }else if (item.sdsPageRecords) {
+      navigate("/sds-page-panel", { state: item });
+    }else if (item.gelDocIGeneRecords) {
+      navigate("/gel-doc-igene-panel", { state: item });
+    }else if (item.uvWhiteLightRecords) {
+      navigate("/uv-wl-transilluminator-panel", { state: item });
+    } else {
       // Handle default or fallback navigation if needed
     }
   };
@@ -316,14 +457,13 @@ function Dashboard() {
     const utcDate = new Date(dateString);
     return utcDate.toLocaleString("en-GB", {
       day: "2-digit",
-      month: "short", 
+      month: "short",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
   };
-  
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -339,6 +479,11 @@ function Dashboard() {
       ...analyticalBalanceElogs,
       ...karlFischerElogs,
       ...hplcElogs,
+      ...pHMeterOPCalElogs,
+      ...UVVisCalibElogs,
+      ...sdsPage,
+      ...gelDociGene,
+      ...uVWhiteLightTrans,
     ].filter((item) => {
       const matchesSearchTerm =
         item.date_of_initiation
@@ -366,7 +511,6 @@ function Dashboard() {
           : item?.karlFischerRecords
           ? `KF${item.form_id}`
           : `HP${item.form_id}`
-
         )
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
@@ -392,7 +536,12 @@ function Dashboard() {
     operationOfSterilizerElogs,
     analyticalBalanceElogs,
     karlFischerElogs,
-    hplcElogs,  
+    hplcElogs,
+    pHMeterOPCalElogs,
+    UVVisCalibElogs,
+    sdsPage,
+    gelDociGene,
+    uVWhiteLightTrans,
   ]);
 
   return (
@@ -446,15 +595,12 @@ function Dashboard() {
               <option value="dispensing_of_material">
                 Dispensing Of Materials
               </option> */}
-              <option value="analytical_balance">
-                Analytical Balance
-              </option>
-              <option value="karl_fischer">
-                KARL Fischer
-              </option>
-              <option value="hplc">
-                hplc
-              </option>
+              <option value="analytical_balance">Analytical Balance</option>
+              <option value="karl_fischer">KARL Fischer</option>
+              <option value="hplc">hplc</option>
+              <option value="pH Meter OP/CAL">pH Meter OP/CAL</option>
+              <option value="SDS Page">SDS PAGE</option>
+              <option value="Gel Doc iGene">Gel Doc iGene</option>
             </select>
           </div>
 
@@ -519,7 +665,7 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td
@@ -602,7 +748,7 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td
@@ -650,7 +796,7 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td
@@ -750,7 +896,7 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td
@@ -801,7 +947,7 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td
@@ -818,7 +964,6 @@ function Dashboard() {
               : null}
             {eLogSelect === "analytical_balance"
               ? analyticalBalanceElogs?.map((item, index) => {
-                
                   const cleanHTML =
                     item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
@@ -852,7 +997,7 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td
@@ -869,7 +1014,6 @@ function Dashboard() {
               : null}
             {eLogSelect === "karl_fischer"
               ? karlFischerElogs?.map((item, index) => {
-                
                   const cleanHTML =
                     item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
@@ -903,7 +1047,7 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td
@@ -920,7 +1064,6 @@ function Dashboard() {
               : null}
             {eLogSelect === "hplc"
               ? hplcElogs?.map((item, index) => {
-                
                   const cleanHTML =
                     item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
@@ -954,7 +1097,258 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+              
+            {eLogSelect === "pH Meter OP/CAL"
+              ? pHMeterOPCalElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/PhMeterOpCal-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`pHOPCAL${item?.form_id}`}
+                      </td>
+                      <td>pH Meter OP/Cal</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : item.site_id === 5
+                          ? "Biologics"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "UV-Vis Calibration"
+              ? UVVisCalibElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/uv-vis-calibration-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`UVVIS${item?.form_id}`}
+                      </td>
+                      <td>pH Meter OP/Cal</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : item.site_id === 5
+                          ? "Biologics"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "SDS Page"
+              ? sdsPage?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/sds-page-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`SDSPAGE${item?.form_id}`}
+                      </td>
+                      <td>SDS PAGE</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : item.site_id === 5
+                          ? "Biologics"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "Gel Doc iGene"
+              ? gelDociGene?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/gel-doc-igene-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`GELDOCIGENE${item?.form_id}`}
+                      </td>
+                      <td>Gel Doc iGene</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : item.site_id === 5
+                          ? "Biologics"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "UV/White Light Transilluminator"
+              ? uVWhiteLightTrans?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/uv-wl-transilluminator-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`UV-WLTI${item?.form_id}`}
+                      </td>
+                      <td>UV/WL Transilluminator</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : item.site_id === 5
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td
@@ -978,7 +1372,6 @@ function Dashboard() {
                     new Date(a.date_of_initiation)
                 )
 
-                
                 .map((item, index) => {
                   const cleanHTML = (html) =>
                     html?.replace(/^"|"$/g, "").trim() || "NA";
@@ -992,8 +1385,7 @@ function Dashboard() {
                         onMouseEnter={(e) => (e.target.style.color = "blue")}
                         onMouseLeave={(e) => (e.target.style.color = "black")}
                       >
-                        {
-                          item.DifferentialPressureRecords
+                        {item.DifferentialPressureRecords
                           ? `DP${item.form_id}`
                           : item.TempratureRecords
                           ? `TR${item.form_id}`
@@ -1011,6 +1403,16 @@ function Dashboard() {
                           ? `KF${item.form_id}`
                           : item.hplcRecords
                           ? `HP${item.form_id}`
+                          : item.OpAndCalMultiParameterProcessRecords
+                          ? `pHOPCAL${item.form_id}`
+                          : item.UvVisRecords
+                          ? `UVVIS${item.form_id}`
+                          : item.sdsPageRecords
+                          ? `SDSPAGE${item.form_id}`
+                          : item.gelDocIGeneRecords
+                          ? `GELDOCIGENE${item.form_id}`
+                          : item.uvWhiteLightRecords
+                          ? `UV-WLTI${item.form_id}`
                           : null}
                       </td>
                       <td>
@@ -1032,6 +1434,16 @@ function Dashboard() {
                           ? "KARL Fischer"
                           : item.hplcRecords
                           ? "HPLC"
+                          : item.OpAndCalMultiParameterProcessRecords
+                          ? "pH Meter OP/Cal"
+                          : item.UvVisRecords
+                          ? "UV Vis Calib"
+                          : item.sdsPageRecords
+                          ? "SDS PAGE"
+                          : item.gelDocIGeneRecords
+                          ? "Gel Doc iGene"
+                          : item.uvWhiteLightRecords
+                          ? "UV/WL Transilluminator"
                           : null}
                       </td>
                       <td>
@@ -1042,7 +1454,7 @@ function Dashboard() {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "IPC"
+                          ? "Biologics"
                           : "EU"}
                       </td>
                       <td

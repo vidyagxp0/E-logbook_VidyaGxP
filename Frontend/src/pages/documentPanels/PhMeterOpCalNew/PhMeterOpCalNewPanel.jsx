@@ -9,7 +9,8 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
-const HplcPanel = () => {
+
+const PhMeterOpCalPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
@@ -30,10 +31,10 @@ const HplcPanel = () => {
     additionalInfo: "",
     additionalAttachment: "",
     additionalInfo: "",
-    // HPLCRecords: [],
+    KarlFischer: [],
     limit: "",
   });
-  console.log(editData, "111");
+  console.log(editData, "editData");
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -72,7 +73,11 @@ const HplcPanel = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/hplc/send-HP-elog-for-review", data, config)
+        .put(
+          "http://localhost:1000/op-and-calParameter/send-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -87,7 +92,7 @@ const HplcPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-from-review-to-approval",
+          "http://localhost:1000/op-and-calParameter/send-review-to-approval",
           data,
           config
         )
@@ -106,7 +111,7 @@ const HplcPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-elog-from-review-to-open",
+          "http://localhost:1000/op-and-calParameter/send-review-to-open",
           data,
           config
         )
@@ -121,7 +126,7 @@ const HplcPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/hplc/approve-HP-elog", data, config)
+        .put("http://localhost:1000/op-and-calParameter/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -136,7 +141,7 @@ const HplcPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-elog-from-approval-to-open",
+          "http://localhost:1000/op-and-calParameter/send-approval-to-open",
           data,
           config
         )
@@ -183,7 +188,7 @@ const HplcPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/hplc/update-hplc",
+        url: "http://localhost:1000/op-and-calParameter/update",
       };
 
       axios(requestOptions)
@@ -228,10 +233,7 @@ const HplcPanel = () => {
       setEditData((prevState) => ({
         ...prevState,
 
-        DifferentialPressureRecords: [
-          ...prevState.DifferentialPressureRecords,
-          newRow,
-        ],
+        KarlFischerRecords: [...prevState.KarlFischerRecords, newRow],
       }));
     }
   };
@@ -377,12 +379,14 @@ const HplcPanel = () => {
         ? "Malaysia"
         : location.state.site_id === 3
         ? "EMEA"
+        : location.state.site_id === 5
+        ? "Biologics"
         : location.state?.site_id === 4
         ? "EU"
         : "Biologics",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title: "HPLC",
+    title: "KARL Fischer",
     ...editData,
   };
 
@@ -396,7 +400,7 @@ const HplcPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/hplc/chat-pdf/${formId}`,
+        `http://localhost:1000/op-and-calParameter/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -435,7 +439,7 @@ const HplcPanel = () => {
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block !grid !grid-cols-3">
             {/* <div>
-                <strong> Record Name:&nbsp;</strong>HPLC             </div> */}
+               <strong> Record Name:&nbsp;</strong>KARL Fischer             </div> */}
             <div>
               <strong> Site:&nbsp;</strong>
               {location.state?.site_id === 1
@@ -460,26 +464,26 @@ const HplcPanel = () => {
 
           <div className="document-form">
             <div className="details-form-data">
+              <div className="sop-type-header">
+                <div className="logo">
+                  <img src="/vidyalogo21.png" alt="..." />
+                </div>
+                <div className="main-head">
+                  <div>VidyaGxP Private Limited</div>
+                </div>
+              </div>
               {/* <div className="sop-type-header">
-                  <div className="logo">
-                    <img src="/vidyalogo21.png" alt="..." />
-                  </div>
-                  <div className="main-head">
-                    <div>VidyaGxP Private Limited</div>
-                  </div>
-                </div> */}
-              {/* <div className="sop-type-header">
-                  <div className="logo">
-                    <img src="/vidyalogo21.png" alt="..." />
-                  </div>
-                  <div className="main-head">
-                    <div>VidyaGxP Private Limited</div>
-                  </div>
-                </div> */}
+                 <div className="logo">
+                   <img src="/vidyalogo21.png" alt="..." />
+                 </div>
+                 <div className="main-head">
+                   <div>VidyaGxP Private Limited</div>
+                 </div>
+               </div> */}
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  HPLC Record
+                  KARL Fischer Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -490,7 +494,7 @@ const HplcPanel = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "HPLC",
+                          process: "pH Meter OP/Cal",
                         },
                       })
                     }
@@ -523,11 +527,11 @@ const HplcPanel = () => {
                     )}
                     <style>
                       {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
+           @keyframes spin {
+             0% { transform: rotate(0deg); }
+             100% { transform: rotate(360deg); }
+           }
+         `}
                     </style>
                   </button>
 
@@ -743,34 +747,34 @@ const HplcPanel = () => {
                     Approver
                   </div>
                   {/* <div
-                      className="btn-forms-select"
-                      onClick={() =>
-                        navigate("/audit-trail", {
-                          state: {
-                            formId: location.state?.form_id,
-                            process: "Differential Pressure",
-                          },
-                        })
-                      }
-                    >
-                      Audit Trail
-                    </div> */}
+                     className="btn-forms-select"
+                     onClick={() =>
+                       navigate("/audit-trail", {
+                         state: {
+                           formId: location.state?.form_id,
+                           process: "Differential Pressure",
+                         },
+                       })
+                     }
+                   >
+                     Audit Trail
+                   </div> */}
                 </div>
                 {/* <button className="btn-forms-select" onClick={generateReport}>
-                    Generate Report
-                  </button> */}
+                   Generate Report
+                 </button> */}
                 {/* <div className="analytics-btn">
-                    <button
-                      className="btn-print"
-                      onClick={() =>
-                        navigate("/analytics", {
-                          state: { records: location.state, processId: 1 },
-                        })
-                      }
-                    >
-                      Analytics
-                    </button>
-                  </div> */}
+                   <button
+                     className="btn-print"
+                     onClick={() =>
+                       navigate("/analytics", {
+                         state: { records: location.state, processId: 1 },
+                       })
+                     }
+                   >
+                     Analytics
+                   </button>
+                 </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -805,15 +809,15 @@ const HplcPanel = () => {
                     </label>
                     <div>
                       {/* <input
-                          name="description"
-                          type="text"
-                          value={editData.description}
-                          onChange={handleInputChange1}
-                          readOnly={
-                            location.state?.stage !== 1 ||
-                            location.state?.initiator_id !== userDetails.userId
-                          }
-                        /> */}
+                         name="description"
+                         type="text"
+                         value={editData.description}
+                         onChange={handleInputChange1}
+                         readOnly={
+                           location.state?.stage !== 1 ||
+                           location.state?.initiator_id !== userDetails.userId
+                         }
+                       /> */}
 
                       <TinyEditor
                         editorContent={editData.description}
@@ -895,14 +899,8 @@ const HplcPanel = () => {
                       <tr>
                         <th>S no.</th>
                         <th>Date</th>
-                        <th>Sample Name</th>
-                        <th>Reg No./ Lot No.</th>
-                        <th>Method Used</th>
-                        <th>Parameter/Activity</th>
-                        <th>Column No.</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>No. of Injections</th>
+                        <th>Name of Solution/Buffer/Sample Solution</th>
+                        <th>Adjusted pH</th>
                         <th>Done by</th>
                         <th>Checked By</th>
                         <th>Remarks</th>
@@ -912,165 +910,165 @@ const HplcPanel = () => {
                     </thead>
                     <tbody>
                       {/*  {editData?.DifferentialPressureRecords.map(
-                          (item, index) => (
-                            <tr key={index}>
-                              <td>{index + 1}</td>
-                              <td>{item.unique_id}</td>
-                              <td>
-                                <input value={item.time} readOnly />
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  value={item.differential_pressure}
-                                  className={`${
-                                    item.differential_pressure < 0.6
-                                      ? "limit"
-                                      : item.differential_pressure > 2.6
-                                      ? "limit"
-                                      : ""
-                                  }`}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.DifferentialPressureRecords,
-                                    ];
-                                    newData[index].differential_pressure =
-                                      e.target.value;
-                                    setEditData({
-                                      ...editData,
-                                      DifferentialPressureRecords: newData,
-                                    });
-                                  }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  value={item.remarks}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.DifferentialPressureRecords,
-                                    ];
-                                    newData[index].remarks = e.target.value;
-                                    setEditData({
-                                      ...editData,
-                                      DifferentialPressureRecords: newData,
-                                    });
-                                  }}
-                                  readOnly={
-                                    location.state?.stage !== 1 ||
-                                    location.state?.initiator_id !==
-                                      userDetails.userId
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  value={item.checked_by}
-                                  disabled
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.DifferentialPressureRecords,
-                                    ];
-                                    newData[index].checked_by = e.target.value;
-                                    setEditData({
-                                      ...editData,
-                                      DifferentialPressureRecords: newData,
-                                    });
-                                  }}
-                                  readOnly
-                                />
-                              </td>
-                              <td style={{ width: "250px" }}>
-                                <div className="d-flex">
-                                  {item.supporting_docs ? (
-                                    <div className="file-upload-wrapper">
-                                      <button
-                                        type="button"
-                                        className="btn-upload"
-                                        onClick={() =>
-                                          document
-                                            .getElementsByName("supporting_docs")
-                                            [index].click()
-                                        }
-                                        disabled={
-                                          location.state?.stage !== 4 ||
-                                          [2, 3].includes(
-                                            userDetails.roles[0].role_id
-                                          )
-                                        }
-                                      >
-                                        Change File
-                                      </button>
-                                      <h3>
-                                        Selected File:{" "}
-                                        <a
-                                          href={item.supporting_docs}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          View File
-                                        </a>
-                                        {/* <DeleteIcon
-                                      style={{ color: "red", cursor: "pointer" }}
-                                      onClick={() => handleDeleteFile(index)}
-                                    /> */}
+                         (item, index) => (
+                           <tr key={index}>
+                             <td>{index + 1}</td>
+                             <td>{item.unique_id}</td>
+                             <td>
+                               <input value={item.time} readOnly />
+                             </td>
+                             <td>
+                               <input
+                                 type="number"
+                                 value={item.differential_pressure}
+                                 className={`${
+                                   item.differential_pressure < 0.6
+                                     ? "limit"
+                                     : item.differential_pressure > 2.6
+                                     ? "limit"
+                                     : ""
+                                 }`}
+                                 onChange={(e) => {
+                                   const newData = [
+                                     ...editData.DifferentialPressureRecords,
+                                   ];
+                                   newData[index].differential_pressure =
+                                     e.target.value;
+                                   setEditData({
+                                     ...editData,
+                                     DifferentialPressureRecords: newData,
+                                   });
+                                 }}
+                                 readOnly={
+                                   location.state?.stage !== 1 ||
+                                   location.state?.initiator_id !==
+                                     userDetails.userId
+                                 }
+                               />
+                             </td>
+                             <td>
+                               <input
+                                 value={item.remarks}
+                                 onChange={(e) => {
+                                   const newData = [
+                                     ...editData.DifferentialPressureRecords,
+                                   ];
+                                   newData[index].remarks = e.target.value;
+                                   setEditData({
+                                     ...editData,
+                                     DifferentialPressureRecords: newData,
+                                   });
+                                 }}
+                                 readOnly={
+                                   location.state?.stage !== 1 ||
+                                   location.state?.initiator_id !==
+                                     userDetails.userId
+                                 }
+                               />
+                             </td>
+                             <td>
+                               <input
+                                 value={item.checked_by}
+                                 disabled
+                                 onChange={(e) => {
+                                   const newData = [
+                                     ...editData.DifferentialPressureRecords,
+                                   ];
+                                   newData[index].checked_by = e.target.value;
+                                   setEditData({
+                                     ...editData,
+                                     DifferentialPressureRecords: newData,
+                                   });
+                                 }}
+                                 readOnly
+                               />
+                             </td>
+                             <td style={{ width: "250px" }}>
+                               <div className="d-flex">
+                                 {item.supporting_docs ? (
+                                   <div className="file-upload-wrapper">
+                                     <button
+                                       type="button"
+                                       className="btn-upload"
+                                       onClick={() =>
+                                         document
+                                           .getElementsByName("supporting_docs")
+                                           [index].click()
+                                       }
+                                       disabled={
+                                         location.state?.stage !== 4 ||
+                                         [2, 3].includes(
+                                           userDetails.roles[0].role_id
+                                         )
+                                       }
+                                     >
+                                       Change File
+                                     </button>
+                                     <h3>
+                                       Selected File:{" "}
+                                       <a
+                                         href={item.supporting_docs}
+                                         target="_blank"
+                                         rel="noopener noreferrer"
+                                       >
+                                         View File
+                                       </a>
+                                       {/* <DeleteIcon
+                                     style={{ color: "red", cursor: "pointer" }}
+                                     onClick={() => handleDeleteFile(index)}
+                                   /> */}
                       {/* </h3>
-                                    </div>
-                                  ) : (
-                                    <div className="file-upload-wrapper">
-                                      <button
-                                        type="button"
-                                        className="btn-upload"
-                                        onClick={() =>
-                                          document
-                                            .getElementsByName("supporting_docs")
-                                            [index].click()
-                                        }
-                                        disabled={
-                                          location.state?.stage !== 4 ||
-                                          [2, 3].includes(
-                                            userDetails.roles[0].role_id
-                                          )
-                                        }
-                                      >
-                                        Select File
-                                      </button>
-                                    </div>
-                                  )}
-                                  <input
-                                    type="file"
-                                    name="supporting_docs"
-                                    style={{ display: "none" }}
-                                    onChange={(e) =>
-                                      handleFileChange(index, e.target.files[0])
-                                    }
-                                  />
-                                </div>
-                              </td>
-  
-                              <td>
-                                <DeleteIcon onClick={() => deleteRow(index)} />
-                                {item.limit !== "" &&
-                                  (item.limit < 0.6 || item.limit > 2.6) && (
-                                    <button
-                                      className="deviation-btn"
-                                      onClick={() => {
-                                        navigate("/chart");
-                                      }}
-                                    >
-                                      Launch Deviation
-                                    </button>
-                                  )}
-                              </td>
-                            </tr>
-                          )
-                        )}
-                        */}
+                                   </div>
+                                 ) : (
+                                   <div className="file-upload-wrapper">
+                                     <button
+                                       type="button"
+                                       className="btn-upload"
+                                       onClick={() =>
+                                         document
+                                           .getElementsByName("supporting_docs")
+                                           [index].click()
+                                       }
+                                       disabled={
+                                         location.state?.stage !== 4 ||
+                                         [2, 3].includes(
+                                           userDetails.roles[0].role_id
+                                         )
+                                       }
+                                     >
+                                       Select File
+                                     </button>
+                                   </div>
+                                 )}
+                                 <input
+                                   type="file"
+                                   name="supporting_docs"
+                                   style={{ display: "none" }}
+                                   onChange={(e) =>
+                                     handleFileChange(index, e.target.files[0])
+                                   }
+                                 />
+                               </div>
+                             </td>
+ 
+                             <td>
+                               <DeleteIcon onClick={() => deleteRow(index)} />
+                               {item.limit !== "" &&
+                                 (item.limit < 0.6 || item.limit > 2.6) && (
+                                   <button
+                                     className="deviation-btn"
+                                     onClick={() => {
+                                       navigate("/chart");
+                                     }}
+                                   >
+                                     Launch Deviation
+                                   </button>
+                                 )}
+                             </td>
+                           </tr>
+                         )
+                       )}
+                       */}
                     </tbody>
                   </table>
 
@@ -1315,7 +1313,7 @@ const HplcPanel = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewerss?.name}
+                          value={editData?.reviewer7?.name}
                           readOnly
                         />
                       </div>
@@ -1431,7 +1429,7 @@ const HplcPanel = () => {
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
                               className="py-1
-                                bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                               bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1459,7 +1457,7 @@ const HplcPanel = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approverss?.name}
+                          value={editData?.approver7?.name}
                           readOnly
                         />
                       </div>
@@ -1596,77 +1594,77 @@ const HplcPanel = () => {
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1
-                  ? location.state?.initiator_id === userDetails.userId && (
-                      <button
-                        className="themeBtn"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
-                        }}
-                      >
-                        Send for Review
-                      </button>
-                    )
-                  : location.state?.stage === 2
-                  ? location.state?.reviewer_id === userDetails.userId && (
-                      <>
-                        <button
-                          className="themeBtn"
-                          onClick={() => {
-                            setIsPopupOpen(true);
-                            setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
-                          }}
-                        >
-                          Review Completed
-                        </button>
-                        <button
-                          className="themeBtn"
-                          onClick={() => {
-                            setIsPopupOpen(true);
-                            setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
-                          }}
-                        >
-                          More Info Required
-                        </button>
-                      </>
-                    )
-                  : location.state?.stage === 3
-                  ? location.state?.approver_id === userDetails.userId && (
-                      <>
-                        <button
-                          className="themeBtn"
-                          onClick={() => {
-                            setIsPopupOpen(true);
-                            setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
-                          }}
-                        >
-                          Approve elog
-                        </button>
-                        <button
-                          className="themeBtn"
-                          onClick={() => {
-                            setIsPopupOpen(true);
-                            setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
-                          }}
-                        >
-                          More Info Required
-                        </button>
-                      </>
-                    )
-                  : null}
-                {location.state?.stage === 1
-                  ? userDetails.userId === location.state?.initiator_id && (
-                      <button
-                        className="themeBtn"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    )
-                  : null} */}
+                 ? location.state?.initiator_id === userDetails.userId && (
+                     <button
+                       className="themeBtn"
+                       onClick={() => {
+                         setIsPopupOpen(true);
+                         setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
+                       }}
+                     >
+                       Send for Review
+                     </button>
+                   )
+                 : location.state?.stage === 2
+                 ? location.state?.reviewer_id === userDetails.userId && (
+                     <>
+                       <button
+                         className="themeBtn"
+                         onClick={() => {
+                           setIsPopupOpen(true);
+                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
+                         }}
+                       >
+                         Review Completed
+                       </button>
+                       <button
+                         className="themeBtn"
+                         onClick={() => {
+                           setIsPopupOpen(true);
+                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
+                         }}
+                       >
+                         More Info Required
+                       </button>
+                     </>
+                   )
+                 : location.state?.stage === 3
+                 ? location.state?.approver_id === userDetails.userId && (
+                     <>
+                       <button
+                         className="themeBtn"
+                         onClick={() => {
+                           setIsPopupOpen(true);
+                           setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
+                         }}
+                       >
+                         Approve elog
+                       </button>
+                       <button
+                         className="themeBtn"
+                         onClick={() => {
+                           setIsPopupOpen(true);
+                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
+                         }}
+                       >
+                         More Info Required
+                       </button>
+                     </>
+                   )
+                 : null}
+               {location.state?.stage === 1
+                 ? userDetails.userId === location.state?.initiator_id && (
+                     <button
+                       className="themeBtn"
+                       onClick={() => {
+                         setIsPopupOpen(true);
+                         setPopupAction("updateElog");
+                       }}
+                     >
+                       Save
+                     </button>
+                   )
+                 : null} */}
               <button
                 className="themeBtn"
                 onClick={() => {
@@ -1693,4 +1691,4 @@ const HplcPanel = () => {
   );
 };
 
-export default HplcPanel;
+export default PhMeterOpCalPanel;

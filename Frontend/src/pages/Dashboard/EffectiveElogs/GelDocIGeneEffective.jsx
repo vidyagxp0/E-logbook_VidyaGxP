@@ -9,7 +9,7 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import dayjs from "dayjs";
-const HplcEffective = () => {
+const GelDocIGeneEffective = () => {
   const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [selectedInitiator, setSelectedInitiator] = useState("All Records");
   const [selectedReviewer, setSelectedReviewer] = useState("All Records");
@@ -71,7 +71,7 @@ const HplcEffective = () => {
     compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
-    hplcRecords: [],
+    gelDocIGeneRecords: [],
     limit: "",
   });
   console.log(editData, "editdata");
@@ -85,28 +85,26 @@ const HplcEffective = () => {
   };
 
   const handlePopupSubmit = (credentials) => {
-    const cleanedData = editData?.hplcRecords.filter((record) => {
-      const hasRequiredFields = record.start_time?.trim() !== "";
+    const cleanedData = editData?.gelDocIGeneRecords.filter((record) => {
+      const hasRequiredFields = record.sample_name?.trim() !== "";
       return hasRequiredFields;
     });
 
     console.log("Cleaned records:", cleanedData);
 
-    const emptyRowsCount = editData?.hplcRecords.length - cleanedData.length;
+    const emptyRowsCount = editData?.gelDocIGeneRecords.length - cleanedData.length;
     if (emptyRowsCount > 0) {
       toast.warn(
         `${emptyRowsCount} empty row(s) will be removed before saving.`
       );
-      console.log("Original records:", editData?.hplcRecords);
+      console.log("Original records:", editData?.gelDocIGeneRecords);
       console.log("Cleaned records:", cleanedData);
     }
 
     const updatedEditData = {
       ...editData,
-      hplcRecords: cleanedData,
+      gelDocIGeneRecords: cleanedData,
     };
-
-    console.log(updatedEditData, "updatedEditData");
 
     const data = {
       ...updatedEditData,
@@ -137,7 +135,7 @@ const HplcEffective = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/hplc/send-HP-elog-for-review", data, config)
+        .put("http://localhost:1000/gel-doc-igene/send-elog-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -152,7 +150,7 @@ const HplcEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-from-review-to-approval",
+          "http://localhost:1000/gel-doc-igene/send-from-review-to-approval",
           data,
           config
         )
@@ -171,7 +169,7 @@ const HplcEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-elog-from-review-to-open",
+          "http://localhost:1000/gel-doc-igene/send-elog-from-review-to-open",
           data,
           config
         )
@@ -186,7 +184,7 @@ const HplcEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/hplc/approve-HP-elog", data, config)
+        .put("http://localhost:1000/gel-doc-igene/approve-elog", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -201,7 +199,7 @@ const HplcEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-elog-from-approval-to-open",
+          "http://localhost:1000/gel-doc-igene/send-elog-from-approval-to-open",
           data,
           config
         )
@@ -215,7 +213,7 @@ const HplcEffective = () => {
     } else if (popupAction === "updateElog") {
       data.initiatorDeclaration = credentials?.declaration;
       if (
-        updatedEditData?.hplcRecords?.some(
+        updatedEditData?.gelDocIGeneRecords?.some(
           (record) => record.differential_pressure === ""
         )
       ) {
@@ -238,7 +236,7 @@ const HplcEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: updatedEditData,
-        url: "http://localhost:1000/hplc/update-hplc",
+        url: "http://localhost:1000/gel-doc-igene/update",
       };
 
       axios(requestOptions)
@@ -274,12 +272,9 @@ const HplcEffective = () => {
         date: dayjs().format("YYYY-MM-DD"),
         sample_name: "",
         reg_no: "",
-        method_used: "",
-        parameter_or_activity: "",
-        column_no: "",
-        start_time: "",
-        end_time: "",
-        no_of_injections: "",
+        // start_time: "",
+        // end_time: "",
+        time: dayjs().format("hh:mm A"),
         done_by: location?.state?.initiator_name || "",
         checked_by: location?.state?.initiator_name,
         remarks: "",
@@ -290,9 +285,9 @@ const HplcEffective = () => {
       };
       setEditData((prevState) => ({
         ...prevState,
-        hplcRecords: [...prevState?.hplcRecords, newRow],
+        gelDocIGeneRecords: [...prevState?.gelDocIGeneRecords, newRow],
       }));
-    } else if (location.state.approver_id == 4) {
+    } else if (location.state.reviewer_id == 4) {
       toast.warn("Only Initiator can add new Row here");
     } else if (location.state.approver_id == 5) {
       toast.warn("Only Initiator can add new Row here");
@@ -351,7 +346,7 @@ const HplcEffective = () => {
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
     ) {
-      const updatedGridData = [...editData.hplcRecords];
+      const updatedGridData = [...editData.gelDocIGeneRecords];
       const rowToDelete = updatedGridData[index];
 
       if (rowToDelete?.record_id) {
@@ -364,7 +359,7 @@ const HplcEffective = () => {
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
-        hplcRecords: updatedGridData,
+        gelDocIGeneRecords: updatedGridData,
       }));
     }
   };
@@ -398,7 +393,7 @@ const HplcEffective = () => {
   };
 
   const filteredGridData = useMemo(() => {
-    const records = editData?.hplcRecords || [];
+    const records = editData?.gelDocIGeneRecords || [];
 
     return records.filter((record) => {
       const matchInitiator =
@@ -421,7 +416,7 @@ const HplcEffective = () => {
       return matchInitiator && matchReviewer && matchStatus;
     });
   }, [
-    editData?.hplcRecords,
+    editData?.gelDocIGeneRecords,
     selectedInitiator,
     selectedReviewer,
     selectedStatus,
@@ -448,26 +443,26 @@ const HplcEffective = () => {
   };
 
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.hplcRecords];
+    const updatedGridData = [...editData.gelDocIGeneRecords];
     updatedGridData[index].supporting_docs = file;
     setEditData((prevState) => ({
       ...prevState,
-      hplcRecords: updatedGridData,
+      gelDocIGeneRecords: updatedGridData,
     }));
   };
 
   const EmptyreportData = {
-    title: "HPLC",
+    title: "Gel Doc iGene Record",
     status: location.state.status,
     blankRows: 17,
     form_id: location.state.form_id,
-    hplcRecords: [],
+    gelDocIGeneRecords: [],
   };
   const generateEmptyReport = async () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/hplc/blank-report/${formId}`,
+        `http://localhost:1000/gel-doc-igene/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -501,7 +496,7 @@ const HplcEffective = () => {
         : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title: "HPLC Record",
+    title: "UVvisCalib Record",
     ...editData,
   };
 
@@ -511,7 +506,7 @@ const HplcEffective = () => {
     }
   }, [reportData]);
 
-  const allRecordDates = editData?.hplcRecords?.map((r) => new Date(r.date));
+  const allRecordDates = editData?.gelDocIGeneRecords?.map((r) => new Date(r.date));
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
@@ -546,7 +541,7 @@ const HplcEffective = () => {
         }
 
         // Filter hplc records
-        filteredData.hplcRecords = editData.hplcRecords.filter((record) => {
+        filteredData.gelDocIGeneRecords = editData.gelDocIGeneRecords.filter((record) => {
           const recordDate = new Date(record.date);
           return recordDate >= start && recordDate <= end;
         });
@@ -559,7 +554,7 @@ const HplcEffective = () => {
       };
 
       const response = await axios.post(
-        `http://localhost:1000/hplc/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/gel-doc-igene/effective-chat-pdf/${formId}`,
         payload,
         {
           headers: {
@@ -602,7 +597,7 @@ const HplcEffective = () => {
   };
 
   const handleDeleteFile = async (index) => {
-    const record = editData.hplcRecords[index];
+    const record = editData.gelDocIGeneRecords[index];
 
     if (!record?.record_id) {
       console.error("Record ID not found for deletion");
@@ -611,17 +606,17 @@ const HplcEffective = () => {
     [];
     try {
       const res = await axios.delete(
-        `http://localhost:1000/hplc/delete-hplc/attachment/${record.record_id}`
+        `http://localhost:1000/gel-doc-igene/delete-gel-doc-igene/attachment/${record.record_id}`
       );
 
       if (res.data?.error === false) {
         // Clear file from UI state
-        const newData = [...editData.hplcRecords];
+        const newData = [...editData.gelDocIGeneRecords];
         newData[index].supporting_docs = null;
 
         setEditData((prev) => ({
           ...prev,
-          hplcRecords: newData,
+          gelDocIGeneRecords: newData,
         }));
       } else {
         alert(res.data?.message || "Failed to delete attachment.");
@@ -669,7 +664,7 @@ const HplcEffective = () => {
             <div className="details-form-data">
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  HPLC Record
+                  Operation of Gel Documentation system with CCD camera-iGene Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -680,7 +675,7 @@ const HplcEffective = () => {
                       navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "HPLC",
+                          process: "Gel Doc iGene",
                         },
                       })
                     }
@@ -932,7 +927,7 @@ const HplcEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.hplcRecords?.map((r) => r.done_by)
+                              editData?.gelDocIGeneRecords?.map((r) => r.done_by)
                             ),
                           ].map(
                             (done_by, index) =>
@@ -977,7 +972,7 @@ const HplcEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.hplcRecords?.map((r) => r.reviewed_by)
+                              editData?.gelDocIGeneRecords?.map((r) => r.reviewed_by)
                             ),
                           ].map(
                             (reviewed_by, index) =>
@@ -1007,13 +1002,9 @@ const HplcEffective = () => {
                           <th>S.No.</th>
                           <th className="!text-nowrap px-8">Date</th>
                           <th className="!text-nowrap">Sample Name</th>
-                          <th className="!text-nowrap">Reg No./ Lot No.</th>
-                          <th className="!text-nowrap">Method Used</th>
-                          <th className="!text-nowrap">Parameter/Activity</th>
-                          <th className="!text-nowrap">Column No.</th>
-                          <th className="text-nowrap">Start Time</th>
-                          <th className="text-nowrap">End Time</th>
-                          <th className="!text-nowrap">No. of Injections</th>
+                          <th className="!text-nowrap">Reg No./Lot No.</th>
+                          {/* <th className="text-nowrap">Start Time</th> */}
+                          <th className="text-nowrap">Time</th>
                           <th className="!text-nowrap">Done by</th>
                           <th className="!text-nowrap">Checked By</th>
                           <th className="!text-nowrap">Remarks</th>
@@ -1041,11 +1032,11 @@ const HplcEffective = () => {
                               <input
                                 value={item.sample_name}
                                 onChange={(e) => {
-                                  const newData = [...editData.hplcRecords];
+                                  const newData = [...editData.gelDocIGeneRecords];
                                   newData[index].sample_name = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    hplcRecords: newData,
+                                    gelDocIGeneRecords: newData,
                                   });
                                 }}
                                 readOnly={
@@ -1060,11 +1051,11 @@ const HplcEffective = () => {
                               <input
                                 value={item.reg_no}
                                 onChange={(e) => {
-                                  const newData = [...editData.hplcRecords];
+                                  const newData = [...editData.gelDocIGeneRecords];
                                   newData[index].reg_no = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    hplcRecords: newData,
+                                    gelDocIGeneRecords: newData,
                                   });
                                 }}
                                 readOnly={
@@ -1075,66 +1066,9 @@ const HplcEffective = () => {
                               />
                             </td>
 
-                            <td>
-                              <input
-                                value={item.method_used}
-                                onChange={(e) => {
-                                  const newData = [...editData.hplcRecords];
-                                  newData[index].method_used = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    hplcRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
-                                }
-                              />
-                            </td>
-
-                            <td>
-                              <input
-                                value={item.parameter_or_activity}
-                                onChange={(e) => {
-                                  const newData = [...editData.hplcRecords];
-                                  newData[index].parameter_or_activity =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    hplcRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
-                                }
-                              />
-                            </td>
-
-                            <td>
-                              <input
-                                value={item.column_no}
-                                onChange={(e) => {
-                                  const newData = [...editData.hplcRecords];
-                                  newData[index].column_no = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    hplcRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
-                                }
-                              />
-                            </td>
 
                             {/* ✅ Start Time */}
-                            <td>
+                            {/* <td>
                               <input
                                 type="checkbox"
                                 checked={!!item.start_time}
@@ -1144,7 +1078,7 @@ const HplcEffective = () => {
                                   ) || !isRowEditable(item)
                                 }
                                 onChange={(e) => {
-                                  const newData = [...editData.hplcRecords];
+                                  const newData = [...editData.gelDocIGeneRecords];
                                   if (e.target.checked) {
                                     newData[index].start_time =
                                       new Date().toLocaleTimeString([], {
@@ -1154,8 +1088,9 @@ const HplcEffective = () => {
                                         hour12: false,
                                       });
                                   } else {
-                                    newData[index].start_time = "";
-                                    newData[index].end_time = "";
+                                    // newData[index].start_time = "";
+                                    // newData[index].end_time = "";
+                                    newData[index].time = "";
                                     newData[index].reviewed_by = "";
                                     newData[index].status = "Open";
                                     newData[index].remarks = "";
@@ -1165,17 +1100,17 @@ const HplcEffective = () => {
                                   }
                                   setEditData({
                                     ...editData,
-                                    hplcRecords: newData,
+                                    gelDocIGeneRecords: newData,
                                   });
                                 }}
                               />
                               {item.start_time && (
                                 <span className="ml-2">{item.start_time}</span>
                               )}
-                            </td>
+                            </td> */}
 
                             {/* ✅ End Time */}
-                            <td>
+                            {/* <td>
                               <input
                                 type="checkbox"
                                 checked={!!item.end_time}
@@ -1215,7 +1150,7 @@ const HplcEffective = () => {
                                       return;
                                     }
 
-                                    const newData = [...editData.hplcRecords];
+                                    const newData = [...editData.gelDocIGeneRecords];
                                     newData[index].end_time =
                                       now.toLocaleTimeString([], {
                                         hour: "2-digit",
@@ -1226,10 +1161,10 @@ const HplcEffective = () => {
 
                                     setEditData({
                                       ...editData,
-                                      hplcRecords: newData,
+                                      gelDocIGeneRecords: newData,
                                     });
                                   } else {
-                                    const newData = [...editData.hplcRecords];
+                                    const newData = [...editData.gelDocIGeneRecords];
                                     newData[index].end_time = "";
                                     newData[index].reviewed_by = "";
                                     newData[index].status = "Open";
@@ -1240,7 +1175,7 @@ const HplcEffective = () => {
 
                                     setEditData({
                                       ...editData,
-                                      hplcRecords: newData,
+                                      gelDocIGeneRecords: newData,
                                     });
                                   }
                                 }}
@@ -1248,26 +1183,10 @@ const HplcEffective = () => {
                               {item.end_time && (
                                 <span className="ml-2">{item.end_time}</span>
                               )}
-                            </td>
+                            </td> */}
 
-                            <td>
-                              <input
-                                value={item.no_of_injections}
-                                onChange={(e) => {
-                                  const newData = [...editData.hplcRecords];
-                                  newData[index].no_of_injections =
-                                    e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    hplcRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
-                                }
-                              />
+                             <td className="w-24">
+                              <input value={item?.time} type="text" readOnly />
                             </td>
 
                             <td>
@@ -1282,13 +1201,7 @@ const HplcEffective = () => {
                                   type="checkbox"
                                   checked={!!item.reviewed_by}
                                   onChange={(e) => {
-                                    if (!item.end_time) {
-                                      toast.warn(
-                                        "Initiator must mark the End Time before reviewer action."
-                                      );
-                                      return;
-                                    }
-                                    const newData = [...editData.hplcRecords];
+                                    const newData = [...editData.gelDocIGeneRecords];
                                     if (e.target.checked) {
                                       newData[index].reviewed_by = reviewed_by;
                                       newData[index].status = "Closed";
@@ -1302,7 +1215,7 @@ const HplcEffective = () => {
                                     }
                                     setEditData({
                                       ...editData,
-                                      hplcRecords: newData,
+                                      gelDocIGeneRecords: newData,
                                     });
                                   }}
                                   disabled={
@@ -1323,7 +1236,7 @@ const HplcEffective = () => {
                                   <select
                                     value={item.remarksType || ""}
                                     onChange={(e) => {
-                                      const newData = [...editData.hplcRecords];
+                                      const newData = [...editData.gelDocIGeneRecords];
                                       newData[index].remarksType =
                                         e.target.value;
 
@@ -1338,7 +1251,7 @@ const HplcEffective = () => {
 
                                       setEditData({
                                         ...editData,
-                                        hplcRecords: newData,
+                                        gelDocIGeneRecords: newData,
                                       });
                                     }}
                                     className="border rounded px-2 py-1 w-auto"
@@ -1361,7 +1274,7 @@ const HplcEffective = () => {
                                         value={item.remarksSubType || ""}
                                         onChange={(e) => {
                                           const newData = [
-                                            ...editData.hplcRecords,
+                                            ...editData.gelDocIGeneRecords,
                                           ];
                                           newData[index].remarksSubType =
                                             e.target.value;
@@ -1376,7 +1289,7 @@ const HplcEffective = () => {
 
                                           setEditData({
                                             ...editData,
-                                            hplcRecords: newData,
+                                            gelDocIGeneRecords: newData,
                                           });
                                         }}
                                         className="border rounded px-2 py-1 w-auto"
@@ -1391,19 +1304,7 @@ const HplcEffective = () => {
                                           Incorrect Sample Name
                                         </option>
                                         <option value="Incorrect Reg No./ Lot No.">
-                                          Incorrect Reg No./ Lot No.
-                                        </option>
-                                        <option value="Incorrect Method Used">
-                                          Incorrect Method Used
-                                        </option>
-                                        <option value="Incorrect Parameter/Activity">
-                                          Incorrect Parameter/Activity
-                                        </option>
-                                        <option value="Incorrect Column No.">
-                                          Incorrect Column No.
-                                        </option>
-                                        <option value="Incorrect No. of Injections">
-                                          Incorrect No. of Injections
+                                          Incorrect Reg No.
                                         </option>
                                         <option value="Others">Others</option>
                                       </select>
@@ -1416,7 +1317,7 @@ const HplcEffective = () => {
                                           value={item.remarksOther || ""}
                                           onChange={(e) => {
                                             const newData = [
-                                              ...editData.hplcRecords,
+                                              ...editData.gelDocIGeneRecords,
                                             ];
                                             newData[index].remarksOther =
                                               e.target.value;
@@ -1425,7 +1326,7 @@ const HplcEffective = () => {
 
                                             setEditData({
                                               ...editData,
-                                              hplcRecords: newData,
+                                              gelDocIGeneRecords: newData,
                                             });
                                           }}
                                           className="border rounded px-2 py-1 w-auto"
@@ -1527,7 +1428,7 @@ const HplcEffective = () => {
                             </td>
 
                             <td>
-                              {editData?.hplcRecords?.find(
+                              {editData?.gelDocIGeneRecords?.find(
                                 (r) => r.record_id === item.record_id
                               )?.reviewed_by
                                 ? "Closed"
@@ -1555,4 +1456,4 @@ const HplcEffective = () => {
   );
 };
 
-export default HplcEffective;
+export default GelDocIGeneEffective;

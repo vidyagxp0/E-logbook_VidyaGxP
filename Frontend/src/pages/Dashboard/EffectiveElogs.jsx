@@ -28,6 +28,11 @@ function EffectiveElogs() {
   const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState([]);
   const [karlFischerElogs, setKarlFischerElogs] = useState([]);
   const [hplcElogs, setHplcElogs] = useState([]);
+  const [pHMeterOPCalElogs, setPHMeterOPCalElogs] = useState([]);
+  const [uVVisCalibElogs, setUVVisCalibElogs] = useState([]);
+  const [sdsPage, setSdsPage] = useState([]);
+  const [gelDociGene, setGelDociGene] = useState([]);
+  const [uVWhiteLightTrans, setUVWlTrans] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -299,6 +304,138 @@ function EffectiveElogs() {
       .catch((error) => {
         console.error("Error: ", error);
       });
+      const newpHMeterOPCal = {
+            method: "get",
+            url: "http://localhost:1000/op-and-calParameter/get-all",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+              "Content-Type": "application/json",
+            },
+          };
+          axios(newpHMeterOPCal)
+            .then((response) => {
+              const pHMeterOPCal = response.data.message;
+              let filteredArray = pHMeterOPCal.filter((elog) => {
+                const userId = userDetails.userId;
+      
+                return (
+                  userId === elog.reviewer_id ||
+                  userId === elog.initiator_id ||
+                  userId === elog.approver_id ||
+                  hasAccess(4, elog.site_id, 4)
+                );
+              });
+              setPHMeterOPCalElogs(pHMeterOPCal);
+            })
+            .catch((error) => {
+              console.error("Error: ", error);
+            });
+      const newuVVisCalibElogs = {
+            method: "get",
+            url: "http://localhost:1000/uv-vis-calib/get-all",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+              "Content-Type": "application/json",
+            },
+          };
+          axios(newuVVisCalibElogs)
+            .then((response) => {
+              const uVVisCalib = response.data.message;
+              let filteredArray = uVVisCalib.filter((elog) => {
+                const userId = userDetails.userId;
+      
+                return (
+                  userId === elog.reviewer_id ||
+                  userId === elog.initiator_id ||
+                  userId === elog.approver_id ||
+                  hasAccess(4, elog.site_id, 4)
+                );
+              });
+              setUVVisCalibElogs(uVVisCalib);
+            })
+            .catch((error) => {
+              console.error("Error: ", error);
+            });
+      const newSdsPageElogs = {
+            method: "get",
+            url: "http://localhost:1000/sds-page/get-all",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+              "Content-Type": "application/json",
+            },
+          };
+          axios(newSdsPageElogs)
+            .then((response) => {
+              const sDsPage = response.data.message;
+              let filteredArray = sDsPage.filter((elog) => {
+                const userId = userDetails.userId;
+      
+                return (
+                  userId === elog.reviewer_id ||
+                  userId === elog.initiator_id ||
+                  userId === elog.approver_id ||
+                  hasAccess(4, elog.site_id, 4)
+                );
+              });
+              setSdsPage(sDsPage);
+            })
+            .catch((error) => {
+              console.error("Error: ", error);
+            });
+
+             const newGelDociGene = {
+                  method: "get",
+                  url: "http://localhost:1000/gel-doc-igene/get-all",
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+                    "Content-Type": "application/json",
+                  },
+                };
+                axios(newGelDociGene)
+                  .then((response) => {
+                    const gelDociGene = response.data.message;
+                    let filteredArray = gelDociGene.filter((elog) => {
+                      const userId = userDetails.userId;
+            
+                      return (
+                        userId === elog.reviewer_id ||
+                        userId === elog.initiator_id ||
+                        userId === elog.approver_id ||
+                        hasAccess(4, elog.site_id, 4)
+                      );
+                    });
+                    setGelDociGene(gelDociGene);
+                  })
+                  .catch((error) => {
+                    console.error("Error: ", error);
+                  });
+
+                  const newUVwlTrans = {
+                        method: "get",
+                        url: "http://localhost:1000/uv-wl-transi/get-all",
+                        headers: {
+                          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+                          "Content-Type": "application/json",
+                        },
+                      };
+                      axios(newUVwlTrans)
+                        .then((response) => {
+                          const uvWlTrans = response.data.message;
+                          let filteredArray = uvWlTrans.filter((elog) => {
+                            const userId = userDetails.userId;
+                  
+                            return (
+                              userId === elog.reviewer_id ||
+                              userId === elog.initiator_id ||
+                              userId === elog.approver_id ||
+                              hasAccess(4, elog.site_id, 4)
+                            );
+                          });
+                          setUVWlTrans(uvWlTrans);
+                        })
+                        .catch((error) => {
+                          console.error("Error: ", error);
+                        });
   }, []);
 
   const combinedRecords = [
@@ -313,6 +450,11 @@ function EffectiveElogs() {
     ...analyticalBalanceElogs.filter((log) => log.status === "Closed"),
     ...karlFischerElogs.filter((log) => log.status === "Closed"),
     ...hplcElogs.filter((log) => log.status === "Closed"),
+    ...pHMeterOPCalElogs.filter((log) => log.status === "Closed"),
+    ...uVVisCalibElogs.filter((log) => log.status === "Closed"),
+    ...sdsPage.filter((log) => log.status === "Closed"),
+    ...gelDociGene.filter((log) => log.status === "Closed"),
+    ...uVWhiteLightTrans.filter((log) => log.status === "Closed"),
   ];
 
   const handleNavigation = (item) => {
@@ -339,6 +481,16 @@ function EffectiveElogs() {
       navigate("/effective-karl-fischer", { state: item });
     } else if (item.hplcRecords) {
       navigate("/effective-hplc", { state: item });
+    }else if (item.OpAndCalMultiParameterProcessRecords) {
+      navigate("/effective-pHMeterOpCal", { state: item });
+    }else if (item.UvVisRecords) {
+      navigate("/effective-uv-vis-calibration", { state: item });
+    }else if (item.sdsPageRecords) {
+      navigate("/effective-sds-page", { state: item });
+    }else if (item.gelDocIGeneRecords) {
+      navigate("/effective-gel-doc-igene", { state: item });
+    }else if (item.uvWhiteLightRecords) {
+      navigate("/effective-uv-wl-transilluminator", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
@@ -362,6 +514,16 @@ function EffectiveElogs() {
       return karlFischerElogs?.filter(filterRecord);
     } else if (eLogSelect === "hplc") {
       return hplcElogs?.filter(filterRecord);
+    }else if (eLogSelect === "pH Meter OP/Cal") {
+      return pHMeterOPCalElogs?.filter(filterRecord);
+    }else if (eLogSelect === "UV-Vis Calibration") {
+      return uVVisCalibElogs?.filter(filterRecord);
+    }else if (eLogSelect === "SDS PAGE") {
+      return sdsPage?.filter(filterRecord);
+    }else if (eLogSelect === "Gel Doc iGene") {
+      return gelDociGene?.filter(filterRecord);
+    }else if (eLogSelect === "UV/WL Transilluminator") {
+      return uVWhiteLightTrans?.filter(filterRecord);
     } else {
       return combinedRecords
         ?.filter(filterRecord)
@@ -405,12 +567,34 @@ function EffectiveElogs() {
       ? "KF"
       : item.hplcRecords
       ? "HP"
+      : item.OpAndCalMultiParameterProcessRecords
+      ? "pHOPCAL"
+      : item.UvVisRecords
+      ? "UVVIS"
+      : item.sdsPageRecords
+      ? "SDSPAGE"
+      : item.gelDocIGeneRecords
+      ? "GELDOCIGENE"
+      : item.uvWhiteLightRecords
+      ? "UV-WLTI"
+      : item.uvWhiteLightRecords
+      ? "UV-WLTI"
       : eLogSelect === "analytical_balance"
       ? "AB"
       : eLogSelect === "karl_fischer"
       ? "KF"
       : eLogSelect === "hplc"
       ? "HP"
+      : eLogSelect === "pH Meter OP/Cal"
+      ? "pHOPCAL"
+      : eLogSelect === "UV-Vis Calib"
+      ? "UVVIS"
+      : eLogSelect === "SDS PAGE"
+      ? "SDS PAGE"
+      : eLogSelect === "Gel Doc iGene"
+      ? "GELDOCIGENE"
+      : eLogSelect === "UV/WL Transilluminator"
+      ? "UV-WLTI"
       : "";
   };
 
@@ -433,12 +617,32 @@ function EffectiveElogs() {
       ? "KARL Fischer"
       : item.hplcRecords
       ? "HPLC"
+      : item.OpAndCalMultiParameterProcessRecords
+      ? "pH Meter OP/Cal"
+      : item.UvVisRecords
+      ? "UV-Vis Calibration"
+      : item.sdsPageRecords
+      ? "SDS PAGE"
+      : item.gelDocIGeneRecords
+      ? "Gel Doc iGene"
+      : item.uvWhiteLightRecords
+      ? "UV/WL Transilluminator"
       : eLogSelect === "analytical_balance"
       ? "Analytical Balance"
       : eLogSelect === "karl_fischer"
       ? "KARL Fischer"
       : eLogSelect === "hplc"
       ? "HPLC"
+      : eLogSelect === "pH Meter OP/Cal"
+      ? "pHOPCAL"
+      : eLogSelect === "UV-Vis Calibration"
+      ? "UVVIS"
+      : eLogSelect === "SDS PAGE"
+      ? "SDS PAGE"
+      : eLogSelect === "Gel Doc iGene"
+      ? "Gel Doc iGene"
+      : eLogSelect === "UV/WL Transilluminator"
+      ? "UV/WL Transilluminator"
       : "NA";
   };
 
@@ -506,6 +710,10 @@ function EffectiveElogs() {
                 <option value="analytical_balance">Analytical Balance</option>
                 <option value="karl_fischer">KARL Fischer</option>
                 <option value="hplc">HPLC</option>
+                <option value="pH Meter OP/Cal">pH Meter OP/Cal</option>
+                <option value="UV-Vis Calibration">UV-Vis Calibration</option>
+                <option value="SDS PAGE">SDS PAGE</option>
+                <option value="Gel Doc iGene">Gel Doc iGene</option>
               </select>
             </div>
 
@@ -618,7 +826,7 @@ function EffectiveElogs() {
                       : item.site_id === 3
                       ? "EMEA"
                       : item.site_id === 5
-                      ? "IPC"
+                      ? "Biologics"
                       : "EU"}
                   </td>
                   <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>

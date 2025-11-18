@@ -9,7 +9,8 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
-const HplcPanel = () => {
+import GelDocIGene from "../../configForms/GelDocIGene/GelDocIGene";
+const GelDocIGenePanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
@@ -72,7 +73,7 @@ const HplcPanel = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/hplc/send-HP-elog-for-review", data, config)
+        .put("http://localhost:1000/gel-doc-igene/send-elog-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -87,7 +88,7 @@ const HplcPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-from-review-to-approval",
+          "http://localhost:1000/gel-doc-igene/send-from-review-to-approval",
           data,
           config
         )
@@ -106,7 +107,7 @@ const HplcPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-elog-from-review-to-open",
+          "http://localhost:1000/gel-doc-igene/send-elog-from-review-to-open",
           data,
           config
         )
@@ -121,7 +122,7 @@ const HplcPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/hplc/approve-HP-elog", data, config)
+        .put("http://localhost:1000/gel-doc-igene/approve-elog", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -136,7 +137,7 @@ const HplcPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/hplc/send-HP-elog-from-approval-to-open",
+          "http://localhost:1000/gel-doc-igene/send-elog-from-approval-to-open",
           data,
           config
         )
@@ -183,7 +184,7 @@ const HplcPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/hplc/update-hplc",
+        url: "http://localhost:1000/gel-doc-igene/update",
       };
 
       axios(requestOptions)
@@ -382,7 +383,7 @@ const HplcPanel = () => {
         : "Biologics",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title: "HPLC",
+    title: "Gel Doc iGene Record",
     ...editData,
   };
 
@@ -396,7 +397,7 @@ const HplcPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/hplc/chat-pdf/${formId}`,
+        `http://localhost:1000/gel-doc-igene/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -479,7 +480,7 @@ const HplcPanel = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  HPLC Record
+                  Operation of Gel Documentation system with CCD camera-iGene Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -490,7 +491,7 @@ const HplcPanel = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "HPLC",
+                          process: "Gel Doc iGene",
                         },
                       })
                     }
@@ -896,13 +897,9 @@ const HplcPanel = () => {
                         <th>S no.</th>
                         <th>Date</th>
                         <th>Sample Name</th>
-                        <th>Reg No./ Lot No.</th>
-                        <th>Method Used</th>
-                        <th>Parameter/Activity</th>
-                        <th>Column No.</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>No. of Injections</th>
+                        <th>Reg No.</th>
+                        {/* <th>Start Time</th> */}
+                        <th>Time</th>
                         <th>Done by</th>
                         <th>Checked By</th>
                         <th>Remarks</th>
@@ -1315,7 +1312,7 @@ const HplcPanel = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewerss?.name}
+                          value={editData?.reviewerss10?.name}
                           readOnly
                         />
                       </div>
@@ -1459,7 +1456,7 @@ const HplcPanel = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approverss?.name}
+                          value={editData?.approverss10?.name}
                           readOnly
                         />
                       </div>
@@ -1693,4 +1690,4 @@ const HplcPanel = () => {
   );
 };
 
-export default HplcPanel;
+export default GelDocIGenePanel;

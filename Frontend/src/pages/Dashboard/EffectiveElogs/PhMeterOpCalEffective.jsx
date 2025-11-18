@@ -12,7 +12,7 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 import dayjs from "dayjs";
 import { useMemo } from "react";
-const KarlFischerEffective = () => {
+const PhMeterOpCalEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
@@ -79,7 +79,7 @@ const KarlFischerEffective = () => {
     compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
-    karlFischerRecords: [],
+    OpAndCalMultiParameterProcessRecords: [],
     limit: "",
   });
 
@@ -92,31 +92,30 @@ const KarlFischerEffective = () => {
   };
 
   const handlePopupSubmit = (credentials) => {
-    const cleanedData = editData?.karlFischerRecords.filter((record) => {
+    const cleanedData = editData?.OpAndCalMultiParameterProcessRecords.filter((record) => {
       // Check if ANY of the key fields are non-empty (treat numbers and strings correctly)
       const isNotCompletelyEmpty =
-        !!record.lot_no?.toString().trim() ||
-        !!record.sample_name?.toString().trim() ||
-        !!record.factor_percent_water?.toString().trim();
+        !!record.nameOfSolution?.toString().trim() ||
+        !!record.adjustPH?.toString().trim();
 
       return isNotCompletelyEmpty;
     });
 
     // Calculate empty row count
     const emptyRowsCount =
-      editData?.karlFischerRecords.length - cleanedData.length;
+      editData?.OpAndCalMultiParameterProcessRecords.length - cleanedData.length;
 
     // Show toast ONLY if truly empty rows are being removed
     if (emptyRowsCount > 0) {
       toast.warn(
         `${emptyRowsCount} empty row(s) will be removed before saving.`
       );
-      console.log("Original records:", editData?.karlFischerRecords);
+      console.log("Original records:", editData?.OpAndCalMultiParameterProcessRecords);
       console.log("Cleaned records:", cleanedData);
     }
     const updatedEditData = {
       ...editData,
-      karlFischerRecords: cleanedData,
+      OpAndCalMultiParameterProcessRecords: cleanedData,
     };
 
     const data = {
@@ -149,7 +148,7 @@ const KarlFischerEffective = () => {
       }
       axios
         .put(
-          "http://localhost:1000/karl-fischer/send-KF-elog-for-review",
+          "http://localhost:1000/op-and-calParameter/send-for-review",
           data,
           config
         )
@@ -167,7 +166,7 @@ const KarlFischerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/karl-fischer/send-KF-from-review-to-approval",
+          "http://localhost:1000/op-and-calParameter/send-from-review-to-approval",
           data,
           config
         )
@@ -186,7 +185,7 @@ const KarlFischerEffective = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/karl-fischer/send-KF-elog-from-review-to-open",
+          "http://localhost:1000/op-and-calParameter/send-from-review-to-open",
           data,
           config
         )
@@ -201,7 +200,7 @@ const KarlFischerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/karl-fischer/approve-KF-elog", data, config)
+        .put("http://localhost:1000/op-and-calParameter/approve", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -216,7 +215,7 @@ const KarlFischerEffective = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/karl-fischer/send-KF-elog-from-approval-to-open",
+          "http://localhost:1000/op-and-calParameter/send-from-approval-to-open",
           data,
           config
         )
@@ -241,7 +240,7 @@ const KarlFischerEffective = () => {
       //   return;
       // }
       if (
-        updatedEditData?.karlFischerRecords?.some(
+        updatedEditData?.OpAndCalMultiParameterProcessRecords?.some(
           (record) => record.differential_pressure === ""
         )
       ) {
@@ -257,12 +256,12 @@ const KarlFischerEffective = () => {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "multipart/form-data",
       };
-
+console.log(updatedEditData,"updatedEditData")
       const requestOptions = {
         method: "PUT",
         headers: myHeaders,
         data: updatedEditData,
-        url: "http://localhost:1000/karl-fischer/update-karl-fischer",
+        url: "http://localhost:1000/op-and-calParameter/update",
       };
 
       axios(requestOptions)
@@ -294,12 +293,11 @@ const KarlFischerEffective = () => {
         second: "2-digit",
         hour12: true, // Use 12-hour format
       };
-      const nextIndex = editData?.karlFischerRecords?.length || 0;
+      const nextIndex = editData?.OpAndCalMultiParameterProcessRecords?.length || 0;
       const newRow = {
         date: dayjs().format("YYYY-MM-DD"),
-        lot_no: "",
-        sample_name: "",
-        factor_percent_water: "",
+        nameOfSolution: "",
+        adjustPH: "",
         done_by: location?.state?.initiator_name || "",
         checked_by: location?.state?.initiator_name || "",
         remarks: "",
@@ -311,7 +309,7 @@ const KarlFischerEffective = () => {
       };
       setEditData((prevState) => ({
         ...prevState,
-        karlFischerRecords: [...prevState?.karlFischerRecords, newRow],
+        OpAndCalMultiParameterProcessRecords: [...prevState?.OpAndCalMultiParameterProcessRecords, newRow],
       }));
     } else if (location.state.reviewer_id == 4) {
       toast.warn("Only the Initiator has permission to add a new row.");
@@ -372,7 +370,7 @@ const KarlFischerEffective = () => {
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
     ) {
-      const updatedGridData = [...editData.karlFischerRecords];
+      const updatedGridData = [...editData.OpAndCalMultiParameterProcessRecords];
       const rowToDelete = updatedGridData[index];
 
       if (rowToDelete?.record_id) {
@@ -385,7 +383,7 @@ const KarlFischerEffective = () => {
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
-        karlFischerRecords: updatedGridData,
+        OpAndCalMultiParameterProcessRecords: updatedGridData,
       }));
     }
   };
@@ -419,7 +417,7 @@ const KarlFischerEffective = () => {
   };
 
   const filteredGridData = useMemo(() => {
-    const records = editData?.karlFischerRecords || [];
+    const records = editData?.OpAndCalMultiParameterProcessRecords || [];
 
     return records.filter((record) => {
       const matchInitiator =
@@ -442,7 +440,7 @@ const KarlFischerEffective = () => {
       return matchInitiator && matchReviewer && matchStatus;
     });
   }, [
-    editData?.karlFischerRecords,
+    editData?.OpAndCalMultiParameterProcessRecords,
     selectedInitiator,
     selectedReviewer,
     selectedStatus,
@@ -453,7 +451,7 @@ const KarlFischerEffective = () => {
   //     location.state?.stage === 1 &&
   //     location.state?.initiator_id === userDetails.userId
   //   ) {
-  //     const updatedGridData = editData.karlFischerRecords.map(
+  //     const updatedGridData = editData.OpAndCalMultiParameterProcessRecords.map(
   //       (item, i) => {
   //         if (i === index) {
   //           return { ...item, supporting_docs: null };
@@ -463,7 +461,7 @@ const KarlFischerEffective = () => {
   //     );
   //     setEditData((prevState) => ({
   //       ...prevState,
-  //       karlFischerRecords: updatedGridData,
+  //       OpAndCalMultiParameterProcessRecords: updatedGridData,
   //     }));
   //   }
   // };
@@ -483,17 +481,16 @@ const KarlFischerEffective = () => {
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit",
       hour12: false,
     });
   };
 
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.karlFischerRecords];
+    const updatedGridData = [...editData.OpAndCalMultiParameterProcessRecords];
     updatedGridData[index].supporting_docs = file;
     setEditData((prevState) => ({
       ...prevState,
-      karlFischerRecords: updatedGridData,
+      OpAndCalMultiParameterProcessRecords: updatedGridData,
     }));
   };
 
@@ -516,17 +513,17 @@ const KarlFischerEffective = () => {
   };
 
   const EmptyreportData = {
-    title: "KARL Fischer",
+    title: "pH Meter OP/Cal",
     status: location.state.status,
     blankRows: 17,
     form_id: location.state.form_id,
-    karlFischerRecords: [],
+    OpAndCalMultiParameterProcessRecords: [],
   };
   const generateEmptyReport = async () => {
     setIsLoading1(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/karl-fischer/blank-report/${formId}`,
+        `http://localhost:1000/op-and-calParameter/blank-report/${formId}`,
         {
           reportData: EmptyreportData,
         },
@@ -562,7 +559,7 @@ const KarlFischerEffective = () => {
         : "Biologics",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title: "KARL Fischer Record",
+    title: "pH Meter OP/Cal Record",
     ...editData,
   };
 
@@ -572,7 +569,7 @@ const KarlFischerEffective = () => {
     }
   }, [reportData]);
 
-  const allRecordDates = editData?.karlFischerRecords?.map(
+  const allRecordDates = editData?.OpAndCalMultiParameterProcessRecords?.map(
     (r) => new Date(r.date)
   );
   const firstRecordDate = allRecordDates?.length
@@ -609,7 +606,7 @@ const KarlFischerEffective = () => {
         }
 
         // Filter karl fischer records
-        filteredData.karlFischerRecords = editData.karlFischerRecords.filter(
+        filteredData.OpAndCalMultiParameterProcessRecords = editData.OpAndCalMultiParameterProcessRecords.filter(
           (record) => {
             const recordDate = new Date(record.date);
             return recordDate >= start && recordDate <= end;
@@ -624,7 +621,7 @@ const KarlFischerEffective = () => {
       };
 
       const response = await axios.post(
-        `http://localhost:1000/karl-fischer/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/op-and-calParameter/effective-chat-pdf/${formId}`,
         payload,
         {
           headers: {
@@ -653,7 +650,7 @@ const KarlFischerEffective = () => {
   };
 
   const handleDeleteFile = async (index) => {
-    const record = editData.karlFischerRecords[index];
+    const record = editData.OpAndCalMultiParameterProcessRecords[index];
 
     if (!record?.record_id) {
       console.error("Record ID not found for deletion");
@@ -662,17 +659,17 @@ const KarlFischerEffective = () => {
     [];
     try {
       const res = await axios.delete(
-        `http://localhost:1000/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`
+        `http://localhost:1000/op-and-calParameter/delete/attachment/${record.record_id}`
       );
 
       if (res.data?.error === false) {
         // Clear file from UI state
-        const newData = [...editData.karlFischerRecords];
+        const newData = [...editData.OpAndCalMultiParameterProcessRecords];
         newData[index].supporting_docs = null;
 
         setEditData((prev) => ({
           ...prev,
-          karlFischerRecords: newData,
+          OpAndCalMultiParameterProcessRecords: newData,
         }));
       } else {
         alert(res.data?.message || "Failed to delete attachment.");
@@ -758,7 +755,7 @@ const KarlFischerEffective = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  KARL Fischer Record
+                  pH Meter OP/Cal Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -769,7 +766,7 @@ const KarlFischerEffective = () => {
                       navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "KARL Fischer",
+                          process: "pH Meter OP/Cal",
                         },
                       })
                     }
@@ -1369,7 +1366,7 @@ const KarlFischerEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.karlFischerRecords?.map(
+                              editData?.OpAndCalMultiParameterProcessRecords?.map(
                                 (r) => r.done_by
                               )
                             ),
@@ -1416,7 +1413,7 @@ const KarlFischerEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.karlFischerRecords?.map(
+                              editData?.OpAndCalMultiParameterProcessRecords?.map(
                                 (r) => r.reviewed_by
                               )
                             ),
@@ -1444,11 +1441,10 @@ const KarlFischerEffective = () => {
                   <table>
                     <thead>
                       <tr>
-                        <th className="text-center">S no.</th>
+                         <th className="text-center">S no.</th>
                         <th className="text-center">Date</th>
-                        <th className="text-center">Lot No./Batch No.</th>
-                        <th className="text-center">Sample Name</th>
-                        <th className="text-center">Factor/ % water</th>
+                        <th className="text-center">Name of Solution/Buffer/Sample Solution</th>
+                        <th className="text-center">Adjusted pH</th>
                         <th className="text-center">Done by</th>
                         <th className="text-center">Checked By</th>
                         <th className="text-center">Remarks</th>
@@ -1472,39 +1468,17 @@ const KarlFischerEffective = () => {
                             <td className="!text-center !justify-center">
                               <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
                             </td>
-
                             <td className="!text-center !justify-center">
                               <input
-                                value={item.lot_no}
+                                value={item.nameOfSolution}
                                 onChange={(e) => {
                                   const newData = [
-                                    ...editData.karlFischerRecords,
+                                    ...editData.OpAndCalMultiParameterProcessRecords,
                                   ];
-                                  newData[index].lot_no = e.target.value;
+                                  newData[index].nameOfSolution = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    karlFischerRecords: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
-                                }
-                                //  readOnly={!isRowEditable(item)}
-                              />
-                            </td>
-                            <td className="!text-center !justify-center">
-                              <input
-                                value={item.sample_name}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.karlFischerRecords,
-                                  ];
-                                  newData[index].sample_name = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    karlFischerRecords: newData,
+                                    OpAndCalMultiParameterProcessRecords: newData,
                                   });
                                 }}
                                 readOnly={
@@ -1517,17 +1491,17 @@ const KarlFischerEffective = () => {
 
                             <td className="!text-center">
                               <input
-                                value={item.factor_percent_water}
+                                value={item.adjustPH}
                                 // disabled
                                 onChange={(e) => {
                                   const newData = [
-                                    ...editData.karlFischerRecords,
+                                    ...editData.OpAndCalMultiParameterProcessRecords,
                                   ];
-                                  newData[index].factor_percent_water =
+                                  newData[index].adjustPH =
                                     e.target.value;
                                   setEditData({
                                     ...editData,
-                                    karlFischerRecords: newData,
+                                    OpAndCalMultiParameterProcessRecords: newData,
                                   });
                                 }}
                                 readOnly={
@@ -1543,12 +1517,12 @@ const KarlFischerEffective = () => {
                                 // disabled
                                 // onChange={(e) => {
                                 //   const newData = [
-                                //     ...editData.karlFischerRecords,
+                                //     ...editData.OpAndCalMultiParameterProcessRecords,
                                 //   ];
                                 //   newData[index].done_by = e.target.value;
                                 //   setEditData({
                                 //     ...editData,
-                                //     karlFischerRecords: newData,
+                                //     OpAndCalMultiParameterProcessRecords: newData,
                                 //   });
                                 // }}
                                 readOnly={true}
@@ -1564,7 +1538,7 @@ const KarlFischerEffective = () => {
                                     checked={!!item.reviewed_by}
                                     onChange={(e) => {
                                       const newData = [
-                                        ...editData.karlFischerRecords,
+                                        ...editData.OpAndCalMultiParameterProcessRecords,
                                       ];
                                       if (e.target.checked) {
                                         newData[index].reviewed_by =
@@ -1580,7 +1554,7 @@ const KarlFischerEffective = () => {
                                       }
                                       setEditData({
                                         ...editData,
-                                        karlFischerRecords: newData,
+                                        OpAndCalMultiParameterProcessRecords: newData,
                                       });
                                     }}
                                     disabled={
@@ -1603,7 +1577,7 @@ const KarlFischerEffective = () => {
                                     value={item.remarksType || ""}
                                     onChange={(e) => {
                                       const newData = [
-                                        ...editData.karlFischerRecords,
+                                        ...editData.OpAndCalMultiParameterProcessRecords,
                                       ];
                                       newData[index].remarksType =
                                         e.target.value;
@@ -1619,7 +1593,7 @@ const KarlFischerEffective = () => {
 
                                       setEditData({
                                         ...editData,
-                                        karlFischerRecords: newData,
+                                        OpAndCalMultiParameterProcessRecords: newData,
                                       });
                                     }}
                                     className="border rounded px-2 py-1 w-auto"
@@ -1641,7 +1615,7 @@ const KarlFischerEffective = () => {
                                         value={item.remarksSubType || ""}
                                         onChange={(e) => {
                                           const newData = [
-                                            ...editData.karlFischerRecords,
+                                            ...editData.OpAndCalMultiParameterProcessRecords,
                                           ];
                                           newData[index].remarksSubType =
                                             e.target.value;
@@ -1657,7 +1631,7 @@ const KarlFischerEffective = () => {
 
                                           setEditData({
                                             ...editData,
-                                            karlFischerRecords: newData,
+                                            OpAndCalMultiParameterProcessRecords: newData,
                                           });
                                         }}
                                         className="border rounded px-2 py-1 w-auto"
@@ -1668,24 +1642,6 @@ const KarlFischerEffective = () => {
                                         }
                                       >
                                         <option value="">Select Issue</option>
-                                        <option value="Incorrect Sample Name">
-                                          Incorrect Sample Name
-                                        </option>
-                                        <option value="Incorrect Reg No./ Lot No.">
-                                          Incorrect Reg No./ Lot No.
-                                        </option>
-                                        <option value="Incorrect Method Used">
-                                          Incorrect Method Used
-                                        </option>
-                                        <option value="Incorrect Parameter/Activity">
-                                          Incorrect Parameter/Activity
-                                        </option>
-                                        <option value="Incorrect Column No.">
-                                          Incorrect Column No.
-                                        </option>
-                                        <option value="Incorrect No. of Injections">
-                                          Incorrect No. of Injections
-                                        </option>
                                         <option value="Others">Others</option>
                                       </select>
 
@@ -1697,7 +1653,7 @@ const KarlFischerEffective = () => {
                                           value={item.remarksOther || ""}
                                           onChange={(e) => {
                                             const newData = [
-                                              ...editData.karlFischerRecords,
+                                              ...editData.OpAndCalMultiParameterProcessRecords,
                                             ];
                                             newData[index].remarksOther =
                                               e.target.value;
@@ -1706,7 +1662,7 @@ const KarlFischerEffective = () => {
 
                                             setEditData({
                                               ...editData,
-                                              karlFischerRecords: newData,
+                                              OpAndCalMultiParameterProcessRecords: newData,
                                             });
                                           }}
                                           className="border rounded px-2 py-1 w-auto"
@@ -2379,4 +2335,4 @@ const KarlFischerEffective = () => {
   );
 };
 
-export default KarlFischerEffective;
+export default PhMeterOpCalEffective;

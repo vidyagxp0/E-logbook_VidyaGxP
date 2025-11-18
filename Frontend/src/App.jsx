@@ -57,6 +57,21 @@ import KarlFischerPanel from "./pages/documentPanels/KarlFischerPanel/KarlFische
 import KarlFischerEffective from "./pages/Dashboard/EffectiveElogs/KarlFischerEffective.jsx";
 import HplcPanel from "./pages/documentPanels/HPLC/HplcPanel.jsx";
 import HplcEffective from "./pages/Dashboard/EffectiveElogs/HplcEffective.jsx";
+import PhMeterOpCal from "./pages/configForms/PhMeterOpCal/PhMeterOpCalNew.jsx";
+import PhMeterOpCalPanel from "./pages/documentPanels/PhMeterOpCalNew/PhMeterOpCalNewPanel.jsx";
+import PhMeterOpCalEffective from "./pages/Dashboard/EffectiveElogs/PhMeterOpCalEffective.jsx";
+import UVvisCalibration from "./pages/configForms/UVvisCalibration/UVvisCalibration.jsx";
+import UVvisCalibrationPanel from "./pages/documentPanels/UVvisCalibration/UVvisCalibrationPanel.jsx";
+import UVvisCalibrationEffective from "./pages/Dashboard/EffectiveElogs/UVvisCalibrationEffective.jsx";
+import SdsPagePanel from "./pages/documentPanels/SdsPage/SdsPagePanel.jsx";
+import SdsPage from "./pages/configForms/SdsPage/SdsPage.jsx";
+import SdsPageEffective from "./pages/Dashboard/EffectiveElogs/SdsPageEffective.jsx";
+import GelDocIGeneEffective from "./pages/Dashboard/EffectiveElogs/GelDocIGeneEffective.jsx";
+import GelDocIGenePanel from "./pages/documentPanels/GelDocIGene/GelDocIGenePanel.jsx";
+import GelDocIGene from "./pages/configForms/GelDocIGene/GelDocIGene.jsx";
+import UvWlTransilluminatorPanel from "./pages/documentPanels/UvWlTransilluminator/UvWlTransilluminatorPanel.jsx";
+import UvWlTransilluminator from "./pages/configForms/UvWlTransilluminator/UvWlTransilluminator.jsx";
+import UvWITransilluminatorEffective from "./pages/Dashboard/EffectiveElogs/UvWlTransilluminatorEffective.jsx";
 
 function App() {
   return (
@@ -64,7 +79,7 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
-          {/* <Route path="/test" element={<ExcelSelectWithFileInput />} />  */}
+            {/* <Route path="/test" element={<ExcelSelectWithFileInput />} />  */}
 
             <Route path="/" element={<Login />} />
             <Route path="/admin-login" element={<AdminLogin />} />
@@ -113,7 +128,7 @@ function App() {
             />
             <Route
               path="/effective-audit-trail"
-              element={<ProtectedRoute element={<Effective_AuditTrail  />} />}
+              element={<ProtectedRoute element={<Effective_AuditTrail />} />}
             />
             <Route
               path="/dpr-panel"
@@ -162,7 +177,9 @@ function App() {
             />
             <Route
               path="/effective-analytical-balance"
-              element={<ProtectedRoute element={<AnalyticalBalanceEffective />} />}
+              element={
+                <ProtectedRoute element={<AnalyticalBalanceEffective />} />
+              }
             />
             <Route
               path="/effective-karl-fischer"
@@ -171,6 +188,26 @@ function App() {
             <Route
               path="/effective-hplc"
               element={<ProtectedRoute element={<HplcEffective />} />}
+            />
+            <Route
+              path="/effective-pHMeterOpCal"
+              element={<ProtectedRoute element={<PhMeterOpCalEffective />} />}
+            />
+            <Route
+              path="/effective-uv-vis-calibration"
+              element={<ProtectedRoute element={<UVvisCalibrationEffective />} />}
+            />
+            <Route
+              path="/effective-sds-page"
+              element={<ProtectedRoute element={<SdsPageEffective />} />}
+            />
+            <Route
+              path="/effective-gel-doc-igene"
+              element={<ProtectedRoute element={<GelDocIGeneEffective />} />}
+            />
+            <Route
+              path="/effective-uv-wl-transilluminator"
+              element={<ProtectedRoute element={<UvWITransilluminatorEffective />} />}
             />
 
             <Route
@@ -197,23 +234,37 @@ function App() {
                 <ProtectedRoute element={<DispensingOfMaterialsPanel />} />
               }
             />
-              <Route
+            <Route
               path="/analytical-balance-panel"
-              element={
-                <ProtectedRoute element={<AnalitycalBalancePanel />} />
-              }
+              element={<ProtectedRoute element={<AnalitycalBalancePanel />} />}
             />
-              <Route
+            <Route
               path="/karl-fischer-panel"
-              element={
-                <ProtectedRoute element={<KarlFischerPanel />} />
-              }
+              element={<ProtectedRoute element={<KarlFischerPanel />} />}
             />
-              <Route
+            <Route
+              path="/PhMeterOpCal-panel"
+              element={<ProtectedRoute element={<PhMeterOpCalPanel />} />}
+            />
+            <Route
+              path="/uv-vis-calibration-panel"
+              element={<ProtectedRoute element={<UVvisCalibrationPanel />} />}
+            />
+            <Route
+              path="/sds-page-panel"
+              element={<ProtectedRoute element={<SdsPagePanel />} />}
+            />
+            <Route
+              path="/gel-doc-igene-panel"
+              element={<ProtectedRoute element={<GelDocIGenePanel />} />}
+            />
+            <Route
+              path="/uv-wl-transilluminator-panel"
+              element={<ProtectedRoute element={<UvWlTransilluminatorPanel />} />}
+            />
+            <Route
               path="/hplc-panel"
-              element={
-                <ProtectedRoute element={<HplcPanel />} />
-              }
+              element={<ProtectedRoute element={<HplcPanel />} />}
             />
             <Route
               path="/dashboard"
@@ -236,8 +287,28 @@ function App() {
               element={<ProtectedRoute element={<Karl />} />}
             />
             <Route
+              path="/pHMeter-OpCal"
+              element={<ProtectedRoute element={<PhMeterOpCal />} />}
+            />
+            <Route
+              path="/uv-vis-calibration"
+              element={<ProtectedRoute element={<UVvisCalibration />} />}
+            />
+            <Route
+              path="/sds-page"
+              element={<ProtectedRoute element={<SdsPage />} />}
+            />
+            <Route
+              path="/gel-doc-igene"
+              element={<ProtectedRoute element={<GelDocIGene />} />}
+            />
+            <Route
+              path="/uv-wl-transilluminator"
+              element={<ProtectedRoute element={<UvWlTransilluminator />} />}
+            />
+            <Route
               path="/hplc"
-              element={<ProtectedRoute element={<Hplc/>} />}
+              element={<ProtectedRoute element={<Hplc />} />}
             />
             <Route
               path="/area-and-equiment-usage-log"
@@ -270,7 +341,10 @@ function App() {
               element={<ProtectedRoute element={<DispensingOfMaterials />} />}
             />
             <Route path="/view-report" element={<ViewReport />} />
-            <Route path="/effective-view-report" element={<Effective_ViewReport />} />
+            <Route
+              path="/effective-view-report"
+              element={<Effective_ViewReport />}
+            />
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={3000} pauseOnHover={false} />

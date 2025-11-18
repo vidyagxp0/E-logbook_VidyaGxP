@@ -11,7 +11,7 @@ function AuditTrail() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
+console.log(location.state?.process,"location.state?.process")
   useEffect(() => {
     const fetchAuditTrail = async () => {
       if (location.state?.process === "Differential Pressure") {
@@ -162,6 +162,74 @@ function AuditTrail() {
           console.error(error);
         }
       }
+      else if (location.state?.process === "pH Meter OP/Cal") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/op-and-calParameter/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      else if (location.state?.process === "UV-Vis Calibration") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/uv-vis-calib/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      else if (location.state?.process === "SDS PAGE") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/sds-page/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      else if (location.state?.process === "Gel Doc iGene") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/gel-doc-igene/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      }
     };
 
     fetchAuditTrail();
@@ -222,6 +290,12 @@ const generateReport = async () => {
     },
     "KARL Fischer": {
       type: "karlFischerAuditTrail",
+    },
+    "pH Meter OP/Cal": {
+      type: "pHMeterOPCalAuditTrail",
+    },
+    "UV-Vis Calibration": {
+      type: "UVVisCalibrationAuditTrail",
     },
  };
 

@@ -55,6 +55,8 @@ function CreateRecordModal(_props) {
       const filteredProcesses = response.data.message.filter((process) =>
         filteredProcessIds.includes(process.process_id)
       );
+      console.log(filteredProcesses,"filterdProcess");
+      
       setProcesses(filteredProcesses);
       console.log(filteredProcesses);
     } catch (error) {
@@ -74,7 +76,7 @@ function CreateRecordModal(_props) {
 
   const handleSelectProcess = (element) => {
     setProject(element.process);
-
+console.log(element,"leel")
     switch (element.process_id) {
       case 1:
         navigate("/differential-pressure-record", {
@@ -118,6 +120,31 @@ function CreateRecordModal(_props) {
         break;
       case 9:
         navigate("/hplc", {
+          state: division,
+        });
+        break;
+      case 10:
+        navigate("/pHMeter-OpCal", {
+          state: division,
+        });
+        break;
+      case 11:
+        navigate("/uv-vis-calibration", {
+          state: division,
+        });
+        break;
+      case 12:
+        navigate("/sds-page", {
+          state: division,
+        });
+        break;
+      case 13:
+        navigate("/gel-doc-igene", {
+          state: division,
+        });
+        break;
+      case 14:
+        navigate("/uv-wl-transilluminator", {
           state: division,
         });
         break;
