@@ -30,7 +30,7 @@ router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(12, 1),
+  Auth.authorizeUserRole(13, 1),
   gelDocIGene.Insert
 );
 
@@ -62,7 +62,7 @@ router.put(
   "/send-elog-for-review",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(12, 1),
+  Auth.authorizeUserRole(13, 1),
   gelDocIGene.SendElogForReview
 );
 
@@ -71,7 +71,7 @@ router.put(
   "/send-elog-from-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(12, 2),
+  Auth.authorizeUserRole(13, 2),
   gelDocIGene.SendElogfromReviewToOpen
 );
 
@@ -80,7 +80,7 @@ router.put(
   "/send-from-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(12, 2),
+  Auth.authorizeUserRole(13, 2),
   gelDocIGene.SendfromReviewToApproval
 );
 
@@ -89,7 +89,7 @@ router.put(
   "/send-elog-from-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(12, 3),
+  Auth.authorizeUserRole(13, 3),
   gelDocIGene.SendfromApprovalToOpen
 );
 
@@ -98,7 +98,7 @@ router.put(
   "/approve-elog",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(12, 3),
+  Auth.authorizeUserRole(13, 3),
   gelDocIGene.ApproveElog
 );
 
