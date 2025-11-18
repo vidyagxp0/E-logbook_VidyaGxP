@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Auth = require("../middlewares/authentication");
-const UvVis = require("../controllers/OpAndCalUvVisProcess");
+const sdsPage = require("../controllers/sdsPageProcess");
 const multer = require("multer");
 const path = require("path");
 
@@ -30,8 +30,8 @@ router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(11, 1),
-  UvVis.InsertUvVis
+  Auth.authorizeUserRole(12, 1),
+  sdsPage.InsertsdsPage
 );
 
 // edit UV-VIS elog details
@@ -40,21 +40,21 @@ router.put(
   Auth.checkUserJwtToken,
   upload.any(),
   // Auth.authorizeUserRole(9, 1),
-  UvVis.EditUvVis
+  sdsPage.EditsdsPage
 );
 
 //get a UV-VIS elog by id
 router.get(
   "/get/:id",
   Auth.checkUserJwtToken,
-  UvVis.GetUvVisElog
+  sdsPage.GetsdsPageElog
 );
 
 //get all the UV-VIS elogs
 router.get(
   "/get-all",
   Auth.checkUserJwtToken,
-  UvVis.GetAllUvVisElog
+  sdsPage.GetAllsdsPageElog
 );
 
 //send UV-VIS elog for review
@@ -62,8 +62,8 @@ router.put(
   "/send-elog-for-review",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(11, 1),
-  UvVis.SendUVElogForReview
+  Auth.authorizeUserRole(12, 1),
+  sdsPage.SendElogForReview
 );
 
 // change status of UV-VIS elog from review to open
@@ -71,8 +71,8 @@ router.put(
   "/send-elog-from-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(11, 2),
-  UvVis.SendUVElogfromReviewToOpen
+  Auth.authorizeUserRole(12, 2),
+  sdsPage.SendElogfromReviewToOpen
 );
 
 // send UV-VIS elog from review to approval
@@ -80,8 +80,8 @@ router.put(
   "/send-from-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(11, 2),
-  UvVis.SendUVfromReviewToApproval
+  Auth.authorizeUserRole(12, 2),
+  sdsPage.SendfromReviewToApproval
 );
 
 // send UV-VIS elog from under-approval to open
@@ -89,8 +89,8 @@ router.put(
   "/send-elog-from-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(11, 3),
-  UvVis.SendUVfromApprovalToOpen
+  Auth.authorizeUserRole(12, 3),
+  sdsPage.SendfromApprovalToOpen
 );
 
 // APPROVE UV-VIS elog
@@ -98,68 +98,68 @@ router.put(
   "/approve-elog",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(11, 3),
-  UvVis.ApproveUVElog
+  Auth.authorizeUserRole(12, 3),
+  sdsPage.ApproveElog
 );
 
 // get users based on roles, sites and processes
 router.post(
   "/get-user-roleGroups",
   Auth.checkUserJwtToken,
-  UvVis.GetUserOnBasisOfRoleGroup
+  sdsPage.GetUserOnBasisOfRoleGroup
 );
 
-router.get("/get-processes", UvVis.getAllProcesses);
+router.get("/get-processes", sdsPage.getAllProcesses);
 
 router.get(
   "/get-audit-trail-for-elog/:id",
   Auth.checkUserJwtToken,
-  UvVis.getAuditTrailForAnElog
+  sdsPage.getAuditTrailForAnElog
 );
 
 // router.get(
 //   "/get-audit-report/:formId/:type/:userId",
-//   UvVis.generateAuditPdfbyId
+//   sdsPage.generateAuditPdfbyId
 // );
 
 router.post(
   "/generate-pdf",
   Auth.checkUserJwtToken,
-  UvVis.generateReport
+  sdsPage.generateReport
 );
 
-// delete UvVis elog attachment
-router.delete("/delete/attachment/:record_id", UvVis.deleteUvVisAttachment);
+// delete sdsPage elog attachment
+router.delete("/delete/attachment/:record_id", sdsPage.deletesdsPageAttachment);
 
 router.post(
   "/chat-pdf/:form_id",
   Auth.checkUserJwtToken,
-  UvVis.chatByPdf
+  sdsPage.chatByPdf
 );
 
-router.post("/view-report", UvVis.viewReport);
+router.post("/view-report", sdsPage.viewReport);
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,
-  UvVis.effetiveChatByPdf
+  sdsPage.effetiveChatByPdf
 );
 
 router.post(
   "/blank-report/:form_id",
   Auth.checkUserJwtToken,
-  UvVis.blankReport
+  sdsPage.blankReport
 );
 
 router.post(
   "/effective-view-report",
-  UvVis.effetiveViewReport
+  sdsPage.effetiveViewReport
 );
 // router.post(
 //   "/send-report-on-mail/:id",
 //   upload.any(),
-//   UvVis.sendReportOnMail
+//   sdsPage.sendReportOnMail
 // );
 
-// // router.get("/search", UvVis.GetAll);
+// // router.get("/search", sdsPage.GetAll);
 
 module.exports = router;

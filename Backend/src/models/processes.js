@@ -32,6 +32,7 @@ Process.addHook('afterSync', async () => {
                 { process: 'HPLC' },
                 { process: 'pH Meter Op/Cal' },
                 { process: 'UV Vis Calib'},
+                { process: 'SDS PAGE'},
               
             ]);
             console.log('Processes created');
