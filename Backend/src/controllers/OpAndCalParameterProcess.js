@@ -31,7 +31,7 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
     initiatorComment,
     email,
     password,
-    FormRecordsArray,
+    pHOpCalRecords,
     initiatorDeclaration,
     additionalAttachment,
     additionalInfo,
@@ -150,8 +150,8 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
       });
     }
 
-    if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-      const formRecords = FormRecordsArray.map((record, index) => ({
+    if (Array.isArray(pHOpCalRecords) && pHOpCalRecords.length > 0) {
+      const formRecords = pHOpCalRecords.map((record, index) => ({
         form_id: newForm?.form_id,
         date:
           record?.date && !isNaN(new Date(record?.date))
@@ -174,17 +174,17 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
       });
 
       formRecords.forEach((record, index) => {
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Reg No",
-          previous_value: null,
-          new_value: record.reg_no,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
+        // auditTrailEntries.push({
+        //   form_id: newForm.form_id,
+        //   field_name: "Reg No",
+        //   previous_value: null,
+        //   new_value: record.reg_no,
+        //   changed_by: user.user_id,
+        //   previous_status: "Not Applicable",
+        //   new_status: "Opened",
+        //   declaration: initiatorDeclaration,
+        //   action: "Opened",
+        // });
         auditTrailEntries.push({
           form_id: newForm.form_id,
           field_name: "Date",
@@ -198,9 +198,9 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Sample Name",
+          field_name: "Name of Solution",
           previous_value: null,
-          new_value: record.sample_name,
+          new_value: record.nameOfSolution,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -209,9 +209,9 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Weight Taken",
+          field_name: "Adjusted PH",
           previous_value: null,
-          new_value: record.weight_taken,
+          new_value: record.adjustPH,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -256,39 +256,6 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           field_name: "Status",
           previous_value: null,
           new_value: record?.status,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Remarks Other",
-          previous_value: null,
-          new_value: record?.remarksOther,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Remarks Type",
-          previous_value: null,
-          new_value: record?.remarksType,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          declaration: initiatorDeclaration,
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Remarks Sub Type",
-          previous_value: null,
-          new_value: record?.remarksSubType,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
