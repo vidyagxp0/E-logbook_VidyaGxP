@@ -12,6 +12,7 @@ const operationOfSterlizerRoutes = require("./routes/operationOfSterlizer");
 const analyticalBalanceRoutes = require("./routes/AnalyticalBalance")
 const opAndCalParamterRoute = require("./routes/OpAndCalProcessRoute")
 const OpAndCalUvVisRoute = require("./routes/OpAndCalUvVisRoute")
+const sdsPage = require("./routes/sdsPageRoute")
 const karlFischerRoutes = require("./routes/karlFischer")
 const hplcRoutes = require("./routes/hplcRoutes")
 const vidyagxpFeedback = require("./config/vidyagxp_feedback");
@@ -65,6 +66,7 @@ app.use("/site", siteRoutes);
 app.use("/analytical-balance",analyticalBalanceRoutes);
 app.use("/op-and-calParameter",opAndCalParamterRoute);
 app.use("/uv-vis-calib",OpAndCalUvVisRoute);
+app.use("/sds-page",sdsPage);
 app.use("/karl-fischer",karlFischerRoutes);
 app.use("/hplc",hplcRoutes)
 app.use(express.static(path.join(__dirname, "documents")));
