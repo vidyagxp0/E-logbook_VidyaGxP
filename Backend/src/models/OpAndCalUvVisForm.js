@@ -111,20 +111,20 @@ User.hasMany(UvVisForm, { foreignKey: "initiator_id" });
 
 UvVisForm.belongsTo(User, {
   foreignKey: "reviewer_id",
-  as: "reviewerss",
+  as: "reviewerss8",
 });
 User.hasMany(UvVisForm, {
   foreignKey: "reviewer_id",
-  as: "reviewerss",
+  as: "reviewerss8",
 });
 
 UvVisForm.belongsTo(User, {
   foreignKey: "approver_id",
-  as: "approverss",
+  as: "approverss8",
 });
 User.hasMany(UvVisForm, {
   foreignKey: "approver_id",
-  as: "approverss",
+  as: "approverss8",
 });
 
 module.exports = UvVisForm;
