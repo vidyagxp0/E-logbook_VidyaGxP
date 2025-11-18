@@ -103,11 +103,11 @@ const UvVisForm = sequelize.define("UvVisForm", {
   },
 });
 
-UvVisForm.belongsTo(Site, { foreignKey: "site_id" });
-Site.hasMany(UvVisForm, { foreignKey: "site_id" });
+UvVisForm.belongsTo(Site, { foreignKey: "site_id8" });
+Site.hasMany(UvVisForm, { foreignKey: "site_id8" });
 
-UvVisForm.belongsTo(User, { foreignKey: "initiator_id" });
-User.hasMany(UvVisForm, { foreignKey: "initiator_id" });
+UvVisForm.belongsTo(User, { foreignKey: "initiator_id8" });
+User.hasMany(UvVisForm, { foreignKey: "initiator_id8" });
 
 UvVisForm.belongsTo(User, {
   foreignKey: "reviewer_id",

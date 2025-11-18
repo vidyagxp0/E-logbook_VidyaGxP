@@ -31,7 +31,7 @@ Process.addHook('afterSync', async () => {
                 { process: 'Karl Fischer' },
                 { process: 'HPLC' },
                 { process: 'pH Meter Op/Cal' },
-                { process: 'UV-Vis Calib'},
+                { process: 'UV Vis Calib'},
               
             ]);
             console.log('Processes created');
