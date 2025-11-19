@@ -35,6 +35,7 @@ Process.addHook('afterSync', async () => {
                 { process: 'SDS PAGE'},
                 { process: 'Gel Doc iGene'},
                 { process: 'UV/White Light Transilluminator'},
+                { process: 'VO Calibration'},
               
             ]);
             console.log('Processes created');
