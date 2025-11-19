@@ -37,6 +37,8 @@ function EffectiveElogs() {
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const location = useLocation();
 const [selectedProcess, setSelectedProcess] = useState(null);
+const [searchTerm, setSearchTerm] = useState("");
+
 
 useEffect(() => {
   // Get from location if available
@@ -717,7 +719,89 @@ const getFilteredData = () => {
   );
 };
 
-  const filteredData = getFilteredData();
+
+
+  const getEquipmentType = (item) => {
+    return item.DifferentialPressureRecords
+      ? "Differential Pressure"
+      : item.TempratureRecords
+      ? "Temperature Records"
+      : item.LoadedQuantityRecords
+      ? "Loaded Quantity"
+      : item.OperationOfSterilizerRecords
+      ? "Operation of Sterilizer"
+      : item.MediaRecords
+      ? "Media Record"
+      : item.DispenseOfMaterials
+      ? "Dispensing of Material"
+      : item.AnalyticalBalances
+      ? "Analytical Balance"
+      : item.karlFischerRecords
+      ? "KARL Fischer"
+      : item.hplcRecords
+      ? "HPLC"
+      : item.OpAndCalMultiParameterProcessRecords
+      ? "pH Meter OP/Cal"
+      : item.UvVisRecords
+      ? "UV-Vis Calibration"
+      : item.sdsPageRecords
+      ? "SDS PAGE"
+      : item.gelDocIGeneRecords
+      ? "Gel Doc iGene"
+      : item.uvWhiteLightRecords
+      ? "UV/WL Transilluminator"
+      : item.voCalibRecords
+      ? "VO Calibration"
+      : eLogSelect === "analytical_balance"
+      ? "Analytical Balance"
+      : eLogSelect === "karl_fischer"
+      ? "KARL Fischer"
+      : eLogSelect === "hplc"
+      ? "HPLC"
+      : eLogSelect === "pH Meter OP/Cal"
+      ? "pHOPCAL"
+      : eLogSelect === "UV-Vis Calibration"
+      ? "UVVIS"
+      : eLogSelect === "SDS PAGE"
+      ? "SDS PAGE"
+      : eLogSelect === "Gel Doc iGene"
+      ? "Gel Doc iGene"
+      : eLogSelect === "UV/WL Transilluminator"
+      ? "UV/WL Transilluminator"
+      : eLogSelect === "VO Calibration"
+      ? "VO-CAL"
+      : "NA";
+  };
+  // const filteredData = getFilteredData();
+  const filteredData = getFilteredData()?.filter((item) => {
+  if (!searchTerm.trim()) return true;
+
+  const term = searchTerm.toLowerCase();
+
+  const instrument = getElogNumber(item)?.toLowerCase() || "";
+  const name = getEquipmentType(item)?.toLowerCase() || "";
+  const dept =
+    item.site_id === 1
+      ? "india"
+      : item.site_id === 2
+      ? "malaysia"
+      : item.site_id === 3
+      ? "emea"
+      : item.site_id === 5
+      ? "biologics"
+      : item.site_id === 6
+      ? "ar&d"
+      : "eu";
+  const creator = item.initiator_name?.toLowerCase() || "";
+
+  return (
+    instrument.includes(term) ||
+    name.includes(term) ||
+    dept.includes(term) ||
+    creator.includes(term)
+  );
+});
+
 
   const formatDate = (dateString) => {
     const utcDate = new Date(dateString);
@@ -785,57 +869,6 @@ const getFilteredData = () => {
       : "";
   };
 
-  const getEquipmentType = (item) => {
-    return item.DifferentialPressureRecords
-      ? "Differential Pressure"
-      : item.TempratureRecords
-      ? "Temperature Records"
-      : item.LoadedQuantityRecords
-      ? "Loaded Quantity"
-      : item.OperationOfSterilizerRecords
-      ? "Operation of Sterilizer"
-      : item.MediaRecords
-      ? "Media Record"
-      : item.DispenseOfMaterials
-      ? "Dispensing of Material"
-      : item.AnalyticalBalances
-      ? "Analytical Balance"
-      : item.karlFischerRecords
-      ? "KARL Fischer"
-      : item.hplcRecords
-      ? "HPLC"
-      : item.OpAndCalMultiParameterProcessRecords
-      ? "pH Meter OP/Cal"
-      : item.UvVisRecords
-      ? "UV-Vis Calibration"
-      : item.sdsPageRecords
-      ? "SDS PAGE"
-      : item.gelDocIGeneRecords
-      ? "Gel Doc iGene"
-      : item.uvWhiteLightRecords
-      ? "UV/WL Transilluminator"
-      : item.voCalibRecords
-      ? "VO Calibration"
-      : eLogSelect === "analytical_balance"
-      ? "Analytical Balance"
-      : eLogSelect === "karl_fischer"
-      ? "KARL Fischer"
-      : eLogSelect === "hplc"
-      ? "HPLC"
-      : eLogSelect === "pH Meter OP/Cal"
-      ? "pHOPCAL"
-      : eLogSelect === "UV-Vis Calibration"
-      ? "UVVIS"
-      : eLogSelect === "SDS PAGE"
-      ? "SDS PAGE"
-      : eLogSelect === "Gel Doc iGene"
-      ? "Gel Doc iGene"
-      : eLogSelect === "UV/WL Transilluminator"
-      ? "UV/WL Transilluminator"
-      : eLogSelect === "VO Calibration"
-      ? "VO-CAL"
-      : "NA";
-  };
 
   return (
     <>
@@ -844,6 +877,10 @@ const getFilteredData = () => {
 
       <div className="desktop-input-table-wrapper">
         {/* Filters */}
+
+        {/* Search Bar */}
+
+
         <div
           className="filter-section"
           style={{
@@ -868,6 +905,40 @@ const getFilteredData = () => {
               flex: 1,
             }}
           >
+                    <div
+  className="group-input"
+  style={{ marginBottom: "0", minWidth: "280px" }} // wider than before
+>
+  <label
+    className="color-label"
+    style={{
+      fontSize: "14px",
+      fontWeight: "600",
+      color: "#495057",
+      marginBottom: "8px",
+      padding: "0",
+    }}
+  >
+    Search
+  </label>
+
+  <input
+    type="text"
+    placeholder="Search Instrument, Name, Dept, Creator..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    style={{
+      height: "38px",              // ✨ same height like dropdown
+      padding: "8px 12px",
+      border: "1px solid #ced4da",
+      borderRadius: "4px",
+      fontSize: "14px",
+      backgroundColor: "white",
+      width: "100%",
+    }}
+  />
+</div>
+
    <div
               className="group-input"
               style={{ marginBottom: "0", minWidth: "200px" }}
