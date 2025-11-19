@@ -79,7 +79,7 @@ export default function Analytics() {
       <HeaderTop />
       <HeaderBottom />
 
-      <div style={{ display: "flex", gap: "1rem", alignItems: "center", padding: "1rem" }}>
+      {/* <div style={{ display: "flex", gap: "1rem", alignItems: "center", padding: "1rem" }}>
         <Select
           placeholder="Select Chart Type"
           style={{
@@ -101,7 +101,7 @@ export default function Analytics() {
       </div>
 
       {/* Only render the chart when both chart type and date range are selected */}
-      {selectedChartType && selectedDateRange[0] && selectedDateRange[1] && graphData.length > 0 && (
+      {/* {selectedChartType && selectedDateRange[0] && selectedDateRange[1] && graphData.length > 0 && (
         <DynamicLineChart
           heading={
             selectedChartType === "differential_pressure"
@@ -117,7 +117,12 @@ export default function Analytics() {
           highchartData={graphData}
           fromCPP={true}
         />
-      )}
+      )}  */}
+       <div className="flex items-center justify-center h-screen animate-fadeIn">
+  <h1 className="text-4xl font-bold text-center text-blue-700">
+    Will be available in the final version
+  </h1>
+</div>
     </div>
   );
 }

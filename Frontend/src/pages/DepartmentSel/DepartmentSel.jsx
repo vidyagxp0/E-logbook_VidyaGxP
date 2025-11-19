@@ -20,7 +20,7 @@ function DepartmentSel(_props) {
           "http://localhost:1000/site/get-sites"
         );
         const userSiteIds = await userDetails.roles
-          .filter((role) => role.role_id === 1 || role.role_id === 5)
+          .filter((role) => role.role_id === 1 || role.role_id === 5 || role.role_id === 2 || role.role_id === 3 )
           .map((role) => role.site_id);
 
         // Filter sites based on user's roles
@@ -46,7 +46,7 @@ function DepartmentSel(_props) {
       const filteredProcessIds = userDetails.roles
         .filter(
           (role) =>
-            (role.role_id === 1 || role.role_id === 5) &&
+            (role.role_id === 1 || role.role_id === 5 || role.role_id === 2 || role.role_id === 3) &&
             role?.site_id === division?.site_id
         )
         .map((role) => role.process_id);

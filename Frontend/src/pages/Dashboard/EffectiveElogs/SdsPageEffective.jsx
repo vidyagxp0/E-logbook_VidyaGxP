@@ -1372,7 +1372,7 @@ const SdsPageEffective = () => {
                               <div className="d-flex">
                                 {(() => {
                                   const isDisabled =
-                                    [3, 2, 4].includes(
+                                    [3,4].includes(
                                       userDetails.roles[0].role_id
                                     ) || !isRowEditable(item);
 
@@ -1444,7 +1444,7 @@ const SdsPageEffective = () => {
                                     handleFileChange(index, e.target.files[0])
                                   }
                                   disabled={
-                                    [3, 2, 4].includes(
+                                    [3, 4].includes(
                                       userDetails.roles[0].role_id
                                     ) || !isRowEditable(item)
                                   }
