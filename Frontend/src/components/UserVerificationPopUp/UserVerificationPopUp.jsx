@@ -16,8 +16,14 @@ const UserVerificationPopUp = ({ onClose, onSubmit }) => {
     <div className="popup-overlay">
       <div className="popup">
         <h2>E-signature</h2>
+        {/* <h4> Before saving, kindly ensure all fields are filled correctly. Changes cannot be edited once saved.</h4> */}
+        
+<h4 className="text-sm text-gray-600 bg-yellow-100 border border-yellow-300 p-2 rounded-md mt-5">
+  Note: Before saving, kindly ensure all fields are filled correctly. Changes cannot be edited once saved.
+</h4>
+
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="form-group mb-5">
             <label className="color-label">
               Email <span className="required-asterisk text-red-500">*</span>
             </label>

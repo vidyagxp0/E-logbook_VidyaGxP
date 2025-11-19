@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/Login/Login.jsx";
+import DeptPage from "./pages/DepartmentSel/DepartmentSel.jsx";
 import AdminLogin from "./pages/admin/adminLogin/adminLogin.jsx";
 import DiffrentialPressure from "./pages/configForms/DiffrentialPressureRecord/DiffrentialPressure.jsx";
 import AreaAndEquiment from "./pages/configForms/AreaAndEquipment/AreaAndEquiment.jsx";
@@ -82,6 +83,7 @@ function App() {
             {/* <Route path="/test" element={<ExcelSelectWithFileInput />} />  */}
 
             <Route path="/" element={<Login />} />
+            <Route path="/dept-selection" element={<DeptPage />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="" element={<Wrapper />}>
               <Route
@@ -269,7 +271,7 @@ function App() {
             <Route
               path="/dashboard"
               element={<ProtectedRoute element={<Dashboard />} />}
-            />
+            />p
             <Route
               path="/effectiveElogs"
               element={<ProtectedRoute element={<EffectiveElogs />} />}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import HeaderTop from "../../components/Header/HeaderTop";
 import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Dashboard.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { hasAccess } from "../../components/userAuth/userAuth";
 
@@ -34,6 +34,25 @@ function Dashboard() {
   );
   const [filteredRecords, setFilteredRecords] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+// const location = useLocation();
+// const selectedProcess = location.state?.selectedProcess;
+
+const location = useLocation();
+const [selectedProcess, setSelectedProcess] = useState(null);
+
+useEffect(() => {
+  // Get from location if available
+  if (location.state?.selectedProcess) {
+    setSelectedProcess(location.state.selectedProcess);
+    sessionStorage.setItem("selectedProcess", location.state.selectedProcess);
+  } else {
+    const storedProcess = sessionStorage.getItem("selectedProcess");
+    if (storedProcess) {
+      setSelectedProcess(Number(storedProcess));
+    }
+  }
+}, [location.state]);
+
 
   useEffect(() => {
     const newConfig = {
@@ -467,82 +486,212 @@ function Dashboard() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    const filteredData = [
-      ...differentialPressureElogs,
-      ...equipmentCRecordElogs,
-      ...tempratureRecordElogs,
-      ...loadedQuantityElogs,
-      ...mediaRecordElogs,
-      ...dispensingOfMaterialsElogs,
-      ...operationOfSterilizerElogs,
-      ...analyticalBalanceElogs,
-      ...karlFischerElogs,
-      ...hplcElogs,
-      ...pHMeterOPCalElogs,
-      ...UVVisCalibElogs,
-      ...sdsPage,
-      ...gelDociGene,
-      ...uVWhiteLightTrans,
-    ].filter((item) => {
-      const matchesSearchTerm =
-        item.date_of_initiation
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item?.initiator_name
-          ?.toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item?.TempratureRecords
-          ? `TR${item.form_id}`
-          : item?.LoadedQuantityRecords
-          ? `LQ${item.form_id}`
-          : item?.OperationOfSterilizerRecords
-          ? `OF${item.form_id}`
-          : item?.MediaRecords
-          ? `MR${item.form_id}`
-          : item?.DispenseOfMaterials
-          ? `DM${item.form_id}`
-          : item?.DifferentialPressureRecords
-          ? `DP${item.form_id}`
-          : item?.AnalyticalBalances
-          ? `AB${item.form_id}`
-          : item?.karlFischerRecords
-          ? `KF${item.form_id}`
-          : `HP${item.form_id}`
-        )
-          ?.toLowerCase()
-          .includes(searchTerm.toLowerCase());
 
-      // Check if the status matches
-      const matchesStatus =
-        eLogStatus === "All_Records" || // Match all records
-        item.status.toLowerCase() === eLogStatus.toLowerCase();
+  const processKey = {
+  1: "DifferentialPressureRecords",
+  2: "TempratureRecords",
+  3: "LoadedQuantityRecords",
+  4: "OperationOfSterilizerRecords",
+  5: "MediaRecords",
+  6: "DispenseOfMaterials",
+  7: "AnalyticalBalances",
+  8: "karlFischerRecords",
+  9: "hplcRecords",
+  10: "OpAndCalMultiParameterProcessRecords",
+  11: "UvVisRecords",
+  12: "sdsPageRecords",
+  13: "gelDocIGeneRecords",
+  14: "uvWhiteLightRecords",
+};
 
-      return matchesSearchTerm && matchesStatus;
-    });
+const processShortName = {
+  1: "DP",       // Differential Pressure
+  2: "TR",       // Temperature Record
+  3: "LQ",       // Loaded Quantity
+  4: "OS",       // Operation of Sterilizer
+  5: "MR",       // Media Record
+  6: "DM",       // Dispensing Material
+  7: "AB",       // Analytical Balance
+  8: "KF",       // Karl Fischer
+  9: "HPLC",
+  10: "PH",
+  11: "UVVIS",
+  12: "SDS",
+  13: "GDI",     // Gel Doc iGene
+  14: "UVWL",    // UV White Light
+};
+const [eLogInstrument, setELogInstrument] = useState("All");
 
-    setCombinedRecords(filteredData);
-  }, [
-    searchTerm,
-    eLogStatus,
-    differentialPressureElogs,
-    equipmentCRecordElogs,
-    tempratureRecordElogs,
-    loadedQuantityElogs,
-    mediaRecordElogs,
-    dispensingOfMaterialsElogs,
-    operationOfSterilizerElogs,
-    analyticalBalanceElogs,
-    karlFischerElogs,
-    hplcElogs,
-    pHMeterOPCalElogs,
-    UVVisCalibElogs,
-    sdsPage,
-    gelDociGene,
-    uVWhiteLightTrans,
-  ]);
+
+// const getElogNumber = (item) => {
+//   // detect process ID based on object key
+//   const processId = Object.keys(processKey).find(
+//     (pid) => item[processKey[pid]]
+//   );
+
+//   const shortName = processShortName[processId];
+//   const index = String(item.form_id).padStart(3, "0");
+
+//   return `IPC/BIOS/${shortName}/${index}`;
+// };
+
+    
+
+const getElogNumber = (item) => {
+  const processId = item.process_id;
+  if (!processId) return "IPC/BIOS/NA/000";
+
+  const shortName = processShortName[processId] || "NA";
+  const index = String(item.form_id).padStart(3, "0");
+
+  return `IPC/BIOS/${shortName}/${index}`;
+};
+
+
+useEffect(() => {
+  let allData = [
+    ...differentialPressureElogs.map(r => ({ ...r, process_id: 1 })),
+    ...tempratureRecordElogs.map(r => ({ ...r, process_id: 2 })),
+    ...loadedQuantityElogs.map(r => ({ ...r, process_id: 3 })),
+    ...operationOfSterilizerElogs.map(r => ({ ...r, process_id: 4 })),
+    ...mediaRecordElogs.map(r => ({ ...r, process_id: 5 })),
+    ...dispensingOfMaterialsElogs.map(r => ({ ...r, process_id: 6 })),
+    ...analyticalBalanceElogs.map(r => ({ ...r, process_id: 7 })),
+    ...karlFischerElogs.map(r => ({ ...r, process_id: 8 })),
+    ...hplcElogs.map(r => ({ ...r, process_id: 9 })),
+    ...pHMeterOPCalElogs.map(r => ({ ...r, process_id: 10 })),
+    ...UVVisCalibElogs.map(r => ({ ...r, process_id: 11 })),
+    ...sdsPage.map(r => ({ ...r, process_id: 12 })),
+    ...gelDociGene.map(r => ({ ...r, process_id: 13 })),
+    ...uVWhiteLightTrans.map(r => ({ ...r, process_id: 14 })),
+  ];
+
+  // ⭐ FILTER BY SELECTED PROCESS  
+  if (selectedProcess) {
+    allData = allData.filter((item) => item.process_id === selectedProcess);
+  }
+
+  // ⭐ FILTER FINAL  
+  const finalFiltered = allData.filter((item) => {
+    console.log(item,"this is itemsss")
+    const elogNo = getElogNumber(item);
+
+    const instrumentMatch =
+      eLogInstrument === "All" || elogNo === eLogInstrument;
+      console.log(instrumentMatch,"instrumentMatch>>>>>")
+
+    const searchMatch =
+      item?.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.initiator_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      elogNo.toLowerCase().includes(searchTerm.toLowerCase())
+      
+    const statusMatch =
+      eLogStatus === "All_Records" ||
+      item.status?.toLowerCase() === eLogStatus.toLowerCase();
+
+    return searchMatch && statusMatch && instrumentMatch;
+  });
+
+  setCombinedRecords(finalFiltered);
+}, [
+  selectedProcess,
+  searchTerm,
+  eLogStatus,
+  eLogInstrument,
+  differentialPressureElogs,
+  tempratureRecordElogs,
+  loadedQuantityElogs,
+  mediaRecordElogs,
+  dispensingOfMaterialsElogs,
+  operationOfSterilizerElogs,
+  analyticalBalanceElogs,
+  karlFischerElogs,
+  hplcElogs,
+  pHMeterOPCalElogs,
+  UVVisCalibElogs,
+  sdsPage,
+  gelDociGene,
+  uVWhiteLightTrans,
+]);
+
+
+
+  // useEffect(() => {
+  //   const filteredData = [
+  //     ...differentialPressureElogs,
+  //     ...equipmentCRecordElogs,
+  //     ...tempratureRecordElogs,
+  //     ...loadedQuantityElogs,
+  //     ...mediaRecordElogs,
+  //     ...dispensingOfMaterialsElogs,
+  //     ...operationOfSterilizerElogs,
+  //     ...analyticalBalanceElogs,
+  //     ...karlFischerElogs,
+  //     ...hplcElogs,
+  //     ...pHMeterOPCalElogs,
+  //     ...UVVisCalibElogs,
+  //     ...sdsPage,
+  //     ...gelDociGene,
+  //     ...uVWhiteLightTrans,
+  //   ].filter((item) => {
+  //     const matchesSearchTerm =
+  //       item.date_of_initiation
+  //         .toLowerCase()
+  //         .includes(searchTerm.toLowerCase()) ||
+  //       item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       item?.initiator_name
+  //         ?.toLowerCase()
+  //         .includes(searchTerm.toLowerCase()) ||
+  //       item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       (item?.TempratureRecords
+  //         ? `TR${item.form_id}`
+  //         : item?.LoadedQuantityRecords
+  //         ? `LQ${item.form_id}`
+  //         : item?.OperationOfSterilizerRecords
+  //         ? `OF${item.form_id}`
+  //         : item?.MediaRecords
+  //         ? `MR${item.form_id}`
+  //         : item?.DispenseOfMaterials
+  //         ? `DM${item.form_id}`
+  //         : item?.DifferentialPressureRecords
+  //         ? `DP${item.form_id}`
+  //         : item?.AnalyticalBalances
+  //         ? `AB${item.form_id}`
+  //         : item?.karlFischerRecords
+  //         ? `KF${item.form_id}`
+  //         : `HP${item.form_id}`
+  //       )
+  //         ?.toLowerCase()
+  //         .includes(searchTerm.toLowerCase());
+
+  //     // Check if the status matches
+  //     const matchesStatus =
+  //       eLogStatus === "All_Records" || // Match all records
+  //       item.status.toLowerCase() === eLogStatus.toLowerCase();
+
+  //     return matchesSearchTerm && matchesStatus;
+  //   });
+
+  //   setCombinedRecords(filteredData);
+  // }, [
+  //   searchTerm,
+  //   eLogStatus,
+  //   differentialPressureElogs,
+  //   equipmentCRecordElogs,
+  //   tempratureRecordElogs,
+  //   loadedQuantityElogs,
+  //   mediaRecordElogs,
+  //   dispensingOfMaterialsElogs,
+  //   operationOfSterilizerElogs,
+  //   analyticalBalanceElogs,
+  //   karlFischerElogs,
+  //   hplcElogs,
+  //   pHMeterOPCalElogs,
+  //   UVVisCalibElogs,
+  //   sdsPage,
+  //   gelDociGene,
+  //   uVWhiteLightTrans,
+  // ]);
 
   return (
     <>
@@ -572,14 +721,14 @@ function Dashboard() {
           </div>
 
           {/* Dropdown */}
-          <div className="w-full max-w-md ">
+          {/* <div className="w-full max-w-md ">
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
               className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
               style={{ border: "1px solid gray", padding: "2px 0px" }}
             >
-              <option value="All_Records">All Records</option>
+              <option value="All_Records">All Records</option> */}
               {/* <option value="diffrential_pressure">
                 Differential Pressure Record
               </option>
@@ -595,14 +744,34 @@ function Dashboard() {
               <option value="dispensing_of_material">
                 Dispensing Of Materials
               </option> */}
-              <option value="analytical_balance">Analytical Balance</option>
+              {/* <option value="analytical_balance">Analytical Balance</option>
               <option value="karl_fischer">KARL Fischer</option>
               <option value="hplc">hplc</option>
               <option value="pH Meter OP/CAL">pH Meter OP/CAL</option>
               <option value="SDS Page">SDS PAGE</option>
               <option value="Gel Doc iGene">Gel Doc iGene</option>
             </select>
-          </div>
+          </div> */}
+
+<div className="w-full max-w-md ">
+  <select
+    value={eLogInstrument}
+    onChange={(e) => setELogInstrument(e.target.value)}
+    className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
+    style={{ border: "1px solid gray", padding: "2px 0px" }}
+  >
+    <option value="All">All Instruments</option>
+
+    {combinedRecords
+      .map((item) => getElogNumber(item))
+      .filter((value, index, self) => self.indexOf(value) === index) // unique
+      .map((instNo, index) => (
+        <option key={index} value={instNo}>
+          {instNo}
+        </option>
+      ))}
+  </select>
+</div>
 
           <div className="w-full max-w-md ">
             <select
@@ -624,7 +793,7 @@ function Dashboard() {
           <thead>
             <tr>
               <th>S no</th>
-              <th>E.Log no</th>
+              <th>Instrument No.</th>
               <th>Process</th>
               <th>Site</th>
               <th>Short description</th>
@@ -1386,33 +1555,34 @@ function Dashboard() {
                         onMouseLeave={(e) => (e.target.style.color = "black")}
                       >
                         {item.DifferentialPressureRecords
-                          ? `DP${item.form_id}`
+                          ? getElogNumber(item)
                           : item.TempratureRecords
-                          ? `TR${item.form_id}`
+                          ? getElogNumber(item)
                           : item.LoadedQuantityRecords
-                          ? `LQ${item.form_id}`
+                          ? getElogNumber(item)
                           : item.OperationOfSterilizerRecords
-                          ? `OF${item.form_id}`
+                          ? getElogNumber(item)
                           : item.MediaRecords
-                          ? `MR${item.form_id}`
+                          ? getElogNumber(item)
                           : item.DispenseOfMaterials
-                          ? `DM${item.form_id}`
+                          ? getElogNumber(item)
                           : item.AnalyticalBalances
-                          ? `AB${item.form_id}`
+                          // ? `AB${item.form_id}`
+                          ? getElogNumber(item)
                           : item.karlFischerRecords
-                          ? `KF${item.form_id}`
+                          ? getElogNumber(item)
                           : item.hplcRecords
-                          ? `HP${item.form_id}`
+                          ? getElogNumber(item)
                           : item.OpAndCalMultiParameterProcessRecords
-                          ? `pHOPCAL${item.form_id}`
+                          ? getElogNumber(item)
                           : item.UvVisRecords
-                          ? `UVVIS${item.form_id}`
+                          ? getElogNumber(item)
                           : item.sdsPageRecords
-                          ? `SDSPAGE${item.form_id}`
+                          ? getElogNumber(item)
                           : item.gelDocIGeneRecords
-                          ? `GELDOCIGENE${item.form_id}`
+                          ? getElogNumber(item)
                           : item.uvWhiteLightRecords
-                          ? `UV-WLTI${item.form_id}`
+                          ? getElogNumber(item)
                           : null}
                       </td>
                       <td>
