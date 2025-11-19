@@ -83,7 +83,6 @@ const AnalyticalBalancesEffective = () => {
     AnalyticalBalances: [],
     limit: "",
   });
-  console.log(editData, "editdata");
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -92,6 +91,7 @@ const AnalyticalBalancesEffective = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
+  console.log(location.state,"state")
 
   const handlePopupSubmit = (credentials) => {
     const cleanedData = editData?.AnalyticalBalances.filter((record) => {
@@ -109,8 +109,6 @@ const AnalyticalBalancesEffective = () => {
       toast.warn(
         `${emptyRowsCount} empty row(s) will be removed before saving.`
       );
-      console.log("Original records:", editData?.AnalyticalBalances);
-      console.log("Cleaned records:", cleanedData);
     }
 
     const updatedEditData = {
@@ -125,7 +123,6 @@ const AnalyticalBalancesEffective = () => {
       );
       return;
     }
-
     const data = {
       ...updatedEditData,
       site_id: location.state?.site_id,
@@ -286,9 +283,13 @@ const AnalyticalBalancesEffective = () => {
     setPopupAction(null);
   };
 
-  useEffect(() => {
-    setEditData(location.state);
-  }, [location.state]);
+ useEffect(() => {
+  if (location.state) {
+    const cloned = JSON.parse(JSON.stringify(location.state));
+    setEditData(cloned);
+  }
+}, [location.state]);
+
 
   const addRow = () => {
      const records = editData?.AnalyticalBalances || [];
@@ -745,15 +746,54 @@ const AnalyticalBalancesEffective = () => {
     const isInitiator = userDetails.userId == location.state?.initiator_id;
     const isNewRow = !item.form_id; // ya item.isNew === true if you manually add it
     return isInitiator ? isNewRow : true;
-  };
+  }
+
+const originalData = location.state;
 
   // Check if reviewer can edit a record (prevent changes after saving)
-  const canReviewerEdit = (item) => {
-    if (item.record_id && item.reviewed_by) {
-      return true;
+ const canReviewerEdit = (item) => {
+  // find original version of this record by record_id
+  const original = originalData?.AnalyticalBalances?.find(o => o.record_id === item.record_id);
+
+  // If we found the original row
+  if (original) {
+    // If original remarksType was OK → Lock it
+    if (original.remarksType === "OK") {
+      return false;
     }
-    return true;
-  };
+  }
+
+  // Otherwise allow editing
+  return true;
+};
+
+
+
+  const disableFieldMap = {
+  "Incorrect Sample Name": "sample_name",
+  "Incorrect Reg No./ Lot No.": "reg_no",
+  "Incorrect Weight Taken": "weight_taken",
+  "Incorrect UOM": "uom",
+};
+
+const getReviewerMarkedField = (item) => {
+  return disableFieldMap[item.remarksSubType] || null;
+};
+
+const isFieldEditable = (item, fieldName) => {
+  const reviewerMarkedField = getReviewerMarkedField(item);
+
+  // If reviewer marked a wrong field
+  if (reviewerMarkedField) {
+    return fieldName === reviewerMarkedField;
+  }
+
+  // Else default logic
+  return isRowEditable(item);
+};
+
+
+
 
   return (
     <>
@@ -930,7 +970,6 @@ const AnalyticalBalancesEffective = () => {
                               checked={reportType === "full"}
                               onChange={() => {
                                 setReportType("full");
-                                console.log("Report Type:", "full");
                               }}
                               className="accent-blue-600 w-4 h-4"
                             />
@@ -948,7 +987,6 @@ const AnalyticalBalancesEffective = () => {
                               checked={reportType === "custom"}
                               onChange={() => {
                                 setReportType("custom");
-                                console.log("Report Type:", "custom");
                               }}
                               className="accent-blue-600 w-4 h-4 mt-1"
                             />
@@ -972,10 +1010,6 @@ const AnalyticalBalancesEffective = () => {
                                       onChange={(e) => {
                                         setFromDate(e.target.value);
                                         setToDate(""); // Reset toDate on fromDate change
-                                        console.log(
-                                          "From Date:",
-                                          e.target.value
-                                        );
                                       }}
                                       className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
@@ -992,7 +1026,6 @@ const AnalyticalBalancesEffective = () => {
                                       min={fromDate || formattedFirstDate}
                                       onChange={(e) => {
                                         setToDate(e.target.value);
-                                        console.log("To Date:", e.target.value);
                                       }}
                                       className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
@@ -1565,7 +1598,7 @@ const AnalyticalBalancesEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "reg_no")
                                 }
                               />
                             </td>
@@ -1582,11 +1615,7 @@ const AnalyticalBalancesEffective = () => {
                                     AnalyticalBalances: newData,
                                   });
                                 }}
-                                readOnly={
-                                  [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
-                                }
+                                readOnly={[2, 3,4].includes(userDetails.roles[0].role_id) || !isFieldEditable(item, "sample_name")}
                               />
                             </td>
 
@@ -1607,7 +1636,7 @@ const AnalyticalBalancesEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "weight_taken")
                                 }
                               />
                             </td>
@@ -1636,8 +1665,7 @@ const AnalyticalBalancesEffective = () => {
       }}
       className="border rounded px-2 py-1 w-auto"
       disabled={
-        [2, 3,4].includes(userDetails.roles[0].role_id) ||
-        !canReviewerEdit(item)
+        [2, 3,4].includes(userDetails.roles[0].role_id) || !isFieldEditable(item, "uom") 
       }
     >
       <option value="">Select UOM</option>
@@ -1665,7 +1693,7 @@ const AnalyticalBalancesEffective = () => {
         className="border rounded px-2 py-1 w-auto"
         readOnly={
           [2, 3,4].includes(userDetails.roles[0].role_id) ||
-          !canReviewerEdit(item)
+          !isFieldEditable(item, "uom")
         }
       />
     )}
@@ -1766,6 +1794,7 @@ const AnalyticalBalancesEffective = () => {
                                       ) || !canReviewerEdit(item)
                                     }
                                   >
+                                    <option value="Select">--Select--</option>
                                     <option value="OK">OK</option>
                                     <option value="action-needed">
                                       Action Needed
@@ -1812,17 +1841,11 @@ const AnalyticalBalancesEffective = () => {
                                         <option value="Incorrect Reg No./ Lot No.">
                                           Incorrect Reg No./ Lot No.
                                         </option>
-                                        <option value="Incorrect Method Used">
-                                          Incorrect Method Used
+                                        <option value="Incorrect Weight Taken">
+                                          Incorrect Weight Taken
                                         </option>
-                                        <option value="Incorrect Parameter/Activity">
-                                          Incorrect Parameter/Activity
-                                        </option>
-                                        <option value="Incorrect Column No.">
-                                          Incorrect Column No.
-                                        </option>
-                                        <option value="Incorrect No. of Injections">
-                                          Incorrect No. of Injections
+                                        <option value="Incorrect UOM">
+                                          Incorrect UOM
                                         </option>
                                         <option value="Others">Others</option>
                                       </select>
@@ -1944,8 +1967,8 @@ const AnalyticalBalancesEffective = () => {
                               </div>
                             </td>
                             <td>
-                              {item.status ||
-                                (item.reviewed_by ? "Closed" : "Open")}
+                              {
+                                (item.remarksOther || item.remarks == "OK" ? "Closed" : "Open")}
                             </td>
                             {/*  
                              <td>
