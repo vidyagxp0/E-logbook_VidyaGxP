@@ -147,6 +147,10 @@ function CreateRecordModal(_props) {
         navigate("/uv-wl-transilluminator", {
           state: division,
         });
+      case 15:
+        navigate("/vo-calibration", {
+          state: division,
+        });
         break;
       default:
         break;

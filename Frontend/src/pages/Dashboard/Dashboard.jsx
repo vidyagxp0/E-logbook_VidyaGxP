@@ -29,6 +29,7 @@ function Dashboard() {
   const [sdsPage, setSdsPage] = useState([]);
   const [gelDociGene, setGelDociGene] = useState([]);
   const [uVWhiteLightTrans, setUVWlTrans] = useState([]);
+  const [voCalibElogs, setVOCalibElogs] = useState([]);
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
   );
@@ -411,10 +412,35 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error: ", error);
       });
+    const newVOCalib = {
+      method: "get",
+      url: "http://localhost:1000/vo-cal/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newVOCalib)
+      .then((response) => {
+        const voCalib = response.data.message;
+        let filteredArray = voCalib.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setVOCalibElogs(voCalib);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const [combinedRecords, setCombinedRecords] = useState([]);
-  console.log(combinedRecords, "combinedRecords");
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
       navigate("/dpr-panel", { state: item });
@@ -448,6 +474,8 @@ function Dashboard() {
       navigate("/gel-doc-igene-panel", { state: item });
     } else if (item.uvWhiteLightRecords) {
       navigate("/uv-wl-transilluminator-panel", { state: item });
+    } else if (item.voCalibRecords) {
+      navigate("/vo-calibration-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
@@ -484,6 +512,7 @@ function Dashboard() {
       ...sdsPage,
       ...gelDociGene,
       ...uVWhiteLightTrans,
+      ...voCalibElogs,
     ].filter((item) => {
       const matchesSearchTerm =
         item.date_of_initiation
@@ -542,6 +571,7 @@ function Dashboard() {
     sdsPage,
     gelDociGene,
     uVWhiteLightTrans,
+    voCalibElogs,
   ]);
 
   return (
@@ -601,6 +631,9 @@ function Dashboard() {
               <option value="pH Meter OP/CAL">pH Meter OP/CAL</option>
               <option value="SDS Page">SDS PAGE</option>
               <option value="Gel Doc iGene">Gel Doc iGene</option>
+              <option value="UV-Vis Calibration">UV-Vis Calibration</option>
+              <option value="UV/White Light Transilluminator">UV/White Light Transilluminator</option>
+              <option value="Vacuum Oven Calibration">Vacuum Oven Calibration</option>
             </select>
           </div>
 
@@ -666,6 +699,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -749,6 +784,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -797,6 +834,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -897,6 +936,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -948,6 +989,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -998,6 +1041,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -1048,6 +1093,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -1098,6 +1145,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -1149,6 +1198,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -1199,6 +1250,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -1249,6 +1302,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -1299,6 +1354,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -1349,6 +1406,60 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "Vacuum Oven Calibration"
+              ? voCalibElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/vo-cal-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`VOCALIB${item?.form_id}`}
+                      </td>
+                      <td>VO CAL</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : item.site_id === 5
+                          ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
@@ -1413,6 +1524,8 @@ function Dashboard() {
                           ? `GELDOCIGENE${item.form_id}`
                           : item.uvWhiteLightRecords
                           ? `UV-WLTI${item.form_id}`
+                          : item.voCalibRecords
+                          ? `VO-CAL${item.form_id}`
                           : null}
                       </td>
                       <td>
@@ -1444,6 +1557,8 @@ function Dashboard() {
                           ? "Gel Doc iGene"
                           : item.uvWhiteLightRecords
                           ? "UV/WL Transilluminator"
+                          : item.voCalibRecords
+                          ? "VO Calibration"
                           : null}
                       </td>
                       <td>
@@ -1455,6 +1570,8 @@ function Dashboard() {
                           ? "EMEA"
                           : item.site_id === 5
                           ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
                           : "EU"}
                       </td>
                       <td
