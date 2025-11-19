@@ -156,7 +156,7 @@ function DepartmentSel(_props) {
 const handleSelectProcess = (element) => {
   setProject(element.process);
 
-  navigate("/dashboard", {
+  navigate("/effectiveElogs", {
     state: {
       selectedProcess: element.process_id,
       division: division

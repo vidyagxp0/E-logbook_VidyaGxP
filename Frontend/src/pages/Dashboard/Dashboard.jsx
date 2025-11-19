@@ -827,12 +827,12 @@ useEffect(() => {
             <tr>
               <th>S no</th>
               <th>Instrument No.</th>
-              <th>Process</th>
-              <th>Site</th>
+              <th>Name</th>
+              <th>Department</th>
               <th>Short description</th>
-              <th>Initiator</th>
-              <th>Date of initiation</th>
-              <th>Status</th>
+              <th>Created By</th>
+              <th>Date of Creation</th>
+              {/* <th>Status</th> */}
             </tr>
           </thead>
           <tbody>
@@ -879,7 +879,7 @@ useEffect(() => {
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -964,7 +964,7 @@ useEffect(() => {
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1014,7 +1014,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1064,7 +1064,7 @@ useEffect(() => {
                         ></td>
                         <td>{item.initiator_name}</td>
                         <td>{formatDate(item.date_of_initiation)}</td>
-                        <td>{item.status}</td>
+                        {/* <td>{item.status}</td> */}
                       </tr>
                     </>
                   );
@@ -1116,7 +1116,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1169,7 +1169,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1221,7 +1221,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1273,7 +1273,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1325,7 +1325,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1378,7 +1378,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1430,7 +1430,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1482,7 +1482,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1534,7 +1534,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1638,7 +1638,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })
@@ -1720,7 +1720,7 @@ useEffect(() => {
                           : item.OpAndCalMultiParameterProcessRecords
                           ? "pH Meter OP/Cal"
                           : item.UvVisRecords
-                          ? "UV Vis Calib"
+                          ? "UV-VIS Spectrophotometer"
                           : item.sdsPageRecords
                           ? "SDS PAGE"
                           : item.gelDocIGeneRecords
@@ -1751,7 +1751,7 @@ useEffect(() => {
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      <td>{item.status}</td>
+                      {/* <td>{item.status}</td> */}
                     </tr>
                   );
                 })}

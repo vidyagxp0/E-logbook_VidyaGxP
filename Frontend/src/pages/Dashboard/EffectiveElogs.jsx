@@ -35,6 +35,33 @@ function EffectiveElogs() {
   const [uVWhiteLightTrans, setUVWlTrans] = useState([]);
   const [voCalibElogs, SetVOCalibElogs] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const getElogNumber = (item) => {
+  const processId = item.process_id;
+  if (!processId) return "IPC/BIOS/NA/000";
+
+  const shortName = processShortName[processId] || "NA";
+  const index = String(item.form_id).padStart(3, "0");
+
+  return `IPC/BIOS/${shortName}/${index}`;
+};
+
+const [instrumentFilter, setInstrumentFilter] = useState("All");
+const processShortName = {
+  1: "DP",
+  2: "TR",
+  3: "LQ",
+  4: "OS",
+  5: "MR",
+  6: "DM",
+  7: "AB",
+  8: "KF",
+  9: "HPLC",
+  10: "PH",
+  11: "UVVIS",
+  12: "SDS",
+  13: "GDI",
+  14: "UVWL",
+};
 
   useEffect(() => {
     const newConfig = {
@@ -261,6 +288,7 @@ function EffectiveElogs() {
     axios(newKarlFischer)
       .then((response) => {
         const temp = response.data.message;
+        console.log(temp,"temo")
         const allKarlFischer = temp.filter((log) => log.status === "Closed");
         setKarlFischerElogs(allKarlFischer);
         let filteredArray = allKarlFischer.filter((elog) => {
@@ -268,7 +296,6 @@ function EffectiveElogs() {
 
           return (
             userId === elog.reviewer_id ||
-            userId === elog.initiator_id ||
             userId === elog.approver_id ||
             hasAccess(4, elog.site_id, 4)
           );
@@ -476,25 +503,41 @@ function EffectiveElogs() {
       });
   }, []);
 
+  // const combinedRecords = [
+  //   ...differentialPressureElogs.filter((log) => log.status === "Closed"),
+  //   ...areaAndERecordElogs.filter(log => log.status === "Closed"),
+  //   ...equipmentCRecordElogs.filter((log) => log.status === "Closed"),
+  //   ...tempratureRecordElogs.filter((log) => log.status === "Closed"),
+  //   ...loadedQuantityElogs.filter((log) => log.status === "Closed"),
+  //   ...mediaRecordElogs.filter((log) => log.status === "Closed"),
+  //   ...dispensingOfMaterialsElogs.filter((log) => log.status === "Closed"),
+  //   ...operationOfSterilizerElogs.filter((log) => log.status === "Closed"),
+  //   ...analyticalBalanceElogs.filter((log) => log.status === "Closed"),
+  //   ...karlFischerElogs.filter((log) => log.status === "Closed"),
+  //   ...hplcElogs.filter((log) => log.status === "Closed"),
+  //   ...pHMeterOPCalElogs.filter((log) => log.status === "Closed"),
+  //   ...uVVisCalibElogs.filter((log) => log.status === "Closed"),
+  //   ...sdsPage.filter((log) => log.status === "Closed"),
+  //   ...gelDociGene.filter((log) => log.status === "Closed"),
+  //   ...uVWhiteLightTrans.filter((log) => log.status === "Closed"),
+  // ];
+
   const combinedRecords = [
-    ...differentialPressureElogs.filter((log) => log.status === "Closed"),
-    // ...areaAndERecordElogs.filter(log => log.status === "Closed"), // Uncomment if needed
-    ...equipmentCRecordElogs.filter((log) => log.status === "Closed"),
-    ...tempratureRecordElogs.filter((log) => log.status === "Closed"),
-    ...loadedQuantityElogs.filter((log) => log.status === "Closed"),
-    ...mediaRecordElogs.filter((log) => log.status === "Closed"),
-    ...dispensingOfMaterialsElogs.filter((log) => log.status === "Closed"),
-    ...operationOfSterilizerElogs.filter((log) => log.status === "Closed"),
-    ...analyticalBalanceElogs.filter((log) => log.status === "Closed"),
-    ...karlFischerElogs.filter((log) => log.status === "Closed"),
-    ...hplcElogs.filter((log) => log.status === "Closed"),
-    ...pHMeterOPCalElogs.filter((log) => log.status === "Closed"),
-    ...uVVisCalibElogs.filter((log) => log.status === "Closed"),
-    ...sdsPage.filter((log) => log.status === "Closed"),
-    ...gelDociGene.filter((log) => log.status === "Closed"),
-    ...uVWhiteLightTrans.filter((log) => log.status === "Closed"),
-    ...voCalibElogs.filter((log) => log.status === "Closed"),
-  ];
+  ...differentialPressureElogs.map(r => ({ ...r, process_id: 1 })),
+  ...tempratureRecordElogs.map(r => ({ ...r, process_id: 2 })),
+  ...loadedQuantityElogs.map(r => ({ ...r, process_id: 3 })),
+  ...operationOfSterilizerElogs.map(r => ({ ...r, process_id: 4 })),
+  ...mediaRecordElogs.map(r => ({ ...r, process_id: 5 })),
+  ...dispensingOfMaterialsElogs.map(r => ({ ...r, process_id: 6 })),
+  ...analyticalBalanceElogs.map(r => ({ ...r, process_id: 7 })),
+  ...karlFischerElogs.map(r => ({ ...r, process_id: 8 })),
+  ...hplcElogs.map(r => ({ ...r, process_id: 9 })),
+  ...pHMeterOPCalElogs.map(r => ({ ...r, process_id: 10 })),
+  ...uVVisCalibElogs.map(r => ({ ...r, process_id: 11 })),
+  ...sdsPage.map(r => ({ ...r, process_id: 12 })),
+  ...gelDociGene.map(r => ({ ...r, process_id: 13 })),
+  ...uVWhiteLightTrans.map(r => ({ ...r, process_id: 14 })),
+];
 
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
@@ -546,24 +589,41 @@ function EffectiveElogs() {
   };
 
   const getFilteredData = () => {
+    const applyInstrumentFilter = (data) => {
+  if (instrumentFilter === "All") return data;
+  return data.filter((item) => getElogNumber(item) === instrumentFilter);
+};
+
     if (eLogSelect === "analytical_balance") {
-      return analyticalBalanceElogs?.filter(filterRecord);
+      // return analyticalBalanceElogs?.filter(filterRecord);
+      return applyInstrumentFilter(analyticalBalanceElogs?.filter(filterRecord));
+
     } else if (eLogSelect === "karl_fischer") {
-      return karlFischerElogs?.filter(filterRecord);
+      // return karlFischerElogs?.filter(filterRecord);
+      return applyInstrumentFilter(karlFischerElogs?.filter(filterRecord));
     } else if (eLogSelect === "hplc") {
-      return hplcElogs?.filter(filterRecord);
+      // return hplcElogs?.filter(filterRecord);
+      return applyInstrumentFilter(hplcElogs?.filter(filterRecord));
     } else if (eLogSelect === "pH Meter OP/Cal") {
-      return pHMeterOPCalElogs?.filter(filterRecord);
+      // return pHMeterOPCalElogs?.filter(filterRecord);
+      return applyInstrumentFilter(pHMeterOPCalElogs?.filter(filterRecord));
+
     } else if (eLogSelect === "UV-Vis Calibration") {
-      return uVVisCalibElogs?.filter(filterRecord);
+      // return uVVisCalibElogs?.filter(filterRecord);
+      return applyInstrumentFilter(uVVisCalibElogs?.filter(filterRecord));
+
     } else if (eLogSelect === "SDS PAGE") {
-      return sdsPage?.filter(filterRecord);
+      // return sdsPage?.filter(filterRecord);
+      return applyInstrumentFilter(sdsPage?.filter(filterRecord));
     } else if (eLogSelect === "Gel Doc iGene") {
-      return gelDociGene?.filter(filterRecord);
+      // return gelDociGene?.filter(filterRecord);
+      return applyInstrumentFilter(gelDociGene?.filter(filterRecord));
     } else if (eLogSelect === "UV/WL Transilluminator") {
-      return uVWhiteLightTrans?.filter(filterRecord);
+      // return uVWhiteLightTrans?.filter(filterRecord);
+      return applyInstrumentFilter(uVWhiteLightTrans?.filter(filterRecord));
     } else if (eLogSelect === "VO Calibration") {
-      return voCalibElogs?.filter(filterRecord);
+      // return voCalibElogs?.filter(filterRecord);
+            return applyInstrumentFilter(voCalibElogs?.filter(filterRecord));
     } else {
       return combinedRecords
         ?.filter(filterRecord)
@@ -725,6 +785,48 @@ function EffectiveElogs() {
               flex: 1,
             }}
           >
+   <div
+              className="group-input"
+              style={{ marginBottom: "0", minWidth: "200px" }}
+            >
+              <label
+                className="color-label"
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#495057",
+                  marginBottom: "8px",
+                  padding: "0",
+                }}
+              >
+    All Instruments
+  </label>
+
+  <select
+    value={instrumentFilter}
+    onChange={(e) => setInstrumentFilter(e.target.value)}
+    style={{
+      padding: "8px 12px",
+      border: "1px solid #ced4da",
+      borderRadius: "4px",
+      fontSize: "14px",
+      backgroundColor: "white",
+      width: "100%",
+    }}
+  >
+    <option value="All">All Instruments</option>
+
+    {combinedRecords
+      .map((item) => getElogNumber(item))
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .map((instNo, index) => (
+        <option key={index} value={instNo}>
+          {instNo}
+        </option>
+      ))}
+  </select>
+</div>
+
             {/* Equipment Filter */}
             <div
               className="group-input"
@@ -848,10 +950,13 @@ function EffectiveElogs() {
           <thead>
             <tr>
               <th>S no</th>
-              <th>E.Log no</th>
-              <th>Instrument / Equipment</th>
+              {/* <th>E.Log no</th> */}
+              <th>Instrument No.</th>
+              {/* <th>Instrument / Equipment</th> */}
+              <th>Name</th>
               <th>Department</th>
               <th>Short description</th>
+              <th>Created By</th>
               {/* <th>Initiator</th> */}
               <th>Date of initiation</th>
             </tr>
@@ -863,13 +968,44 @@ function EffectiveElogs() {
               return (
                 <tr key={item.form_id || item.eLogId}>
                   <td>{index + 1}</td>
+
                   <td
                     style={{ cursor: "pointer", color: "black" }}
                     onClick={() => handleNavigation(item)}
                     onMouseEnter={(e) => (e.target.style.color = "blue")}
                     onMouseLeave={(e) => (e.target.style.color = "black")}
+
                   >
-                    {`${getFormPrefix(item)}${item.form_id}`}
+                                 {item.DifferentialPressureRecords
+                          ? getElogNumber(item)
+                          : item.TempratureRecords
+                          ? getElogNumber(item)
+                          : item.LoadedQuantityRecords
+                          ? getElogNumber(item)
+                          : item.OperationOfSterilizerRecords
+                          ? getElogNumber(item)
+                          : item.MediaRecords
+                          ? getElogNumber(item)
+                          : item.DispenseOfMaterials
+                          ? getElogNumber(item)
+                          : item.AnalyticalBalances
+                          // ? `AB${item.form_id}`
+                          ? getElogNumber(item)
+                          : item.karlFischerRecords
+                          ? getElogNumber(item)
+                          : item.hplcRecords
+                          ? getElogNumber(item)
+                          : item.OpAndCalMultiParameterProcessRecords
+                          ? getElogNumber(item)
+                          : item.UvVisRecords
+                          ? getElogNumber(item)
+                          : item.sdsPageRecords
+                          ? getElogNumber(item)
+                          : item.gelDocIGeneRecords
+                          ? getElogNumber(item)
+                          : item.uvWhiteLightRecords
+                          ? getElogNumber(item)
+                          : null}
                   </td>
                   <td>{getEquipmentType(item)}</td>
                   <td>
@@ -886,7 +1022,7 @@ function EffectiveElogs() {
                       : "EU"}
                   </td>
                   <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
-                  {/* <td>{item.initiator_name}</td> */}
+                  <td>{item.initiator_name}</td>
                   <td>{formatDate(item.date_of_initiation)}</td>
                 </tr>
               );
