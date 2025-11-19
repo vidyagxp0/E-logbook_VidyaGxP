@@ -899,19 +899,28 @@ const getFilteredData = () => {
   >
     <option value="All">All Instruments</option>
 
-    {combinedRecords
+    {/* {combinedRecords
       .map((item) => getElogNumber(item))
       .filter((value, index, self) => self.indexOf(value) === index)
       .map((instNo, index) => (
         <option key={index} value={instNo}>
           {instNo}
         </option>
-      ))}
+      ))} */}
+      {filteredData
+  ?.map((item) => getElogNumber(item))
+  .filter((value, index, self) => self.indexOf(value) === index) // unique only
+  .map((instNo, index) => (
+    <option key={index} value={instNo}>
+      {instNo}
+    </option>
+  ))}
+
   </select>
 </div>
 
             {/* Equipment Filter */}
-            <div
+            {/* <div
               className="group-input"
               style={{ marginBottom: "0", minWidth: "200px" }}
             >
@@ -954,7 +963,7 @@ const getFilteredData = () => {
                   VO Calibration
                 </option>
               </select>
-            </div>
+            </div> */}
 
             {/* Role Filter */}
             {/* <div
