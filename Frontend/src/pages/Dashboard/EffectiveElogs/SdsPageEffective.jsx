@@ -86,7 +86,8 @@ const SdsPageEffective = () => {
 
   const handlePopupSubmit = (credentials) => {
     const cleanedData = editData?.sdsPageRecords.filter((record) => {
-      const hasRequiredFields = record.start_time?.trim() !== "" && record.end_time?.trim() !== "";
+      const hasRequiredFields =
+        record.start_time?.trim() !== "" && record.end_time?.trim() !== "";
       return hasRequiredFields;
     });
 
@@ -135,7 +136,11 @@ const SdsPageEffective = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/sds-page/send-elog-for-review", data, config)
+        .put(
+          "http://localhost:1000/sds-page/send-elog-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -544,10 +549,12 @@ const SdsPageEffective = () => {
         }
 
         // Filter hplc records
-        filteredData.sdsPageRecords = editData.sdsPageRecords.filter((record) => {
-          const recordDate = new Date(record.date);
-          return recordDate >= start && recordDate <= end;
-        });
+        filteredData.sdsPageRecords = editData.sdsPageRecords.filter(
+          (record) => {
+            const recordDate = new Date(record.date);
+            return recordDate >= start && recordDate <= end;
+          }
+        );
       }
 
       const payload = {
@@ -667,7 +674,8 @@ const SdsPageEffective = () => {
             <div className="details-form-data">
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Sodium Dodecyl Sulfate Polyacrylamide gel electrophoresis (SDS-PAGE) Record
+                  Sodium Dodecyl Sulfate Polyacrylamide gel electrophoresis
+                  (SDS-PAGE) Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -975,7 +983,9 @@ const SdsPageEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.sdsPageRecords?.map((r) => r.reviewed_by)
+                              editData?.sdsPageRecords?.map(
+                                (r) => r.reviewed_by
+                              )
                             ),
                           ].map(
                             (reviewed_by, index) =>
@@ -1028,7 +1038,11 @@ const SdsPageEffective = () => {
                             </td>
 
                             <td className="w-24">
-                              <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
+                              <input
+                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                type="text"
+                                readOnly
+                              />
                             </td>
 
                             <td>
@@ -1068,7 +1082,6 @@ const SdsPageEffective = () => {
                                 }
                               />
                             </td>
-
 
                             {/* ✅ Start Time */}
                             <td>
@@ -1152,7 +1165,9 @@ const SdsPageEffective = () => {
                                       return;
                                     }
 
-                                    const newData = [...editData.sdsPageRecords];
+                                    const newData = [
+                                      ...editData.sdsPageRecords,
+                                    ];
                                     newData[index].end_time =
                                       now.toLocaleTimeString([], {
                                         hour: "2-digit",
@@ -1166,7 +1181,9 @@ const SdsPageEffective = () => {
                                       sdsPageRecords: newData,
                                     });
                                   } else {
-                                    const newData = [...editData.sdsPageRecords];
+                                    const newData = [
+                                      ...editData.sdsPageRecords,
+                                    ];
                                     newData[index].end_time = "";
                                     newData[index].reviewed_by = "";
                                     newData[index].status = "Open";
@@ -1187,7 +1204,6 @@ const SdsPageEffective = () => {
                               )}
                             </td>
 
-
                             <td>
                               <input value={item.done_by} readOnly={true} />
                             </td>
@@ -1206,7 +1222,9 @@ const SdsPageEffective = () => {
                                       );
                                       return;
                                     }
-                                    const newData = [...editData.sdsPageRecords];
+                                    const newData = [
+                                      ...editData.sdsPageRecords,
+                                    ];
                                     if (e.target.checked) {
                                       newData[index].reviewed_by = reviewed_by;
                                       newData[index].status = "Closed";
@@ -1241,7 +1259,9 @@ const SdsPageEffective = () => {
                                   <select
                                     value={item.remarksType || ""}
                                     onChange={(e) => {
-                                      const newData = [...editData.sdsPageRecords];
+                                      const newData = [
+                                        ...editData.sdsPageRecords,
+                                      ];
                                       newData[index].remarksType =
                                         e.target.value;
 

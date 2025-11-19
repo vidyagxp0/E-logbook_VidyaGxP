@@ -86,7 +86,8 @@ const UVvisCalibrationEffective = () => {
 
   const handlePopupSubmit = (credentials) => {
     const cleanedData = editData?.UvVisRecords.filter((record) => {
-      const hasRequiredFields = record.start_time?.trim() !== "" && record.end_time?.trim() !== "";
+      const hasRequiredFields =
+        record.start_time?.trim() !== "" && record.end_time?.trim() !== "";
       return hasRequiredFields;
     });
 
@@ -135,7 +136,11 @@ const UVvisCalibrationEffective = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/uv-vis-calib/send-elog-for-review", data, config)
+        .put(
+          "http://localhost:1000/uv-vis-calib/send-elog-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -1028,7 +1033,11 @@ const UVvisCalibrationEffective = () => {
                             </td>
 
                             <td className="w-24">
-                              <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
+                              <input
+                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                type="text"
+                                readOnly
+                              />
                             </td>
 
                             <td>
@@ -1068,7 +1077,6 @@ const UVvisCalibrationEffective = () => {
                                 }
                               />
                             </td>
-
 
                             {/* ✅ Start Time */}
                             <td>
@@ -1187,7 +1195,6 @@ const UVvisCalibrationEffective = () => {
                               )}
                             </td>
 
-
                             <td>
                               <input value={item.done_by} readOnly={true} />
                             </td>
@@ -1241,7 +1248,9 @@ const UVvisCalibrationEffective = () => {
                                   <select
                                     value={item.remarksType || ""}
                                     onChange={(e) => {
-                                      const newData = [...editData.UvVisRecords];
+                                      const newData = [
+                                        ...editData.UvVisRecords,
+                                      ];
                                       newData[index].remarksType =
                                         e.target.value;
 

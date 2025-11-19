@@ -92,7 +92,8 @@ const GelDocIGeneEffective = () => {
 
     console.log("Cleaned records:", cleanedData);
 
-    const emptyRowsCount = editData?.gelDocIGeneRecords.length - cleanedData.length;
+    const emptyRowsCount =
+      editData?.gelDocIGeneRecords.length - cleanedData.length;
     if (emptyRowsCount > 0) {
       toast.warn(
         `${emptyRowsCount} empty row(s) will be removed before saving.`
@@ -135,7 +136,11 @@ const GelDocIGeneEffective = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/gel-doc-igene/send-elog-for-review", data, config)
+        .put(
+          "http://localhost:1000/gel-doc-igene/send-elog-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -506,7 +511,9 @@ const GelDocIGeneEffective = () => {
     }
   }, [reportData]);
 
-  const allRecordDates = editData?.gelDocIGeneRecords?.map((r) => new Date(r.date));
+  const allRecordDates = editData?.gelDocIGeneRecords?.map(
+    (r) => new Date(r.date)
+  );
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
@@ -541,10 +548,12 @@ const GelDocIGeneEffective = () => {
         }
 
         // Filter hplc records
-        filteredData.gelDocIGeneRecords = editData.gelDocIGeneRecords.filter((record) => {
-          const recordDate = new Date(record.date);
-          return recordDate >= start && recordDate <= end;
-        });
+        filteredData.gelDocIGeneRecords = editData.gelDocIGeneRecords.filter(
+          (record) => {
+            const recordDate = new Date(record.date);
+            return recordDate >= start && recordDate <= end;
+          }
+        );
       }
 
       const payload = {
@@ -664,7 +673,8 @@ const GelDocIGeneEffective = () => {
             <div className="details-form-data">
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Operation of Gel Documentation system with CCD camera-iGene Record
+                  Operation of Gel Documentation system with CCD camera-iGene
+                  Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -927,7 +937,9 @@ const GelDocIGeneEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.gelDocIGeneRecords?.map((r) => r.done_by)
+                              editData?.gelDocIGeneRecords?.map(
+                                (r) => r.done_by
+                              )
                             ),
                           ].map(
                             (done_by, index) =>
@@ -972,7 +984,9 @@ const GelDocIGeneEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.gelDocIGeneRecords?.map((r) => r.reviewed_by)
+                              editData?.gelDocIGeneRecords?.map(
+                                (r) => r.reviewed_by
+                              )
                             ),
                           ].map(
                             (reviewed_by, index) =>
@@ -1025,14 +1039,20 @@ const GelDocIGeneEffective = () => {
                             </td>
 
                             <td className="w-24">
-                              <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
+                              <input
+                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                type="text"
+                                readOnly
+                              />
                             </td>
 
                             <td>
                               <input
                                 value={item.sample_name}
                                 onChange={(e) => {
-                                  const newData = [...editData.gelDocIGeneRecords];
+                                  const newData = [
+                                    ...editData.gelDocIGeneRecords,
+                                  ];
                                   newData[index].sample_name = e.target.value;
                                   setEditData({
                                     ...editData,
@@ -1051,7 +1071,9 @@ const GelDocIGeneEffective = () => {
                               <input
                                 value={item.reg_no}
                                 onChange={(e) => {
-                                  const newData = [...editData.gelDocIGeneRecords];
+                                  const newData = [
+                                    ...editData.gelDocIGeneRecords,
+                                  ];
                                   newData[index].reg_no = e.target.value;
                                   setEditData({
                                     ...editData,
@@ -1065,7 +1087,6 @@ const GelDocIGeneEffective = () => {
                                 }
                               />
                             </td>
-
 
                             {/* ✅ Start Time */}
                             {/* <td>
@@ -1185,7 +1206,7 @@ const GelDocIGeneEffective = () => {
                               )}
                             </td> */}
 
-                             <td className="w-24">
+                            <td className="w-24">
                               <input value={item?.time} type="text" readOnly />
                             </td>
 
@@ -1201,7 +1222,9 @@ const GelDocIGeneEffective = () => {
                                   type="checkbox"
                                   checked={!!item.reviewed_by}
                                   onChange={(e) => {
-                                    const newData = [...editData.gelDocIGeneRecords];
+                                    const newData = [
+                                      ...editData.gelDocIGeneRecords,
+                                    ];
                                     if (e.target.checked) {
                                       newData[index].reviewed_by = reviewed_by;
                                       newData[index].status = "Closed";
@@ -1236,7 +1259,9 @@ const GelDocIGeneEffective = () => {
                                   <select
                                     value={item.remarksType || ""}
                                     onChange={(e) => {
-                                      const newData = [...editData.gelDocIGeneRecords];
+                                      const newData = [
+                                        ...editData.gelDocIGeneRecords,
+                                      ];
                                       newData[index].remarksType =
                                         e.target.value;
 

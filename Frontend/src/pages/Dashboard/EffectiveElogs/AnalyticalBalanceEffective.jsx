@@ -1518,7 +1518,11 @@ const AnalyticalBalancesEffective = () => {
                               />{" "}
                             </td>
                             <td>
-                              <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
+                              <input
+                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                type="text"
+                                readOnly
+                              />
                             </td>
                             <td>
                               <input

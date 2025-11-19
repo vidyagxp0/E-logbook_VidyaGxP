@@ -280,7 +280,7 @@ function Dashboard() {
         console.error("Error: ", error);
       });
 
-      const newpHMeterOPCal = {
+    const newpHMeterOPCal = {
       method: "get",
       url: "http://localhost:1000/op-and-calParameter/get-all",
       headers: {
@@ -306,7 +306,7 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error: ", error);
       });
-      const newUVvisCal = {
+    const newUVvisCal = {
       method: "get",
       url: "http://localhost:1000/uv-vis-calib/get-all",
       headers: {
@@ -332,7 +332,7 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error: ", error);
       });
-      const newSdSPage = {
+    const newSdSPage = {
       method: "get",
       url: "http://localhost:1000/sds-page/get-all",
       headers: {
@@ -358,7 +358,7 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error: ", error);
       });
-       const newGelDociGene = {
+    const newGelDociGene = {
       method: "get",
       url: "http://localhost:1000/gel-doc-igene/get-all",
       headers: {
@@ -385,7 +385,7 @@ function Dashboard() {
         console.error("Error: ", error);
       });
 
-      const newUVwlTrans = {
+    const newUVwlTrans = {
       method: "get",
       url: "http://localhost:1000/uv-wl-transi/get-all",
       headers: {
@@ -440,13 +440,13 @@ function Dashboard() {
       navigate("/hplc-panel", { state: item });
     } else if (item.OpAndCalMultiParameterProcessRecords) {
       navigate("/PhMeterOpCal-panel", { state: item });
-    }else if (item.UvVisRecords) {
+    } else if (item.UvVisRecords) {
       navigate("/uv-vis-calibration-panel", { state: item });
-    }else if (item.sdsPageRecords) {
+    } else if (item.sdsPageRecords) {
       navigate("/sds-page-panel", { state: item });
-    }else if (item.gelDocIGeneRecords) {
+    } else if (item.gelDocIGeneRecords) {
       navigate("/gel-doc-igene-panel", { state: item });
-    }else if (item.uvWhiteLightRecords) {
+    } else if (item.uvWhiteLightRecords) {
       navigate("/uv-wl-transilluminator-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
@@ -1112,7 +1112,7 @@ function Dashboard() {
                   );
                 })
               : null}
-              
+
             {eLogSelect === "pH Meter OP/CAL"
               ? pHMeterOPCalElogs?.map((item, index) => {
                   const cleanHTML =

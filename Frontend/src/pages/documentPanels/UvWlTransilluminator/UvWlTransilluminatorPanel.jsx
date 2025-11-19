@@ -73,7 +73,11 @@ const UvWlTransilluminatorPanel = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/uv-wl-transi/send-elog-for-review", data, config)
+        .put(
+          "http://localhost:1000/uv-wl-transi/send-elog-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);

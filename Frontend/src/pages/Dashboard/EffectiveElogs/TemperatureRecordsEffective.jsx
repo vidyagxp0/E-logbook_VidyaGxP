@@ -218,7 +218,8 @@ export default function TempretureRecordsEffective() {
         });
     }
 
-    setIsPopupOpen(false);e
+    setIsPopupOpen(false);
+    e;
     setPopupAction(null);
   };
 

@@ -154,10 +154,11 @@ function HeaderTop() {
               </div>
             </div> */}
             <div className="flex flex-col items-center justify-center">
-            <h1 className="text-3xl font-bold font-serif">eLog-Book</h1>
-            <h1 className="text-2xl font-bold font-serif">Indian Pharmacopoeia Commission
-</h1></div>
-            
+              <h1 className="text-3xl font-bold font-serif">eLog-Book</h1>
+              <h1 className="text-2xl font-bold font-serif">
+                Indian Pharmacopoeia Commission
+              </h1>
+            </div>
           </div>
           <div className="right">
             <div className="bellLeft">
@@ -166,20 +167,20 @@ function HeaderTop() {
 
             <div className="drop-container">
               <div className="drop-btn">
-  <div className="">
-    {User?.profile_pic ? (
-      <img
-        src={User?.profile_pic}
-        alt="Profile Picture"
-        className="w-9 h-9 rounded-full object-cover"
-      />
-    ) : (
-      <div className="w-9 h-9 rounded-full bg-[#0c5fc6] text-white flex items-center justify-center text-lg font-semibold">
-        {User?.name?.charAt(0).toUpperCase()}
-      </div>
-    )}
-  </div>
-</div>
+                <div className="">
+                  {User?.profile_pic ? (
+                    <img
+                      src={User?.profile_pic}
+                      alt="Profile Picture"
+                      className="w-9 h-9 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-[#0c5fc6] text-white flex items-center justify-center text-lg font-semibold">
+                      {User?.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+              </div>
               <div className="drop-list">
                 <div className="image">
                   {/* <img src={User?.profile_pic} alt="..." /> */}

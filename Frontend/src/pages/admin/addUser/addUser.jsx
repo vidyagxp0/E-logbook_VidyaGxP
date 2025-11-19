@@ -29,8 +29,7 @@ function AddNewUser() {
   }, [selectedOptions]);
 
   useEffect(() => {
-    const url =
-      "http://localhost:1000/user/get-all-rolegroups";
+    const url = "http://localhost:1000/user/get-all-rolegroups";
     axios
       .get(url)
       .then((response) => {
@@ -46,8 +45,7 @@ function AddNewUser() {
   }, [selectedOptions2]);
 
   useEffect(() => {
-    const url =
-      "http://localhost:1000/user/get-all-effective-roles";
+    const url = "http://localhost:1000/user/get-all-effective-roles";
     axios
       .get(url)
       .then((response) => {

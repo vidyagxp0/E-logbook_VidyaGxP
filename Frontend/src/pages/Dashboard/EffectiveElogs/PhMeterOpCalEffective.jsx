@@ -92,25 +92,31 @@ const PhMeterOpCalEffective = () => {
   };
 
   const handlePopupSubmit = (credentials) => {
-    const cleanedData = editData?.OpAndCalMultiParameterProcessRecords.filter((record) => {
-      // Check if ANY of the key fields are non-empty (treat numbers and strings correctly)
-      const isNotCompletelyEmpty =
-        !!record.nameOfSolution?.toString().trim() ||
-        !!record.adjustPH?.toString().trim();
+    const cleanedData = editData?.OpAndCalMultiParameterProcessRecords.filter(
+      (record) => {
+        // Check if ANY of the key fields are non-empty (treat numbers and strings correctly)
+        const isNotCompletelyEmpty =
+          !!record.nameOfSolution?.toString().trim() ||
+          !!record.adjustPH?.toString().trim();
 
-      return isNotCompletelyEmpty;
-    });
+        return isNotCompletelyEmpty;
+      }
+    );
 
     // Calculate empty row count
     const emptyRowsCount =
-      editData?.OpAndCalMultiParameterProcessRecords.length - cleanedData.length;
+      editData?.OpAndCalMultiParameterProcessRecords.length -
+      cleanedData.length;
 
     // Show toast ONLY if truly empty rows are being removed
     if (emptyRowsCount > 0) {
       toast.warn(
         `${emptyRowsCount} empty row(s) will be removed before saving.`
       );
-      console.log("Original records:", editData?.OpAndCalMultiParameterProcessRecords);
+      console.log(
+        "Original records:",
+        editData?.OpAndCalMultiParameterProcessRecords
+      );
       console.log("Cleaned records:", cleanedData);
     }
     const updatedEditData = {
@@ -256,7 +262,7 @@ const PhMeterOpCalEffective = () => {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "multipart/form-data",
       };
-console.log(updatedEditData,"updatedEditData")
+      console.log(updatedEditData, "updatedEditData");
       const requestOptions = {
         method: "PUT",
         headers: myHeaders,
@@ -293,7 +299,8 @@ console.log(updatedEditData,"updatedEditData")
         second: "2-digit",
         hour12: true, // Use 12-hour format
       };
-      const nextIndex = editData?.OpAndCalMultiParameterProcessRecords?.length || 0;
+      const nextIndex =
+        editData?.OpAndCalMultiParameterProcessRecords?.length || 0;
       const newRow = {
         date: dayjs().format("YYYY-MM-DD"),
         nameOfSolution: "",
@@ -309,7 +316,10 @@ console.log(updatedEditData,"updatedEditData")
       };
       setEditData((prevState) => ({
         ...prevState,
-        OpAndCalMultiParameterProcessRecords: [...prevState?.OpAndCalMultiParameterProcessRecords, newRow],
+        OpAndCalMultiParameterProcessRecords: [
+          ...prevState?.OpAndCalMultiParameterProcessRecords,
+          newRow,
+        ],
       }));
     } else if (location.state.reviewer_id == 4) {
       toast.warn("Only the Initiator has permission to add a new row.");
@@ -370,7 +380,9 @@ console.log(updatedEditData,"updatedEditData")
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
     ) {
-      const updatedGridData = [...editData.OpAndCalMultiParameterProcessRecords];
+      const updatedGridData = [
+        ...editData.OpAndCalMultiParameterProcessRecords,
+      ];
       const rowToDelete = updatedGridData[index];
 
       if (rowToDelete?.record_id) {
@@ -606,12 +618,11 @@ console.log(updatedEditData,"updatedEditData")
         }
 
         // Filter karl fischer records
-        filteredData.OpAndCalMultiParameterProcessRecords = editData.OpAndCalMultiParameterProcessRecords.filter(
-          (record) => {
+        filteredData.OpAndCalMultiParameterProcessRecords =
+          editData.OpAndCalMultiParameterProcessRecords.filter((record) => {
             const recordDate = new Date(record.date);
             return recordDate >= start && recordDate <= end;
-          }
-        );
+          });
       }
 
       const payload = {
@@ -755,7 +766,7 @@ console.log(updatedEditData,"updatedEditData")
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  pH Meter OP/Cal Record
+                  Operation and Calibration of pH Meter (Multiparameter) Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -1441,9 +1452,11 @@ console.log(updatedEditData,"updatedEditData")
                   <table>
                     <thead>
                       <tr>
-                         <th className="text-center">S no.</th>
+                        <th className="text-center">S no.</th>
                         <th className="text-center">Date</th>
-                        <th className="text-center">Name of Solution/Buffer/Sample Solution</th>
+                        <th className="text-center">
+                          Name of Solution/Buffer/Sample Solution
+                        </th>
                         <th className="text-center">Adjusted pH</th>
                         <th className="text-center">Done by</th>
                         <th className="text-center">Checked By</th>
@@ -1466,7 +1479,11 @@ console.log(updatedEditData,"updatedEditData")
                               />
                             </td>
                             <td className="!text-center !justify-center">
-                              <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
+                              <input
+                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                type="text"
+                                readOnly
+                              />
                             </td>
                             <td className="!text-center !justify-center">
                               <input
@@ -1475,10 +1492,12 @@ console.log(updatedEditData,"updatedEditData")
                                   const newData = [
                                     ...editData.OpAndCalMultiParameterProcessRecords,
                                   ];
-                                  newData[index].nameOfSolution = e.target.value;
+                                  newData[index].nameOfSolution =
+                                    e.target.value;
                                   setEditData({
                                     ...editData,
-                                    OpAndCalMultiParameterProcessRecords: newData,
+                                    OpAndCalMultiParameterProcessRecords:
+                                      newData,
                                   });
                                 }}
                                 readOnly={
@@ -1497,11 +1516,11 @@ console.log(updatedEditData,"updatedEditData")
                                   const newData = [
                                     ...editData.OpAndCalMultiParameterProcessRecords,
                                   ];
-                                  newData[index].adjustPH =
-                                    e.target.value;
+                                  newData[index].adjustPH = e.target.value;
                                   setEditData({
                                     ...editData,
-                                    OpAndCalMultiParameterProcessRecords: newData,
+                                    OpAndCalMultiParameterProcessRecords:
+                                      newData,
                                   });
                                 }}
                                 readOnly={
@@ -1554,7 +1573,8 @@ console.log(updatedEditData,"updatedEditData")
                                       }
                                       setEditData({
                                         ...editData,
-                                        OpAndCalMultiParameterProcessRecords: newData,
+                                        OpAndCalMultiParameterProcessRecords:
+                                          newData,
                                       });
                                     }}
                                     disabled={
@@ -1593,7 +1613,8 @@ console.log(updatedEditData,"updatedEditData")
 
                                       setEditData({
                                         ...editData,
-                                        OpAndCalMultiParameterProcessRecords: newData,
+                                        OpAndCalMultiParameterProcessRecords:
+                                          newData,
                                       });
                                     }}
                                     className="border rounded px-2 py-1 w-auto"
@@ -1631,7 +1652,8 @@ console.log(updatedEditData,"updatedEditData")
 
                                           setEditData({
                                             ...editData,
-                                            OpAndCalMultiParameterProcessRecords: newData,
+                                            OpAndCalMultiParameterProcessRecords:
+                                              newData,
                                           });
                                         }}
                                         className="border rounded px-2 py-1 w-auto"
@@ -1662,7 +1684,8 @@ console.log(updatedEditData,"updatedEditData")
 
                                             setEditData({
                                               ...editData,
-                                              OpAndCalMultiParameterProcessRecords: newData,
+                                              OpAndCalMultiParameterProcessRecords:
+                                                newData,
                                             });
                                           }}
                                           className="border rounded px-2 py-1 w-auto"

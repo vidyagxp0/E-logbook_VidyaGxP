@@ -308,7 +308,10 @@ const PhMeterOpCal = () => {
                               <div>VidyaGxP Private Limited</div>
                             </div>
                           </div> */}
-              <div className="sub-head-2"> Operation and Calibration of pH meter (multiparamter)</div>
+              <div className="sub-head-2">
+                {" "}
+                Operation and Calibration of pH meter (multiparamter)
+              </div>
 
               <div className="outerDiv4">
                 <div className="btn-forms">

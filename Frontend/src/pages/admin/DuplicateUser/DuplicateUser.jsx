@@ -23,14 +23,11 @@ function DuplicateUser() {
 
   useEffect(() => {
     axios
-      .get(
-        `http://localhost:1000/user/get-a-user/${location.state.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
-          },
-        }
-      )
+      .get(`http://localhost:1000/user/get-a-user/${location.state.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
+        },
+      })
       .then((response) => {
         setUserInfo(response.data);
         setSelectedOptions(response.data.roles || []);

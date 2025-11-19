@@ -52,7 +52,7 @@ function hasAccess(userRoles, site_id, processId, roleId) {
       (role.site_id === site_id &&
         role.process_id === processId &&
         role.role_id === roleId)
-  );  
+  );
 }
 
 function authorizeUserRole(processId, roleId) {
@@ -85,7 +85,7 @@ const getFileUrl = (file) => {
 };
 
 const getElogDocsUrl = (file) => {
-  if (file && typeof file === 'object' && !file.filename) {
+  if (file && typeof file === "object" && !file.filename) {
     const firstValue = Object.values(file)[0];
     if (firstValue?.filename) {
       const url = `http://localhost:1000/elog_docs/${firstValue.filename}`;
@@ -100,7 +100,6 @@ const getElogDocsUrl = (file) => {
 
   return null;
 };
-
 
 module.exports.getFileUrl = getFileUrl;
 module.exports.getElogDocsUrl = getElogDocsUrl;

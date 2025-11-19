@@ -72,7 +72,11 @@ const SdsPagePanel = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/sds-page/send-elog-for-review", data, config)
+        .put(
+          "http://localhost:1000/sds-page/send-elog-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -479,7 +483,8 @@ const SdsPagePanel = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Sodium Dodecyl Sulfate Polyacrylamide gel electrophoresis (SDS-PAGE) Record
+                  Sodium Dodecyl Sulfate Polyacrylamide gel electrophoresis
+                  (SDS-PAGE) Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">

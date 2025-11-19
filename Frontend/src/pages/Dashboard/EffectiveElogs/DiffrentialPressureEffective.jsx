@@ -58,9 +58,11 @@ export default function DPREffective() {
 
   const handlePopupSubmit = (credentials) => {
     const cleanedData = editData.DifferentialPressureRecords.filter(
-      (record) => record.differential_pressure.trim() !== "" || record.remarks.trim() !== ""
+      (record) =>
+        record.differential_pressure.trim() !== "" ||
+        record.remarks.trim() !== ""
     );
-  
+
     const updatedEditData = {
       ...editData,
       DifferentialPressureRecords: cleanedData,
@@ -880,34 +882,30 @@ export default function DPREffective() {
                 </div> */}
               </div>
               <div className="flex gap-2">
-              <div className="flex gap-2">
-               
-                <div >
-                <label> Start Date</label>
-                <input  type="date" />
+                <div className="flex gap-2">
+                  <div>
+                    <label> Start Date</label>
+                    <input type="date" />
+                  </div>
+                  <div>
+                    <label> End Date</label>
+                    <input type="date" />
+                  </div>
                 </div>
-                <div >
-                <label> End Date</label>
-                <input  type="date" />
+                <div className="flex gap-2">
+                  <div>
+                    <label> Start Date and Time</label>
+                    <input type="datetime-local" />
+                  </div>
+                  <div>
+                    <label> End Date and Time</label>
+                    <input type="datetime-local" />
+                  </div>
                 </div>
-              
-                
-              </div>
-              <div className="flex gap-2">
-               
-                <div >
-                <label> Start Date and Time</label>
-                <input  type="datetime-local" />
+                <div>
+                  <label htmlFor="">Shift Vise</label>
+                  <input type="text" />
                 </div>
-                <div >
-                <label> End Date and Time</label>
-                <input  type="datetime-local" />
-                </div>
-              </div>
-              <div>
-              <label htmlFor="">Shift Vise</label>
-              <input type="text" />
-              </div>
               </div>
 
               {/* {isSelectedGeneral === true ? (

@@ -1034,7 +1034,11 @@ const HplcEffective = () => {
                             </td>
 
                             <td className="w-24">
-                              <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
+                              <input
+                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                type="text"
+                                readOnly
+                              />
                             </td>
 
                             <td>

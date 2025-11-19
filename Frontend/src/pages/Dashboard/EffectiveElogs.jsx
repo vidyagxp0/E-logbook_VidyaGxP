@@ -259,7 +259,6 @@ function EffectiveElogs() {
     };
     axios(newKarlFischer)
       .then((response) => {
-        console.log(response, "karl fischer");
         const temp = response.data.message;
         const allKarlFischer = temp.filter((log) => log.status === "Closed");
         setKarlFischerElogs(allKarlFischer);
@@ -304,138 +303,149 @@ function EffectiveElogs() {
       .catch((error) => {
         console.error("Error: ", error);
       });
-      const newpHMeterOPCal = {
-            method: "get",
-            url: "http://localhost:1000/op-and-calParameter/get-all",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-              "Content-Type": "application/json",
-            },
-          };
-          axios(newpHMeterOPCal)
-            .then((response) => {
-              const pHMeterOPCal = response.data.message;
-              let filteredArray = pHMeterOPCal.filter((elog) => {
-                const userId = userDetails.userId;
-      
-                return (
-                  userId === elog.reviewer_id ||
-                  userId === elog.initiator_id ||
-                  userId === elog.approver_id ||
-                  hasAccess(4, elog.site_id, 4)
-                );
-              });
-              setPHMeterOPCalElogs(pHMeterOPCal);
-            })
-            .catch((error) => {
-              console.error("Error: ", error);
-            });
-      const newuVVisCalibElogs = {
-            method: "get",
-            url: "http://localhost:1000/uv-vis-calib/get-all",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-              "Content-Type": "application/json",
-            },
-          };
-          axios(newuVVisCalibElogs)
-            .then((response) => {
-              const uVVisCalib = response.data.message;
-              let filteredArray = uVVisCalib.filter((elog) => {
-                const userId = userDetails.userId;
-      
-                return (
-                  userId === elog.reviewer_id ||
-                  userId === elog.initiator_id ||
-                  userId === elog.approver_id ||
-                  hasAccess(4, elog.site_id, 4)
-                );
-              });
-              setUVVisCalibElogs(uVVisCalib);
-            })
-            .catch((error) => {
-              console.error("Error: ", error);
-            });
-      const newSdsPageElogs = {
-            method: "get",
-            url: "http://localhost:1000/sds-page/get-all",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-              "Content-Type": "application/json",
-            },
-          };
-          axios(newSdsPageElogs)
-            .then((response) => {
-              const sDsPage = response.data.message;
-              let filteredArray = sDsPage.filter((elog) => {
-                const userId = userDetails.userId;
-      
-                return (
-                  userId === elog.reviewer_id ||
-                  userId === elog.initiator_id ||
-                  userId === elog.approver_id ||
-                  hasAccess(4, elog.site_id, 4)
-                );
-              });
-              setSdsPage(sDsPage);
-            })
-            .catch((error) => {
-              console.error("Error: ", error);
-            });
+    const newpHMeterOPCal = {
+      method: "get",
+      url: "http://localhost:1000/op-and-calParameter/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newpHMeterOPCal)
+      .then((response) => {
+        const pHMeterOPCal = response.data.message;
+        const allPhMeterOPCal = pHMeterOPCal.filter(
+          (log) => log.status === "Closed"
+        );
+        let filteredArray = pHMeterOPCal.filter((elog) => {
+          const userId = userDetails.userId;
 
-             const newGelDociGene = {
-                  method: "get",
-                  url: "http://localhost:1000/gel-doc-igene/get-all",
-                  headers: {
-                    Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-                    "Content-Type": "application/json",
-                  },
-                };
-                axios(newGelDociGene)
-                  .then((response) => {
-                    const gelDociGene = response.data.message;
-                    let filteredArray = gelDociGene.filter((elog) => {
-                      const userId = userDetails.userId;
-            
-                      return (
-                        userId === elog.reviewer_id ||
-                        userId === elog.initiator_id ||
-                        userId === elog.approver_id ||
-                        hasAccess(4, elog.site_id, 4)
-                      );
-                    });
-                    setGelDociGene(gelDociGene);
-                  })
-                  .catch((error) => {
-                    console.error("Error: ", error);
-                  });
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setPHMeterOPCalElogs(allPhMeterOPCal);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+    const newuVVisCalibElogs = {
+      method: "get",
+      url: "http://localhost:1000/uv-vis-calib/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newuVVisCalibElogs)
+      .then((response) => {
+        const uVVisCalib = response.data.message;
+        const allUVVisCalibElogs = uVVisCalib.filter(
+          (log) => log.status === "Closed"
+        );
+        let filteredArray = uVVisCalib.filter((elog) => {
+          const userId = userDetails.userId;
 
-                  const newUVwlTrans = {
-                        method: "get",
-                        url: "http://localhost:1000/uv-wl-transi/get-all",
-                        headers: {
-                          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-                          "Content-Type": "application/json",
-                        },
-                      };
-                      axios(newUVwlTrans)
-                        .then((response) => {
-                          const uvWlTrans = response.data.message;
-                          let filteredArray = uvWlTrans.filter((elog) => {
-                            const userId = userDetails.userId;
-                  
-                            return (
-                              userId === elog.reviewer_id ||
-                              userId === elog.initiator_id ||
-                              userId === elog.approver_id ||
-                              hasAccess(4, elog.site_id, 4)
-                            );
-                          });
-                          setUVWlTrans(uvWlTrans);
-                        })
-                        .catch((error) => {
-                          console.error("Error: ", error);
-                        });
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setUVVisCalibElogs(allUVVisCalibElogs);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+    const newSdsPageElogs = {
+      method: "get",
+      url: "http://localhost:1000/sds-page/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newSdsPageElogs)
+      .then((response) => {
+        const sDsPage = response.data.message;
+        const allSdsPage = sDsPage.filter((log) => log.status === "Closed");
+        let filteredArray = sDsPage.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setSdsPage(allSdsPage);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+    const newGelDociGene = {
+      method: "get",
+      url: "http://localhost:1000/gel-doc-igene/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newGelDociGene)
+      .then((response) => {
+        const gelDociGene = response.data.message;
+        const allGelDociGene = gelDociGene.filter(
+          (log) => log.status === "Closed"
+        );
+        let filteredArray = gelDociGene.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setGelDociGene(allGelDociGene);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+    const newUVwlTrans = {
+      method: "get",
+      url: "http://localhost:1000/uv-wl-transi/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newUVwlTrans)
+      .then((response) => {
+        const uvWlTrans = response.data.message;
+        const allUVWlTrans = uvWlTrans.filter((log) => log.status === "Closed");
+        let filteredArray = uvWlTrans.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setUVWlTrans(allUVWlTrans);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const combinedRecords = [
@@ -458,7 +468,6 @@ function EffectiveElogs() {
   ];
 
   const handleNavigation = (item) => {
-    console.log(item, "itme");
     if (item.DifferentialPressureRecords) {
       navigate("/effective-dpr", { state: item });
       // } else if (item.process === "Area and equipment") {
@@ -481,15 +490,15 @@ function EffectiveElogs() {
       navigate("/effective-karl-fischer", { state: item });
     } else if (item.hplcRecords) {
       navigate("/effective-hplc", { state: item });
-    }else if (item.OpAndCalMultiParameterProcessRecords) {
+    } else if (item.OpAndCalMultiParameterProcessRecords) {
       navigate("/effective-pHMeterOpCal", { state: item });
-    }else if (item.UvVisRecords) {
+    } else if (item.UvVisRecords) {
       navigate("/effective-uv-vis-calibration", { state: item });
-    }else if (item.sdsPageRecords) {
+    } else if (item.sdsPageRecords) {
       navigate("/effective-sds-page", { state: item });
-    }else if (item.gelDocIGeneRecords) {
+    } else if (item.gelDocIGeneRecords) {
       navigate("/effective-gel-doc-igene", { state: item });
-    }else if (item.uvWhiteLightRecords) {
+    } else if (item.uvWhiteLightRecords) {
       navigate("/effective-uv-wl-transilluminator", { state: item });
     } else {
       // Handle default or fallback navigation if needed
@@ -501,9 +510,7 @@ function EffectiveElogs() {
       role === "All_Records" ||
       (role === "analytical_balance" && item?.initiator_name) ||
       (role === "karl_fischer" && item?.reviewed_by);
-
     const statusMatch = status === "All_Records" || item.status === status;
-
     return roleMatch && statusMatch;
   };
 
@@ -514,15 +521,15 @@ function EffectiveElogs() {
       return karlFischerElogs?.filter(filterRecord);
     } else if (eLogSelect === "hplc") {
       return hplcElogs?.filter(filterRecord);
-    }else if (eLogSelect === "pH Meter OP/Cal") {
+    } else if (eLogSelect === "pH Meter OP/Cal") {
       return pHMeterOPCalElogs?.filter(filterRecord);
-    }else if (eLogSelect === "UV-Vis Calibration") {
+    } else if (eLogSelect === "UV-Vis Calibration") {
       return uVVisCalibElogs?.filter(filterRecord);
-    }else if (eLogSelect === "SDS PAGE") {
+    } else if (eLogSelect === "SDS PAGE") {
       return sdsPage?.filter(filterRecord);
-    }else if (eLogSelect === "Gel Doc iGene") {
+    } else if (eLogSelect === "Gel Doc iGene") {
       return gelDociGene?.filter(filterRecord);
-    }else if (eLogSelect === "UV/WL Transilluminator") {
+    } else if (eLogSelect === "UV/WL Transilluminator") {
       return uVWhiteLightTrans?.filter(filterRecord);
     } else {
       return combinedRecords
@@ -714,6 +721,9 @@ function EffectiveElogs() {
                 <option value="UV-Vis Calibration">UV-Vis Calibration</option>
                 <option value="SDS PAGE">SDS PAGE</option>
                 <option value="Gel Doc iGene">Gel Doc iGene</option>
+                <option value="UV/Wl Transilluminator">
+                  UV/Wl Transilluminator
+                </option>
               </select>
             </div>
 

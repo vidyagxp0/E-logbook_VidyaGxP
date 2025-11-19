@@ -157,11 +157,7 @@ const MediaRecord = () => {
     mediaRecords.initiatorDeclaration = credentials?.declaration;
 
     axios
-      .post(
-        "http://localhost:1000/media-record/post",
-        mediaRecords,
-        config
-      )
+      .post("http://localhost:1000/media-record/post", mediaRecords, config)
       .then(() => {
         toast.success("eLog Saved Successfully!");
         navigate("/dashboard");

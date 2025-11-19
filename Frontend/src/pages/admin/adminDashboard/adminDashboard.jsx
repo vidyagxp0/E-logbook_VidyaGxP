@@ -128,14 +128,11 @@ function AdminDashboard() {
   const openPermissionsModal = (user) => {
     const token = localStorage.getItem("admin-token");
     axios
-      .get(
-        `http://localhost:1000/user/get-user-permissions/${user.user_id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .get(`http://localhost:1000/user/get-user-permissions/${user.user_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         setPermissions(response.data.message);
         setSelectedUser(user);

@@ -92,7 +92,8 @@ const UvWITransilluminatorEffective = () => {
 
     console.log("Cleaned records:", cleanedData);
 
-    const emptyRowsCount = editData?.uvWhiteLightRecords.length - cleanedData.length;
+    const emptyRowsCount =
+      editData?.uvWhiteLightRecords.length - cleanedData.length;
     if (emptyRowsCount > 0) {
       toast.warn(
         `${emptyRowsCount} empty row(s) will be removed before saving.`
@@ -135,7 +136,11 @@ const UvWITransilluminatorEffective = () => {
         return;
       }
       axios
-        .put("http://localhost:1000/uv-wl-transi/send-elog-for-review", data, config)
+        .put(
+          "http://localhost:1000/uv-wl-transi/send-elog-for-review",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
@@ -506,7 +511,9 @@ const UvWITransilluminatorEffective = () => {
     }
   }, [reportData]);
 
-  const allRecordDates = editData?.uvWhiteLightRecords?.map((r) => new Date(r.date));
+  const allRecordDates = editData?.uvWhiteLightRecords?.map(
+    (r) => new Date(r.date)
+  );
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
@@ -541,10 +548,12 @@ const UvWITransilluminatorEffective = () => {
         }
 
         // Filter hplc records
-        filteredData.uvWhiteLightRecords = editData.uvWhiteLightRecords.filter((record) => {
-          const recordDate = new Date(record.date);
-          return recordDate >= start && recordDate <= end;
-        });
+        filteredData.uvWhiteLightRecords = editData.uvWhiteLightRecords.filter(
+          (record) => {
+            const recordDate = new Date(record.date);
+            return recordDate >= start && recordDate <= end;
+          }
+        );
       }
 
       const payload = {
@@ -927,7 +936,9 @@ const UvWITransilluminatorEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.uvWhiteLightRecords?.map((r) => r.done_by)
+                              editData?.uvWhiteLightRecords?.map(
+                                (r) => r.done_by
+                              )
                             ),
                           ].map(
                             (done_by, index) =>
@@ -972,7 +983,9 @@ const UvWITransilluminatorEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.uvWhiteLightRecords?.map((r) => r.reviewed_by)
+                              editData?.uvWhiteLightRecords?.map(
+                                (r) => r.reviewed_by
+                              )
                             ),
                           ].map(
                             (reviewed_by, index) =>
@@ -1025,14 +1038,20 @@ const UvWITransilluminatorEffective = () => {
                             </td>
 
                             <td className="w-24">
-                              <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
+                              <input
+                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                type="text"
+                                readOnly
+                              />
                             </td>
 
                             <td>
                               <input
                                 value={item.sample_name}
                                 onChange={(e) => {
-                                  const newData = [...editData.uvWhiteLightRecords];
+                                  const newData = [
+                                    ...editData.uvWhiteLightRecords,
+                                  ];
                                   newData[index].sample_name = e.target.value;
                                   setEditData({
                                     ...editData,
@@ -1051,7 +1070,9 @@ const UvWITransilluminatorEffective = () => {
                               <input
                                 value={item.reg_no}
                                 onChange={(e) => {
-                                  const newData = [...editData.uvWhiteLightRecords];
+                                  const newData = [
+                                    ...editData.uvWhiteLightRecords,
+                                  ];
                                   newData[index].reg_no = e.target.value;
                                   setEditData({
                                     ...editData,
@@ -1065,7 +1086,6 @@ const UvWITransilluminatorEffective = () => {
                                 }
                               />
                             </td>
-
 
                             {/* ✅ Start Time */}
                             {/* <td>
@@ -1185,7 +1205,7 @@ const UvWITransilluminatorEffective = () => {
                               )}
                             </td> */}
 
-                             <td className="w-24">
+                            <td className="w-24">
                               <input value={item?.time} type="text" readOnly />
                             </td>
 
@@ -1201,7 +1221,9 @@ const UvWITransilluminatorEffective = () => {
                                   type="checkbox"
                                   checked={!!item.reviewed_by}
                                   onChange={(e) => {
-                                    const newData = [...editData.uvWhiteLightRecords];
+                                    const newData = [
+                                      ...editData.uvWhiteLightRecords,
+                                    ];
                                     if (e.target.checked) {
                                       newData[index].reviewed_by = reviewed_by;
                                       newData[index].status = "Closed";
@@ -1236,7 +1258,9 @@ const UvWITransilluminatorEffective = () => {
                                   <select
                                     value={item.remarksType || ""}
                                     onChange={(e) => {
-                                      const newData = [...editData.uvWhiteLightRecords];
+                                      const newData = [
+                                        ...editData.uvWhiteLightRecords,
+                                      ];
                                       newData[index].remarksType =
                                         e.target.value;
 

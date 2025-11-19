@@ -1470,7 +1470,11 @@ const KarlFischerEffective = () => {
                               />
                             </td>
                             <td className="!text-center !justify-center">
-                              <input value={dayjs(item?.date).format("DD-MM-YYYY")} type="text" readOnly />
+                              <input
+                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                type="text"
+                                readOnly
+                              />
                             </td>
 
                             <td className="!text-center !justify-center">

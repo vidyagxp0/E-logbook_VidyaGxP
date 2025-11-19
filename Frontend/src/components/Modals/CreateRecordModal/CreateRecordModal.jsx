@@ -55,8 +55,8 @@ function CreateRecordModal(_props) {
       const filteredProcesses = response.data.message.filter((process) =>
         filteredProcessIds.includes(process.process_id)
       );
-      console.log(filteredProcesses,"filterdProcess");
-      
+      console.log(filteredProcesses, "filterdProcess");
+
       setProcesses(filteredProcesses);
       console.log(filteredProcesses);
     } catch (error) {
@@ -76,7 +76,7 @@ function CreateRecordModal(_props) {
 
   const handleSelectProcess = (element) => {
     setProject(element.process);
-console.log(element,"leel")
+    console.log(element, "leel");
     switch (element.process_id) {
       case 1:
         navigate("/differential-pressure-record", {

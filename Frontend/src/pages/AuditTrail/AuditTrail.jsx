@@ -4,14 +4,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import HeaderTop from "../../components/Header/HeaderTop";
 import { useSelector } from "react-redux";
 
-
 function AuditTrail() {
   const [auditTrails, setAuditTrails] = useState([]);
   const [User, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-console.log(location.state?.process,"location.state?.process")
+  console.log(location.state?.process, "location.state?.process");
   useEffect(() => {
     const fetchAuditTrail = async () => {
       if (location.state?.process === "Differential Pressure") {
@@ -110,8 +109,7 @@ console.log(location.state?.process,"location.state?.process")
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "Analytical Balance") {
+      } else if (location.state?.process === "Analytical Balance") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -127,8 +125,7 @@ console.log(location.state?.process,"location.state?.process")
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "KARL Fischer") {
+      } else if (location.state?.process === "KARL Fischer") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -144,8 +141,7 @@ console.log(location.state?.process,"location.state?.process")
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "HPLC") {
+      } else if (location.state?.process === "HPLC") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -161,8 +157,7 @@ console.log(location.state?.process,"location.state?.process")
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "pH Meter OP/Cal") {
+      } else if (location.state?.process === "pH Meter OP/Cal") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -178,8 +173,7 @@ console.log(location.state?.process,"location.state?.process")
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "UV-Vis Calibration") {
+      } else if (location.state?.process === "UV-Vis Calibration") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -195,8 +189,7 @@ console.log(location.state?.process,"location.state?.process")
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "SDS PAGE") {
+      } else if (location.state?.process === "SDS PAGE") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -212,8 +205,7 @@ console.log(location.state?.process,"location.state?.process")
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "Gel Doc iGene") {
+      } else if (location.state?.process === "Gel Doc iGene") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -235,103 +227,100 @@ console.log(location.state?.process,"location.state?.process")
     fetchAuditTrail();
   }, [location.state?.formId, location.state?.process]);
 
-  const formId = location.state?.formId
+  const formId = location.state?.formId;
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
-useEffect(() => {
- const requestOptions = {
-   method: "GET",
-   url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, 
-   headers: {}, 
- };
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`,
+      headers: {},
+    };
 
- axios(requestOptions)
-   .then((response) => {
-     setUser(response.data);
-   })
-   .catch((error) => {
-     console.error(error);
-   });
-}, []);
+    axios(requestOptions)
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
+  const generateReport = async () => {
+    const process = location.state?.process;
+    if (!process) {
+      console.error("Process is not defined.");
+      return;
+    }
 
-const generateReport = async () => {
+    const processRouteMap = {
+      "Differential Pressure": {
+        type: "DifferentialPressureAuditTrail",
+      },
+      "Temperature Record": {
+        type: "TemperatureRecordsAuditTrail",
+      },
+      "Loaded Quantity": {
+        type: "LoadedQuantityProcessAuditTrail",
+      },
+      "Operation Of Sterilizer": {
+        type: "OperationOfSterilizerProcessAuditTrail",
+      },
+      "Dispensing Of Materials": {
+        type: "DispenseOfMatrialAuditTrail",
+      },
+      "Media Record": {
+        type: "MediaRecordAuditTrail",
+      },
+      "Analytical Balance": {
+        type: "AnalyticalBalanceAuditTrail",
+      },
+      HPLC: {
+        type: "hplcAuditTrail",
+      },
+      "KARL Fischer": {
+        type: "karlFischerAuditTrail",
+      },
+      "pH Meter OP/Cal": {
+        type: "pHMeterOPCalAuditTrail",
+      },
+      "UV-Vis Calibration": {
+        type: "UVVisCalibrationAuditTrail",
+      },
+    };
 
- const process = location.state?.process;
- if (!process) {
-   console.error("Process is not defined.");
-   return;
- }
+    const processDetails = processRouteMap[process];
+    if (!processDetails) {
+      console.error("Invalid process type.");
+      return;
+    }
 
- const processRouteMap = {
-   "Differential Pressure": {
-     type: "DifferentialPressureAuditTrail",
-   },
-   "Temperature Record": {
-     type: "TemperatureRecordsAuditTrail",
-   },
-   "Loaded Quantity": {
-     type: "LoadedQuantityProcessAuditTrail",
-   },
-   "Operation Of Sterilizer": {
-     type: "OperationOfSterilizerProcessAuditTrail",
-   },
-   "Dispensing Of Materials": {
-     type: "DispenseOfMatrialAuditTrail",
-   },
-   "Media Record": {
-     type: "MediaRecordAuditTrail",
-   },
-   "Analytical Balance": {
-      type: "AnalyticalBalanceAuditTrail",
-    },
-    "HPLC": {
-      type: "hplcAuditTrail",
-    },
-    "KARL Fischer": {
-      type: "karlFischerAuditTrail",
-    },
-    "pH Meter OP/Cal": {
-      type: "pHMeterOPCalAuditTrail",
-    },
-    "UV-Vis Calibration": {
-      type: "UVVisCalibrationAuditTrail",
-    },
- };
+    const { type } = processDetails;
 
- const processDetails = processRouteMap[process];
- if (!processDetails) {
-   console.error("Invalid process type.");
-   return;
- }
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`
+      );
 
- const {  type } = processDetails;
+      if (!response.ok) {
+        throw new Error(`Failed to fetch audit report: ${response.statusText}`);
+      }
 
- setIsLoading(true);
- try {
-   const response = await fetch(
-     `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`
-   );
-
-   if (!response.ok) {
-     throw new Error(`Failed to fetch audit report: ${response.statusText}`);
-   }
-
-   const blob = await response.blob();
-   const url = window.URL.createObjectURL(blob);
-   const link = document.createElement("a");
-   link.href = url;
-   link.setAttribute("download", `${type}_audit_report.pdf`);
-   document.body.appendChild(link);
-   link.click();
-   document.body.removeChild(link);
- } catch (error) {
-   console.error("Error downloading PDF:", error);
- } finally {
-   setIsLoading(false);
- }
-};
-
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${type}_audit_report.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -375,46 +364,47 @@ const generateReport = async () => {
         <HeaderTop />
         <div id="body-container" style={{ margin: "20px" }}>
           <div className="flex justify-between items-center bg-slate-300 p-2">
-          <h3 style={{ textAlign: "center", fontSize: "2em",margin:"auto" }}>
-            <strong>Audit Trail</strong>
-          </h3>
-          <div className="flex flex-col gap-3 items-center justify-center">
-                
-                {/* Generate Report Button */}
-                <button
-                  onClick={generateReport}
-                  className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-slate-400 text-sm  cursor-pointer text-black font-normal"
-                >
-                  {isLoading ? (
-                    <>
-                      <span>Generate Report</span>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          border: "3px solid #f3f3f3",
-                          borderTop: "3px solid black",
-                          borderRadius: "50%",
-                          animation: "spin 1s linear infinite",
-                          marginLeft: "10px",
-                        }}
-                      ></div>
-                    </>
-                  ) : (
-                    "Generate Report"
-                  )}
-                  <style>
-                    {`
+            <h3
+              style={{ textAlign: "center", fontSize: "2em", margin: "auto" }}
+            >
+              <strong>Audit Trail</strong>
+            </h3>
+            <div className="flex flex-col gap-3 items-center justify-center">
+              {/* Generate Report Button */}
+              <button
+                onClick={generateReport}
+                className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-slate-400 text-sm  cursor-pointer text-black font-normal"
+              >
+                {isLoading ? (
+                  <>
+                    <span>Generate Report</span>
+                    <div
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        border: "3px solid #f3f3f3",
+                        borderTop: "3px solid black",
+                        borderRadius: "50%",
+                        animation: "spin 1s linear infinite",
+                        marginLeft: "10px",
+                      }}
+                    ></div>
+                  </>
+                ) : (
+                  "Generate Report"
+                )}
+                <style>
+                  {`
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
       `}
-                  </style>
-                </button>
-                </div>
+                </style>
+              </button>
+            </div>
           </div>
-          
+
           <br />
           <hr />
           {auditTrails?.length === 0 ? (
@@ -461,7 +451,6 @@ const generateReport = async () => {
                         borderBottom: "1px solid #ccc",
                         width: "10%",
                       }}
-                      
                     >
                       {/* Previous Value */}
                       Data Fields
@@ -591,11 +580,14 @@ const generateReport = async () => {
                         </div>
                         <div className="mb-2">
                           Previous Value :{" "}
-                          <span className="font-normal" dangerouslySetInnerHTML={{__html:auditTrail.previous_value
-                              ? auditTrail.previous_value
-                              : "null"}} >
-                           
-                          </span>
+                          <span
+                            className="font-normal"
+                            dangerouslySetInnerHTML={{
+                              __html: auditTrail.previous_value
+                                ? auditTrail.previous_value
+                                : "null",
+                            }}
+                          ></span>
                         </div>
                         <div className="text-nowrap flex">
                           New Value :{" "}
