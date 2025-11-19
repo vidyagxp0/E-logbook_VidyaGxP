@@ -665,30 +665,60 @@ const processShortName = {
 //   };
 
 
-const checkReviewStatus = (item, type) => {
-  const key = Object.keys(item).find((k) =>
-    k.toLowerCase().includes("records")
-  );
+// const checkReviewStatus = (item, type) => {
+//   console.log(item, "item>>>>");
+//   const key = Object.keys(item).find((k) =>
+//     ("records")
+//   );
+//   console.log(key, "key>>>>");
 
-  if (!key || !Array.isArray(item[key])) return false;
+//   if (!key || !Array.isArray(item[key])) return false;
+
+//   const records = item[key];
+
+//   if (records.length === 0) {
+//     return type === "PendingForCreate";
+//   }
+
+//   if (type === "Pending") {
+//     return records.some((rec) => !rec?.reviewed_by);
+//   }
+
+//   if (type === "Complete") {
+//     return records.every((rec) => rec?.reviewed_by);
+//   }
+
+//   return false;
+// };
+
+
+const checkReviewStatus = (item, type) => {
+  // find the key where value is an array of record objects
+  const key = Object.keys(item).find(
+    (k) => Array.isArray(item[k]) && item[k]?.length >= 0
+  );
+console.log(key,"filter key")
+  if (!key) return false;
 
   const records = item[key];
 
+  // If empty rows = Pending For Create
   if (records.length === 0) {
     return type === "PendingForCreate";
   }
 
+  // Pending → at least one empty reviewed_by
   if (type === "Pending") {
     return records.some((rec) => !rec?.reviewed_by);
   }
 
+  // Complete → every row has reviewed_by
   if (type === "Complete") {
     return records.every((rec) => rec?.reviewed_by);
   }
 
   return false;
 };
-
 
 const getFilteredData = () => {
   let data = [...combinedRecords];
