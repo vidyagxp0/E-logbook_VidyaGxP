@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import HeaderTop from "../../components/Header/HeaderTop";
 import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Dashboard.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import axios from "axios";
 import { hasAccess } from "../../components/userAuth/userAuth";
 
@@ -35,6 +35,22 @@ function EffectiveElogs() {
   const [uVWhiteLightTrans, setUVWlTrans] = useState([]);
   const [voCalibElogs, SetVOCalibElogs] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const location = useLocation();
+const [selectedProcess, setSelectedProcess] = useState(null);
+
+useEffect(() => {
+  // Get from location if available
+  if (location.state?.selectedProcess) {
+    setSelectedProcess(location.state.selectedProcess);
+    sessionStorage.setItem("selectedProcess", location.state.selectedProcess);
+  } else {
+    const storedProcess = sessionStorage.getItem("selectedProcess");
+    if (storedProcess) {
+      setSelectedProcess(Number(storedProcess));
+    }
+  }
+}, [location.state]);
+
   const getElogNumber = (item) => {
   const processId = item.process_id;
   if (!processId) return "IPC/BIOS/NA/000";
@@ -590,60 +606,116 @@ const processShortName = {
     return roleMatch && statusMatch;
   };
 
-  const getFilteredData = () => {
-    const applyInstrumentFilter = (data) => {
-  if (instrumentFilter === "All") return data;
-  return data.filter((item) => getElogNumber(item) === instrumentFilter);
-};
+//   const getFilteredData = () => {
+//     const applyInstrumentFilter = (data) => {
+//   if (instrumentFilter === "All") return data;
+//   return data.filter((item) => getElogNumber(item) === instrumentFilter);
+// };
 
-    if (eLogSelect === "analytical_balance") {
-      // return analyticalBalanceElogs?.filter(filterRecord);
-      return applyInstrumentFilter(analyticalBalanceElogs?.filter(filterRecord));
+//     if (eLogSelect === "analytical_balance") {
+//       // return analyticalBalanceElogs?.filter(filterRecord);
+//       return applyInstrumentFilter(analyticalBalanceElogs?.filter(filterRecord));
 
-    } else if (eLogSelect === "karl_fischer") {
-      // return karlFischerElogs?.filter(filterRecord);
-      return applyInstrumentFilter(karlFischerElogs?.filter(filterRecord));
-    } else if (eLogSelect === "hplc") {
-      // return hplcElogs?.filter(filterRecord);
-      return applyInstrumentFilter(hplcElogs?.filter(filterRecord));
-    } else if (eLogSelect === "pH Meter OP/Cal") {
-      // return pHMeterOPCalElogs?.filter(filterRecord);
-      return applyInstrumentFilter(pHMeterOPCalElogs?.filter(filterRecord));
+//     } else if (eLogSelect === "karl_fischer") {
+//       // return karlFischerElogs?.filter(filterRecord);
+//       return applyInstrumentFilter(karlFischerElogs?.filter(filterRecord));
+//     } else if (eLogSelect === "hplc") {
+//       // return hplcElogs?.filter(filterRecord);
+//       return applyInstrumentFilter(hplcElogs?.filter(filterRecord));
+//     } else if (eLogSelect === "pH Meter OP/Cal") {
+//       // return pHMeterOPCalElogs?.filter(filterRecord);
+//       return applyInstrumentFilter(pHMeterOPCalElogs?.filter(filterRecord));
 
-    } else if (eLogSelect === "UV-Vis Calibration") {
-      // return uVVisCalibElogs?.filter(filterRecord);
-      return applyInstrumentFilter(uVVisCalibElogs?.filter(filterRecord));
+//     } else if (eLogSelect === "UV-Vis Calibration") {
+//       // return uVVisCalibElogs?.filter(filterRecord);
+//       return applyInstrumentFilter(uVVisCalibElogs?.filter(filterRecord));
 
-    } else if (eLogSelect === "SDS PAGE") {
-      // return sdsPage?.filter(filterRecord);
-      return applyInstrumentFilter(sdsPage?.filter(filterRecord));
-    } else if (eLogSelect === "Gel Doc iGene") {
-      // return gelDociGene?.filter(filterRecord);
-      return applyInstrumentFilter(gelDociGene?.filter(filterRecord));
-    } else if (eLogSelect === "UV/WL Transilluminator") {
-      // return uVWhiteLightTrans?.filter(filterRecord);
-      return applyInstrumentFilter(uVWhiteLightTrans?.filter(filterRecord));
-    } else if (eLogSelect === "VO Calibration") {
-      // return voCalibElogs?.filter(filterRecord);
-            return applyInstrumentFilter(voCalibElogs?.filter(filterRecord));
-    } else {
-      // return combinedRecords
-      //   ?.filter(filterRecord)
-      //   ?.sort(
-      //     (a, b) =>
-      //       new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
-      //   );
-      return applyInstrumentFilter(
-  combinedRecords
-    ?.filter(filterRecord)
-    ?.sort(
-      (a, b) =>
-        new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
-    )
-);
+//     } else if (eLogSelect === "SDS PAGE") {
+//       // return sdsPage?.filter(filterRecord);
+//       return applyInstrumentFilter(sdsPage?.filter(filterRecord));
+//     } else if (eLogSelect === "Gel Doc iGene") {
+//       // return gelDociGene?.filter(filterRecord);
+//       return applyInstrumentFilter(gelDociGene?.filter(filterRecord));
+//     } else if (eLogSelect === "UV/WL Transilluminator") {
+//       // return uVWhiteLightTrans?.filter(filterRecord);
+//       return applyInstrumentFilter(uVWhiteLightTrans?.filter(filterRecord));
+//     } else if (eLogSelect === "VO Calibration") {
+//       // return voCalibElogs?.filter(filterRecord);
+//             return applyInstrumentFilter(voCalibElogs?.filter(filterRecord));
+//     } else {
+//       // return combinedRecords
+//       //   ?.filter(filterRecord)
+//       //   ?.sort(
+//       //     (a, b) =>
+//       //       new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
+//       //   );
+//       return applyInstrumentFilter(
+//   combinedRecords
+//     ?.filter(filterRecord)
+//     ?.sort(
+//       (a, b) =>
+//         new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
+//     )
+// );
 
-    }
+//     }
+//   };
+
+
+const getFilteredData = () => {
+  let data = [...combinedRecords];
+
+  // ⭐ Apply selected process filter (same as Dashboard)
+  if (selectedProcess) {
+    data = data.filter((item) => item.process_id === selectedProcess);
+  }
+
+  // ⭐ Instrument filter wrapper
+  const applyInstrumentFilter = (rows) => {
+    if (instrumentFilter === "All") return rows;
+    return rows.filter((item) => getElogNumber(item) === instrumentFilter);
   };
+
+  // ⭐ Individual instrument filters
+  if (eLogSelect === "analytical_balance") {
+    return applyInstrumentFilter(analyticalBalanceElogs?.filter(filterRecord));
+  } 
+  else if (eLogSelect === "karl_fischer") {
+    return applyInstrumentFilter(karlFischerElogs?.filter(filterRecord));
+  } 
+  else if (eLogSelect === "hplc") {
+    return applyInstrumentFilter(hplcElogs?.filter(filterRecord));
+  } 
+  else if (eLogSelect === "pH Meter OP/Cal") {
+    return applyInstrumentFilter(pHMeterOPCalElogs?.filter(filterRecord));
+  } 
+  else if (eLogSelect === "UV-Vis Calibration") {
+    return applyInstrumentFilter(uVVisCalibElogs?.filter(filterRecord));
+  } 
+  else if (eLogSelect === "SDS PAGE") {
+    return applyInstrumentFilter(sdsPage?.filter(filterRecord));
+  } 
+  else if (eLogSelect === "Gel Doc iGene") {
+    return applyInstrumentFilter(gelDociGene?.filter(filterRecord));
+  } 
+  else if (eLogSelect === "UV/WL Transilluminator") {
+    return applyInstrumentFilter(uVWhiteLightTrans?.filter(filterRecord));
+  }
+  else if (eLogSelect === "VO Calibration") {
+    return applyInstrumentFilter(voCalibElogs?.filter(filterRecord));
+  }
+
+  // ⭐ All Records + instrument filter + selectedProcess
+  return applyInstrumentFilter(
+    data
+      ?.filter(filterRecord)
+      ?.sort(
+        (a, b) =>
+          new Date(b.date_of_initiation) -
+          new Date(a.date_of_initiation)
+      )
+  );
+};
 
   const filteredData = getFilteredData();
 
