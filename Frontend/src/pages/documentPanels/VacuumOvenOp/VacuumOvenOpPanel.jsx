@@ -9,8 +9,8 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
-
-const AnalitycalBalancePanel = () => {
+import VacuumOvenOp from "../../configForms/VacuumOvenOp/VacuumOvenOp";
+const VacuumOvenOpPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
@@ -31,10 +31,10 @@ const AnalitycalBalancePanel = () => {
     additionalInfo: "",
     additionalAttachment: "",
     additionalInfo: "",
-    AnalyticalBalance: [],
+    // HPLCRecords: [],
     limit: "",
   });
-  console.log(editData, "bhai");
+  console.log(editData, "111");
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -74,7 +74,7 @@ const AnalitycalBalancePanel = () => {
       }
       axios
         .put(
-          "http://localhost:1000/analytical-balance/send-for-review",
+          "http://localhost:1000/vo-cal/send-elog-for-review",
           data,
           config
         )
@@ -92,7 +92,7 @@ const AnalitycalBalancePanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/analytical-balance/send-review-to-approval",
+          "http://localhost:1000/vo-cal/send-from-review-to-approval",
           data,
           config
         )
@@ -111,7 +111,7 @@ const AnalitycalBalancePanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/analytical-balance/send-review-to-open",
+          "http://localhost:1000/vo-cal/send-elog-from-review-to-open",
           data,
           config
         )
@@ -126,7 +126,7 @@ const AnalitycalBalancePanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/analytical-balance/approve", data, config)
+        .put("http://localhost:1000/vo-cal/approve-elog", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -141,7 +141,7 @@ const AnalitycalBalancePanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/analytical-balance/send-approval-to-open",
+          "http://localhost:1000/vo-cal/send-elog-from-approval-to-open",
           data,
           config
         )
@@ -166,7 +166,7 @@ const AnalitycalBalancePanel = () => {
       //   return;
       // }
       if (
-        editData?.AnalyticalBalances?.some(
+        editData?.DifferentialPressureRecords?.some(
           (record) =>
             record.differential_pressure === "" || record.remarks === ""
         )
@@ -188,7 +188,7 @@ const AnalitycalBalancePanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/analytical-balance/update",
+        url: "http://localhost:1000/vo-cal/update",
       };
 
       axios(requestOptions)
@@ -233,7 +233,10 @@ const AnalitycalBalancePanel = () => {
       setEditData((prevState) => ({
         ...prevState,
 
-        AnalyticalBalances: [...prevState.AnalyticalBalances, newRow],
+        DifferentialPressureRecords: [
+          ...prevState.DifferentialPressureRecords,
+          newRow,
+        ],
       }));
     }
   };
@@ -290,11 +293,11 @@ const AnalitycalBalancePanel = () => {
       location.state?.stage === 1 &&
       location.state?.initiator_id === userDetails.userId
     ) {
-      const updatedGridData = [...editData.AnalyticalBalances];
+      const updatedGridData = [...editData.DifferentialPressureRecords];
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
-        AnalyticalBalances: updatedGridData,
+        DifferentialPressureRecords: updatedGridData,
       }));
     }
   };
@@ -309,7 +312,7 @@ const AnalitycalBalancePanel = () => {
   //     location.state?.stage === 1 &&
   //     location.state?.initiator_id === userDetails.userId
   //   ) {
-  //     const updatedGridData = editData.AnalyticalBalances.map(
+  //     const updatedGridData = editData.DifferentialPressureRecords.map(
   //       (item, i) => {
   //         if (i === index) {
   //           return { ...item, supporting_docs: null };
@@ -319,7 +322,7 @@ const AnalitycalBalancePanel = () => {
   //     );
   //     setEditData((prevState) => ({
   //       ...prevState,
-  //       AnalyticalBalances: updatedGridData,
+  //       DifferentialPressureRecords: updatedGridData,
   //     }));
   //   }
   // };
@@ -345,11 +348,11 @@ const AnalitycalBalancePanel = () => {
   };
 
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.AnalyticalBalances];
+    const updatedGridData = [...editData.DifferentialPressureRecords];
     updatedGridData[index].supporting_docs = file;
     setEditData((prevState) => ({
       ...prevState,
-      AnalyticalBalances: updatedGridData,
+      DifferentialPressureRecords: updatedGridData,
     }));
   };
 
@@ -381,10 +384,14 @@ const AnalitycalBalancePanel = () => {
         ? "EMEA"
         : location.state?.site_id === 4
         ? "EU"
-        : "Biologics",
+        : location.state?.site_id === 5
+        ? "Biologics"
+        : location.state?.site_id === 6
+        ? "AR&D"
+        : "--",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title: "Analytical Balance",
+    title: "Vacuum Oven Operation",
     ...editData,
   };
 
@@ -398,7 +405,7 @@ const AnalitycalBalancePanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/analytical-balance/chat-pdf/${formId}`,
+        `http://localhost:1000/vo-cal/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -437,7 +444,7 @@ const AnalitycalBalancePanel = () => {
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block !grid !grid-cols-3">
             {/* <div>
-               <strong> Record Name:&nbsp;</strong>Analytical Balance             </div> */}
+                <strong> Record Name:&nbsp;</strong>HPLC             </div> */}
             <div>
               <strong> Site:&nbsp;</strong>
               {location.state?.site_id === 1
@@ -446,9 +453,13 @@ const AnalitycalBalancePanel = () => {
                 ? "Malaysia"
                 : location.state?.site_id === 3
                 ? "EMEA"
-                : location.state?.site_id === 4
+                 : location.state?.site_id === 4
                 ? "EU"
-                : "Biologics"}
+                : location.state?.site_id === 5
+                ? "Biologics"
+                : location.state?.site_id === 6
+                ? "AR&D"
+                : "--"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -463,25 +474,25 @@ const AnalitycalBalancePanel = () => {
           <div className="document-form">
             <div className="details-form-data">
               {/* <div className="sop-type-header">
-                 <div className="logo">
-                   <img src="/vidyalogo21.png" alt="..." />
-                 </div>
-                 <div className="main-head">
-                   <div>VidyaGxP Private Limited</div>
-                 </div>
-               </div> */}
+                  <div className="logo">
+                    <img src="/vidyalogo21.png" alt="..." />
+                  </div>
+                  <div className="main-head">
+                    <div>VidyaGxP Private Limited</div>
+                  </div>
+                </div> */}
               {/* <div className="sop-type-header">
-                 <div className="logo">
-                   <img src="/vidyalogo21.png" alt="..." />
-                 </div>
-                 <div className="main-head">
-                   <div>VidyaGxP Private Limited</div>
-                 </div>
-               </div> */}
+                  <div className="logo">
+                    <img src="/vidyalogo21.png" alt="..." />
+                  </div>
+                  <div className="main-head">
+                    <div>VidyaGxP Private Limited</div>
+                  </div>
+                </div> */}
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Analytical Balance Record
+                  Operation and Calibration of Vacuum Oven Record
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -492,7 +503,7 @@ const AnalitycalBalancePanel = () => {
                       navigate("/audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Analytical Balance",
+                          process: "VO Calibration",
                         },
                       })
                     }
@@ -525,11 +536,11 @@ const AnalitycalBalancePanel = () => {
                     )}
                     <style>
                       {`
-           @keyframes spin {
-             0% { transform: rotate(0deg); }
-             100% { transform: rotate(360deg); }
-           }
-         `}
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}
                     </style>
                   </button>
 
@@ -566,7 +577,7 @@ const AnalitycalBalancePanel = () => {
                             setPopupAction("sendFromReviewToOpen");
                           }}
                         >
-                          Additional Information Required
+                          More Info Required
                         </button>
                       </>
                     )}
@@ -745,34 +756,34 @@ const AnalitycalBalancePanel = () => {
                     Approver
                   </div>
                   {/* <div
-                     className="btn-forms-select"
-                     onClick={() =>
-                       navigate("/audit-trail", {
-                         state: {
-                           formId: location.state?.form_id,
-                           process: "Differential Pressure",
-                         },
-                       })
-                     }
-                   >
-                     Audit Trail
-                   </div> */}
+                      className="btn-forms-select"
+                      onClick={() =>
+                        navigate("/audit-trail", {
+                          state: {
+                            formId: location.state?.form_id,
+                            process: "Differential Pressure",
+                          },
+                        })
+                      }
+                    >
+                      Audit Trail
+                    </div> */}
                 </div>
                 {/* <button className="btn-forms-select" onClick={generateReport}>
-                   Generate Report
-                 </button> */}
+                    Generate Report
+                  </button> */}
                 {/* <div className="analytics-btn">
-                   <button
-                     className="btn-print"
-                     onClick={() =>
-                       navigate("/analytics", {
-                         state: { records: location.state, processId: 1 },
-                       })
-                     }
-                   >
-                     Analytics
-                   </button>
-                 </div> */}
+                    <button
+                      className="btn-print"
+                      onClick={() =>
+                        navigate("/analytics", {
+                          state: { records: location.state, processId: 1 },
+                        })
+                      }
+                    >
+                      Analytics
+                    </button>
+                  </div> */}
               </div>
 
               {isSelectedGeneral === true ? (
@@ -807,15 +818,15 @@ const AnalitycalBalancePanel = () => {
                     </label>
                     <div>
                       {/* <input
-                         name="description"
-                         type="text"
-                         value={editData.description}
-                         onChange={handleInputChange1}
-                         readOnly={
-                           location.state?.stage !== 1 ||
-                           location.state?.initiator_id !== userDetails.userId
-                         }
-                       /> */}
+                          name="description"
+                          type="text"
+                          value={editData.description}
+                          onChange={handleInputChange1}
+                          readOnly={
+                            location.state?.stage !== 1 ||
+                            location.state?.initiator_id !== userDetails.userId
+                          }
+                        /> */}
 
                       <TinyEditor
                         editorContent={editData.description}
@@ -897,10 +908,10 @@ const AnalitycalBalancePanel = () => {
                       <tr>
                         <th>S no.</th>
                         <th>Date</th>
-                        <th>Reg. No./Lot no.</th>
                         <th>Sample Name</th>
-                        <th>Weight Taken</th>
-                        <th>UOM</th>
+                        <th>Reg No.</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
                         <th>Done by</th>
                         <th>Checked By</th>
                         <th>Remarks</th>
@@ -909,166 +920,166 @@ const AnalitycalBalancePanel = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {/*  {editData?.AnalyticalBalances.map(
-                         (item, index) => (
-                           <tr key={index}>
-                             <td>{index + 1}</td>
-                             <td>{item.unique_id}</td>
-                             <td>
-                               <input value={item.time} readOnly />
-                             </td>
-                             <td>
-                               <input
-                                 type="number"
-                                 value={item.differential_pressure}
-                                 className={`${
-                                   item.differential_pressure < 0.6
-                                     ? "limit"
-                                     : item.differential_pressure > 2.6
-                                     ? "limit"
-                                     : ""
-                                 }`}
-                                 onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].differential_pressure =
-                                     e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly={
-                                   location.state?.stage !== 1 ||
-                                   location.state?.initiator_id !==
-                                     userDetails.userId
-                                 }
-                               />
-                             </td>
-                             <td>
-                               <input
-                                 value={item.remarks}
-                                 onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].remarks = e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly={
-                                   location.state?.stage !== 1 ||
-                                   location.state?.initiator_id !==
-                                     userDetails.userId
-                                 }
-                               />
-                             </td>
-                             <td>
-                               <input
-                                 value={item.checked_by}
-                                 disabled
-                                 onChange={(e) => {
-                                   const newData = [
-                                     ...editData.AnalyticalBalances,
-                                   ];
-                                   newData[index].checked_by = e.target.value;
-                                   setEditData({
-                                     ...editData,
-                                     AnalyticalBalances: newData,
-                                   });
-                                 }}
-                                 readOnly
-                               />
-                             </td>
-                             <td style={{ width: "250px" }}>
-                               <div className="d-flex">
-                                 {item.supporting_docs ? (
-                                   <div className="file-upload-wrapper">
-                                     <button
-                                       type="button"
-                                       className="btn-upload"
-                                       onClick={() =>
-                                         document
-                                           .getElementsByName("supporting_docs")
-                                           [index].click()
-                                       }
-                                       disabled={
-                                         location.state?.stage !== 4 ||
-                                         [2, 3].includes(
-                                           userDetails.roles[0].role_id
-                                         )
-                                       }
-                                     >
-                                       Change File
-                                     </button>
-                                     <h3>
-                                       Selected File:{" "}
-                                       <a
-                                         href={item.supporting_docs}
-                                         target="_blank"
-                                         rel="noopener noreferrer"
-                                       >
-                                         View File
-                                       </a>
-                                       {/* <DeleteIcon
-                                     style={{ color: "red", cursor: "pointer" }}
-                                     onClick={() => handleDeleteFile(index)}
-                                   /> */}
+                      {/*  {editData?.DifferentialPressureRecords.map(
+                          (item, index) => (
+                            <tr key={index}>
+                              <td>{index + 1}</td>
+                              <td>{item.unique_id}</td>
+                              <td>
+                                <input value={item.time} readOnly />
+                              </td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value={item.differential_pressure}
+                                  className={`${
+                                    item.differential_pressure < 0.6
+                                      ? "limit"
+                                      : item.differential_pressure > 2.6
+                                      ? "limit"
+                                      : ""
+                                  }`}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.DifferentialPressureRecords,
+                                    ];
+                                    newData[index].differential_pressure =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      DifferentialPressureRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.remarks}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.DifferentialPressureRecords,
+                                    ];
+                                    newData[index].remarks = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      DifferentialPressureRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    location.state?.stage !== 1 ||
+                                    location.state?.initiator_id !==
+                                      userDetails.userId
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.checked_by}
+                                  disabled
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.DifferentialPressureRecords,
+                                    ];
+                                    newData[index].checked_by = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      DifferentialPressureRecords: newData,
+                                    });
+                                  }}
+                                  readOnly
+                                />
+                              </td>
+                              <td style={{ width: "250px" }}>
+                                <div className="d-flex">
+                                  {item.supporting_docs ? (
+                                    <div className="file-upload-wrapper">
+                                      <button
+                                        type="button"
+                                        className="btn-upload"
+                                        onClick={() =>
+                                          document
+                                            .getElementsByName("supporting_docs")
+                                            [index].click()
+                                        }
+                                        disabled={
+                                          location.state?.stage !== 4 ||
+                                          [2, 3].includes(
+                                            userDetails.roles[0].role_id
+                                          )
+                                        }
+                                      >
+                                        Change File
+                                      </button>
+                                      <h3>
+                                        Selected File:{" "}
+                                        <a
+                                          href={item.supporting_docs}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          View File
+                                        </a>
+                                        {/* <DeleteIcon
+                                      style={{ color: "red", cursor: "pointer" }}
+                                      onClick={() => handleDeleteFile(index)}
+                                    /> */}
                       {/* </h3>
-                                   </div>
-                                 ) : (
-                                   <div className="file-upload-wrapper">
-                                     <button
-                                       type="button"
-                                       className="btn-upload"
-                                       onClick={() =>
-                                         document
-                                           .getElementsByName("supporting_docs")
-                                           [index].click()
-                                       }
-                                       disabled={
-                                         location.state?.stage !== 4 ||
-                                         [2, 3].includes(
-                                           userDetails.roles[0].role_id
-                                         )
-                                       }
-                                     >
-                                       Select File
-                                     </button>
-                                   </div>
-                                 )}
-                                 <input
-                                   type="file"
-                                   name="supporting_docs"
-                                   style={{ display: "none" }}
-                                   onChange={(e) =>
-                                     handleFileChange(index, e.target.files[0])
-                                   }
-                                 />
-                               </div>
-                             </td>
- 
-                             <td>
-                               <DeleteIcon onClick={() => deleteRow(index)} />
-                               {item.limit !== "" &&
-                                 (item.limit < 0.6 || item.limit > 2.6) && (
-                                   <button
-                                     className="deviation-btn"
-                                     onClick={() => {
-                                       navigate("/chart");
-                                     }}
-                                   >
-                                     Launch Deviation
-                                   </button>
-                                 )}
-                             </td>
-                           </tr>
-                         )
-                       )}
-                       */}
+                                    </div>
+                                  ) : (
+                                    <div className="file-upload-wrapper">
+                                      <button
+                                        type="button"
+                                        className="btn-upload"
+                                        onClick={() =>
+                                          document
+                                            .getElementsByName("supporting_docs")
+                                            [index].click()
+                                        }
+                                        disabled={
+                                          location.state?.stage !== 4 ||
+                                          [2, 3].includes(
+                                            userDetails.roles[0].role_id
+                                          )
+                                        }
+                                      >
+                                        Select File
+                                      </button>
+                                    </div>
+                                  )}
+                                  <input
+                                    type="file"
+                                    name="supporting_docs"
+                                    style={{ display: "none" }}
+                                    onChange={(e) =>
+                                      handleFileChange(index, e.target.files[0])
+                                    }
+                                  />
+                                </div>
+                              </td>
+  
+                              <td>
+                                <DeleteIcon onClick={() => deleteRow(index)} />
+                                {item.limit !== "" &&
+                                  (item.limit < 0.6 || item.limit > 2.6) && (
+                                    <button
+                                      className="deviation-btn"
+                                      onClick={() => {
+                                        navigate("/chart");
+                                      }}
+                                    >
+                                      Launch Deviation
+                                    </button>
+                                  )}
+                              </td>
+                            </tr>
+                          )
+                        )}
+                        */}
                     </tbody>
                   </table>
 
@@ -1313,7 +1324,7 @@ const AnalitycalBalancePanel = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer6?.name}
+                          value={editData?.reviewerss12?.name}
                           readOnly
                         />
                       </div>
@@ -1429,7 +1440,7 @@ const AnalitycalBalancePanel = () => {
                                 [1, 3].includes(userDetails.roles[0].role_id)
                               }
                               className="py-1
-                               bg-blue-500 hover:bg-blue-600 text-white ml-3"
+                                bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Select File
                             </button>
@@ -1457,7 +1468,7 @@ const AnalitycalBalancePanel = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver6?.name}
+                          value={editData?.approverss12?.name}
                           readOnly
                         />
                       </div>
@@ -1594,77 +1605,77 @@ const AnalitycalBalancePanel = () => {
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1
-                 ? location.state?.initiator_id === userDetails.userId && (
-                     <button
-                       className="themeBtn"
-                       onClick={() => {
-                         setIsPopupOpen(true);
-                         setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
-                       }}
-                     >
-                       Send for Review
-                     </button>
-                   )
-                 : location.state?.stage === 2
-                 ? location.state?.reviewer_id === userDetails.userId && (
-                     <>
-                       <button
-                         className="themeBtn"
-                         onClick={() => {
-                           setIsPopupOpen(true);
-                           setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
-                         }}
-                       >
-                         Review Completed
-                       </button>
-                       <button
-                         className="themeBtn"
-                         onClick={() => {
-                           setIsPopupOpen(true);
-                           setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
-                         }}
-                       >
-                         More Info Required
-                       </button>
-                     </>
-                   )
-                 : location.state?.stage === 3
-                 ? location.state?.approver_id === userDetails.userId && (
-                     <>
-                       <button
-                         className="themeBtn"
-                         onClick={() => {
-                           setIsPopupOpen(true);
-                           setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
-                         }}
-                       >
-                         Approve elog
-                       </button>
-                       <button
-                         className="themeBtn"
-                         onClick={() => {
-                           setIsPopupOpen(true);
-                           setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
-                         }}
-                       >
-                         More Info Required
-                       </button>
-                     </>
-                   )
-                 : null}
-               {location.state?.stage === 1
-                 ? userDetails.userId === location.state?.initiator_id && (
-                     <button
-                       className="themeBtn"
-                       onClick={() => {
-                         setIsPopupOpen(true);
-                         setPopupAction("updateElog");
-                       }}
-                     >
-                       Save
-                     </button>
-                   )
-                 : null} */}
+                  ? location.state?.initiator_id === userDetails.userId && (
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("sendFromOpenToReview"); // Set the action when opening the popup
+                        }}
+                      >
+                        Send for Review
+                      </button>
+                    )
+                  : location.state?.stage === 2
+                  ? location.state?.reviewer_id === userDetails.userId && (
+                      <>
+                        <button
+                          className="themeBtn"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromReviewToApproval"); // Set the action when opening the popup
+                          }}
+                        >
+                          Review Completed
+                        </button>
+                        <button
+                          className="themeBtn"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromReviewToOpen"); // Set the action when opening the popup
+                          }}
+                        >
+                          More Info Required
+                        </button>
+                      </>
+                    )
+                  : location.state?.stage === 3
+                  ? location.state?.approver_id === userDetails.userId && (
+                      <>
+                        <button
+                          className="themeBtn"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromApprovalToClosedDone"); // Set the action when opening the popup
+                          }}
+                        >
+                          Approve elog
+                        </button>
+                        <button
+                          className="themeBtn"
+                          onClick={() => {
+                            setIsPopupOpen(true);
+                            setPopupAction("sendFromApprovalToOpen"); // Set the action when opening the popup
+                          }}
+                        >
+                          More Info Required
+                        </button>
+                      </>
+                    )
+                  : null}
+                {location.state?.stage === 1
+                  ? userDetails.userId === location.state?.initiator_id && (
+                      <button
+                        className="themeBtn"
+                        onClick={() => {
+                          setIsPopupOpen(true);
+                          setPopupAction("updateElog");
+                        }}
+                      >
+                        Save
+                      </button>
+                    )
+                  : null} */}
               <button
                 className="themeBtn"
                 onClick={() => {
@@ -1691,4 +1702,4 @@ const AnalitycalBalancePanel = () => {
   );
 };
 
-export default AnalitycalBalancePanel;
+export default VacuumOvenOpPanel;

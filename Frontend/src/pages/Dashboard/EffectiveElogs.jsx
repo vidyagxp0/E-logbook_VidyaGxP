@@ -33,6 +33,7 @@ function EffectiveElogs() {
   const [sdsPage, setSdsPage] = useState([]);
   const [gelDociGene, setGelDociGene] = useState([]);
   const [uVWhiteLightTrans, setUVWlTrans] = useState([]);
+  const [voCalibElogs, SetVOCalibElogs] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   useEffect(() => {
@@ -446,6 +447,33 @@ function EffectiveElogs() {
       .catch((error) => {
         console.error("Error: ", error);
       });
+    const newVOCalib = {
+      method: "get",
+      url: "http://localhost:1000/vo-cal/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(newVOCalib)
+      .then((response) => {
+        const voCalib = response.data.message;
+        const allVoCalib = voCalib.filter((log) => log.status === "Closed");
+        let filteredArray = voCalib.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        SetVOCalibElogs(allVoCalib);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
 
   const combinedRecords = [
@@ -465,6 +493,7 @@ function EffectiveElogs() {
     ...sdsPage.filter((log) => log.status === "Closed"),
     ...gelDociGene.filter((log) => log.status === "Closed"),
     ...uVWhiteLightTrans.filter((log) => log.status === "Closed"),
+    ...voCalibElogs.filter((log) => log.status === "Closed"),
   ];
 
   const handleNavigation = (item) => {
@@ -500,6 +529,8 @@ function EffectiveElogs() {
       navigate("/effective-gel-doc-igene", { state: item });
     } else if (item.uvWhiteLightRecords) {
       navigate("/effective-uv-wl-transilluminator", { state: item });
+    }else if (item.voCalibRecords) {
+      navigate("/effective-vo-calibration", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
@@ -531,6 +562,8 @@ function EffectiveElogs() {
       return gelDociGene?.filter(filterRecord);
     } else if (eLogSelect === "UV/WL Transilluminator") {
       return uVWhiteLightTrans?.filter(filterRecord);
+    } else if (eLogSelect === "VO Calibration") {
+      return voCalibElogs?.filter(filterRecord);
     } else {
       return combinedRecords
         ?.filter(filterRecord)
@@ -586,6 +619,8 @@ function EffectiveElogs() {
       ? "UV-WLTI"
       : item.uvWhiteLightRecords
       ? "UV-WLTI"
+      : item.voCalibRecords
+      ? "VO-CAL"
       : eLogSelect === "analytical_balance"
       ? "AB"
       : eLogSelect === "karl_fischer"
@@ -602,6 +637,8 @@ function EffectiveElogs() {
       ? "GELDOCIGENE"
       : eLogSelect === "UV/WL Transilluminator"
       ? "UV-WLTI"
+      : eLogSelect === "VO Calibration"
+      ? "VO-CAL"
       : "";
   };
 
@@ -634,6 +671,8 @@ function EffectiveElogs() {
       ? "Gel Doc iGene"
       : item.uvWhiteLightRecords
       ? "UV/WL Transilluminator"
+      : item.voCalibRecords
+      ? "VO Calibration"
       : eLogSelect === "analytical_balance"
       ? "Analytical Balance"
       : eLogSelect === "karl_fischer"
@@ -650,6 +689,8 @@ function EffectiveElogs() {
       ? "Gel Doc iGene"
       : eLogSelect === "UV/WL Transilluminator"
       ? "UV/WL Transilluminator"
+      : eLogSelect === "VO Calibration"
+      ? "VO-CAL"
       : "NA";
   };
 
@@ -721,8 +762,11 @@ function EffectiveElogs() {
                 <option value="UV-Vis Calibration">UV-Vis Calibration</option>
                 <option value="SDS PAGE">SDS PAGE</option>
                 <option value="Gel Doc iGene">Gel Doc iGene</option>
-                <option value="UV/Wl Transilluminator">
-                  UV/Wl Transilluminator
+                <option value="UV/WL Transilluminator">
+                  UV/WL Transilluminator
+                </option>
+                <option value="VO Calibration">
+                  VO Calibration
                 </option>
               </select>
             </div>
@@ -837,6 +881,8 @@ function EffectiveElogs() {
                       ? "EMEA"
                       : item.site_id === 5
                       ? "Biologics"
+                      : item.site_id === 6
+                      ? "AR&D"
                       : "EU"}
                   </td>
                   <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>

@@ -222,6 +222,23 @@ function Effective_AuditTrail() {
           console.error(error);
         }
       }
+      else if (location.state?.process === "VO Calibration") {
+        const myHeaders = {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        };
+
+        try {
+          const response = await axios.get(
+            `http://localhost:1000/vo-cal/get-audit-trail-for-elog/${location.state?.formId}`,
+            {
+              headers: myHeaders,
+            }
+          );
+          setAuditTrails(response.data.auditTrail);
+        } catch (error) {
+          console.error(error);
+        }
+      }
     };
 
     fetchAuditTrail();

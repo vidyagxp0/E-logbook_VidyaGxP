@@ -30,7 +30,7 @@ router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(13, 1),
+  Auth.authorizeUserRole(14, 1),
   uvWhiteLight.Insert
 );
 
@@ -62,7 +62,7 @@ router.put(
   "/send-elog-for-review",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(13, 1),
+  Auth.authorizeUserRole(14, 1),
   uvWhiteLight.SendElogForReview
 );
 

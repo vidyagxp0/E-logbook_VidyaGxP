@@ -291,6 +291,28 @@ const AnalyticalBalancesEffective = () => {
   }, [location.state]);
 
   const addRow = () => {
+     const records = editData?.AnalyticalBalances || [];
+
+  // Function to check if a row is filled
+  const isRowComplete = (row) => {
+    return (
+      row.reg_no?.trim() !== "" &&
+      row.sample_name?.trim() !== "" &&
+      row.weight_taken?.trim() !== "" && 
+      row.reviewed_by !== null
+    );
+  };
+
+  // 1️⃣ Check if there is at least 1 row
+  if (records.length > 0) {
+    const lastRow = records[records.length - 1];
+
+    // 2️⃣ If last row is empty → block adding a new row
+    if (!isRowComplete(lastRow)) {
+      toast.warn("Please fill the current row before adding a new one.");
+      return;
+    }
+  }
     if (
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
@@ -1497,6 +1519,9 @@ const AnalyticalBalancesEffective = () => {
                         <th className="text-center !text-wrap ">
                           Weight Taken
                         </th>
+                        <th className="text-center !text-wrap ">
+                          UOM
+                        </th>
                         <th className="text-center !text-wrap ">Done by</th>
                         <th className="text-center !text-wrap ">Checked By</th>
                         <th className="text-center !text-wrap ">Remarks</th>
@@ -1586,6 +1611,67 @@ const AnalyticalBalancesEffective = () => {
                                 }
                               />
                             </td>
+
+                                                        <td>
+  <div className="flex flex-col gap-2">
+
+    {/* UOM Dropdown */}
+    <select
+      value={item.uom || ""}
+      onChange={(e) => {
+        const newData = [...editData.AnalyticalBalances];
+        newData[index].uom = e.target.value;
+
+        // Reset input if UOM != Others
+        if (e.target.value !== "Others") {
+          newData[index].uomOther = "";
+        } else {
+          newData[index].remarks = newData[index].uomOther || "";
+        }
+
+        setEditData({
+          ...editData,
+          AnalyticalBalances: newData,
+        });
+      }}
+      className="border rounded px-2 py-1 w-auto"
+      disabled={
+        [2, 3,4].includes(userDetails.roles[0].role_id) ||
+        !canReviewerEdit(item)
+      }
+    >
+      <option value="">Select UOM</option>
+      <option value="mg">mg</option>
+      <option value="kg">kg</option>
+      <option value="Others">Others</option>
+    </select>
+
+    {/* Custom UOM input, only if "Others" selected */}
+    {item.uom === "Others" && ( 
+      <input
+        type="text"
+        placeholder="Enter custom UOM"
+        value={item.uomOther || ""}
+        onChange={(e) => {
+          const newData = [...editData.AnalyticalBalances];
+          newData[index].uomOther = e.target.value;
+          newData[index].remarks = e.target.value;
+
+          setEditData({
+            ...editData,
+            AnalyticalBalances: newData,
+          });
+        }}
+        className="border rounded px-2 py-1 w-auto"
+        readOnly={
+          [2, 3,4].includes(userDetails.roles[0].role_id) ||
+          !canReviewerEdit(item)
+        }
+      />
+    )}
+
+  </div>
+</td>
                             <td>
                               <input
                                 value={item.done_by}

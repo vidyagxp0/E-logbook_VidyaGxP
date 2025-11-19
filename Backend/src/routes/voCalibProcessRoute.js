@@ -30,7 +30,7 @@ router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(11, 1),
+  Auth.authorizeUserRole(15, 1),
   voCalib.Insert
 );
 
@@ -62,7 +62,7 @@ router.put(
   "/send-elog-for-review",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(11, 1),
+  Auth.authorizeUserRole(15, 1),
   voCalib.SendElogForReview
 );
 
@@ -71,7 +71,7 @@ router.put(
   "/send-elog-from-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(11, 2),
+  Auth.authorizeUserRole(15, 2),
   voCalib.SendElogfromReviewToOpen
 );
 
@@ -80,7 +80,7 @@ router.put(
   "/send-from-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(11, 2),
+  Auth.authorizeUserRole(15, 2),
   voCalib.SendfromReviewToApproval
 );
 
@@ -89,7 +89,7 @@ router.put(
   "/send-elog-from-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(11, 3),
+  Auth.authorizeUserRole(15, 3),
   voCalib.SendfromApprovalToOpen
 );
 
@@ -98,7 +98,7 @@ router.put(
   "/approve-elog",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(11, 3),
+  Auth.authorizeUserRole(15, 3),
   voCalib.ApproveElog
 );
 

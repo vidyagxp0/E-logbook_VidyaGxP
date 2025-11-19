@@ -73,6 +73,9 @@ import GelDocIGene from "./pages/configForms/GelDocIGene/GelDocIGene.jsx";
 import UvWlTransilluminatorPanel from "./pages/documentPanels/UvWlTransilluminator/UvWlTransilluminatorPanel.jsx";
 import UvWlTransilluminator from "./pages/configForms/UvWlTransilluminator/UvWlTransilluminator.jsx";
 import UvWITransilluminatorEffective from "./pages/Dashboard/EffectiveElogs/UvWlTransilluminatorEffective.jsx";
+import VacuumOvenOpEffective from "./pages/Dashboard/EffectiveElogs/VacuumOvenOpEffective.jsx";
+import VacuumOvenOpPanel from "./pages/documentPanels/VacuumOvenOp/VacuumOvenOpPanel.jsx";
+import VacuumOvenOp from "./pages/configForms/VacuumOvenOp/VacuumOvenOp.jsx";
 
 function App() {
   return (
@@ -211,6 +214,10 @@ function App() {
               path="/effective-uv-wl-transilluminator"
               element={<ProtectedRoute element={<UvWITransilluminatorEffective />} />}
             />
+            <Route
+              path="/effective-vo-calibration"
+              element={<ProtectedRoute element={<VacuumOvenOpEffective />} />}
+            />
 
             <Route
               path="/area-and-equipment-panel"
@@ -251,6 +258,10 @@ function App() {
             <Route
               path="/uv-vis-calibration-panel"
               element={<ProtectedRoute element={<UVvisCalibrationPanel />} />}
+            />
+            <Route
+              path="/vo-calibration-panel"
+              element={<ProtectedRoute element={<VacuumOvenOpPanel />} />}
             />
             <Route
               path="/sds-page-panel"
@@ -295,6 +306,10 @@ function App() {
             <Route
               path="/uv-vis-calibration"
               element={<ProtectedRoute element={<UVvisCalibration />} />}
+            />
+            <Route
+              path="/vo-calibration"
+              element={<ProtectedRoute element={<VacuumOvenOp />} />}
             />
             <Route
               path="/sds-page"

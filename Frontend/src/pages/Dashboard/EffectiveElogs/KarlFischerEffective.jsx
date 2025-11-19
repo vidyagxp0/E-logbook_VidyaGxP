@@ -284,6 +284,29 @@ const KarlFischerEffective = () => {
   }, [location.state]);
 
   const addRow = () => {
+
+    const records = editData?.karlFischerRecords || [];
+
+  // Function to check if a row is filled
+  const isRowComplete = (row) => {
+    return (
+      row.lot_no?.trim() !== "" &&
+      row.factor_percent_water?.trim() !== "" &&
+      row.sample_name?.trim() !== "" && 
+      row.reviewed_by !== null
+    );
+  };
+
+  // 1️⃣ Check if there is at least 1 row
+  if (records.length > 0) {
+    const lastRow = records[records.length - 1];
+
+    // 2️⃣ If last row is empty → block adding a new row
+    if (!isRowComplete(lastRow)) {
+      toast.warn("Please fill the current row before adding a new one.");
+      return;
+    }
+  }
     if (
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5

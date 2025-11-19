@@ -8,8 +8,7 @@ import { NoteAdd } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import { toast } from "react-toastify";
-
-const AnalyticalBalance = () => {
+const VacuumOvenOp = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
@@ -28,7 +27,7 @@ const AnalyticalBalance = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/vo-cal/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -36,7 +35,7 @@ const AnalyticalBalance = () => {
       data: {
         site_id: location.state?.site_id,
         role_id: 2,
-        process_id: 7,
+        process_id: 9,
       },
     };
 
@@ -50,7 +49,7 @@ const AnalyticalBalance = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/vo-cal/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -58,7 +57,7 @@ const AnalyticalBalance = () => {
       data: {
         site_id: location.state?.site_id,
         role_id: 3,
-        process_id: 7,
+        process_id: 9,
       },
     };
 
@@ -93,9 +92,9 @@ const AnalyticalBalance = () => {
 
   const handlePopupSubmit = (credentials) => {
     if (
-      analyticalBalance.site_id === null ||
-      analyticalBalance.approver_id === null ||
-      analyticalBalance.reviewer_id === null
+      hplc.site_id === null ||
+      hplc.approver_id === null ||
+      hplc.reviewer_id === null
     ) {
       toast.error(
         "Please select an approver and a reviewer before saving e-log!"
@@ -103,16 +102,16 @@ const AnalyticalBalance = () => {
       return;
     }
 
-    // if (analyticalBalance.initiatorComment === "") {
+    // if (hplc.initiatorComment === "") {
     //   toast.error("Please provide an initiator comment!");
     //   return;
     // }
-    // if (analyticalBalance.description === "") {
+    // if (hplc.description === "") {
     //   toast.error("Please provide a short description!");
     //   return;
     // }
     if (
-      analyticalBalance?.FormRecordsArray?.some(
+      hplc?.FormRecordsArray?.some(
         (record) => record.sampleName === "" || record.remarks === ""
       )
     ) {
@@ -127,16 +126,12 @@ const AnalyticalBalance = () => {
       },
     };
 
-    analyticalBalance.email = credentials?.email;
-    analyticalBalance.password = credentials?.password;
-    analyticalBalance.initiatorDeclaration = credentials?.declaration;
+    hplc.email = credentials?.email;
+    hplc.password = credentials?.password;
+    hplc.initiatorDeclaration = credentials?.declaration;
 
     axios
-      .post(
-        "http://localhost:1000/analytical-balance/post",
-        analyticalBalance,
-        config
-      )
+      .post("http://localhost:1000/vo-cal/post", hplc, config)
       .then(() => {
         toast.success("eLog Saved Successfully!");
         navigate("/dashboard");
@@ -173,11 +168,15 @@ const AnalyticalBalance = () => {
       date: date,
       reg_no: "",
       sample_name: "",
-      weight_taken: "",
+      method_used: "",
+      parameter_or_activity: "",
+      column_no: "",
+      start_time: "",
+      end_time: "",
+      no_of_injections: "",
       done_by: User?.name,
       checked_by: User?.name,
       remarks: "",
-      supporting_docs: null,
     };
     setAllTableData([...allTableData, newRow]);
   };
@@ -195,7 +194,7 @@ const AnalyticalBalance = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
-  const [analyticalBalance, setAnalyticalBalance] = useReducer(
+  const [hplc, sethplc] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
@@ -216,27 +215,27 @@ const AnalyticalBalance = () => {
       initiatorDeclaration: "",
     }
   );
-  console.log(analyticalBalance, "analyticalBalance");
+  console.log(hplc, "hplc");
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
-    setAnalyticalBalance({ ...analyticalBalance, [name]: value });
+    sethplc({ ...hplc, [name]: value });
   };
 
   const handleReviewerFileChange = (e) => {
-    setAnalyticalBalance({
-      ...analyticalBalance,
+    sethplc({
+      ...hplc,
       reviewerAttachment: e.target.files[0],
     });
   };
   const handleApproverFileChange = (e) => {
-    setAnalyticalBalance({
-      ...analyticalBalance,
+    sethplc({
+      ...hplc,
       approverAttachment: e.target.files[0],
     });
   };
 
   useEffect(() => {
-    setAnalyticalBalance({ FormRecordsArray: allTableData });
+    sethplc({ FormRecordsArray: allTableData });
   }, [allTableData]);
 
   const handleDeleteFile = (index) => {
@@ -251,21 +250,21 @@ const AnalyticalBalance = () => {
     setAllTableData(updatedData);
   };
   const handleFileChangeAttachment = (e) => {
-    setAnalyticalBalance({
-      ...analyticalBalance,
+    sethplc({
+      ...hplc,
       additionalAttachment: e.target.files[0],
     });
   };
 
   const handleInitiatorFileChange = (e) => {
-    setAnalyticalBalance({
-      ...analyticalBalance,
+    sethplc({
+      ...hplc,
       initiatorAttachment: e.target.files[0],
     });
   };
 
   const setTinyContent = (content) => {
-    setAnalyticalBalance({
+    sethplc({
       description: content,
     });
   };
@@ -277,8 +276,8 @@ const AnalyticalBalance = () => {
         <div id="config-form-document-pages" className="min-w-full">
           <div className="top-blocks !grid !grid-cols-3">
             {/* <div>
-              <strong> Record Name:&nbsp;</strong>Analytical Balance
-            </div> */}
+                <strong> Record Name:&nbsp;</strong>HPLC
+              </div> */}
             <div>
               <strong> Site:&nbsp;</strong>
               {location.state?.site}
@@ -294,22 +293,24 @@ const AnalyticalBalance = () => {
           <div className="document-form">
             <div className="details-form-data">
               {/* <div className="sop-type-header">
-                          <div className="logo">
-                            <img src="/vidyalogo21.png" alt="..." />
-                          </div>
-                          <div className="main-head">
-                            <div>VidyaGxP Private Limited</div>
-                          </div>
-                        </div> */}
+                            <div className="logo">
+                              <img src="/vidyalogo21.png" alt="..." />
+                            </div>
+                            <div className="main-head">
+                              <div>VidyaGxP Private Limited</div>
+                            </div>
+                          </div> */}
               {/* <div className="sop-type-header">
-                          <div className="logo">
-                            <img src="/vidyalogo21.png" alt="..." width={20} />
-                          </div>
-                          <div className="main-head">
-                            <div>VidyaGxP Private Limited</div>
-                          </div>
-                        </div> */}
-              <div className="sub-head-2"> Analytical Balance</div>
+                            <div className="logo">
+                              <img src="/vidyalogo21.png" alt="..." width={20} />
+                            </div>
+                            <div className="main-head">
+                              <div>VidyaGxP Private Limited</div>
+                            </div>
+                          </div> */}
+              <div className="sub-head-2">
+                Operation and Calibration of UV-VIS Spectrophotometer
+              </div>
 
               <div className="outerDiv4">
                 <div className="btn-forms">
@@ -346,53 +347,53 @@ const AnalyticalBalance = () => {
                     Details
                   </div>
                   {/* <div
-                              className={`${
-                                initiatorRemarks === true
-                                  ? "btn-forms-isSelected"
-                                  : "btn-forms-select"
-                              }`}
-                              onClick={() => {
-                                setIsSelectedDetails(false),
-                                  setIsSelectedGeneral(false),
-                                  setInitiatorRemarks(true),
-                                  setReviewerRemarks(false),
-                                  setApproverRemarks(false);
-                              }}
-                            >
-                              Initiator Remarks
-                            </div> */}
+                                className={`${
+                                  initiatorRemarks === true
+                                    ? "btn-forms-isSelected"
+                                    : "btn-forms-select"
+                                }`}
+                                onClick={() => {
+                                  setIsSelectedDetails(false),
+                                    setIsSelectedGeneral(false),
+                                    setInitiatorRemarks(true),
+                                    setReviewerRemarks(false),
+                                    setApproverRemarks(false);
+                                }}
+                              >
+                                Initiator Remarks
+                              </div> */}
                   {/* <div
-                              className={`${
-                                reviewerRemarks === true
-                                  ? "btn-forms-isSelected"
-                                  : "btn-forms-select"
-                              }`}
-                              onClick={() => {
-                                setIsSelectedDetails(false),
-                                  setIsSelectedGeneral(false),
-                                  setInitiatorRemarks(false),
-                                  setReviewerRemarks(true),
-                                  setApproverRemarks(false);
-                              }}
-                            >
-                              Reviewer Remarks
-                            </div>
-                            <div
-                              className={`${
-                                approverRemarks === true
-                                  ? "btn-forms-isSelected"
-                                  : "btn-forms-select"
-                              }`}
-                              onClick={() => {
-                                setIsSelectedDetails(false),
-                                  setIsSelectedGeneral(false),
-                                  setInitiatorRemarks(false),
-                                  setReviewerRemarks(false),
-                                  setApproverRemarks(true);
-                              }}
-                            >
-                              Approver Remarks
-                            </div> */}
+                                className={`${
+                                  reviewerRemarks === true
+                                    ? "btn-forms-isSelected"
+                                    : "btn-forms-select"
+                                }`}
+                                onClick={() => {
+                                  setIsSelectedDetails(false),
+                                    setIsSelectedGeneral(false),
+                                    setInitiatorRemarks(false),
+                                    setReviewerRemarks(true),
+                                    setApproverRemarks(false);
+                                }}
+                              >
+                                Reviewer Remarks
+                              </div>
+                              <div
+                                className={`${
+                                  approverRemarks === true
+                                    ? "btn-forms-isSelected"
+                                    : "btn-forms-select"
+                                }`}
+                                onClick={() => {
+                                  setIsSelectedDetails(false),
+                                    setIsSelectedGeneral(false),
+                                    setInitiatorRemarks(false),
+                                    setReviewerRemarks(false),
+                                    setApproverRemarks(true);
+                                }}
+                              >
+                                Approver Remarks
+                              </div> */}
                 </div>
               </div>
 
@@ -404,9 +405,7 @@ const AnalyticalBalance = () => {
                       <input
                         type="text"
                         value={User?.name}
-                        onChange={(e) =>
-                          setAnalyticalBalance({ initiator: e.target.value })
-                        }
+                        onChange={(e) => sethplc({ initiator: e.target.value })}
                         disabled
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
@@ -421,7 +420,7 @@ const AnalyticalBalance = () => {
                         type="text"
                         value={date}
                         onChange={(e) =>
-                          setAnalyticalBalance({
+                          sethplc({
                             dateOfInitiation: e.target.value,
                           })
                         }
@@ -439,18 +438,18 @@ const AnalyticalBalance = () => {
                     </label>
                     <div>
                       {/* <input
-                                  type="text"
-                                  value={analyticalBalance.description}
-                                  onChange={(e) =>
-                                    setAnalyticalBalance({
-                                      description: e.target.value,
-                                    })
-                                  }
-                                  required // HTML5 attribute to enforce field requirement
-                                /> */}
+                                    type="text"
+                                    value={hplc.description}
+                                    onChange={(e) =>
+                                      sethplc({
+                                        description: e.target.value,
+                                      })
+                                    }
+                                    required // HTML5 attribute to enforce field requirement
+                                  /> */}
 
                       <TinyEditor
-                        editorContent={analyticalBalance.description}
+                        editorContent={hplc.description}
                         setEditorContent={setTinyContent}
                         tinyNo={1}
                       />
@@ -463,9 +462,7 @@ const AnalyticalBalance = () => {
                       <input
                         type="text"
                         value="Under Initiation"
-                        onChange={(e) =>
-                          setAnalyticalBalance({ status: e.target.value })
-                        }
+                        onChange={(e) => sethplc({ status: e.target.value })}
                         disabled
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
@@ -482,9 +479,9 @@ const AnalyticalBalance = () => {
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={analyticalBalance.department}
+                      value={hplc.department}
                       onChange={(e) =>
-                        setAnalyticalBalance({
+                        sethplc({
                           department: e.target.value,
                         })
                       }
@@ -530,9 +527,9 @@ const AnalyticalBalance = () => {
                       </label>
                       <div>
                         <select
-                          value={analyticalBalance.reviewer_id}
+                          value={hplc.reviewer_id}
                           onChange={(e) => {
-                            setAnalyticalBalance({
+                            sethplc({
                               reviewer_id: e.target.value,
                             });
                           }}
@@ -562,9 +559,9 @@ const AnalyticalBalance = () => {
                       </label>
                       <div>
                         <select
-                          value={analyticalBalance.approver_id}
+                          value={hplc.approver_id}
                           onChange={(e) => {
-                            setAnalyticalBalance({
+                            sethplc({
                               approver_id: e.target.value,
                             });
                           }}
@@ -589,7 +586,7 @@ const AnalyticalBalance = () => {
 
                   <div>
                     <div className="AddRows d-flex ">
-                      <NoteAdd onClick={""} className="cursor-pointer" />
+                      <NoteAdd onClick={"addRow"} className="cursor-pointer" />
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
@@ -598,10 +595,10 @@ const AnalyticalBalance = () => {
                       <tr>
                         <th>S no.</th>
                         <th>Date</th>
-                        <th>Reg. No./Lot no.</th>
                         <th>Sample Name</th>
-                        <th>Weight Taken</th>
-                        <th>UOM</th>
+                        <th>Batch No./Reg No.</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
                         <th>Done by</th>
                         <th>Checked By</th>
                         <th>Remarks</th>
@@ -626,16 +623,6 @@ const AnalyticalBalance = () => {
 
                           <td>
                             <input
-                              value={item.regNo}
-                              onChange={(e) => {
-                                const newData = [...allTableData];
-                                newData[index].regNo = e.target.value;
-                                setAllTableData(newData);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <input
                               value={item.sampleName}
                               onChange={(e) => {
                                 const newData = [...allTableData];
@@ -647,11 +634,80 @@ const AnalyticalBalance = () => {
 
                           <td>
                             <input
-                              value={item.weightTaken}
+                              value={item.regNo}
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].regNo = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                            />
+                          </td>
+
+                          <td>
+                            <input
+                              value={item.methodUsed}
                               // disabled
                               onChange={(e) => {
                                 const newData = [...allTableData];
-                                newData[index].weightTaken = e.target.value;
+                                newData[index].methodUsed = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.parameterActivity}
+                              // disabled
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].parameterActivity =
+                                  e.target.value;
+                                setAllTableData(newData);
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.columnNo}
+                              // disabled
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].columnNo = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="time"
+                              value={item.startTime}
+                              // disabled
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].startTime = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="time"
+                              value={item.endTime}
+                              // disabled
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].endTime = e.target.value;
+                                setAllTableData(newData);
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              value={item.noOfInjection}
+                              // disabled
+                              onChange={(e) => {
+                                const newData = [...allTableData];
+                                newData[index].noOfInjection = e.target.value;
                                 setAllTableData(newData);
                               }}
                             />
@@ -754,10 +810,10 @@ const AnalyticalBalance = () => {
                       <textarea
                         className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                         rows="4"
-                        value={analyticalBalance.additionalInfo}
+                        value={hplc.additionalInfo}
                         disabled
                         onChange={(e) => {
-                          setAnalyticalBalance({
+                          sethplc({
                             additionalInfo: e.target.value,
                           });
                         }}
@@ -781,7 +837,7 @@ const AnalyticalBalance = () => {
                       <input
                         name="initiatorComment"
                         onChange={(e) =>
-                          setAnalyticalBalance({
+                          sethplc({
                             initiatorComment: e.target.value,
                           })
                         }
@@ -1024,4 +1080,4 @@ const AnalyticalBalance = () => {
   );
 };
 
-export default AnalyticalBalance;
+export default VacuumOvenOp;
