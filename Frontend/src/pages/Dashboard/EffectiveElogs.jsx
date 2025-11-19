@@ -61,6 +61,7 @@ const processShortName = {
   12: "SDS",
   13: "GDI",
   14: "UVWL",
+  15: "VOCAL",
 };
 
   useEffect(() => {
@@ -537,6 +538,7 @@ const processShortName = {
   ...sdsPage.map(r => ({ ...r, process_id: 12 })),
   ...gelDociGene.map(r => ({ ...r, process_id: 13 })),
   ...uVWhiteLightTrans.map(r => ({ ...r, process_id: 14 })),
+  ...voCalibElogs.map(r => ({ ...r, process_id: 15 })),
 ];
 
   const handleNavigation = (item) => {
@@ -625,12 +627,21 @@ const processShortName = {
       // return voCalibElogs?.filter(filterRecord);
             return applyInstrumentFilter(voCalibElogs?.filter(filterRecord));
     } else {
-      return combinedRecords
-        ?.filter(filterRecord)
-        ?.sort(
-          (a, b) =>
-            new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
-        );
+      // return combinedRecords
+      //   ?.filter(filterRecord)
+      //   ?.sort(
+      //     (a, b) =>
+      //       new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
+      //   );
+      return applyInstrumentFilter(
+  combinedRecords
+    ?.filter(filterRecord)
+    ?.sort(
+      (a, b) =>
+        new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
+    )
+);
+
     }
   };
 
