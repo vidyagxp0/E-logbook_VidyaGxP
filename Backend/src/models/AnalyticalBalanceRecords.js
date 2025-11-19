@@ -34,6 +34,14 @@ const AnalyticalBalance = sequelize.define(
       type: DataTypes.STRING, 
       allowNull: false 
     },
+    uom: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
+    uomOther: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
     done_by: { 
       type: DataTypes.STRING
      },
