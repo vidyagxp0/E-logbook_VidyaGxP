@@ -38,6 +38,8 @@ function EffectiveElogs() {
   const location = useLocation();
 const [selectedProcess, setSelectedProcess] = useState(null);
 const [searchTerm, setSearchTerm] = useState("");
+const [reviewStatusFilter, setReviewStatusFilter] = useState("All");
+
 
 
 useEffect(() => {
@@ -307,7 +309,6 @@ const processShortName = {
     axios(newKarlFischer)
       .then((response) => {
         const temp = response.data.message;
-        console.log(temp,"temo")
         const allKarlFischer = temp.filter((log) => log.status === "Closed");
         setKarlFischerElogs(allKarlFischer);
         let filteredArray = allKarlFischer.filter((elog) => {
@@ -664,12 +665,49 @@ const processShortName = {
 //   };
 
 
+const checkReviewStatus = (item, type) => {
+  const key = Object.keys(item).find((k) =>
+    k.toLowerCase().includes("records")
+  );
+
+  if (!key || !Array.isArray(item[key])) return false;
+
+  const records = item[key];
+
+  if (records.length === 0) {
+    return type === "PendingForCreate";
+  }
+
+  if (type === "Pending") {
+    return records.some((rec) => !rec?.reviewed_by);
+  }
+
+  if (type === "Complete") {
+    return records.every((rec) => rec?.reviewed_by);
+  }
+
+  return false;
+};
+
+
 const getFilteredData = () => {
   let data = [...combinedRecords];
 
-  // ⭐ Apply selected process filter (same as Dashboard)
+  // ⭐ Apply selected process filter (if user selected DP/TR/etc.)
   if (selectedProcess) {
     data = data.filter((item) => item.process_id === selectedProcess);
+  }
+
+  // ⭐ Apply Review Filter GENERICALLY for ALL processes
+  if (reviewStatusFilter === "Pending") {
+    data = data.filter((item) => checkReviewStatus(item, "Pending"));
+  }
+  if (reviewStatusFilter === "PendingForCreate") {
+    data = data.filter((item) => checkReviewStatus(item, "PendingForCreate"));
+  }
+
+  if (reviewStatusFilter === "Complete") {
+    data = data.filter((item) => checkReviewStatus(item, "Complete"));
   }
 
   // ⭐ Instrument filter wrapper
@@ -680,42 +718,82 @@ const getFilteredData = () => {
 
   // ⭐ Individual instrument filters
   if (eLogSelect === "analytical_balance") {
-    return applyInstrumentFilter(analyticalBalanceElogs?.filter(filterRecord));
-  } 
-  else if (eLogSelect === "karl_fischer") {
-    return applyInstrumentFilter(karlFischerElogs?.filter(filterRecord));
-  } 
-  else if (eLogSelect === "hplc") {
-    return applyInstrumentFilter(hplcElogs?.filter(filterRecord));
-  } 
-  else if (eLogSelect === "pH Meter OP/Cal") {
-    return applyInstrumentFilter(pHMeterOPCalElogs?.filter(filterRecord));
-  } 
-  else if (eLogSelect === "UV-Vis Calibration") {
-    return applyInstrumentFilter(uVVisCalibElogs?.filter(filterRecord));
-  } 
-  else if (eLogSelect === "SDS PAGE") {
-    return applyInstrumentFilter(sdsPage?.filter(filterRecord));
-  } 
-  else if (eLogSelect === "Gel Doc iGene") {
-    return applyInstrumentFilter(gelDociGene?.filter(filterRecord));
-  } 
-  else if (eLogSelect === "UV/WL Transilluminator") {
-    return applyInstrumentFilter(uVWhiteLightTrans?.filter(filterRecord));
-  }
-  else if (eLogSelect === "VO Calibration") {
-    return applyInstrumentFilter(voCalibElogs?.filter(filterRecord));
+    return applyInstrumentFilter(
+      analyticalBalanceElogs.filter((item) => 
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
   }
 
-  // ⭐ All Records + instrument filter + selectedProcess
+  if (eLogSelect === "karl_fischer") {
+    return applyInstrumentFilter(
+      karlFischerElogs.filter((item) =>
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
+  }
+
+  if (eLogSelect === "hplc") {
+    return applyInstrumentFilter(
+      hplcElogs.filter((item) =>
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
+  }
+
+  if (eLogSelect === "pH Meter OP/Cal") {
+    return applyInstrumentFilter(
+      pHMeterOPCalElogs.filter((item) =>
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
+  }
+
+  if (eLogSelect === "UV-Vis Calibration") {
+    return applyInstrumentFilter(
+      uVVisCalibElogs.filter((item) =>
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
+  }
+
+  if (eLogSelect === "SDS PAGE") {
+    return applyInstrumentFilter(
+      sdsPage.filter((item) =>
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
+  }
+
+  if (eLogSelect === "Gel Doc iGene") {
+    return applyInstrumentFilter(
+      gelDociGene.filter((item) =>
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
+  }
+
+  if (eLogSelect === "UV/WL Transilluminator") {
+    return applyInstrumentFilter(
+      uVWhiteLightTrans.filter((item) =>
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
+  }
+
+  if (eLogSelect === "VO Calibration") {
+    return applyInstrumentFilter(
+      voCalibElogs.filter((item) =>
+        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
+      )
+    );
+  }
+
+  // ⭐ All Records + instrument filter + sorting
   return applyInstrumentFilter(
     data
       ?.filter(filterRecord)
-      ?.sort(
-        (a, b) =>
-          new Date(b.date_of_initiation) -
-          new Date(a.date_of_initiation)
-      )
+      ?.sort((a, b) => new Date(b.date_of_initiation) - new Date(a.date_of_initiation))
   );
 };
 
@@ -881,6 +959,7 @@ const getFilteredData = () => {
         {/* Search Bar */}
 
 
+
         <div
           className="filter-section"
           style={{
@@ -905,6 +984,44 @@ const getFilteredData = () => {
               flex: 1,
             }}
           >
+
+            <div
+  className="group-input"
+  style={{ marginBottom: "0", minWidth: "200px" }}
+>
+  <label
+    className="color-label"
+    style={{
+      fontSize: "14px",
+      fontWeight: "600",
+      color: "#495057",
+      marginBottom: "8px",
+      padding: "0",
+    }}
+  >
+    Review Filter
+  </label>
+
+  <select
+    value={reviewStatusFilter}
+    onChange={(e) => setReviewStatusFilter(e.target.value)}
+    style={{
+      padding: "8px 12px",
+      border: "1px solid #ced4da",
+      borderRadius: "4px",
+      fontSize: "14px",
+      backgroundColor: "white",
+      width: "100%",
+    }}
+  >
+    <option value="All">All Records</option>
+    <option value="PendingForCreate">Pending For Create</option>
+    <option value="Pending">Pending For Review</option>
+      <option value="Complete">Complete </option>
+
+  </select>
+</div>
+
                     <div
   className="group-input"
   style={{ marginBottom: "0", minWidth: "280px" }} // wider than before
