@@ -20,7 +20,13 @@ function DepartmentSel(_props) {
           "http://localhost:1000/site/get-sites"
         );
         const userSiteIds = await userDetails.roles
-          .filter((role) => role.role_id === 1 || role.role_id === 5 || role.role_id === 2 || role.role_id === 3 )
+          .filter(
+            (role) =>
+              role.role_id === 1 ||
+              role.role_id === 5 ||
+              role.role_id === 2 ||
+              role.role_id === 3
+          )
           .map((role) => role.site_id);
 
         // Filter sites based on user's roles
@@ -46,7 +52,10 @@ function DepartmentSel(_props) {
       const filteredProcessIds = userDetails.roles
         .filter(
           (role) =>
-            (role.role_id === 1 || role.role_id === 5 || role.role_id === 2 || role.role_id === 3) &&
+            (role.role_id === 1 ||
+              role.role_id === 5 ||
+              role.role_id === 2 ||
+              role.role_id === 3) &&
             role?.site_id === division?.site_id
         )
         .map((role) => role.process_id);
@@ -74,103 +83,104 @@ function DepartmentSel(_props) {
     }
   }, [processVisible]);
 
-//   const handleSelectProcess = (element) => {
-//     setProject(element.process);
-//     console.log(element, "leel");
-//     switch (element.process_id) {
-//       case 1:
-//         navigate("/differential-pressure-record", {
-//           state: division,
-//         });
-//         break;
-//       case 2:
-//         navigate("/temperature-records", {
-//           state: division,
-//         });
-//         break;
-//       case 3:
-//         navigate("/loaded-quantity", {
-//           state: division,
-//         });
-//         break;
-//       case 4:
-//         navigate("/operations-of-sterilizer", {
-//           state: division,
-//         });
-//         break;
-//       case 5:
-//         navigate("/media-record", {
-//           state: division,
-//         });
-//         break;
-//       case 6:
-//         navigate("/dispensing-of-material", {
-//           state: division,
-//         });
-//         break;
-//       case 7:
-//         navigate("/analytical-balance", {
-//           state: division,
-//         });
-//         break;
-//       case 8:
-//         navigate("/karl-fischer", {
-//           state: division,
-//         });
-//         break;
-//       case 9:
-//         navigate("/hplc", {
-//           state: division,
-//         });
-//         break;
-//       case 10:
-//         navigate("/pHMeter-OpCal", {
-//           state: division,
-//         });
-//         break;
-//       case 11:
-//         navigate("/uv-vis-calibration", {
-//           state: division,
-//         });
-//         break;
-//       case 12:
-//         navigate("/sds-page", {
-//           state: division,
-//         });
-//         break;
-//       case 13:
-//         navigate("/gel-doc-igene", {
-//           state: division,
-//         });
-//         break;
-//       case 14:
-//         navigate("/uv-wl-transilluminator", {
-//           state: division,
-//         });
-//         break;
-//       default:
-//         break;
-//     }
-//   };
+  //   const handleSelectProcess = (element) => {
+  //     setProject(element.process);
+  //     console.log(element, "leel");
+  //     switch (element.process_id) {
+  //       case 1:
+  //         navigate("/differential-pressure-record", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 2:
+  //         navigate("/temperature-records", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 3:
+  //         navigate("/loaded-quantity", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 4:
+  //         navigate("/operations-of-sterilizer", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 5:
+  //         navigate("/media-record", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 6:
+  //         navigate("/dispensing-of-material", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 7:
+  //         navigate("/analytical-balance", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 8:
+  //         navigate("/karl-fischer", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 9:
+  //         navigate("/hplc", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 10:
+  //         navigate("/pHMeter-OpCal", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 11:
+  //         navigate("/uv-vis-calibration", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 12:
+  //         navigate("/sds-page", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 13:
+  //         navigate("/gel-doc-igene", {
+  //           state: division,
+  //         });
+  //         break;
+  //       case 14:
+  //         navigate("/uv-wl-transilluminator", {
+  //           state: division,
+  //         });
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   };
 
-const handleSelectProcess = (element) => {
-  setProject(element.process);
+  const handleSelectProcess = (element) => {
+    setProject(element.process);
 
-  navigate("/effectiveElogs", {
-    state: {
-      selectedProcess: element.process_id,
-      division: division
-    },
-  });
-};
-
+    navigate("/effectiveElogs", {
+      state: {
+        selectedProcess: element.process_id,
+        division: division,
+      },
+    });
+  };
 
   return (
     <>
       <div className="custom-modal" id="create-record-modal">
         <div className="modal-container">
-          <div className="modal-top">
-            <div className="head">Select Your Department and Equipment/Instrument</div>
+          <div className="p-4 text-xl font-semibold border-b border-gray-300 text-center">
+            <div className="head">
+              Select Your Department and Equipment/Instrument
+            </div>
           </div>
 
           <div className="modal-middle">
@@ -183,11 +193,11 @@ const handleSelectProcess = (element) => {
                   {sites?.map((item) => (
                     <div
                       className={` cursor-pointer transition-colors duration-300 
-          ${
-            division?.site === item?.site
-              ? "bg-[#0c5fc6] text-white"
-              : " hover:bg-gray-200"
-          }`}
+                      ${
+                        division?.site === item?.site
+                          ? "bg-[#0c5fc6] text-white"
+                          : " hover:bg-gray-200"
+                      }`}
                       key={item.id}
                       onClick={() => {
                         setDivision(item);
@@ -201,7 +211,9 @@ const handleSelectProcess = (element) => {
               </div>
 
               <div className="project">
-                <div className="head gap-2 mb-3">Equipment/Instrument</div>
+                <div className="head text-lg font-semibold mb-2">
+                  Equipment/Instrument
+                </div>
                 <div className="select-list division-list gap-2">
                   {processes.map((item, index) => (
                     <div

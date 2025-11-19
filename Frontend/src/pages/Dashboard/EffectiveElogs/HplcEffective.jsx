@@ -256,7 +256,10 @@ const HplcEffective = () => {
   };
 
   useEffect(() => {
-    setEditData(location.state);
+    if (location.state) {
+      const cloned = JSON.parse(JSON.stringify(location.state));
+      setEditData(cloned);
+    }
   }, [location.state]);
 
   const addRow = () => {
@@ -619,13 +622,50 @@ const HplcEffective = () => {
     return isInitiator ? isNewRow : true;
   };
 
+  const originalData = location.state;
+
   // Check if reviewer can edit a record (prevent changes after saving)
-  const canReviewerEdit = (item) => {
-    if (item.record_id && item.reviewed_by) {
-      return true;
+   const canReviewerEdit = (item) => {
+  // find original version of this record by record_id
+  const original = originalData?.hplcRecords?.find(o => o.record_id === item.record_id);
+
+  // If we found the original row
+  if (original) {
+    // If original remarksType was OK → Lock it
+    if (original.remarksType === "OK") {
+      return false;
     }
-    return true;
-  };
+  }
+
+  // Otherwise allow editing
+  return true;
+};
+
+    const disableFieldMap = {
+  "Incorrect Sample Name": "sample_name",
+  "Incorrect Reg No./ Lot No.": "reg_no",
+  "Incorrect Method Used": "method_used",
+  "Incorrect Parameter/Activity": "parameter_or_activity",
+  "Incorrect Column No.": "column_no",
+  "Incorrect No. of Injections": "no_of_injections",
+};
+
+const getReviewerMarkedField = (item) => {
+  return disableFieldMap[item.remarksSubType] || null;
+};
+
+const isFieldEditable = (item, fieldName) => {
+  const reviewerMarkedField = getReviewerMarkedField(item);
+
+  // If reviewer marked a wrong field
+  if (reviewerMarkedField) {
+    return fieldName === reviewerMarkedField;
+  }
+
+  // Else default logic
+  return isRowEditable(item);
+};
+
 
   const handleDeleteFile = async (index) => {
     const record = editData.hplcRecords[index];
@@ -1081,7 +1121,7 @@ const HplcEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "sample_name")
                                 }
                               />
                             </td>
@@ -1100,7 +1140,7 @@ const HplcEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "reg_no")
                                 }
                               />
                             </td>
@@ -1119,7 +1159,7 @@ const HplcEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "method_used")
                                 }
                               />
                             </td>
@@ -1139,7 +1179,7 @@ const HplcEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "parameter_or_activity")
                                 }
                               />
                             </td>
@@ -1158,7 +1198,7 @@ const HplcEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "column_no")
                                 }
                               />
                             </td>
@@ -1295,7 +1335,7 @@ const HplcEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "no_of_injections")
                                 }
                               />
                             </td>
@@ -1378,6 +1418,7 @@ const HplcEffective = () => {
                                       ) || !canReviewerEdit(item)
                                     }
                                   >
+                                    <option value="Select">--Select--</option>
                                     <option value="OK">OK</option>
                                     <option value="action-needed">
                                       Action Needed
@@ -1478,7 +1519,7 @@ const HplcEffective = () => {
                                   const isDisabled =
                                     [3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isRowEditable(item);
+                                    ) || !isRowEditable(item) || !canReviewerEdit(item);
 
                                   return item.supporting_docs ? (
                                     <div className="file-upload-wrapper">
@@ -1557,11 +1598,8 @@ const HplcEffective = () => {
                             </td>
 
                             <td>
-                              {editData?.hplcRecords?.find(
-                                (r) => r.record_id === item.record_id
-                              )?.reviewed_by
-                                ? "Closed"
-                                : "Open"}
+                              {
+                                (item.remarksOther || item.remarks == "OK" ? "Closed" : "Open")}
                             </td>
                           </tr>
                         ))}
