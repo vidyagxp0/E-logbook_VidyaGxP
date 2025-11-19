@@ -301,8 +301,20 @@ function AuditTrail() {
       "pH Meter OP/Cal": {
         type: "pHMeterOPCalAuditTrail",
       },
-      "UV-Vis Calibration": {
+      "UV Vis Calib": {
         type: "UVVisCalibrationAuditTrail",
+      },
+      "SDS PAGE": {
+        type: "sdsPageAuditTrail",
+      },
+      "Gel Doc iGene": {
+        type: "GelDociGeneAuditTrail",
+      },
+      "UV/White Light Transilluminator": {
+        type: "UVWhiteLightAuditTrail",
+      },
+      "VO Calibration": {
+        type: "VoCalibrationAuditTrail",
       },
     };
 

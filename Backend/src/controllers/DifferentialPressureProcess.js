@@ -22,6 +22,12 @@ const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditT
 const AnalyticalBalanceAuditTrail = require("../models/AnalyticalBalanceAuditTrail")
 const hplcAuditTrails = require("../models/hplcAuditTrails")
 const karlFischer = require("../models/karlFischerAuditTrail")
+const GelDocIGeneAuditTrails = require("../models/gelDocIGeneAuditTrail")
+const OpAndCalParameterAuditTrails = require("../models/OpAndCalParameterAuditTrail")
+const OpAndCalUvVisAuditTrails = require("../models/OpAndCalUvVisAuditTrail")
+const sdsPageAuditTrails = require("../models/sdsPageAuditTrail")
+const uvWhiteLightAuditTrails = require("../models/uvWhiteLightAuditTrail")
+const vocalibAuditTrails = require("../models/voCalibAuditTrail")
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -2172,6 +2178,66 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
+      case "GelDociGeneAuditTrail":
+        getData = await GelDocIGeneAuditTrails.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      case "pHMeterOPCalAuditTrail":
+        getData = await OpAndCalParameterAuditTrails.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      case "UVVisCalibrationAuditTrail":
+        getData = await OpAndCalUvVisAuditTrails.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      case "sdsPageAuditTrail":
+        getData = await sdsPageAuditTrails.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      case "UVWhiteLightAuditTrail":
+        getData = await uvWhiteLightAuditTrails.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
+      case "VoCalibrationAuditTrail":
+        getData = await vocalibAuditTrails.findAll({
+          where: { form_id: formId },
+          include: {
+            model: User,
+            attributes: ["user_id", "name"],
+          },
+          order: [["auditTrail_id", "DESC"]],
+        });
+        break;
       
       default:
         return res.status(400).json({
@@ -2249,7 +2315,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
       `attachment; filename=${type}_Audit_Report.pdf`
     );
     res.setHeader("Content-Type", "application/pdf");
-    res.send(pdfBuffer);
+    res.end(pdfBuffer);
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
