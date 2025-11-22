@@ -26,10 +26,14 @@ const OpAndCalMultiParameterProcessRecord = sequelize.define(
       type: DataTypes.STRING, 
       allowNull: false 
     },
-     adjustPH: { 
-      type: DataTypes.STRING, 
-      allowNull: false 
-    },
+    factorValue: { 
+     type: DataTypes.STRING, 
+     allowNull: false 
+   },
+    adjustPH: { 
+     type: DataTypes.STRING, 
+     allowNull: false 
+   },
     done_by: { 
       type: DataTypes.STRING
      },
