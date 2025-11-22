@@ -77,7 +77,7 @@ function LaunchQMS({ onClick, onExit }) {
             text-sm
           "
             >
-              Launch QMS
+              Launch LIMS
             </button>
           </div>
           {/* Modal */}

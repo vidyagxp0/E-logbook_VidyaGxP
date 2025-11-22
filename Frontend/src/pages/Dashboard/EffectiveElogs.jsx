@@ -849,7 +849,7 @@ const getFilteredData = () => {
       : item.hplcRecords
       ? "HPLC"
       : item.OpAndCalMultiParameterProcessRecords
-      ? "pH Meter OP/Cal"
+      ? "pH Meter"
       : item.UvVisRecords
       ? "UV-Vis Calibration"
       : item.sdsPageRecords
@@ -977,7 +977,18 @@ const getFilteredData = () => {
       : "";
   };
 
-
+ const labelStyle = {
+    display: "inline-block",
+    padding: "4px 12px",
+    paddingLeft: "18px",
+    borderRadius: "50px",
+    backgroundColor: "#e9ecef",
+    fontSize: "13px",
+    fontWeight: "600",
+    color: "#000000",
+    marginBottom: "6px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+  };
   return (
     <>
       <HeaderTop />
@@ -1005,6 +1016,32 @@ const getFilteredData = () => {
             border: "1px solid #e9ecef",
           }}
         >
+<div className="flex flex-col min-w-[280px] mb-0">
+
+  <label style={labelStyle} className="!flex items-center gap-2 w-fit text-[14px] font-semibold text-[#495057] mb-1 select-none">
+
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="#0c5fc6"
+      className="h-[20px] w-[20px]"
+    >
+      <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"></path>
+    </svg>
+
+    Search
+  </label>
+
+  <input
+    type="text"
+    placeholder="Search Instrument, Name, Dept, Creator..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="h-[38px] px-3 border border-[#ced4da] rounded-md text-[14px] placeholder:text-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-black focus:border-black "
+  />
+
+</div>
+
           <div
             style={{
               display: "flex",
@@ -1020,16 +1057,10 @@ const getFilteredData = () => {
   style={{ marginBottom: "0", minWidth: "200px" }}
 >
   <label
-    className="color-label"
-    style={{
-      fontSize: "14px",
-      fontWeight: "600",
-      color: "#495057",
-      marginBottom: "8px",
-      padding: "0",
-    }}
+    style={labelStyle}
+    
   >
-    Review Filter
+    Status
   </label>
 
   <select
@@ -1052,55 +1083,17 @@ const getFilteredData = () => {
   </select>
 </div>
 
-                    <div
-  className="group-input"
-  style={{ marginBottom: "0", minWidth: "280px" }} // wider than before
->
-  <label
-    className="color-label"
-    style={{
-      fontSize: "14px",
-      fontWeight: "600",
-      color: "#495057",
-      marginBottom: "8px",
-      padding: "0",
-    }}
-  >
-    Search
-  </label>
 
-  <input
-    type="text"
-    placeholder="Search Instrument, Name, Dept, Creator..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    style={{
-      height: "38px",              // ✨ same height like dropdown
-      padding: "8px 12px",
-      border: "1px solid #ced4da",
-      borderRadius: "4px",
-      fontSize: "14px",
-      backgroundColor: "white",
-      width: "100%",
-    }}
-  />
-</div>
 
    <div
               className="group-input"
               style={{ marginBottom: "0", minWidth: "200px" }}
             >
               <label
-                className="color-label"
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#495057",
-                  marginBottom: "8px",
-                  padding: "0",
-                }}
+                 style={labelStyle}
+                
               >
-    All Instruments
+    All Instruments/Equipment ID's
   </label>
 
   <select
@@ -1115,7 +1108,7 @@ const getFilteredData = () => {
       width: "100%",
     }}
   >
-    <option value="All">All Instruments</option>
+    <option value="All">All</option>
 
     {/* {combinedRecords
       .map((item) => getElogNumber(item))
@@ -1256,19 +1249,19 @@ const getFilteredData = () => {
         </div>
 
         {/* Table */}
-        <table className="w-full border border-collapse">
-          <thead>
+        <table className="w-full border border-collapse text-center">
+          <thead >
             <tr>
-              <th>S no</th>
-              {/* <th>E.Log no</th> */}
-              <th>Instrument No.</th>
-              {/* <th>Instrument / Equipment</th> */}
-              <th>Name</th>
-              <th>Department</th>
-              <th>Short description</th>
-              <th>Created By</th>
-              {/* <th>Initiator</th> */}
-              <th>Date of initiation</th>
+              <th className="text-center">S no</th>
+              {/* <th className="text-center">E.Log no</th> */}
+              <th className="text-center">Instrument No.</th>
+              {/* <th className="text-center">Instrument / Equipment</th> */}
+              <th className="text-center">Name</th>
+              <th className="text-center">Department</th>
+              <th className="text-center">Short description</th>
+              <th className="text-center">Created By</th>
+              {/* <th className="text-center">Initiator</th> */}
+              <th className="text-center">Date of initiation</th>
             </tr>
           </thead>
           <tbody>
@@ -1279,44 +1272,51 @@ const getFilteredData = () => {
                 <tr key={item.form_id || item.eLogId}>
                   <td>{index + 1}</td>
 
-                  <td
-                    style={{ cursor: "pointer", color: "black" }}
-                    onClick={() => handleNavigation(item)}
-                    onMouseEnter={(e) => (e.target.style.color = "blue")}
-                    onMouseLeave={(e) => (e.target.style.color = "black")}
+            <td
+  onClick={() => handleNavigation(item)}
+  className="relative group cursor-pointer text-black hover:text-blue-600"
+>
+  {/* Tooltip */}
+  <span
+    className="absolute -top-7 left-1/2 -translate-x-1/2 
+               bg-gray-800 text-white text-xs px-2 py-1 rounded 
+               opacity-0 group-hover:opacity-100 pointer-events-none
+               transition-opacity duration-0"
+  >
+    Click to select
+  </span>
 
-                  >
-                                 {item.DifferentialPressureRecords
-                          ? getElogNumber(item)
-                          : item.TempratureRecords
-                          ? getElogNumber(item)
-                          : item.LoadedQuantityRecords
-                          ? getElogNumber(item)
-                          : item.OperationOfSterilizerRecords
-                          ? getElogNumber(item)
-                          : item.MediaRecords
-                          ? getElogNumber(item)
-                          : item.DispenseOfMaterials
-                          ? getElogNumber(item)
-                          : item.AnalyticalBalances
-                          // ? `AB${item.form_id}`
-                          ? getElogNumber(item)
-                          : item.karlFischerRecords
-                          ? getElogNumber(item)
-                          : item.hplcRecords
-                          ? getElogNumber(item)
-                          : item.OpAndCalMultiParameterProcessRecords
-                          ? getElogNumber(item)
-                          : item.UvVisRecords
-                          ? getElogNumber(item)
-                          : item.sdsPageRecords
-                          ? getElogNumber(item)
-                          : item.gelDocIGeneRecords
-                          ? getElogNumber(item)
-                          : item.uvWhiteLightRecords
-                          ? getElogNumber(item)
-                          : null}
-                  </td>
+  {item.DifferentialPressureRecords
+    ? getElogNumber(item)
+    : item.TempratureRecords
+    ? getElogNumber(item)
+    : item.LoadedQuantityRecords
+    ? getElogNumber(item)
+    : item.OperationOfSterilizerRecords
+    ? getElogNumber(item)
+    : item.MediaRecords
+    ? getElogNumber(item)
+    : item.DispenseOfMaterials
+    ? getElogNumber(item)
+    : item.AnalyticalBalances
+    ? getElogNumber(item)
+    : item.karlFischerRecords
+    ? getElogNumber(item)
+    : item.hplcRecords
+    ? getElogNumber(item)
+    : item.OpAndCalMultiParameterProcessRecords
+    ? getElogNumber(item)
+    : item.UvVisRecords
+    ? getElogNumber(item)
+    : item.sdsPageRecords
+    ? getElogNumber(item)
+    : item.gelDocIGeneRecords
+    ? getElogNumber(item)
+    : item.uvWhiteLightRecords
+    ? getElogNumber(item)
+    : null}
+</td>
+
                   <td>{getEquipmentType(item)}</td>
                   <td>
                     {item.site_id === 1

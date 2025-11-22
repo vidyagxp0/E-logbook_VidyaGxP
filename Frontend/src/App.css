@@ -12,7 +12,9 @@
     
 }
 
-
-
-
-
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* bottom */
+  min-height: 100vh;
+}

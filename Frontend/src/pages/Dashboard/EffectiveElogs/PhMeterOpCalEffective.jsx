@@ -324,7 +324,7 @@ const PhMeterOpCalEffective = () => {
       const nextIndex =
         editData?.OpAndCalMultiParameterProcessRecords?.length || 0;
       const newRow = {
-        date: dayjs().format("YYYY-MM-DD"),
+        date: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
         nameOfSolution: "",
         adjustPH: "",
         done_by: location?.state?.initiator_name || "",
@@ -450,6 +450,8 @@ const PhMeterOpCalEffective = () => {
     }));
   };
 
+  
+
   const filteredGridData = useMemo(() => {
     const records = editData?.OpAndCalMultiParameterProcessRecords || [];
 
@@ -469,6 +471,8 @@ const PhMeterOpCalEffective = () => {
           ? record.status === "Open"
           : selectedStatus === "Closed"
           ? record.status === "Closed"
+          : selectedStatus === "Return"
+          ? record.status === "Return"
           : true;
 
       return matchInitiator && matchReviewer && matchStatus;
@@ -727,8 +731,28 @@ const PhMeterOpCalEffective = () => {
     return true;
   };
 
+  const [showFilter, setShowFilter] = useState(true);
+
+  // Common Label Style
+ const labelStyle = {
+    display: "inline-block",
+    padding: "4px 12px",
+    paddingLeft: "18px",
+    borderRadius: "50px",
+    backgroundColor: "#e9ecef",
+    fontSize: "13px",
+    fontWeight: "600",
+    color: "#000000",
+    marginBottom: "6px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+  };
+  
+useEffect(() => {
+  const box = document.querySelector(".tableBottomStart");
+  box.scrollTop = box.scrollHeight;
+}, [filteredGridData]);
   return (
-    <>
+    <div>
       <HeaderTop />
       <LaunchQMS
         onClick={() => {
@@ -750,17 +774,27 @@ const PhMeterOpCalEffective = () => {
                 <strong> Record Name:&nbsp;</strong>KARL Fischer
               </div> */}
             <div>
-              <strong> Department :&nbsp;</strong>
-              {location.state?.site_id === 1
-                ? "India"
-                : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : location.state?.site_id === 4
-                ? "EU"
-                : "Biologics"}
-            </div>
+  <strong style={{ fontSize: "16px", color: "#ffff" }}>Department :&nbsp;</strong>
+  <span
+    style={{
+      fontWeight: "700",
+      fontSize: "16px",
+      letterSpacing: "0.5px",
+      color: "#ffff",
+      fontFamily: "Segoe UI, Roboto, sans-serif",
+    }}
+  >
+    {location.state?.site_id === 1
+      ? "India"
+      : location.state?.site_id === 2
+      ? "Malaysia"
+      : location.state?.site_id === 3
+      ? "EMEA"
+      : location.state?.site_id === 4
+      ? "EU"
+      : "Biologics"}
+  </span>
+</div>
             {/* <div>
                 <strong> Initiated By :&nbsp;</strong>
                 {location.state?.initiator_name}
@@ -788,7 +822,7 @@ const PhMeterOpCalEffective = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Operation and Calibration of pH Meter (Multiparameter) Record
+                  pH Meter (Multiparameter)
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -1308,160 +1342,150 @@ const PhMeterOpCalEffective = () => {
 
               {isSelectedDetails === true ? (
                 <>
-                  <div
-                    className="filter-section"
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: "20px",
-                      flexWrap: "wrap",
-                      marginBottom: "20px",
-                      padding: "15px",
-                      backgroundColor: "#f8f9fa",
-                      borderRadius: "8px",
-                      border: "1px solid #e9ecef",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "end",
-                        gap: "20px",
-                        flexWrap: "wrap",
-                        flex: 1,
-                      }}
-                    >
-                      <div
-                        className="group-input"
-                        style={{ marginBottom: "0", minWidth: "200px" }}
-                      >
-                        <label
-                          className="color-label"
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#495057",
-                            marginBottom: "8px",
-                            padding: "0",
-                          }}
-                        >
-                          Status
-                        </label>
-                        <select
-                          className="form-control"
-                          name="status"
-                          value={selectedStatus}
-                          onChange={handleInputChange1}
-                          style={{
-                            padding: "8px 12px",
-                            border: "1px solid #ced4da",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="All Records">All Records</option>
-                          <option value="Open">Open</option>
-                          <option value="Closed">Closed</option>
-                        </select>
-                      </div>
+                     <div
+      style={{
+        marginBottom: showFilter ? "20px" : "10px",
+        padding: showFilter ? "15px" : "8px 12px",
+        backgroundColor: "#f8f9fa",
+        borderRadius: "8px",
+        border: "1px solid #e9ecef",
+        transition: "0.3s ease",
+      }}
+    >
+      {/* Only Icon */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+        onClick={() => setShowFilter(!showFilter)}
+        title={showFilter ? "Collapse Filters" : "Expand Filters"}
+        className="h-[10px]"
+      >
+        <span
+         style={{
+  fontSize: "28px",
+  fontWeight: "800",
+  color: "#111",
+  userSelect: "none",
+  cursor: "pointer",
+  transition: "0.2s",
+  transform: showFilter ? "scale(1.15)" : "scale(1.1)"
+}}
 
-                      <div
-                        className="group-input"
-                        style={{ marginBottom: "0", minWidth: "200px" }}
-                      >
-                        <label
-                          className="color-label"
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#495057",
-                            marginBottom: "8px",
-                            padding: "0",
-                          }}
-                        >
-                          Initiator
-                        </label>
-                        <select
-                          className="form-control"
-                          name="initiator"
-                          value={selectedInitiator}
-                          onChange={handleInputChange1}
-                          style={{
-                            padding: "8px 12px",
-                            border: "1px solid #ced4da",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="All Records">All Records</option>
-                          {[
-                            ...new Set(
-                              editData?.OpAndCalMultiParameterProcessRecords?.map(
-                                (r) => r.done_by
-                              )
-                            ),
-                          ].map(
-                            (done_by, index) =>
-                              done_by && (
-                                <option key={index} value={done_by}>
-                                  {done_by}
-                                </option>
-                              )
-                          )}
-                        </select>
-                      </div>
+        >
+          {showFilter ? "−" : "+"}
+        </span>
+      </div>
 
-                      <div
-                        className="group-input"
-                        style={{ marginBottom: "0", minWidth: "200px" }}
-                      >
-                        <label
-                          className="color-label"
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#495057",
-                            marginBottom: "8px",
-                            padding: "0",
-                          }}
-                        >
-                          Reviewer
-                        </label>
-                        <select
-                          className="form-control"
-                          name="reviewer"
-                          value={selectedReviewer}
-                          onChange={handleInputChange1}
-                          style={{
-                            padding: "8px 12px",
-                            border: "1px solid #ced4da",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="All Records">All Records</option>
-                          {[
-                            ...new Set(
-                              editData?.OpAndCalMultiParameterProcessRecords?.map(
-                                (r) => r.reviewed_by
-                              )
-                            ),
-                          ].map(
-                            (reviewed_by, index) =>
-                              reviewed_by && (
-                                <option key={index} value={reviewed_by}>
-                                  {reviewed_by}
-                                </option>
-                              )
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
+      {/* Collapsible Content */}
+      {showFilter && (
+        <div
+          style={{
+            marginTop: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: "20px",
+            flexWrap: "wrap",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "end",
+              gap: "20px",
+              flexWrap: "wrap",
+              flex: 1,
+            }}
+          >
+            {/* Status */}
+            <div style={{ marginBottom: "0", minWidth: "200px" }}>
+              <label style={labelStyle}>Status</label>
+              <select
+                className="form-control"
+                name="status"
+                value={selectedStatus}
+                onChange={handleInputChange1}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All Records">All Records</option>
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+                <option value="Return">Return</option>
+              </select>
+            </div>
+
+            {/* Initiator */}
+            <div style={{ marginBottom: "0", minWidth: "200px" }}>
+              <label style={labelStyle}>Initiator</label>
+              <select
+                className="form-control"
+                name="initiator"
+                value={selectedInitiator}
+                onChange={handleInputChange1}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All Records">All</option>
+                {[...new Set(editData?.OpAndCalMultiParameterProcessRecords?.map(r => r.done_by))].map(
+                  (done_by, index) =>
+                    done_by && (
+                      <option key={index} value={done_by}>
+                        {done_by}
+                      </option>
+                    )
+                )}
+              </select>
+            </div>
+
+            {/* Reviewer */}
+            <div style={{ marginBottom: "0", minWidth: "200px" }}>
+              <label style={labelStyle}>Reviewer</label>
+              <select
+                className="form-control"
+                name="reviewer"
+                value={selectedReviewer}
+                onChange={handleInputChange1}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All Records">All</option>
+                {[...new Set(editData?.OpAndCalMultiParameterProcessRecords?.map(r => r.reviewed_by))].map(
+                  (reviewed_by, index) =>
+                    reviewed_by && (
+                      <option key={index} value={reviewed_by}>
+                        {reviewed_by}
+                      </option>
+                    )
+                )}
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
 
                   <div>
                     <div className="AddRows d-flex items-center">
@@ -1471,43 +1495,64 @@ const PhMeterOpCalEffective = () => {
                       </div>
                     </div>
                   </div>
-                  <table>
+                  <div className="tableBottomStart max-h-[350px] overflow-y-auto flex flex-col-reverse">
+
+                  <table className="w-full border-collapse text-center">
                     <thead>
                       <tr>
-                        <th className="text-center">S no.</th>
-                        <th className="text-center">Date</th>
-                        <th className="text-center">
+                        <th className="sticky top-0 z-10 text-center">S no.</th>
+                        <th className="sticky top-0 z-10 text-center">Date</th>
+                        <th className="sticky top-0 z-10 text-center">Instrument/Equipment Name</th>
+                        <th className="sticky top-0 z-10 text-center">Instrument/Equipment No.</th>
+                        <th className="sticky top-0 z-10 text-center">Factor Value</th>
+
+                        <th className="sticky top-0 z-10 text-center">
                           Name of Solution/Buffer/Sample Solution
                         </th>
-                        <th className="text-center">Adjusted pH</th>
-                        <th className="text-center">Done by</th>
-                        <th className="text-center">Checked By</th>
-                        <th className="text-center">Remarks</th>
-                        <th className="text-center">Attachment</th>
-                        <th className="text-center">Status</th>
+                        <th className="sticky top-0 z-10 text-center">Adjusted pH</th>
+                        <th className="sticky top-0 z-10 text-center">Done by</th>
+                        <th className="sticky top-0 z-10 text-center">Checked By</th>
+                        <th className="sticky top-0 z-10 text-center">Remarks</th>
+                        <th className="sticky top-0 z-10 text-center">Attachment</th>
+                        <th className="sticky top-0 z-10 text-center">Status</th>
                         {/* <th className="text-center">Supporting Documents</th> */}
                         {/* <th className="text-center">Actions</th> */}
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="text-center">
                       {filteredGridData.length > 0 ? (
                         filteredGridData?.map((item, index) => (
                           <tr key={index}>
-                            <td className="relative group">
+                            <td  className="relative group">
                               {index + 1}
                               <DeleteIcon
                                 className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                 onClick={() => deleteRow(index)}
                               />
                             </td>
-                            <td className="!text-center !justify-center">
+                            <td  className="!text-center !justify-center">
                               <input
-                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                value={dayjs(item?.date).format("DD-MM-YYYY HH:mm:ss")}
                                 type="text"
                                 readOnly
                               />
                             </td>
-                            <td className="!text-center !justify-center">
+                            <td  className="!text-center !justify-center">
+                              <input
+                               
+                              />
+                            </td>
+                            <td  className="!text-center !justify-center">
+                              <input
+                               
+                              />
+                            </td>
+                            <td  className="!text-center !justify-center">
+                              <input
+                               
+                              />
+                            </td>
+                            <td  className="!text-center !justify-center">
                               <input
                                 value={item.nameOfSolution}
                                 onChange={(e) => {
@@ -1530,7 +1575,7 @@ const PhMeterOpCalEffective = () => {
                               />
                             </td>
 
-                            <td className="!text-center">
+                            <td  className="!text-center">
                               <input
                                 value={item.adjustPH}
                                 // disabled
@@ -1552,7 +1597,7 @@ const PhMeterOpCalEffective = () => {
                                 }
                               />
                             </td>
-                            <td className="!text-center">
+                            <td  className="!text-center">
                               <input
                                 value={item.done_by}
                                 // disabled
@@ -1570,49 +1615,43 @@ const PhMeterOpCalEffective = () => {
                               />
                             </td>
 
-                            <td>
+                            <td >
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                  <input
-                                    className="h-4 w-4 cursor-pointer"
-                                    type="checkbox"
-                                    checked={!!item.reviewed_by}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.OpAndCalMultiParameterProcessRecords,
-                                      ];
-                                      if (e.target.checked) {
-                                        newData[index].reviewed_by =
-                                          reviewed_by;
-                                        newData[index].status = "Closed";
-                                      } else {
-                                        newData[index].reviewed_by = "";
-                                        newData[index].status = "Open";
-                                        newData[index].remarks = "";
-                                        newData[index].remarksType = "";
-                                        newData[index].remarksOther = "";
-                                        newData[index].remarksSubType = "";
-                                      }
-                                      setEditData({
-                                        ...editData,
-                                        OpAndCalMultiParameterProcessRecords:
-                                          newData,
-                                      });
-                                    }}
-                                    disabled={
-                                      [1, 3].includes(
-                                        userDetails.roles[0].role_id
-                                      ) || !canReviewerEdit(item)
-                                    }
-                                  />
+                                 <input
+  className="h-5 w-5 cursor-pointer accent-blue-600"
+  type="checkbox"
+  checked={!!item.reviewed_by}
+  onChange={(e) => {
+    const newData = [...editData.OpAndCalMultiParameterProcessRecords];
+    if (e.target.checked) {
+      newData[index].reviewed_by = reviewed_by;
+      newData[index].status = "Closed";
+    } else {
+      newData[index].reviewed_by = "";
+      newData[index].status = "Open";
+      newData[index].remarks = "";  
+      newData[index].remarksType = "";
+      newData[index].remarksOther = "";
+      newData[index].remarksSubType = "";
+    }
+    setEditData({
+      ...editData,
+      OpAndCalMultiParameterProcessRecords: newData,
+    });
+  }}
+  disabled={
+    [1, 3].includes(userDetails.roles[0].role_id) || !canReviewerEdit(item)
+  }
+/>
                                   {item.reviewed_by && (
-                                    <p>{item.reviewed_by}</p>
+                                    <p className="text-blue-700">{item.reviewed_by}</p>
                                   )}
                                 </div>
                               </div>
                             </td>
 
-                            <td>
+                            <td >
                               {item.reviewed_by && (
                                 <div className="flex items-center gap-2">
                                   <select
@@ -1724,7 +1763,7 @@ const PhMeterOpCalEffective = () => {
                               )}
                             </td>
 
-                            <td style={{ width: "200px" }}>
+                            <td  style={{ width: "200px" }}>
                               <div className="d-flex">
                                 {(() => {
                                   const isDisabled =
@@ -1808,7 +1847,7 @@ const PhMeterOpCalEffective = () => {
                               </div>
                             </td>
 
-                            <td>
+                            <td >
                               {item.status ||
                                 (item.reviewed_by ? "Closed" : "Open")}
                             </td>
@@ -1816,13 +1855,17 @@ const PhMeterOpCalEffective = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={10} className="!text-center">
+                          <td  colSpan={10} className="!text-center">
                             Data Not Found
                           </td>
                         </tr>
                       )}
                     </tbody>
                   </table>
+                  </div>
+                   {/* <div className=" d-flex items-center">
+                      <NoteAdd onClick={addRow} className="cursor-pointer" />
+                    </div> */}
                   {/* 
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="group-input mt-4">
@@ -2376,7 +2419,7 @@ const PhMeterOpCalEffective = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
