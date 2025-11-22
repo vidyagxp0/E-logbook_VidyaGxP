@@ -19,7 +19,7 @@ const uvWhiteLightRecords = sequelize.define(
       },
     },
     date: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     sample_name: {

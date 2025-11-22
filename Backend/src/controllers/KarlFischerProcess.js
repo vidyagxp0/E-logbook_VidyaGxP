@@ -187,7 +187,7 @@ exports.InsertKarlFischer = async (req, res) => {
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
-        date:new Date().toISOString().split('T')[0],
+        date: record?.date,
         lot_no: record?.lot_no,
         done_by: record?.done_by, // Assuming time was meant here instead of unique_id again
         factor_percent_water: record?.factor_percent_water,
@@ -504,7 +504,7 @@ exports.EditKarlFischer = async (req, res) => {
 
       const newData = {
         form_id,
-        date: record.date ? new Date(record.date).toISOString() : null,
+        date: record.date,
         remarks: record.remarks,
         status:record?.status,
         remarksOther: record.remarksOther,

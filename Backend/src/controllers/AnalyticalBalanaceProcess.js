@@ -154,10 +154,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
-        date:
-          record?.date && !isNaN(new Date(record?.date))
-            ? new Date(record?.date).toISOString()
-            : null,
+        date:record?.date,
         reg_no: record?.reg_no,
         sample_name: record?.sample_name,
         weight_taken: record?.weight_taken,
@@ -500,7 +497,7 @@ exports.EditAnalyticalBalance = async (req, res) => {
       const newData = {
         form_id,
         reg_no: record.reg_no,
-        date: record.date ? new Date(record.date).toISOString() : null,
+        date: record.date,
         sample_name: record.sample_name,
         weight_taken: record.weight_taken,
         uom: record.uom,

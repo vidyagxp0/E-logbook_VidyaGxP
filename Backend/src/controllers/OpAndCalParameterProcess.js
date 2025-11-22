@@ -152,12 +152,8 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
     if (Array.isArray(pHOpCalRecords) && pHOpCalRecords.length > 0) {
       const formRecords = pHOpCalRecords.map((record, index) => ({
         form_id: newForm?.form_id,
-        date:
-          record?.date && !isNaN(new Date(record?.date))
-            ? new Date(record?.date).toISOString()
-            : null,
+        date: record?.date ,
         nameOfSolution: record?.nameOfSolution,
-        date: record?.date,
         adjustPH: record?.adjustPH,
         done_by: record?.done_by,
         checked_by: record?.checked_by,
@@ -473,7 +469,7 @@ exports.EditOpAndCalMultiParameter = async (req, res) => {
       const newData = {
         form_id,
         nameOfSolution: record.nameOfSolution,
-        date: record.date ? new Date(record.date).toISOString() : null,
+        date: record.date,
         adjustPH: record.adjustPH,
         done_by: record.done_by,
         checked_by: record.checked_by,

@@ -19,7 +19,7 @@ const karlFischerRecord = sequelize.define(
       },
     },
     date: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     lot_no: {
