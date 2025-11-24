@@ -56,7 +56,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.any(),
   Auth.authorizeUserRole(10, 1),
-  OpAndCalParameterProcess.SendDPElogForReview
+  OpAndCalParameterProcess.SendElogForReview
 );
 
 // change status of OpAndCalParameterProcess elog from review to open
@@ -65,7 +65,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(10, 2),
-  OpAndCalParameterProcess.SendDPElogfromReviewToOpen
+  OpAndCalParameterProcess.SendElogfromReviewToOpen
 );
 
 // send OpAndCalParameterProcess elog from review to approval
@@ -74,7 +74,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(10, 2),
-  OpAndCalParameterProcess.SendDPfromReviewToApproval
+  OpAndCalParameterProcess.SendfromReviewToApproval
 );
 
 // send OpAndCalParameterProcess elog from under-approval to open
@@ -83,7 +83,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
   Auth.authorizeUserRole(10, 3),
-  OpAndCalParameterProcess.SendDPfromApprovalToOpen
+  OpAndCalParameterProcess.SendfromApprovalToOpen
 );
 
 // APPROVE OpAndCalParameterProcess elog
@@ -92,7 +92,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
   Auth.authorizeUserRole(10, 3),
-  OpAndCalParameterProcess.ApproveDPElog
+  OpAndCalParameterProcess.ApproveElog
 );
 
 // get users based on roles, sites and processes

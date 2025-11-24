@@ -688,7 +688,7 @@ exports.GetAllOpAndCalMultiParameter = async (req, res) => {
 };
 
 //send differential pressure elog for review
-exports.SendDPElogForReview = async (req, res) => {
+exports.SendElogForReview = async (req, res) => {
   const { form_id, email, password, initiatorDeclaration, initiatorComment } =
     req.body;
 
@@ -836,7 +836,7 @@ exports.SendDPElogForReview = async (req, res) => {
 };
 
 // change status of differential pressure elog from review to open
-exports.SendDPElogfromReviewToOpen = async (req, res) => {
+exports.SendElogfromReviewToOpen = async (req, res) => {
   const { form_id, email, password, reviewerDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -959,7 +959,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 };
 
 // send differential pressure elog from review to approval
-exports.SendDPfromReviewToApproval = async (req, res) => {
+exports.SendfromReviewToApproval = async (req, res) => {
   const { form_id, reviewComment, email, password, reviewerDeclaration } =
     req.body;
 
@@ -1107,7 +1107,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 };
 
 // send differential pressure elog from under approval to open
-exports.SendDPfromApprovalToOpen = async (req, res) => {
+exports.SendfromApprovalToOpen = async (req, res) => {
   const { form_id, email, password, approverDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -1231,7 +1231,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 };
 
 // APPROVE differential pressure elog
-exports.ApproveDPElog = async (req, res) => {
+exports.ApproveElog = async (req, res) => {
   const { form_id, approverComment, email, password, approverDeclaration } =
     req.body;
 
@@ -1685,7 +1685,7 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveABReport", { reportData }, (err, html) => {
+      req.app.render("effectiveReport/effectivePHReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
