@@ -3,10 +3,17 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import HeaderTop from "../../components/Header/HeaderTop";
 import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 
 function Effective_AuditTrail() {
   const [auditTrails, setAuditTrails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [reviewer, setReviewer] = useState("All");
+  const [initiator, setInitiator] = useState("All");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const [User, setUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -221,8 +228,7 @@ function Effective_AuditTrail() {
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "VO Calibration") {
+      } else if (location.state?.process === "VO Calibration") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -336,6 +342,44 @@ function Effective_AuditTrail() {
     }
   };
 
+  const filteredAuditTrails = auditTrails.filter((item) => {
+    // Search text filter
+    const searchMatch =
+      item.field_name?.toLowerCase().includes(search.toLowerCase()) ||
+      item.previous_value?.toLowerCase().includes(search.toLowerCase()) ||
+      item.new_value?.toLowerCase().includes(search.toLowerCase()) ||
+      item.User?.name?.toLowerCase().includes(search.toLowerCase());
+
+    // Reviewer filter
+    const reviewerMatch = reviewer === "All" || item.User?.name === reviewer;
+    // Initiator filter
+    const initiatorMatch = initiator === "All" || item.User?.name === initiator;
+
+    // Date filter
+    const created = dayjs(item.createdAt).format("YYYY-MM-DD");
+    const start = startDate ? dayjs(startDate).format("YYYY-MM-DD") : null;
+    const end = endDate ? dayjs(endDate).format("YYYY-MM-DD") : null;
+    const startMatch = start ? created >= start : true;
+    const endMatch = end ? created <= end : true;
+
+    return (
+      searchMatch && reviewerMatch && initiatorMatch && startMatch && endMatch
+    );
+  });
+
+  const labelStyle = {
+    display: "inline-block",
+    padding: "4px 12px",
+    paddingLeft: "18px",
+    borderRadius: "50px",
+    backgroundColor: "#e9ecef",
+    fontSize: "13px",
+    fontWeight: "600",
+    color: "#000000",
+    marginBottom: "6px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+  };
+
   return (
     <>
       <style>
@@ -377,9 +421,9 @@ function Effective_AuditTrail() {
       <div className="admin-dashboard">
         <HeaderTop />
         <div id="body-container" style={{ margin: "20px" }}>
-          <div className="flex justify-between items-center bg-slate-300 p-2">
+          <div className="flex justify-between items-center bg-slate-300 p-2 mb-3">
             <h3
-              style={{ textAlign: "center", fontSize: "2em", margin: "auto" }}
+              style={{ textAlign: "center", fontSize: "1.5em", margin: "auto" }}
             >
               <strong>Audit Trail</strong>
             </h3>
@@ -418,11 +462,133 @@ function Effective_AuditTrail() {
               </button>
             </div>
           </div>
-          <br />
-          <hr />
-          {auditTrails?.length === 0 ? (
+          {/* <hr /> */}
+
+          <div className="flex justify-between gap-4 items-center mb-4">
+            {/* Search */}
+            <div className="flex flex-col min-w-[300px] mb-0">
+              <label
+                style={labelStyle}
+                className="!flex items-center gap-2 w-fit text-[14px] font-semibold text-[#495057] mb-1 select-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="#0c5fc6"
+                  className="h-[20px] w-[20px]"
+                >
+                  <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"></path>
+                </svg>
+                Search
+              </label>
+              <input
+                type="text"
+                placeholder="Search..."
+                className="border px-3 py-2 rounded-md w-[300px] focus:outline-none 
+    focus:ring-2 focus:ring-[#ced4da] 
+    focus:border-[#ced4da]
+    focus:px-3 focus:py-2"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            {/* Initiator */}
+            <div className="flex flex-col min-w-[260px] mb-0">
+              <label
+                style={labelStyle}
+                className="!flex items-center gap-2 w-fit text-[14px] font-semibold text-[#495057] mb-1 select-none"
+              >
+                Initiator
+              </label>
+              <select
+                className="border px-3 py-2 rounded-md"
+                value={initiator}
+                onChange={(e) => setInitiator(e.target.value)}
+              >
+                <option value="All">All Initiators</option>
+                {[
+                  ...new Set(
+                    auditTrails
+                      .filter((t) =>
+                        t.User?.UserRoles?.some((r) => r.role_id === 1)
+                      )
+                      .map((t) => t.User?.name)
+                  ),
+                ].map((name, idx) => (
+                  <option key={idx} value={name}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Reviewer */}
+            <div className="flex flex-col min-w-[260px] mb-0">
+              <label
+                style={labelStyle}
+                className="!flex items-center gap-2 w-fit text-[14px] font-semibold text-[#495057] mb-1 select-none"
+              >
+                Reviewer
+              </label>
+              <select
+                className="border px-3 py-2 rounded-md"
+                value={reviewer}
+                onChange={(e) => setReviewer(e.target.value)}
+              >
+                <option value="All">All Reviewers</option>
+                {[
+                  ...new Set(
+                    auditTrails
+                      .filter((t) =>
+                        t.User?.UserRoles?.some((r) => r.role_id === 2)
+                      )
+                      .map((t) => t.User?.name)
+                  ),
+                ].map((name, idx) => (
+                  <option key={idx} value={name}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Date Range */}
+            <div className="flex flex-col min-w-[260px] mb-0">
+              <label
+                style={labelStyle}
+                className="!flex items-center gap-2 w-fit text-[14px] font-semibold text-[#495057] mb-1 select-none"
+              >
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border px-3 py-2 rounded-md"
+              />
+            </div>
+            <div className="flex flex-col min-w-[260px] mb-0">
+              <label
+                style={labelStyle}
+                className="!flex items-center gap-2 w-fit text-[14px] font-semibold text-[#495057] mb-1 select-none"
+              >
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border px-3 py-2 rounded-md"
+              />
+            </div>
+          </div>
+
+          {filteredAuditTrails?.length === 0 ? (
             <>
-              <p className="text-center mt-10">No audit trails Available</p>
+              <p className="text-lg font-semibold text-center pt-10 border-t-2">
+                Data Not Found
+              </p>
             </>
           ) : (
             <div className="scrollable-container">
@@ -541,7 +707,7 @@ function Effective_AuditTrail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {auditTrails
+                  {filteredAuditTrails
                     .filter(
                       (auditTrail) =>
                         ![

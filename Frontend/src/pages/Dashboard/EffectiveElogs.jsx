@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import HeaderTop from "../../components/Header/HeaderTop";
 import HeaderBottom from "../../components/Header/HeaderBottom";
 import "./Dashboard.css";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { hasAccess } from "../../components/userAuth/userAuth";
+import dayjs from "dayjs";
 
 function EffectiveElogs() {
   const navigate = useNavigate();
@@ -36,53 +37,51 @@ function EffectiveElogs() {
   const [voCalibElogs, SetVOCalibElogs] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const location = useLocation();
-const [selectedProcess, setSelectedProcess] = useState(null);
-const [searchTerm, setSearchTerm] = useState("");
-const [reviewStatusFilter, setReviewStatusFilter] = useState("All");
+  const [selectedProcess, setSelectedProcess] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [reviewStatusFilter, setReviewStatusFilter] = useState("All");
 
-
-
-useEffect(() => {
-  // Get from location if available
-  if (location.state?.selectedProcess) {
-    setSelectedProcess(location.state.selectedProcess);
-    sessionStorage.setItem("selectedProcess", location.state.selectedProcess);
-  } else {
-    const storedProcess = sessionStorage.getItem("selectedProcess");
-    if (storedProcess) {
-      setSelectedProcess(Number(storedProcess));
+  useEffect(() => {
+    // Get from location if available
+    if (location.state?.selectedProcess) {
+      setSelectedProcess(location.state.selectedProcess);
+      sessionStorage.setItem("selectedProcess", location.state.selectedProcess);
+    } else {
+      const storedProcess = sessionStorage.getItem("selectedProcess");
+      if (storedProcess) {
+        setSelectedProcess(Number(storedProcess));
+      }
     }
-  }
-}, [location.state]);
+  }, [location.state]);
 
   const getElogNumber = (item) => {
-  const processId = item.process_id;
-  if (!processId) return "IPC/BIOS/NA/000";
+    const processId = item.process_id;
+    if (!processId) return "IPC/BIOS/NA/000";
 
-  const shortName = processShortName[processId] || "NA";
-  const index = String(item.form_id).padStart(3, "0");
+    const shortName = processShortName[processId] || "NA";
+    const index = String(item.form_id).padStart(3, "0");
 
-  return `IPC/BIOS/${shortName}/${index}`;
-};
+    return `IPC/BIOS/${shortName}/${index}`;
+  };
 
-const [instrumentFilter, setInstrumentFilter] = useState("All");
-const processShortName = {
-  1: "DP",
-  2: "TR",
-  3: "LQ",
-  4: "OS",
-  5: "MR",
-  6: "DM",
-  7: "AB",
-  8: "KF",
-  9: "HPLC",
-  10: "PH",
-  11: "UVVIS",
-  12: "SDS",
-  13: "GDI",
-  14: "UVWL",
-  15: "VOCAL",
-};
+  const [instrumentFilter, setInstrumentFilter] = useState("All");
+  const processShortName = {
+    1: "DP",
+    2: "TR",
+    3: "LQ",
+    4: "OS",
+    5: "MR",
+    6: "DM",
+    7: "AB",
+    8: "KF",
+    9: "HPLC",
+    10: "PH",
+    11: "UVVIS",
+    12: "SDS",
+    13: "GDI",
+    14: "UVWL",
+    15: "VOCAL",
+  };
 
   useEffect(() => {
     const newConfig = {
@@ -543,22 +542,22 @@ const processShortName = {
   // ];
 
   const combinedRecords = [
-  ...differentialPressureElogs.map(r => ({ ...r, process_id: 1 })),
-  ...tempratureRecordElogs.map(r => ({ ...r, process_id: 2 })),
-  ...loadedQuantityElogs.map(r => ({ ...r, process_id: 3 })),
-  ...operationOfSterilizerElogs.map(r => ({ ...r, process_id: 4 })),
-  ...mediaRecordElogs.map(r => ({ ...r, process_id: 5 })),
-  ...dispensingOfMaterialsElogs.map(r => ({ ...r, process_id: 6 })),
-  ...analyticalBalanceElogs.map(r => ({ ...r, process_id: 7 })),
-  ...karlFischerElogs.map(r => ({ ...r, process_id: 8 })),
-  ...hplcElogs.map(r => ({ ...r, process_id: 9 })),
-  ...pHMeterOPCalElogs.map(r => ({ ...r, process_id: 10 })),
-  ...uVVisCalibElogs.map(r => ({ ...r, process_id: 11 })),
-  ...sdsPage.map(r => ({ ...r, process_id: 12 })),
-  ...gelDociGene.map(r => ({ ...r, process_id: 13 })),
-  ...uVWhiteLightTrans.map(r => ({ ...r, process_id: 14 })),
-  ...voCalibElogs.map(r => ({ ...r, process_id: 15 })),
-];
+    ...differentialPressureElogs.map((r) => ({ ...r, process_id: 1 })),
+    ...tempratureRecordElogs.map((r) => ({ ...r, process_id: 2 })),
+    ...loadedQuantityElogs.map((r) => ({ ...r, process_id: 3 })),
+    ...operationOfSterilizerElogs.map((r) => ({ ...r, process_id: 4 })),
+    ...mediaRecordElogs.map((r) => ({ ...r, process_id: 5 })),
+    ...dispensingOfMaterialsElogs.map((r) => ({ ...r, process_id: 6 })),
+    ...analyticalBalanceElogs.map((r) => ({ ...r, process_id: 7 })),
+    ...karlFischerElogs.map((r) => ({ ...r, process_id: 8 })),
+    ...hplcElogs.map((r) => ({ ...r, process_id: 9 })),
+    ...pHMeterOPCalElogs.map((r) => ({ ...r, process_id: 10 })),
+    ...uVVisCalibElogs.map((r) => ({ ...r, process_id: 11 })),
+    ...sdsPage.map((r) => ({ ...r, process_id: 12 })),
+    ...gelDociGene.map((r) => ({ ...r, process_id: 13 })),
+    ...uVWhiteLightTrans.map((r) => ({ ...r, process_id: 14 })),
+    ...voCalibElogs.map((r) => ({ ...r, process_id: 15 })),
+  ];
 
   const handleNavigation = (item) => {
     if (item.DifferentialPressureRecords) {
@@ -576,7 +575,12 @@ const processShortName = {
     } else if (item.OperationOfSterilizerRecords) {
       navigate("/effective-operation-of-sterilizer", { state: item });
     } else if (item.AnalyticalBalances) {
-      navigate("/effective-analytical-balance", { state: item });
+      navigate("/effective-analytical-balance", {
+        state: {
+          ...item,
+          instrument_no: getElogNumber(item),
+        },
+      });
     } else if (item.DispenseOfMaterials) {
       navigate("/effective-dispensing-of-material", { state: item });
     } else if (item.karlFischerRecords) {
@@ -585,13 +589,12 @@ const processShortName = {
       navigate("/effective-hplc", { state: item });
     } else if (item.OpAndCalMultiParameterProcessRecords) {
       // navigate("/effective-pHMeterOpCal", { state: item });
-      navigate("/effective-pHMeterOpCal", { 
-  state: {
-    ...item,
-    instrument_no: getElogNumber(item), 
-  }
-});
-
+      navigate("/effective-pHMeterOpCal", {
+        state: {
+          ...item,
+          instrument_no: getElogNumber(item),
+        },
+      });
     } else if (item.UvVisRecords) {
       navigate("/effective-uv-vis-calibration", { state: item });
     } else if (item.sdsPageRecords) {
@@ -600,7 +603,7 @@ const processShortName = {
       navigate("/effective-gel-doc-igene", { state: item });
     } else if (item.uvWhiteLightRecords) {
       navigate("/effective-uv-wl-transilluminator", { state: item });
-    }else if (item.voCalibRecords) {
+    } else if (item.voCalibRecords) {
       navigate("/effective-vo-calibration", { state: item });
     } else {
       // Handle default or fallback navigation if needed
@@ -616,225 +619,242 @@ const processShortName = {
     return roleMatch && statusMatch;
   };
 
-//   const getFilteredData = () => {
-//     const applyInstrumentFilter = (data) => {
-//   if (instrumentFilter === "All") return data;
-//   return data.filter((item) => getElogNumber(item) === instrumentFilter);
-// };
+  //   const getFilteredData = () => {
+  //     const applyInstrumentFilter = (data) => {
+  //   if (instrumentFilter === "All") return data;
+  //   return data.filter((item) => getElogNumber(item) === instrumentFilter);
+  // };
 
-//     if (eLogSelect === "analytical_balance") {
-//       // return analyticalBalanceElogs?.filter(filterRecord);
-//       return applyInstrumentFilter(analyticalBalanceElogs?.filter(filterRecord));
+  //     if (eLogSelect === "analytical_balance") {
+  //       // return analyticalBalanceElogs?.filter(filterRecord);
+  //       return applyInstrumentFilter(analyticalBalanceElogs?.filter(filterRecord));
 
-//     } else if (eLogSelect === "karl_fischer") {
-//       // return karlFischerElogs?.filter(filterRecord);
-//       return applyInstrumentFilter(karlFischerElogs?.filter(filterRecord));
-//     } else if (eLogSelect === "hplc") {
-//       // return hplcElogs?.filter(filterRecord);
-//       return applyInstrumentFilter(hplcElogs?.filter(filterRecord));
-//     } else if (eLogSelect === "pH Meter OP/Cal") {
-//       // return pHMeterOPCalElogs?.filter(filterRecord);
-//       return applyInstrumentFilter(pHMeterOPCalElogs?.filter(filterRecord));
+  //     } else if (eLogSelect === "karl_fischer") {
+  //       // return karlFischerElogs?.filter(filterRecord);
+  //       return applyInstrumentFilter(karlFischerElogs?.filter(filterRecord));
+  //     } else if (eLogSelect === "hplc") {
+  //       // return hplcElogs?.filter(filterRecord);
+  //       return applyInstrumentFilter(hplcElogs?.filter(filterRecord));
+  //     } else if (eLogSelect === "pH Meter OP/Cal") {
+  //       // return pHMeterOPCalElogs?.filter(filterRecord);
+  //       return applyInstrumentFilter(pHMeterOPCalElogs?.filter(filterRecord));
 
-//     } else if (eLogSelect === "UV-Vis Calibration") {
-//       // return uVVisCalibElogs?.filter(filterRecord);
-//       return applyInstrumentFilter(uVVisCalibElogs?.filter(filterRecord));
+  //     } else if (eLogSelect === "UV-Vis Calibration") {
+  //       // return uVVisCalibElogs?.filter(filterRecord);
+  //       return applyInstrumentFilter(uVVisCalibElogs?.filter(filterRecord));
 
-//     } else if (eLogSelect === "SDS PAGE") {
-//       // return sdsPage?.filter(filterRecord);
-//       return applyInstrumentFilter(sdsPage?.filter(filterRecord));
-//     } else if (eLogSelect === "Gel Doc iGene") {
-//       // return gelDociGene?.filter(filterRecord);
-//       return applyInstrumentFilter(gelDociGene?.filter(filterRecord));
-//     } else if (eLogSelect === "UV/WL Transilluminator") {
-//       // return uVWhiteLightTrans?.filter(filterRecord);
-//       return applyInstrumentFilter(uVWhiteLightTrans?.filter(filterRecord));
-//     } else if (eLogSelect === "VO Calibration") {
-//       // return voCalibElogs?.filter(filterRecord);
-//             return applyInstrumentFilter(voCalibElogs?.filter(filterRecord));
-//     } else {
-//       // return combinedRecords
-//       //   ?.filter(filterRecord)
-//       //   ?.sort(
-//       //     (a, b) =>
-//       //       new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
-//       //   );
-//       return applyInstrumentFilter(
-//   combinedRecords
-//     ?.filter(filterRecord)
-//     ?.sort(
-//       (a, b) =>
-//         new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
-//     )
-// );
+  //     } else if (eLogSelect === "SDS PAGE") {
+  //       // return sdsPage?.filter(filterRecord);
+  //       return applyInstrumentFilter(sdsPage?.filter(filterRecord));
+  //     } else if (eLogSelect === "Gel Doc iGene") {
+  //       // return gelDociGene?.filter(filterRecord);
+  //       return applyInstrumentFilter(gelDociGene?.filter(filterRecord));
+  //     } else if (eLogSelect === "UV/WL Transilluminator") {
+  //       // return uVWhiteLightTrans?.filter(filterRecord);
+  //       return applyInstrumentFilter(uVWhiteLightTrans?.filter(filterRecord));
+  //     } else if (eLogSelect === "VO Calibration") {
+  //       // return voCalibElogs?.filter(filterRecord);
+  //             return applyInstrumentFilter(voCalibElogs?.filter(filterRecord));
+  //     } else {
+  //       // return combinedRecords
+  //       //   ?.filter(filterRecord)
+  //       //   ?.sort(
+  //       //     (a, b) =>
+  //       //       new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
+  //       //   );
+  //       return applyInstrumentFilter(
+  //   combinedRecords
+  //     ?.filter(filterRecord)
+  //     ?.sort(
+  //       (a, b) =>
+  //         new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
+  //     )
+  // );
 
-//     }
-//   };
+  //     }
+  //   };
 
+  // const checkReviewStatus = (item, type) => {
+  //   console.log(item, "item>>>>");
+  //   const key = Object.keys(item).find((k) =>
+  //     ("records")
+  //   );
+  //   console.log(key, "key>>>>");
 
-// const checkReviewStatus = (item, type) => {
-//   console.log(item, "item>>>>");
-//   const key = Object.keys(item).find((k) =>
-//     ("records")
-//   );
-//   console.log(key, "key>>>>");
+  //   if (!key || !Array.isArray(item[key])) return false;
 
-//   if (!key || !Array.isArray(item[key])) return false;
+  //   const records = item[key];
 
-//   const records = item[key];
+  //   if (records.length === 0) {
+  //     return type === "PendingForCreate";
+  //   }
 
-//   if (records.length === 0) {
-//     return type === "PendingForCreate";
-//   }
+  //   if (type === "Pending") {
+  //     return records.some((rec) => !rec?.reviewed_by);
+  //   }
 
-//   if (type === "Pending") {
-//     return records.some((rec) => !rec?.reviewed_by);
-//   }
+  //   if (type === "Complete") {
+  //     return records.every((rec) => rec?.reviewed_by);
+  //   }
 
-//   if (type === "Complete") {
-//     return records.every((rec) => rec?.reviewed_by);
-//   }
+  //   return false;
+  // };
 
-//   return false;
-// };
+  const checkReviewStatus = (item, type) => {
+    // find the key where value is an array of record objects
+    const key = Object.keys(item).find(
+      (k) => Array.isArray(item[k]) && item[k]?.length >= 0
+    );
+    console.log(key, "filter key");
+    if (!key) return false;
 
+    const records = item[key];
 
-const checkReviewStatus = (item, type) => {
-  // find the key where value is an array of record objects
-  const key = Object.keys(item).find(
-    (k) => Array.isArray(item[k]) && item[k]?.length >= 0
-  );
-console.log(key,"filter key")
-  if (!key) return false;
+    // If empty rows = Pending For Create
+    if (records.length === 0) {
+      return type === "PendingForCreate";
+    }
 
-  const records = item[key];
+    // Pending → at least one empty reviewed_by
+    if (type === "Pending") {
+      return records.some((rec) => !rec?.reviewed_by);
+    }
 
-  // If empty rows = Pending For Create
-  if (records.length === 0) {
-    return type === "PendingForCreate";
-  }
+    // Complete → every row has reviewed_by
+    if (type === "Complete") {
+      return records.every((rec) => rec?.reviewed_by);
+    }
 
-  // Pending → at least one empty reviewed_by
-  if (type === "Pending") {
-    return records.some((rec) => !rec?.reviewed_by);
-  }
-
-  // Complete → every row has reviewed_by
-  if (type === "Complete") {
-    return records.every((rec) => rec?.reviewed_by);
-  }
-
-  return false;
-};
-
-const getFilteredData = () => {
-  let data = [...combinedRecords];
-
-  // ⭐ Apply selected process filter (if user selected DP/TR/etc.)
-  if (selectedProcess) {
-    data = data.filter((item) => item.process_id === selectedProcess);
-  }
-
-  // ⭐ Apply Review Filter GENERICALLY for ALL processes
-  if (reviewStatusFilter === "Pending") {
-    data = data.filter((item) => checkReviewStatus(item, "Pending"));
-  }
-  if (reviewStatusFilter === "PendingForCreate") {
-    data = data.filter((item) => checkReviewStatus(item, "PendingForCreate"));
-  }
-
-  if (reviewStatusFilter === "Complete") {
-    data = data.filter((item) => checkReviewStatus(item, "Complete"));
-  }
-
-  // ⭐ Instrument filter wrapper
-  const applyInstrumentFilter = (rows) => {
-    if (instrumentFilter === "All") return rows;
-    return rows.filter((item) => getElogNumber(item) === instrumentFilter);
+    return false;
   };
 
-  // ⭐ Individual instrument filters
-  if (eLogSelect === "analytical_balance") {
+  const getFilteredData = () => {
+    let data = [...combinedRecords];
+
+    // ⭐ Apply selected process filter (if user selected DP/TR/etc.)
+    if (selectedProcess) {
+      data = data.filter((item) => item.process_id === selectedProcess);
+    }
+
+    // ⭐ Apply Review Filter GENERICALLY for ALL processes
+    if (reviewStatusFilter === "Pending") {
+      data = data.filter((item) => checkReviewStatus(item, "Pending"));
+    }
+    if (reviewStatusFilter === "PendingForCreate") {
+      data = data.filter((item) => checkReviewStatus(item, "PendingForCreate"));
+    }
+
+    if (reviewStatusFilter === "Complete") {
+      data = data.filter((item) => checkReviewStatus(item, "Complete"));
+    }
+
+    // ⭐ Instrument filter wrapper
+    const applyInstrumentFilter = (rows) => {
+      if (instrumentFilter === "All") return rows;
+      return rows.filter((item) => getElogNumber(item) === instrumentFilter);
+    };
+
+    // ⭐ Individual instrument filters
+    if (eLogSelect === "analytical_balance") {
+      return applyInstrumentFilter(
+        analyticalBalanceElogs.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    if (eLogSelect === "karl_fischer") {
+      return applyInstrumentFilter(
+        karlFischerElogs.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    if (eLogSelect === "hplc") {
+      return applyInstrumentFilter(
+        hplcElogs.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    if (eLogSelect === "pH Meter OP/Cal") {
+      return applyInstrumentFilter(
+        pHMeterOPCalElogs.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    if (eLogSelect === "UV-Vis Calibration") {
+      return applyInstrumentFilter(
+        uVVisCalibElogs.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    if (eLogSelect === "SDS PAGE") {
+      return applyInstrumentFilter(
+        sdsPage.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    if (eLogSelect === "Gel Doc iGene") {
+      return applyInstrumentFilter(
+        gelDociGene.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    if (eLogSelect === "UV/WL Transilluminator") {
+      return applyInstrumentFilter(
+        uVWhiteLightTrans.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    if (eLogSelect === "VO Calibration") {
+      return applyInstrumentFilter(
+        voCalibElogs.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
+    // ⭐ All Records + instrument filter + sorting
     return applyInstrumentFilter(
-      analyticalBalanceElogs.filter((item) => 
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
+      data
+        ?.filter(filterRecord)
+        ?.sort(
+          (a, b) =>
+            new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
+        )
     );
-  }
-
-  if (eLogSelect === "karl_fischer") {
-    return applyInstrumentFilter(
-      karlFischerElogs.filter((item) =>
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
-    );
-  }
-
-  if (eLogSelect === "hplc") {
-    return applyInstrumentFilter(
-      hplcElogs.filter((item) =>
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
-    );
-  }
-
-  if (eLogSelect === "pH Meter OP/Cal") {
-    return applyInstrumentFilter(
-      pHMeterOPCalElogs.filter((item) =>
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
-    );
-  }
-
-  if (eLogSelect === "UV-Vis Calibration") {
-    return applyInstrumentFilter(
-      uVVisCalibElogs.filter((item) =>
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
-    );
-  }
-
-  if (eLogSelect === "SDS PAGE") {
-    return applyInstrumentFilter(
-      sdsPage.filter((item) =>
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
-    );
-  }
-
-  if (eLogSelect === "Gel Doc iGene") {
-    return applyInstrumentFilter(
-      gelDociGene.filter((item) =>
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
-    );
-  }
-
-  if (eLogSelect === "UV/WL Transilluminator") {
-    return applyInstrumentFilter(
-      uVWhiteLightTrans.filter((item) =>
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
-    );
-  }
-
-  if (eLogSelect === "VO Calibration") {
-    return applyInstrumentFilter(
-      voCalibElogs.filter((item) =>
-        reviewStatusFilter === "All" || checkReviewStatus(item, reviewStatusFilter)
-      )
-    );
-  }
-
-  // ⭐ All Records + instrument filter + sorting
-  return applyInstrumentFilter(
-    data
-      ?.filter(filterRecord)
-      ?.sort((a, b) => new Date(b.date_of_initiation) - new Date(a.date_of_initiation))
-  );
-};
-
-
+  };
 
   const getEquipmentType = (item) => {
     return item.DifferentialPressureRecords
@@ -889,40 +909,39 @@ const getFilteredData = () => {
   };
   // const filteredData = getFilteredData();
   const filteredData = getFilteredData()?.filter((item) => {
-  if (!searchTerm.trim()) return true;
+    if (!searchTerm.trim()) return true;
 
-  const term = searchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase();
 
-  const instrument = getElogNumber(item)?.toLowerCase() || "";
-  const name = getEquipmentType(item)?.toLowerCase() || "";
-  const dept =
-    item.site_id === 1
-      ? "india"
-      : item.site_id === 2
-      ? "malaysia"
-      : item.site_id === 3
-      ? "emea"
-      : item.site_id === 5
-      ? "biologics"
-      : item.site_id === 6
-      ? "ar&d"
-      : "eu";
-  const creator = item.initiator_name?.toLowerCase() || "";
+    const instrument = getElogNumber(item)?.toLowerCase() || "";
+    const name = getEquipmentType(item)?.toLowerCase() || "";
+    const dept =
+      item.site_id === 1
+        ? "india"
+        : item.site_id === 2
+        ? "malaysia"
+        : item.site_id === 3
+        ? "emea"
+        : item.site_id === 5
+        ? "biologics"
+        : item.site_id === 6
+        ? "ar&d"
+        : "eu";
+    const creator = item.initiator_name?.toLowerCase() || "";
 
-  return (
-    instrument.includes(term) ||
-    name.includes(term) ||
-    dept.includes(term) ||
-    creator.includes(term)
-  );
-});
-
+    return (
+      instrument.includes(term) ||
+      name.includes(term) ||
+      dept.includes(term) ||
+      creator.includes(term)
+    );
+  });
 
   const formatDate = (dateString) => {
     const utcDate = new Date(dateString);
     return utcDate.toLocaleString("en-GB", {
       day: "2-digit",
-      month: "short",
+      month: "2-digit",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
@@ -984,7 +1003,7 @@ const getFilteredData = () => {
       : "";
   };
 
- const labelStyle = {
+  const labelStyle = {
     display: "inline-block",
     padding: "4px 12px",
     paddingLeft: "18px",
@@ -1006,8 +1025,6 @@ const getFilteredData = () => {
 
         {/* Search Bar */}
 
-
-
         <div
           className="filter-section"
           style={{
@@ -1023,31 +1040,38 @@ const getFilteredData = () => {
             border: "1px solid #e9ecef",
           }}
         >
-<div className="flex flex-col min-w-[280px] mb-0">
+          <div className="flex flex-col min-w-[280px] mb-0">
+            <label
+              style={labelStyle}
+              className="!flex items-center gap-2 w-fit text-[14px] font-semibold text-[#495057] mb-1 select-none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="#0c5fc6"
+                className="h-[20px] w-[20px]"
+              >
+                <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"></path>
+              </svg>
+              Search
+            </label>
 
-  <label style={labelStyle} className="!flex items-center gap-2 w-fit text-[14px] font-semibold text-[#495057] mb-1 select-none">
-
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="#0c5fc6"
-      className="h-[20px] w-[20px]"
-    >
-      <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"></path>
-    </svg>
-
-    Search
-  </label>
-
-  <input
-    type="text"
-    placeholder="Search Instrument, Name, Dept, Creator..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    className="h-[38px] px-3 border border-[#ced4da] rounded-md text-[14px] placeholder:text-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-black focus:border-black "
-  />
-
-</div>
+            <input
+              type="text"
+              placeholder="Search Instrument, Name, Dept, Creator..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="
+    h-[38px] px-3 
+    border border-[#ced4da] rounded-md 
+    text-[14px] placeholder:text-gray-500 bg-white 
+    focus:outline-none 
+    focus:ring-2 focus:ring-[#ced4da] 
+    focus:border-[#ced4da]
+    focus:px-3
+  "
+            />
+          </div>
 
           <div
             style={{
@@ -1058,66 +1082,52 @@ const getFilteredData = () => {
               flex: 1,
             }}
           >
-
             <div
-  className="group-input"
-  style={{ marginBottom: "0", minWidth: "200px" }}
->
-  <label
-    style={labelStyle}
-    
-  >
-    Status
-  </label>
-
-  <select
-    value={reviewStatusFilter}
-    onChange={(e) => setReviewStatusFilter(e.target.value)}
-    style={{
-      padding: "8px 12px",
-      border: "1px solid #ced4da",
-      borderRadius: "4px",
-      fontSize: "14px",
-      backgroundColor: "white",
-      width: "100%",
-    }}
-  >
-    <option value="All">All</option>
-    <option value="PendingForCreate">Pending For Create</option>
-    <option value="Pending">Pending For Review</option>
-      <option value="Complete">Complete </option>
-
-  </select>
-</div>
-
-
-
-   <div
               className="group-input"
               style={{ marginBottom: "0", minWidth: "200px" }}
             >
-              <label
-                 style={labelStyle}
-                
+              <label style={labelStyle}>Status</label>
+
+              <select
+                value={reviewStatusFilter}
+                onChange={(e) => setReviewStatusFilter(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
               >
-    All Instruments/Equipment ID's
-  </label>
+                <option value="All">All</option>
+                <option value="PendingForCreate">Pending For Create</option>
+                <option value="Pending">Pending For Review</option>
+                <option value="Complete">Complete </option>
+              </select>
+            </div>
 
-  <select
-    value={instrumentFilter}
-    onChange={(e) => setInstrumentFilter(e.target.value)}
-    style={{
-      padding: "8px 12px",
-      border: "1px solid #ced4da",
-      borderRadius: "4px",
-      fontSize: "14px",
-      backgroundColor: "white",
-      width: "100%",
-    }}
-  >
-    <option value="All">All</option>
+            <div
+              className="group-input"
+              style={{ marginBottom: "0", minWidth: "200px" }}
+            >
+              <label style={labelStyle}>All Instruments/Equipment ID's</label>
 
-    {/* {combinedRecords
+              <select
+                value={instrumentFilter}
+                onChange={(e) => setInstrumentFilter(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All">All</option>
+
+                {/* {combinedRecords
       .map((item) => getElogNumber(item))
       .filter((value, index, self) => self.indexOf(value) === index)
       .map((instNo, index) => (
@@ -1125,17 +1135,16 @@ const getFilteredData = () => {
           {instNo}
         </option>
       ))} */}
-      {filteredData
-  ?.map((item) => getElogNumber(item))
-  .filter((value, index, self) => self.indexOf(value) === index) // unique only
-  .map((instNo, index) => (
-    <option key={index} value={instNo}>
-      {instNo}
-    </option>
-  ))}
-
-  </select>
-</div>
+                {filteredData
+                  ?.map((item) => getElogNumber(item))
+                  .filter((value, index, self) => self.indexOf(value) === index) // unique only
+                  .map((instNo, index) => (
+                    <option key={index} value={instNo}>
+                      {instNo}
+                    </option>
+                  ))}
+              </select>
+            </div>
 
             {/* Equipment Filter */}
             {/* <div
@@ -1257,7 +1266,7 @@ const getFilteredData = () => {
 
         {/* Table */}
         <table className="w-full border border-collapse text-center">
-          <thead >
+          <thead>
             <tr>
               <th className="text-center">S no</th>
               {/* <th className="text-center">E.Log no</th> */}
@@ -1279,50 +1288,50 @@ const getFilteredData = () => {
                 <tr key={item.form_id || item.eLogId}>
                   <td>{index + 1}</td>
 
-            <td
-  onClick={() => handleNavigation(item)}
-  className="relative group cursor-pointer text-black hover:text-blue-600"
->
-  {/* Tooltip */}
-  <span
-    className="absolute -top-7 left-1/2 -translate-x-1/2 
+                  <td
+                    onClick={() => handleNavigation(item)}
+                    className="relative group cursor-pointer text-black hover:text-blue-600"
+                  >
+                    {/* Tooltip */}
+                    <span
+                      className="absolute -top-7 left-1/2 -translate-x-1/2 
                bg-gray-800 text-white text-xs px-2 py-1 rounded 
                opacity-0 group-hover:opacity-100 pointer-events-none
                transition-opacity duration-0"
-  >
-    Click to select
-  </span>
+                    >
+                      Click to select
+                    </span>
 
-  {item.DifferentialPressureRecords
-    ? getElogNumber(item)
-    : item.TempratureRecords
-    ? getElogNumber(item)
-    : item.LoadedQuantityRecords
-    ? getElogNumber(item)
-    : item.OperationOfSterilizerRecords
-    ? getElogNumber(item)
-    : item.MediaRecords
-    ? getElogNumber(item)
-    : item.DispenseOfMaterials
-    ? getElogNumber(item)
-    : item.AnalyticalBalances
-    ? getElogNumber(item)
-    : item.karlFischerRecords
-    ? getElogNumber(item)
-    : item.hplcRecords
-    ? getElogNumber(item)
-    : item.OpAndCalMultiParameterProcessRecords
-    ? getElogNumber(item)
-    : item.UvVisRecords
-    ? getElogNumber(item)
-    : item.sdsPageRecords
-    ? getElogNumber(item)
-    : item.gelDocIGeneRecords
-    ? getElogNumber(item)
-    : item.uvWhiteLightRecords
-    ? getElogNumber(item)
-    : null}
-</td>
+                    {item.DifferentialPressureRecords
+                      ? getElogNumber(item)
+                      : item.TempratureRecords
+                      ? getElogNumber(item)
+                      : item.LoadedQuantityRecords
+                      ? getElogNumber(item)
+                      : item.OperationOfSterilizerRecords
+                      ? getElogNumber(item)
+                      : item.MediaRecords
+                      ? getElogNumber(item)
+                      : item.DispenseOfMaterials
+                      ? getElogNumber(item)
+                      : item.AnalyticalBalances
+                      ? getElogNumber(item)
+                      : item.karlFischerRecords
+                      ? getElogNumber(item)
+                      : item.hplcRecords
+                      ? getElogNumber(item)
+                      : item.OpAndCalMultiParameterProcessRecords
+                      ? getElogNumber(item)
+                      : item.UvVisRecords
+                      ? getElogNumber(item)
+                      : item.sdsPageRecords
+                      ? getElogNumber(item)
+                      : item.gelDocIGeneRecords
+                      ? getElogNumber(item)
+                      : item.uvWhiteLightRecords
+                      ? getElogNumber(item)
+                      : null}
+                  </td>
 
                   <td>{getEquipmentType(item)}</td>
                   <td>
@@ -1340,7 +1349,7 @@ const getFilteredData = () => {
                   </td>
                   <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
                   <td>{item.initiator_name}</td>
-                  <td>{formatDate(item.date_of_initiation)}</td>
+                  <td>{dayjs(item.date_of_initiation).format("DD-MM-YYYY hh:mm a")}</td>
                 </tr>
               );
             })}

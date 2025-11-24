@@ -7,7 +7,7 @@ function LaunchQMS({ onClick, onExit }) {
   return (
     <div>
       {" "}
-      <div className="fixed top-[65%] right-0 z-10 flex flex-col">
+      <div className="fixed top-[60%] right-0 z-50 flex flex-col" style={{zIndex:9999}}>
         <div>
           <div className="flex flex-col right-0 justify-end items-end">
             <button
@@ -16,7 +16,7 @@ function LaunchQMS({ onClick, onExit }) {
             px-4
             py-2
             bg-teal-600
-            opacity-70
+            opacity-75
             text-white
             font-semibold
             rounded-l-full
@@ -39,7 +39,7 @@ function LaunchQMS({ onClick, onExit }) {
             px-4
             py-2
             bg-teal-600
-            opacity-70
+            opacity-75
             text-white
             font-semibold
             rounded-l-full
@@ -62,7 +62,7 @@ function LaunchQMS({ onClick, onExit }) {
             px-4
             py-2
             bg-teal-600
-            opacity-70
+            opacity-75
             text-white
             font-semibold
             rounded-l-full
