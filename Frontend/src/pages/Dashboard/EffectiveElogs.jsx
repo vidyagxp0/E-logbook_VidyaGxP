@@ -1082,7 +1082,7 @@ const getFilteredData = () => {
       width: "100%",
     }}
   >
-    <option value="All">All Records</option>
+    <option value="All">All</option>
     <option value="PendingForCreate">Pending For Create</option>
     <option value="Pending">Pending For Review</option>
       <option value="Complete">Complete </option>

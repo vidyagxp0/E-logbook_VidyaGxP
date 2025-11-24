@@ -967,7 +967,7 @@ const allowInitiator = (item, field) => {
                               className="accent-blue-600 w-4 h-4"
                             />
                             <label className="cursor-pointer font-medium">
-                              Full Report
+                              Since Begnining
                             </label>
                           </div>
 
@@ -1152,7 +1152,7 @@ const allowInitiator = (item, field) => {
                   width: "100%",
                 }}
               >
-                <option value="All Records">All Records</option>
+                <option value="All Records">All</option>
                 <option value="Open">Open</option>
                 <option value="Closed">Closed</option>
                 <option value="Return">Return</option>
@@ -1646,18 +1646,34 @@ const allowInitiator = (item, field) => {
           </div>
         </div>
         {showFactorErrorModal && (
-  <div className="fixed inset-0 bg-opacity-60 flex justify-center items-center z-50">
-    <div className="bg-white p-6 rounded shadow-lg w-[350px] text-center">
-      <h2 className="text-lg font-semibold mb-3 text-red-600">
-        Missing Required Field
+  <div
+    className="
+      fixed inset-0 bg-black/30 backdrop-blur-sm 
+      flex justify-center items-center z-[999]
+      animate-fadeIn
+    "
+  >
+    <div
+      className="
+        bg-white text-center p-6 w-[360px]
+        rounded-xl shadow-2xl border border-gray-200
+        animate-scaleUp
+      "
+    >
+      <h2 className="text-xl font-semibold mb-3 text-red-600">
+        ⚠ Missing Required Field
       </h2>
 
-      <p className="text-gray-700 mb-5">
-        Calibration/Verification Factor is missing. This is required.
+      <p className="text-gray-700 mb-6">
+        Calibration/Verification Factor is required before proceeding.
       </p>
 
       <button
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        className="
+          bg-blue-600 hover:bg-blue-700 transition-all
+          text-white px-5 py-2.5 rounded-lg font-medium shadow-md
+          hover:shadow-lg
+        "
         onClick={() => setShowFactorErrorModal(false)}
       >
         OK
@@ -1665,6 +1681,7 @@ const allowInitiator = (item, field) => {
     </div>
   </div>
 )}
+
 
       </div>
     </div>

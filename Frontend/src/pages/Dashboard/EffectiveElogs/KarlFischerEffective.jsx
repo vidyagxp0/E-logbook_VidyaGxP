@@ -745,6 +745,8 @@ const KarlFischerEffective = () => {
     }
   }, [filteredGridData]);
 
+  console.log(location?.state,"loca")
+
   return (
     <>
       <HeaderTop />
@@ -1412,7 +1414,7 @@ const KarlFischerEffective = () => {
                   width: "100%",
                 }}
               >
-                <option value="All Records">All Records</option>
+                <option value="All Records">All</option>
                 <option value="Open">Open</option>
                 <option value="Closed">Closed</option>
                 <option value="Return">Return</option>
@@ -1528,8 +1530,23 @@ const KarlFischerEffective = () => {
                                 readOnly
                               />
                             </td>
-<td></td>
-<td></td>
+{/* Instrument / Equipment Name */}
+<td className="!text-center !justify-center">
+  <input
+    value="KARL Fischer"
+    readOnly
+    // className="bg-gray-100 cursor-not-allowed"
+  />
+</td>
+
+{/* Instrument / Equipment No. */}
+<td className="!text-center !justify-center">
+  <input
+    value={location.state?.instrument_no || ""}
+    readOnly
+    // className="bg-gray-100 cursor-not-allowed"
+  />
+</td>
 <td></td>
                             <td className="!text-center !justify-center">
                               <input

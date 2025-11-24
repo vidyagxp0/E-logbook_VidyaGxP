@@ -26,7 +26,7 @@ const AnalyticalBalancesEffective = () => {
   const [reportType, setReportType] = useState("quick");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
+const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -94,6 +94,15 @@ const AnalyticalBalancesEffective = () => {
   console.log(location.state,"state")
 
   const handlePopupSubmit = (credentials) => {
+     const hasMissingFactor = editData.AnalyticalBalances.some(
+    (row) => !row.factorValue || row.factorValue.trim() === ""
+  );
+
+  if (hasMissingFactor) {
+    setIsPopupOpen(false);
+    setShowFactorErrorModal(true); // open modal
+    return; // stop submit
+  }
     const cleanedData = editData?.AnalyticalBalances.filter((record) => {
       const hasRequiredFields =
         record.reg_no.trim() !== "" &&
@@ -670,70 +679,84 @@ const AnalyticalBalancesEffective = () => {
     : null;
   const formattedFirstDate = firstRecordDate?.toISOString().split("T")[0];
 
-  const generateReport = async () => {
-    setIsLoading(true);
+const generateReport = async () => {
+  setIsLoading(true);
 
-    try {
-      let filteredData = { ...editData };
+  try {
+    let filteredData = { ...editData };
+    let start = null;
+    let end = new Date();
 
-      if (reportType === "custom") {
-        if (!fromDate || !toDate) {
-          alert("Please select both From and To dates.");
-          setIsLoading(false);
-          return;
-        }
+    if (reportType !== "full" && reportType !== "custom") {
+      const today = new Date();
 
-        const start = new Date(fromDate);
-        const end = new Date(toDate);
-
-        if (start < firstRecordDate) {
-          alert("From Date cannot be before the first available record date.");
-          setIsLoading(false);
-          return;
-        }
-
-        if (end < start) {
-          alert("To Date cannot be earlier than From Date.");
-          setIsLoading(false);
-          return;
-        }
-
-        // Filter Analytical Balance records
-        filteredData.AnalyticalBalances = editData.AnalyticalBalances.filter(
-          (record) => {
-            const recordDate = new Date(record.date);
-            return recordDate >= start && recordDate <= end;
-          }
-        );
+      switch (reportType) {
+        case "1day":
+          start = new Date(today.setDate(today.getDate() - 1));
+          break;
+        case "1week":
+          start = new Date(today.setDate(today.getDate() - 7));
+          break;
+        case "1month":
+          start = new Date(today.setMonth(today.getMonth() - 1));
+          break;
+        case "quarterly":
+          start = new Date(today.setMonth(today.getMonth() - 3));
+          break;
+        case "annually":
+          start = new Date(today.setFullYear(today.getFullYear() - 1));
+          break;
+        default:
+          start = null;
       }
-
-      const payload = {
-        reportData: filteredData,
-        reportType,
-        ...(reportType === "custom" && { fromDate, toDate }),
-      };
-
-      const response = await axios.post(
-        `http://localhost:1000/analytical-balance/effective-chat-pdf/${formId}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const { filename } = response.data;
-      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
-      window.open(reportUrl, "_blank", "noopener,noreferrer");
-    } catch (error) {
-      console.error("Error opening chat PDF:", error);
-    } finally {
-      setIsLoading(false);
-      setShowOptions(false);
     }
-  };
+
+    if (reportType === "custom") {
+      if (!fromDate || !toDate) {
+        alert("Please select both From and To dates.");
+        setIsLoading(false);
+        return;
+      }
+      start = new Date(fromDate);
+      end = new Date(toDate);
+    }
+
+    if (start) {
+      filteredData.AnalyticalBalances = editData.AnalyticalBalances.filter((record) => {
+        const recordDate = new Date(record.date);
+        return recordDate >= start && recordDate <= end;
+      });
+    }
+
+    const payload = {
+      reportData: filteredData,
+      reportType,
+      ...(reportType === "custom" && { fromDate, toDate }),
+    };
+
+    const response = await axios.post(
+      `http://localhost:1000/analytical-balance/effective-chat-pdf/${formId}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const { filename } = response.data;
+    const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+    window.open(reportUrl, "_blank", "noopener,noreferrer");
+
+  } catch (error) {
+    console.error("Error opening chat PDF:", error);
+  } finally {
+    setIsLoading(false);
+    setShowOptions(false);
+  }
+};
+
 
   const setTinyContent = (content) => {
     setEditData((prevState) => ({
@@ -816,6 +839,22 @@ useEffect(() => {
 }, [filteredGridData]);
 
 
+ const allowInitiator = (item, field) => {
+  if (userDetails.roles[0].role_id !== 3) return false; // only initiator
+
+  if (item.remarksType !== "action-needed") return false;
+
+  // if (field === "adjustPH" && item.remarksSubType === "Adjusted pH")
+  //   return true;
+
+  if (field === "factorValue" && item.remarksSubType === "Factor Value")
+    return true;
+
+  // if (field === "remarksOther" && item.remarksSubType === "Others")
+  //   return true;
+
+  return false;
+};
   return (
     <>
       <HeaderTop />
@@ -944,142 +983,138 @@ useEffect(() => {
                   </button> */}
 
                   {/* Generate Report Button */}
-                  <div
-                    className="relative inline-block text-left"
-                    ref={modalRef}
-                  >
-                    <button
-                      onClick={() => setShowOptions(!showOptions)}
-                      className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm cursor-pointer text-black font-normal"
-                    >
-                      {isLoading ? (
-                        <>
-                          <span>Generating</span>
-                          <div
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              border: "3px solid #f3f3f3",
-                              borderTop: "3px solid black",
-                              borderRadius: "50%",
-                              animation: "spin 1s linear infinite",
-                              marginLeft: "10px",
-                            }}
-                          ></div>
-                        </>
-                      ) : (
-                        "Generate Report"
-                      )}
-                      <style>
-                        {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
-                      </style>
-                    </button>
+                 <div
+  className="relative inline-block text-left"
+  ref={modalRef}
+>
+  <button
+    onClick={() => setShowOptions(!showOptions)}
+    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm cursor-pointer text-black font-normal"
+  >
+    {isLoading ? (
+      <>
+        <span>Generating</span>
+        <div
+          style={{
+            width: "20px",
+            height: "20px",
+            border: "3px solid #f3f3f3",
+            borderTop: "3px solid black",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+            marginLeft: "10px",
+          }}
+        ></div>
+      </>
+    ) : (
+      "Generate Report"
+    )}
+  </button>
 
-                    {/* Dropdown Modal */}
-                    {showOptions && (
-                      <div className="absolute right-0 mt-2 w-80 rounded-lg shadow-2xl bg-white border border-gray-300 z-50 p-5 text-black transition-all duration-200">
-                        {/* Title */}
-                        <div className="mb-4">
-                          <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                            📄 Generate Report
-                          </h2>
-                        </div>
+  <style>
+    {`
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `}
+  </style>
 
-                        {/* Radio Options */}
-                        <div className="space-y-4 text-sm text-gray-700">
-                          {/* Full Report Option */}
-                          <div className="flex items-center space-x-3">
-                            <input
-                              type="radio"
-                              name="reportType"
-                              value="full"
-                              checked={reportType === "full"}
-                              onChange={() => {
-                                setReportType("full");
-                              }}
-                              className="accent-blue-600 w-4 h-4"
-                            />
-                            <label className="cursor-pointer font-medium">
-                              Full Report
-                            </label>
-                          </div>
+  {showOptions && (
+    <div className="absolute right-0 mt-2 w-80 rounded-lg shadow-2xl bg-white border border-gray-300 z-50 p-5 text-black transition-all duration-200">
 
-                          {/* Custom Date Range Option */}
-                          <div className="flex items-start space-x-3">
-                            <input
-                              type="radio"
-                              name="reportType"
-                              value="custom"
-                              checked={reportType === "custom"}
-                              onChange={() => {
-                                setReportType("custom");
-                              }}
-                              className="accent-blue-600 w-4 h-4 mt-1"
-                            />
-                            <div className="w-full">
-                              <label className="cursor-pointer font-medium">
-                                Custom Date Range
-                              </label>
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+          📄 Generate Report
+        </h2>
+      </div>
 
-                              {reportType === "custom" && (
-                                <div className="mt-3 space-y-3">
-                                  {/* From Date */}
-                                  <div>
-                                    <label className="block text-xs text-gray-500 mb-1">
-                                      From Date
-                                    </label>
-                                    <input
-                                      type="date"
-                                      value={fromDate}
-                                      min={formattedFirstDate}
-                                      max={toDate || undefined}
-                                      onChange={(e) => {
-                                        setFromDate(e.target.value);
-                                        setToDate(""); // Reset toDate on fromDate change
-                                      }}
-                                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                    />
-                                  </div>
+      <div className="space-y-3 text-sm text-gray-700">
 
-                                  {/* To Date */}
-                                  <div>
-                                    <label className="block text-xs text-gray-500 mb-1">
-                                      To Date
-                                    </label>
-                                    <input
-                                      type="date"
-                                      value={toDate}
-                                      min={fromDate || formattedFirstDate}
-                                      onChange={(e) => {
-                                        setToDate(e.target.value);
-                                      }}
-                                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                    />
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
+        {[
+          { label: "Since Beginning", value: "full" },
+          { label: "Last 1 Day", value: "1day" },
+          { label: "Last 1 Week", value: "1week" },
+          { label: "Last 1 Month", value: "1month" },
+          { label: "Quarterly (Last 3 Months)", value: "quarterly" },
+          { label: "Annually (Last 1 Year)", value: "annually" },
+        ].map((item) => (
+          <div key={item.value} className="flex items-center space-x-3">
+            <input
+              type="radio"
+              name="reportType"
+              value={item.value}
+              checked={reportType === item.value}
+              onChange={() => setReportType(item.value)}
+              className="accent-blue-600 w-4 h-4"
+            />
+            <label className="cursor-pointer font-medium">{item.label}</label>
+          </div>
+        ))}
 
-                        {/* Generate Button */}
-                        <div className="mt-6">
-                          <button
-                            onClick={generateReport}
-                            disabled={isLoading}
-                            className="w-full bg-blue-600 hover:bg-blue-700 transition duration-150 text-white font-semibold text-sm py-2 rounded-md"
-                          >
-                            {isLoading ? "Generating..." : "Generate Report"}
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+        {/* Custom Date */}
+        <div className="flex items-start space-x-3">
+          <input
+            type="radio"
+            name="reportType"
+            value="custom"
+            checked={reportType === "custom"}
+            onChange={() => setReportType("custom")}
+            className="accent-blue-600 w-4 h-4 mt-1"
+          />
+          <div className="w-full">
+            <label className="cursor-pointer font-medium">Custom Date Range</label>
+
+            {reportType === "custom" && (
+              <div className="mt-3 space-y-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">
+                    From Date
+                  </label>
+                  <input
+                    type="date"
+                    value={fromDate}
+                    min={formattedFirstDate}
+                    max={toDate || undefined}
+                    onChange={(e) => {
+                      setFromDate(e.target.value);
+                      setToDate("");
+                    }}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">
+                    To Date
+                  </label>
+                  <input
+                    type="date"
+                    value={toDate}
+                    min={fromDate || formattedFirstDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <button
+          onClick={generateReport}
+          disabled={isLoading}
+          className="w-full bg-blue-600 hover:bg-blue-700 transition duration-150 text-white font-semibold text-sm py-2 rounded-md"
+        >
+          {isLoading ? "Generating..." : "Generate Report"}
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+
 
                   {/* Conditional Buttons Based on Stages */}
                   {/* {location.state?.stage === 1 &&
@@ -1570,7 +1605,6 @@ useEffect(() => {
                         <th className="sticky top-0 z-10 text-center !text-wrap">Date</th>
                         <th className="sticky top-0 z-10 text-center">Instrument/Equipment Name</th>
                         <th className="sticky top-0 z-10 text-center">Instrument/Equipment No.</th>
-                        <th className="sticky top-0 z-10 text-center">Factor Value</th>
                         
                         <th className="sticky top-0 z-10 text-center !text-wrap ">
                           Reg. No./Lot no.
@@ -1582,6 +1616,7 @@ useEffect(() => {
                         <th className="sticky top-0 z-10 text-center !text-wrap ">
                           UOM
                         </th>
+                        <th className="sticky top-0 z-10 text-center">Factor Value</th>
                         <th className="sticky top-0 z-10 text-center !text-wrap ">Done by</th>
                         <th className="sticky top-0 z-10 text-center !text-wrap ">Checked By</th>
                         <th className="sticky top-0 z-10 text-center !text-wrap ">Remarks</th>
@@ -1609,9 +1644,20 @@ useEffect(() => {
                                 readOnly
                               />
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td className="!text-center !justify-center">
+  <input
+    value="Analytical Balance"
+    readOnly
+    // className="bg-gray-100 cursor-not-allowed"
+  />
+</td>
+                            <td className="!text-center !justify-center">
+  <input
+    value={location.state?.instrument_no || ""}
+    readOnly
+    // className="bg-gray-100 cursor-not-allowed"
+  />
+</td>
                             <td>
                               <input
                                 value={item.reg_no}
@@ -1730,6 +1776,29 @@ useEffect(() => {
 
   </div>
 </td>
+                            <td className="!text-center !justify-center">
+  <select
+    value={item.factorValue || ""}
+    onChange={(e) => {
+      const newData = [...editData.AnalyticalBalances];
+      newData[index].factorValue = e.target.value;
+      setEditData({
+        ...editData,
+        AnalyticalBalances: newData,
+      });
+    }}
+    disabled={
+       !allowInitiator(item, "factorValue") &&
+ [3, 2, 4].includes(userDetails.roles[0].role_id) || !isRowEditable(item)
+    }
+    className="border px-2 py-1 rounded w-full"
+  >
+    <option value="">Select</option>
+    <option value="Calibration/Verification">Calibration / Verification</option>
+  </select>
+</td>
+
+
                             <td>
                               <input
                                 value={item.done_by}
@@ -2580,6 +2649,42 @@ useEffect(() => {
               />
             )}
           </div>
+           {showFactorErrorModal && (
+  <div
+    className="
+      fixed inset-0 bg-black/30 backdrop-blur-sm 
+      flex justify-center items-center z-[999]
+      animate-fadeIn
+    "
+  >
+    <div
+      className="
+        bg-white text-center p-6 w-[360px]
+        rounded-xl shadow-2xl border border-gray-200
+        animate-scaleUp
+      "
+    >
+      <h2 className="text-xl font-semibold mb-3 text-red-600">
+        ⚠ Missing Required Field
+      </h2>
+
+      <p className="text-gray-700 mb-6">
+        Calibration/Verification Factor is required before proceeding.
+      </p>
+
+      <button
+        className="
+          bg-blue-600 hover:bg-blue-700 transition-all
+          text-white px-5 py-2.5 rounded-lg font-medium shadow-md
+          hover:shadow-lg
+        "
+        onClick={() => setShowFactorErrorModal(false)}
+      >
+        OK
+      </button>
+    </div>
+  </div>
+)}
         </div>
       </div>
     </>
