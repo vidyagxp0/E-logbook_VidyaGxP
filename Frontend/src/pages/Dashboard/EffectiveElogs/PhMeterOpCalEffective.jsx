@@ -295,9 +295,12 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
     setPopupAction(null);
   };
 
-  useEffect(() => {
-    setEditData(location.state);
-  }, [location.state]);
+   useEffect(() => {
+     if (location.state) {
+       const cloned = JSON.parse(JSON.stringify(location.state));
+       setEditData(cloned);
+     }
+   }, [location.state]);
   const addRow = () => {
 
      const records = editData?.OpAndCalMultiParameterProcessRecords || [];
@@ -743,17 +746,28 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
     }
   };
 
-  const isRowEditable = (item) => {
+    const isRowEditable = (item) => {
     const isInitiator = userDetails.userId == location.state?.initiator_id;
     const isNewRow = !item.form_id; // ya item.isNew === true if you manually add it
     return isInitiator ? isNewRow : true;
   };
 
-  // Check if reviewer can edit a record (prevent changes after saving)
-  const canReviewerEdit = (item) => {
-    if (item.record_id && item.reviewed_by) {
-      return true;
+    const originalData = location.state;
+ const canReviewerEdit = (item) => {
+    // find original version of this record by record_id
+    const original = originalData?.OpAndCalMultiParameterProcessRecords?.find(
+      (o) => o.record_id === item.record_id
+    );
+
+    // If we found the original row
+    if (original) {
+      // If original remarksType was OK → Lock it
+      if (original.remarksType === "OK") {
+        return false;
+      }
     }
+
+    // Otherwise allow editing
     return true;
   };
 
@@ -1482,6 +1496,7 @@ console.log(location?.state,"stateeee")
                                       ) || !canReviewerEdit(item)
                                     }
                                   >
+                                    <option value="Select">--Select--</option>
                                     <option value="OK">OK</option>
                                     <option value="action-needed">
                                       Action Needed
@@ -1518,7 +1533,7 @@ console.log(location?.state,"stateeee")
                                         disabled={
                                           [1, 3].includes(
                                             userDetails.roles[0].role_id
-                                          ) || !canReviewerEdit(item)
+                                          ) || !isRowEditable(item)
                                         }
                                       >
                                         <option value="">Select Issue</option>

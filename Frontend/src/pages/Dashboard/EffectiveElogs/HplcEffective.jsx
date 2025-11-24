@@ -263,32 +263,31 @@ const HplcEffective = () => {
   }, [location.state]);
 
   const addRow = () => {
+    const records = editData?.hplcRecords || [];
 
-      const records = editData?.hplcRecords || [];
+    // Function to check if a row is filled
+    const isRowComplete = (row) => {
+      return (
+        row.sample_name?.trim() !== "" &&
+        row.reg_no?.trim() !== "" &&
+        row.method_used?.trim() !== "" &&
+        row.parameter_or_activity?.trim() !== "" &&
+        row.column_no?.trim() !== "" &&
+        row.start_time?.trim() !== "" &&
+        row.reviewed_by !== null
+      );
+    };
 
-  // Function to check if a row is filled
-  const isRowComplete = (row) => {
-    return (
-      row.sample_name?.trim() !== "" && 
-      row.reg_no?.trim() !== "" && 
-      row.method_used?.trim() !== "" && 
-      row.parameter_or_activity?.trim() !== "" && 
-      row.column_no?.trim() !== "" && 
-      row.start_time?.trim() !== "" && 
-      row.reviewed_by !== null
-    );
-  };
+    // 1️⃣ Check if there is at least 1 row
+    if (records.length > 0) {
+      const lastRow = records[records.length - 1];
 
-  // 1️⃣ Check if there is at least 1 row
-  if (records.length > 0) {
-    const lastRow = records[records.length - 1];
-
-    // 2️⃣ If last row is empty → block adding a new row
-    if (!isRowComplete(lastRow)) {
-      toast.warn("Please fill the current row before adding a new one.");
-      return;
+      // 2️⃣ If last row is empty → block adding a new row
+      if (!isRowComplete(lastRow)) {
+        toast.warn("Please fill the current row before adding a new one.");
+        return;
+      }
     }
-  }
     if (
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
@@ -300,7 +299,9 @@ const HplcEffective = () => {
         hour12: true, // Use 12-hour format
       };
       const newRow = {
-        date: dayjs().format("YYYY-MM-DD"),
+        date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
+        instrument_name: "HPLC",
+        instrument_no: location.state.instrument_no,
         sample_name: "",
         reg_no: "",
         method_used: "",
@@ -445,6 +446,8 @@ const HplcEffective = () => {
           ? record.status === "Open"
           : selectedStatus === "Closed"
           ? record.status === "Closed"
+          : selectedStatus === "Return"
+          ? record.status === "Return"
           : true;
 
       return matchInitiator && matchReviewer && matchStatus;
@@ -476,6 +479,7 @@ const HplcEffective = () => {
     });
   };
 
+  console.log(location.state, "location.state");
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.hplcRecords];
     updatedGridData[index].supporting_docs = file;
@@ -544,20 +548,19 @@ const HplcEffective = () => {
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
-  const formattedFirstDate = firstRecordDate?.toISOString().split("T")[0];
-
+  const formattedFirstDate = firstRecordDate;
 
   const generateReport = async () => {
     setIsLoading(true);
-  
+
     try {
       let filteredData = { ...editData };
       let start = null;
       let end = new Date();
-  
+
       if (reportType !== "full" && reportType !== "custom") {
         const today = new Date();
-  
+
         switch (reportType) {
           case "1day":
             start = new Date(today.setDate(today.getDate() - 1));
@@ -578,7 +581,7 @@ const HplcEffective = () => {
             start = null;
         }
       }
-  
+
       if (reportType === "custom") {
         if (!fromDate || !toDate) {
           alert("Please select both From and To dates.");
@@ -588,20 +591,20 @@ const HplcEffective = () => {
         start = new Date(fromDate);
         end = new Date(toDate);
       }
-  
+
       if (start) {
         filteredData.hplcRecords = editData.hplcRecords.filter((record) => {
           const recordDate = new Date(record.date);
           return recordDate >= start && recordDate <= end;
         });
       }
-  
+
       const payload = {
         reportData: filteredData,
         reportType,
         ...(reportType === "custom" && { fromDate, toDate }),
       };
-  
+
       const response = await axios.post(
         `http://localhost:1000/hplc/effective-chat-pdf/${formId}`,
         payload,
@@ -612,11 +615,10 @@ const HplcEffective = () => {
           },
         }
       );
-  
+
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
       window.open(reportUrl, "_blank", "noopener,noreferrer");
-  
     } catch (error) {
       console.error("Error opening chat PDF:", error);
     } finally {
@@ -641,47 +643,57 @@ const HplcEffective = () => {
   const originalData = location.state;
 
   // Check if reviewer can edit a record (prevent changes after saving)
-   const canReviewerEdit = (item) => {
-  // find original version of this record by record_id
-  const original = originalData?.hplcRecords?.find(o => o.record_id === item.record_id);
+  const canReviewerEdit = (item) => {
+    // find original version of this record by record_id
+    const original = originalData?.hplcRecords?.find(
+      (o) => o.record_id === item.record_id
+    );
 
-  // If we found the original row
-  if (original) {
-    // If original remarksType was OK → Lock it
-    if (original.remarksType === "OK") {
-      return false;
+    // If we found the original row
+    if (original) {
+      // If original remarksType was OK → Lock it
+      if (original.remarksType === "OK") {
+        return false;
+      }
     }
-  }
 
-  // Otherwise allow editing
-  return true;
-};
+    // Otherwise allow editing
+    return true;
+  };
 
-    const disableFieldMap = {
-  "Incorrect Sample Name": "sample_name",
-  "Incorrect Reg No./ Lot No.": "reg_no",
-  "Incorrect Method Used": "method_used",
-  "Incorrect Parameter/Activity": "parameter_or_activity",
-  "Incorrect Column No.": "column_no",
-  "Incorrect No. of Injections": "no_of_injections",
-};
+  const disableFieldMap = {
+    "Incorrect Sample Name": ["sample_name"],
+    "Incorrect Reg No./ Lot No.": ["reg_no"],
+    "Incorrect Method Used": ["method_used"],
+    "Incorrect Parameter/Activity": ["parameter_or_activity"],
+    "Incorrect Column No.": ["column_no"],
+    "Incorrect No. of Injections": ["no_of_injections"],
 
-const getReviewerMarkedField = (item) => {
-  return disableFieldMap[item.remarksSubType] || null;
-};
+    Others: [
+      "sample_name",
+      "reg_no",
+      "method_used",
+      "parameter_or_activity",
+      "column_no",
+      "no_of_injections",
+    ],
+  };
 
-const isFieldEditable = (item, fieldName) => {
-  const reviewerMarkedField = getReviewerMarkedField(item);
+  const getReviewerMarkedField = (item) => {
+    return disableFieldMap[item.remarksSubType] || [];
+  };
 
-  // If reviewer marked a wrong field
-  if (reviewerMarkedField) {
-    return fieldName === reviewerMarkedField;
-  }
+  const isFieldEditable = (item, fieldName) => {
+    const allowedFields = getReviewerMarkedField(item);
 
-  // Else default logic
-  return isRowEditable(item);
-};
+    // If reviewer marked a specific issue
+    if (allowedFields.length > 0) {
+      return allowedFields.includes(fieldName);
+    }
 
+    // Else fallback default
+    return isRowEditable(item);
+  };
 
   const handleDeleteFile = async (index) => {
     const record = editData.hplcRecords[index];
@@ -771,137 +783,150 @@ const isFieldEditable = (item, fieldName) => {
                   </button>
 
                   {/* Generate Report Button */}
-                 <div
-  className="relative inline-block text-left"
-  ref={modalRef}
->
-  <button
-    onClick={() => setShowOptions(!showOptions)}
-    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm cursor-pointer text-black font-normal"
-  >
-    {isLoading ? (
-      <>
-        <span>Generating</span>
-        <div
-          style={{
-            width: "20px",
-            height: "20px",
-            border: "3px solid #f3f3f3",
-            borderTop: "3px solid black",
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite",
-            marginLeft: "10px",
-          }}
-        ></div>
-      </>
-    ) : (
-      "Generate Report"
-    )}
-  </button>
+                  <div
+                    className="relative inline-block text-left"
+                    ref={modalRef}
+                  >
+                    <button
+                      onClick={() => setShowOptions(!showOptions)}
+                      className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm cursor-pointer text-black font-normal"
+                    >
+                      {isLoading ? (
+                        <>
+                          <span>Generating</span>
+                          <div
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              border: "3px solid #f3f3f3",
+                              borderTop: "3px solid black",
+                              borderRadius: "50%",
+                              animation: "spin 1s linear infinite",
+                              marginLeft: "10px",
+                            }}
+                          ></div>
+                        </>
+                      ) : (
+                        "Generate Report"
+                      )}
+                    </button>
 
-  <style>
-    {`
+                    <style>
+                      {`
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
     `}
-  </style>
+                    </style>
 
-  {showOptions && (
-    <div className="absolute right-0 mt-2 w-80 rounded-lg shadow-2xl bg-white border border-gray-300 z-50 p-5 text-black transition-all duration-200">
+                    {showOptions && (
+                      <div className="absolute right-0 mt-2 w-80 rounded-lg shadow-2xl bg-white border border-gray-300 z-50 p-5 text-black transition-all duration-200">
+                        <div className="mb-4">
+                          <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
+                            📄 Generate Report
+                          </h2>
+                        </div>
 
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
-          📄 Generate Report
-        </h2>
-      </div>
+                        <div className="space-y-3 text-sm text-gray-700">
+                          {[
+                            { label: "Since Beginning", value: "full" },
+                            { label: "Last 1 Day", value: "1day" },
+                            { label: "Last 1 Week", value: "1week" },
+                            { label: "Last 1 Month", value: "1month" },
+                            {
+                              label: "Quarterly (Last 3 Months)",
+                              value: "quarterly",
+                            },
+                            {
+                              label: "Annually (Last 1 Year)",
+                              value: "annually",
+                            },
+                          ].map((item) => (
+                            <div
+                              key={item.value}
+                              className="flex items-center space-x-3"
+                            >
+                              <input
+                                type="radio"
+                                name="reportType"
+                                value={item.value}
+                                checked={reportType === item.value}
+                                onChange={() => setReportType(item.value)}
+                                className="accent-blue-600 w-4 h-4"
+                              />
+                              <label className="cursor-pointer font-medium">
+                                {item.label}
+                              </label>
+                            </div>
+                          ))}
 
-      <div className="space-y-3 text-sm text-gray-700">
+                          {/* Custom Date */}
+                          <div className="flex items-start space-x-3">
+                            <input
+                              type="radio"
+                              name="reportType"
+                              value="custom"
+                              checked={reportType === "custom"}
+                              onChange={() => setReportType("custom")}
+                              className="accent-blue-600 w-4 h-4 mt-1"
+                            />
+                            <div className="w-full">
+                              <label className="cursor-pointer font-medium">
+                                Custom Date Range
+                              </label>
 
-        {[
-          { label: "Since Beginning", value: "full" },
-          { label: "Last 1 Day", value: "1day" },
-          { label: "Last 1 Week", value: "1week" },
-          { label: "Last 1 Month", value: "1month" },
-          { label: "Quarterly (Last 3 Months)", value: "quarterly" },
-          { label: "Annually (Last 1 Year)", value: "annually" },
-        ].map((item) => (
-          <div key={item.value} className="flex items-center space-x-3">
-            <input
-              type="radio"
-              name="reportType"
-              value={item.value}
-              checked={reportType === item.value}
-              onChange={() => setReportType(item.value)}
-              className="accent-blue-600 w-4 h-4"
-            />
-            <label className="cursor-pointer font-medium">{item.label}</label>
-          </div>
-        ))}
+                              {reportType === "custom" && (
+                                <div className="mt-3 space-y-3">
+                                  <div>
+                                    <label className="block text-xs text-gray-500 mb-1">
+                                      From Date
+                                    </label>
+                                    <input
+                                      type="date"
+                                      value={fromDate}
+                                      min={formattedFirstDate}
+                                      max={toDate || undefined}
+                                      onChange={(e) => {
+                                        setFromDate(e.target.value);
+                                        setToDate("");
+                                      }}
+                                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                  </div>
 
-        {/* Custom Date */}
-        <div className="flex items-start space-x-3">
-          <input
-            type="radio"
-            name="reportType"
-            value="custom"
-            checked={reportType === "custom"}
-            onChange={() => setReportType("custom")}
-            className="accent-blue-600 w-4 h-4 mt-1"
-          />
-          <div className="w-full">
-            <label className="cursor-pointer font-medium">Custom Date Range</label>
+                                  <div>
+                                    <label className="block text-xs text-gray-500 mb-1">
+                                      To Date
+                                    </label>
+                                    <input
+                                      type="date"
+                                      value={toDate}
+                                      min={fromDate || formattedFirstDate}
+                                      onChange={(e) =>
+                                        setToDate(e.target.value)
+                                      }
+                                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
 
-            {reportType === "custom" && (
-              <div className="mt-3 space-y-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">
-                    From Date
-                  </label>
-                  <input
-                    type="date"
-                    value={fromDate}
-                    min={formattedFirstDate}
-                    max={toDate || undefined}
-                    onChange={(e) => {
-                      setFromDate(e.target.value);
-                      setToDate("");
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">
-                    To Date
-                  </label>
-                  <input
-                    type="date"
-                    value={toDate}
-                    min={fromDate || formattedFirstDate}
-                    onChange={(e) => setToDate(e.target.value)}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6">
-        <button
-          onClick={generateReport}
-          disabled={isLoading}
-          className="w-full bg-blue-600 hover:bg-blue-700 transition duration-150 text-white font-semibold text-sm py-2 rounded-md"
-        >
-          {isLoading ? "Generating..." : "Generate Report"}
-        </button>
-      </div>
-    </div>
-  )}
-</div>
+                        <div className="mt-6">
+                          <button
+                            onClick={generateReport}
+                            disabled={isLoading}
+                            className="w-full bg-blue-600 hover:bg-blue-700 transition duration-150 text-white font-semibold text-sm py-2 rounded-md"
+                          >
+                            {isLoading ? "Generating..." : "Generate Report"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -967,6 +992,7 @@ const isFieldEditable = (item, fieldName) => {
                           <option value="All Records">All Records</option>
                           <option value="Open">Open</option>
                           <option value="Closed">Closed</option>
+                          <option value="Return">Return</option>
                         </select>
                       </div>
 
@@ -1076,6 +1102,12 @@ const isFieldEditable = (item, fieldName) => {
                         <tr>
                           <th>S.No.</th>
                           <th className="!text-nowrap px-8">Date</th>
+                          <th className="sticky top-0 z-10 text-center">
+                            Instrument/Equipment Name
+                          </th>
+                          <th className="sticky top-0 z-10 text-center">
+                            Instrument/Equipment No.
+                          </th>
                           <th className="!text-nowrap">Sample Name</th>
                           <th className="!text-nowrap">Reg No./ Lot No.</th>
                           <th className="!text-nowrap">Method Used</th>
@@ -1096,7 +1128,7 @@ const isFieldEditable = (item, fieldName) => {
                         {filteredGridData?.map((item, index) => (
                           <tr key={index}>
                             <td className="relative group">
-                              {index + 1}
+                              {item.record_id || index + 1}
                               <DeleteIcon
                                 className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                 onClick={() => deleteRow(index)}
@@ -1105,9 +1137,24 @@ const isFieldEditable = (item, fieldName) => {
 
                             <td className="w-24">
                               <input
-                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                value={item?.date || ""}
                                 type="text"
                                 readOnly
+                              />
+                            </td>
+
+                            <td className="!text-center !justify-center">
+                              <input
+                                value={item.instrument_name || ""}
+                                readOnly
+                                // className="bg-gray-100 cursor-not-allowed"
+                              />
+                            </td>
+                            <td className="!text-center !justify-center">
+                              <input
+                                value={item.instrument_no || ""}
+                                readOnly
+                                // className="bg-gray-100 cursor-not-allowed"
                               />
                             </td>
 
@@ -1183,7 +1230,11 @@ const isFieldEditable = (item, fieldName) => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isFieldEditable(item, "parameter_or_activity")
+                                  ) ||
+                                  !isFieldEditable(
+                                    item,
+                                    "parameter_or_activity"
+                                  )
                                 }
                               />
                             </td>
@@ -1339,7 +1390,8 @@ const isFieldEditable = (item, fieldName) => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isFieldEditable(item, "no_of_injections")
+                                  ) ||
+                                  !isFieldEditable(item, "no_of_injections")
                                 }
                               />
                             </td>
@@ -1402,6 +1454,12 @@ const isFieldEditable = (item, fieldName) => {
                                         e.target.value;
 
                                       // Reset other fields on change
+                                      if (e.target.value === "OK") {
+                                          newData[index].status = "Closed";
+                                        } else if(e.target.value === "action-needed") {
+                                          newData[index].status = "Return";
+                                        }
+                                        
                                       if (e.target.value !== "action-needed") {
                                         newData[index].remarksSubType = "";
                                         newData[index].remarksOther = "";
@@ -1484,10 +1542,10 @@ const isFieldEditable = (item, fieldName) => {
                                       </select>
 
                                       {/* Custom Remark Input if 'Others' selected */}
-                                      {item.remarksSubType === "Others" && (
+                                      {item.remarksSubType && (
                                         <input
                                           type="text"
-                                          placeholder="Enter custom remark"
+                                          placeholder="Enter remark"
                                           value={item.remarksOther || ""}
                                           onChange={(e) => {
                                             const newData = [
@@ -1523,7 +1581,9 @@ const isFieldEditable = (item, fieldName) => {
                                   const isDisabled =
                                     [3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isRowEditable(item) || !canReviewerEdit(item);
+                                    ) ||
+                                    !isRowEditable(item) ||
+                                    !canReviewerEdit(item);
 
                                   return item.supporting_docs ? (
                                     <div className="file-upload-wrapper">
@@ -1602,8 +1662,11 @@ const isFieldEditable = (item, fieldName) => {
                             </td>
 
                             <td>
-                              {
-                                (item.remarksOther || item.remarks == "OK" ? "Closed" : "Open")}
+                              {item.remarksSubType
+                                ? "Return"
+                                : item.remarks?.toLowerCase() === "ok"
+                                ? "Closed"
+                                : "Open"}
                             </td>
                           </tr>
                         ))}
