@@ -728,7 +728,9 @@ exports.GetAllAnalyticalBalance = async (req, res) => {
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
-    order: [["form_id", "ASC"]],
+    order: [["form_id", "ASC"],
+   [AnalyticalBalanceRecords, "record_id", "ASC"] 
+  ],
   })
     .then((result) => {
       res.json({
@@ -1498,10 +1500,22 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     // Find all audit trail entries for the given form_id
     const auditTrail = await AnalyticalBalanceAuditTrail.findAll({
       where: { form_id: formId },
-      include: {
-        model: User,
-        attributes: ["user_id", "name"],
-      },
+  include: [
+    {
+      model: User,
+      attributes: ["user_id", "name"],
+
+    include: [
+      {
+        model: UserRole,
+        attributes: ["role_id"],
+        required: false,
+        duplicating: false,
+        separate: true
+      }
+    ]
+    }
+  ],
       order: [["auditTrail_id", "DESC"]],
     });
 
