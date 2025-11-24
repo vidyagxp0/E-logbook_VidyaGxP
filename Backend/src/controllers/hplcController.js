@@ -190,6 +190,8 @@ exports.InsertHPLC = async (req, res) => {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         date: record?.date,
+        instrument_name: record?.instrument_name,
+        instrument_no: record?.instrument_no,
         sample_name: record?.sample_name,
         reg_no: record?.reg_no,
         method_used: record?.method_used,
@@ -212,6 +214,28 @@ exports.InsertHPLC = async (req, res) => {
       await hplcRecord.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument Name",
+          previous_value: null,
+          new_value: record?.instrument_name,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument No",
+          previous_value: null,
+          new_value: record?.instrument_no,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
         auditTrailEntries.push({
           form_id: newForm.form_id,
           field_name: "Sample Name",
@@ -560,6 +584,8 @@ exports.EditHPLC = async (req, res) => {
       const newData = {
         form_id,
         date: record.date,
+        instrument_name: record.instrument_name,
+        instrument_no: record.instrument_no,
         sample_name: record.sample_name,
         reg_no: record.reg_no,
         method_used: record.method_used,

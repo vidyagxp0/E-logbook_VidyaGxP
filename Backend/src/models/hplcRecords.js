@@ -22,6 +22,14 @@ const hplcRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    instrument_name: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
+    instrument_no: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
     sample_name: {
       type: DataTypes.STRING,
       allowNull: false,
