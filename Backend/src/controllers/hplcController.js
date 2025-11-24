@@ -1593,11 +1593,23 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     // Find all audit trail entries for the given form_id
     const auditTrail = await hplcAudittrail.findAll({
       where: { form_id: formId },
-      include: {
-        model: User,
-        attributes: ["user_id", "name"],
-      },
-      order: [["auditTrail_id", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: ["user_id", "name"],
+
+        include: [
+          {
+            model: UserRole,
+            attributes: ["role_id"],
+            required: false,
+            duplicating: false,
+            separate: true
+          }
+        ]
+        }
+      ],
+      order: [["auditTrail_id", "ASC"]],
     });
 
     if (!auditTrail || auditTrail.length === 0) {
