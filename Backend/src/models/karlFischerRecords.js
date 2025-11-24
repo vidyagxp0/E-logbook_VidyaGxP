@@ -22,6 +22,14 @@ const karlFischerRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    instrument_name: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
+    instrument_no: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
     lot_no: {
       type: DataTypes.STRING,
       allowNull: false,

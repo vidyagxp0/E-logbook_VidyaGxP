@@ -189,6 +189,8 @@ exports.InsertKarlFischer = async (req, res) => {
         form_id: newForm?.form_id,
         date: record?.date,
         lot_no: record?.lot_no,
+        instrument_name: record?.instrument_name,
+        instrument_no: record?.instrument_no,
         done_by: record?.done_by,
         factorValue: record?.factorValue,
         factor_percent_water: record?.factor_percent_water,
@@ -211,6 +213,28 @@ exports.InsertKarlFischer = async (req, res) => {
           field_name: "Lot no",
           previous_value: null,
           new_value: record?.lot_no,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument Name",
+          previous_value: null,
+          new_value: record?.instrument_name,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument No",
+          previous_value: null,
+          new_value: record?.instrument_no,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -524,6 +548,8 @@ exports.EditKarlFischer = async (req, res) => {
         remarksType: record.remarksType,
         remarksSubType: record.remarksSubType,
         lot_no: record.lot_no,
+        instrument_name: record.instrument_name,
+        instrument_no: record.instrument_no,
         done_by: record.done_by,
         factorValue: record.factorValue,
         sample_name: record.sample_name,
@@ -1505,7 +1531,16 @@ exports.getAuditTrailForAnElog = async (req, res) => {
         model: User,
         attributes: ["user_id", "name"],
       },
-      order: [["auditTrail_id", "DESC"]],
+    include: [
+      {
+        model: UserRole,
+        attributes: ["role_id"],
+        required: false,
+        duplicating: false,
+        separate: true
+      }
+    ],
+      order: [["auditTrail_id", "ASC"]],
     });
 
     if (!auditTrail || auditTrail.length === 0) {
@@ -1849,6 +1884,8 @@ exports.blankReport = async (req, res) => {
       ? reportData.karlFischerRecords.map((record) => ({
           date: record?.date || "",
           lot_no: record?.lot_no || "",
+          instrument_name: record?.instrument_name,
+          instrument_no: record?.instrument_no,
           sample_name: record?.sample_name || "",
           factor_percent_water: record?.factor_percent_water || "",
           factorValue: record?.factorValue || "",
