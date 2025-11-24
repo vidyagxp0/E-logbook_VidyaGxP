@@ -87,12 +87,19 @@
           <tr>
             <th>Sr. No</th>
             <th style="text-align: center;">Date</th>
+            <th>Instrument/Equipment Name</th>
+            <th>Instrument/Equipment No.</th>
             <th>Reg. No./Lot No.</th>
             <th>Sample Name</th>
             <th>Weight Taken</th>
+            <th>UOM</th>
+          </tr>
+          <tr>
+            <!-- <th>Sr. No</th> -->
+             <th></th>
+            <th>Factor Value</th>
             <th>Done By</th>
             <th>Checked By</th>
-            <!-- <th>Reviewed By</th> -->
             <th>Remark</th>
             <th style="text-align: center;">Attachment</th>
             <th>Status</th>
@@ -103,14 +110,26 @@
             <tr>
               <td><%= index + 1 %></td>
               <td style="white-space: nowrap; text-align: center;" ><%= record?.date || "Not Applicable" %></td>
+              <td><%= record?.instrument_name || "Not Applicable" %></td>
+              <td><%= record?.instrument_no || "Not Applicable" %></td>
               <td><%= record?.reg_no || "Not Applicable" %></td>
               <td><%= record?.sample_name || "Not Applicable" %></td>
               <td><%= record?.weight_taken || "Not Applicable" %></td>
+              <td>
+                <%= record?.uom === "Others"
+                      ? (record?.uomOther || "Not Applicable")
+                      : (record?.uom || "Not Applicable")
+                %>
+              </td>
+            </tr> 
+            <tr>
+              <!-- <td><%= index + 1 %></td> -->
+               <td></td>
+              <td><%= record?.factorValue || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
               <td><%= record?.reviewed_by || "Not Applicable" %></td>
-              <!-- <td><%= record?.reviewed_by || "Not Applicable" %></td> -->
               <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
-              <td>
+              <td style="word-break: break-word;">
                 <% if (record?.supporting_docs) { %>
                   <a href="<%= record.supporting_docs %>" target="_blank">
                     <%= record.supporting_docs.split('/').pop() %>
