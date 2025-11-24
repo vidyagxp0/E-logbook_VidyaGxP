@@ -189,7 +189,8 @@ exports.InsertKarlFischer = async (req, res) => {
         form_id: newForm?.form_id,
         date: record?.date,
         lot_no: record?.lot_no,
-        done_by: record?.done_by, // Assuming time was meant here instead of unique_id again
+        done_by: record?.done_by,
+        factorValue: record?.factorValue,
         factor_percent_water: record?.factor_percent_water,
         remarks: record?.remarks,
         status:record?.status,
@@ -222,6 +223,18 @@ exports.InsertKarlFischer = async (req, res) => {
           field_name: "Done by",
           previous_value: null,
           new_value: record?.done_by,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+          
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Factor value",
+          previous_value: null,
+          new_value: record?.factorValue,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -512,6 +525,7 @@ exports.EditKarlFischer = async (req, res) => {
         remarksSubType: record.remarksSubType,
         lot_no: record.lot_no,
         done_by: record.done_by,
+        factorValue: record.factorValue,
         sample_name: record.sample_name,
         factor_percent_water: record.factor_percent_water,
         checked_by: record.checked_by,
@@ -1831,22 +1845,23 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-const data = Array.isArray(reportData?.karlFischerRecords)
-  ? reportData.karlFischerRecords.map((record) => ({
-      date: record?.date || "",
-      lot_no: record?.lot_no || "",
-      sample_name: record?.sample_name || "",
-      factor_percent_water: record?.factor_percent_water || "",
-      done_by: record?.done_by || "",
-      checked_by: record?.checked_by || "",
-      reviewed_by:record?.reviewed_by || "",
-      remarks: record?.remarks || "",
-      status: record?.status || "",
-      remarksOther: record?.remarksOther || "",
-      remarksType: record?.remarksType || "",
-      remarksSubType: record?.remarksSubType || "",
-    }))
-  : [];
+    const data = Array.isArray(reportData?.karlFischerRecords)
+      ? reportData.karlFischerRecords.map((record) => ({
+          date: record?.date || "",
+          lot_no: record?.lot_no || "",
+          sample_name: record?.sample_name || "",
+          factor_percent_water: record?.factor_percent_water || "",
+          factorValue: record?.factorValue || "",
+          done_by: record?.done_by || "",
+          checked_by: record?.checked_by || "",
+          reviewed_by:record?.reviewed_by || "",
+          remarks: record?.remarks || "",
+          status: record?.status || "",
+          remarksOther: record?.remarksOther || "",
+          remarksType: record?.remarksType || "",
+          remarksSubType: record?.remarksSubType || "",
+        }))
+      : [];
 
     const arrayData = [...data, ...blankRows];
     // Render HTML using EJS template

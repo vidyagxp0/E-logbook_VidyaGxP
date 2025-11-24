@@ -30,6 +30,10 @@ const karlFischerRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    factorValue: { 
+     type: DataTypes.STRING, 
+     allowNull: false 
+   },
     factor_percent_water: {
       type: DataTypes.STRING,
     },

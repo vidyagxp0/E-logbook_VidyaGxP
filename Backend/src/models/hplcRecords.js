@@ -26,6 +26,10 @@ const hplcRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    factorValue: { 
+     type: DataTypes.STRING, 
+     allowNull: false 
+   },
     reg_no: {
       type: DataTypes.STRING,
     },

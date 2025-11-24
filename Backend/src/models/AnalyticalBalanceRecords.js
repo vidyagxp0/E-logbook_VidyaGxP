@@ -30,6 +30,10 @@ const AnalyticalBalance = sequelize.define(
       type: DataTypes.STRING, 
       allowNull: false 
     },
+    factorValue: { 
+     type: DataTypes.STRING, 
+     allowNull: false 
+   },
     weight_taken: { 
       type: DataTypes.STRING, 
       allowNull: false 
