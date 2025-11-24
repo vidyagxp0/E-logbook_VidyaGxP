@@ -700,7 +700,9 @@ exports.GetAllKarlFischerElog = async (req, res) => {
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
-    order: [["form_id", "DESC"]],
+    order: [["form_id", "ASC"],
+   [karlFischerRecord, "record_id", "ASC"] 
+  ],
   })
     .then((result) => {
       res.json({
