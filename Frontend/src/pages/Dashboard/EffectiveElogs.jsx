@@ -584,7 +584,14 @@ const processShortName = {
     } else if (item.hplcRecords) {
       navigate("/effective-hplc", { state: item });
     } else if (item.OpAndCalMultiParameterProcessRecords) {
-      navigate("/effective-pHMeterOpCal", { state: item });
+      // navigate("/effective-pHMeterOpCal", { state: item });
+      navigate("/effective-pHMeterOpCal", { 
+  state: {
+    ...item,
+    instrument_no: getElogNumber(item), 
+  }
+});
+
     } else if (item.UvVisRecords) {
       navigate("/effective-uv-vis-calibration", { state: item });
     } else if (item.sdsPageRecords) {
