@@ -1599,7 +1599,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("AnalyticalBalance", { reportData }, (err, html) => {
+      req.app.render("Report/PHMeterReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1611,7 +1611,7 @@ exports.chatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
