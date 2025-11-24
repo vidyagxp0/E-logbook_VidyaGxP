@@ -107,27 +107,17 @@
             <tr>
               <td><%= index + 1 %></td>
               <td ><%= record?.date || "Not Applicable" %></td>
+              <td><%= record?.instrument_name || "Not Applicable" %></td>
+              <td><%= record?.instrument_no || "Not Applicable" %></td>
+              <td><%= record?.factorValue || "Not Applicable" %></td>
               <td><%= record?.lot_no || "Not Applicable" %></td>
               <td><%= record?.sample_name || "Not Applicable" %></td>
-              <td><%= record?.factor_percent_water || "Not Applicable" %></td>
-              <td><%= record?.done_by || "Not Applicable" %></td>
-              
-              <td><%= record?.reviewed_by || "Not Applicable" %></td>
-              <!-- <td><%= record?.reviewed_by || "Not Applicable" %></td> -->
-              <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
-          
-            <td><%= record?.status || "Not Applicable" %></td>
             </tr>
             <tr>
               <td> </td>
-              <td style="white-space: nowrap;"><%= record?.date || "Not Applicable" %></td>
-              <td><%= record?.lot_no || "Not Applicable" %></td>
-              <td><%= record?.sample_name || "Not Applicable" %></td>
               <td><%= record?.factor_percent_water || "Not Applicable" %></td>
               <td><%= record?.done_by || "Not Applicable" %></td>
-              
               <td><%= record?.reviewed_by || "Not Applicable" %></td>
-              <!-- <td><%= record?.reviewed_by || "Not Applicable" %></td> -->
               <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
             
             <td>
