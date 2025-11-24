@@ -1516,7 +1516,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     ]
     }
   ],
-      order: [["auditTrail_id", "DESC"]],
+      order: [["auditTrail_id", "ASC"]],
     });
 
     if (!auditTrail || auditTrail.length === 0) {

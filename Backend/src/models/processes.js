@@ -16,6 +16,8 @@ const Process = sequelize.define("Process", {
 // User.belongsToMany(Project, { through: UserProject });
 // Project.belongsToMany(User, { through: UserProject });
 
+
+// isme UI ke hisab se process_id ko static diya hai id base pr
 Process.addHook('afterSync', async () => {
     try {
         const processesCount = await Process.count();
@@ -27,15 +29,15 @@ Process.addHook('afterSync', async () => {
                 // { process: 'Operation Of Sterilizer' },
                 // { process: 'Media Record' },
                 // { process: 'Dispensing Of Materials' },
-                { process: 'Analytical Balance' },
-                { process: 'Karl Fischer' },
-                { process: 'HPLC' },
-                { process: 'pH Meter Op/Cal' },
-                { process: 'UV Vis Calib'},
-                { process: 'SDS PAGE'},
-                { process: 'Gel Doc iGene'},
-                { process: 'UV/White Light Transilluminator'},
-                { process: 'VO Calibration'},
+                { process_id: 7,process: 'Analytical Balance' },
+                { process_id: 8,process: 'Karl Fischer' },
+                { process_id: 9,process: 'HPLC' },
+                { process_id: 10,process: 'pH Meter Op/Cal' },
+                { process_id: 11,process: 'UV Vis Calib'},
+                { process_id: 12,process: 'SDS PAGE'},
+                { process_id: 13,process: 'Gel Doc iGene'},
+                { process_id: 14,process: 'UV/White Light Transilluminator'},
+                { process_id: 15,process: 'VO Calibration'},
               
             ]);
             console.log('Processes created');

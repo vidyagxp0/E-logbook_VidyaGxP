@@ -16,6 +16,8 @@ const Site = sequelize.define("Site", {
 // User.belongsToMany(Project, { through: UserProject });
 // Project.belongsToMany(User, { through: UserProject });
 
+
+// isme UI ke hisab se site_id ko static diya hai id base pr
 Site.addHook('afterSync', async () => {
     try {
         const sitesCount = await Site.count();
@@ -25,8 +27,8 @@ Site.addHook('afterSync', async () => {
                 // { site: 'Malaysia' },
                 // { site: 'EMEA' },
                 // { site: 'EU' },
-                { site: 'Biologics'},
-                {site : "AR&D"}
+                { site_id:5, site: 'Biologics'},
+                { site_id:6, site : "AR&D"}
             ]);
             console.log('Sites created');
         } else {
