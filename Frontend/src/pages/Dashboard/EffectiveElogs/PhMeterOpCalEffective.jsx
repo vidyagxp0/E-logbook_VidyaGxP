@@ -1611,7 +1611,7 @@ const allowInitiator = (item, field) => {
                                   }
                                 />
                               </div>
-                            </td>
+                             </td>
 
                             <td >
                               {item.status ||

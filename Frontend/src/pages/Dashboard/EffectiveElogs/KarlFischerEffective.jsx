@@ -319,7 +319,7 @@ const KarlFischerEffective = () => {
       };
       const nextIndex = editData?.karlFischerRecords?.length || 0;
       const newRow = {
-        date: dayjs().format("YYYY-MM-DD"),
+        date: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
         lot_no: "",
         sample_name: "",
         factor_percent_water: "",
@@ -460,6 +460,8 @@ const KarlFischerEffective = () => {
           ? record.status === "Open"
           : selectedStatus === "Closed"
           ? record.status === "Closed"
+          : selectedStatus === "Return"
+          ? record.status === "Return"
           : true;
 
       return matchInitiator && matchReviewer && matchStatus;
@@ -720,6 +722,29 @@ const KarlFischerEffective = () => {
     return true;
   };
 
+    const [showFilter, setShowFilter] = useState(true);
+  
+    // Common Label Style
+   const labelStyle = {
+      display: "inline-block",
+      padding: "4px 12px",
+      paddingLeft: "18px",
+      borderRadius: "50px",
+      backgroundColor: "#e9ecef",
+      fontSize: "13px",
+      fontWeight: "600",
+      color: "#000000",
+      marginBottom: "6px",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+    };
+    
+  useEffect(() => {
+    const box = document.querySelector(".tableBottomStart");
+    if (box) {
+      box.scrollTop = box.scrollHeight;
+    }
+  }, [filteredGridData]);
+
   return (
     <>
       <HeaderTop />
@@ -743,7 +768,16 @@ const KarlFischerEffective = () => {
                 <strong> Record Name:&nbsp;</strong>KARL Fischer
               </div> */}
             <div>
-              <strong> Department :&nbsp;</strong>
+              <strong  style={{ fontSize: "16px", color: "#ffff" }}> Department :&nbsp;</strong>
+              <span
+    style={{
+      fontWeight: "700",
+      fontSize: "16px",
+      letterSpacing: "0.5px",
+      color: "#ffff",
+      fontFamily: "Segoe UI, Roboto, sans-serif",
+    }}
+  >
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
@@ -753,6 +787,7 @@ const KarlFischerEffective = () => {
                 : location.state?.site_id === 4
                 ? "EU"
                 : "Biologics"}
+                </span>
             </div>
             {/* <div>
                 <strong> Initiated By :&nbsp;</strong>
@@ -781,7 +816,7 @@ const KarlFischerEffective = () => {
 
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  KARL Fischer Record
+                  KARL Fischer
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -1301,160 +1336,149 @@ const KarlFischerEffective = () => {
 
               {isSelectedDetails === true ? (
                 <>
-                  <div
-                    className="filter-section"
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: "20px",
-                      flexWrap: "wrap",
-                      marginBottom: "20px",
-                      padding: "15px",
-                      backgroundColor: "#f8f9fa",
-                      borderRadius: "8px",
-                      border: "1px solid #e9ecef",
-                    }}
-                  >
                     <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "end",
-                        gap: "20px",
-                        flexWrap: "wrap",
-                        flex: 1,
-                      }}
-                    >
-                      <div
-                        className="group-input"
-                        style={{ marginBottom: "0", minWidth: "200px" }}
-                      >
-                        <label
-                          className="color-label"
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#495057",
-                            marginBottom: "8px",
-                            padding: "0",
-                          }}
-                        >
-                          Status
-                        </label>
-                        <select
-                          className="form-control"
-                          name="status"
-                          value={selectedStatus}
-                          onChange={handleInputChange1}
-                          style={{
-                            padding: "8px 12px",
-                            border: "1px solid #ced4da",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="All Records">All Records</option>
-                          <option value="Open">Open</option>
-                          <option value="Closed">Closed</option>
-                        </select>
-                      </div>
+      style={{
+        marginBottom: showFilter ? "20px" : "10px",
+        padding: showFilter ? "15px" : "8px 12px",
+        backgroundColor: "#f8f9fa",
+        borderRadius: "8px",
+        border: "1px solid #e9ecef",
+        transition: "0.3s ease",
+      }}
+    >
+      {/* Only Icon */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+        onClick={() => setShowFilter(!showFilter)}
+        title={showFilter ? "Collapse Filters" : "Expand Filters"}
+        className="h-[10px]"
+      >
+        <span
+         style={{
+  fontSize: "28px",
+  fontWeight: "800",
+  color: "#111",
+  userSelect: "none",
+  cursor: "pointer",
+  transition: "0.2s",
+  transform: showFilter ? "scale(1.15)" : "scale(1.1)"
+}}
 
-                      <div
-                        className="group-input"
-                        style={{ marginBottom: "0", minWidth: "200px" }}
-                      >
-                        <label
-                          className="color-label"
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#495057",
-                            marginBottom: "8px",
-                            padding: "0",
-                          }}
-                        >
-                          Initiator
-                        </label>
-                        <select
-                          className="form-control"
-                          name="initiator"
-                          value={selectedInitiator}
-                          onChange={handleInputChange1}
-                          style={{
-                            padding: "8px 12px",
-                            border: "1px solid #ced4da",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="All Records">All Records</option>
-                          {[
-                            ...new Set(
-                              editData?.karlFischerRecords?.map(
-                                (r) => r.done_by
-                              )
-                            ),
-                          ].map(
-                            (done_by, index) =>
-                              done_by && (
-                                <option key={index} value={done_by}>
-                                  {done_by}
-                                </option>
-                              )
-                          )}
-                        </select>
-                      </div>
+        >
+          {showFilter ? "−" : "+"}
+        </span>
+      </div>
 
-                      <div
-                        className="group-input"
-                        style={{ marginBottom: "0", minWidth: "200px" }}
-                      >
-                        <label
-                          className="color-label"
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#495057",
-                            marginBottom: "8px",
-                            padding: "0",
-                          }}
-                        >
-                          Reviewer
-                        </label>
-                        <select
-                          className="form-control"
-                          name="reviewer"
-                          value={selectedReviewer}
-                          onChange={handleInputChange1}
-                          style={{
-                            padding: "8px 12px",
-                            border: "1px solid #ced4da",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="All Records">All Records</option>
-                          {[
-                            ...new Set(
-                              editData?.karlFischerRecords?.map(
-                                (r) => r.reviewed_by
-                              )
-                            ),
-                          ].map(
-                            (reviewed_by, index) =>
-                              reviewed_by && (
-                                <option key={index} value={reviewed_by}>
-                                  {reviewed_by}
-                                </option>
-                              )
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
+      {/* Collapsible Content */}
+      {showFilter && (
+        <div
+          style={{
+            marginTop: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: "20px",
+            flexWrap: "wrap",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "end",
+              gap: "20px",
+              flexWrap: "wrap",
+              flex: 1,
+            }}
+          >
+            {/* Status */}
+            <div style={{ marginBottom: "0", minWidth: "200px" }}>
+              <label style={labelStyle}>Status</label>
+              <select
+                className="form-control"
+                name="status"
+                value={selectedStatus}
+                onChange={handleInputChange1}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All Records">All Records</option>
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+                <option value="Return">Return</option>
+              </select>
+            </div>
+
+            {/* Initiator */}
+            <div style={{ marginBottom: "0", minWidth: "200px" }}>
+              <label style={labelStyle}>Initiator</label>
+              <select
+                className="form-control"
+                name="initiator"
+                value={selectedInitiator}
+                onChange={handleInputChange1}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All Records">All</option>
+                {[...new Set(editData?.karlFischerRecords?.map(r => r.done_by))].map(
+                  (done_by, index) =>
+                    done_by && (
+                      <option key={index} value={done_by}>
+                        {done_by}
+                      </option>
+                    )
+                )}
+              </select>
+            </div>
+
+            {/* Reviewer */}
+            <div style={{ marginBottom: "0", minWidth: "200px" }}>
+              <label style={labelStyle}>Reviewer</label>
+              <select
+                className="form-control"
+                name="reviewer"
+                value={selectedReviewer}
+                onChange={handleInputChange1}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              >
+                <option value="All Records">All</option>
+                {[...new Set(editData?.karlFischerRecords?.map(r => r.reviewed_by))].map(
+                  (reviewed_by, index) =>
+                    reviewed_by && (
+                      <option key={index} value={reviewed_by}>
+                        {reviewed_by}
+                      </option>)
+                )}
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
 
                   <div>
                     <div className="AddRows d-flex items-center">
@@ -1464,19 +1488,24 @@ const KarlFischerEffective = () => {
                       </div>
                     </div>
                   </div>
-                  <table>
+                  <div className="tableBottomStart max-h-[350px] w-full overflow-x-auto overflow-y-auto flex flex-col-reverse">
+                    
+                  <table  className="min-w-max w-full border-collapse text-center">
                     <thead>
                       <tr>
-                        <th className="text-center">S no.</th>
-                        <th className="text-center">Date</th>
-                        <th className="text-center">Lot No./Batch No.</th>
-                        <th className="text-center">Sample Name</th>
-                        <th className="text-center">Factor/ % water</th>
-                        <th className="text-center">Done by</th>
-                        <th className="text-center">Checked By</th>
-                        <th className="text-center">Remarks</th>
-                        <th className="text-center">Attachment</th>
-                        <th className="text-center">Status</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">S no.</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Date</th>
+                              <th className="sticky top-0 z-10 text-center">Instrument/Equipment Name</th>
+                        <th className="sticky top-0 z-10 text-center">Instrument/Equipment No.</th>
+                        <th className="sticky top-0 z-10 text-center">Factor Value</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Lot No./Batch No.</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Sample Name</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Factor/ % water</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Done by</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Checked By</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Remarks</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Attachment</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Status</th>
                         {/* <th className="text-center">Supporting Documents</th> */}
                         {/* <th className="text-center">Actions</th> */}
                       </tr>
@@ -1499,7 +1528,9 @@ const KarlFischerEffective = () => {
                                 readOnly
                               />
                             </td>
-
+<td></td>
+<td></td>
+<td></td>
                             <td className="!text-center !justify-center">
                               <input
                                 value={item.lot_no}
@@ -1849,6 +1880,7 @@ const KarlFischerEffective = () => {
                       )}
                     </tbody>
                   </table>
+                  </div>
                   {/* 
                     <div className="group-input flex flex-col gap-4 mt-4 items-start">
                       <div className="group-input mt-4">

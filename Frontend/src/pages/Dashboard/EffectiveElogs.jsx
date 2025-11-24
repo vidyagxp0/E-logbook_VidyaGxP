@@ -1268,7 +1268,7 @@ const getFilteredData = () => {
               <th className="text-center">Short description</th>
               <th className="text-center">Created By</th>
               {/* <th className="text-center">Initiator</th> */}
-              <th className="text-center">Date of initiation</th>
+              <th className="text-center">Date of Creation</th>
             </tr>
           </thead>
           <tbody>
