@@ -153,6 +153,8 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
       const formRecords = pHOpCalRecords.map((record, index) => ({
         form_id: newForm?.form_id,
         date: record?.date ,
+        instrument_name: record?.instrument_name,
+        instrument_no: record?.instrument_no,
         nameOfSolution: record?.nameOfSolution,
         adjustPH: record?.adjustPH,
         factorValue: record?.factorValue,
@@ -186,6 +188,28 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           field_name: "Date",
           previous_value: null,
           new_value: record.date || "",
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument Name",
+          previous_value: null,
+          new_value: record.instrument_name || "",
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument No",
+          previous_value: null,
+          new_value: record.instrument_no || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -480,6 +504,8 @@ exports.EditOpAndCalMultiParameter = async (req, res) => {
 
       const newData = {
         form_id,
+        instrument_name: record.instrument_name,
+        instrument_no: record.instrument_no,
         nameOfSolution: record.nameOfSolution,
         date: record.date,
         adjustPH: record.adjustPH,
@@ -1632,10 +1658,10 @@ exports.chatByPdf = async (req, res) => {
     await browser.close();
     // const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `PHMeterElog_Report_${formId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `PHMeterElog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     res.status(500).json({
@@ -1743,11 +1769,11 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     const filePath = path.resolve(
       "public",
-      `ABEffectice_Elog_Report_${formId}.pdf`
+      `PHMeterEffectice_Elog_Report_${formId}.pdf`
     );
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `ABEffectice_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `PHMeterEffectice_Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

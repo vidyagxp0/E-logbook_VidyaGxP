@@ -22,6 +22,14 @@ const OpAndCalMultiParameterProcessRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    instrument_name: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
+    instrument_no: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
      nameOfSolution: { 
       type: DataTypes.STRING, 
       allowNull: false 
