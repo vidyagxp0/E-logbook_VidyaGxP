@@ -334,9 +334,11 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
       const nextIndex =
         editData?.OpAndCalMultiParameterProcessRecords?.length || 0;
       const newRow = {
-        date: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+        date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
         nameOfSolution: "",
         adjustPH: "",
+        instrument_name:"pH Meter",
+        instrument_no:location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         checked_by: location?.state?.initiator_name || "",
         remarks: "",
@@ -623,7 +625,7 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
-  const formattedFirstDate = firstRecordDate?.toISOString().split("T")[0];
+  const formattedFirstDate = firstRecordDate;
 
 
   const generateReport = async () => {
@@ -754,6 +756,31 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
     }
     return true;
   };
+
+  const disableFieldMap = {
+  "Incorrect Name of Solution": ["nameOfSolution"],
+  "Incorrect Adjust pH": ["adjustPH"],
+
+  // Others → enable ALL these fields
+  "Others": ["nameOfSolution", "adjustPH" ],
+};
+
+const getReviewerMarkedField = (item) => {
+  return disableFieldMap[item.remarksSubType] || [];
+};
+
+const isFieldEditable = (item, fieldName) => {
+  const allowedFields = getReviewerMarkedField(item);
+
+  // If reviewer marked a specific issue
+  if (allowedFields.length > 0) {
+    return allowedFields.includes(fieldName);
+  }
+
+  // Else fallback default
+  return isRowEditable(item);
+};
+
 
   const [showFilter, setShowFilter] = useState(true);
 
@@ -1261,7 +1288,7 @@ console.log(location?.state,"stateeee")
                         filteredGridData?.map((item, index) => (
                           <tr key={index}>
                             <td  className="relative group">
-                              {index + 1}
+                              {item.record_id || index+1}
                               <DeleteIcon
                                 className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                 onClick={() => deleteRow(index)}
@@ -1269,7 +1296,7 @@ console.log(location?.state,"stateeee")
                             </td>
                             <td  className="!text-center !justify-center">
                               <input
-                                value={dayjs(item?.date).format("DD-MM-YYYY HH:mm:ss")}
+                                value={item?.date || ""}
                                 type="text"
                                 readOnly
                               />
@@ -1277,7 +1304,7 @@ console.log(location?.state,"stateeee")
 {/* Instrument / Equipment Name */}
 <td className="!text-center !justify-center">
   <input
-    value="pH Meter"
+    value={item.instrument_name || ""}
     readOnly
     // className="bg-gray-100 cursor-not-allowed"
   />
@@ -1286,7 +1313,7 @@ console.log(location?.state,"stateeee")
 {/* Instrument / Equipment No. */}
 <td className="!text-center !justify-center">
   <input
-    value={location.state?.instrument_no || ""}
+    value={item.instrument_no || ""}
     readOnly
     // className="bg-gray-100 cursor-not-allowed"
   />
@@ -1311,7 +1338,7 @@ console.log(location?.state,"stateeee")
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "nameOfSolution")
                                 }
                               />
                             </td>
@@ -1332,10 +1359,9 @@ console.log(location?.state,"stateeee")
                                   });
                                 }}
                                 readOnly={
-                                  !allowInitiator(item, "adjustPH") &&
-  [3, 2, 4].includes(
+                                  [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "adjustPH")
                                 }
                               />
                             </td>
@@ -1430,6 +1456,11 @@ console.log(location?.state,"stateeee")
                                         e.target.value;
 
                                       // clear other if not selected
+                                      if (e.target.value === "OK") {
+                                          newData[index].status = "Closed";
+                                        } else if(e.target.value === "action-needed") {
+                                          newData[index].status = "Return";
+                                        }
                                       if (e.target.value !== "action-needed") {
                                         newData[index].remarksSubType = "";
                                         newData[index].remarksOther = "";
@@ -1491,14 +1522,14 @@ console.log(location?.state,"stateeee")
                                         }
                                       >
                                         <option value="">Select Issue</option>
-                                          <option value="Adjusted pH">Adjusted pH</option>
-                                        <option value="Factor Value">Factor Value</option>
+                                          <option value="Incorrect Name of Solution">Incorrect Name of Solution</option>
+                                        <option value="Incorrect Adjust pH">Incorrect Adjust pH</option>
                                         <option value="Others">Others</option>
                                         
                                       </select>
 
                                       {/* Show Input if "Others" is selected */}
-                                      {item.remarksSubType === "Others" && (
+                                      {item.remarksSubType && (
                                         <input
                                           type="text"
                                           placeholder="Enter custom remark"
@@ -1617,8 +1648,11 @@ console.log(location?.state,"stateeee")
                              </td>
 
                             <td >
-                              {item.status ||
-                                (item.reviewed_by ? "Closed" : "Open")}
+                              {item.remarksSubType
+                                ? "Return"
+                                : item.remarks?.toLowerCase() === "ok"
+                                ? "Closed"
+                                : "Open"}
                             </td>
                           </tr>
                         ))

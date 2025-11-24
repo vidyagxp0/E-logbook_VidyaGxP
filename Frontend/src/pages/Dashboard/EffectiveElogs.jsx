@@ -584,9 +584,19 @@ function EffectiveElogs() {
     } else if (item.DispenseOfMaterials) {
       navigate("/effective-dispensing-of-material", { state: item });
     } else if (item.karlFischerRecords) {
-      navigate("/effective-karl-fischer", { state: item });
+      navigate("/effective-karl-fischer", {
+        state: {
+          ...item,
+          instrument_no: getElogNumber(item),
+        },
+      });
     } else if (item.hplcRecords) {
-      navigate("/effective-hplc", { state: item });
+      navigate("/effective-hplc", {
+        state: {
+          ...item,
+          instrument_no: getElogNumber(item),
+        },
+      });
     } else if (item.OpAndCalMultiParameterProcessRecords) {
       // navigate("/effective-pHMeterOpCal", { state: item });
       navigate("/effective-pHMeterOpCal", {

@@ -74,6 +74,8 @@ const KarlFischerEffective = () => {
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
+    instrument_name:"Karl Fischer",
+    instrument_no:location.state.instrument_no,
     description: "",
     department: "",
     compression_area: "",
@@ -319,10 +321,12 @@ const KarlFischerEffective = () => {
       };
       const nextIndex = editData?.karlFischerRecords?.length || 0;
       const newRow = {
-        date: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+        date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
         lot_no: "",
         sample_name: "",
         factor_percent_water: "",
+        instrument_name:"Karl Fischer",
+        instrument_no:location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         checked_by: location?.state?.initiator_name || "",
         remarks: "",
@@ -603,7 +607,7 @@ const KarlFischerEffective = () => {
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
-  const formattedFirstDate = firstRecordDate?.toISOString().split("T")[0];
+  const formattedFirstDate = firstRecordDate;
 
 
   const generateReport = async () => {
@@ -736,6 +740,30 @@ const KarlFischerEffective = () => {
     return true;
   };
 
+  const disableFieldMap = {
+  "Incorrect Sample Name": ["sample_name"],
+  "Incorrect Reg No./ Lot No.": ["lot_no"],
+"Incorrect Factor % Water":["factor_percent_water"],
+  // Others → enable ALL these fields
+  "Others": ["sample_name", "lot_no", "factor_percent_water"],
+};
+
+const getReviewerMarkedField = (item) => {
+  return disableFieldMap[item.remarksSubType] || [];
+};
+
+const isFieldEditable = (item, fieldName) => {
+  const allowedFields = getReviewerMarkedField(item);
+
+  // If reviewer marked a specific issue
+  if (allowedFields.length > 0) {
+    return allowedFields.includes(fieldName);
+  }
+
+  // Else fallback default
+  return isRowEditable(item);
+};
+
     const [showFilter, setShowFilter] = useState(true);
   
     // Common Label Style
@@ -760,6 +788,23 @@ const KarlFischerEffective = () => {
   }, [filteredGridData]);
 
   console.log(location?.state,"loca")
+
+   const allowInitiator = (item, field) => {
+    if (userDetails.roles[0].role_id !== 3) return false; // only initiator
+
+    if (item.remarksType !== "action-needed") return false;
+
+    // if (field === "adjustPH" && item.remarksSubType === "Adjusted pH")
+    //   return true;
+
+    if (field === "factorValue" && item.remarksSubType === "Factor Value")
+      return true;
+
+    // if (field === "remarksOther" && item.remarksSubType === "Others")
+    //   return true;
+
+    return false;
+  };
 
   return (
     <>
@@ -1519,7 +1564,7 @@ const KarlFischerEffective = () => {
                         filteredGridData?.map((item, index) => (
                           <tr key={index}>
                             <td className="relative group">
-                              {index + 1}
+                              {item.record_id || index+1}
                               <DeleteIcon
                                 className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                 onClick={() => deleteRow(index)}
@@ -1527,7 +1572,7 @@ const KarlFischerEffective = () => {
                             </td>
                             <td className="!text-center !justify-center">
                               <input
-                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                value={item?.date || ""}
                                 type="text"
                                 readOnly
                               />
@@ -1535,7 +1580,7 @@ const KarlFischerEffective = () => {
 {/* Instrument / Equipment Name */}
 <td className="!text-center !justify-center">
   <input
-    value="KARL Fischer"
+    value={item.instrument_name || ""}
     readOnly
     // className="bg-gray-100 cursor-not-allowed"
   />
@@ -1544,12 +1589,39 @@ const KarlFischerEffective = () => {
 {/* Instrument / Equipment No. */}
 <td className="!text-center !justify-center">
   <input
-    value={location.state?.instrument_no || ""}
+    value={item.instrument_no || ""}
     readOnly
     // className="bg-gray-100 cursor-not-allowed"
   />
 </td>
-<td></td>
+<td className="!text-center !justify-center">
+                                <select
+                                  value={item.factorValue || ""}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.karlFischerRecords,
+                                    ];
+                                    newData[index].factorValue = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      karlFischerRecords: newData,
+                                    });
+                                  }}
+                                  disabled={
+                                    (!allowInitiator(item, "factorValue") &&
+                                      [3, 2, 4].includes(
+                                        userDetails.roles[0].role_id
+                                      )) ||
+                                    !isRowEditable(item)
+                                  }
+                                  className="border px-2 py-1 rounded w-full"
+                                >
+                                  <option value="">Select</option>
+                                  <option value="Calibration/Verification">
+                                    Calibration / Verification
+                                  </option>
+                                </select>
+                              </td>
                             <td className="!text-center !justify-center">
                               <input
                                 value={item.lot_no}
@@ -1566,7 +1638,7 @@ const KarlFischerEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "lot_no")
                                 }
                                 //  readOnly={!isRowEditable(item)}
                               />
@@ -1587,7 +1659,7 @@ const KarlFischerEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "sample_name")
                                 }
                               />
                             </td>
@@ -1610,7 +1682,7 @@ const KarlFischerEffective = () => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isRowEditable(item)
+                                  ) || !isFieldEditable(item, "factor_percent_water")
                                 }
                               />
                             </td>
@@ -1685,6 +1757,12 @@ const KarlFischerEffective = () => {
                                       newData[index].remarksType =
                                         e.target.value;
 
+
+                                        if (e.target.value === "OK") {
+                                          newData[index].status = "Closed";
+                                        } else if(e.target.value === "action-needed") {
+                                          newData[index].status = "Return";
+                                        }
                                       // clear other if not selected
                                       if (e.target.value !== "action-needed") {
                                         newData[index].remarksSubType = "";
@@ -1706,6 +1784,7 @@ const KarlFischerEffective = () => {
                                       ) || !canReviewerEdit(item)
                                     }
                                   >
+                                    <option value="Select">--Select--</option>
                                     <option value="OK">OK</option>
                                     <option value="action-needed">
                                       Action Needed
@@ -1751,26 +1830,18 @@ const KarlFischerEffective = () => {
                                         <option value="Incorrect Reg No./ Lot No.">
                                           Incorrect Reg No./ Lot No.
                                         </option>
-                                        <option value="Incorrect Method Used">
-                                          Incorrect Method Used
+                                        <option value="Incorrect Factor % Water">
+                                          Incorrect Factor % Water
                                         </option>
-                                        <option value="Incorrect Parameter/Activity">
-                                          Incorrect Parameter/Activity
-                                        </option>
-                                        <option value="Incorrect Column No.">
-                                          Incorrect Column No.
-                                        </option>
-                                        <option value="Incorrect No. of Injections">
-                                          Incorrect No. of Injections
-                                        </option>
+                                       
                                         <option value="Others">Others</option>
                                       </select>
 
                                       {/* Show Input if "Others" is selected */}
-                                      {item.remarksSubType === "Others" && (
+                                      {item.remarksSubType && (
                                         <input
                                           type="text"
-                                          placeholder="Enter custom remark"
+                                          placeholder="Enter remark"
                                           value={item.remarksOther || ""}
                                           onChange={(e) => {
                                             const newData = [
@@ -1885,8 +1956,11 @@ const KarlFischerEffective = () => {
                             </td>
 
                             <td>
-                              {item.status ||
-                                (item.reviewed_by ? "Closed" : "Open")}
+                              {item.remarksSubType
+                                ? "Return"
+                                : item.remarks?.toLowerCase() === "ok"
+                                ? "Closed"
+                                : "Open"}
                             </td>
                           </tr>
                         ))
