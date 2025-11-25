@@ -464,8 +464,8 @@ const KarlFischerEffective = () => {
           ? record.status === "Open"
           : selectedStatus === "Closed"
           ? record.status === "Closed"
-          : selectedStatus === "Return"
-          ? record.status === "Return"
+          : selectedStatus === "Returned"
+          ? record.status === "Returned"
           : true;
 
       return matchInitiator && matchReviewer && matchStatus;
@@ -498,7 +498,7 @@ const KarlFischerEffective = () => {
   // };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
+    if (!dateString) return ""; // Returned empty if the input is falsy
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -1464,7 +1464,7 @@ const isFieldEditable = (item, fieldName) => {
                 <option value="All Records">All</option>
                 <option value="Open">Open</option>
                 <option value="Closed">Closed</option>
-                <option value="Return">Return</option>
+                <option value="Returned">Returned</option>
               </select>
             </div>
 
@@ -1543,7 +1543,7 @@ const isFieldEditable = (item, fieldName) => {
                     <thead>
                       <tr>
                         <th className=" sticky top-0 z-10 text-center !text-wrap">S no.</th>
-                        <th className=" sticky top-0 z-10 text-center !text-wrap">Date</th>
+                        <th className=" sticky top-0 z-10 text-center !text-wrap">Date and Time</th>
                               <th className="sticky top-0 z-10 text-center">Instrument/Equipment Name</th>
                         <th className="sticky top-0 z-10 text-center">Instrument/Equipment No.</th>
                         <th className="sticky top-0 z-10 text-center">Factor Value</th>
@@ -1761,7 +1761,7 @@ const isFieldEditable = (item, fieldName) => {
                                         if (e.target.value === "OK") {
                                           newData[index].status = "Closed";
                                         } else if(e.target.value === "action-needed") {
-                                          newData[index].status = "Return";
+                                          newData[index].status = "Returned";
                                         }
                                       // clear other if not selected
                                       if (e.target.value !== "action-needed") {
@@ -1957,7 +1957,7 @@ const isFieldEditable = (item, fieldName) => {
 
                             <td>
                               {item.remarksSubType
-                                ? "Return"
+                                ? "Returned"
                                 : item.remarks?.toLowerCase() === "ok"
                                 ? "Closed"
                                 : "Open"}

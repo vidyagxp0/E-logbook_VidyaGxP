@@ -423,9 +423,13 @@ function Effective_AuditTrail() {
         <div id="body-container" style={{ margin: "20px" }}>
           <div className="flex justify-between items-center bg-slate-300 p-2 mb-3">
             <h3
+              className="font-semibold text-black flex items-center gap-2"
               style={{ textAlign: "center", fontSize: "1.5em", margin: "auto" }}
             >
-              <strong>Audit Trail</strong>
+            <p className="">
+  {location.state?.process}
+</p>
+  <strong>Audit Trail</strong>
             </h3>
             <div className="flex flex-col gap-3 items-center justify-center">
               {/* Generate Report Button */}

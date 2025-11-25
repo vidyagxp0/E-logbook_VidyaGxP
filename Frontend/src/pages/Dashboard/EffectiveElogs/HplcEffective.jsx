@@ -446,8 +446,8 @@ const HplcEffective = () => {
           ? record.status === "Open"
           : selectedStatus === "Closed"
           ? record.status === "Closed"
-          : selectedStatus === "Return"
-          ? record.status === "Return"
+          : selectedStatus === "Returned"
+          ? record.status === "Returned"
           : true;
 
       return matchInitiator && matchReviewer && matchStatus;
@@ -460,7 +460,7 @@ const HplcEffective = () => {
   ]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
+    if (!dateString) return ""; // Returned empty if the input is falsy
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -992,7 +992,7 @@ const HplcEffective = () => {
                           <option value="All Records">All Records</option>
                           <option value="Open">Open</option>
                           <option value="Closed">Closed</option>
-                          <option value="Return">Return</option>
+                          <option value="Returned">Returned</option>
                         </select>
                       </div>
 
@@ -1101,7 +1101,7 @@ const HplcEffective = () => {
                       <thead>
                         <tr>
                           <th>S.No.</th>
-                          <th className="!text-nowrap px-8">Date</th>
+                          <th className="!text-nowrap px-8">Date and Time</th>
                           <th className="sticky top-0 z-10 text-center">
                             Instrument/Equipment Name
                           </th>
@@ -1457,7 +1457,7 @@ const HplcEffective = () => {
                                       if (e.target.value === "OK") {
                                           newData[index].status = "Closed";
                                         } else if(e.target.value === "action-needed") {
-                                          newData[index].status = "Return";
+                                          newData[index].status = "Returned";
                                         }
                                         
                                       if (e.target.value !== "action-needed") {
@@ -1663,7 +1663,7 @@ const HplcEffective = () => {
 
                             <td>
                               {item.remarksSubType
-                                ? "Return"
+                                ? "Returned"
                                 : item.remarks?.toLowerCase() === "ok"
                                 ? "Closed"
                                 : "Open"}
