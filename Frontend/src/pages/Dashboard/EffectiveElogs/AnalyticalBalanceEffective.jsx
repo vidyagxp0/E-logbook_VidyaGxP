@@ -74,8 +74,10 @@ const AnalyticalBalancesEffective = () => {
 
   const [editData, setEditData] = useState({
     initiator_name: "",
-    instrument_name:"Analytical Balance",
-    instrument_no:location.state.instrument_no,
+    instrument_name: "Analytical Balance",
+    instrument_no: location.state.instrument_no,
+    factorValue: "Ok",
+    performance: "OK",
     status: "",
     description: "",
     department: "",
@@ -303,8 +305,10 @@ const AnalyticalBalancesEffective = () => {
   const addRow = () => {
     const records = editData?.AnalyticalBalances || [];
 
+    console.log(records, "records");
     // Function to check if a row is filled
     const isRowComplete = (row) => {
+      console.log(row, "ro");
       return (
         row.reg_no?.trim() !== "" &&
         row.sample_name?.trim() !== "" &&
@@ -320,6 +324,12 @@ const AnalyticalBalancesEffective = () => {
       // 2️⃣ If last row is empty → block adding a new row
       if (!isRowComplete(lastRow)) {
         toast.warn("Please fill the current row before adding a new one.");
+        return;
+      }
+      if (lastRow.factorValue === "Calibration/Verification") {
+        toast.warn(
+          "Machine is under maintenance (Calibration/Verification). Please complete the process before adding a new entry."
+        );
         return;
       }
     }
@@ -340,8 +350,9 @@ const AnalyticalBalancesEffective = () => {
         date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
         sample_name: "",
         weight_taken: "",
-        instrument_name:"Analytical Balance",
-        instrument_no:location.state.instrument_no,
+        instrument_name: "Analytical Balance",
+        factorValue: "Ok",
+        instrument_no: location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         reviewed_by: "",
         checked_by: location?.state?.initiator_name || "",
@@ -492,7 +503,7 @@ const AnalyticalBalancesEffective = () => {
     selectedStatus,
   ]);
 
-  console.log(editData,"editDAta")
+  console.log(editData, "editDAta");
   // const handleDeleteFile = (index) => {
   //   if (
   //     location.state?.stage === 1 &&
@@ -784,6 +795,10 @@ const AnalyticalBalancesEffective = () => {
       (o) => o.record_id === item.record_id
     );
 
+    if (item.factorValue === "Calibration/Verification") {
+      return false;
+    }
+
     // If we found the original row
     if (original) {
       // If original remarksType was OK → Lock it
@@ -796,31 +811,41 @@ const AnalyticalBalancesEffective = () => {
     return true;
   };
 
-const disableFieldMap = {
-  "Incorrect Sample Name": ["sample_name"],
-  "Incorrect Reg No./ Lot No.": ["reg_no"],
-  "Incorrect Weight Taken": ["weight_taken"],
-  "Incorrect UOM": ["uom"],
+  const disableFieldMap = {
+    "Incorrect Sample Name": ["sample_name"],
+    "Incorrect Reg No./ Lot No.": ["reg_no"],
+    "Incorrect Weight Taken": ["weight_taken"],
+    "Incorrect UOM": ["uom"],
 
-  // Others → enable ALL these fields
-  "Others": ["sample_name", "reg_no", "weight_taken", "uom", ]
-};
+    // Others → enable ALL these fields
+    Others: ["sample_name", "reg_no", "weight_taken", "uom"],
+  };
 
-const getReviewerMarkedField = (item) => {
-  return disableFieldMap[item.remarksSubType] || [];
-};
+  const getReviewerMarkedField = (item) => {
+    return disableFieldMap[item.remarksSubType] || [];
+  };
 
-const isFieldEditable = (item, fieldName) => {
-  const allowedFields = getReviewerMarkedField(item);
+  const isFieldEditable = (item, fieldName) => {
+    const factor = item?.factorValue;
 
-  // If reviewer marked a specific issue
-  if (allowedFields.length > 0) {
-    return allowedFields.includes(fieldName);
-  }
+    // Disable all fields if factorValue is Calibration/Verification
+    if (fieldName === "factorValue") {
+      return isRowEditable(item);
+    }
+    if (factor === "Calibration/Verification") {
+      return false;
+    }
 
-  // Else fallback default
-  return isRowEditable(item);
-};
+    const allowedFields = getReviewerMarkedField(item);
+
+    // If reviewer marked a specific issue
+    if (allowedFields.length > 0) {
+      return allowedFields.includes(fieldName);
+    }
+
+    // Else fallback default
+    return isRowEditable(item);
+  };
 
   const [showFilter, setShowFilter] = useState(true);
 
@@ -1659,10 +1684,10 @@ const isFieldEditable = (item, fieldName) => {
                             UOM
                           </th>
                           <th className="sticky top-0 z-10 text-center">
-                            Factor Value
+                            Performance
                           </th>
                           <th className="sticky top-0 z-10 text-center">
-                            Performance
+                            Factor Value
                           </th>
                           <th className="sticky top-0 z-10 text-center !text-wrap ">
                             Done by
@@ -1688,7 +1713,7 @@ const isFieldEditable = (item, fieldName) => {
                           filteredGridData?.map((item, index) => (
                             <tr key={index} className="!text-center">
                               <td className="relative group">
-                                {item.record_id || index+1}
+                                {item.record_id || index + 1}
                                 <DeleteIcon
                                   className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                   onClick={() => deleteRow(index)}
@@ -1844,6 +1869,238 @@ const isFieldEditable = (item, fieldName) => {
                                   )}
                                 </div>
                               </td>
+
+                              <td className="relative align-middle">
+                                {/* PERFORMANCE DROPDOWN */}
+                                <select
+                                  value={item.performance}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.AnalyticalBalances,
+                                    ];
+                                    newData[index].performance = e.target.value;
+
+                                    // 👉 Auto-set START DATETIME (DD-MM-YYYY hh:mm:ss A)
+                                    if (e.target.value !== "OK") {
+                                      newData[index].performanceStartTime =
+                                        dayjs().format("DD-MM-YYYY hh:mm:ss A");
+                                    } else {
+                                      newData[index].performanceStartTime = "";
+                                      newData[index].performanceEndDate = "";
+                                      newData[index].performanceEndTime = "";
+                                      newData[index].performanceEndDateTime = "";
+                                      newData[index].performanceRemark = "";
+                                    }
+
+                                    setEditData({
+                                      ...editData,
+                                      AnalyticalBalances: newData,
+                                    });
+                                  }}
+                                  className="border px-2 py-1 rounded w-full text-sm"
+                                  disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "performance")
+                                  }
+                                >
+                                  <option value="OK">OK</option>
+                                  <option value="Preventive / Maintenance">
+                                    Preventive / Maintenance
+                                  </option>
+                                  <option value="Out of Order">
+                                    Out of Order
+                                  </option>
+                                  <option value="Under Calibration">
+                                    Under Calibration
+                                  </option>
+                                </select>
+
+                                {/* SHOW ONLY IF NOT OK */}
+                                {item.performance &&
+                                  item.performance !== "OK" && (
+                                    <div className="mt-1 border rounded p-1 bg-yellow-50 text-xs">
+                                      <table className="w-full border-collapse text-center text-xs">
+                                        <thead>
+                                          <tr className="bg-yellow-100">
+                                            <th className="border text-center px-1 py-1">
+                                              Start Date & Time
+                                            </th>
+                                            <th className="border text-center px-1 py-1">
+                                              End Date & Time
+                                            </th>
+                                            <th className="border text-center px-1 py-1">
+                                              Remark
+                                            </th>
+                                          </tr>
+                                        </thead>
+
+                                        <tbody>
+                                          <tr>
+                                            {/* START TIME DISPLAY */}
+                                            <td className="border px-1 py-1">
+                                              <input
+                                                type="text"
+                                                readOnly
+                                                value={
+                                                  item.performanceStartTime ||
+                                                  ""
+                                                }
+                                                className="text-center border px-2 py-[6px] w-auto bg-gray-200 rounded text-sm"
+                                              />
+                                            </td>
+
+                                            {/* END DATE + TIME */}
+                                            <td className="border px-1 py-1">
+                                              <div className="flex flex-col gap-1">
+                                                {/* END DATE */}
+                                                <input
+                                                  type="date"
+                                                  value={
+                                                    item.performanceEndDate ||
+                                                    ""
+                                                  }
+                                                  onChange={(e) => {
+                                                    const newData = [
+                                                      ...editData.AnalyticalBalances,
+                                                    ];
+                                                    newData[
+                                                      index
+                                                    ].performanceEndDate =
+                                                      e.target.value;
+
+                                                    // Combine & Format Only When Time Exists
+                                                    if (
+                                                      newData[index]
+                                                        .performanceEndDate &&
+                                                      newData[index]
+                                                        .performanceEndTime
+                                                    ) {
+                                                      newData[
+                                                        index
+                                                      ].performanceEndDateTime =
+                                                        dayjs(
+                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                        ).format(
+                                                          "DD-MM-YYYY hh:mm:ss A"
+                                                        );
+                                                    }
+
+                                                    setEditData({
+                                                      ...editData,
+                                                      AnalyticalBalances:
+                                                        newData,
+                                                    });
+                                                  }}
+                                                  disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "performanceEndDateTime")
+                                  }
+                                                  className="border px-2 py-[6px] w-full rounded text-sm"
+                                                />
+
+                                                {/* END TIME (Normal Input) */}
+                                                <input
+                                                  type="time"
+                                                  step="1"
+                                                  value={
+                                                    item.performanceEndTime ||
+                                                    ""
+                                                  }
+                                                  onChange={(e) => {
+                                                    const newData = [
+                                                      ...editData.AnalyticalBalances,
+                                                    ];
+                                                    newData[
+                                                      index
+                                                    ].performanceEndTime =
+                                                      e.target.value;
+
+                                                    // Combine & Format Only When Date Exists
+                                                    if (
+                                                      newData[index]
+                                                        .performanceEndDate &&
+                                                      newData[index]
+                                                        .performanceEndTime
+                                                    ) {
+                                                      newData[
+                                                        index
+                                                      ].performanceEndDateTime =
+                                                        dayjs(
+                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                        ).format(
+                                                          "DD-MM-YYYY hh:mm:ss A"
+                                                        );
+                                                    }
+
+                                                    setEditData({
+                                                      ...editData,
+                                                      AnalyticalBalances:
+                                                        newData,
+                                                    });
+                                                  }}
+                                                  disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "performanceEndDateTime")
+                                  }
+                                                  className="border px-2 py-[6px] w-full rounded text-sm"
+                                                />
+
+                                                {/* FINAL READONLY DISPLAY SAME AS START */}
+                                                <input
+                                                  type="text"
+                                                  readOnly
+                                                  value={
+                                                    item.performanceEndDateTime ||
+                                                    ""
+                                                  }
+                                                  className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm mt-1"
+                                                />
+                                              </div>
+                                            </td>
+
+                                            {/* REMARK BOX */}
+                                            <td className="border px-1 py-1">
+                                              <textarea
+                                                placeholder="Enter remark"
+                                                value={
+                                                  item.performanceRemark || ""
+                                                }
+                                                onChange={(e) => {
+                                                  const newData = [
+                                                    ...editData.AnalyticalBalances,
+                                                  ];
+                                                  newData[
+                                                    index
+                                                  ].performanceRemark =
+                                                    e.target.value;
+                                                  setEditData({
+                                                    ...editData,
+                                                    AnalyticalBalances: newData,
+                                                  });
+                                                }}
+                                                className="border px-2 py-[6px] w-full rounded resize-none text-sm"
+                                                rows={2}
+                                                disabled={
+                                                  [2, 3, 4].includes(
+                                                    userDetails.roles[0]
+                                                      .role_id
+                                                  ) ||
+                                                  !isFieldEditable(
+                                                    item,
+                                                    "performanceRemark"
+                                                  )
+                                                }
+                                              ></textarea>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  )}
+                              </td>
                               <td className="!text-center !justify-center">
                                 <select
                                   value={item.factorValue || ""}
@@ -1862,156 +2119,16 @@ const isFieldEditable = (item, fieldName) => {
                                       [3, 2, 4].includes(
                                         userDetails.roles[0].role_id
                                       )) ||
-                                    !isRowEditable(item)
+                                    !isFieldEditable(item, "factorValue")
                                   }
                                   className="border px-2 py-1 rounded w-full"
                                 >
-                                  <option value="">Select</option>
+                                  <option value="Ok">Ok</option>
                                   <option value="Calibration/Verification">
                                     Calibration / Verification
                                   </option>
                                 </select>
                               </td>
-<td className="relative align-top">
-
-  {/* PERFORMANCE DROPDOWN */}
-  <select
-    value={item.performance || "OK"}
-    onChange={(e) => {
-      const newData = [...editData.AnalyticalBalances];
-      newData[index].performance = e.target.value;
-
-      // 👉 Auto-set START DATETIME (DD-MM-YYYY hh:mm:ss A)
-      if (e.target.value !== "OK") {
-        newData[index].performanceStartTime = dayjs().format(
-          "DD-MM-YYYY hh:mm:ss A"
-        );
-      } else {
-        newData[index].performanceStartTime = "";
-        newData[index].performanceEndDate = "";
-        newData[index].performanceEndTime = "";
-        newData[index].performanceEndDateTime = "";
-        newData[index].performanceRemark = "";
-      }
-
-      setEditData({ ...editData, AnalyticalBalances: newData });
-    }}
-    className="border px-2 py-1 rounded w-full text-sm"
-  >
-    <option value="OK">OK</option>
-    <option value="Preventive / Maintenance">Preventive / Maintenance</option>
-    <option value="Out of Order">Out of Order</option>
-    <option value="Under Calibration">Under Calibration</option>
-  </select>
-
-  {/* SHOW ONLY IF NOT OK */}
-  {item.performance && item.performance !== "OK" && (
-    <div className="mt-1 border rounded p-1 bg-yellow-50 text-xs">
-      <table className="w-full border-collapse text-center text-xs">
-        <thead>
-          <tr className="bg-yellow-100">
-            <th className="border text-center px-1 py-1">Start Date & Time</th>
-            <th className="border text-center px-1 py-1">End Date & Time</th>
-            <th className="border text-center px-1 py-1">Remark</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-
-            {/* START TIME DISPLAY */}
-            <td className="border px-1 py-1">
-              <input
-                type="text"
-                readOnly
-                value={item.performanceStartTime || ""}
-                className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm"
-              />
-            </td>
-
-            {/* END DATE + TIME */}
-            <td className="border px-1 py-1">
-              <div className="flex flex-col gap-1">
-
-                {/* END DATE */}
-                <input
-                  type="date"
-                  value={item.performanceEndDate || ""}
-                  onChange={(e) => {
-                    const newData = [...editData.AnalyticalBalances];
-                    newData[index].performanceEndDate = e.target.value;
-
-                    // Combine & Format Only When Time Exists
-                    if (
-                      newData[index].performanceEndDate &&
-                      newData[index].performanceEndTime
-                    ) {
-                      newData[index].performanceEndDateTime = dayjs(
-                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
-                      ).format("DD-MM-YYYY hh:mm:ss A");
-                    }
-
-                    setEditData({ ...editData, AnalyticalBalances: newData });
-                  }}
-                  className="border px-2 py-[6px] w-full rounded text-sm"
-                />
-
-                {/* END TIME (Normal Input) */}
-                <input
-                  type="time"
-                  step="1"
-                  value={item.performanceEndTime || ""}
-                  onChange={(e) => {
-                    const newData = [...editData.AnalyticalBalances];
-                    newData[index].performanceEndTime = e.target.value;
-
-                    // Combine & Format Only When Date Exists
-                    if (
-                      newData[index].performanceEndDate &&
-                      newData[index].performanceEndTime
-                    ) {
-                      newData[index].performanceEndDateTime = dayjs(
-                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
-                      ).format("DD-MM-YYYY hh:mm:ss A");
-                    }
-
-                    setEditData({ ...editData, AnalyticalBalances: newData });
-                  }}
-                  className="border px-2 py-[6px] w-full rounded text-sm"
-                />
-
-                {/* FINAL READONLY DISPLAY SAME AS START */}
-                <input
-                  type="text"
-                  readOnly
-                  value={item.performanceEndDateTime || ""}
-                  className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm mt-1"
-                />
-              </div>
-            </td>
-
-            {/* REMARK BOX */}
-            <td className="border px-1 py-1">
-              <textarea
-                placeholder="Enter remark"
-                value={item.performanceRemark || ""}
-                onChange={(e) => {
-                  const newData = [...editData.AnalyticalBalances];
-                  newData[index].performanceRemark = e.target.value;
-                  setEditData({ ...editData, AnalyticalBalances: newData });
-                }}
-                className="border px-2 py-[6px] w-full rounded resize-none text-sm"
-                rows={2}
-              ></textarea>
-            </td>
-
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  )}
-</td>
-
 
                               <td>
                                 <input
@@ -2089,7 +2206,9 @@ const isFieldEditable = (item, fieldName) => {
                                         // Clear related fields when not "action-needed"
                                         if (e.target.value === "OK") {
                                           newData[index].status = "Closed";
-                                        } else if(e.target.value === "action-needed") {
+                                        } else if (
+                                          e.target.value === "action-needed"
+                                        ) {
                                           newData[index].status = "Returned";
                                         }
                                         if (
@@ -2153,7 +2272,7 @@ const isFieldEditable = (item, fieldName) => {
                                           disabled={
                                             [1, 3].includes(
                                               userDetails.roles[0].role_id
-                                            ) ||  !isRowEditable(item)
+                                            ) || !isRowEditable(item)
                                           }
                                         >
                                           <option value="">Select Issue</option>
@@ -2288,13 +2407,13 @@ const isFieldEditable = (item, fieldName) => {
                                   />
                                 </div>
                               </td>
-                           <td>
-                              {item.remarksSubType
-                                ? "Returned"
-                                : item.remarks?.toLowerCase() === "ok"
-                                ? "Closed"
-                                : "Open"}
-                            </td>
+                              <td>
+                                {item.remarksSubType
+                                  ? "Returned"
+                                  : item.remarks?.toLowerCase() === "ok"
+                                  ? "Closed"
+                                  : "Open"}
+                              </td>
                               {/*  
                              <td>
                                <DeleteIcon onClick={() => deleteRow(index)} />

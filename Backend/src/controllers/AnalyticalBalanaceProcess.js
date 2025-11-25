@@ -15,6 +15,7 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { formatNamedParameters } = require("sequelize/lib/utils");
 const AnalyticalBalance = require("../models/AnalyticalBalanceRecords");
+const { performance } = require("perf_hooks");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -169,6 +170,12 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        perfromance: record?.perfromance,
+        performanceStartTime: record?.performanceStartTime,
+        performanceEndTime: record?.performanceEndTime,
+        performanceEndDate: record?.performanceEndDate,
+        performanceEndDateTime: record?.performanceEndDateTime,
+        performanceRemark: record?.performanceRemark,
         status:record?.status
       }));
 
@@ -347,6 +354,72 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           field_name: "Remarks Sub Type",
           previous_value: null,
           new_value: record?.remarksSubType,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance",
+          previous_value: null,
+          new_value: record?.performance,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Start Time",
+          previous_value: null,
+          new_value: record?.performanceStartTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Time",
+          previous_value: null,
+          new_value: record?.performanceEndTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date",
+          previous_value: null,
+          new_value: record?.performanceEndDate,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date Time",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Remark",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -549,6 +622,12 @@ exports.EditAnalyticalBalance = async (req, res) => {
         remarksOther: record.remarksOther,
         remarksType: record.remarksType,
         remarksSubType: record.remarksSubType,
+        performance: record.performance,
+        performanceStartTime: record.performanceStartTime,
+        performanceEndTime: record.performanceEndTime,
+        performanceEndDate: record.performanceEndDate,
+        performanceEndDateTime: record.performanceEndDateTime,
+        performanceRemark: record.performanceRemark,
         supporting_docs: supporting_docs_url,
       };
 
