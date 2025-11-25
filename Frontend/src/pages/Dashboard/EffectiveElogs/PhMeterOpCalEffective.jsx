@@ -1288,6 +1288,7 @@ console.log(location?.state,"stateeee")
                         </th>
                         <th className="sticky top-0 z-10 text-center">Adjusted pH</th>
                         <th className="sticky top-0 z-10 text-center">Factor Value</th>
+                        <th className="sticky top-0 z-10 text-center">Performance</th>
                         <th className="sticky top-0 z-10 text-center">Done by</th>
                         <th className="sticky top-0 z-10 text-center">Checked By</th>
                         <th className="sticky top-0 z-10 text-center">Remarks</th>
@@ -1402,6 +1403,145 @@ console.log(location?.state,"stateeee")
   </select>
 </td>
 
+<td className="relative align-top">
+
+  {/* PERFORMANCE DROPDOWN */}
+  <select
+    value={item.performance || "OK"}
+    onChange={(e) => {
+      const newData = [...editData.OpAndCalMultiParameterProcessRecords];
+      newData[index].performance = e.target.value;
+
+      // 👉 Auto-set START DATETIME (DD-MM-YYYY hh:mm:ss A)
+      if (e.target.value !== "OK") {
+        newData[index].performanceStartTime = dayjs().format(
+          "DD-MM-YYYY hh:mm:ss A"
+        );
+      } else {
+        newData[index].performanceStartTime = "";
+        newData[index].performanceEndDate = "";
+        newData[index].performanceEndTime = "";
+        newData[index].performanceEndDateTime = "";
+        newData[index].performanceRemark = "";
+      }
+
+      setEditData({ ...editData, OpAndCalMultiParameterProcessRecords: newData });
+    }}
+    className="border px-2 py-1 rounded w-full text-sm"
+  >
+    <option value="OK">OK</option>
+    <option value="Preventive / Maintenance">Preventive / Maintenance</option>
+    <option value="Out of Order">Out of Order</option>
+    <option value="Under Calibration">Under Calibration</option>
+  </select>
+
+  {/* SHOW ONLY IF NOT OK */}
+  {item.performance && item.performance !== "OK" && (
+    <div className="mt-1 border rounded p-1 bg-yellow-50 text-xs">
+      <table className="w-full border-collapse text-center text-xs">
+        <thead>
+          <tr className="bg-yellow-100">
+            <th className="border text-center px-1 py-1">Start Date & Time</th>
+            <th className="border text-center px-1 py-1">End Date & Time</th>
+            <th className="border text-center px-1 py-1">Remark</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+
+            {/* START TIME DISPLAY */}
+            <td className="border px-1 py-1">
+              <input
+                type="text"
+                readOnly
+                value={item.performanceStartTime || ""}
+                className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm"
+              />
+            </td>
+
+            {/* END DATE + TIME */}
+            <td className="border px-1 py-1">
+              <div className="flex flex-col gap-1">
+
+                {/* END DATE */}
+                <input
+                  type="date"
+                  value={item.performanceEndDate || ""}
+                  onChange={(e) => {
+                    const newData = [...editData.OpAndCalMultiParameterProcessRecords];
+                    newData[index].performanceEndDate = e.target.value;
+
+                    // Combine & Format Only When Time Exists
+                    if (
+                      newData[index].performanceEndDate &&
+                      newData[index].performanceEndTime
+                    ) {
+                      newData[index].performanceEndDateTime = dayjs(
+                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                      ).format("DD-MM-YYYY hh:mm:ss A");
+                    }
+
+                    setEditData({ ...editData, OpAndCalMultiParameterProcessRecords: newData });
+                  }}
+                  className="border px-2 py-[6px] w-full rounded text-sm"
+                />
+
+                {/* END TIME (Normal Input) */}
+                <input
+                  type="time"
+                  step="1"
+                  value={item.performanceEndTime || ""}
+                  onChange={(e) => {
+                    const newData = [...editData.OpAndCalMultiParameterProcessRecords];
+                    newData[index].performanceEndTime = e.target.value;
+
+                    // Combine & Format Only When Date Exists
+                    if (
+                      newData[index].performanceEndDate &&
+                      newData[index].performanceEndTime
+                    ) {
+                      newData[index].performanceEndDateTime = dayjs(
+                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                      ).format("DD-MM-YYYY hh:mm:ss A");
+                    }
+
+                    setEditData({ ...editData, OpAndCalMultiParameterProcessRecords: newData });
+                  }}
+                  className="border px-2 py-[6px] w-full rounded text-sm"
+                />
+
+                {/* FINAL READONLY DISPLAY SAME AS START */}
+                <input
+                  type="text"
+                  readOnly
+                  value={item.performanceEndDateTime || ""}
+                  className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm mt-1"
+                />
+              </div>
+            </td>
+
+            {/* REMARK BOX */}
+            <td className="border px-1 py-1">
+              <textarea
+                placeholder="Enter remark"
+                value={item.performanceRemark || ""}
+                onChange={(e) => {
+                  const newData = [...editData.OpAndCalMultiParameterProcessRecords];
+                  newData[index].performanceRemark = e.target.value;
+                  setEditData({ ...editData, OpAndCalMultiParameterProcessRecords: newData });
+                }}
+                className="border px-2 py-[6px] w-full rounded resize-none text-sm"
+                rows={2}
+              ></textarea>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )}
+</td>
  
                             <td  className="!text-center">
                               <input
