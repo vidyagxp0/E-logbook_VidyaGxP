@@ -1934,8 +1934,7 @@ console.log(lastRow,"lastRow")
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !originalData?.karlFischerRecords[index]
-                                      ?.performance === "OK"
+                                                    ) || !isFieldEditable(item, "performanceEndDate")
                                                   }
                                                 />
 
@@ -1984,8 +1983,7 @@ console.log(lastRow,"lastRow")
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !originalData?.karlFischerRecords[index]
-                                      ?.performance === "OK"
+                                                    ) || !isFieldEditable(item, "performanceEndTime")
                                                   }
                                                 />
 
@@ -2027,8 +2025,7 @@ console.log(lastRow,"lastRow")
                                                 disabled={
                                                   [2, 3, 4].includes(
                                                     userDetails.roles[0].role_id
-                                                  ) || !originalData?.karlFischerRecords[index]
-                                      ?.performance === "OK"
+                                                  ) || !isFieldEditable(item, "performanceRemark")
                                                 }
                                               ></textarea>
                                             </td>
