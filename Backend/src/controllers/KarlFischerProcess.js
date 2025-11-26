@@ -199,7 +199,7 @@ exports.InsertKarlFischer = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
-        perfromance: record?.perfromance,
+        performance: record?.performance,
         performanceStartTime: record?.performanceStartTime,
         performanceEndTime: record?.performanceEndTime,
         performanceEndDate: record?.performanceEndDate,
