@@ -95,8 +95,7 @@ const KarlFischerEffective = () => {
   };
 
   const handlePopupSubmit = (credentials) => {
-
-     const hasMissingFactor = editData.karlFischerRecords.some(
+    const hasMissingFactor = editData.karlFischerRecords.some(
       (row) => !row.factorValue || row.factorValue.trim() === ""
     );
 
@@ -292,7 +291,7 @@ const KarlFischerEffective = () => {
     setPopupAction(null);
   };
 
- useEffect(() => {
+  useEffect(() => {
     if (location.state) {
       const cloned = JSON.parse(JSON.stringify(location.state));
       setEditData(cloned);
@@ -315,7 +314,7 @@ const KarlFischerEffective = () => {
     // 1️⃣ Check if there is at least 1 row
     if (records.length > 0) {
       const lastRow = records[records.length - 1];
-console.log(lastRow,"lastRow")
+      console.log(lastRow, "lastRow");
       // 2️⃣ If last row is empty → block adding a new row
       if (!isRowComplete(lastRow)) {
         toast.warn("Please fill the current row before adding a new one.");
@@ -1837,7 +1836,8 @@ console.log(lastRow,"lastRow")
                                   disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || originalData?.karlFischerRecords[index]
+                                    ) ||
+                                    originalData?.karlFischerRecords[index]
                                       ?.performance === "OK"
                                   }
                                 >
@@ -1934,7 +1934,11 @@ console.log(lastRow,"lastRow")
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !!originalData?.karlFischerRecords[index]?.performanceEndDate
+                                                    ) ||
+                                                    !!originalData
+                                                      ?.karlFischerRecords[
+                                                      index
+                                                    ]?.performanceEndDate
                                                   }
                                                 />
 
@@ -1983,7 +1987,11 @@ console.log(lastRow,"lastRow")
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !!originalData?.karlFischerRecords[index]?.performanceEndTime
+                                                    ) ||
+                                                    !!originalData
+                                                      ?.karlFischerRecords[
+                                                      index
+                                                    ]?.performanceEndTime
                                                   }
                                                 />
 
@@ -2025,7 +2033,10 @@ console.log(lastRow,"lastRow")
                                                 disabled={
                                                   [2, 3, 4].includes(
                                                     userDetails.roles[0].role_id
-                                                  ) || !!originalData?.karlFischerRecords[index]?.performanceRemark
+                                                  ) ||
+                                                  !!originalData
+                                                    ?.karlFischerRecords[index]
+                                                    ?.performanceRemark
                                                 }
                                               ></textarea>
                                             </td>
@@ -2879,7 +2890,7 @@ console.log(lastRow,"lastRow")
               />
             )}
           </div>
-           {showFactorErrorModal && (
+          {showFactorErrorModal && (
             <div
               className="
       fixed inset-0 bg-black/30 backdrop-blur-sm 

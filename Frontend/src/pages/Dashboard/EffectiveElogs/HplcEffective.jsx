@@ -286,13 +286,15 @@ const HplcEffective = () => {
         toast.warn("Please fill the current row before adding a new one.");
         return;
       }
-            if (lastRow.performanceEndDateTime === null && lastRow.performance !== "OK"
-            ) {
-              toast.warn(
-                `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
-              );
-              return;
-            }
+      if (
+        lastRow.performanceEndDateTime === null &&
+        lastRow.performance !== "OK"
+      ) {
+        toast.warn(
+          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+        );
+        return;
+      }
     }
     if (
       userDetails.roles[0].role_id === 1 ||
@@ -308,8 +310,8 @@ const HplcEffective = () => {
         date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
         instrument_name: "HPLC",
         instrument_no: location.state.instrument_no,
-        performance:"OK",
-        performanceRemark:"",
+        performance: "OK",
+        performanceRemark: "",
         sample_name: "",
         reg_no: "",
         method_used: "",
@@ -1112,29 +1114,61 @@ const HplcEffective = () => {
                     <table className="min-w-max w-full border-collapse text-center">
                       <thead>
                         <tr>
-                          <th className="sticky top-0 z-10 text-center">S.No.</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Date and Time</th>
+                          <th className="sticky top-0 z-10 text-center">
+                            S.No.
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Date and Time
+                          </th>
                           <th className="sticky top-0 z-10 text-center">
                             Instrument/Equipment Name
                           </th>
                           <th className="sticky top-0 z-10 text-center">
                             Instrument/Equipment No.
                           </th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Sample Name</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Reg No./ Lot No.</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Method Used</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Parameter/Activity</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Column No.</th>
-                          <th className=" sticky top-0 z-10 text-centertext-nowrap">Start Time</th>
-                          <th className=" sticky top-0 z-10 text-centertext-nowrap">End Time</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">No. of Injections</th>
-                          <th className="sticky top-0 z-10 text-center ">Performance</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Done by</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Checked By</th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap">Remarks</th>
-                          <th className="sticky top-0 z-10 !text-wrap text-center">Attachment</th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Sample Name
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Reg No./ Lot No.
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Method Used
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Parameter/Activity
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Column No.
+                          </th>
+                          <th className=" sticky top-0 z-10 text-centertext-nowrap">
+                            Start Time
+                          </th>
+                          <th className=" sticky top-0 z-10 text-centertext-nowrap">
+                            End Time
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            No. of Injections
+                          </th>
+                          <th className="sticky top-0 z-10 text-center ">
+                            Performance
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Done by
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Checked By
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Remarks
+                          </th>
+                          <th className="sticky top-0 z-10 !text-wrap text-center">
+                            Attachment
+                          </th>
                           {/* <th>Supporting Documents</th> */}
-                          <th className="sticky top-0 z-10 !text-wrap text-center">Status</th>
+                          <th className="sticky top-0 z-10 !text-wrap text-center">
+                            Status
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1408,167 +1442,234 @@ const HplcEffective = () => {
                                 }
                               />
                             </td>
-<td className="relative align-middle">
+                            <td className="relative align-middle">
+                              {/* PERFORMANCE DROPDOWN */}
+                              <select
+                                value={item.performance || "OK"}
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  newData[index].performance = e.target.value;
 
-  {/* PERFORMANCE DROPDOWN */}
-  <select
-    value={item.performance || "OK"}
-    onChange={(e) => {
-      const newData = [...editData.hplcRecords];
-      newData[index].performance = e.target.value;
-
-      // 👉 Auto-set START DATETIME (DD-MM-YYYY hh:mm:ss A)
-      if (e.target.value !== "OK") {
-        newData[index].performanceStartTime = dayjs().format(
-          "DD-MM-YYYY hh:mm:ss A"
-        );
-      } else {
-        newData[index].performanceStartTime = "";
-        newData[index].performanceEndDate = "";
-        newData[index].performanceEndTime = "";
-        newData[index].performanceEndDateTime = "";
-        newData[index].performanceRemark = "";
-      }
-
-      setEditData({ ...editData, hplcRecords: newData });
-    }}
-    className="border px-2 py-1 rounded w-full text-sm text-center"
-    disabled={
-                                    [2, 3, 4].includes(
-                                      userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "performance")
+                                  // 👉 Auto-set START DATETIME (DD-MM-YYYY hh:mm:ss A)
+                                  if (e.target.value !== "OK") {
+                                    newData[index].performanceStartTime =
+                                      dayjs().format("DD-MM-YYYY hh:mm:ss A");
+                                  } else {
+                                    newData[index].performanceStartTime = "";
+                                    newData[index].performanceEndDate = "";
+                                    newData[index].performanceEndTime = "";
+                                    newData[index].performanceEndDateTime = "";
+                                    newData[index].performanceRemark = "";
                                   }
-  >
-    <option value="OK">OK</option>
-    <option value="Preventive / Maintenance">Preventive / Maintenance</option>
-    <option value="Out of Order">Out of Order</option>
-    <option value="Under Calibration">Under Calibration</option>
-  </select>
 
-  {/* SHOW ONLY IF NOT OK */}
-  {item.performance && item.performance !== "OK" && (
-    <div className="mt-1 border rounded p-1 bg-yellow-50 text-xs">
-      <table className="w-full border-collapse text-center text-xs">
-        <thead>
-          <tr className="bg-yellow-100">
-            <th className="border text-center px-1 py-1">Start Date & Time</th>
-            <th className="border text-center px-1 py-1">End Date & Time</th>
-            <th className="border text-center px-1 py-1">Remark</th>
-          </tr>
-        </thead>
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                                className="border px-2 py-1 rounded w-full text-sm text-center"
+                                disabled={
+                                  [2, 3, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isFieldEditable(item, "performance")
+                                }
+                              >
+                                <option value="OK">OK</option>
+                                <option value="Preventive / Maintenance">
+                                  Preventive / Maintenance
+                                </option>
+                                <option value="Out of Order">
+                                  Out of Order
+                                </option>
+                                <option value="Under Calibration">
+                                  Under Calibration
+                                </option>
+                              </select>
 
-        <tbody>
-          <tr>
+                              {/* SHOW ONLY IF NOT OK */}
+                              {item.performance &&
+                                item.performance !== "OK" && (
+                                  <div className="mt-1 border rounded p-1 bg-yellow-50 text-xs">
+                                    <table className="w-full border-collapse text-center text-xs">
+                                      <thead>
+                                        <tr className="bg-yellow-100">
+                                          <th className="border text-center px-1 py-1">
+                                            Start Date & Time
+                                          </th>
+                                          <th className="border text-center px-1 py-1">
+                                            End Date & Time
+                                          </th>
+                                          <th className="border text-center px-1 py-1">
+                                            Remark
+                                          </th>
+                                        </tr>
+                                      </thead>
 
-            {/* START TIME DISPLAY */}
-            <td className="border px-1 py-1">
-              <input
-                type="text"
-                readOnly
-                value={item.performanceStartTime || ""}
-                className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm"
-              />
-            </td>
+                                      <tbody>
+                                        <tr>
+                                          {/* START TIME DISPLAY */}
+                                          <td className="border px-1 py-1">
+                                            <input
+                                              type="text"
+                                              readOnly
+                                              value={
+                                                item.performanceStartTime || ""
+                                              }
+                                              className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm"
+                                            />
+                                          </td>
 
-            {/* END DATE + TIME */}
-            <td className="border px-1 py-1">
-              <div className="flex flex-col gap-1">
+                                          {/* END DATE + TIME */}
+                                          <td className="border px-1 py-1">
+                                            <div className="flex flex-col gap-1">
+                                              {/* END DATE */}
+                                              <input
+                                                type="date"
+                                                value={
+                                                  item.performanceEndDate || ""
+                                                }
+                                                onChange={(e) => {
+                                                  const newData = [
+                                                    ...editData.hplcRecords,
+                                                  ];
+                                                  newData[
+                                                    index
+                                                  ].performanceEndDate =
+                                                    e.target.value;
 
-                {/* END DATE */}
-                <input
-                  type="date"
-                  value={item.performanceEndDate || ""}
-                  onChange={(e) => {
-                    const newData = [...editData.hplcRecords];
-                    newData[index].performanceEndDate = e.target.value;
-
-                    // Combine & Format Only When Time Exists
-                    if (
-                      newData[index].performanceEndDate &&
-                      newData[index].performanceEndTime
-                    ) {
-                      newData[index].performanceEndDateTime = dayjs(
-                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
-                      ).format("DD-MM-YYYY hh:mm:ss A");
-                    }
-
-                    setEditData({ ...editData, hplcRecords: newData });
-                  }}
-                  disabled={
-                                                    [2, 3, 4].includes(
-                                                      userDetails.roles[0]
-                                                        .role_id
-                                                    ) || !!originalData?.hplcRecords[index]?.performanceEndTime
+                                                  // Combine & Format Only When Time Exists
+                                                  if (
+                                                    newData[index]
+                                                      .performanceEndDate &&
+                                                    newData[index]
+                                                      .performanceEndTime
+                                                  ) {
+                                                    newData[
+                                                      index
+                                                    ].performanceEndDateTime =
+                                                      dayjs(
+                                                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                      ).format(
+                                                        "DD-MM-YYYY hh:mm:ss A"
+                                                      );
                                                   }
-                  className="border px-2 py-[6px] w-full rounded text-sm"
-                />
 
-                {/* END TIME (Normal Input) */}
-                <input
-                  type="time"
-                  step="1"
-                  value={item.performanceEndTime || ""}
-                  onChange={(e) => {
-                    const newData = [...editData.hplcRecords];
-                    newData[index].performanceEndTime = e.target.value;
+                                                  setEditData({
+                                                    ...editData,
+                                                    hplcRecords: newData,
+                                                  });
+                                                }}
+                                                disabled={
+                                                  [2, 3, 4].includes(
+                                                    userDetails.roles[0].role_id
+                                                  ) ||
+                                                  !!originalData?.hplcRecords[
+                                                    index
+                                                  ]?.performanceEndTime
+                                                }
+                                                className="border px-2 py-[6px] w-full rounded text-sm"
+                                              />
 
-                    // Combine & Format Only When Date Exists
-                    if (
-                      newData[index].performanceEndDate &&
-                      newData[index].performanceEndTime
-                    ) {
-                      newData[index].performanceEndDateTime = dayjs(
-                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
-                      ).format("DD-MM-YYYY hh:mm:ss A");
-                    }
+                                              {/* END TIME (Normal Input) */}
+                                              <input
+                                                type="time"
+                                                step="1"
+                                                value={
+                                                  item.performanceEndTime || ""
+                                                }
+                                                onChange={(e) => {
+                                                  const newData = [
+                                                    ...editData.hplcRecords,
+                                                  ];
+                                                  newData[
+                                                    index
+                                                  ].performanceEndTime =
+                                                    e.target.value;
 
-                    setEditData({ ...editData, hplcRecords: newData });
-                  }}
-                  disabled={
-  [2, 3, 4].includes(userDetails.roles[0].role_id) ||
-  !!originalData?.hplcRecords[index]?.performanceEndTime
-}
-
-                  className="border px-2 py-[6px] w-full rounded text-sm"
-                />
-
-                {/* FINAL READONLY DISPLAY SAME AS START */}
-                <input
-                  type="text"
-                  readOnly
-                  value={item.performanceEndDateTime || ""}
-                  className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm mt-1"
-                />
-              </div>
-            </td>
-
-            {/* REMARK BOX */}
-            <td className="border px-1 py-1">
-              <textarea
-                placeholder="Enter remark"
-                value={item.performanceRemark || ""}
-                onChange={(e) => {
-                  const newData = [...editData.hplcRecords];
-                  newData[index].performanceRemark = e.target.value;
-                  setEditData({ ...editData, hplcRecords: newData });
-                }}
-                className="border px-2 py-[6px] w-full rounded resize-none text-sm"
-                rows={2}
-                disabled={
-                                                    [2, 3, 4].includes(
-                                                      userDetails.roles[0]
-                                                        .role_id
-                                                    ) ||!!originalData?.hplcRecords[index]?.performanceRemark
+                                                  // Combine & Format Only When Date Exists
+                                                  if (
+                                                    newData[index]
+                                                      .performanceEndDate &&
+                                                    newData[index]
+                                                      .performanceEndTime
+                                                  ) {
+                                                    newData[
+                                                      index
+                                                    ].performanceEndDateTime =
+                                                      dayjs(
+                                                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                      ).format(
+                                                        "DD-MM-YYYY hh:mm:ss A"
+                                                      );
                                                   }
-              ></textarea>
-            </td>
 
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  )}
-</td>
+                                                  setEditData({
+                                                    ...editData,
+                                                    hplcRecords: newData,
+                                                  });
+                                                }}
+                                                disabled={
+                                                  [2, 3, 4].includes(
+                                                    userDetails.roles[0].role_id
+                                                  ) ||
+                                                  !!originalData?.hplcRecords[
+                                                    index
+                                                  ]?.performanceEndTime
+                                                }
+                                                className="border px-2 py-[6px] w-full rounded text-sm"
+                                              />
+
+                                              {/* FINAL READONLY DISPLAY SAME AS START */}
+                                              <input
+                                                type="text"
+                                                readOnly
+                                                value={
+                                                  item.performanceEndDateTime ||
+                                                  ""
+                                                }
+                                                className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm mt-1"
+                                              />
+                                            </div>
+                                          </td>
+
+                                          {/* REMARK BOX */}
+                                          <td className="border px-1 py-1">
+                                            <textarea
+                                              placeholder="Enter remark"
+                                              value={
+                                                item.performanceRemark || ""
+                                              }
+                                              onChange={(e) => {
+                                                const newData = [
+                                                  ...editData.hplcRecords,
+                                                ];
+                                                newData[
+                                                  index
+                                                ].performanceRemark =
+                                                  e.target.value;
+                                                setEditData({
+                                                  ...editData,
+                                                  hplcRecords: newData,
+                                                });
+                                              }}
+                                              className="border px-2 py-[6px] w-full rounded resize-none text-sm"
+                                              rows={2}
+                                              disabled={
+                                                [2, 3, 4].includes(
+                                                  userDetails.roles[0].role_id
+                                                ) ||
+                                                !!originalData?.hplcRecords[
+                                                  index
+                                                ]?.performanceRemark
+                                              }
+                                            ></textarea>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                )}
+                            </td>
                             <td>
                               <input value={item.done_by} readOnly={true} />
                             </td>
@@ -1628,11 +1729,13 @@ const HplcEffective = () => {
 
                                       // Reset other fields on change
                                       if (e.target.value === "OK") {
-                                          newData[index].status = "Closed";
-                                        } else if(e.target.value === "action-needed") {
-                                          newData[index].status = "Returned";
-                                        }
-                                        
+                                        newData[index].status = "Closed";
+                                      } else if (
+                                        e.target.value === "action-needed"
+                                      ) {
+                                        newData[index].status = "Returned";
+                                      }
+
                                       if (e.target.value !== "action-needed") {
                                         newData[index].remarksSubType = "";
                                         newData[index].remarksOther = "";
