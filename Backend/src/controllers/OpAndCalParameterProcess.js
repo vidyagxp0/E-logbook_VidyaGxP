@@ -164,6 +164,12 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        performance: record?.performance,
+        performanceStartTime: record?.performanceStartTime,
+        performanceEndTime: record?.performanceEndTime,
+        performanceEndDate: record?.performanceEndDate,
+        performanceEndDateTime: record?.performanceEndDateTime,
+        performanceRemark: record?.performanceRemark,
         status:record?.status
       }));
 
@@ -315,6 +321,72 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           declaration: initiatorDeclaration,
           action: "Opened",
         });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance",
+          previous_value: null,
+          new_value: record?.performance,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Start Time",
+          previous_value: null,
+          new_value: record?.performanceStartTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Time",
+          previous_value: null,
+          new_value: record?.performanceEndTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date",
+          previous_value: null,
+          new_value: record?.performanceEndDate,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date Time",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Remark",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });        
         auditTrailEntries.push({
           form_id: newForm.form_id,
           field_name: "Status",
@@ -517,6 +589,12 @@ exports.EditOpAndCalMultiParameter = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        performance: record.performance,
+        performanceStartTime: record.performanceStartTime,
+        performanceEndTime: record.performanceEndTime,
+        performanceEndDate: record.performanceEndDate,
+        performanceEndDateTime: record.performanceEndDateTime,
+        performanceRemark: record.performanceRemark,
         status:record?.status,
         supporting_docs: supporting_docs_url,
       };
