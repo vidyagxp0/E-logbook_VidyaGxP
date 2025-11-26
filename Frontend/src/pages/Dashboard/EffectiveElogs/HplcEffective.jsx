@@ -287,7 +287,7 @@ const HplcEffective = () => {
         toast.warn("Please fill the current row before adding a new one.");
         return;
       }
-            if (lastRow.performance !== "OK"
+            if (lastRow.performanceEndDateTime === null
             ) {
               toast.warn(
                 `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`

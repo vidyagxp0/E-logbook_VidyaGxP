@@ -358,7 +358,7 @@ const AnalyticalBalancesEffective = () => {
         weight_taken: "",
         instrument_name: "Analytical Balance",
         factorValue: "Ok",
-        performance: "Ok",
+        performance: "OK",
         instrument_no: location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         reviewed_by: "",

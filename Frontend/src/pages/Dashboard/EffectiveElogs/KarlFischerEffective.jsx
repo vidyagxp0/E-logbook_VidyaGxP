@@ -1805,7 +1805,7 @@ console.log(lastRow,"lastRow")
                                   }
                                 />
                               </td>
-                              <td className="relative align-top">
+                              <td className="relative align-middle">
                                 {/* PERFORMANCE DROPDOWN */}
                                 <select
                                   value={item.performance}

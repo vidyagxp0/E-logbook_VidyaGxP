@@ -75,6 +75,8 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
+    factorValue: "",
+    performance: "",
     description: "",
     department: "",
     compression_area: "",
@@ -323,6 +325,18 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
       toast.warn("Please fill the current row before adding a new one.");
       return;
     }
+     if (lastRow.factorValue === "Calibration/Verification") {
+            toast.warn(
+              "Machine is under maintenance (Calibration/Verification). Please complete the process before adding a new entry."
+            );
+            return;
+          }
+          if (lastRow.performanceEndDateTime === null) {
+                  toast.warn(
+                    `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+                  );
+                  return;
+                }
   }
     if (
       userDetails.roles[0].role_id === 1 ||
@@ -341,6 +355,8 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
         nameOfSolution: "",
         adjustPH: "",
         instrument_name:"pH Meter",
+        factorValue: "Ok",
+        performance: "OK",
         instrument_no:location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         checked_by: location?.state?.initiator_name || "",
@@ -759,6 +775,13 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
       (o) => o.record_id === item.record_id
     );
 
+    if (item.factorValue === "Calibration/Verification") {
+      return false;
+    }
+    if (item.performance !== "OK") {
+      return false;
+    }
+
     // If we found the original row
     if (original) {
       // If original remarksType was OK → Lock it
@@ -784,6 +807,15 @@ const getReviewerMarkedField = (item) => {
 };
 
 const isFieldEditable = (item, fieldName) => {
+  const factor = item?.factorValue;
+
+    // Disable all fields if factorValue is Calibration/Verification
+    if (fieldName === "factorValue") {
+      return isRowEditable(item);
+    }
+    if (factor === "Calibration/Verification") {
+      return false;
+    }
   const allowedFields = getReviewerMarkedField(item);
 
   // If reviewer marked a specific issue
@@ -1393,17 +1425,20 @@ console.log(location?.state,"stateeee")
       });
     }}
     disabled={
+      originalData?.OpAndCalMultiParameterProcessRecords[index]
+                                      ?.factorValue === "Ok" ||
        !allowInitiator(item, "factorValue") &&
- [3, 2, 4].includes(userDetails.roles[0].role_id) || !isRowEditable(item)
+ [3, 2, 4].includes(userDetails.roles[0].role_id)
     }
     className="border px-2 py-1 rounded w-full"
   >
-    <option value="">Select</option>
+    <option value="Select">--Select--</option>
+    <option value="Ok">Ok</option>
     <option value="Calibration/Verification">Calibration / Verification</option>
   </select>
 </td>
 
-<td className="relative align-top">
+<td className="relative align-midle">
 
   {/* PERFORMANCE DROPDOWN */}
   <select
@@ -1427,7 +1462,13 @@ console.log(location?.state,"stateeee")
 
       setEditData({ ...editData, OpAndCalMultiParameterProcessRecords: newData });
     }}
-    className="border px-2 py-1 rounded w-full text-sm"
+    className="border px-2 py-1 rounded w-full text-sm text-center"
+    disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || originalData?.OpAndCalMultiParameterProcessRecords[index]
+                                      ?.performance === "OK"
+                                  }
   >
     <option value="OK">OK</option>
     <option value="Preventive / Maintenance">Preventive / Maintenance</option>
@@ -1485,6 +1526,12 @@ console.log(location?.state,"stateeee")
                     setEditData({ ...editData, OpAndCalMultiParameterProcessRecords: newData });
                   }}
                   className="border px-2 py-[6px] w-full rounded text-sm"
+                  disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || originalData?.OpAndCalMultiParameterProcessRecords[index]
+                                      ?.performance === "OK"
+                                  }
                 />
 
                 {/* END TIME (Normal Input) */}
@@ -1509,6 +1556,12 @@ console.log(location?.state,"stateeee")
                     setEditData({ ...editData, OpAndCalMultiParameterProcessRecords: newData });
                   }}
                   className="border px-2 py-[6px] w-full rounded text-sm"
+                  disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || originalData?.OpAndCalMultiParameterProcessRecords[index]
+                                      ?.performance === "OK"
+                                  }
                 />
 
                 {/* FINAL READONLY DISPLAY SAME AS START */}
@@ -1533,6 +1586,12 @@ console.log(location?.state,"stateeee")
                 }}
                 className="border px-2 py-[6px] w-full rounded resize-none text-sm"
                 rows={2}
+                disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || originalData?.OpAndCalMultiParameterProcessRecords[index]
+                                      ?.performance === "OK"
+                                  }
               ></textarea>
             </td>
 
