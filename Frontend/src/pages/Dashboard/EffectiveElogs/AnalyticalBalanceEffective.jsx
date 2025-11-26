@@ -76,8 +76,8 @@ const AnalyticalBalancesEffective = () => {
     initiator_name: "",
     instrument_name: "Analytical Balance",
     instrument_no: location.state.instrument_no,
-    factorValue: "Ok",
-    performance: "OK",
+    factorValue: "",
+    performance: "",
     status: "",
     description: "",
     department: "",
@@ -332,6 +332,12 @@ const AnalyticalBalancesEffective = () => {
         );
         return;
       }
+      if (lastRow.performanceEndDateTime === null) {
+              toast.warn(
+                `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+              );
+              return;
+            }
     }
     if (
       userDetails.roles[0].role_id === 1 ||
@@ -352,6 +358,7 @@ const AnalyticalBalancesEffective = () => {
         weight_taken: "",
         instrument_name: "Analytical Balance",
         factorValue: "Ok",
+        performance: "Ok",
         instrument_no: location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         reviewed_by: "",
@@ -796,6 +803,9 @@ const AnalyticalBalancesEffective = () => {
     );
 
     if (item.factorValue === "Calibration/Verification") {
+      return false;
+    }
+    if (item.performance !== "OK") {
       return false;
     }
 
@@ -1888,7 +1898,8 @@ const AnalyticalBalancesEffective = () => {
                                       newData[index].performanceStartTime = "";
                                       newData[index].performanceEndDate = "";
                                       newData[index].performanceEndTime = "";
-                                      newData[index].performanceEndDateTime = "";
+                                      newData[index].performanceEndDateTime =
+                                        "";
                                       newData[index].performanceRemark = "";
                                     }
 
@@ -1897,11 +1908,12 @@ const AnalyticalBalancesEffective = () => {
                                       AnalyticalBalances: newData,
                                     });
                                   }}
-                                  className="border px-2 py-1 rounded w-full text-sm"
+                                  className="border px-2 py-1 rounded w-full text-sm text-center"
                                   disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "performance")
+                                    ) || originalData?.AnalyticalBalances[index]
+                                      ?.performance === "OK"
                                   }
                                 >
                                   <option value="OK">OK</option>
@@ -1993,10 +2005,12 @@ const AnalyticalBalancesEffective = () => {
                                                     });
                                                   }}
                                                   disabled={
-                                    [2, 3, 4].includes(
-                                      userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "performanceEndDateTime")
-                                  }
+                                                    [2, 3, 4].includes(
+                                                      userDetails.roles[0]
+                                                        .role_id
+                                                    ) || !originalData?.AnalyticalBalances[index]
+                                      ?.performance === "OK"
+                                                  }
                                                   className="border px-2 py-[6px] w-full rounded text-sm"
                                                 />
 
@@ -2041,10 +2055,12 @@ const AnalyticalBalancesEffective = () => {
                                                     });
                                                   }}
                                                   disabled={
-                                    [2, 3, 4].includes(
-                                      userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "performanceEndDateTime")
-                                  }
+                                                    [2, 3, 4].includes(
+                                                      userDetails.roles[0]
+                                                        .role_id
+                                                    ) || !originalData?.AnalyticalBalances[index]
+                                      ?.performance === "OK"
+                                                  }
                                                   className="border px-2 py-[6px] w-full rounded text-sm"
                                                 />
 
@@ -2085,13 +2101,9 @@ const AnalyticalBalancesEffective = () => {
                                                 rows={2}
                                                 disabled={
                                                   [2, 3, 4].includes(
-                                                    userDetails.roles[0]
-                                                      .role_id
-                                                  ) ||
-                                                  !isFieldEditable(
-                                                    item,
-                                                    "performanceRemark"
-                                                  )
+                                                    userDetails.roles[0].role_id
+                                                  ) || !originalData?.AnalyticalBalances[index]
+                                      ?.performance === "OK"
                                                 }
                                               ></textarea>
                                             </td>
@@ -2115,14 +2127,16 @@ const AnalyticalBalancesEffective = () => {
                                     });
                                   }}
                                   disabled={
+                                    originalData?.AnalyticalBalances[index]
+                                      ?.factorValue === "Ok" ||
                                     (!allowInitiator(item, "factorValue") &&
                                       [3, 2, 4].includes(
                                         userDetails.roles[0].role_id
-                                      )) ||
-                                    !isFieldEditable(item, "factorValue")
+                                      ))
                                   }
                                   className="border px-2 py-1 rounded w-full"
                                 >
+                                  <option value="Select">--Select--</option>
                                   <option value="Ok">Ok</option>
                                   <option value="Calibration/Verification">
                                     Calibration / Verification
