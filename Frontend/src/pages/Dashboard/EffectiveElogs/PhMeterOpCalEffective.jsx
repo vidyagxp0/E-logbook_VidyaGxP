@@ -1466,8 +1466,7 @@ console.log(location?.state,"stateeee")
     disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || originalData?.OpAndCalMultiParameterProcessRecords[index]
-                                      ?.performance === "OK"
+                                    ) || !isFieldEditable(item, "performance")
                                   }
   >
     <option value="OK">OK</option>
@@ -1529,8 +1528,7 @@ console.log(location?.state,"stateeee")
                   disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || originalData?.OpAndCalMultiParameterProcessRecords[index]
-                                      ?.performance === "OK"
+                                    ) || !isFieldEditable(item, "performanceEndDate")
                                   }
                 />
 
@@ -1559,8 +1557,7 @@ console.log(location?.state,"stateeee")
                   disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || originalData?.OpAndCalMultiParameterProcessRecords[index]
-                                      ?.performance === "OK"
+                                    ) || !isFieldEditable(item, "performanceEndTime")
                                   }
                 />
 
@@ -1589,8 +1586,7 @@ console.log(location?.state,"stateeee")
                 disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || originalData?.OpAndCalMultiParameterProcessRecords[index]
-                                      ?.performance === "OK"
+                                    ) || !isFieldEditable(item, "performanceRemark")
                                   }
               ></textarea>
             </td>

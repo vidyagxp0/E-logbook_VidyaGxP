@@ -2008,8 +2008,7 @@ const AnalyticalBalancesEffective = () => {
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !originalData?.AnalyticalBalances[index]
-                                      ?.performance === "OK"
+                                                    ) || !isFieldEditable(item, "performanceEndDate")
                                                   }
                                                   className="border px-2 py-[6px] w-full rounded text-sm"
                                                 />
@@ -2058,8 +2057,7 @@ const AnalyticalBalancesEffective = () => {
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !originalData?.AnalyticalBalances[index]
-                                      ?.performance === "OK"
+                                                    ) || !isFieldEditable(item, "performanceEndTime")
                                                   }
                                                   className="border px-2 py-[6px] w-full rounded text-sm"
                                                 />
@@ -2102,8 +2100,7 @@ const AnalyticalBalancesEffective = () => {
                                                 disabled={
                                                   [2, 3, 4].includes(
                                                     userDetails.roles[0].role_id
-                                                  ) || !originalData?.AnalyticalBalances[index]
-                                      ?.performance === "OK"
+                                                  ) || !isFieldEditable(item, "performanceRemark")
                                                 }
                                               ></textarea>
                                             </td>
