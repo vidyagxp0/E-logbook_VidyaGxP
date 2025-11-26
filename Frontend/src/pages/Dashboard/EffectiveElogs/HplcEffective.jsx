@@ -1175,7 +1175,7 @@ const HplcEffective = () => {
                         {filteredGridData?.map((item, index) => (
                           <tr key={index}>
                             <td className="relative group">
-                              {item.record_id || index + 1}
+                              {index + 1}
                               <DeleteIcon
                                 className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                 onClick={() => deleteRow(index)}
