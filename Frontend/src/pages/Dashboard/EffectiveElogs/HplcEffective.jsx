@@ -287,6 +287,13 @@ const HplcEffective = () => {
         toast.warn("Please fill the current row before adding a new one.");
         return;
       }
+            if (lastRow.performance !== "OK"
+            ) {
+              toast.warn(
+                `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+              );
+              return;
+            }
     }
     if (
       userDetails.roles[0].role_id === 1 ||
@@ -302,6 +309,7 @@ const HplcEffective = () => {
         date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
         instrument_name: "HPLC",
         instrument_no: location.state.instrument_no,
+        performance:"OK",
         sample_name: "",
         reg_no: "",
         method_used: "",
@@ -648,6 +656,10 @@ const HplcEffective = () => {
     const original = originalData?.hplcRecords?.find(
       (o) => o.record_id === item.record_id
     );
+
+    if (item.performance !== "OK") {
+      return false;
+    }
 
     // If we found the original row
     if (original) {
@@ -1100,7 +1112,7 @@ const HplcEffective = () => {
                     <table className="min-w-max w-full border-collapse text-center">
                       <thead>
                         <tr>
-                          <th>S.No.</th>
+                          <th className="sticky top-0 z-10 text-center">S.No.</th>
                           <th className="sticky top-0 z-10 text-center !text-wrap">Date and Time</th>
                           <th className="sticky top-0 z-10 text-center">
                             Instrument/Equipment Name
@@ -1113,8 +1125,8 @@ const HplcEffective = () => {
                           <th className="sticky top-0 z-10 text-center !text-wrap">Method Used</th>
                           <th className="sticky top-0 z-10 text-center !text-wrap">Parameter/Activity</th>
                           <th className="sticky top-0 z-10 text-center !text-wrap">Column No.</th>
-                          <th className="text-nowrap">Start Time</th>
-                          <th className="text-nowrap">End Time</th>
+                          <th className=" sticky top-0 z-10 text-centertext-nowrap">Start Time</th>
+                          <th className=" sticky top-0 z-10 text-centertext-nowrap">End Time</th>
                           <th className="sticky top-0 z-10 text-center !text-wrap">No. of Injections</th>
                           <th className="sticky top-0 z-10 text-center ">Performance</th>
                           <th className="sticky top-0 z-10 text-center !text-wrap">Done by</th>
@@ -1122,7 +1134,7 @@ const HplcEffective = () => {
                           <th className="sticky top-0 z-10 text-center !text-wrap">Remarks</th>
                           <th className="sticky top-0 z-10 !text-wrap text-center">Attachment</th>
                           {/* <th>Supporting Documents</th> */}
-                          <th>Status</th>
+                          <th className="sticky top-0 z-10 !text-wrap text-center">Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1396,7 +1408,7 @@ const HplcEffective = () => {
                                 }
                               />
                             </td>
-<td className="relative align-top">
+<td className="relative align-middle">
 
   {/* PERFORMANCE DROPDOWN */}
   <select
@@ -1420,7 +1432,13 @@ const HplcEffective = () => {
 
       setEditData({ ...editData, hplcRecords: newData });
     }}
-    className="border px-2 py-1 rounded w-full text-sm"
+    className="border px-2 py-1 rounded w-full text-sm text-center"
+    disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || originalData?.hplcRecords[index]
+                                      ?.performance === "OK"
+                                  }
   >
     <option value="OK">OK</option>
     <option value="Preventive / Maintenance">Preventive / Maintenance</option>
@@ -1477,6 +1495,13 @@ const HplcEffective = () => {
 
                     setEditData({ ...editData, hplcRecords: newData });
                   }}
+                  disabled={
+                                                    [2, 3, 4].includes(
+                                                      userDetails.roles[0]
+                                                        .role_id
+                                                    ) || !originalData?.hplcRecords[index]
+                                      ?.performance === "OK"
+                                                  }
                   className="border px-2 py-[6px] w-full rounded text-sm"
                 />
 
@@ -1501,6 +1526,13 @@ const HplcEffective = () => {
 
                     setEditData({ ...editData, hplcRecords: newData });
                   }}
+                   disabled={
+                                                    [2, 3, 4].includes(
+                                                      userDetails.roles[0]
+                                                        .role_id
+                                                    ) || !originalData?.hplcRecords[index]
+                                      ?.performance === "OK"
+                                                  }
                   className="border px-2 py-[6px] w-full rounded text-sm"
                 />
 
@@ -1526,6 +1558,13 @@ const HplcEffective = () => {
                 }}
                 className="border px-2 py-[6px] w-full rounded resize-none text-sm"
                 rows={2}
+                disabled={
+                                                    [2, 3, 4].includes(
+                                                      userDetails.roles[0]
+                                                        .role_id
+                                                    ) || !originalData?.hplcRecords[index]
+                                      ?.performance === "OK"
+                                                  }
               ></textarea>
             </td>
 
