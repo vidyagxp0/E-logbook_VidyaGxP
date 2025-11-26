@@ -273,8 +273,7 @@ const HplcEffective = () => {
         row.method_used?.trim() !== "" &&
         row.parameter_or_activity?.trim() !== "" &&
         row.column_no?.trim() !== "" &&
-        row.start_time?.trim() !== "" &&
-        row.reviewed_by !== null
+        row.start_time?.trim() !== ""
       );
     };
 
@@ -287,7 +286,7 @@ const HplcEffective = () => {
         toast.warn("Please fill the current row before adding a new one.");
         return;
       }
-            if (lastRow.performanceEndDateTime === null
+            if (lastRow.performanceEndDateTime === null && lastRow.performance !== "OK"
             ) {
               toast.warn(
                 `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
@@ -310,6 +309,7 @@ const HplcEffective = () => {
         instrument_name: "HPLC",
         instrument_no: location.state.instrument_no,
         performance:"OK",
+        performanceRemark:"",
         sample_name: "",
         reg_no: "",
         method_used: "",
@@ -1436,8 +1436,7 @@ const HplcEffective = () => {
     disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || originalData?.hplcRecords[index]
-                                      ?.performance === "OK"
+                                    ) || !isFieldEditable(item, "performance")
                                   }
   >
     <option value="OK">OK</option>
@@ -1499,7 +1498,7 @@ const HplcEffective = () => {
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !isFieldEditable(item, "performanceEndDate")
+                                                    ) || !!originalData?.hplcRecords[index]?.performanceEndTime
                                                   }
                   className="border px-2 py-[6px] w-full rounded text-sm"
                 />
@@ -1525,12 +1524,11 @@ const HplcEffective = () => {
 
                     setEditData({ ...editData, hplcRecords: newData });
                   }}
-                   disabled={
-                                                    [2, 3, 4].includes(
-                                                      userDetails.roles[0]
-                                                        .role_id
-                                                    ) || !isFieldEditable(item, "performanceEndTime")
-                                                  }
+                  disabled={
+  [2, 3, 4].includes(userDetails.roles[0].role_id) ||
+  !!originalData?.hplcRecords[index]?.performanceEndTime
+}
+
                   className="border px-2 py-[6px] w-full rounded text-sm"
                 />
 
@@ -1560,7 +1558,7 @@ const HplcEffective = () => {
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !isFieldEditable(item, "performanceRemark")
+                                                    ) ||!!originalData?.hplcRecords[index]?.performanceRemark
                                                   }
               ></textarea>
             </td>

@@ -331,7 +331,7 @@ const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
             );
             return;
           }
-          if (lastRow.performanceEndDateTime === null) {
+          if (lastRow.performanceEndDateTime === null && lastRow.performance !== "OK") {
                   toast.warn(
                     `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
                   );
@@ -1528,7 +1528,7 @@ console.log(location?.state,"stateeee")
                   disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "performanceEndDate")
+                                    ) || !!originalData?.OpAndCalMultiParameterProcessRecords[index]?.performanceEndDate
                                   }
                 />
 
@@ -1557,7 +1557,7 @@ console.log(location?.state,"stateeee")
                   disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "performanceEndTime")
+                                    ) || !!originalData?.OpAndCalMultiParameterProcessRecords[index]?.performanceEndTime
                                   }
                 />
 
@@ -1586,7 +1586,7 @@ console.log(location?.state,"stateeee")
                 disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "performanceRemark")
+                                    ) || !!originalData?.OpAndCalMultiParameterProcessRecords[index]?.performanceRemark
                                   }
               ></textarea>
             </td>

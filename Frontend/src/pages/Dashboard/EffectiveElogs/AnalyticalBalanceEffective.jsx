@@ -332,12 +332,15 @@ const AnalyticalBalancesEffective = () => {
         );
         return;
       }
-      if (lastRow.performanceEndDateTime === null) {
-              toast.warn(
-                `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
-              );
-              return;
-            }
+      if (
+        lastRow.performanceEndDateTime === null &&
+        lastRow.performance !== "OK"
+      ) {
+        toast.warn(
+          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+        );
+        return;
+      }
     }
     if (
       userDetails.roles[0].role_id === 1 ||
@@ -1912,8 +1915,7 @@ const AnalyticalBalancesEffective = () => {
                                   disabled={
                                     [2, 3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || originalData?.AnalyticalBalances[index]
-                                      ?.performance === "OK"
+                                    ) || !isFieldEditable(item, "performance")
                                   }
                                 >
                                   <option value="OK">OK</option>
@@ -2008,7 +2010,11 @@ const AnalyticalBalancesEffective = () => {
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !isFieldEditable(item, "performanceEndDate")
+                                                    ) ||
+                                                    !!originalData
+                                                      ?.AnalyticalBalances[
+                                                      index
+                                                    ]?.performanceEndDate
                                                   }
                                                   className="border px-2 py-[6px] w-full rounded text-sm"
                                                 />
@@ -2057,7 +2063,11 @@ const AnalyticalBalancesEffective = () => {
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
                                                         .role_id
-                                                    ) || !isFieldEditable(item, "performanceEndTime")
+                                                    ) ||
+                                                    !!originalData
+                                                      ?.AnalyticalBalances[
+                                                      index
+                                                    ]?.performanceEndTime
                                                   }
                                                   className="border px-2 py-[6px] w-full rounded text-sm"
                                                 />
@@ -2100,7 +2110,10 @@ const AnalyticalBalancesEffective = () => {
                                                 disabled={
                                                   [2, 3, 4].includes(
                                                     userDetails.roles[0].role_id
-                                                  ) || !isFieldEditable(item, "performanceRemark")
+                                                  ) ||
+                                                  !!originalData
+                                                    ?.AnalyticalBalances[index]
+                                                    ?.performanceRemark
                                                 }
                                               ></textarea>
                                             </td>
