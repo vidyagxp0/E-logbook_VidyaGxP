@@ -15,7 +15,6 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { formatNamedParameters } = require("sequelize/lib/utils");
 const AnalyticalBalance = require("../models/AnalyticalBalanceRecords");
-const { performance } = require("perf_hooks");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -170,7 +169,7 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
-        perfromance: record?.perfromance,
+        performance: record?.performance,
         performanceStartTime: record?.performanceStartTime,
         performanceEndTime: record?.performanceEndTime,
         performanceEndDate: record?.performanceEndDate,

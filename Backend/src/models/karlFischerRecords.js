@@ -70,6 +70,24 @@ const karlFischerRecord = sequelize.define(
     remarksSubType: {
       type: DataTypes.STRING,
     },
+     performance: {
+      type: DataTypes.STRING,
+    },
+    performanceStartTime: {
+      type: DataTypes.STRING,
+    },
+    performanceEndTime: {
+      type: DataTypes.STRING,
+    },
+    performanceEndDate: {
+      type: DataTypes.STRING,
+    },
+    performanceEndDateTime: {
+      type: DataTypes.STRING,
+    },
+    performanceRemark: {
+      type: DataTypes.STRING,
+    },
     status: {
       type: DataTypes.STRING
     }

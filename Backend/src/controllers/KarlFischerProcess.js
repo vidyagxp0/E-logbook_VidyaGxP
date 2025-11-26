@@ -199,6 +199,12 @@ exports.InsertKarlFischer = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        perfromance: record?.perfromance,
+        performanceStartTime: record?.performanceStartTime,
+        performanceEndTime: record?.performanceEndTime,
+        performanceEndDate: record?.performanceEndDate,
+        performanceEndDateTime: record?.performanceEndDateTime,
+        performanceRemark: record?.performanceRemark,
         sample_name: record?.sample_name,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
@@ -359,7 +365,72 @@ exports.InsertKarlFischer = async (req, res) => {
             action: "Opened",
           });
         }
-         
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance",
+                  previous_value: null,
+                  new_value: record?.performance,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance Start Time",
+                  previous_value: null,
+                  new_value: record?.performanceStartTime,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance End Time",
+                  previous_value: null,
+                  new_value: record?.performanceEndTime,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance End Date",
+                  previous_value: null,
+                  new_value: record?.performanceEndDate,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance End Date Time",
+                  previous_value: null,
+                  new_value: record?.performanceEndDateTime,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance Remark",
+                  previous_value: null,
+                  new_value: record?.performanceEndDateTime,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
       });
     }
 
@@ -556,6 +627,12 @@ exports.EditKarlFischer = async (req, res) => {
         factor_percent_water: record.factor_percent_water,
         checked_by: record.checked_by,
         reviewed_by: record.reviewed_by,
+        performance: record.performance,
+        performanceStartTime: record.performanceStartTime,
+        performanceEndTime: record.performanceEndTime,
+        performanceEndDate: record.performanceEndDate,
+        performanceEndDateTime: record.performanceEndDateTime,
+        performanceRemark: record.performanceRemark,
         supporting_docs: supporting_docs_url,
       };
       
