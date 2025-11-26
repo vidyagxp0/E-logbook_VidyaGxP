@@ -33,11 +33,11 @@ Process.addHook('afterSync', async () => {
                 { process_id: 8,process: 'Karl Fischer' },
                 { process_id: 9,process: 'HPLC' },
                 { process_id: 10,process: 'pH Meter Op/Cal' },
-                { process_id: 11,process: 'UV Vis Calib'},
-                { process_id: 12,process: 'SDS PAGE'},
-                { process_id: 13,process: 'Gel Doc iGene'},
-                { process_id: 14,process: 'UV/White Light Transilluminator'},
-                { process_id: 15,process: 'VO Calibration'},
+                // { process_id: 11,process: 'UV Vis Calib'},
+                // { process_id: 12,process: 'SDS PAGE'},
+                // { process_id: 13,process: 'Gel Doc iGene'},
+                // { process_id: 14,process: 'UV/White Light Transilluminator'},
+                // { process_id: 15,process: 'VO Calibration'},
               
             ]);
             console.log('Processes created');
