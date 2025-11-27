@@ -776,7 +776,7 @@ const PhMeterOpCalEffective = () => {
     if (item.factorValue === "Calibration/Verification") {
       return false;
     }
-    if (item.performance !== "OK") {
+    if (item.performanceEndDateTime === null && item.performance !== "OK") {
       return false;
     }
 

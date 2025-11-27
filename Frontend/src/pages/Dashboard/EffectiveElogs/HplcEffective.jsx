@@ -659,7 +659,7 @@ const HplcEffective = () => {
       (o) => o.record_id === item.record_id
     );
 
-    if (item.performance !== "OK") {
+     if (item.performanceEndDateTime === null && item.performance !== "OK") {
       return false;
     }
 
