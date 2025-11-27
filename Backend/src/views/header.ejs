@@ -65,11 +65,18 @@
         </tr>
         <tr>
           <td class="header-info">
-            <span style="font-weight: 600">Form ID:</span><%=reportData?.form_id
-            %>
+            <span style="font-weight: 600">Department Name:</span>
+
+            <% if (reportData?.site_id == 5) { %>
+              Biologics
+            <% } else if (reportData?.site_id == 6) { %>
+              AR&D
+            <% } else { %>
+              <%= reportData?.site_id %>
+            <% } %>
           </td>
           <td class="header-info">
-            <span style="font-weight: 600">Status:</span><%=reportData?.status
+            <span style="font-weight: 600">Instrument No:</span> <%=reportData?.instrument_no
             %>
           </td>
         </tr>

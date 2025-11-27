@@ -156,6 +156,8 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         form_id: newForm?.form_id,
         date:record?.date,
         reg_no: record?.reg_no,
+        instrument_no: record?.instrument_no,
+        instrument_name: record?.instrument_name,
         sample_name: record?.sample_name,
         weight_taken: record?.weight_taken,
         factorValue: record?.factorValue,
@@ -167,6 +169,12 @@ exports.InsertAnalyticalBalance = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        performance: record?.performance,
+        performanceStartTime: record?.performanceStartTime,
+        performanceEndTime: record?.performanceEndTime,
+        performanceEndDate: record?.performanceEndDate,
+        performanceEndDateTime: record?.performanceEndDateTime,
+        performanceRemark: record?.performanceRemark,
         status:record?.status
       }));
 
@@ -180,6 +188,28 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           field_name: "Reg No",
           previous_value: null,
           new_value: record.reg_no,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument No",
+          previous_value: null,
+          new_value: record.instrument_no,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument Name",
+          previous_value: null,
+          new_value: record.instrument_name,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -323,6 +353,72 @@ exports.InsertAnalyticalBalance = async (req, res) => {
           field_name: "Remarks Sub Type",
           previous_value: null,
           new_value: record?.remarksSubType,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance",
+          previous_value: null,
+          new_value: record?.performance,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Start Time",
+          previous_value: null,
+          new_value: record?.performanceStartTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Time",
+          previous_value: null,
+          new_value: record?.performanceEndTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date",
+          previous_value: null,
+          new_value: record?.performanceEndDate,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date Time",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Remark",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -509,6 +605,8 @@ exports.EditAnalyticalBalance = async (req, res) => {
       const newData = {
         form_id,
         reg_no: record.reg_no,
+        instrument_no: record.instrument_no,
+        instrument_name: record.instrument_name,
         date: record.date,
         sample_name: record.sample_name,
         weight_taken: record.weight_taken,
@@ -523,6 +621,12 @@ exports.EditAnalyticalBalance = async (req, res) => {
         remarksOther: record.remarksOther,
         remarksType: record.remarksType,
         remarksSubType: record.remarksSubType,
+        performance: record.performance,
+        performanceStartTime: record.performanceStartTime,
+        performanceEndTime: record.performanceEndTime,
+        performanceEndDate: record.performanceEndDate,
+        performanceEndDateTime: record.performanceEndDateTime,
+        performanceRemark: record.performanceRemark,
         supporting_docs: supporting_docs_url,
       };
 
@@ -702,7 +806,9 @@ exports.GetAllAnalyticalBalance = async (req, res) => {
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
-    order: [["form_id", "DESC"]],
+    order: [["form_id", "ASC"],
+   [AnalyticalBalanceRecords, "record_id", "ASC"] 
+  ],
   })
     .then((result) => {
       res.json({
@@ -1472,11 +1578,23 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     // Find all audit trail entries for the given form_id
     const auditTrail = await AnalyticalBalanceAuditTrail.findAll({
       where: { form_id: formId },
-      include: {
-        model: User,
-        attributes: ["user_id", "name"],
-      },
-      order: [["auditTrail_id", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: ["user_id", "name"],
+
+        include: [
+          {
+            model: UserRole,
+            attributes: ["role_id"],
+            required: false,
+            duplicating: false,
+            separate: true
+          }
+        ]
+        }
+      ],
+      order: [["auditTrail_id", "ASC"]],
     });
 
     if (!auditTrail || auditTrail.length === 0) {
@@ -1828,6 +1946,8 @@ exports.blankReport = async (req, res) => {
           s_no: record?.s_no || "",
           date: record?.date || "",
           reg_no: record?.reg_no || "",
+          instrument_no: record?.instrument_no || "",
+          instrument_name: record?.instrument_name || "",
           sample_name: record?.sample_name || "",
           weight_taken: record?.weight_taken || "",
           factorValue: record?.factorValue || "",

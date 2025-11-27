@@ -26,7 +26,7 @@ const AnalyticalBalancesEffective = () => {
   const [reportType, setReportType] = useState("quick");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
+  const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -74,6 +74,10 @@ const AnalyticalBalancesEffective = () => {
 
   const [editData, setEditData] = useState({
     initiator_name: "",
+    instrument_name: "Analytical Balance",
+    instrument_no: location.state.instrument_no,
+    factorValue: "",
+    performance: "",
     status: "",
     description: "",
     department: "",
@@ -91,12 +95,20 @@ const AnalyticalBalancesEffective = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
-  console.log(location.state,"state")
 
   const handlePopupSubmit = (credentials) => {
+    const hasMissingFactor = editData.AnalyticalBalances.some(
+      (row) => !row.factorValue || row.factorValue.trim() === ""
+    );
+
+    if (hasMissingFactor) {
+      setIsPopupOpen(false);
+      setShowFactorErrorModal(true); // open modal
+      return; // stop submit
+    }
     const cleanedData = editData?.AnalyticalBalances.filter((record) => {
       const hasRequiredFields =
-        record.reg_no.trim() !== "" &&
+        record.reg_no?.trim() !== "" &&
         record.sample_name?.trim() !== "" &&
         record.weight_taken?.trim() !== "";
       return hasRequiredFields;
@@ -283,37 +295,53 @@ const AnalyticalBalancesEffective = () => {
     setPopupAction(null);
   };
 
- useEffect(() => {
-  if (location.state) {
-    const cloned = JSON.parse(JSON.stringify(location.state));
-    setEditData(cloned);
-  }
-}, [location.state]);
-
+  useEffect(() => {
+    if (location.state) {
+      const cloned = JSON.parse(JSON.stringify(location.state));
+      setEditData(cloned);
+    }
+  }, [location.state]);
 
   const addRow = () => {
-     const records = editData?.AnalyticalBalances || [];
+    const records = editData?.AnalyticalBalances || [];
 
-  // Function to check if a row is filled
-  const isRowComplete = (row) => {
-    return (
-      row.reg_no?.trim() !== "" &&
-      row.sample_name?.trim() !== "" &&
-      row.weight_taken?.trim() !== "" && 
-      row.reviewed_by !== null
-    );
-  };
+    console.log(records, "records");
+    // Function to check if a row is filled
+    const isRowComplete = (row) => {
+      console.log(row, "ro");
+      return (
+        row.reg_no?.trim() !== "" &&
+        row.sample_name?.trim() !== "" &&
+        row.weight_taken?.trim() !== "" &&
+        row.reviewed_by !== null
+      );
+    };
 
-  // 1️⃣ Check if there is at least 1 row
-  if (records.length > 0) {
-    const lastRow = records[records.length - 1];
+    // 1️⃣ Check if there is at least 1 row
+    if (records.length > 0) {
+      const lastRow = records[records.length - 1];
 
-    // 2️⃣ If last row is empty → block adding a new row
-    if (!isRowComplete(lastRow)) {
-      toast.warn("Please fill the current row before adding a new one.");
-      return;
+      // 2️⃣ If last row is empty → block adding a new row
+      if (!isRowComplete(lastRow)) {
+        toast.warn("Please fill the current row before adding a new one.");
+        return;
+      }
+      if (lastRow.factorValue === "Calibration/Verification") {
+        toast.warn(
+          "Machine is under maintenance (Calibration/Verification). Please complete the process before adding a new entry."
+        );
+        return;
+      }
+      if (
+        lastRow.performanceEndDateTime === null &&
+        lastRow.performance !== "OK"
+      ) {
+        toast.warn(
+          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+        );
+        return;
+      }
     }
-  }
     if (
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
@@ -328,10 +356,13 @@ const AnalyticalBalancesEffective = () => {
 
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        date: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
-        reg_no: "",
+        date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
         sample_name: "",
         weight_taken: "",
+        instrument_name: "Analytical Balance",
+        factorValue: "Ok",
+        performance: "OK",
+        instrument_no: location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         reviewed_by: "",
         checked_by: location?.state?.initiator_name || "",
@@ -345,10 +376,10 @@ const AnalyticalBalancesEffective = () => {
         ...prevState,
         AnalyticalBalances: [...prevState?.AnalyticalBalances, newRow],
       }));
-    } else if (location.state == reviewer_id) {
-      console.warn("Only Initiator can add new Row here");
-    } else if (location.state == approver_id) {
-      console.warn("Only Initiator can add new Row here");
+    } else if (location.state.reviewer_id) {
+      toast.warn("Only Initiator can add new Row here");
+    } else if (location.state.approver_id) {
+      toast.warn("Only Initiator can add new Row here");
     }
   };
 
@@ -469,6 +500,8 @@ const AnalyticalBalancesEffective = () => {
           ? record.status === "Open"
           : selectedStatus === "Closed"
           ? record.status === "Closed"
+          : selectedStatus === "Returned"
+          ? record.status === "Returned"
           : true;
 
       return matchInitiator && matchReviewer && matchStatus;
@@ -480,6 +513,7 @@ const AnalyticalBalancesEffective = () => {
     selectedStatus,
   ]);
 
+  console.log(editData, "editDAta");
   // const handleDeleteFile = (index) => {
   //   if (
   //     location.state?.stage === 1 &&
@@ -501,7 +535,7 @@ const AnalyticalBalancesEffective = () => {
   // };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
+    if (!dateString) return ""; // Returned empty if the input is falsy
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -668,13 +702,39 @@ const AnalyticalBalancesEffective = () => {
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
-  const formattedFirstDate = firstRecordDate?.toISOString().split("T")[0];
+  const formattedFirstDate = firstRecordDate;
 
   const generateReport = async () => {
     setIsLoading(true);
 
     try {
       let filteredData = { ...editData };
+      let start = null;
+      let end = new Date();
+
+      if (reportType !== "full" && reportType !== "custom") {
+        const today = new Date();
+
+        switch (reportType) {
+          case "1day":
+            start = new Date(today.setDate(today.getDate() - 1));
+            break;
+          case "1week":
+            start = new Date(today.setDate(today.getDate() - 7));
+            break;
+          case "1month":
+            start = new Date(today.setMonth(today.getMonth() - 1));
+            break;
+          case "quarterly":
+            start = new Date(today.setMonth(today.getMonth() - 3));
+            break;
+          case "annually":
+            start = new Date(today.setFullYear(today.getFullYear() - 1));
+            break;
+          default:
+            start = null;
+        }
+      }
 
       if (reportType === "custom") {
         if (!fromDate || !toDate) {
@@ -682,23 +742,11 @@ const AnalyticalBalancesEffective = () => {
           setIsLoading(false);
           return;
         }
+        start = new Date(fromDate);
+        end = new Date(toDate);
+      }
 
-        const start = new Date(fromDate);
-        const end = new Date(toDate);
-
-        if (start < firstRecordDate) {
-          alert("From Date cannot be before the first available record date.");
-          setIsLoading(false);
-          return;
-        }
-
-        if (end < start) {
-          alert("To Date cannot be earlier than From Date.");
-          setIsLoading(false);
-          return;
-        }
-
-        // Filter Analytical Balance records
+      if (start) {
         filteredData.AnalyticalBalances = editData.AnalyticalBalances.filter(
           (record) => {
             const recordDate = new Date(record.date);
@@ -746,56 +794,76 @@ const AnalyticalBalancesEffective = () => {
     const isInitiator = userDetails.userId == location.state?.initiator_id;
     const isNewRow = !item.form_id; // ya item.isNew === true if you manually add it
     return isInitiator ? isNewRow : true;
-  }
+  };
 
-const originalData = location.state;
+  const originalData = location.state;
 
   // Check if reviewer can edit a record (prevent changes after saving)
- const canReviewerEdit = (item) => {
-  // find original version of this record by record_id
-  const original = originalData?.AnalyticalBalances?.find(o => o.record_id === item.record_id);
+  const canReviewerEdit = (item) => {
+    // find original version of this record by record_id
+    const original = originalData?.AnalyticalBalances?.find(
+      (o) => o.record_id === item.record_id
+    );
 
-  // If we found the original row
-  if (original) {
-    // If original remarksType was OK → Lock it
-    if (original.remarksType === "OK") {
+    if (item.factorValue === "Calibration/Verification") {
       return false;
     }
-  }
+    if (item.performance !== "OK") {
+      return false;
+    }
 
-  // Otherwise allow editing
-  return true;
-};
+    // If we found the original row
+    if (original) {
+      // If original remarksType was OK → Lock it
+      if (original.remarksType === "OK") {
+        return false;
+      }
+    }
 
-
+    // Otherwise allow editing
+    return true;
+  };
 
   const disableFieldMap = {
-  "Incorrect Sample Name": "sample_name",
-  "Incorrect Reg No./ Lot No.": "reg_no",
-  "Incorrect Weight Taken": "weight_taken",
-  "Incorrect UOM": "uom",
-};
+    "Incorrect Sample Name": ["sample_name"],
+    "Incorrect Reg No./ Lot No.": ["reg_no"],
+    "Incorrect Weight Taken": ["weight_taken"],
+    "Incorrect UOM": ["uom"],
 
-const getReviewerMarkedField = (item) => {
-  return disableFieldMap[item.remarksSubType] || null;
-};
+    // Others → enable ALL these fields
+    Others: ["sample_name", "reg_no", "weight_taken", "uom"],
+  };
 
-const isFieldEditable = (item, fieldName) => {
-  const reviewerMarkedField = getReviewerMarkedField(item);
+  const getReviewerMarkedField = (item) => {
+    return disableFieldMap[item.remarksSubType] || [];
+  };
 
-  // If reviewer marked a wrong field
-  if (reviewerMarkedField) {
-    return fieldName === reviewerMarkedField;
-  }
+  const isFieldEditable = (item, fieldName) => {
+    const factor = item?.factorValue;
 
-  // Else default logic
-  return isRowEditable(item);
-};
+    // Disable all fields if factorValue is Calibration/Verification
+    if (fieldName === "factorValue") {
+      return isRowEditable(item);
+    }
+    if (factor === "Calibration/Verification") {
+      return false;
+    }
+
+    const allowedFields = getReviewerMarkedField(item);
+
+    // If reviewer marked a specific issue
+    if (allowedFields.length > 0) {
+      return allowedFields.includes(fieldName);
+    }
+
+    // Else fallback default
+    return isRowEditable(item);
+  };
 
   const [showFilter, setShowFilter] = useState(true);
 
   // Common Label Style
- const labelStyle = {
+  const labelStyle = {
     display: "inline-block",
     padding: "4px 12px",
     paddingLeft: "18px",
@@ -807,15 +875,30 @@ const isFieldEditable = (item, fieldName) => {
     marginBottom: "6px",
     boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
   };
-  
-useEffect(() => {
-  const box = document.querySelector(".tableBottomStart");
-  if (box) {
-    box.scrollTop = box.scrollHeight;
-  }
-}, [filteredGridData]);
 
+  useEffect(() => {
+    const box = document.querySelector(".tableBottomStart");
+    if (box) {
+      box.scrollTop = box.scrollHeight;
+    }
+  }, [filteredGridData]);
 
+  const allowInitiator = (item, field) => {
+    if (userDetails.roles[0].role_id !== 3) return false; // only initiator
+
+    if (item.remarksType !== "action-needed") return false;
+
+    // if (field === "adjustPH" && item.remarksSubType === "Adjusted pH")
+    //   return true;
+
+    if (field === "factorValue" && item.remarksSubType === "Factor Value")
+      return true;
+
+    // if (field === "remarksOther" && item.remarksSubType === "Others")
+    //   return true;
+
+    return false;
+  };
   return (
     <>
       <HeaderTop />
@@ -839,26 +922,29 @@ useEffect(() => {
                <strong> Record Name:&nbsp;</strong>Analytical Balance
              </div> */}
             <div>
-              <strong  style={{ fontSize: "16px", color: "#ffff" }}> Department :&nbsp;</strong>
+              <strong style={{ fontSize: "16px", color: "#ffff" }}>
+                {" "}
+                Department :&nbsp;
+              </strong>
               <span
-    style={{
-      fontWeight: "700",
-      fontSize: "16px",
-      letterSpacing: "0.5px",
-      color: "#ffff",
-      fontFamily: "Segoe UI, Roboto, sans-serif",
-    }}
-  >
-              {location.state?.site_id === 1
-                ? "India"
-                : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : location.state?.site_id === 4
-                ? "EU"
-                : "Biologics"}
-                </span>
+                style={{
+                  fontWeight: "700",
+                  fontSize: "16px",
+                  letterSpacing: "0.5px",
+                  color: "#ffff",
+                  fontFamily: "Segoe UI, Roboto, sans-serif",
+                }}
+              >
+                {location.state?.site_id === 1
+                  ? "India"
+                  : location.state?.site_id === 2
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                  ? "EMEA"
+                  : location.state?.site_id === 4
+                  ? "EU"
+                  : "Biologics"}
+              </span>
             </div>
             {/* <div>
               <strong> Current Status:&nbsp;</strong>
@@ -970,55 +1056,66 @@ useEffect(() => {
                       ) : (
                         "Generate Report"
                       )}
-                      <style>
-                        {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
-                      </style>
                     </button>
 
-                    {/* Dropdown Modal */}
+                    <style>
+                      {`
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `}
+                    </style>
+
                     {showOptions && (
                       <div className="absolute right-0 mt-2 w-80 rounded-lg shadow-2xl bg-white border border-gray-300 z-50 p-5 text-black transition-all duration-200">
-                        {/* Title */}
                         <div className="mb-4">
                           <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                             📄 Generate Report
                           </h2>
                         </div>
 
-                        {/* Radio Options */}
-                        <div className="space-y-4 text-sm text-gray-700">
-                          {/* Full Report Option */}
-                          <div className="flex items-center space-x-3">
-                            <input
-                              type="radio"
-                              name="reportType"
-                              value="full"
-                              checked={reportType === "full"}
-                              onChange={() => {
-                                setReportType("full");
-                              }}
-                              className="accent-blue-600 w-4 h-4"
-                            />
-                            <label className="cursor-pointer font-medium">
-                              Full Report
-                            </label>
-                          </div>
+                        <div className="space-y-3 text-sm text-gray-700">
+                          {[
+                            { label: "Since Beginning", value: "full" },
+                            { label: "Last 1 Day", value: "1day" },
+                            { label: "Last 1 Week", value: "1week" },
+                            { label: "Last 1 Month", value: "1month" },
+                            {
+                              label: "Quarterly (Last 3 Months)",
+                              value: "quarterly",
+                            },
+                            {
+                              label: "Annually (Last 1 Year)",
+                              value: "annually",
+                            },
+                          ].map((item) => (
+                            <div
+                              key={item.value}
+                              className="flex items-center space-x-3"
+                            >
+                              <input
+                                type="radio"
+                                name="reportType"
+                                value={item.value}
+                                checked={reportType === item.value}
+                                onChange={() => setReportType(item.value)}
+                                className="accent-blue-600 w-4 h-4"
+                              />
+                              <label className="cursor-pointer font-medium">
+                                {item.label}
+                              </label>
+                            </div>
+                          ))}
 
-                          {/* Custom Date Range Option */}
+                          {/* Custom Date */}
                           <div className="flex items-start space-x-3">
                             <input
                               type="radio"
                               name="reportType"
                               value="custom"
                               checked={reportType === "custom"}
-                              onChange={() => {
-                                setReportType("custom");
-                              }}
+                              onChange={() => setReportType("custom")}
                               className="accent-blue-600 w-4 h-4 mt-1"
                             />
                             <div className="w-full">
@@ -1028,7 +1125,6 @@ useEffect(() => {
 
                               {reportType === "custom" && (
                                 <div className="mt-3 space-y-3">
-                                  {/* From Date */}
                                   <div>
                                     <label className="block text-xs text-gray-500 mb-1">
                                       From Date
@@ -1040,13 +1136,12 @@ useEffect(() => {
                                       max={toDate || undefined}
                                       onChange={(e) => {
                                         setFromDate(e.target.value);
-                                        setToDate(""); // Reset toDate on fromDate change
+                                        setToDate("");
                                       }}
                                       className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                   </div>
 
-                                  {/* To Date */}
                                   <div>
                                     <label className="block text-xs text-gray-500 mb-1">
                                       To Date
@@ -1055,9 +1150,9 @@ useEffect(() => {
                                       type="date"
                                       value={toDate}
                                       min={fromDate || formattedFirstDate}
-                                      onChange={(e) => {
-                                        setToDate(e.target.value);
-                                      }}
+                                      onChange={(e) =>
+                                        setToDate(e.target.value)
+                                      }
                                       className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                   </div>
@@ -1067,7 +1162,6 @@ useEffect(() => {
                           </div>
                         </div>
 
-                        {/* Generate Button */}
                         <div className="mt-6">
                           <button
                             onClick={generateReport}
@@ -1408,149 +1502,161 @@ useEffect(() => {
 
               {isSelectedDetails === true ? (
                 <>
-                   <div
-      style={{
-        marginBottom: showFilter ? "20px" : "10px",
-        padding: showFilter ? "15px" : "8px 12px",
-        backgroundColor: "#f8f9fa",
-        borderRadius: "8px",
-        border: "1px solid #e9ecef",
-        transition: "0.3s ease",
-      }}
-    >
-      {/* Only Icon */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "",
-          alignItems: "center",
-          cursor: "pointer",
-        }}
-        onClick={() => setShowFilter(!showFilter)}
-        title={showFilter ? "Collapse Filters" : "Expand Filters"}
-        className="h-[10px]"
-      >
-        <span
-         style={{
-  fontSize: "28px",
-  fontWeight: "800",
-  color: "#111",
-  userSelect: "none",
-  cursor: "pointer",
-  transition: "0.2s",
-  transform: showFilter ? "scale(1.15)" : "scale(1.1)"
-}}
+                  <div
+                    style={{
+                      marginBottom: showFilter ? "20px" : "10px",
+                      padding: showFilter ? "15px" : "8px 12px",
+                      backgroundColor: "#f8f9fa",
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef",
+                      transition: "0.3s ease",
+                    }}
+                  >
+                    {/* Only Icon */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setShowFilter(!showFilter)}
+                      title={showFilter ? "Collapse Filters" : "Expand Filters"}
+                      className="h-[10px]"
+                    >
+                      <span
+                        style={{
+                          fontSize: "28px",
+                          fontWeight: "800",
+                          color: "#111",
+                          userSelect: "none",
+                          cursor: "pointer",
+                          transition: "0.2s",
+                          transform: showFilter ? "scale(1.15)" : "scale(1.1)",
+                        }}
+                      >
+                        {showFilter ? "−" : "+"}
+                      </span>
+                    </div>
 
-        >
-          {showFilter ? "−" : "+"}
-        </span>
-      </div>
+                    {/* Collapsible Content */}
+                    {showFilter && (
+                      <div
+                        style={{
+                          marginTop: "10px",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-start",
+                          gap: "20px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "end",
+                            gap: "20px",
+                            flexWrap: "wrap",
+                            flex: 1,
+                          }}
+                        >
+                          {/* Status */}
+                          <div style={{ marginBottom: "0", minWidth: "200px" }}>
+                            <label style={labelStyle}>Status</label>
+                            <select
+                              className="form-control"
+                              name="status"
+                              value={selectedStatus}
+                              onChange={handleInputChange1}
+                              style={{
+                                padding: "8px 12px",
+                                border: "1px solid #ced4da",
+                                borderRadius: "4px",
+                                fontSize: "14px",
+                                backgroundColor: "white",
+                                width: "100%",
+                              }}
+                            >
+                              <option value="All Records">All</option>
+                              <option value="Open">Open</option>
+                              <option value="Closed">Closed</option>
+                              <option value="Returned">Returned</option>
+                            </select>
+                          </div>
 
-      {/* Collapsible Content */}
-      {showFilter && (
-        <div
-          style={{
-            marginTop: "10px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: "20px",
-            flexWrap: "wrap",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "end",
-              gap: "20px",
-              flexWrap: "wrap",
-              flex: 1,
-            }}
-          >
-            {/* Status */}
-            <div style={{ marginBottom: "0", minWidth: "200px" }}>
-              <label style={labelStyle}>Status</label>
-              <select
-                className="form-control"
-                name="status"
-                value={selectedStatus}
-                onChange={handleInputChange1}
-                style={{
-                  padding: "8px 12px",
-                  border: "1px solid #ced4da",
-                  borderRadius: "4px",
-                  fontSize: "14px",
-                  backgroundColor: "white",
-                  width: "100%",
-                }}
-              >
-                <option value="All Records">All Records</option>
-                <option value="Open">Open</option>
-                <option value="Closed">Closed</option>
-                <option value="Return">Return</option>
-              </select>
-            </div>
+                          {/* Initiator */}
+                          <div style={{ marginBottom: "0", minWidth: "200px" }}>
+                            <label style={labelStyle}>Initiator</label>
+                            <select
+                              className="form-control"
+                              name="initiator"
+                              value={selectedInitiator}
+                              onChange={handleInputChange1}
+                              style={{
+                                padding: "8px 12px",
+                                border: "1px solid #ced4da",
+                                borderRadius: "4px",
+                                fontSize: "14px",
+                                backgroundColor: "white",
+                                width: "100%",
+                              }}
+                            >
+                              <option value="All Records">All</option>
+                              {[
+                                ...new Set(
+                                  editData?.AnalyticalBalances?.map(
+                                    (r) => r.done_by
+                                  )
+                                ),
+                              ].map(
+                                (done_by, index) =>
+                                  done_by && (
+                                    <option key={index} value={done_by}>
+                                      {done_by}
+                                    </option>
+                                  )
+                              )}
+                            </select>
+                          </div>
 
-            {/* Initiator */}
-            <div style={{ marginBottom: "0", minWidth: "200px" }}>
-              <label style={labelStyle}>Initiator</label>
-              <select
-                className="form-control"
-                name="initiator"
-                value={selectedInitiator}
-                onChange={handleInputChange1}
-                style={{
-                  padding: "8px 12px",
-                  border: "1px solid #ced4da",
-                  borderRadius: "4px",
-                  fontSize: "14px",
-                  backgroundColor: "white",
-                  width: "100%",
-                }}
-              >
-                <option value="All Records">All</option>
-                {[...new Set(editData?.AnalyticalBalances?.map(r => r.done_by))].map(
-                  (done_by, index) =>
-                    done_by && (
-                      <option key={index} value={done_by}>
-                        {done_by}
-                      </option>
-                    )
-                )}
-              </select>
-            </div>
-
-            {/* Reviewer */}
-            <div style={{ marginBottom: "0", minWidth: "200px" }}>
-              <label style={labelStyle}>Reviewer</label>
-              <select
-                className="form-control"
-                name="reviewer"
-                value={selectedReviewer}
-                onChange={handleInputChange1}
-                style={{
-                  padding: "8px 12px",
-                  border: "1px solid #ced4da",
-                  borderRadius: "4px",
-                  fontSize: "14px",
-                  backgroundColor: "white",
-                  width: "100%",
-                }}
-              >
-                <option value="All Records">All</option>
-                {[...new Set(editData?.AnalyticalBalances?.map(r => r.reviewed_by))].map(
-                  (reviewed_by, index) =>
-                    reviewed_by && (
-                      <option key={index} value={reviewed_by}>
-                        {reviewed_by}
-                      </option>)
-                )}
-              </select>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+                          {/* Reviewer */}
+                          <div style={{ marginBottom: "0", minWidth: "200px" }}>
+                            <label style={labelStyle}>Reviewer</label>
+                            <select
+                              className="form-control"
+                              name="reviewer"
+                              value={selectedReviewer}
+                              onChange={handleInputChange1}
+                              style={{
+                                padding: "8px 12px",
+                                border: "1px solid #ced4da",
+                                borderRadius: "4px",
+                                fontSize: "14px",
+                                backgroundColor: "white",
+                                width: "100%",
+                              }}
+                            >
+                              <option value="All Records">All</option>
+                              {[
+                                ...new Set(
+                                  editData?.AnalyticalBalances?.map(
+                                    (r) => r.reviewed_by
+                                  )
+                                ),
+                              ].map(
+                                (reviewed_by, index) =>
+                                  reviewed_by && (
+                                    <option key={index} value={reviewed_by}>
+                                      {reviewed_by}
+                                    </option>
+                                  )
+                              )}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   <div>
                     <div className="AddRows d-flex items-center">
@@ -1561,255 +1667,173 @@ useEffect(() => {
                     </div>
                   </div>
                   <div className="tableBottomStart max-h-[350px] w-full overflow-x-auto overflow-y-auto flex flex-col-reverse">
+                    <table className="min-w-max w-full border-collapse text-center">
+                      <thead>
+                        <tr>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            S no.
+                          </th>
 
-                  <table className="min-w-max w-full border-collapse text-center">
-                    <thead>
-                      <tr>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">S no.</th>
-                        
-                        <th className="sticky top-0 z-10 text-center !text-wrap">Date</th>
-                        <th className="sticky top-0 z-10 text-center">Instrument/Equipment Name</th>
-                        <th className="sticky top-0 z-10 text-center">Instrument/Equipment No.</th>
-                        <th className="sticky top-0 z-10 text-center">Factor Value</th>
-                        
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">
-                          Reg. No./Lot no.
-                        </th>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">Sample Name</th>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">
-                          Weight Taken
-                        </th>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">
-                          UOM
-                        </th>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">Done by</th>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">Checked By</th>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">Remarks</th>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">Attachment</th>
-                        <th className="sticky top-0 z-10 text-center !text-wrap ">Status</th>
-                        {/* <th  className="text-center">Supporting Documents</th> */}
-                        {/* <th  className="text-center">Actions</th> */}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredGridData.length > 0 ? (
-                        filteredGridData?.map((item, index) => (
-                          <tr key={index} className="!text-center">
-                            <td className="relative group">
-                              {index + 1}
-                              <DeleteIcon
-                                className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                                onClick={() => deleteRow(index)}
-                              />{" "}
-                            </td>
-                            <td>
-                              <input
-                                value={dayjs(item?.date).format("DD-MM-YYYY HH:mm:ss")}
-                                type="text"
-                                readOnly
-                              />
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                              <input
-                                value={item.reg_no}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.AnalyticalBalances,
-                                  ];
-                                  newData[index].reg_no = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    AnalyticalBalances: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  ) || !isFieldEditable(item, "reg_no")
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={item.sample_name}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.AnalyticalBalances,
-                                  ];
-                                  newData[index].sample_name = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    AnalyticalBalances: newData,
-                                  });
-                                }}
-                                readOnly={[2, 3,4].includes(userDetails.roles[0].role_id) || !isFieldEditable(item, "sample_name")}
-                              />
-                            </td>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Date and Time
+                          </th>
+                          <th className="sticky top-0 z-10 text-center">
+                            Instrument/Equipment Name
+                          </th>
+                          <th className="sticky top-0 z-10 text-center">
+                            Instrument/Equipment No.
+                          </th>
 
-                            <td>
-                              <input
-                                value={item.weight_taken}
-                                // disabled
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.AnalyticalBalances,
-                                  ];
-                                  newData[index].weight_taken = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    AnalyticalBalances: newData,
-                                  });
-                                }}
-                                readOnly={
-                                  [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  ) || !isFieldEditable(item, "weight_taken")
-                                }
-                              />
-                            </td>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            Reg. No./Lot no.
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            Sample Name
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            Weight Taken
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            UOM
+                          </th>
+                          <th className="sticky top-0 z-10 text-center">
+                            Performance
+                          </th>
+                          <th className="sticky top-0 z-10 text-center">
+                            Factor Value
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            Done by
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            Checked By
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            Remarks
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            Attachment
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                            Status
+                          </th>
+                          {/* <th  className="text-center">Supporting Documents</th> */}
+                          {/* <th  className="text-center">Actions</th> */}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredGridData.length > 0 ? (
+                          filteredGridData?.map((item, index) => (
+                            <tr key={index} className="!text-center">
+                              <td className="relative group">
+                                {index + 1}
+                                <DeleteIcon
+                                  className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                  onClick={() => deleteRow(index)}
+                                />{" "}
+                              </td>
+                              <td>
+                                <input
+                                  value={item?.date || ""}
+                                  type="text"
+                                  readOnly
+                                />
+                              </td>
+                              <td className="!text-center !justify-center">
+                                <input
+                                  value={item.instrument_name || ""}
+                                  readOnly
+                                  // className="bg-gray-100 cursor-not-allowed"
+                                />
+                              </td>
+                              <td className="!text-center !justify-center">
+                                <input
+                                  value={item.instrument_no || ""}
+                                  readOnly
+                                  // className="bg-gray-100 cursor-not-allowed"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.reg_no}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.AnalyticalBalances,
+                                    ];
+                                    newData[index].reg_no = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      AnalyticalBalances: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    [3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "reg_no")
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={item.sample_name}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.AnalyticalBalances,
+                                    ];
+                                    newData[index].sample_name = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      AnalyticalBalances: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "sample_name")
+                                  }
+                                />
+                              </td>
 
-                                                        <td>
-  <div className="flex flex-col gap-2">
+                              <td>
+                                <input
+                                  value={item.weight_taken}
+                                  // disabled
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.AnalyticalBalances,
+                                    ];
+                                    newData[index].weight_taken =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      AnalyticalBalances: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    [3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "weight_taken")
+                                  }
+                                />
+                              </td>
 
-    {/* UOM Dropdown */}
-    <select
-      value={item.uom || ""}
-      onChange={(e) => {
-        const newData = [...editData.AnalyticalBalances];
-        newData[index].uom = e.target.value;
-
-        // Reset input if UOM != Others
-        if (e.target.value !== "Others") {
-          newData[index].uomOther = "";
-        } else {
-          newData[index].remarks = newData[index].uomOther || "";
-        }
-
-        setEditData({
-          ...editData,
-          AnalyticalBalances: newData,
-        });
-      }}
-      className="border rounded px-2 py-1 w-auto"
-      disabled={
-        [2, 3,4].includes(userDetails.roles[0].role_id) || !isFieldEditable(item, "uom") 
-      }
-    >
-      <option value="">Select UOM</option>
-      <option value="mg">mg</option>
-      <option value="kg">kg</option>
-      <option value="Others">Others</option>
-    </select>
-
-    {/* Custom UOM input, only if "Others" selected */}
-    {item.uom === "Others" && ( 
-      <input
-        type="text"
-        placeholder="Enter custom UOM"
-        value={item.uomOther || ""}
-        onChange={(e) => {
-          const newData = [...editData.AnalyticalBalances];
-          newData[index].uomOther = e.target.value;
-          newData[index].remarks = e.target.value;
-
-          setEditData({
-            ...editData,
-            AnalyticalBalances: newData,
-          });
-        }}
-        className="border rounded px-2 py-1 w-auto"
-        readOnly={
-          [2, 3,4].includes(userDetails.roles[0].role_id) ||
-          !isFieldEditable(item, "uom")
-        }
-      />
-    )}
-
-  </div>
-</td>
-                            <td>
-                              <input
-                                value={item.done_by}
-                                // disabled
-                                //           onChange={(e) => {
-                                //    const newData = [
-                                //      ...editData.AnalyticalBalances,
-                                //    ];
-                                //    newData[index].done_by =
-                                //      e.target.value;
-                                //    setEditData({
-                                //      ...editData,
-                                //      AnalyticalBalances: newData,
-                                //    });
-                                //  }}
-                                readOnly={true}
-                              />
-                            </td>
-
-                            <td>
-                              <div>
-                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                  <input
-                                    className="h-4 w-4 cursor-pointer"
-                                    type="checkbox"
-                                    checked={!!item.reviewed_by}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.AnalyticalBalances,
-                                      ];
-                                      if (e.target.checked) {
-                                        newData[index].reviewed_by =
-                                          reviewed_by;
-                                        newData[index].status = "Closed";
-                                      } else {
-                                        newData[index].reviewed_by = "";
-                                        newData[index].status = "Open";
-                                        newData[index].remarks = "";
-                                        newData[index].remarksType = "";
-                                        newData[index].remarksOther = "";
-                                        newData[index].remarksSubType = "";
-                                      }
-                                      setEditData({
-                                        ...editData,
-                                        AnalyticalBalances: newData,
-                                      });
-                                    }}
-                                    disabled={
-                                      [1, 3].includes(
-                                        userDetails.roles[0].role_id
-                                      ) || !canReviewerEdit(item)
-                                    }
-                                  />
-                                  {item.reviewed_by && (
-                                    <p>{item.reviewed_by}</p>
-                                  )}
-                                </div>
-                              </div>
-                            </td>
-
-                            <td>
-                              {item.reviewed_by && (
+                              <td>
                                 <div className="flex flex-col gap-2">
-                                  {/* First Dropdown: OK / Action Needed */}
+                                  {/* UOM Dropdown */}
                                   <select
-                                    value={item.remarksType || ""}
+                                    value={item.uom || ""}
                                     onChange={(e) => {
                                       const newData = [
                                         ...editData.AnalyticalBalances,
                                       ];
-                                      newData[index].remarksType =
-                                        e.target.value;
+                                      newData[index].uom = e.target.value;
 
-                                      // Clear related fields when not "action-needed"
-                                      if (e.target.value !== "action-needed") {
-                                        newData[index].remarksSubType = "";
-                                        newData[index].remarksOther = "";
-                                        newData[index].remarks = e.target.value;
+                                      // Reset input if UOM != Others
+                                      if (e.target.value !== "Others") {
+                                        newData[index].uomOther = "";
                                       } else {
-                                        newData[index].remarks = "";
+                                        newData[index].remarks =
+                                          newData[index].uomOther || "";
                                       }
 
                                       setEditData({
@@ -1819,81 +1843,449 @@ useEffect(() => {
                                     }}
                                     className="border rounded px-2 py-1 w-auto"
                                     disabled={
-                                      [1, 3].includes(
+                                      [2, 3, 4].includes(
                                         userDetails.roles[0].role_id
-                                      ) || !canReviewerEdit(item)
+                                      ) || !isFieldEditable(item, "uom")
                                     }
                                   >
-                                    <option value="Select">--Select--</option>
-                                    <option value="OK">OK</option>
-                                    <option value="action-needed">
-                                      Action Needed
-                                    </option>
+                                    <option value="">Select UOM</option>
+                                    <option value="mg">mg</option>
+                                    <option value="kg">kg</option>
+                                    <option value="Others">Others</option>
                                   </select>
 
-                                  {/* Show Second Dropdown if "action-needed" */}
-                                  {item.remarksType === "action-needed" && (
-                                    <div className="flex flex-col gap-2">
-                                      <select
-                                        value={item.remarksSubType || ""}
-                                        onChange={(e) => {
-                                          const newData = [
-                                            ...editData.AnalyticalBalances,
-                                          ];
-                                          newData[index].remarksSubType =
-                                            e.target.value;
+                                  {/* Custom UOM input, only if "Others" selected */}
+                                  {item.uom === "Others" && (
+                                    <input
+                                      type="text"
+                                      placeholder="Enter custom UOM"
+                                      value={item.uomOther || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.AnalyticalBalances,
+                                        ];
+                                        newData[index].uomOther =
+                                          e.target.value;
 
-                                          if (e.target.value !== "Others") {
-                                            newData[index].remarksOther = "";
-                                            newData[index].remarks =
-                                              e.target.value;
-                                          } else {
-                                            newData[index].remarks =
-                                              newData[index].remarksOther || "";
-                                          }
+                                        setEditData({
+                                          ...editData,
+                                          AnalyticalBalances: newData,
+                                        });
+                                      }}
+                                      className="border rounded px-2 py-1 w-auto"
+                                      readOnly={
+                                        [2, 3, 4].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !isFieldEditable(item, "uom")
+                                      }
+                                    />
+                                  )}
+                                </div>
+                              </td>
 
-                                          setEditData({
-                                            ...editData,
-                                            AnalyticalBalances: newData,
-                                          });
-                                        }}
-                                        className="border rounded px-2 py-1 w-auto"
-                                        disabled={
-                                          [1, 3].includes(
-                                            userDetails.roles[0].role_id
-                                          ) || !canReviewerEdit(item)
+                              <td className="relative align-middle">
+                                {/* PERFORMANCE DROPDOWN */}
+                                <select
+                                  value={item.performance}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.AnalyticalBalances,
+                                    ];
+                                    newData[index].performance = e.target.value;
+
+                                    // 👉 Auto-set START DATETIME (DD-MM-YYYY hh:mm:ss A)
+                                    if (e.target.value !== "OK") {
+                                      newData[index].performanceStartTime =
+                                        dayjs().format("DD-MM-YYYY hh:mm:ss A");
+                                    } else {
+                                      newData[index].performanceStartTime = "";
+                                      newData[index].performanceEndDate = "";
+                                      newData[index].performanceEndTime = "";
+                                      newData[index].performanceEndDateTime =
+                                        "";
+                                      newData[index].performanceRemark = "";
+                                    }
+
+                                    setEditData({
+                                      ...editData,
+                                      AnalyticalBalances: newData,
+                                    });
+                                  }}
+                                  className="border px-2 py-1 rounded w-full text-sm text-center"
+                                  disabled={
+                                    [2, 3, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "performance")
+                                  }
+                                >
+                                  <option value="OK">OK</option>
+                                  <option value="Preventive / Maintenance">
+                                    Preventive / Maintenance
+                                  </option>
+                                  <option value="Out of Order">
+                                    Out of Order
+                                  </option>
+                                  <option value="Under Calibration">
+                                    Under Calibration
+                                  </option>
+                                </select>
+
+                                {/* SHOW ONLY IF NOT OK */}
+                                {item.performance &&
+                                  item.performance !== "OK" && (
+                                    <div className="mt-1 border rounded p-1 bg-yellow-50 text-xs">
+                                      <table className="w-full border-collapse text-center text-xs">
+                                        <thead>
+                                          <tr className="bg-yellow-100">
+                                            <th className="border text-center px-1 py-1">
+                                              Start Date & Time
+                                            </th>
+                                            <th className="border text-center px-1 py-1">
+                                              End Date & Time
+                                            </th>
+                                            <th className="border text-center px-1 py-1">
+                                              Remark
+                                            </th>
+                                          </tr>
+                                        </thead>
+
+                                        <tbody>
+                                          <tr>
+                                            {/* START TIME DISPLAY */}
+                                            <td className="border px-1 py-1">
+                                              <input
+                                                type="text"
+                                                readOnly
+                                                value={
+                                                  item.performanceStartTime ||
+                                                  ""
+                                                }
+                                                className="text-center border px-2 py-[6px] w-auto bg-gray-200 rounded text-sm"
+                                              />
+                                            </td>
+
+                                            {/* END DATE + TIME */}
+                                            <td className="border px-1 py-1">
+                                              <div className="flex flex-col gap-1">
+                                                {/* END DATE */}
+                                                <input
+                                                  type="date"
+                                                  value={
+                                                    item.performanceEndDate ||
+                                                    ""
+                                                  }
+                                                  onChange={(e) => {
+                                                    const newData = [
+                                                      ...editData.AnalyticalBalances,
+                                                    ];
+                                                    newData[
+                                                      index
+                                                    ].performanceEndDate =
+                                                      e.target.value;
+
+                                                    // Combine & Format Only When Time Exists
+                                                    if (
+                                                      newData[index]
+                                                        .performanceEndDate &&
+                                                      newData[index]
+                                                        .performanceEndTime
+                                                    ) {
+                                                      newData[
+                                                        index
+                                                      ].performanceEndDateTime =
+                                                        dayjs(
+                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                        ).format(
+                                                          "DD-MM-YYYY hh:mm:ss A"
+                                                        );
+                                                    }
+
+                                                    setEditData({
+                                                      ...editData,
+                                                      AnalyticalBalances:
+                                                        newData,
+                                                    });
+                                                  }}
+                                                  disabled={
+                                                    [2, 3, 4].includes(
+                                                      userDetails.roles[0]
+                                                        .role_id
+                                                    ) ||
+                                                    !!originalData
+                                                      ?.AnalyticalBalances[
+                                                      index
+                                                    ]?.performanceEndDate
+                                                  }
+                                                  className="border px-2 py-[6px] w-full rounded text-sm"
+                                                />
+
+                                                {/* END TIME (Normal Input) */}
+                                                <input
+                                                  type="time"
+                                                  step="1"
+                                                  value={
+                                                    item.performanceEndTime ||
+                                                    ""
+                                                  }
+                                                  onChange={(e) => {
+                                                    const newData = [
+                                                      ...editData.AnalyticalBalances,
+                                                    ];
+                                                    newData[
+                                                      index
+                                                    ].performanceEndTime =
+                                                      e.target.value;
+
+                                                    // Combine & Format Only When Date Exists
+                                                    if (
+                                                      newData[index]
+                                                        .performanceEndDate &&
+                                                      newData[index]
+                                                        .performanceEndTime
+                                                    ) {
+                                                      newData[
+                                                        index
+                                                      ].performanceEndDateTime =
+                                                        dayjs(
+                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                        ).format(
+                                                          "DD-MM-YYYY hh:mm:ss A"
+                                                        );
+                                                    }
+
+                                                    setEditData({
+                                                      ...editData,
+                                                      AnalyticalBalances:
+                                                        newData,
+                                                    });
+                                                  }}
+                                                  disabled={
+                                                    [2, 3, 4].includes(
+                                                      userDetails.roles[0]
+                                                        .role_id
+                                                    ) ||
+                                                    !!originalData
+                                                      ?.AnalyticalBalances[
+                                                      index
+                                                    ]?.performanceEndTime
+                                                  }
+                                                  className="border px-2 py-[6px] w-full rounded text-sm"
+                                                />
+
+                                                {/* FINAL READONLY DISPLAY SAME AS START */}
+                                                <input
+                                                  type="text"
+                                                  readOnly
+                                                  value={
+                                                    item.performanceEndDateTime ||
+                                                    ""
+                                                  }
+                                                  className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm mt-1"
+                                                />
+                                              </div>
+                                            </td>
+
+                                            {/* REMARK BOX */}
+                                            <td className="border px-1 py-1">
+                                              <textarea
+                                                placeholder="Enter remark"
+                                                value={
+                                                  item.performanceRemark || ""
+                                                }
+                                                onChange={(e) => {
+                                                  const newData = [
+                                                    ...editData.AnalyticalBalances,
+                                                  ];
+                                                  newData[
+                                                    index
+                                                  ].performanceRemark =
+                                                    e.target.value;
+                                                  setEditData({
+                                                    ...editData,
+                                                    AnalyticalBalances: newData,
+                                                  });
+                                                }}
+                                                className="border px-2 py-[6px] w-full rounded resize-none text-sm"
+                                                rows={2}
+                                                disabled={
+                                                  [2, 3, 4].includes(
+                                                    userDetails.roles[0].role_id
+                                                  ) ||
+                                                  !!originalData
+                                                    ?.AnalyticalBalances[index]
+                                                    ?.performanceRemark
+                                                }
+                                              ></textarea>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  )}
+                              </td>
+                              <td className="!text-center !justify-center">
+                                <select
+                                  value={item.factorValue || ""}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.AnalyticalBalances,
+                                    ];
+                                    newData[index].factorValue = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      AnalyticalBalances: newData,
+                                    });
+                                  }}
+                                  disabled={
+                                    originalData?.AnalyticalBalances[index]
+                                      ?.factorValue === "Ok" ||
+                                    (!allowInitiator(item, "factorValue") &&
+                                      [3, 2, 4].includes(
+                                        userDetails.roles[0].role_id
+                                      ))
+                                  }
+                                  className="border px-2 py-1 rounded w-full"
+                                >
+                                  <option value="Select">--Select--</option>
+                                  <option value="Ok">Ok</option>
+                                  <option value="Calibration/Verification">
+                                    Calibration / Verification
+                                  </option>
+                                </select>
+                              </td>
+
+                              <td>
+                                <input
+                                  value={item.done_by}
+                                  // disabled
+                                  //           onChange={(e) => {
+                                  //    const newData = [
+                                  //      ...editData.AnalyticalBalances,
+                                  //    ];
+                                  //    newData[index].done_by =
+                                  //      e.target.value;
+                                  //    setEditData({
+                                  //      ...editData,
+                                  //      AnalyticalBalances: newData,
+                                  //    });
+                                  //  }}
+                                  readOnly={true}
+                                />
+                              </td>
+
+                              <td>
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                    <input
+                                      className="h-4 w-4 cursor-pointer"
+                                      type="checkbox"
+                                      checked={!!item.reviewed_by}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.AnalyticalBalances,
+                                        ];
+                                        if (e.target.checked) {
+                                          newData[index].reviewed_by =
+                                            reviewed_by;
+                                          newData[index].status = "Closed";
+                                        } else {
+                                          newData[index].reviewed_by = "";
+                                          newData[index].status = "Open";
+                                          newData[index].remarks = "";
+                                          newData[index].remarksType = "";
+                                          newData[index].remarksOther = "";
+                                          newData[index].remarksSubType = "";
                                         }
-                                      >
-                                        <option value="">Select Issue</option>
-                                        <option value="Incorrect Sample Name">
-                                          Incorrect Sample Name
-                                        </option>
-                                        <option value="Incorrect Reg No./ Lot No.">
-                                          Incorrect Reg No./ Lot No.
-                                        </option>
-                                        <option value="Incorrect Weight Taken">
-                                          Incorrect Weight Taken
-                                        </option>
-                                        <option value="Incorrect UOM">
-                                          Incorrect UOM
-                                        </option>
-                                        <option value="Others">Others</option>
-                                      </select>
+                                        setEditData({
+                                          ...editData,
+                                          AnalyticalBalances: newData,
+                                        });
+                                      }}
+                                      disabled={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
+                                    />
+                                    {item.reviewed_by && (
+                                      <p>{item.reviewed_by}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
 
-                                      {/* Show Input if "Others" is selected */}
-                                      {item.remarksSubType === "Others" && (
-                                        <input
-                                          type="text"
-                                          placeholder="Enter custom remark"
-                                          value={item.remarksOther || ""}
+                              <td>
+                                {item.reviewed_by && (
+                                  <div className="flex flex-col gap-2">
+                                    {/* First Dropdown: OK / Action Needed */}
+                                    <select
+                                      value={item.remarksType || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.AnalyticalBalances,
+                                        ];
+                                        newData[index].remarksType =
+                                          e.target.value;
+
+                                        // Clear related fields when not "action-needed"
+                                        if (e.target.value === "OK") {
+                                          newData[index].status = "Closed";
+                                        } else if (
+                                          e.target.value === "action-needed"
+                                        ) {
+                                          newData[index].status = "Returned";
+                                        }
+                                        if (
+                                          e.target.value !== "action-needed"
+                                        ) {
+                                          newData[index].remarksSubType = "";
+                                          newData[index].remarksOther = "";
+                                          newData[index].remarks =
+                                            e.target.value;
+                                        } else {
+                                          newData[index].remarks = "";
+                                        }
+
+                                        setEditData({
+                                          ...editData,
+                                          AnalyticalBalances: newData,
+                                        });
+                                      }}
+                                      className="border rounded px-2 py-1 w-auto"
+                                      disabled={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
+                                    >
+                                      <option value="Select">--Select--</option>
+                                      <option value="OK">OK</option>
+                                      <option value="action-needed">
+                                        Action Needed
+                                      </option>
+                                    </select>
+
+                                    {/* Show Second Dropdown if "action-needed" */}
+                                    {item.remarksType === "action-needed" && (
+                                      <div className="flex flex-col gap-2">
+                                        <select
+                                          value={item.remarksSubType || ""}
                                           onChange={(e) => {
                                             const newData = [
                                               ...editData.AnalyticalBalances,
                                             ];
-                                            newData[index].remarksOther =
+                                            newData[index].remarksSubType =
                                               e.target.value;
-                                            newData[index].remarks =
-                                              e.target.value;
+
+                                            if (e.target.value !== "Others") {
+                                              newData[index].remarksOther = "";
+                                              newData[index].remarks =
+                                                e.target.value;
+                                            } else {
+                                              newData[index].remarks =
+                                                newData[index].remarksOther ||
+                                                "";
+                                            }
 
                                             setEditData({
                                               ...editData,
@@ -1901,106 +2293,152 @@ useEffect(() => {
                                             });
                                           }}
                                           className="border rounded px-2 py-1 w-auto"
-                                          readOnly={
+                                          disabled={
                                             [1, 3].includes(
                                               userDetails.roles[0].role_id
-                                            ) || !canReviewerEdit(item)
+                                            ) || !isRowEditable(item)
                                           }
-                                        />
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </td>
-
-                            <td style={{ width: "200px" }}>
-                              <div className="d-flex">
-                                {(() => {
-                                  const isDisabled =
-                                    [3,4].includes(
-                                      userDetails.roles[0].role_id
-                                    ) || !isRowEditable(item);
-
-                                  return item.supporting_docs ? (
-                                    <div className="file-upload-wrapper">
-                                      <button
-                                        type="button"
-                                        className="btn-upload"
-                                        onClick={() =>
-                                          !isDisabled &&
-                                          document
-                                            .getElementsByName(
-                                              "supporting_docs"
-                                            )
-                                            [index].click()
-                                        }
-                                        disabled={isDisabled}
-                                      >
-                                        Change File
-                                      </button>
-                                      <h3>
-                                        Selected File:{" "}
-                                        <a
-                                          href={item.supporting_docs}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
                                         >
-                                          View File
-                                        </a>
-                                        {!isDisabled && (
-                                          <CloseIcon
-                                            style={{
-                                              color: "black",
-                                              cursor: "pointer",
+                                          <option value="">Select Issue</option>
+                                          <option value="Incorrect Sample Name">
+                                            Incorrect Sample Name
+                                          </option>
+                                          <option value="Incorrect Reg No./ Lot No.">
+                                            Incorrect Reg No./ Lot No.
+                                          </option>
+                                          <option value="Incorrect Weight Taken">
+                                            Incorrect Weight Taken
+                                          </option>
+                                          <option value="Incorrect UOM">
+                                            Incorrect UOM
+                                          </option>
+                                          <option value="Others">Others</option>
+                                        </select>
+
+                                        {/* Show Input if "Others" is selected */}
+                                        {item.remarksSubType && (
+                                          <input
+                                            type="text"
+                                            placeholder="Enter remark"
+                                            value={item.remarksOther || ""}
+                                            onChange={(e) => {
+                                              const newData = [
+                                                ...editData.AnalyticalBalances,
+                                              ];
+                                              newData[index].remarksOther =
+                                                e.target.value;
+                                              newData[index].remarks =
+                                                e.target.value;
+
+                                              setEditData({
+                                                ...editData,
+                                                AnalyticalBalances: newData,
+                                              });
                                             }}
-                                            onClick={() =>
-                                              handleDeleteFile(index)
+                                            className="border rounded px-2 py-1 w-auto"
+                                            readOnly={
+                                              [1, 3].includes(
+                                                userDetails.roles[0].role_id
+                                              ) || !canReviewerEdit(item)
                                             }
                                           />
                                         )}
-                                      </h3>
-                                    </div>
-                                  ) : (
-                                    <div className="file-upload-wrapper">
-                                      <button
-                                        type="button"
-                                        className="btn-upload"
-                                        onClick={() =>
-                                          !isDisabled &&
-                                          document
-                                            .getElementsByName(
-                                              "supporting_docs"
-                                            )
-                                            [index].click()
-                                        }
-                                        disabled={isDisabled}
-                                      >
-                                        Select File
-                                      </button>
-                                    </div>
-                                  );
-                                })()}
-                                <input
-                                  type="file"
-                                  name="supporting_docs"
-                                  style={{ display: "none" }}
-                                  onChange={(e) =>
-                                    handleFileChange(index, e.target.files[0])
-                                  }
-                                  disabled={
-                                    [3, 4].includes(
-                                      userDetails.roles[0].role_id
-                                    ) || !isRowEditable(item)
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              {
-                                (item.remarksOther || item.remarks == "OK" ? "Closed" : "Open")}
-                            </td>
-                            {/*  
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </td>
+
+                              <td style={{ width: "200px" }}>
+                                <div className="d-flex">
+                                  {(() => {
+                                    const isDisabled =
+                                      [3, 4].includes(
+                                        userDetails.roles[0].role_id
+                                      ) || !isRowEditable(item);
+
+                                    return item.supporting_docs ? (
+                                      <div className="file-upload-wrapper">
+                                        <button
+                                          type="button"
+                                          className="btn-upload"
+                                          onClick={() =>
+                                            !isDisabled &&
+                                            document
+                                              .getElementsByName(
+                                                "supporting_docs"
+                                              )
+                                              [index].click()
+                                          }
+                                          disabled={isDisabled}
+                                        >
+                                          Change File
+                                        </button>
+                                        <h3>
+                                          Selected File:{" "}
+                                          <a
+                                            href={item.supporting_docs}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                          >
+                                            View File
+                                          </a>
+                                          {!isDisabled && (
+                                            <CloseIcon
+                                              style={{
+                                                color: "black",
+                                                cursor: "pointer",
+                                              }}
+                                              onClick={() =>
+                                                handleDeleteFile(index)
+                                              }
+                                            />
+                                          )}
+                                        </h3>
+                                      </div>
+                                    ) : (
+                                      <div className="file-upload-wrapper">
+                                        <button
+                                          type="button"
+                                          className="btn-upload"
+                                          onClick={() =>
+                                            !isDisabled &&
+                                            document
+                                              .getElementsByName(
+                                                "supporting_docs"
+                                              )
+                                              [index].click()
+                                          }
+                                          disabled={isDisabled}
+                                        >
+                                          Select File
+                                        </button>
+                                      </div>
+                                    );
+                                  })()}
+                                  <input
+                                    type="file"
+                                    name="supporting_docs"
+                                    style={{ display: "none" }}
+                                    onChange={(e) =>
+                                      handleFileChange(index, e.target.files[0])
+                                    }
+                                    disabled={
+                                      [3, 4].includes(
+                                        userDetails.roles[0].role_id
+                                      ) || !isRowEditable(item)
+                                    }
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                {item.remarksSubType
+                                  ? "Returned"
+                                  : item.remarks?.toLowerCase() === "ok"
+                                  ? "Closed"
+                                  : "Open"}
+                              </td>
+                              {/*  
                              <td>
                                <DeleteIcon onClick={() => deleteRow(index)} />
                                {item.limit !== "" &&
@@ -2015,17 +2453,17 @@ useEffect(() => {
                                    </button>
                                  )}
                              </td> */}
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="9" className="!text-center">
+                              No records found
+                            </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="9" className="!text-center">
-                            No records found
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                        )}
+                      </tbody>
+                    </table>
                   </div>
 
                   {/* <div className="group-input flex flex-col gap-4 mt-4 items-start">
@@ -2580,6 +3018,42 @@ useEffect(() => {
               />
             )}
           </div>
+          {showFactorErrorModal && (
+            <div
+              className="
+      fixed inset-0 bg-black/30 backdrop-blur-sm 
+      flex justify-center items-center z-[999]
+      animate-fadeIn
+    "
+            >
+              <div
+                className="
+        bg-white text-center p-6 w-[360px]
+        rounded-xl shadow-2xl border border-gray-200
+        animate-scaleUp
+      "
+              >
+                <h2 className="text-xl font-semibold mb-3 text-red-600">
+                  ⚠ Missing Required Field
+                </h2>
+
+                <p className="text-gray-700 mb-6">
+                  Calibration/Verification Factor is required before proceeding.
+                </p>
+
+                <button
+                  className="
+          bg-blue-600 hover:bg-blue-700 transition-all
+          text-white px-5 py-2.5 rounded-lg font-medium shadow-md
+          hover:shadow-lg
+        "
+                  onClick={() => setShowFactorErrorModal(false)}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

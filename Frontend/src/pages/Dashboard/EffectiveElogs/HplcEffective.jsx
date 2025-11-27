@@ -263,32 +263,39 @@ const HplcEffective = () => {
   }, [location.state]);
 
   const addRow = () => {
+    const records = editData?.hplcRecords || [];
 
-      const records = editData?.hplcRecords || [];
+    // Function to check if a row is filled
+    const isRowComplete = (row) => {
+      return (
+        row.sample_name?.trim() !== "" &&
+        row.reg_no?.trim() !== "" &&
+        row.method_used?.trim() !== "" &&
+        row.parameter_or_activity?.trim() !== "" &&
+        row.column_no?.trim() !== "" &&
+        row.start_time?.trim() !== ""
+      );
+    };
 
-  // Function to check if a row is filled
-  const isRowComplete = (row) => {
-    return (
-      row.sample_name?.trim() !== "" && 
-      row.reg_no?.trim() !== "" && 
-      row.method_used?.trim() !== "" && 
-      row.parameter_or_activity?.trim() !== "" && 
-      row.column_no?.trim() !== "" && 
-      row.start_time?.trim() !== "" && 
-      row.reviewed_by !== null
-    );
-  };
+    // 1️⃣ Check if there is at least 1 row
+    if (records.length > 0) {
+      const lastRow = records[records.length - 1];
 
-  // 1️⃣ Check if there is at least 1 row
-  if (records.length > 0) {
-    const lastRow = records[records.length - 1];
-
-    // 2️⃣ If last row is empty → block adding a new row
-    if (!isRowComplete(lastRow)) {
-      toast.warn("Please fill the current row before adding a new one.");
-      return;
+      // 2️⃣ If last row is empty → block adding a new row
+      if (!isRowComplete(lastRow)) {
+        toast.warn("Please fill the current row before adding a new one.");
+        return;
+      }
+      if (
+        lastRow.performanceEndDateTime === null &&
+        lastRow.performance !== "OK"
+      ) {
+        toast.warn(
+          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+        );
+        return;
+      }
     }
-  }
     if (
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
@@ -300,7 +307,11 @@ const HplcEffective = () => {
         hour12: true, // Use 12-hour format
       };
       const newRow = {
-        date: dayjs().format("YYYY-MM-DD"),
+        date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
+        instrument_name: "HPLC",
+        instrument_no: location.state.instrument_no,
+        performance: "OK",
+        performanceRemark: "",
         sample_name: "",
         reg_no: "",
         method_used: "",
@@ -445,6 +456,8 @@ const HplcEffective = () => {
           ? record.status === "Open"
           : selectedStatus === "Closed"
           ? record.status === "Closed"
+          : selectedStatus === "Returned"
+          ? record.status === "Returned"
           : true;
 
       return matchInitiator && matchReviewer && matchStatus;
@@ -457,7 +470,7 @@ const HplcEffective = () => {
   ]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
+    if (!dateString) return ""; // Returned empty if the input is falsy
 
     const utcDate = new Date(dateString);
     // Check if the date is valid
@@ -476,6 +489,7 @@ const HplcEffective = () => {
     });
   };
 
+  console.log(location.state, "location.state");
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.hplcRecords];
     updatedGridData[index].supporting_docs = file;
@@ -544,13 +558,39 @@ const HplcEffective = () => {
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
-  const formattedFirstDate = firstRecordDate?.toISOString().split("T")[0];
+  const formattedFirstDate = firstRecordDate;
 
   const generateReport = async () => {
     setIsLoading(true);
 
     try {
       let filteredData = { ...editData };
+      let start = null;
+      let end = new Date();
+
+      if (reportType !== "full" && reportType !== "custom") {
+        const today = new Date();
+
+        switch (reportType) {
+          case "1day":
+            start = new Date(today.setDate(today.getDate() - 1));
+            break;
+          case "1week":
+            start = new Date(today.setDate(today.getDate() - 7));
+            break;
+          case "1month":
+            start = new Date(today.setMonth(today.getMonth() - 1));
+            break;
+          case "quarterly":
+            start = new Date(today.setMonth(today.getMonth() - 3));
+            break;
+          case "annually":
+            start = new Date(today.setFullYear(today.getFullYear() - 1));
+            break;
+          default:
+            start = null;
+        }
+      }
 
       if (reportType === "custom") {
         if (!fromDate || !toDate) {
@@ -558,23 +598,11 @@ const HplcEffective = () => {
           setIsLoading(false);
           return;
         }
+        start = new Date(fromDate);
+        end = new Date(toDate);
+      }
 
-        const start = new Date(fromDate);
-        const end = new Date(toDate);
-
-        if (start < firstRecordDate) {
-          alert("From Date cannot be before the first available record date.");
-          setIsLoading(false);
-          return;
-        }
-
-        if (end < start) {
-          alert("To Date cannot be earlier than From Date.");
-          setIsLoading(false);
-          return;
-        }
-
-        // Filter hplc records
+      if (start) {
         filteredData.hplcRecords = editData.hplcRecords.filter((record) => {
           const recordDate = new Date(record.date);
           return recordDate >= start && recordDate <= end;
@@ -625,47 +653,61 @@ const HplcEffective = () => {
   const originalData = location.state;
 
   // Check if reviewer can edit a record (prevent changes after saving)
-   const canReviewerEdit = (item) => {
-  // find original version of this record by record_id
-  const original = originalData?.hplcRecords?.find(o => o.record_id === item.record_id);
+  const canReviewerEdit = (item) => {
+    // find original version of this record by record_id
+    const original = originalData?.hplcRecords?.find(
+      (o) => o.record_id === item.record_id
+    );
 
-  // If we found the original row
-  if (original) {
-    // If original remarksType was OK → Lock it
-    if (original.remarksType === "OK") {
+    if (item.performance !== "OK") {
       return false;
     }
-  }
 
-  // Otherwise allow editing
-  return true;
-};
+    // If we found the original row
+    if (original) {
+      // If original remarksType was OK → Lock it
+      if (original.remarksType === "OK") {
+        return false;
+      }
+    }
 
-    const disableFieldMap = {
-  "Incorrect Sample Name": "sample_name",
-  "Incorrect Reg No./ Lot No.": "reg_no",
-  "Incorrect Method Used": "method_used",
-  "Incorrect Parameter/Activity": "parameter_or_activity",
-  "Incorrect Column No.": "column_no",
-  "Incorrect No. of Injections": "no_of_injections",
-};
+    // Otherwise allow editing
+    return true;
+  };
 
-const getReviewerMarkedField = (item) => {
-  return disableFieldMap[item.remarksSubType] || null;
-};
+  const disableFieldMap = {
+    "Incorrect Sample Name": ["sample_name"],
+    "Incorrect Reg No./ Lot No.": ["reg_no"],
+    "Incorrect Method Used": ["method_used"],
+    "Incorrect Parameter/Activity": ["parameter_or_activity"],
+    "Incorrect Column No.": ["column_no"],
+    "Incorrect No. of Injections": ["no_of_injections"],
 
-const isFieldEditable = (item, fieldName) => {
-  const reviewerMarkedField = getReviewerMarkedField(item);
+    Others: [
+      "sample_name",
+      "reg_no",
+      "method_used",
+      "parameter_or_activity",
+      "column_no",
+      "no_of_injections",
+    ],
+  };
 
-  // If reviewer marked a wrong field
-  if (reviewerMarkedField) {
-    return fieldName === reviewerMarkedField;
-  }
+  const getReviewerMarkedField = (item) => {
+    return disableFieldMap[item.remarksSubType] || [];
+  };
 
-  // Else default logic
-  return isRowEditable(item);
-};
+  const isFieldEditable = (item, fieldName) => {
+    const allowedFields = getReviewerMarkedField(item);
 
+    // If reviewer marked a specific issue
+    if (allowedFields.length > 0) {
+      return allowedFields.includes(fieldName);
+    }
+
+    // Else fallback default
+    return isRowEditable(item);
+  };
 
   const handleDeleteFile = async (index) => {
     const record = editData.hplcRecords[index];
@@ -781,57 +823,66 @@ const isFieldEditable = (item, fieldName) => {
                       ) : (
                         "Generate Report"
                       )}
-                      <style>
-                        {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
-                      </style>
                     </button>
 
-                    {/* Dropdown Modal */}
+                    <style>
+                      {`
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `}
+                    </style>
+
                     {showOptions && (
                       <div className="absolute right-0 mt-2 w-80 rounded-lg shadow-2xl bg-white border border-gray-300 z-50 p-5 text-black transition-all duration-200">
-                        {/* Title */}
                         <div className="mb-4">
                           <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                             📄 Generate Report
                           </h2>
                         </div>
 
-                        {/* Radio Options */}
-                        <div className="space-y-4 text-sm text-gray-700">
-                          {/* Full Report Option */}
-                          <div className="flex items-center space-x-3">
-                            <input
-                              type="radio"
-                              name="reportType"
-                              value="full"
-                              checked={reportType === "full"}
-                              onChange={() => {
-                                setReportType("full");
-                                console.log("Report Type:", "full");
-                              }}
-                              className="accent-blue-600 w-4 h-4"
-                            />
-                            <label className="cursor-pointer font-medium">
-                              Full Report
-                            </label>
-                          </div>
+                        <div className="space-y-3 text-sm text-gray-700">
+                          {[
+                            { label: "Since Beginning", value: "full" },
+                            { label: "Last 1 Day", value: "1day" },
+                            { label: "Last 1 Week", value: "1week" },
+                            { label: "Last 1 Month", value: "1month" },
+                            {
+                              label: "Quarterly (Last 3 Months)",
+                              value: "quarterly",
+                            },
+                            {
+                              label: "Annually (Last 1 Year)",
+                              value: "annually",
+                            },
+                          ].map((item) => (
+                            <div
+                              key={item.value}
+                              className="flex items-center space-x-3"
+                            >
+                              <input
+                                type="radio"
+                                name="reportType"
+                                value={item.value}
+                                checked={reportType === item.value}
+                                onChange={() => setReportType(item.value)}
+                                className="accent-blue-600 w-4 h-4"
+                              />
+                              <label className="cursor-pointer font-medium">
+                                {item.label}
+                              </label>
+                            </div>
+                          ))}
 
-                          {/* Custom Date Range Option */}
+                          {/* Custom Date */}
                           <div className="flex items-start space-x-3">
                             <input
                               type="radio"
                               name="reportType"
                               value="custom"
                               checked={reportType === "custom"}
-                              onChange={() => {
-                                setReportType("custom");
-                                console.log("Report Type:", "custom");
-                              }}
+                              onChange={() => setReportType("custom")}
                               className="accent-blue-600 w-4 h-4 mt-1"
                             />
                             <div className="w-full">
@@ -841,7 +892,6 @@ const isFieldEditable = (item, fieldName) => {
 
                               {reportType === "custom" && (
                                 <div className="mt-3 space-y-3">
-                                  {/* From Date */}
                                   <div>
                                     <label className="block text-xs text-gray-500 mb-1">
                                       From Date
@@ -853,17 +903,12 @@ const isFieldEditable = (item, fieldName) => {
                                       max={toDate || undefined}
                                       onChange={(e) => {
                                         setFromDate(e.target.value);
-                                        setToDate(""); // Reset toDate on fromDate change
-                                        console.log(
-                                          "From Date:",
-                                          e.target.value
-                                        );
+                                        setToDate("");
                                       }}
                                       className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                   </div>
 
-                                  {/* To Date */}
                                   <div>
                                     <label className="block text-xs text-gray-500 mb-1">
                                       To Date
@@ -872,10 +917,9 @@ const isFieldEditable = (item, fieldName) => {
                                       type="date"
                                       value={toDate}
                                       min={fromDate || formattedFirstDate}
-                                      onChange={(e) => {
-                                        setToDate(e.target.value);
-                                        console.log("To Date:", e.target.value);
-                                      }}
+                                      onChange={(e) =>
+                                        setToDate(e.target.value)
+                                      }
                                       className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                   </div>
@@ -885,7 +929,6 @@ const isFieldEditable = (item, fieldName) => {
                           </div>
                         </div>
 
-                        {/* Generate Button */}
                         <div className="mt-6">
                           <button
                             onClick={generateReport}
@@ -963,6 +1006,7 @@ const isFieldEditable = (item, fieldName) => {
                           <option value="All Records">All Records</option>
                           <option value="Open">Open</option>
                           <option value="Closed">Closed</option>
+                          <option value="Returned">Returned</option>
                         </select>
                       </div>
 
@@ -1066,26 +1110,65 @@ const isFieldEditable = (item, fieldName) => {
                       </div>
                     </div>
                   </div>
-                  <div className="overflow-x-auto">
-                    <table>
+                  <div className="tableBottomStart max-h-[350px] w-full overflow-x-auto overflow-y-auto flex flex-col-reverse">
+                    <table className="min-w-max w-full border-collapse text-center">
                       <thead>
                         <tr>
-                          <th>S.No.</th>
-                          <th className="!text-nowrap px-8">Date</th>
-                          <th className="!text-nowrap">Sample Name</th>
-                          <th className="!text-nowrap">Reg No./ Lot No.</th>
-                          <th className="!text-nowrap">Method Used</th>
-                          <th className="!text-nowrap">Parameter/Activity</th>
-                          <th className="!text-nowrap">Column No.</th>
-                          <th className="text-nowrap">Start Time</th>
-                          <th className="text-nowrap">End Time</th>
-                          <th className="!text-nowrap">No. of Injections</th>
-                          <th className="!text-nowrap">Done by</th>
-                          <th className="!text-nowrap">Checked By</th>
-                          <th className="!text-nowrap">Remarks</th>
-                          <th className="text-center">Attachment</th>
+                          <th className="sticky top-0 z-10 text-center">
+                            S.No.
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Date and Time
+                          </th>
+                          <th className="sticky top-0 z-10 text-center">
+                            Instrument/Equipment Name
+                          </th>
+                          <th className="sticky top-0 z-10 text-center">
+                            Instrument/Equipment No.
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Sample Name
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Reg No./ Lot No.
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Method Used
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Parameter/Activity
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Column No.
+                          </th>
+                          <th className=" sticky top-0 z-10 text-centertext-nowrap">
+                            Start Time
+                          </th>
+                          <th className=" sticky top-0 z-10 text-centertext-nowrap">
+                            End Time
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            No. of Injections
+                          </th>
+                          <th className="sticky top-0 z-10 text-center ">
+                            Performance
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Done by
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Checked By
+                          </th>
+                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                            Remarks
+                          </th>
+                          <th className="sticky top-0 z-10 !text-wrap text-center">
+                            Attachment
+                          </th>
                           {/* <th>Supporting Documents</th> */}
-                          <th>Status</th>
+                          <th className="sticky top-0 z-10 !text-wrap text-center">
+                            Status
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1101,9 +1184,24 @@ const isFieldEditable = (item, fieldName) => {
 
                             <td className="w-24">
                               <input
-                                value={dayjs(item?.date).format("DD-MM-YYYY")}
+                                value={item?.date || ""}
                                 type="text"
                                 readOnly
+                              />
+                            </td>
+
+                            <td className="!text-center !justify-center">
+                              <input
+                                value={item.instrument_name || ""}
+                                readOnly
+                                // className="bg-gray-100 cursor-not-allowed"
+                              />
+                            </td>
+                            <td className="!text-center !justify-center">
+                              <input
+                                value={item.instrument_no || ""}
+                                readOnly
+                                // className="bg-gray-100 cursor-not-allowed"
                               />
                             </td>
 
@@ -1179,7 +1277,11 @@ const isFieldEditable = (item, fieldName) => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isFieldEditable(item, "parameter_or_activity")
+                                  ) ||
+                                  !isFieldEditable(
+                                    item,
+                                    "parameter_or_activity"
+                                  )
                                 }
                               />
                             </td>
@@ -1335,11 +1437,239 @@ const isFieldEditable = (item, fieldName) => {
                                 readOnly={
                                   [3, 2, 4].includes(
                                     userDetails.roles[0].role_id
-                                  ) || !isFieldEditable(item, "no_of_injections")
+                                  ) ||
+                                  !isFieldEditable(item, "no_of_injections")
                                 }
                               />
                             </td>
+                            <td className="relative align-middle">
+                              {/* PERFORMANCE DROPDOWN */}
+                              <select
+                                value={item.performance || "OK"}
+                                onChange={(e) => {
+                                  const newData = [...editData.hplcRecords];
+                                  newData[index].performance = e.target.value;
 
+                                  // 👉 Auto-set START DATETIME (DD-MM-YYYY hh:mm:ss A)
+                                  if (e.target.value !== "OK") {
+                                    newData[index].performanceStartTime =
+                                      dayjs().format("DD-MM-YYYY hh:mm:ss A");
+                                  } else {
+                                    newData[index].performanceStartTime = "";
+                                    newData[index].performanceEndDate = "";
+                                    newData[index].performanceEndTime = "";
+                                    newData[index].performanceEndDateTime = "";
+                                    newData[index].performanceRemark = "";
+                                  }
+
+                                  setEditData({
+                                    ...editData,
+                                    hplcRecords: newData,
+                                  });
+                                }}
+                                className="border px-2 py-1 rounded w-full text-sm text-center"
+                                disabled={
+                                  [2, 3, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  ) || !isFieldEditable(item, "performance")
+                                }
+                              >
+                                <option value="OK">OK</option>
+                                <option value="Preventive / Maintenance">
+                                  Preventive / Maintenance
+                                </option>
+                                <option value="Out of Order">
+                                  Out of Order
+                                </option>
+                                <option value="Under Calibration">
+                                  Under Calibration
+                                </option>
+                              </select>
+
+                              {/* SHOW ONLY IF NOT OK */}
+                              {item.performance &&
+                                item.performance !== "OK" && (
+                                  <div className="mt-1 border rounded p-1 bg-yellow-50 text-xs">
+                                    <table className="w-full border-collapse text-center text-xs">
+                                      <thead>
+                                        <tr className="bg-yellow-100">
+                                          <th className="border text-center px-1 py-1">
+                                            Start Date & Time
+                                          </th>
+                                          <th className="border text-center px-1 py-1">
+                                            End Date & Time
+                                          </th>
+                                          <th className="border text-center px-1 py-1">
+                                            Remark
+                                          </th>
+                                        </tr>
+                                      </thead>
+
+                                      <tbody>
+                                        <tr>
+                                          {/* START TIME DISPLAY */}
+                                          <td className="border px-1 py-1">
+                                            <input
+                                              type="text"
+                                              readOnly
+                                              value={
+                                                item.performanceStartTime || ""
+                                              }
+                                              className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm"
+                                            />
+                                          </td>
+
+                                          {/* END DATE + TIME */}
+                                          <td className="border px-1 py-1">
+                                            <div className="flex flex-col gap-1">
+                                              {/* END DATE */}
+                                              <input
+                                                type="date"
+                                                value={
+                                                  item.performanceEndDate || ""
+                                                }
+                                                onChange={(e) => {
+                                                  const newData = [
+                                                    ...editData.hplcRecords,
+                                                  ];
+                                                  newData[
+                                                    index
+                                                  ].performanceEndDate =
+                                                    e.target.value;
+
+                                                  // Combine & Format Only When Time Exists
+                                                  if (
+                                                    newData[index]
+                                                      .performanceEndDate &&
+                                                    newData[index]
+                                                      .performanceEndTime
+                                                  ) {
+                                                    newData[
+                                                      index
+                                                    ].performanceEndDateTime =
+                                                      dayjs(
+                                                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                      ).format(
+                                                        "DD-MM-YYYY hh:mm:ss A"
+                                                      );
+                                                  }
+
+                                                  setEditData({
+                                                    ...editData,
+                                                    hplcRecords: newData,
+                                                  });
+                                                }}
+                                                disabled={
+                                                  [2, 3, 4].includes(
+                                                    userDetails.roles[0].role_id
+                                                  ) ||
+                                                  !!originalData?.hplcRecords[
+                                                    index
+                                                  ]?.performanceEndTime
+                                                }
+                                                className="border px-2 py-[6px] w-full rounded text-sm"
+                                              />
+
+                                              {/* END TIME (Normal Input) */}
+                                              <input
+                                                type="time"
+                                                step="1"
+                                                value={
+                                                  item.performanceEndTime || ""
+                                                }
+                                                onChange={(e) => {
+                                                  const newData = [
+                                                    ...editData.hplcRecords,
+                                                  ];
+                                                  newData[
+                                                    index
+                                                  ].performanceEndTime =
+                                                    e.target.value;
+
+                                                  // Combine & Format Only When Date Exists
+                                                  if (
+                                                    newData[index]
+                                                      .performanceEndDate &&
+                                                    newData[index]
+                                                      .performanceEndTime
+                                                  ) {
+                                                    newData[
+                                                      index
+                                                    ].performanceEndDateTime =
+                                                      dayjs(
+                                                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                      ).format(
+                                                        "DD-MM-YYYY hh:mm:ss A"
+                                                      );
+                                                  }
+
+                                                  setEditData({
+                                                    ...editData,
+                                                    hplcRecords: newData,
+                                                  });
+                                                }}
+                                                disabled={
+                                                  [2, 3, 4].includes(
+                                                    userDetails.roles[0].role_id
+                                                  ) ||
+                                                  !!originalData?.hplcRecords[
+                                                    index
+                                                  ]?.performanceEndTime
+                                                }
+                                                className="border px-2 py-[6px] w-full rounded text-sm"
+                                              />
+
+                                              {/* FINAL READONLY DISPLAY SAME AS START */}
+                                              <input
+                                                type="text"
+                                                readOnly
+                                                value={
+                                                  item.performanceEndDateTime ||
+                                                  ""
+                                                }
+                                                className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm mt-1"
+                                              />
+                                            </div>
+                                          </td>
+
+                                          {/* REMARK BOX */}
+                                          <td className="border px-1 py-1">
+                                            <textarea
+                                              placeholder="Enter remark"
+                                              value={
+                                                item.performanceRemark || ""
+                                              }
+                                              onChange={(e) => {
+                                                const newData = [
+                                                  ...editData.hplcRecords,
+                                                ];
+                                                newData[
+                                                  index
+                                                ].performanceRemark =
+                                                  e.target.value;
+                                                setEditData({
+                                                  ...editData,
+                                                  hplcRecords: newData,
+                                                });
+                                              }}
+                                              className="border px-2 py-[6px] w-full rounded resize-none text-sm"
+                                              rows={2}
+                                              disabled={
+                                                [2, 3, 4].includes(
+                                                  userDetails.roles[0].role_id
+                                                ) ||
+                                                !!originalData?.hplcRecords[
+                                                  index
+                                                ]?.performanceRemark
+                                              }
+                                            ></textarea>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                )}
+                            </td>
                             <td>
                               <input value={item.done_by} readOnly={true} />
                             </td>
@@ -1398,6 +1728,14 @@ const isFieldEditable = (item, fieldName) => {
                                         e.target.value;
 
                                       // Reset other fields on change
+                                      if (e.target.value === "OK") {
+                                        newData[index].status = "Closed";
+                                      } else if (
+                                        e.target.value === "action-needed"
+                                      ) {
+                                        newData[index].status = "Returned";
+                                      }
+
                                       if (e.target.value !== "action-needed") {
                                         newData[index].remarksSubType = "";
                                         newData[index].remarksOther = "";
@@ -1480,10 +1818,10 @@ const isFieldEditable = (item, fieldName) => {
                                       </select>
 
                                       {/* Custom Remark Input if 'Others' selected */}
-                                      {item.remarksSubType === "Others" && (
+                                      {item.remarksSubType && (
                                         <input
                                           type="text"
-                                          placeholder="Enter custom remark"
+                                          placeholder="Enter remark"
                                           value={item.remarksOther || ""}
                                           onChange={(e) => {
                                             const newData = [
@@ -1519,7 +1857,9 @@ const isFieldEditable = (item, fieldName) => {
                                   const isDisabled =
                                     [3, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isRowEditable(item) || !canReviewerEdit(item);
+                                    ) ||
+                                    !isRowEditable(item) ||
+                                    !canReviewerEdit(item);
 
                                   return item.supporting_docs ? (
                                     <div className="file-upload-wrapper">
@@ -1598,8 +1938,11 @@ const isFieldEditable = (item, fieldName) => {
                             </td>
 
                             <td>
-                              {
-                                (item.remarksOther || item.remarks == "OK" ? "Closed" : "Open")}
+                              {item.remarksSubType
+                                ? "Returned"
+                                : item.remarks?.toLowerCase() === "ok"
+                                ? "Closed"
+                                : "Open"}
                             </td>
                           </tr>
                         ))}

@@ -153,6 +153,8 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
       const formRecords = pHOpCalRecords.map((record, index) => ({
         form_id: newForm?.form_id,
         date: record?.date ,
+        instrument_name: record?.instrument_name,
+        instrument_no: record?.instrument_no,
         nameOfSolution: record?.nameOfSolution,
         adjustPH: record?.adjustPH,
         factorValue: record?.factorValue,
@@ -162,6 +164,12 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        performance: record?.performance,
+        performanceStartTime: record?.performanceStartTime,
+        performanceEndTime: record?.performanceEndTime,
+        performanceEndDate: record?.performanceEndDate,
+        performanceEndDateTime: record?.performanceEndDateTime,
+        performanceRemark: record?.performanceRemark,
         status:record?.status
       }));
 
@@ -186,6 +194,28 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           field_name: "Date",
           previous_value: null,
           new_value: record.date || "",
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument Name",
+          previous_value: null,
+          new_value: record.instrument_name || "",
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument No",
+          previous_value: null,
+          new_value: record.instrument_no || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -291,6 +321,72 @@ exports.InsertOpAndCalMultiParameter = async (req, res) => {
           declaration: initiatorDeclaration,
           action: "Opened",
         });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance",
+          previous_value: null,
+          new_value: record?.performance,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Start Time",
+          previous_value: null,
+          new_value: record?.performanceStartTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Time",
+          previous_value: null,
+          new_value: record?.performanceEndTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date",
+          previous_value: null,
+          new_value: record?.performanceEndDate,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date Time",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Remark",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });        
         auditTrailEntries.push({
           form_id: newForm.form_id,
           field_name: "Status",
@@ -480,6 +576,8 @@ exports.EditOpAndCalMultiParameter = async (req, res) => {
 
       const newData = {
         form_id,
+        instrument_name: record.instrument_name,
+        instrument_no: record.instrument_no,
         nameOfSolution: record.nameOfSolution,
         date: record.date,
         adjustPH: record.adjustPH,
@@ -491,6 +589,12 @@ exports.EditOpAndCalMultiParameter = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        performance: record.performance,
+        performanceStartTime: record.performanceStartTime,
+        performanceEndTime: record.performanceEndTime,
+        performanceEndDate: record.performanceEndDate,
+        performanceEndDateTime: record.performanceEndDateTime,
+        performanceRemark: record.performanceRemark,
         status:record?.status,
         supporting_docs: supporting_docs_url,
       };
@@ -671,7 +775,9 @@ exports.GetAllOpAndCalMultiParameter = async (req, res) => {
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
-    order: [["form_id", "DESC"]],
+    order: [["form_id", "ASC"],
+   [OpAndCalParameterRecord, "record_id", "ASC"] 
+  ],
   })
     .then((result) => {
       res.json({
@@ -688,7 +794,7 @@ exports.GetAllOpAndCalMultiParameter = async (req, res) => {
 };
 
 //send differential pressure elog for review
-exports.SendDPElogForReview = async (req, res) => {
+exports.SendElogForReview = async (req, res) => {
   const { form_id, email, password, initiatorDeclaration, initiatorComment } =
     req.body;
 
@@ -836,7 +942,7 @@ exports.SendDPElogForReview = async (req, res) => {
 };
 
 // change status of differential pressure elog from review to open
-exports.SendDPElogfromReviewToOpen = async (req, res) => {
+exports.SendElogfromReviewToOpen = async (req, res) => {
   const { form_id, email, password, reviewerDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -959,7 +1065,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 };
 
 // send differential pressure elog from review to approval
-exports.SendDPfromReviewToApproval = async (req, res) => {
+exports.SendfromReviewToApproval = async (req, res) => {
   const { form_id, reviewComment, email, password, reviewerDeclaration } =
     req.body;
 
@@ -1107,7 +1213,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 };
 
 // send differential pressure elog from under approval to open
-exports.SendDPfromApprovalToOpen = async (req, res) => {
+exports.SendfromApprovalToOpen = async (req, res) => {
   const { form_id, email, password, approverDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -1231,7 +1337,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 };
 
 // APPROVE differential pressure elog
-exports.ApproveDPElog = async (req, res) => {
+exports.ApproveElog = async (req, res) => {
   const { form_id, approverComment, email, password, approverDeclaration } =
     req.body;
 
@@ -1441,10 +1547,22 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     // Find all audit trail entries for the given form_id
     const auditTrail = await OpAndCalParameterAuditTrail.findAll({
       where: { form_id: formId },
-      include: {
-        model: User,
-        attributes: ["user_id", "name"],
-      },
+      include: [
+        {
+          model: User,
+          attributes: ["user_id", "name"],
+
+        include: [
+          {
+            model: UserRole,
+            attributes: ["role_id"],
+            required: false,
+            duplicating: false,
+            separate: true
+          }
+        ]
+        }
+      ],
       order: [["auditTrail_id", "DESC"]],
     });
 
@@ -1573,7 +1691,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("AnalyticalBalance", { reportData }, (err, html) => {
+      req.app.render("Report/PHMeterReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1585,7 +1703,7 @@ exports.chatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoPath = path.join(__dirname, "../public/ipc.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1632,10 +1750,10 @@ exports.chatByPdf = async (req, res) => {
     await browser.close();
     // const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `PHMeterElog_Report_${formId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `PHMeterElog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     res.status(500).json({
@@ -1685,7 +1803,7 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveABReport", { reportData }, (err, html) => {
+      req.app.render("effectiveReport/effectivePHReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1743,11 +1861,11 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     const filePath = path.resolve(
       "public",
-      `ABEffectice_Elog_Report_${formId}.pdf`
+      `PHMeterEffectice_Elog_Report_${formId}.pdf`
     );
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `ABEffectice_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `PHMeterEffectice_Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res

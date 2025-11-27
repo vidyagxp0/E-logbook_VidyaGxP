@@ -190,6 +190,8 @@ exports.InsertHPLC = async (req, res) => {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         date: record?.date,
+        instrument_name: record?.instrument_name,
+        instrument_no: record?.instrument_no,
         sample_name: record?.sample_name,
         reg_no: record?.reg_no,
         method_used: record?.method_used,
@@ -205,6 +207,12 @@ exports.InsertHPLC = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        performance: record?.performance,
+        performanceStartTime: record?.performanceStartTime,
+        performanceEndTime: record?.performanceEndTime,
+        performanceEndDate: record?.performanceEndDate,
+        performanceEndDateTime: record?.performanceEndDateTime,
+        performanceRemark: record?.performanceRemark,
         status:record?.status,
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
@@ -212,6 +220,28 @@ exports.InsertHPLC = async (req, res) => {
       await hplcRecord.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument Name",
+          previous_value: null,
+          new_value: record?.instrument_name,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument No",
+          previous_value: null,
+          new_value: record?.instrument_no,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
         auditTrailEntries.push({
           form_id: newForm.form_id,
           field_name: "Sample Name",
@@ -371,6 +401,72 @@ exports.InsertHPLC = async (req, res) => {
           field_name: "Remarks Sub Type",
           previous_value: null,
           new_value: record?.remarksSubType,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance",
+          previous_value: null,
+          new_value: record?.performance,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Start Time ",
+          previous_value: null,
+          new_value: record?.performanceStartTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Time ",
+          previous_value: null,
+          new_value: record?.performanceEndTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date ",
+          previous_value: null,
+          new_value: record?.performanceEndDate,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance End Date Time ",
+          previous_value: null,
+          new_value: record?.performanceEndDateTime,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Performance Remark",
+          previous_value: null,
+          new_value: record?.performanceRemark,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -560,6 +656,8 @@ exports.EditHPLC = async (req, res) => {
       const newData = {
         form_id,
         date: record.date,
+        instrument_name: record.instrument_name,
+        instrument_no: record.instrument_no,
         sample_name: record.sample_name,
         reg_no: record.reg_no,
         method_used: record.method_used,
@@ -575,6 +673,12 @@ exports.EditHPLC = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        performance: record?.performance,
+        performanceStartTime: record?.performanceStartTime,
+        performanceEndTime: record?.performanceEndTime,
+        performanceEndDate: record?.performanceEndDate,
+        performanceEndDateTime: record?.performanceEndDateTime,
+        performanceRemark: record?.performanceRemark,
         supporting_docs: supporting_docs_url,
       };
 
@@ -740,7 +844,9 @@ exports.GetAllhplcElog = async (req, res) => {
           attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
         },
       ],
-      order: [["form_id", "DESC"]],
+    order: [["form_id", "ASC"],
+   [hplcRecord, "record_id", "ASC"] 
+  ],
     })
     .then((result) => {
       res.json({
@@ -1567,11 +1673,23 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     // Find all audit trail entries for the given form_id
     const auditTrail = await hplcAudittrail.findAll({
       where: { form_id: formId },
-      include: {
-        model: User,
-        attributes: ["user_id", "name"],
-      },
-      order: [["auditTrail_id", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: ["user_id", "name"],
+
+        include: [
+          {
+            model: UserRole,
+            attributes: ["role_id"],
+            required: false,
+            duplicating: false,
+            separate: true
+          }
+        ]
+        }
+      ],
+      order: [["auditTrail_id", "ASC"]],
     });
 
     if (!auditTrail || auditTrail.length === 0) {

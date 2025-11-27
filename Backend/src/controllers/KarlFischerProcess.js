@@ -189,6 +189,8 @@ exports.InsertKarlFischer = async (req, res) => {
         form_id: newForm?.form_id,
         date: record?.date,
         lot_no: record?.lot_no,
+        instrument_name: record?.instrument_name,
+        instrument_no: record?.instrument_no,
         done_by: record?.done_by,
         factorValue: record?.factorValue,
         factor_percent_water: record?.factor_percent_water,
@@ -197,6 +199,12 @@ exports.InsertKarlFischer = async (req, res) => {
         remarksOther: record?.remarksOther,
         remarksType: record?.remarksType,
         remarksSubType: record?.remarksSubType,
+        performance: record?.performance,
+        performanceStartTime: record?.performanceStartTime,
+        performanceEndTime: record?.performanceEndTime,
+        performanceEndDate: record?.performanceEndDate,
+        performanceEndDateTime: record?.performanceEndDateTime,
+        performanceRemark: record?.performanceRemark,
         sample_name: record?.sample_name,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
@@ -211,6 +219,28 @@ exports.InsertKarlFischer = async (req, res) => {
           field_name: "Lot no",
           previous_value: null,
           new_value: record?.lot_no,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument Name",
+          previous_value: null,
+          new_value: record?.instrument_name,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Instrument No",
+          previous_value: null,
+          new_value: record?.instrument_no,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -335,7 +365,72 @@ exports.InsertKarlFischer = async (req, res) => {
             action: "Opened",
           });
         }
-         
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance",
+                  previous_value: null,
+                  new_value: record?.performance,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance Start Time",
+                  previous_value: null,
+                  new_value: record?.performanceStartTime,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance End Time",
+                  previous_value: null,
+                  new_value: record?.performanceEndTime,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance End Date",
+                  previous_value: null,
+                  new_value: record?.performanceEndDate,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance End Date Time",
+                  previous_value: null,
+                  new_value: record?.performanceEndDateTime,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
+                auditTrailEntries.push({
+                  form_id: newForm.form_id,
+                  field_name: "Performance Remark",
+                  previous_value: null,
+                  new_value: record?.performanceEndDateTime,
+                  changed_by: user.user_id,
+                  previous_status: "Not Applicable",
+                  new_status: "Opened",
+                  declaration: initiatorDeclaration,
+                  action: "Opened",
+                });
       });
     }
 
@@ -524,12 +619,20 @@ exports.EditKarlFischer = async (req, res) => {
         remarksType: record.remarksType,
         remarksSubType: record.remarksSubType,
         lot_no: record.lot_no,
+        instrument_name: record.instrument_name,
+        instrument_no: record.instrument_no,
         done_by: record.done_by,
         factorValue: record.factorValue,
         sample_name: record.sample_name,
         factor_percent_water: record.factor_percent_water,
         checked_by: record.checked_by,
         reviewed_by: record.reviewed_by,
+        performance: record.performance,
+        performanceStartTime: record.performanceStartTime,
+        performanceEndTime: record.performanceEndTime,
+        performanceEndDate: record.performanceEndDate,
+        performanceEndDateTime: record.performanceEndDateTime,
+        performanceRemark: record.performanceRemark,
         supporting_docs: supporting_docs_url,
       };
       
@@ -674,7 +777,9 @@ exports.GetAllKarlFischerElog = async (req, res) => {
         attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
       },
     ],
-    order: [["form_id", "DESC"]],
+    order: [["form_id", "ASC"],
+   [karlFischerRecord, "record_id", "ASC"] 
+  ],
   })
     .then((result) => {
       res.json({
@@ -1501,11 +1606,23 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     // Find all audit trail entries for the given form_id
     const auditTrail = await karlFischerAuditTrail.findAll({
       where: { form_id: formId },
-      include: {
-        model: User,
-        attributes: ["user_id", "name"],
-      },
-      order: [["auditTrail_id", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: ["user_id", "name"],
+
+        include: [
+          {
+            model: UserRole,
+            attributes: ["role_id"],
+            required: false,
+            duplicating: false,
+            separate: true
+          }
+        ]
+        }
+      ],
+      order: [["auditTrail_id", "ASC"]],
     });
 
     if (!auditTrail || auditTrail.length === 0) {
@@ -1849,6 +1966,8 @@ exports.blankReport = async (req, res) => {
       ? reportData.karlFischerRecords.map((record) => ({
           date: record?.date || "",
           lot_no: record?.lot_no || "",
+          instrument_name: record?.instrument_name,
+          instrument_no: record?.instrument_no,
           sample_name: record?.sample_name || "",
           factor_percent_water: record?.factor_percent_water || "",
           factorValue: record?.factorValue || "",

@@ -364,7 +364,7 @@ function App() {
             />
           </Routes>
         </BrowserRouter>
-        <ToastContainer autoClose={3000} pauseOnHover={false} />
+        <ToastContainer autoClose={3000} pauseOnHover={true} />
       </Provider>
     </>
   );

@@ -22,6 +22,14 @@ const karlFischerRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    instrument_name: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
+    instrument_no: { 
+      type: DataTypes.STRING, 
+      allowNull: false 
+    },
     lot_no: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -60,6 +68,24 @@ const karlFischerRecord = sequelize.define(
       type: DataTypes.STRING,
     },
     remarksSubType: {
+      type: DataTypes.STRING,
+    },
+     performance: {
+      type: DataTypes.STRING,
+    },
+    performanceStartTime: {
+      type: DataTypes.STRING,
+    },
+    performanceEndTime: {
+      type: DataTypes.STRING,
+    },
+    performanceEndDate: {
+      type: DataTypes.STRING,
+    },
+    performanceEndDateTime: {
+      type: DataTypes.STRING,
+    },
+    performanceRemark: {
       type: DataTypes.STRING,
     },
     status: {
