@@ -42,6 +42,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
     department,
     compression_area,
     limit,
+    area_name,
+    acceptance_criteria,
+    instrument_id_no,
+    differential_pressure,
     reviewer_id,
     approver_id,
     initiatorComment,
@@ -52,6 +56,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     additionalAttachment,
     additionalInfo,
   } = req.body;
+  console.log(req.body,"shivam")
 
   if (!approver_id) {
     return res
@@ -135,6 +140,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
+        area_name:area_name,
+        acceptance_criteria:acceptance_criteria,
+        instrument_id_no:instrument_id_no,
+        differential_pressure:differential_pressure,
       },
 
       { transaction }
@@ -145,6 +154,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
       description,
       department,
       compression_area,
+      area_name,
+      acceptance_criteria,
+      instrument_id_no,
+      differential_pressure,
       limit,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
@@ -157,7 +170,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           form_id: newForm.form_id,
           field_name: field,
           previous_value: null,
-          new_value: value,
+          new_value: value === "" ? "" : value,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -204,8 +217,13 @@ exports.InsertDifferentialPressure = async (req, res) => {
         remarks: record?.remarks,
         approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
+        unique_id: record?.unique_id,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
+        area_name:area_name, 
+        acceptance_criteria:acceptance_criteria,
+        instrument_id_no:instrument_id_no,
+        differential_pressure:differential_pressure,
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
@@ -216,7 +234,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           form_id: newForm.form_id,
           field_name: "Unique Id",
           previous_value: null,
-          new_value: record.unique_id,
+          new_value: record.unique_id || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -317,6 +335,10 @@ exports.EditDifferentialPressure = async (req, res) => {
     department,
     compression_area,
     limit,
+    area_name,
+    acceptance_criteria,
+    instrument_id_no,
+    differential_pressure,  
     reviewer_id,
     approver_id,
     DifferentialPressureRecords,
@@ -520,6 +542,7 @@ exports.EditDifferentialPressure = async (req, res) => {
           const recordFields = {
             unique_id: newRecord?.unique_id,
             time: newRecord?.time,
+            date: newRecord?.date,
             checked_by: newRecord?.checked_by,
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
@@ -536,7 +559,7 @@ exports.EditDifferentialPressure = async (req, res) => {
                 form_id: form.form_id,
                 field_name: `${field}[${i}]`,
                 previous_value: null,
-                new_value: newValue,
+                new_value: newValue || "",
                 changed_by: user.user_id,
                 previous_status: form.status,
                 new_status: "Opened",
@@ -559,6 +582,7 @@ exports.EditDifferentialPressure = async (req, res) => {
         form_id: form_id,
         unique_id: record?.unique_id,
         time: record?.time,
+        date: record?.date,
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         approver_remarks:record?.approver_remarks,
@@ -1828,6 +1852,7 @@ exports.blankReport = async (req, res) => {
     const data = reportData?.DifferentialPressureRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
       time: record?.time || "",
+      date: record?.date || "",
       differential_pressure: record?.differential_pressure || "",
       remarks: record?.remarks || "",
       checked_by: record?.checked_by || "",
@@ -2011,12 +2036,10 @@ exports.blankReport = async (req, res) => {
 exports.sendReportOnMail = async (req, res) => {
   const { to, cc, bcc, subject, message } = req.body;
   const elogId = req.params.id;
-  console.log(elogId,"elogId")
 
   const filePath = path.resolve("public",elogId);
 
   const fileExists = fs.existsSync(filePath);
-console.log(fileExists,"fileExists")
   if (!fileExists) {
     return res.status(404).json({
       status: 404,

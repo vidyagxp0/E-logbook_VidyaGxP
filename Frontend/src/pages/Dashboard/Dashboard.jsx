@@ -466,7 +466,7 @@ useEffect(() => {
       // } else if (item.process === "Area and equipment") {
       //   navigate("/area-and-equipment-panel", { state: item });
     } else if (item.TempratureRecords) {
-      navigate("/tpr-panel", { state: item });
+      navigate("/temperature-record-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
       navigate("/ecc-panel", { state: item });
     } else if (item.LoadedQuantityRecords) {
@@ -551,29 +551,29 @@ const processShortName = {
 const [eLogInstrument, setELogInstrument] = useState("All");
 
 
-// const getElogNumber = (item) => {
-//   // detect process ID based on object key
-//   const processId = Object.keys(processKey).find(
-//     (pid) => item[processKey[pid]]
-//   );
+const getElogNumber = (item) => {
+  // detect process ID based on object key
+  const processId = Object.keys(processKey).find(
+    (pid) => item[processKey[pid]]
+  );
 
-//   const shortName = processShortName[processId];
+  const shortName = processShortName[processId];
+  const index = String(item.form_id).padStart(3, "0");
+
+  return `MED/BIOS/${shortName}/${index}`;
+};
+
+    
+
+// const getElogNumber = (item) => {
+//   const processId = item.process_id;
+//   if (!processId) return "IPC/BIOS/NA/000";
+
+//   const shortName = processShortName[processId] || "NA";
 //   const index = String(item.form_id).padStart(3, "0");
 
 //   return `IPC/BIOS/${shortName}/${index}`;
 // };
-
-    
-
-const getElogNumber = (item) => {
-  const processId = item.process_id;
-  if (!processId) return "IPC/BIOS/NA/000";
-
-  const shortName = processShortName[processId] || "NA";
-  const index = String(item.form_id).padStart(3, "0");
-
-  return `IPC/BIOS/${shortName}/${index}`;
-};
 
 
 useEffect(() => {
@@ -646,90 +646,90 @@ useEffect(() => {
 
 
 
-  // useEffect(() => {
-  //   const filteredData = [
-  //     ...differentialPressureElogs,
-  //     ...equipmentCRecordElogs,
-  //     ...tempratureRecordElogs,
-  //     ...loadedQuantityElogs,
-  //     ...mediaRecordElogs,
-  //     ...dispensingOfMaterialsElogs,
-  //     ...operationOfSterilizerElogs,
-  //     ...analyticalBalanceElogs,
-  //     ...karlFischerElogs,
-  //     ...hplcElogs,
-  //     ...pHMeterOPCalElogs,
-  //     ...UVVisCalibElogs,
-  //     ...sdsPage,
-  //     ...gelDociGene,
-  //     ...uVWhiteLightTrans,
-  //   ].filter((item) => {
-  //     const matchesSearchTerm =
-  //       item.date_of_initiation
-  //         .toLowerCase()
-  //         .includes(searchTerm.toLowerCase()) ||
-  //       item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       item?.initiator_name
-  //         ?.toLowerCase()
-  //         .includes(searchTerm.toLowerCase()) ||
-  //       item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       (item?.TempratureRecords
-  //         ? `TR${item.form_id}`
-  //         : item?.LoadedQuantityRecords
-  //         ? `LQ${item.form_id}`
-  //         : item?.OperationOfSterilizerRecords
-  //         ? `OF${item.form_id}`
-  //         : item?.MediaRecords
-  //         ? `MR${item.form_id}`
-  //         : item?.DispenseOfMaterials
-  //         ? `DM${item.form_id}`
-  //         : item?.DifferentialPressureRecords
-  //         ? `DP${item.form_id}`
-  //         : item?.AnalyticalBalances
-  //         ? `AB${item.form_id}`
-  //         : item?.karlFischerRecords
-  //         ? `KF${item.form_id}`
-  //         : `HP${item.form_id}`
-  //       )
-  //         ?.toLowerCase()
-  //         .includes(searchTerm.toLowerCase());
+  useEffect(() => {
+    const filteredData = [
+      ...differentialPressureElogs,
+      ...equipmentCRecordElogs,
+      ...tempratureRecordElogs,
+      ...loadedQuantityElogs,
+      ...mediaRecordElogs,
+      ...dispensingOfMaterialsElogs,
+      ...operationOfSterilizerElogs,
+      ...analyticalBalanceElogs,
+      ...karlFischerElogs,
+      ...hplcElogs,
+      ...pHMeterOPCalElogs,
+      ...UVVisCalibElogs,
+      ...sdsPage,
+      ...gelDociGene,
+      ...uVWhiteLightTrans,
+    ].filter((item) => {
+      const matchesSearchTerm =
+        item.date_of_initiation
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.initiator_name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        item?.eLogId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item?.TempratureRecords
+          ? `TR${item.form_id}`
+          : item?.LoadedQuantityRecords
+          ? `LQ${item.form_id}`
+          : item?.OperationOfSterilizerRecords
+          ? `OF${item.form_id}`
+          : item?.MediaRecords
+          ? `MR${item.form_id}`
+          : item?.DispenseOfMaterials
+          ? `DM${item.form_id}`
+          : item?.DifferentialPressureRecords
+          ? `DP${item.form_id}`
+          : item?.AnalyticalBalances
+          ? `AB${item.form_id}`
+          : item?.karlFischerRecords
+          ? `KF${item.form_id}`
+          : `HP${item.form_id}`
+        )
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
-  //     // Check if the status matches
-  //     const matchesStatus =
-  //       eLogStatus === "All_Records" || // Match all records
-  //       item.status.toLowerCase() === eLogStatus.toLowerCase();
+      // Check if the status matches
+      const matchesStatus =
+        eLogStatus === "All_Records" || // Match all records
+        item.status.toLowerCase() === eLogStatus.toLowerCase();
 
-  //     return matchesSearchTerm && matchesStatus;
-  //   });
+      return matchesSearchTerm && matchesStatus;
+    });
 
-  //   setCombinedRecords(filteredData);
-  // }, [
-  //   searchTerm,
-  //   eLogStatus,
-  //   differentialPressureElogs,
-  //   equipmentCRecordElogs,
-  //   tempratureRecordElogs,
-  //   loadedQuantityElogs,
-  //   mediaRecordElogs,
-  //   dispensingOfMaterialsElogs,
-  //   operationOfSterilizerElogs,
-  //   analyticalBalanceElogs,
-  //   karlFischerElogs,
-  //   hplcElogs,
-  //   pHMeterOPCalElogs,
-  //   UVVisCalibElogs,
-  //   sdsPage,
-  //   gelDociGene,
-  //   uVWhiteLightTrans,
-  // ]);
+    setCombinedRecords(filteredData);
+  }, [
+    searchTerm,
+    eLogStatus,
+    differentialPressureElogs,
+    equipmentCRecordElogs,
+    tempratureRecordElogs,
+    loadedQuantityElogs,
+    mediaRecordElogs,
+    dispensingOfMaterialsElogs,
+    operationOfSterilizerElogs,
+    analyticalBalanceElogs,
+    karlFischerElogs,
+    hplcElogs,
+    pHMeterOPCalElogs,
+    UVVisCalibElogs,
+    sdsPage,
+    gelDociGene,
+    uVWhiteLightTrans,
+  ]);
 
   return (
     <>
       <HeaderTop />
       <HeaderBottom />
 
-      <div className="desktop-input-table-wrapper">
-        <div className="flex  items-center  gap-10 p-4">
+      <div className="desktop-input-table-wrapper"> 
+        <div className="flex  items-center  gap-10 p-4   border-gray-300">
           {/* Search Input and Button */}
           <div className="flex items-center h-[40px] border border-gray-300 rounded-md shadow-sm w-full max-w-md p-1">
             <svg
@@ -751,15 +751,15 @@ useEffect(() => {
           </div>
 
           {/* Dropdown */}
-          {/* <div className="w-full max-w-md ">
+           <div className="w-full max-w-md ">
             <select
               value={eLogSelect}
               onChange={(e) => setELogSelect(e.target.value)}
               className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
               style={{ border: "1px solid gray", padding: "2px 0px" }}
             >
-              <option value="All_Records">All Records</option> */}
-              {/* <option value="diffrential_pressure">
+              <option value="All_Records">All Records</option> 
+               <option value="diffrential_pressure">
                 Differential Pressure Record
               </option>
               <option value="equipment_cleaning">
@@ -773,8 +773,8 @@ useEffect(() => {
               </option>
               <option value="dispensing_of_material">
                 Dispensing Of Materials
-              </option> */}
-              {/* <option value="analytical_balance">Analytical Balance</option>
+              </option> 
+               <option value="analytical_balance">Analytical Balance</option>
               <option value="karl_fischer">KARL Fischer</option>
               <option value="hplc">hplc</option>
               <option value="pH Meter OP/CAL">pH Meter OP/CAL</option>
@@ -784,27 +784,27 @@ useEffect(() => {
               <option value="UV/White Light Transilluminator">UV/White Light Transilluminator</option>
               <option value="Vacuum Oven Calibration">Vacuum Oven Calibration</option>
             </select>
+          </div> 
+
+          {/* <div className="w-full max-w-md ">
+            <select
+              value={eLogInstrument}
+              onChange={(e) => setELogInstrument(e.target.value)}
+              className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
+              style={{ border: "1px solid gray", padding: "2px 0px" }}
+            >
+              <option value="All">All Instruments</option>
+
+              {combinedRecords
+                .map((item) => getElogNumber(item))
+                .filter((value, index, self) => self.indexOf(value) === index) // unique
+                .map((instNo, index) => (
+                  <option key={index} value={instNo}>
+                    {instNo}
+                  </option>
+                ))}
+            </select>
           </div> */}
-
-<div className="w-full max-w-md ">
-  <select
-    value={eLogInstrument}
-    onChange={(e) => setELogInstrument(e.target.value)}
-    className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
-    style={{ border: "1px solid gray", padding: "2px 0px" }}
-  >
-    <option value="All">All Instruments</option>
-
-    {combinedRecords
-      .map((item) => getElogNumber(item))
-      .filter((value, index, self) => self.indexOf(value) === index) // unique
-      .map((instNo, index) => (
-        <option key={index} value={instNo}>
-          {instNo}
-        </option>
-      ))}
-  </select>
-</div>
 
           <div className="w-full max-w-md ">
             <select
@@ -825,7 +825,7 @@ useEffect(() => {
         <table>
           <thead>
             <tr>
-              <th>S no</th>
+              <th>Sr no</th>
               <th>Instrument No.</th>
               <th>Name</th>
               <th>Department</th>
@@ -840,6 +840,7 @@ useEffect(() => {
               ? differentialPressureElogs?.map((item, index) => {
                   const cleanHTML =
                     item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                    console.log(differentialPressureElogs,"differentialPressureElogs")
                   return (
                     <tr key={item.index}>
                       <td>{index + 1}</td>
@@ -856,7 +857,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`DP${item.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>Differential Pressure</td>
                       <td>
@@ -885,7 +886,7 @@ useEffect(() => {
                 })
               : null}
 
-            {/* {eLogSelect === "area_and_equipment"
+            {eLogSelect === "area_and_equipment"
               ? areaAndERecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -901,9 +902,9 @@ useEffect(() => {
                     </tr>
                   );
                 })
-              : null} */}
+              : null}
 
-            {/* {eLogSelect === "equipment_cleaning"
+            {eLogSelect === "equipment_cleaning"
               ? equipmentCRecordElogs?.map((item, index) => {
                   return (
                     <tr key={item.index}>
@@ -919,7 +920,7 @@ useEffect(() => {
                     </tr>
                   );
                 })
-              : null} */}
+              : null}
 
             {eLogSelect === "temperature_records"
               ? tempratureRecordElogs?.map((item, index) => {
@@ -933,7 +934,7 @@ useEffect(() => {
                           cursor: "pointer",
                           color: "black",
                         }}
-                        onClick={() => navigate("/tpr-panel", { state: item })}
+                        onClick={() => navigate("/temperature-record-panel", { state: item })}
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
                         }}
@@ -941,7 +942,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`TR${item.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>Temperature Records</td>
                       <td>
@@ -991,7 +992,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`LQ${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>Loaded Quantity</td>
                       <td>
@@ -1045,7 +1046,7 @@ useEffect(() => {
                             e.target.style.color = "black";
                           }}
                         >
-                          {`OF${item.form_id}`}
+                         {getElogNumber(item)}
                         </td>
                         <td>Operation of sterilizer</td>
                         <td>
@@ -1093,7 +1094,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`MR${item.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>Media Record</td>
                       <td>
@@ -1146,7 +1147,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`DM${item.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>Dispensing of Material </td>
                       <td>
@@ -1198,7 +1199,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`AB${item?.form_id}`}
+                       {getElogNumber(item)}
                       </td>
                       <td>Analytical Balance</td>
                       <td>
@@ -1250,7 +1251,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`KF${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>KARL Fischer</td>
                       <td>
@@ -1302,7 +1303,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`HP${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>HPLC</td>
                       <td>
@@ -1355,7 +1356,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`pHOPCAL${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>pH Meter OP/Cal</td>
                       <td>
@@ -1407,7 +1408,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`UVVIS${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>pH Meter OP/Cal</td>
                       <td>
@@ -1459,7 +1460,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`SDSPAGE${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>SDS PAGE</td>
                       <td>
@@ -1511,7 +1512,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`GELDOCIGENE${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>Gel Doc iGene</td>
                       <td>
@@ -1563,7 +1564,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`UV-WLTI${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>UV/WL Transilluminator</td>
                       <td>
@@ -1615,7 +1616,7 @@ useEffect(() => {
                           e.target.style.color = "black";
                         }}
                       >
-                        {`VOCALIB${item?.form_id}`}
+                        {getElogNumber(item)}
                       </td>
                       <td>VO CAL</td>
                       <td>
@@ -1758,6 +1759,7 @@ useEffect(() => {
           </tbody>
         </table>
       </div>
+      
     </>
   );
 }

@@ -101,6 +101,19 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   additionalInfo: {
     type: DataTypes.STRING,
   },
+  area_name: {
+    type: DataTypes.STRING,
+  },
+  acceptance_criteria: {
+    type: DataTypes.STRING,
+  },
+  instrument_id_no: {
+    type: DataTypes.STRING,
+  },
+  differential_pressure: {
+    type: DataTypes.STRING,
+  },
+
 });
 
 DifferentialPressureForm.belongsTo(Site, { foreignKey: "site_id" });

@@ -132,7 +132,7 @@ exports.InsertDispenseOfMaterialRecord = async (req, res) => {
           form_id: newForm.form_id,
           field_name: field,
           previous_value: null,
-          new_value: value,
+          new_value: value || "",
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",

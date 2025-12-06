@@ -26,6 +26,10 @@ const DifferentialPressureRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    date: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     differential_pressure: {
       type: DataTypes.FLOAT,
     },

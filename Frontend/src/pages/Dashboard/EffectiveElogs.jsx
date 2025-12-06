@@ -1276,7 +1276,7 @@ function EffectiveElogs() {
 
         {/* Table */}
         <table className="w-full border border-collapse text-center">
-          <thead>
+          <thead>                                                                               
             <tr>
               <th className="text-center">S no</th>
               {/* <th className="text-center">E.Log no</th> */}
@@ -1304,8 +1304,8 @@ function EffectiveElogs() {
                   >
                     {/* Tooltip */}
                    <span
-  className="absolute -bottom-9 left-0 
-    bg-transparent border border-black/40 
+  className="absolute -bottom-4 left-0 
+    bg-slate-300 border border-black/40 
     text-black text-xs px-2 py-1 rounded 
     opacity-0 group-hover:opacity-100 pointer-events-none
     transition-opacity duration-150"

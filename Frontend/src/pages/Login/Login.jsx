@@ -62,7 +62,8 @@ function Login() {
           localStorage.setItem("user-details", JSON.stringify(userDetails));
         }
         // navigate("/effectiveElogs");
-        navigate("/dept-selection");
+        // navigate("/dept-selection");
+        navigate("/effectiveElogs");
         toast.success("Login Successful");
       })
       .catch((error) => {
@@ -89,7 +90,7 @@ function Login() {
           <div className="logo">
             {/* <img src="https://connexo.io/assets/img/logo/logo.png" alt="Logo" /> */}
             <img src="vidyalogo21.png" alt="Logo" className="!w-64" />
-            <img src="image.png" alt="Logo" className="!w-10" />
+            <img src="medicef-logo.png" alt="Logo" className="!w-16" />
           </div>
           <div className="head">Welcome to eLogBook</div>
         </div>

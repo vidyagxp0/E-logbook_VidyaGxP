@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/Login/Login.jsx";
 import DeptPage from "./pages/DepartmentSel/DepartmentSel.jsx";
 import AdminLogin from "./pages/admin/adminLogin/adminLogin.jsx";
-import DiffrentialPressure from "./pages/configForms/DiffrentialPressureRecord/DiffrentialPressure.jsx";
+import DiffrentialPressure from "./pages/documentPanels/Medicef/DifferentialPressureRecord/DifferentialPressureRecord.jsx";
 import AreaAndEquiment from "./pages/configForms/AreaAndEquipment/AreaAndEquiment.jsx";
 import EquipmentCleaningCheckList from "./pages/configForms/EquipmentCheckList/EquipmentCleaningCheckList.jsx";
 import { Provider } from "react-redux";
@@ -14,7 +14,7 @@ import Chart from "./chart/Chart.jsx";
 import Analytics from "./pages/analytics/Analytics.jsx";
 import DPRpanel from "./pages/documentPanels/Dpr/DPRpanel.jsx";
 import TemperatureRecords from "./pages/configForms/TemperatureRecords/TemperatureRecords.jsx";
-import TempretureRecordsPanel from "./pages/documentPanels/TempreratureRecordsPanel/TempretureRecordsPanel.jsx";
+import TemperatureRecordPanel from "./pages/documentPanels/Medicef/TemperatureRecord/TemperatureRecordPanel.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import EquipmentCleaningCheckListPanel from "./pages/documentPanels/EquipmentChecklistPanel/EquipmentCleaningChecklistPanel.jsx";
 import AreaAndEquipmentPanel from "./pages/documentPanels/AreaAndEquipmentPanel/AreaAndEquipmentPanel.jsx";
@@ -76,6 +76,8 @@ import UvWITransilluminatorEffective from "./pages/Dashboard/EffectiveElogs/UvWl
 import VacuumOvenOpEffective from "./pages/Dashboard/EffectiveElogs/VacuumOvenOpEffective.jsx";
 import VacuumOvenOpPanel from "./pages/documentPanels/VacuumOvenOp/VacuumOvenOpPanel.jsx";
 import VacuumOvenOp from "./pages/configForms/VacuumOvenOp/VacuumOvenOp.jsx";
+import TemperatureRecord from "./pages/documentPanels/Medicef/TemperatureRecord/TemperatureRecord.jsx";
+import DifferentialPressureRecordPanel from "./pages/documentPanels/Medicef/DifferentialPressureRecord/DifferentialPressureRecordPanel.jsx";
 
 function App() {
   return (
@@ -86,7 +88,7 @@ function App() {
             {/* <Route path="/test" element={<ExcelSelectWithFileInput />} />  */}
 
             <Route path="/" element={<Login />} />
-            <Route path="/dept-selection" element={<DeptPage />} />
+            {/* <Route path="/dept-selection" element={<DeptPage />} /> */}
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="" element={<Wrapper />}>
               <Route
@@ -137,11 +139,11 @@ function App() {
             />
             <Route
               path="/dpr-panel"
-              element={<ProtectedRoute element={<DPRpanel />} />}
+              element={<ProtectedRoute element={<DifferentialPressureRecordPanel />} />}
             />
             <Route
-              path="/tpr-panel"
-              element={<ProtectedRoute element={<TempretureRecordsPanel />} />}
+              path="/temperature-record-panel"
+              element={<ProtectedRoute element={<TemperatureRecordPanel />} />}
             />
             <Route
               path="/ecc-panel"
@@ -339,7 +341,7 @@ function App() {
             />
             <Route
               path="/temperature-records"
-              element={<ProtectedRoute element={<TemperatureRecords />} />}
+              element={<ProtectedRoute element={<TemperatureRecord />} />}
             />
             <Route
               path="/loaded-quantity"
@@ -358,10 +360,14 @@ function App() {
               element={<ProtectedRoute element={<DispensingOfMaterials />} />}
             />
             <Route path="/view-report" element={<ViewReport />} />
+
+
             <Route
               path="/effective-view-report"
               element={<Effective_ViewReport />}
             />
+          
+            
           </Routes>
         </BrowserRouter>
         <ToastContainer autoClose={3000} pauseOnHover={true} />

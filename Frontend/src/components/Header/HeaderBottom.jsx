@@ -31,7 +31,7 @@ function HeaderBottom() {
             </select>
           </div> */}
             <div className="tabs flex items-center justify-center space-x-6 ml-5">
-              {/* <Link
+              <Link
                 to="/dashboard"
                 className={`tab py-2 px-4 rounded-md  ${
                   window.location.pathname === "/dashboard"
@@ -40,7 +40,7 @@ function HeaderBottom() {
                 } hover:bg-blue-600 transition duration-300 hover:text-white`}
               >
                 Dashboard
-              </Link> */}
+              </Link>
               <Link
                 to="/effectiveElogs"
                 className={`tab py-1 px-3 min-w-fit rounded-md  ${

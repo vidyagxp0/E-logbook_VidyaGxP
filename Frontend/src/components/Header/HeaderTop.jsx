@@ -118,9 +118,10 @@ function HeaderTop() {
                 style={{
                   cursor: "pointer",
                   objectFit: "contain",
-                  width: "255px",
+                  width: "200px",
+                  marginTop: "10px",
                 }}
-                src="/image.png"
+                src="/medicef-logo.png"
                 alt="Logo"
               />
             </div>
@@ -156,7 +157,7 @@ function HeaderTop() {
             <div className="flex flex-col items-center justify-center">
               <h1 className="text-3xl font-bold font-serif">eLog-Book</h1>
               <h1 className="text-2xl font-bold font-serif">
-                Indian Pharmacopoeia Commission
+                Medicef Pharmaceuticals 
               </h1>
             </div>
           </div>

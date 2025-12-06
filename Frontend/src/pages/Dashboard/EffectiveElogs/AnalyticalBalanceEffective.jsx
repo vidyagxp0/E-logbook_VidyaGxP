@@ -162,7 +162,9 @@ const AnalyticalBalancesEffective = () => {
       if (!data.initiatorComment || data.initiatorComment.trim() === "") {
         toast.error("Please provide an initiator comment!");
         return;
+      
       }
+      
       axios
         .put(
           "http://localhost:1000/analytical-balance/send-for-review",
@@ -283,6 +285,8 @@ const AnalyticalBalancesEffective = () => {
 
       axios(requestOptions)
         .then(() => {
+          console.log(data);
+          
           toast.success("Data saved successfully!");
           navigate("/effectiveElogs");
         })
@@ -2149,7 +2153,7 @@ const AnalyticalBalancesEffective = () => {
                                   <option value="Select">--Select--</option>
                                   <option value="Ok">Ok</option>
                                   <option value="Calibration/Verification">
-                                    Calibration / Verification
+                                    Calibration / Verificationnnnnnn
                                   </option>
                                 </select>
                               </td>

@@ -34,9 +34,14 @@ exports.InsertTempratureRecord = async (req, res) => {
     FormRecordsArray,
     initiatorDeclaration,
     additionalAttachment,
+    area_name,
+    room_id,
+    instrument_id,
+    acceptance_temperature,
+      relative_humidity_criteria,
     additionalInfo,
   } = req.body;
-
+console.log(req.body,"shivam")
   if (!approver_id) {
     return res
       .status(400)
@@ -119,6 +124,11 @@ exports.InsertTempratureRecord = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
+        area_name:area_name,
+        instrument_id:instrument_id,
+        room_id:room_id,
+        acceptance_temperature: acceptance_temperature,
+        relative_humidity_criteria: relative_humidity_criteria  
       },
 
       { transaction }
@@ -129,6 +139,11 @@ exports.InsertTempratureRecord = async (req, res) => {
       description,
       department,
       compression_area,
+      area_name,
+      room_id,
+      instrument_id,
+      acceptance_temperature,
+      relative_humidity_criteria,
       limit,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
@@ -189,6 +204,12 @@ exports.InsertTempratureRecord = async (req, res) => {
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
+        area_name:area_name,
+        instrument_id:instrument_id,
+        room_id:room_id,
+        acceptance_temperature: acceptance_temperature,
+        relative_humidity_criteria: relative_humidity_criteria,
+
         supporting_docs: record?.supporting_docs
           ? record.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -397,14 +418,15 @@ exports.EditTempratureRecord = async (req, res) => {
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
-        : form.initiatorAttachment,
+        : form.initiatorAttachment || "",
       additionalAttachment: additionalAttachment
         ? getElogDocsUrl(additionalAttachment)
-        : form.additionalAttachment,
+        : form.additionalAttachment || "",
       additionalInfo,
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
+      console.log("field", field, "newValue", newValue);
       const oldValue = form[field];
       if (
         newValue !== undefined &&
@@ -416,7 +438,7 @@ exports.EditTempratureRecord = async (req, res) => {
           form_id: form.form_id,
           field_name: field,
           previous_value: oldValue || null,
-          new_value: newValue,
+          new_value: newValue || " ",
           changed_by: user.user_id,
           previous_status: form.status,
           new_status: "Opened",
@@ -484,7 +506,7 @@ exports.EditTempratureRecord = async (req, res) => {
                 form_id: form.form_id,
                 field_name: `${field}`,
                 previous_value: oldValue || null,
-                new_value: newValue,
+                new_value: newValue || "",
                 changed_by: user.user_id,
                 previous_status: form.status,
                 new_status: "Opened",
@@ -495,7 +517,6 @@ exports.EditTempratureRecord = async (req, res) => {
           }
         }
       });
-
       // Handle new records added
       if (TempratureRecords.length > existingRecords.length) {
         for (
@@ -523,7 +544,7 @@ exports.EditTempratureRecord = async (req, res) => {
                 form_id: form.form_id,
                 field_name: `${field}`,
                 previous_value: null,
-                new_value: newValue,
+                new_value: newValue || "",
                 changed_by: user.user_id,
                 previous_status: form.status,
                 new_status: "Opened",
@@ -544,14 +565,14 @@ exports.EditTempratureRecord = async (req, res) => {
       // Create new records
       const formRecords = TempratureRecords.map((record, index) => ({
         form_id: form_id,
-        unique_id: record?.unique_id,
-        time: record?.time,
-        temprature_record: record?.temprature_record,
-        remarks: record?.remarks,
-        approver_remarks: record?.approver_remarks,
-        checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
+        unique_id: record?.unique_id || "",
+        time: record?.time || "",
+        temprature_record: record?.temprature_record || "",
+        remarks: record?.remarks || "",
+        approver_remarks: record?.approver_remarks || "",
+        checked_by: record?.checked_by || "",
+        reviewed_by: record?.reviewed_by || "",
+        approved_by: record?.approved_by || "",
         supporting_docs: record?.supporting_docs
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
@@ -560,9 +581,9 @@ exports.EditTempratureRecord = async (req, res) => {
       await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
     }
 
-    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
-    });
+      await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
+        transaction,
+      });
 
     await transaction.commit();
 
@@ -732,7 +753,7 @@ exports.SendTRElogForReview = async (req, res) => {
         form_id: form.form_id,
         field_name: "initiatorAttachment",
         previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(initiatorAttachment),
+        new_value: getElogDocsUrl(initiatorAttachment) || "",
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
@@ -744,7 +765,7 @@ exports.SendTRElogForReview = async (req, res) => {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "additionalAttachment",
-        previous_value: form.additionalAttachment || null,
+        previous_value: form.additionalAttachment || "",
         new_value: getElogDocsUrl(additionalAttachment),
         changed_by: user.user_id,
         previous_status: "Opened",

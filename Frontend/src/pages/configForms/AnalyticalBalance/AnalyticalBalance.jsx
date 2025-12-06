@@ -214,6 +214,7 @@ const AnalyticalBalance = () => {
       initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
+      factorValue: "",   // <<< IMPORTANT
     }
   );
   console.log(analyticalBalance, "analyticalBalance");

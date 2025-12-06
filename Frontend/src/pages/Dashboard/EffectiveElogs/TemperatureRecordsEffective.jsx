@@ -44,7 +44,9 @@ export default function TempretureRecordsEffective() {
     additionalInfo: "",
     compression_area: "",
     TempratureRecords: [],
-    limit: "",
+    tempraturelimit: "",
+    HumidityRecords: '',
+    humiditylimit: "",
   });
   console.log(editData, "Edit Dataaa");
   const navigate = useNavigate();
@@ -254,7 +256,8 @@ export default function TempretureRecordsEffective() {
         unique_id: `TPR000${nextIndex + 1}`,
         time: currentTime,
         temprature_record: "",
-        remarks: "",
+        humidity_record: "",
+        remarks: "initiator",
         reviewed_by: "",
         approver_remarks: "",
         approved_by: "",
@@ -295,6 +298,13 @@ export default function TempretureRecordsEffective() {
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
+    console.log(name, value);
+  };
+
+  const handleInputChange2 = (e) => {
+    const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
+    console.log(name, value);
   };
 
   const EmptyreportData = {
@@ -303,6 +313,7 @@ export default function TempretureRecordsEffective() {
     blankRows: 17,
     form_id: location.state.form_id,
     temprature_record: [],
+    humidity_record: [],
   };
   const generateEmptyReport = async () => {
     setIsLoading1(true);
@@ -955,21 +966,45 @@ export default function TempretureRecordsEffective() {
                     </select>
                   </div> */}
 
+                  {/* temprature limit */}
+
                   <div className="group-input">
-                    <label className="color-label">Limit</label>
+                    <label className="color-label">Temprature Limit</label>
                     <div className="instruction"></div>
                     <input
-                      name="limit"
+                      name="tempraturelimit"
                       type="number"
                       className={`${
-                        editData?.limit < 23
-                          ? "limit"
-                          : editData?.limit > 27
-                          ? "limit"
+                        editData?.tempraturelimit < 23
+                          ? "tempraturelimit"
+                          : editData?.tempraturelimit > 27
+                          ? "tempraturelimit"
                           : ""
                       }`}
-                      value={editData?.limit}
+                      value={editData?.tempraturelimit}
                       onChange={handleInputChange1}
+                      readOnly={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
+                    />
+                  </div>
+
+                  {/* humidity limit */}
+                  <div className="group-input">
+                    <label className="color-label">Humidity Limit</label>
+                    <div className="instruction"></div>
+                    <input
+                      name="humiditylimit"
+                      type="number"
+                      className={`${
+                        editData?.humiditylimit < 20
+                          ? "humiditylimit"
+                          : editData?.humiditylimit > 27
+                          ? "humiditylimit"
+                          : ""
+                      }`}
+                      value={editData?.humiditylimit}
+                      onChange={handleInputChange2}
                       readOnly={[3, 2, 4].includes(
                         userDetails.roles[0].role_id
                       )}
@@ -988,7 +1023,8 @@ export default function TempretureRecordsEffective() {
                         <th>S no.</th>
                         <th>Unique Id</th>
                         <th>Time</th>
-                        <th>Temperature Record</th>
+                        <th>Temperature </th>
+                        <th>Humidity</th>
                         <th>Reviewer Remark</th>
                         <th>Checked By Reviewer</th>
                         <th>Approver Remark</th>
@@ -1010,9 +1046,9 @@ export default function TempretureRecordsEffective() {
                               type="number"
                               value={item.temprature_record}
                               className={`${
-                                item.temprature_record < editData.limit
+                                Number(item.temprature_record) < Number(editData.tempraturelimit) 
                                   ? "text-green-500"
-                                  : item.temprature_record > editData.limit
+                                  : Number(item.temprature_record) > Number(editData.tempraturelimit) 
                                   ? "text-red-600"
                                   : ""
                               }`}
@@ -1030,6 +1066,32 @@ export default function TempretureRecordsEffective() {
                               )}
                             />
                           </td>
+                          <td>
+                            <input
+                              type="number"
+                              value={item.humidity_record}
+                              className={`${
+                                Number(item.humidity_record )< Number(editData.humiditylimit)
+                                  ? "text-green-500"
+                                  : Number(item.humidity_record) >
+                                    Number(editData.humiditylimit)
+                                  ? "text-red-600"
+                                  : ""
+                              }`}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].humidity_record = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              readOnly={[3, 2, 4].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                            />
+                          </td>
+
                           <td>
                             <input
                               value={item.remarks}

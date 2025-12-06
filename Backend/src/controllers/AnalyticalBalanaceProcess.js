@@ -1517,6 +1517,7 @@ exports.ApproveDPElog = async (req, res) => {
 // get users based on roles, sites and processes
 exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
   const { role_id, site_id, process_id } = req.body;
+  
   try {
     // Fetch users based on role, site, and process
     const selectedUsers = await UserRole.findAll({

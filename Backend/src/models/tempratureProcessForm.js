@@ -110,6 +110,21 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   additionalInfo: {
     type: DataTypes.STRING,
   },
+   area_name:{
+    type:DataTypes.STRING,
+  },
+   room_id:{
+    type:DataTypes.STRING,
+  },
+   instrument_id:{
+    type:DataTypes.STRING,
+  },
+   acceptance_temperature:{
+    type:DataTypes.STRING,
+  },
+    relative_humidity_criteria:{
+       type:DataTypes.STRING,
+  }
 });
 
 TempratureProcessForm.belongsTo(Site, { foreignKey: "site_id" });

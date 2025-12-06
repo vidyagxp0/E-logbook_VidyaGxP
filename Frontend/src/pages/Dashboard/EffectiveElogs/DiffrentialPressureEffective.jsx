@@ -59,7 +59,7 @@ export default function DPREffective() {
   const handlePopupSubmit = (credentials) => {
     const cleanedData = editData.DifferentialPressureRecords.filter(
       (record) =>
-        record.differential_pressure.trim() !== "" ||
+        record.differential_pressure !== "" ||
         record.remarks.trim() !== ""
     );
 
@@ -250,10 +250,11 @@ export default function DPREffective() {
 
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        unique_id: `DPR000${nextIndex + 1}`,
+        date: formatDate(Date.now()),
         time: currentTime,
+        unique_id: generateUniqueId(),
         differential_pressure: "",
-        remarks: "",
+        remarks: "Initiator",
         reviewed_by: "",
         approver_remarks: "",
         approved_by: "",
@@ -380,12 +381,12 @@ export default function DPREffective() {
 
     return utcDate.toLocaleString("en-GB", {
       day: "2-digit",
-      month: "short",
+      month: "2-digit",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
+      // hour: "2-digit",
+      // minute: "2-digit",
+      // second: "2-digit",
+      // hour12: false,
     });
   };
 
@@ -1064,14 +1065,11 @@ export default function DPREffective() {
                     <thead>
                       <tr>
                         <th>S no.</th>
-                        <th>Unique Id</th>
+                        <th>Date</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
-                        <th>Reviewer Remark</th>
+                        <th>Done By</th>
                         <th>Checked By Reviewer</th>
-                        <th>Approver Remark</th>
-                        <th>Checked By Approver</th>
-                        <th>Supporting Documents</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -1080,9 +1078,26 @@ export default function DPREffective() {
                         (item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{item.unique_id}</td>
                             <td>
-                              <input value={item.time} readOnly />
+                              <input
+                                value={item.date}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].date = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                value={item.time}
+                                onChange={(e) => {
+                                  const newData = [...allTableData];
+                                  newData[index].time = e.target.value;
+                                  setAllTableData(newData);
+                                }}
+                                readOnly
+                              />
                             </td>
                             <td>
                               <input
@@ -1161,9 +1176,10 @@ export default function DPREffective() {
                                     <p>{item.reviewed_by}</p>
                                   )}
                                 </div>
+                                
                               </div>
                             </td>
-                            <td>
+                            {/* <td>
                               <input
                                 value={item.approver_remarks}
                                 onChange={(e) => {
@@ -1214,6 +1230,7 @@ export default function DPREffective() {
                                 </div>
                               </div>
                             </td>
+                            /*
                             <td style={{ width: "250px" }}>
                               <div className="d-flex">
                                 {item.supporting_docs ? (
@@ -1247,7 +1264,7 @@ export default function DPREffective() {
                                     style={{ color: "red", cursor: "pointer" }}
                                     onClick={() => handleDeleteFile(index)}
                                   /> */}
-                                    </h3>
+                                    {/* </h3>
                                   </div>
                                 ) : (
                                   <div className="file-upload-wrapper">
@@ -1276,7 +1293,7 @@ export default function DPREffective() {
                                   }
                                 />
                               </div>
-                            </td>
+                            </td>   */ }
 
                             <td>
                               <DeleteIcon onClick={() => deleteRow(index)} />
