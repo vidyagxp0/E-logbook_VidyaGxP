@@ -1,10 +1,10 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 const User = require("./users");
-const LoadedQuantityProcessForm = require("./loadedQuantityProcessForm");
+const EquipmentUsageProcessForm = require("./equipmentUsageProcessForm");
 
-const LoadedQuantityProcessAuditTrail = sequelize.define(
-  "LoadedQuantityProcessAuditTrail",
+const EquipmentUsageProcessAuditTrail = sequelize.define(
+  "EquipmentUsageProcessAuditTrail",
   {
     auditTrail_id: {
       type: DataTypes.INTEGER,
@@ -15,7 +15,7 @@ const LoadedQuantityProcessAuditTrail = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: LoadedQuantityProcessForm,
+        model: EquipmentUsageProcessForm,
         key: "form_id",
       },
     },
@@ -58,14 +58,14 @@ const LoadedQuantityProcessAuditTrail = sequelize.define(
   }
 );
 
-LoadedQuantityProcessAuditTrail.belongsTo(User, { foreignKey: "changed_by" });
-User.hasMany(LoadedQuantityProcessAuditTrail, { foreignKey: "changed_by" });
+EquipmentUsageProcessAuditTrail.belongsTo(User, { foreignKey: "changed_by" });
+User.hasMany(EquipmentUsageProcessAuditTrail, { foreignKey: "changed_by" });
 
-LoadedQuantityProcessAuditTrail.belongsTo(LoadedQuantityProcessForm, {
+EquipmentUsageProcessAuditTrail.belongsTo(EquipmentUsageProcessForm, {
   foreignKey: "form_id",
 });
-LoadedQuantityProcessForm.hasMany(LoadedQuantityProcessAuditTrail, {
+EquipmentUsageProcessForm.hasMany(EquipmentUsageProcessAuditTrail, {
   foreignKey: "form_id",
 });
 
-module.exports = LoadedQuantityProcessAuditTrail;
+module.exports = EquipmentUsageProcessAuditTrail;

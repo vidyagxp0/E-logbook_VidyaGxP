@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Auth = require("../middlewares/authentication");
-const LoadedQuantityRecordProcess = require("../controllers/LoadedQuantityRecordProcess");
+const EquipmentUsageRecordProcess = require("../controllers/EquipmentUsageRecordProcess");
 const multer = require("multer");
 const path = require("path");
 
@@ -25,123 +25,123 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// post LoadedQuantityRecordProcess elog
+// post EquipmentUsageRecordProcess elog
 router.post(
   "/post",
   Auth.checkUserJwtToken,
   upload.any(),
   Auth.authorizeUserRole(3, 1),
-  LoadedQuantityRecordProcess.InsertLoadedQuantity
+  EquipmentUsageRecordProcess.InsertEquipmentUsage
 );
 
-// edit LoadedQuantityRecordProcess elog details
+// edit EquipmentUsageRecordProcess elog details
 router.put(
   "/update",
   Auth.checkUserJwtToken,
   upload.any(),
   // Auth.authorizeUserRole(3, 1),
-  LoadedQuantityRecordProcess.EditLoadedQuantity
+  EquipmentUsageRecordProcess.EditEquipmentUsage
 );
 
-// //get a LoadedQuantityRecordProcess elog by id
+// //get a EquipmentUsageRecordProcess elog by id
 router.get(
   "/get/:id",
   Auth.checkUserJwtToken,
-  LoadedQuantityRecordProcess.GettLoadedQuantity
+  EquipmentUsageRecordProcess.GetEquipmentUsage
 );
 
-// //get all the LoadedQuantityRecordProcess elogs
+// //get all the EquipmentUsageRecordProcess elogs
 router.get(
   "/get-all",
   Auth.checkUserJwtToken,
-  LoadedQuantityRecordProcess.GetAlltLoadedQuantity
+  EquipmentUsageRecordProcess.GetAllEquipmentUsage
 );
 
-//send LoadedQuantityRecordProcess elog for review
+//send EquipmentUsageRecordProcess elog for review
 router.put(
   "/send-for-review",
   Auth.checkUserJwtToken,
   upload.any(),
   Auth.authorizeUserRole(3, 1),
-  LoadedQuantityRecordProcess.SendDPElogForReview
+  EquipmentUsageRecordProcess.SendEUElogForReview
 );
 
-// change status of LoadedQuantityRecordProcess elog from review to open
+// change status of EquipmentUsageRecordProcess elog from review to open
 router.put(
   "/send-review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(3, 2),
-  LoadedQuantityRecordProcess.SendDPElogfromReviewToOpen
+  EquipmentUsageRecordProcess.SendEUElogfromReviewToOpen
 );
 
-// send LoadedQuantityRecordProcess elog from review to approval
+// send EquipmentUsageRecordProcess elog from review to approval
 router.put(
   "/send-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(3, 2),
-  LoadedQuantityRecordProcess.SendDPfromReviewToApproval
+  EquipmentUsageRecordProcess.SendEUfromReviewToApproval
 );
 
-// send LoadedQuantityRecordProcess elog from under-approval to open
+// send EquipmentUsageRecordProcess elog from under-approval to open
 router.put(
   "/send-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
   Auth.authorizeUserRole(3, 3),
-  LoadedQuantityRecordProcess.SendDPfromApprovalToOpen
+  EquipmentUsageRecordProcess.SendEUfromApprovalToOpen
 );
 
-// APPROVE LoadedQuantityRecordProcess elog
+// APPROVE EquipmentUsageRecordProcess elog
 router.put(
   "/approve",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
   Auth.authorizeUserRole(3, 3),
-  LoadedQuantityRecordProcess.ApproveDPElog
+  EquipmentUsageRecordProcess.ApproveEUElog
 );
 
-// // get users based on roles, sites and processes
-// router.post(
-//   "/get-user-roleGroups",
-//   Auth.checkUserJwtToken,
-//   LoadedQuantityRecordProcess.GetUserOnBasisOfRoleGroup
-// );
+// get users based on roles, sites and processes
+router.post(
+  "/get-user-roleGroups",
+  Auth.checkUserJwtToken,
+  EquipmentUsageRecordProcess.GetUserOnBasisOfRoleGroup
+);
 
-// router.get("/get-processes", LoadedQuantityRecordProcess.getAllProcesses);
+// router.get("/get-processes", EquipmentUsageRecordProcess.getAllProcesses);
 
 router.get(
   "/get-audit-trail-for-elog/:id",
   Auth.checkUserJwtToken,
-  LoadedQuantityRecordProcess.getAuditTrailForAnElog
+  EquipmentUsageRecordProcess.getAuditTrailForAnElog
 );
 
 router.post(
   "/generate-pdf",
   Auth.checkUserJwtToken,
-  LoadedQuantityRecordProcess.generateReport
+  EquipmentUsageRecordProcess.generateReport
 );
 router.post(
   "/chat-pdf/:form_id",
   Auth.checkUserJwtToken,
-  LoadedQuantityRecordProcess.chatByPdf
+  EquipmentUsageRecordProcess.chatByPdf
 );
 
-router.post("/view-report", LoadedQuantityRecordProcess.viewReport);
+router.post("/view-report", EquipmentUsageRecordProcess.viewReport);
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,
-  LoadedQuantityRecordProcess.effetiveChatByPdf
+  EquipmentUsageRecordProcess.effetiveChatByPdf
 );
 
 router.post(
   "/effective-view-report",
-  LoadedQuantityRecordProcess.effetiveViewReport
+  EquipmentUsageRecordProcess.effetiveViewReport
 );
 router.post(
   "/blank-report/:form_id",
   Auth.checkUserJwtToken,
-  LoadedQuantityRecordProcess.blankReport
+  EquipmentUsageRecordProcess.blankReport
 );
 module.exports = router;

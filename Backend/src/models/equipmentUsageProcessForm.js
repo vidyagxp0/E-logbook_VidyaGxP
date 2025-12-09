@@ -3,8 +3,8 @@ const { DataTypes, Sequelize } = require("sequelize");
 const Site = require("./sites");
 const User = require("./users");
 
-const LoadedQuantityProcessForm = sequelize.define(
-  "LoadedQuantityProcessForm",
+const EquipmentUsageProcessForm = sequelize.define(
+  "EquipmentUsageProcessForm",
   {
     form_id: {
       type: DataTypes.INTEGER,
@@ -72,6 +72,24 @@ const LoadedQuantityProcessForm = sequelize.define(
     reviewComment: {
       type: DataTypes.STRING,
     },
+    equipment_name: {
+      type: DataTypes.STRING,
+    },
+    equipment_id: {
+      type: DataTypes.STRING,
+    },
+    department: {
+      type: DataTypes.STRING,
+    },
+    compression_area: {
+      type: DataTypes.STRING,
+    },
+    area_name: {
+      type: DataTypes.STRING,
+    },
+    limit: {
+      type: DataTypes.STRING,
+    },
     approverComment: {
       type: DataTypes.STRING,
     },
@@ -104,28 +122,28 @@ const LoadedQuantityProcessForm = sequelize.define(
   }
 );
 
-LoadedQuantityProcessForm.belongsTo(Site, { foreignKey: "site_id" });
-Site.hasMany(LoadedQuantityProcessForm, { foreignKey: "site_id" });
+EquipmentUsageProcessForm.belongsTo(Site, { foreignKey: "site_id" });
+Site.hasMany(EquipmentUsageProcessForm, { foreignKey: "site_id" });
 
-LoadedQuantityProcessForm.belongsTo(User, { foreignKey: "initiator_id" });
-User.hasMany(LoadedQuantityProcessForm, { foreignKey: "initiator_id" });
+EquipmentUsageProcessForm.belongsTo(User, { foreignKey: "initiator_id" });
+User.hasMany(EquipmentUsageProcessForm, { foreignKey: "initiator_id" });
 
-LoadedQuantityProcessForm.belongsTo(User, {
+EquipmentUsageProcessForm.belongsTo(User, {
   foreignKey: "reviewer_id",
   as: "reviewer1",
 });
-User.hasMany(LoadedQuantityProcessForm, {
+User.hasMany(EquipmentUsageProcessForm, {
   foreignKey: "reviewer_id",
   as: "reviewer1",
 });
 
-LoadedQuantityProcessForm.belongsTo(User, {
+EquipmentUsageProcessForm.belongsTo(User, {
   foreignKey: "approver_id",
   as: "approver1",
 });
-User.hasMany(LoadedQuantityProcessForm, {
+User.hasMany(EquipmentUsageProcessForm, {
   foreignKey: "approver_id",
   as: "approver1",
 });
 
-module.exports = LoadedQuantityProcessForm;
+module.exports = EquipmentUsageProcessForm;

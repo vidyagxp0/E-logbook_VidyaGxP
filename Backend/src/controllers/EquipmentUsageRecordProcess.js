@@ -1,5 +1,5 @@
-const LoadedQuantityProcessForm = require("../models/loadedQuantityProcessForm");
-const LoadedQuantityRecord = require("../models/loadedQuantityRecords");
+const EquipmentUsageProcessForm = require("../models/equipmentUsageProcessForm");
+const EquipmentUsageRecord = require("../models/equipmentUsageRecords");
 const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
@@ -7,7 +7,7 @@ const UserRole = require("../models/userRoles");
 const { Op, ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
-const LoadedQuantityProcessAuditTrail = require("../models/loadedQuantityProcessAuditTrail");
+const EquipmentUsageProcessAuditTrail = require("../models/equipmentUsageAuditTrail");
 const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
@@ -20,13 +20,14 @@ const getUserById = async (user_id) => {
 };
 
 // Fill Differential pressure form and insert its records.
-exports.InsertLoadedQuantity = async (req, res) => {
+exports.InsertEquipmentUsage = async (req, res) => {
   const {
     site_id,
     description,
     department,
     compression_area,
     limit,
+    area_name,
     reviewer_id,
     approver_id,
     initiatorComment,
@@ -36,6 +37,10 @@ exports.InsertLoadedQuantity = async (req, res) => {
     initiatorDeclaration,
     additionalAttachment,
     additionalInfo,
+    equipment_name,
+    equipment_id,
+    
+
   } = req.body;
 
   if (!approver_id) {
@@ -93,7 +98,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
     });
 
     // Create new Differential Pressure Form
-    const newForm = await LoadedQuantityProcessForm.create(
+    const newForm = await EquipmentUsageProcessForm.create(
       {
         site_id: site_id,
         initiator_id: user.user_id,
@@ -102,6 +107,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         status: "Opened",
         stage: 1,
         department: department,
+        area_name: area_name,
         compression_area: compression_area,
         limit: limit,
         reviewer_id: reviewer_id,
@@ -110,6 +116,9 @@ exports.InsertLoadedQuantity = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
+        equipment_name: equipment_name,
+        equipment_id: equipment_id,
+
       },
 
       { transaction }
@@ -119,6 +128,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
     const fields = {
       description,
       department,
+      area_name,
       compression_area,
       limit,
       reviewer: (await getUserById(reviewer_id))?.name,
@@ -191,7 +201,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
         approved_by: record?. approved_by
       }));
 
-      await LoadedQuantityRecord.bulkCreate(formRecords, { transaction });
+      await EquipmentUsageRecord.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
@@ -318,7 +328,7 @@ exports.InsertLoadedQuantity = async (req, res) => {
       });
     }
 
-    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+    await EquipmentUsageProcessAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -345,12 +355,13 @@ exports.InsertLoadedQuantity = async (req, res) => {
 };
 
 // edit differential pressure elog details
-exports.EditLoadedQuantity = async (req, res) => {
+exports.EditEquipmentUsage = async (req, res) => {
   const {
     form_id,
     site_id,
     description,
     department,
+    area_name,
     compression_area,
     limit,
     reviewer_id,
@@ -409,7 +420,7 @@ exports.EditLoadedQuantity = async (req, res) => {
       }
     });
 
-    const form = await LoadedQuantityProcessForm.findOne({
+    const form = await EquipmentUsageProcessForm.findOne({
       where: { form_id: form_id },
       transaction,
     });
@@ -430,6 +441,7 @@ exports.EditLoadedQuantity = async (req, res) => {
     const fields = {
       description,
       department,
+      area_name,
       compression_area,
       limit,
       initiatorComment,
@@ -467,6 +479,7 @@ exports.EditLoadedQuantity = async (req, res) => {
         site_id,
         description,
         department,
+        area_name,
         compression_area,
         limit,
         reviewer_id,
@@ -484,7 +497,7 @@ exports.EditLoadedQuantity = async (req, res) => {
       Array.isArray(LoadedQuantityRecords) &&
       LoadedQuantityRecords.length > 0
     ) {
-      const existingRecords = await LoadedQuantityRecord.findAll({
+      const existingRecords = await EquipmentUsageRecord.findAll({
         where: { form_id: form_id },
         raw: true,
         // order: [["record_id", "DESC"]],
@@ -578,7 +591,7 @@ exports.EditLoadedQuantity = async (req, res) => {
       }
 
       // Delete existing records for the form
-      await LoadedQuantityRecord.destroy({
+      await EquipmentUsageRecord.destroy({
         where: { form_id: form_id },
         transaction,
       });
@@ -604,10 +617,10 @@ exports.EditLoadedQuantity = async (req, res) => {
         approved_by: record?. approved_by
       }));
 
-      await LoadedQuantityRecord.bulkCreate(formRecords, { transaction });
+      await EquipmentUsageRecord.bulkCreate(formRecords, { transaction });
     }
 
-    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+    await EquipmentUsageProcessAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -633,7 +646,7 @@ exports.EditLoadedQuantity = async (req, res) => {
 };
 
 //get a differential pressure elog by id
-exports.GettLoadedQuantity = async (req, res) => {
+exports.GetEquipmentUsage = async (req, res) => {
   const form_id = req.params.id;
 
   if (!form_id) {
@@ -642,13 +655,13 @@ exports.GettLoadedQuantity = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }
 
-  LoadedQuantityProcessForm.findOne({
+  EquipmentUsageProcessForm.findOne({
     where: {
       form_id: form_id,
     },
     include: [
       {
-        model: LoadedQuantityRecord,
+        model: EquipmentUsageRecord,
       },
     ],
   })
@@ -667,11 +680,11 @@ exports.GettLoadedQuantity = async (req, res) => {
 };
 
 //get all the differential pressure elogs
-exports.GetAlltLoadedQuantity = async (req, res) => {
-  LoadedQuantityProcessForm.findAll({
+exports.GetAllEquipmentUsage = async (req, res) => {
+  EquipmentUsageProcessForm.findAll({
     include: [
       {
-        model: LoadedQuantityRecord,
+        model: EquipmentUsageRecord,
       },
       {
         model: User,
@@ -701,7 +714,7 @@ exports.GetAlltLoadedQuantity = async (req, res) => {
 };
 
 //send differential pressure elog for review
-exports.SendDPElogForReview = async (req, res) => {
+exports.SendEUElogForReview = async (req, res) => {
   const { form_id, email, password, initiatorDeclaration, initiatorComment } =
     req.body;
 
@@ -744,7 +757,7 @@ exports.SendDPElogForReview = async (req, res) => {
     }
 
     // Find the form
-    const form = await LoadedQuantityProcessForm.findOne({
+    const form = await EquipmentUsageProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -827,7 +840,7 @@ exports.SendDPElogForReview = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+    await EquipmentUsageProcessAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -850,7 +863,7 @@ exports.SendDPElogForReview = async (req, res) => {
 };
 
 // change status of differential pressure elog from review to open
-exports.SendDPElogfromReviewToOpen = async (req, res) => {
+exports.SendEUElogfromReviewToOpen = async (req, res) => {
   const { form_id, email, password, reviewerDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -892,7 +905,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     }
 
     // Find the form
-    const form = await LoadedQuantityProcessForm.findOne({
+    const form = await EquipmentUsageProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -950,7 +963,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+    await EquipmentUsageProcessAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -973,7 +986,7 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
 };
 
 // send differential pressure elog from review to approval
-exports.SendDPfromReviewToApproval = async (req, res) => {
+exports.SendEUfromReviewToApproval = async (req, res) => {
   const { form_id, reviewComment, email, password, reviewerDeclaration } =
     req.body;
 
@@ -1021,7 +1034,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     }
 
     // Find the form
-    const form = await LoadedQuantityProcessForm.findOne({
+    const form = await EquipmentUsageProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1097,7 +1110,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+    await EquipmentUsageProcessAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -1121,7 +1134,7 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
 };
 
 // send differential pressure elog from under approval to open
-exports.SendDPfromApprovalToOpen = async (req, res) => {
+exports.SendEUfromApprovalToOpen = async (req, res) => {
   const { form_id, email, password, approverDeclaration } = req.body;
 
   // Check for required fields and provide specific error messages
@@ -1163,7 +1176,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     }
 
     // Find the form
-    const form = await LoadedQuantityProcessForm.findOne({
+    const form = await EquipmentUsageProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1221,7 +1234,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+    await EquipmentUsageProcessAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -1245,7 +1258,7 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
 };
 
 // APPROVE differential pressure elog
-exports.ApproveDPElog = async (req, res) => {
+exports.ApproveEUElog = async (req, res) => {
   const { form_id, approverComment, email, password, approverDeclaration } =
     req.body;
 
@@ -1293,7 +1306,7 @@ exports.ApproveDPElog = async (req, res) => {
     }
 
     // Find the form
-    const form = await LoadedQuantityProcessForm.findOne({
+    const form = await EquipmentUsageProcessForm.findOne({
       where: { form_id },
       transaction,
     });
@@ -1369,7 +1382,7 @@ exports.ApproveDPElog = async (req, res) => {
     );
 
     // Insert audit trail entries
-    await LoadedQuantityProcessAuditTrail.bulkCreate(auditTrailEntries, {
+    await EquipmentUsageProcessAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -1392,54 +1405,54 @@ exports.ApproveDPElog = async (req, res) => {
 };
 
 // get users based on roles, sites and processes
-// exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
-//   const { role_id, site_id, process_id } = req.body;
+exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
+  const { role_id, site_id, process_id } = req.body;
 
-//   try {
-//     // Fetch users based on role, site, and process
-//     const selectedUsers = await UserRole.findAll({
-//       where: {
-//         [Op.or]: [
-//           { role_id: role_id, process_id: process_id, site_id: site_id },
-//           { role_id: 5, process_id: process_id, site_id: site_id },
-//         ],
-//       },
-//       include: {
-//         model: User,
-//         where: { isActive: true },
-//       },
-//     });
+  try {
+    // Fetch users based on role, site, and process
+    const selectedUsers = await UserRole.findAll({
+      where: {
+        [Op.or]: [
+          { role_id: role_id, process_id: process_id, site_id: site_id },
+          { role_id: 5, process_id: process_id, site_id: site_id },
+        ],
+      },
+      include: {
+        model: User,
+        where: { isActive: true },
+      },
+    });
 
-//     // Send the response with the fetched users
-//     return res.status(200).json({
-//       error: false,
-//       message: selectedUsers,
-//     });
-//   } catch (error) {
-//     // Catch any errors and send an appropriate response
-//     console.error("Error fetching users:", error);
-//     return res.status(500).json({
-//       error: true,
-//       message: `Error fetching users: ${error.message}`,
-//     });
-//   }
-// };
+    // Send the response with the fetched users
+    return res.status(200).json({
+      error: false,
+      message: selectedUsers,
+    });
+  } catch (error) {
+    // Catch any errors and send an appropriate response
+    console.error("Error fetching users:", error);
+    return res.status(500).json({
+      error: true,
+      message: `Error fetching users: ${error.message}`,
+    });
+  }
+};
 
-// exports.getAllProcesses = async (req, res) => {
-//   Process.findAll()
-//     .then((result) => {
-//       res.json({
-//         error: false,
-//         message: result,
-//       });
-//     })
-//     .catch((error) => {
-//       res.status(400).json({
-//         error: true,
-//         message: "Couldn't find processes " + error,
-//       });
-//     });
-// };
+exports.getAllProcesses = async (req, res) => {
+  Process.findAll()
+    .then((result) => {
+      res.json({
+        error: false,
+        message: result,
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: true,
+        message: "Couldn't find processes " + error,
+      });
+    });
+};
 
 exports.getAuditTrailForAnElog = async (req, res) => {
   try {
@@ -1454,7 +1467,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     }
 
     // Find all audit trail entries for the given form_id
-    const auditTrail = await LoadedQuantityProcessAuditTrail.findAll({
+    const auditTrail = await EquipmentUsageProcessAuditTrail.findAll({
       where: { form_id: formId },
       include: {
         model: User,
@@ -1823,7 +1836,7 @@ exports.blankReport = async (req, res) => {
       SupportingDocuments: "",
     });
 
-    const data = reportData?.LoadedQuantityRecord?.map((record) => ({
+    const data = reportData?.EquipmentUsageRecord?.map((record) => ({
       unique_id: record?.unique_id || "",
       date: record?.date || "",
       product_name: record?.product_name || "",

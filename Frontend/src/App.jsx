@@ -77,7 +77,9 @@ import VacuumOvenOpEffective from "./pages/Dashboard/EffectiveElogs/VacuumOvenOp
 import VacuumOvenOpPanel from "./pages/documentPanels/VacuumOvenOp/VacuumOvenOpPanel.jsx";
 import VacuumOvenOp from "./pages/configForms/VacuumOvenOp/VacuumOvenOp.jsx";
 import TemperatureRecord from "./pages/documentPanels/Medicef/TemperatureRecord/TemperatureRecord.jsx";
+import EquipmentUsage from "./pages/documentPanels/Medicef/EquipmentUsage/EquipmentUsage.jsx";
 import DifferentialPressureRecordPanel from "./pages/documentPanels/Medicef/DifferentialPressureRecord/DifferentialPressureRecordPanel.jsx";
+import EquipmentUsagePanel from "./pages/documentPanels/Medicef/EquipmentUsage/EquipmentUsagePanel.jsx";
 
 function App() {
   return (
@@ -144,6 +146,10 @@ function App() {
             <Route
               path="/temperature-record-panel"
               element={<ProtectedRoute element={<TemperatureRecordPanel />} />}
+            />
+            <Route
+              path="/equipment-usage-panel"
+              element={<ProtectedRoute element={<EquipmentUsagePanel />} />}
             />
             <Route
               path="/ecc-panel"
@@ -344,9 +350,10 @@ function App() {
               element={<ProtectedRoute element={<TemperatureRecord />} />}
             />
             <Route
-              path="/loaded-quantity"
-              element={<ProtectedRoute element={<LoadedQuantity />} />}
+              path="/equipment-usage"
+              element={<ProtectedRoute element={<EquipmentUsage />} />}
             />
+            
             <Route
               path="/operations-of-sterilizer"
               element={<ProtectedRoute element={<OperationOfSterilizer />} />}

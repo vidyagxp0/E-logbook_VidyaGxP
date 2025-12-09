@@ -89,7 +89,7 @@ function CreateRecordModal(_props) {
         });
         break;
       case 3:
-        navigate("/loaded-quantity", {
+        navigate("/equipment-usage", {
           state: division,
         });
         break;

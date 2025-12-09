@@ -15,7 +15,7 @@ const path = require("path");
 const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
 const DispenseOfMatrialAuditTrail = require("../models/dispensingOfMaterialAuditTrail");
-const LoadedQuantityProcessAuditTrail = require("../models/loadedQuantityProcessAuditTrail");
+const EquipmentUsageProcessAuditTrail = require("../models/equipmentUsageAuditTrail");
 const MediaRecordAuditTrail = require("../models/mediaRecordAuditTrail");
 const OperationOfSterilizerProcessAuditTrail = require("../models/OperationOfSterilizerProcessAuditTrail");
 const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
@@ -2128,8 +2128,8 @@ exports.generateAuditPdfbyId = async (req, res) => {
         });
         break;
       
-      case "LoadedQuantityProcessAuditTrail":
-        getData = await LoadedQuantityProcessAuditTrail.findAll({
+      case "EquipmentUsageProcessAuditTrail":
+        getData = await EquipmentUsageProcessAuditTrail.findAll({
           where: { form_id: formId },
           include: {
             model: User,

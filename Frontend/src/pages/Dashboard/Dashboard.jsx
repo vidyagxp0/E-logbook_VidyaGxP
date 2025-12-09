@@ -18,8 +18,7 @@ function Dashboard() {
   const [karlFischerElogs, setKarlFischerElogs] = useState([]);
   const [hplcElogs, setHplcElogs] = useState([]);
   // const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
-  const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
-  const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
+  const [equipmentUsageElogs, setEquipmentUsageElogs] = useState([]);
   const [mediaRecordElogs, setMediaRecordElogs] = useState([]);
   const [dispensingOfMaterialsElogs, setDispensingOfMaterialsElogs] = useState(
     []
@@ -114,13 +113,13 @@ useEffect(() => {
 
     const newConfigloaded = {
       method: "get",
-      url: "http://localhost:1000/loaded-quantity/get-all",
+      url: "http://localhost:1000/equipment-usage/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
       },
     };
-
+  
     axios(newConfigloaded)
       .then((response) => {
         const allLoadedQuantityElogs = response.data.message;
@@ -134,7 +133,7 @@ useEffect(() => {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setLoadedQuantityElogs(allLoadedQuantityElogs);
+        setEquipmentUsageElogs(allLoadedQuantityElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -469,8 +468,8 @@ useEffect(() => {
       navigate("/temperature-record-panel", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
       navigate("/ecc-panel", { state: item });
-    } else if (item.LoadedQuantityRecords) {
-      navigate("/loaded-quantity-panel", { state: item });
+    } else if (item.EquipmentUsageRecords) {
+      navigate("/equipment-usage-panel", { state: item });
     } else if (item.MediaRecords) {
       navigate("/media-record-panel", { state: item });
     } else if (item.OperationOfSterilizerRecords) {
@@ -518,7 +517,7 @@ useEffect(() => {
   const processKey = {
   1: "DifferentialPressureRecords",
   2: "TempratureRecords",
-  3: "LoadedQuantityRecords",
+  3: "EquipmentUsageRecords",
   4: "OperationOfSterilizerRecords",
   5: "MediaRecords",
   6: "DispenseOfMaterials",
@@ -535,7 +534,7 @@ useEffect(() => {
 const processShortName = {
   1: "DP",       // Differential Pressure
   2: "TR",       // Temperature Record
-  3: "LQ",       // Loaded Quantity
+  3: "EU",       // Equipment Usage
   4: "OS",       // Operation of Sterilizer
   5: "MR",       // Media Record
   6: "DM",       // Dispensing Material
@@ -559,8 +558,9 @@ const getElogNumber = (item) => {
 
   const shortName = processShortName[processId];
   const index = String(item.form_id).padStart(3, "0");
-
+  
   return `MED/BIOS/${shortName}/${index}`;
+  
 };
 
     
@@ -580,7 +580,7 @@ useEffect(() => {
   let allData = [
     ...differentialPressureElogs.map(r => ({ ...r, process_id: 1 })),
     ...tempratureRecordElogs.map(r => ({ ...r, process_id: 2 })),
-    ...loadedQuantityElogs.map(r => ({ ...r, process_id: 3 })),
+    ...equipmentUsageElogs.map(r => ({ ...r, process_id: 3 })),
     ...operationOfSterilizerElogs.map(r => ({ ...r, process_id: 4 })),
     ...mediaRecordElogs.map(r => ({ ...r, process_id: 5 })),
     ...dispensingOfMaterialsElogs.map(r => ({ ...r, process_id: 6 })),
@@ -602,12 +602,10 @@ useEffect(() => {
 
   // ⭐ FILTER FINAL  
   const finalFiltered = allData.filter((item) => {
-    console.log(item,"this is itemsss")
     const elogNo = getElogNumber(item);
 
     const instrumentMatch =
       eLogInstrument === "All" || elogNo === eLogInstrument;
-      console.log(instrumentMatch,"instrumentMatch>>>>>")
 
     const searchMatch =
       item?.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -629,7 +627,7 @@ useEffect(() => {
   eLogInstrument,
   differentialPressureElogs,
   tempratureRecordElogs,
-  loadedQuantityElogs,
+  equipmentUsageElogs,
   mediaRecordElogs,
   dispensingOfMaterialsElogs,
   operationOfSterilizerElogs,
@@ -649,9 +647,8 @@ useEffect(() => {
   useEffect(() => {
     const filteredData = [
       ...differentialPressureElogs,
-      ...equipmentCRecordElogs,
       ...tempratureRecordElogs,
-      ...loadedQuantityElogs,
+      ...equipmentUsageElogs,
       ...mediaRecordElogs,
       ...dispensingOfMaterialsElogs,
       ...operationOfSterilizerElogs,
@@ -707,9 +704,8 @@ useEffect(() => {
     searchTerm,
     eLogStatus,
     differentialPressureElogs,
-    equipmentCRecordElogs,
     tempratureRecordElogs,
-    loadedQuantityElogs,
+    equipmentUsageElogs,
     mediaRecordElogs,
     dispensingOfMaterialsElogs,
     operationOfSterilizerElogs,
@@ -766,7 +762,7 @@ useEffect(() => {
                 Equipment Cleaning Checklist
               </option>
               <option value="temperature_records">Temperature Records</option>
-              <option value="loaded_quantity">Loaded Quantity</option>
+              <option value="loaded_quantity">Equipment Usage</option>
               <option value="media_record">Media Record</option>
               <option value="operation_of_sterilizer">
                 Operation Of Sterilizer
@@ -840,7 +836,6 @@ useEffect(() => {
               ? differentialPressureElogs?.map((item, index) => {
                   const cleanHTML =
                     item?.description.replace(/^"|"$/g, "").trim() || "NA";
-                    console.log(differentialPressureElogs,"differentialPressureElogs")
                   return (
                     <tr key={item.index}>
                       <td>{index + 1}</td>
@@ -904,23 +899,7 @@ useEffect(() => {
                 })
               : null}
 
-            {eLogSelect === "equipment_cleaning"
-              ? equipmentCRecordElogs?.map((item, index) => {
-                  return (
-                    <tr key={item.index}>
-                      <td> {index + 1}</td>
-                      <td onClick={() => navigate("/ecc-panel")}>
-                        {item.eLogId}
-                      </td>
-                      <td>{item.process}</td>
-                      <td>{item.initiator}</td>
-                      <td>{item.dateOfInitiation}</td>
-                      <td>{item.shortDescription}</td>
-                      <td>{item.status}</td>
-                    </tr>
-                  );
-                })
-              : null}
+           
 
             {eLogSelect === "temperature_records"
               ? tempratureRecordElogs?.map((item, index) => {
@@ -970,8 +949,8 @@ useEffect(() => {
                   );
                 })
               : null}
-            {eLogSelect === "loaded_quantity"
-              ? loadedQuantityElogs?.map((item, index) => {
+            {eLogSelect === "equipment_usage"
+              ? equipmentUsageElogs?.map((item, index) => {
                   const cleanHTML =
                     item?.description.replace(/^"|"$/g, "").trim() || "NA";
                   return (
@@ -983,7 +962,7 @@ useEffect(() => {
                           color: "black",
                         }}
                         onClick={() =>
-                          navigate("/loaded-quantity-panel", { state: item })
+                          navigate("/equipment-usage-panel", { state: item })
                         }
                         onMouseEnter={(e) => {
                           e.target.style.color = "blue";
@@ -994,7 +973,7 @@ useEffect(() => {
                       >
                         {getElogNumber(item)}
                       </td>
-                      <td>Loaded Quantity</td>
+                      <td>Equipment Usage</td>
                       <td>
                         {item.site_id === 1
                           ? "India"
@@ -1670,7 +1649,7 @@ useEffect(() => {
                           ? getElogNumber(item)
                           : item.TempratureRecords
                           ? getElogNumber(item)
-                          : item.LoadedQuantityRecords
+                          : item.EquipmentUsageRecords
                           ? getElogNumber(item)
                           : item.OperationOfSterilizerRecords
                           ? getElogNumber(item)
@@ -1704,8 +1683,8 @@ useEffect(() => {
                           ? "Differential Pressure"
                           : item.TempratureRecords
                           ? "Temperature Records"
-                          : item.LoadedQuantityRecords
-                          ? "Loaded Quantity"
+                          : item.EquipmentUsageRecords
+                          ? "Equipment Usage"
                           : item.OperationOfSterilizerRecords
                           ? "Operation of Sterilizer"
                           : item.MediaRecords

@@ -14,11 +14,6 @@ const fs = require("fs");
 const path = require("path");
 const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
-const DispenseOfMatrialAuditTrail = require("../models/dispensingOfMaterialAuditTrail");
-const LoadedQuantityProcessAuditTrail = require("../models/loadedQuantityProcessAuditTrail");
-const MediaRecordAuditTrail = require("../models/mediaRecordAuditTrail");
-const OperationOfSterilizerProcessAuditTrail = require("../models/OperationOfSterilizerProcessAuditTrail");
-const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });

@@ -64,7 +64,6 @@ function DepartmentSel(_props) {
       const filteredProcesses = response.data.message.filter((process) =>
         filteredProcessIds.includes(process.process_id)
       );
-      console.log(filteredProcesses, "filterdProcess");
 
       setProcesses(filteredProcesses);
       console.log(filteredProcesses);

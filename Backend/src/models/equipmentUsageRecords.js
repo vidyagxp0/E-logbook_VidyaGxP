@@ -1,9 +1,9 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
-const LoadedQuantityProcessForm = require("./loadedQuantityProcessForm")
+const EquipmentUsageProcessForm = require("./equipmentUsageProcessForm")
 
-const LoadedQuantityRecord = sequelize.define(
-  "LoadedQuantityRecord",
+const EquipmentUsageRecord = sequelize.define(
+  "EquipmentUsageRecord",
   {
     record_id: {
       type: DataTypes.INTEGER,
@@ -14,7 +14,7 @@ const LoadedQuantityRecord = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: LoadedQuantityProcessForm,
+        model: EquipmentUsageProcessForm,
         key: 'form_id',
       }
     },
@@ -65,7 +65,7 @@ const LoadedQuantityRecord = sequelize.define(
   }
 );
 
-LoadedQuantityRecord.belongsTo(LoadedQuantityProcessForm, { foreignKey: 'form_id' });
-LoadedQuantityProcessForm.hasMany(LoadedQuantityRecord, { foreignKey: 'form_id' });
+EquipmentUsageRecord.belongsTo(EquipmentUsageProcessForm, { foreignKey: 'form_id' });
+EquipmentUsageProcessForm.hasMany(EquipmentUsageRecord, { foreignKey: 'form_id' });
 
-module.exports = LoadedQuantityRecord;
+module.exports = EquipmentUsageRecord;
