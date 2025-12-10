@@ -57,7 +57,6 @@
 
         thead {
             display: table-header-group;
-            /* ⭐ Header har page par repeat hoga */
         }
 
         tfoot {
@@ -99,7 +98,6 @@
 
         <% if (reportData.TempratureRecords && reportData.TempratureRecords.length > 0) { %>
 
-        <!-- ⭐ TABLE ONLY ONE TIME -->
         <table>
             <thead>
                 <tr>
@@ -132,13 +130,13 @@
                         <%= record?.temprature_record || "Not Applicable" %>
                     </td>
 
-<td class="<%= 
-    Number(record?.humidity_record) < Number(reportData?.relative_humidity_criteria)
-        ? 'green'
-        : Number(record?.humidity_record) > Number(reportData?.relative_humidity_criteria)
-            ? 'red'
-            : 'black'
-%>">
+                    <td class="<%= 
+                        Number(record?.humidity_record) < Number(reportData?.relative_humidity_criteria)
+                            ? 'green'
+                            : Number(record?.humidity_record) > Number(reportData?.relative_humidity_criteria)
+                                ? 'red'
+                                : 'black'
+                    %>">
 
                         <%= record?.humidity_record || "Not Applicable" %>
                     </td>
@@ -164,8 +162,7 @@
         <% } else { %>
         <p>No Temperature Process Records Found.</p>
         <% } %>
-
-        <!-- ADDITIONAL SECTION -->
+        
         <div class="remarks">
             <h2 class="heading">Additional</h2>
 
