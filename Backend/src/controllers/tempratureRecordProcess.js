@@ -200,6 +200,7 @@ console.log(req.body,"shivam")
         time: record?.time, // Assuming time was meant here instead of unique_id again
         temprature_record: record?.temprature_record,
         remarks: record?.remarks,
+        done_by: record?.done_by,
         approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
@@ -255,6 +256,17 @@ console.log(req.body,"shivam")
           field_name: "Remarks",
           previous_value: null,
           new_value: record.remarks,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Done by",
+          previous_value: null,
+          new_value: record.done_by,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -486,6 +498,7 @@ exports.EditTempratureRecord = async (req, res) => {
           const recordFields = {
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
+            done_by: newRecord.done_by,
             approver_remarks: newRecord?.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
@@ -531,6 +544,7 @@ exports.EditTempratureRecord = async (req, res) => {
             checked_by: newRecord?.checked_by,
             temprature_record: newRecord.temprature_record,
             remarks: newRecord.remarks,
+            done_by: newRecord.done_by,
             approver_remarks: newRecord?.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
@@ -569,6 +583,7 @@ exports.EditTempratureRecord = async (req, res) => {
         time: record?.time || "",
         temprature_record: record?.temprature_record || "",
         remarks: record?.remarks || "",
+        done_by: record?.done_by || "",
         approver_remarks: record?.approver_remarks || "",
         checked_by: record?.checked_by || "",
         reviewed_by: record?.reviewed_by || "",
@@ -1585,6 +1600,7 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
+    // console.log(reportData,"reportData");
     const formId = req.params.form_id;
     reportData.description = removeHtmlTags(reportData.description);
 
@@ -1613,7 +1629,7 @@ exports.chatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoPath = path.join(__dirname, "../public/medicef_logo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1823,6 +1839,7 @@ exports.blankReport = async (req, res) => {
       time: record?.time || "",
       temprature_record: record?.temprature_record || "",
       remarks: record?.remarks || "",
+      done_by: record?.done_by || "",
       approver_remarks: record?.approver_remarks ||"",
       reviewed_by: record?.reviewed_by || "",
       approved_by: record?.approved_by ||"",
