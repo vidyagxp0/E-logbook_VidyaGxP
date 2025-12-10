@@ -1,150 +1,126 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
   <style>
     body {
         font-family: Arial, sans-serif;
         font-size: 14px;
         margin: 20px;
         line-height: 1.6;
-      }
-      
-      .report-content {
-        margin-top: 30px; /* Increase margin top for more spacing */
-      }
-      
-      h1, h2 {
-        margin-bottom: 20px;
-        text-align: left; /* Align headings to the left */
-        clear: both; /* Clear floats to prevent overlap */
-      }
-      
-      h1 {
-        font-size: 24px;
-      }
-      
-      h2 {
+    }
+
+    h2.heading {
+        padding-top: 35px;
         font-size: 18px;
         color: #0066CC;
-      }
-      
-      p {
-        font-size: 14px;
-        margin-bottom: 10px;
-      }
-      
-      table {
+        margin-bottom: 15px;
+    }
+
+    table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 30px; /* Increase margin bottom for more spacing */
-        border: 1px solid #000; /* Add border to the table */
-      }
-      
-      th, td {
-        border: 1px solid #000; /* Add border to table cells */
-        padding: 10px; /* Adjusted padding for better spacing */
+        margin-bottom: 25px;
+        border: 1px solid #000;
+        page-break-inside: auto;
+    }
+
+    th, td {
+        border: 1px solid #000;
+        padding: 8px;
         text-align: left;
-      }
-      
-      th {
-        background-color: #f8f8f8;
+        font-size: 13px;
+    }
+
+    th {
+        background: #f8f8f8;
         font-weight: bold;
-      }
-      
-      .remarks {
+    }
+
+    thead {
+        display: table-header-group; /* 🔥 PRINT PAR HEADER AUTO REPEAT */
+    }
+
+    tr {
         page-break-inside: avoid;
-      }
-      .heading
-      {
-        padding-top: 35px;
-      }
-            .green {
-        color: green;
-        font-weight: bold;
-    }
-    .red {
-        color: red;
-        font-weight: bold;
-    }
-    .black {
-        color: black;
-        font-weight: bold;
+        page-break-after: auto;
     }
 
-      </style>
-      
-    
-    <body>
-    <div class="report-content">
-        <h2 class="heading">Differential Pressure Records</h2>
-        <% if (reportData.DifferentialPressureRecords && reportData.DifferentialPressureRecords.length > 0) { %>
-            <% reportData.DifferentialPressureRecords.forEach(record => { %>
-            <div class="listItem">
-                <table>
-                    <tr>
-                        <th>Unique Id</th>
-                        <td><%= record?.unique_id || "Not Applicable" %></td>
-                        <th>Time</th>
-                        <td><%= record?.time || "Not Applicable" %></td>
-                    </tr>
-                    <tr>
-                        <th>Differential Pressure</th>
-                        <td class="<%= 
-    record?.differential_pressure < reportData?.limit 
-        ? 'green' 
-        : record?.differential_pressure > reportData?.limit 
-            ? 'red' 
-            : 'black' 
-%>"><%= record?.differential_pressure || "Not Applicable" %></td>
-                        <th>Remark</th>
-                        <td><%= record?.remarks || "Not Applicable" %></td>
-                    </tr>
-                    <tr>
-                        <th>Checked By</th>
-                        <td>
-                                <%= record?.reviewed_by || "Not Applicable" %>
-                            </td>
-                        <th>Supporting Documents</th>
-                        <td>
-                            <% if (record?.supporting_docs) { %>
-                                <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
-                            <% } else { %>
-                                Not Applicable
-                            <% } %>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <hr />
-            <% }) %>
+    .green { color: green; font-weight: bold; }
+    .red { color: red; font-weight: bold; }
+    .black { color: black; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+
+  <h2 class="heading">Differential Pressure Records</h2>
+
+  <div style="margin-bottom: 10px;">
+    <strong style="font-size: medium;">Limit:</strong>
+    <span><%= reportData?.limit %></span>
+  </div>
+
+  <% if (reportData.DifferentialPressureRecords && reportData.DifferentialPressureRecords.length > 0) { %>
+
+  <!-- 🔥 Table only once — rows dynamically inside -->
+  <table>
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Differential Pressure</th>
+        <th>Done by</th>
+        <th>Checked By Reviewer</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% reportData.DifferentialPressureRecords.forEach((record, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= record?.date || "Not Applicable" %></td>
+          <td><%= record?.time || "Not Applicable" %></td>
+
+          <td class="<%= 
+                record?.differential_pressure < reportData?.limit 
+                    ? 'green' 
+                    : record?.differential_pressure > reportData?.limit 
+                        ? 'red' 
+                        : 'black' 
+            %>">
+            <%= record?.differential_pressure || "Not Applicable" %>
+          </td>
+
+          <td><%= record?.remarks || "Not Applicable" %></td>
+          <td><%= record?.reviewed_by || "Not Applicable" %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <% } else { %>
+    <p>No Records Found.</p>
+  <% } %>
+
+  <h2 class="heading">Additional</h2>
+  <table>
+    <tr>
+      <th>Additional Attachment</th>
+      <td>
+        <% if (reportData?.additionalAttachment) { %>
+            <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
         <% } else { %>
-            <p>No Records Found.</p>
-            <hr />
+            Not Applicable
         <% } %>
+      </td>
+    </tr>
 
-        <div class="remarks">
-            <h2 class="heading">Additional</h2>
-            <table>
-                <tr>
-                    <th>Additional Attachment</th>
-                    <td>
-                        <% if (reportData?.additionalAttachment) { %>
-                            <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
-                        <% } else { %>
-                            Not Applicable
-                        <% } %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Addtional Info</th>
-                    <td><%= (reportData?.additionalInfo || "Not Applicable") %></td>
-                </tr>
-                
-            </table>
-        </div>
-    
-        <hr />
-    </div>
+    <tr>
+      <th>Addtional Info</th>
+      <td><%= reportData?.additionalInfo || "Not Applicable" %></td>
+    </tr>
+  </table>
+
 </body>
 </html>

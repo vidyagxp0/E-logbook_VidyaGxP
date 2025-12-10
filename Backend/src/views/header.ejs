@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+
     <style>
       .header-container {
         width: 100%;
-        padding: 0 50px; /* Increased margin from left and right */
+        padding: 0 50px;
         box-sizing: border-box;
       }
 
@@ -33,7 +34,6 @@
       .header-logo {
         text-align: center;
         width: 100px;
-        
       }
 
       .header-title {
@@ -48,38 +48,37 @@
       }
     </style>
   </head>
+
   <body>
     <div class="header-container">
       <table class="header-table">
         <tr>
           <th colspan="2" class="header-title">
-            Indian Pharmacopeia Commission
+            Medicef Pharma <br />
+            <span style="font-weight: normal;">Plot No. 28,29,48 EPIP, Phase-I, Jharmajri, Baddi, Dist. Solan (HP)</span>
           </th>
+
           <th rowspan="2" class="header-logo">
             <img
               src="<%= logoDataUri %>"
               alt="Logo"
-              style="max-width: 50px; height: auto; object-fit: cover"
+              style="max-width: 95px; height: auto; object-fit: cover"
             />
           </th>
         </tr>
+
         <tr>
           <td class="header-info">
             <span style="font-weight: 600">Department Name:</span>
-
-            <% if (reportData?.site_id == 5) { %>
-              Biologics
-            <% } else if (reportData?.site_id == 6) { %>
-              AR&D
-            <% } else { %>
-              <%= reportData?.site_id %>
-            <% } %>
+              Medicef
           </td>
+
           <td class="header-info">
-            <span style="font-weight: 600">Instrument No:</span> <%=reportData?.instrument_no
-            %>
+            <span style="font-weight: 600">Status:</span>
+            <%= reportData?.status %>
           </td>
         </tr>
+
       </table>
     </div>
   </body>

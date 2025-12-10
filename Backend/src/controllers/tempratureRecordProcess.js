@@ -462,7 +462,6 @@ exports.EditTempratureRecord = async (req, res) => {
     };
 
     for (const [field, newValue] of Object.entries(fields)) {
-      console.log("field", field, "newValue", newValue);
       const oldValue = form[field];
       if (
         newValue !== undefined &&
@@ -1696,10 +1695,10 @@ exports.chatByPdf = async (req, res) => {
         );
       }),
       margin: {
-        top: "150px",
+        top: "120px",
         right: "50px",
         bottom: "50px",
-        left: "50px",
+        left: "30px",
       },
     });
 
@@ -1740,6 +1739,7 @@ exports.viewReport = async (req, res) => {
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
+    console.log(reportData,"reportData")
     const formId = req.params.form_id;
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)
@@ -1770,7 +1770,7 @@ exports.effetiveChatByPdf = async (req, res) => {
     });
 
     const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
+    const logoPath = path.join(__dirname, "../public/medicef_logo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
     const logoDataUri = `data:image/png;base64,${logoBase64}`;
 
@@ -1806,10 +1806,10 @@ exports.effetiveChatByPdf = async (req, res) => {
         );
       }),
       margin: {
-        top: "150px",
+        top: "120px",
         right: "50px",
         bottom: "50px",
-        left: "50px",
+        left: "30px",
       },
     });
 

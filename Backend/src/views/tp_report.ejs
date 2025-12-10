@@ -78,12 +78,12 @@
     <div class="report-content">
         <h2 class="heading">General Information</h2>
         <table>
-            <tr>
+            <!-- <tr>
                 <th>Site</th>
                 <td><%= reportData?.site || "Not Applicable" %></td>
                 <th>Status</th>
                 <td><%= reportData?.status || "Not Applicable" %></td>
-            </tr>
+            </tr> -->
             <tr>
                 <th>Initiator</th>
                 <td><%= reportData?.initiator_name || "Not Applicable" %></td>
@@ -96,6 +96,24 @@
                 <td ><%- reportData?.description || "Not Applicable" %></td>
                  <th>Limit</th>
                 <td ><%- reportData?.limit || "Not Applicable" %></td>
+            </tr>
+            <tr>
+                <th>Area name</th>
+                <td ><%- reportData?.area_name || "Not Applicable" %></td>
+                 <th>Room ID</th>
+                <td ><%- reportData?.room_id || "Not Applicable" %></td>
+            </tr>
+            <tr>
+                <th>Instrument Id. No.</th>
+                <td ><%- reportData?.instrument_id || "Not Applicable" %></td>
+                 <th>Department</th>
+                <td ><%- reportData?.department || "Not Applicable" %></td>
+            </tr>
+            <tr>
+                <th>Acceptance Temperature</th>
+                <td ><%- reportData?.acceptance_temperature || "Not Applicable" %></td>
+                 <th>Relative Humidity Criteria</th>
+                <td ><%- reportData?.relative_humidity_criteria || "Not Applicable" %></td>
             </tr>
         </table>
         <hr />
