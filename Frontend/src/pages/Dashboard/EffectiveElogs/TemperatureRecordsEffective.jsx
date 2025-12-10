@@ -516,7 +516,7 @@ export default function TempretureRecordsEffective() {
                 ? "Malaysia"
                 : location.state?.site_id === 3
                 ? "EMEA"
-                : "EU"}
+                : "Medicef"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -1029,7 +1029,7 @@ export default function TempretureRecordsEffective() {
                   <table>
                     <thead>
                       <tr>
-                        <th>S no.</th>
+                        <th>Sr no.</th>
                         <th>Unique Id</th>
                         <th>Date</th>
                         <th>Time</th>
@@ -1037,7 +1037,7 @@ export default function TempretureRecordsEffective() {
                         <th>Humidity</th>
                         <th>Done By</th>
                         <th>Checked By</th>
-                        {/* <th>Checked By Reviewer</th>
+                        {/* <th>Reviewer Remark</th>
                         <th>Approver Remark</th> */}
                         <th>Supporting Documents</th>
                         <th>Remark</th>
@@ -1116,10 +1116,15 @@ export default function TempretureRecordsEffective() {
                                   TempratureRecords: newData,
                                 });
                               }}
-                              disabled={[1, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                             
+ 
+                              readOnly={
+                                userDetails?.roles?.some(
+                                  r => [1, 4].includes(Number(r.user_id))
+                                )
+                              }
                             />
+                                                        
                           </td>
                           <td>
                             <div>

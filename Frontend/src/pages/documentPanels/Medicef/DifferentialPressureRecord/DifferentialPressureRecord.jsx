@@ -279,12 +279,12 @@ export default function DiffrentialPressure() {
     });
   };
 
-  const handleSaveToConsole = () => {
-    console.log("Form Main Data:", differentialPRecord);
-    console.log("Table Rows:", allTableData);
+  // const handleSaveToConsole = () => {
+  //   console.log("Form Main Data:", differentialPRecord);
+  //   console.log("Table Rows:", allTableData);
 
-    toast.success("Data logged in console");
-  };
+  //   toast.success("Data logged in console");
+  // };
   return (
     <>
       <HeaderTop />
@@ -1165,7 +1165,7 @@ export default function DiffrentialPressure() {
               <button
                 className="themeBtn"
                 onClick={() => {
-                  handleSaveToConsole();
+                  // handleSaveToConsole();
                   setIsPopupOpen(true);
                 }}
               >

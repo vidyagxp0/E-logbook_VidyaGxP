@@ -863,11 +863,11 @@ useEffect(() => {
                           ? "Malaysia"
                           : item.site_id === 3
                           ? "EMEA"
-                          : item.site_id === 5
+                          : item.site_id === 4
                           ? "Medicef"
-                          : item.site_id === 6
+                          : item.site_id === 5
                           ? "AR&D"
-                          : "EU"}
+                          : "Medicef"}
                       </td>
                       <td>
                         {item.compression_area}

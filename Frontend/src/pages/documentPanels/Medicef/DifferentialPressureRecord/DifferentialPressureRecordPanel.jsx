@@ -377,14 +377,18 @@ export default function DifferentialPressureRecordPanel() {
   };
 
   const reportData = {
-    site:
+  site:
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
         ? "Malaysia"
         : location.state.site_id === 3
         ? "EMEA"
-        : "EU",
+        : location.state.site_id === 5
+        ? "Medicef"
+        : location.state?.site_id === 4
+        ? "Medicef"
+        : "Medicef",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Differential Pressure Record",
@@ -450,7 +454,7 @@ export default function DifferentialPressureRecordPanel() {
                 ? "Malaysia"
                 : location.state?.site_id === 3
                 ? "EMEA"
-                : "EU"}
+                : "Medicef"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>

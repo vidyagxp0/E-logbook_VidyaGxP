@@ -262,19 +262,22 @@ export default function TempretureRecordsPanel() {
         ? "Malaysia"
         : location.state.site_id === 3
         ? "EMEA"
-        : "EU",
+        : location.state.site_id === 5
+        ? "Medicef"
+        : location.state?.site_id === 4
+        ? "EU"
+        : "Medicef",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Temperature Record",
     ...editData,
   };
-  console.log(reportData, "8888888888888");
 
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
-      console.log(reportData.form_id, "hjjjjj");
-      console.log(formId, "formidddd");
+      // console.log(reportData.form_id, "hjjjjj");
+      // console.log(formId, "formidddd");
     }
   }, [reportData]);
 
@@ -426,7 +429,7 @@ export default function TempretureRecordsPanel() {
                 ? "Malaysia"
                 : location.state?.site_id === 3
                 ? "EMEA"
-                : "EU"}
+                : "Medicef"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>

@@ -252,9 +252,9 @@ export default function DPREffective() {
       const newRow = {
         date: formatDate(Date.now()),
         time: currentTime,
-        unique_id: generateUniqueId(),
+        unique_id: `DPR000${nextIndex + 1}`,
         differential_pressure: "",
-        remarks: "Initiator",
+        remarks: "",
         reviewed_by: "",
         approver_remarks: "",
         approved_by: "",
@@ -524,8 +524,8 @@ export default function DPREffective() {
                 : location.state?.site_id === 2
                 ? "Malaysia"
                 : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                ? "Medicef"
+                : "Medicef"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -1065,12 +1065,15 @@ export default function DPREffective() {
                   <table>
                     <thead>
                       <tr>
-                        <th>S no.</th>
+                        <th>Sr no.</th>
+                        <th>Unique ID</th>
                         <th>Date</th>
                         <th>Time</th>
                         <th>Differential Pressure</th>
                         <th>Done By</th>
-                        <th>Checked By Reviewer</th>
+                        <th>Checked By</th>
+                        <th>Supporting Docs</th>
+                        <th>Remark</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -1079,6 +1082,7 @@ export default function DPREffective() {
                         (item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
+                            <td>{item.unique_id}</td>
                             <td>
                               <input
                                 value={item.date}
@@ -1130,23 +1134,21 @@ export default function DPREffective() {
                               />
                             </td>
                             <td>
-                              <input
-                                value={item.remarks}
-                                onChange={(e) => {
-                                  const newData = [
-                                    ...editData.DifferentialPressureRecords,
-                                  ];
-                                  newData[index].remarks = e.target.value;
-                                  setEditData({
-                                    ...editData,
-                                    DifferentialPressureRecords: newData,
-                                  });
-                                }}
-                                disabled={[1, 3].includes(
-                                  userDetails.roles[0].role_id
-                                )}
-                              />
-                            </td>
+                            <input
+                              value={item.done_by}
+                              onChange={(e) => {
+                                const newData = [...editData.DifferentialPressureRecords];
+                                newData[index].done_by = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  DifferentialPressureRecords: newData,
+                                });
+                              }}
+                              disabled={[1, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                            />
+                          </td>
                             <td>
                               <div>
                                 <div className="flex text-nowrap items-center gap-x-2 justify-center">
@@ -1231,7 +1233,10 @@ export default function DPREffective() {
                                 </div>
                               </div>
                             </td>
-                            /*
+
+                          */}  
+                            
+                            
                             <td style={{ width: "250px" }}>
                               <div className="d-flex">
                                 {item.supporting_docs ? (
@@ -1261,11 +1266,11 @@ export default function DPREffective() {
                                       >
                                         View File
                                       </a>
-                                      {/* <DeleteIcon
+                                      <DeleteIcon
                                     style={{ color: "red", cursor: "pointer" }}
                                     onClick={() => handleDeleteFile(index)}
-                                  /> */}
-                                    {/* </h3>
+                                  /> 
+                                     </h3>
                                   </div>
                                 ) : (
                                   <div className="file-upload-wrapper">
@@ -1294,7 +1299,25 @@ export default function DPREffective() {
                                   }
                                 />
                               </div>
-                            </td>   */ }
+                            </td>   
+                            <td>
+                              <input
+                                value={item.remarks}
+                                onChange={(e) => {
+                                  const newData = [
+                                    ...editData.DifferentialPressureRecords,
+                                  ];
+                                  newData[index].remarks = e.target.value;
+                                  setEditData({
+                                    ...editData,
+                                    DifferentialPressureRecords: newData,
+                                  });
+                                }}
+                                disabled={[1, 3].includes(
+                                  userDetails.roles[0].role_id
+                                )}
+                              />
+                            </td>
 
                             <td>
                               <DeleteIcon onClick={() => deleteRow(index)} />
