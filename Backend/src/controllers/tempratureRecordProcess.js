@@ -198,7 +198,9 @@ console.log(req.body,"shivam")
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
         time: record?.time, // Assuming time was meant here instead of unique_id again
+        date: record?.date,
         temprature_record: record?.temprature_record,
+        humidity_record: record?.humidity_record,
         remarks: record?.remarks,
         done_by: record?.done_by,
         approver_remarks: record?.approver_remarks,
@@ -208,8 +210,8 @@ console.log(req.body,"shivam")
         area_name:area_name,
         instrument_id:instrument_id,
         room_id:room_id,
-        acceptance_temperature: acceptance_temperature,
-        relative_humidity_criteria: relative_humidity_criteria,
+        // acceptance_temperature: acceptance_temperature,
+        // relative_humidity_criteria: relative_humidity_criteria,
 
         supporting_docs: record?.supporting_docs
           ? record.supporting_docs
@@ -242,9 +244,31 @@ console.log(req.body,"shivam")
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "DifferentialPressure",
+          field_name: "Date",
+          previous_value: null,
+          new_value: record.date,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Temprature Record",
           previous_value: null,
           new_value: record.temprature_record,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          declaration: initiatorDeclaration,
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Humidity Record",
+          previous_value: null,
+          new_value: record.humidity_record,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -497,6 +521,9 @@ exports.EditTempratureRecord = async (req, res) => {
         if (newRecord) {
           const recordFields = {
             temprature_record: newRecord.temprature_record,
+            humidity_record: newRecord.humidity_record,
+            date: newRecord.date,
+            time: newRecord.time,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
             approver_remarks: newRecord?.approver_remarks,
@@ -543,6 +570,8 @@ exports.EditTempratureRecord = async (req, res) => {
             time: newRecord?.time,
             checked_by: newRecord?.checked_by,
             temprature_record: newRecord.temprature_record,
+            humidity_record: newRecord.humidity_record,
+            date: newRecord.date,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
             approver_remarks: newRecord?.approver_remarks,
@@ -581,7 +610,9 @@ exports.EditTempratureRecord = async (req, res) => {
         form_id: form_id,
         unique_id: record?.unique_id || "",
         time: record?.time || "",
+        date: record?.date || "",
         temprature_record: record?.temprature_record || "",
+        humidity_record: record?.humidity_record || "",
         remarks: record?.remarks || "",
         done_by: record?.done_by || "",
         approver_remarks: record?.approver_remarks || "",
@@ -1837,7 +1868,9 @@ exports.blankReport = async (req, res) => {
     const data = reportData?.temprature_record?.map((record) => ({
       unique_id: record?.unique_id || "",
       time: record?.time || "",
+      date: record?.date || "",
       temprature_record: record?.temprature_record || "",
+      humidity_record: record?.humidity_record || "",
       remarks: record?.remarks || "",
       done_by: record?.done_by || "",
       approver_remarks: record?.approver_remarks ||"",
