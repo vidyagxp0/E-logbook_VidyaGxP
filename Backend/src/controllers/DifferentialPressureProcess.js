@@ -1802,10 +1802,10 @@ exports.effetiveChatByPdf = async (req, res) => {
         );
       }),
       margin: {
-        top: "150px",
-        right: "50px",
+        top: "130px",
+        right: "30px",
         bottom: "50px",
-        left: "50px",
+        left: "30px",
       },
     });
 
