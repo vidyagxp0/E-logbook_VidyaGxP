@@ -916,7 +916,7 @@ export default function TemperatureRecord() {
                       />
                     </div>
                   </div>
-                  <div className="group-input ">
+                  <div className="group-input">
                     <label className="color-label">
                       Additional Info{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}

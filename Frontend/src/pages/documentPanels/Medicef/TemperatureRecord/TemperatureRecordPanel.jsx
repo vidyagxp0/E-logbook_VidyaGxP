@@ -1177,15 +1177,15 @@ export default function TempretureRecordsPanel() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col w-full">
+                  <div className="flex  flex-col w-full border border-gray-500 p-4 rounded-md pb-12 mb-6">
                     <label className=" text-lg text-gray-900 mb-1">
                       Additional Info{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
                     </label>
                     <textarea
-                      className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full border border-gray-800 rounded-md shadow-sm px-3 py-2 text-gray-700 "
                       rows="4"
-                      disabled
+                      // disabled
                       name="additionalInfo"
                       value={editData?.additionalInfo}
                       onChange={handleInputChange1}

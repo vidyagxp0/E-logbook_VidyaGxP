@@ -1118,11 +1118,7 @@ export default function TempretureRecordsEffective() {
                               }}
                              
  
-                              readOnly={
-                                userDetails?.roles?.some(
-                                  r => [1, 4].includes(Number(r.user_id))
-                                )
-                              }
+                              disabled
                             />
                                                         
                           </td>

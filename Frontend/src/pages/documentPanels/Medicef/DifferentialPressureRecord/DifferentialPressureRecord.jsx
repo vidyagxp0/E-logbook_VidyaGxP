@@ -498,7 +498,7 @@ export default function DiffrentialPressure() {
                       {/* Area Name */}
                       <div className="flex flex-col mb-4">
                         <label className="color-label text-lg">
-                          Area Name:
+                          Area Name
                         </label>
                         <input
                           type="text"
@@ -516,7 +516,7 @@ export default function DiffrentialPressure() {
                       {/* Acceptance Criteria */}
                       <div className="flex flex-col mb-4">
                         <label className="color-label text-lg">
-                          Acceptance Criteria:
+                          Acceptance Criteria
                         </label>
                         <input
                           type="text"
@@ -532,10 +532,10 @@ export default function DiffrentialPressure() {
                       {/* Differential Pressure */}
                       <div className="flex flex-col mb-4">
                         <label className="color-label text-lg">
-                          Differential Pressure:
+                          Differential Pressure
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-500 rounded-md p-2 w-full max-w-full"
                           value={differentialPRecord.differential_pressure || ""}
                           onChange={(e) =>
@@ -548,7 +548,7 @@ export default function DiffrentialPressure() {
                       {/* Instrument ID No */}
                       <div className="flex flex-col">
                         <label className="color-label text-lg">
-                          Instrument ID No:
+                          Instrument ID No
                         </label>
                         <input
                           type="text"
