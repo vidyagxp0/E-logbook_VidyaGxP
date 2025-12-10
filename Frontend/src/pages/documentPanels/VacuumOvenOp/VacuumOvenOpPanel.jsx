@@ -385,7 +385,7 @@ const VacuumOvenOpPanel = () => {
         : location.state?.site_id === 4
         ? "EU"
         : location.state?.site_id === 5
-        ? "Biologics"
+        ? "Medicef"
         : location.state?.site_id === 6
         ? "AR&D"
         : "--",
@@ -456,7 +456,7 @@ const VacuumOvenOpPanel = () => {
                  : location.state?.site_id === 4
                 ? "EU"
                 : location.state?.site_id === 5
-                ? "Biologics"
+                ? "Medicef"
                 : location.state?.site_id === 6
                 ? "AR&D"
                 : "--"}

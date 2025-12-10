@@ -235,7 +235,9 @@ export default function TemperatureRecord() {
       department: "",
       review_comments: "",
       compression_area: "",
-      limit: null,
+      // limit: null,
+      temperature_limit: "",
+      humidity_limit: "",
       initiatorComment: " ",
       initiatorAttachment: null,
       initiatorDeclaration: "",
@@ -535,12 +537,12 @@ export default function TemperatureRecord() {
                 </div>
 
 
-                <div className=" flex justify-between flex-row mt-6 mb-6 ">
+                <div className=" mt-6 mb-6 ">
 
-                    <label className="color-label text-lg max-w-full">Acceptance Temperature: </label>
+                    <label className="color-label text-lg max-w-full">Acceptance Temperature </label>
                     <div>
                       <input
-                        className="w-[440px] border border-gray-500 rounded-md p-2"
+                        className="w-full mt-2 mb-4 border border-gray-500 rounded-md p-2"
                         type="text"
 
                         value={tempratureRecord.acceptance_temperature || ""}
@@ -550,11 +552,11 @@ export default function TemperatureRecord() {
                         
                       />
                     </div>
-                    <label className="color-label text-lg">Relative Humidity Criteria:</label>
+                    <label className="color-label text-lg">Relative Humidity Criteria</label>
                     <div>
                       <input
                         type="text"
-                        className="w-[440px]  border border-gray-500 rounded-md p-2"
+                        className="w-full mt-2 mb-4 border border-gray-500 rounded-md p-2"
                         value={tempratureRecord.relative_humidity_criteria || ""}
                           onChange={(e) =>
                          
@@ -565,7 +567,7 @@ export default function TemperatureRecord() {
                     </div>
                   </div>
                  
-                  <div className="group-input">
+                  <div className="group-input mt-0">
                     <label className="color-label">Department</label>
                     {/* <div className="instruction">&nbsp;</div> */}
                     <select
@@ -631,8 +633,8 @@ export default function TemperatureRecord() {
                     </select>
                   </div>
 
-                  <div className="group-input">
-                    <label className="color-label">Limit</label>
+                  {/* <div className="group-input">
+                    <label className="color-label">Temperature Limit</label>
                     <div className="instruction"></div>
                     <input
                       type="number"
@@ -643,12 +645,28 @@ export default function TemperatureRecord() {
                       //     ? "limit"
                       //     : ""
                       // }`}
-                      value={tempratureRecord.limit}
+                      value={tempratureRecord.temperature_limit}
                       onChange={(e) =>
-                        setTempratureRecord({ limit: e.target.value })
+                        setTempratureRecord({ temperature_limit: e.target.value })
                       }
                     />
-                  </div>
+                    <label className="color-label">Humidity Limit</label>
+                    <div className="instruction"></div>
+                    <input
+                      type="number"
+                      // className={`${
+                      //   tempratureRecord.limit < 23
+                      //     ? "limit"
+                      //     : tempratureRecord.limit > 27
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                      value={tempratureRecord.humidity_limit}
+                      onChange={(e) =>
+                        setTempratureRecord({ humidity_limit: e.target.value })
+                      }
+                    />
+                  </div> */}
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">

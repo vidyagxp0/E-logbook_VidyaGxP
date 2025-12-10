@@ -380,10 +380,10 @@ const PhMeterOpCalPanel = () => {
         : location.state.site_id === 3
         ? "EMEA"
         : location.state.site_id === 5
-        ? "Biologics"
+        ? "Medicef"
         : location.state?.site_id === 4
         ? "EU"
-        : "Biologics",
+        : "Medicef",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "KARL Fischer",
@@ -450,7 +450,7 @@ const PhMeterOpCalPanel = () => {
                 ? "EMEA"
                 : location.state?.site_id === 4
                 ? "EU"
-                : "Biologics"}
+                : "Medicef"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>

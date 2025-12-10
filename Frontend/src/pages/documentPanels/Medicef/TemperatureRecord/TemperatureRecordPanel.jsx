@@ -39,6 +39,7 @@ export default function TempretureRecordsPanel() {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
+  
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -829,27 +830,23 @@ export default function TempretureRecordsPanel() {
                 </div>
 
 
-                <div className=" flex justify-between flex-row mt-6 mb-6 ">
+                <div className=" ">
 
-                    <label className="color-label text-lg max-w-full">Acceptance Temperature: </label>
+                  <label className="color-label text-lg max-w-full ">Acceptance Temperature </label>
                     <div>
                       <input
-                        className="w-[440px] border border-gray-500 rounded-md p-2"
+                        className="w-full mt-4 mb-4 border border-gray-500 rounded-md p-2"
                         type="text"
 
                          name="acceptance_temperature"
                          value={editData?.acceptance_temperature}
-                        disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
                       />
                     </div>
-                    <label className="color-label text-lg">Relative Humidity Criteria:</label>
+                    <label className="color-label text-lg ">Relative Humidity Criteria</label>
                     <div>
                       <input
                         type="text"
-                        className="w-[440px]  border border-gray-500 rounded-md p-2"
+                        className="w-full mt-4 mb-4 border border-gray-500 rounded-md p-2"
                         name="relative_humidity_criteria"
                         value={editData?.relative_humidity_criteria}
                         disabled={
@@ -860,9 +857,10 @@ export default function TempretureRecordsPanel() {
                     </div>
                   </div>
                   
-                    <label className="color-label">Department</label>
+                    <label className="color-label text-lg">Department</label>
 
-                    <div className="instruction">&nbsp;</div>
+               <div className="instruction" style={{ height: "6px" }}>&nbsp;</div>
+
                     <select
                       className="form-control"
                       name="department"
@@ -902,13 +900,11 @@ export default function TempretureRecordsPanel() {
                   </div>
 
                   <div className="group-input">
-                    <label className="color-label">
-                      Compression Area with respect to Corridor
-                    </label>
+                    <label className="">Compression Area with respect to Corridor</label>
 
-                    <div className="instruction">&nbsp;</div>
+                    {/* <div className="instruction">&nbsp;</div> */}
                     <select
-                      className="form-control"
+                      className="form-control mt-0"
                       name="compression_area"
                       value={editData?.compression_area}
                       onChange={handleInputChange1}
@@ -927,7 +923,7 @@ export default function TempretureRecordsPanel() {
                     </select>
                   </div>
 
-                  <div className="group-input">
+                  {/* <div className="group-input">
                     <label className="color-label">Limit</label>
                     <div className="instruction"></div>
                     <input
@@ -948,7 +944,7 @@ export default function TempretureRecordsPanel() {
                         location.state?.initiator_id !== userDetails.userId
                       }
                     />
-                  </div>
+                  </div> */}
 
                   <div>
                     <div className="AddRows d-flex">

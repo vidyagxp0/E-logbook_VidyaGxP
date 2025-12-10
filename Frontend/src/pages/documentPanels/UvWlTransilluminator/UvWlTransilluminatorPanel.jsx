@@ -384,7 +384,7 @@ const UvWlTransilluminatorPanel = () => {
         ? "EMEA"
         : location.state?.site_id === 4
         ? "EU"
-        : "Biologics",
+        : "Medicef",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "UV & White-Light Transilluminator",
@@ -451,7 +451,7 @@ const UvWlTransilluminatorPanel = () => {
                 ? "EMEA"
                 : location.state?.site_id === 4
                 ? "EU"
-                : "Biologics"}
+                : "Medicef"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>

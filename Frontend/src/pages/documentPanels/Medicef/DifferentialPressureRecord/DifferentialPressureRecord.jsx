@@ -494,9 +494,9 @@ export default function DiffrentialPressure() {
               {isSelectedDetails === true ? (
                 <>
                   <div className="">
-                    <div className="grid grid-cols-2 gap-6 mt-6 mb-6">
+                    <div className="gap-6 mt-6 mb-6">
                       {/* Area Name */}
-                      <div className="flex flex-col">
+                      <div className="flex flex-col mb-4">
                         <label className="color-label text-lg">
                           Area Name:
                         </label>
@@ -514,7 +514,7 @@ export default function DiffrentialPressure() {
                       </div>
 
                       {/* Acceptance Criteria */}
-                      <div className="flex flex-col">
+                      <div className="flex flex-col mb-4">
                         <label className="color-label text-lg">
                           Acceptance Criteria:
                         </label>
@@ -530,7 +530,7 @@ export default function DiffrentialPressure() {
                       </div>
 
                       {/* Differential Pressure */}
-                      <div className="flex flex-col">
+                      <div className="flex flex-col mb-4">
                         <label className="color-label text-lg">
                           Differential Pressure:
                         </label>

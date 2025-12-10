@@ -769,7 +769,7 @@ const HplcEffective = () => {
                 ? "EMEA"
                 : location.state?.site_id === 4
                 ? "EU"
-                : "Biologics"}
+                : "Medicef"}
             </div>
           </div>
 

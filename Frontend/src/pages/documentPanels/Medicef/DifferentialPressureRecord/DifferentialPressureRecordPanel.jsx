@@ -844,11 +844,11 @@ export default function DifferentialPressureRecordPanel() {
               {isSelectedDetails === true ? (
                 <>
                   <div className="group-input">
-                    <div className="grid grid-cols-2 gap-6 mt-6 mb-6">
+                    <div className=" gap-6 mt-6 mb-0">
                       {/* Area Name */}
                       <div className="flex flex-col">
                         <label className="color-label text-lg">
-                          Area Name:
+                          Area Name
                         </label>
                         <input
                           type="text"
@@ -861,7 +861,7 @@ export default function DifferentialPressureRecordPanel() {
                       {/* Acceptance Criteria */}
                       <div className="flex flex-col">
                         <label className="color-label text-lg">
-                          Acceptance Criteria:
+                          Acceptance Criteria
                         </label>
                         <input
                           type="text"
@@ -875,7 +875,7 @@ export default function DifferentialPressureRecordPanel() {
                       {/* Differential Pressure */}
                       <div className="flex flex-col">
                         <label className="color-label text-lg">
-                          Differential Pressure:
+                          Differential Pressure
                         </label>
                         <input
                           type="text"
@@ -888,7 +888,7 @@ export default function DifferentialPressureRecordPanel() {
                       {/* Instrument ID No */}
                       <div className="flex flex-col">
                         <label className="color-label text-lg">
-                          Instrument ID No:
+                          Instrument ID No
                         </label>
                         <input
                           type="text"
@@ -898,9 +898,9 @@ export default function DifferentialPressureRecordPanel() {
                         />
                       </div>
                     </div>
-                    <label className="color-label">Department</label>
+                    <label className="color-label text-lg mt-0">Department</label>
 
-                    <div className="instruction">&nbsp;</div>
+                    {/* <div className="instruction" style={{ height: "6px" }}>&nbsp;</div> */}
                     <select
                       className="form-control"
                       disabled
@@ -940,12 +940,10 @@ export default function DifferentialPressureRecordPanel() {
                     </select>
                   </div>
 
-                  <div className="group-input">
-                    <label className="color-label">
-                      Compression Area with respect to Corridor
-                    </label>
+                  <div className="group-input mt-0">
+                    <label className="color-label">Compression Area with respect to Corridor</label>
 
-                    <div className="instruction">&nbsp;</div>
+                    {/* <div className="instruction" style={{ height: "6px" }}>&nbsp;</div> */}
                     <select
                       className="form-control"
                       name="compression_area"

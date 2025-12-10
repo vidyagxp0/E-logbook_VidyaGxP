@@ -40,13 +40,14 @@ export default function TempretureRecordsEffective() {
     status: "",
     description: "",
     department: "",
+    remarks: "",
     additionalAttachment: "",
     additionalInfo: "",
     compression_area: "",
     TempratureRecords: [],
-    tempraturelimit: "",
+    acceptance_temperature: "",
     HumidityRecords: '',
-    humiditylimit: "",
+    relative_humidity_criteria: "",
   });
   console.log(editData, "Edit Dataaa");
   const navigate = useNavigate();
@@ -187,7 +188,7 @@ export default function TempretureRecordsEffective() {
 
       if (
         editData?.TempratureRecords?.some(
-          (record) => record.temprature_record === ""
+          (record) => record.temprature_record === "" || record.humidity_record === ""
         )
       ) {
         toast.error("Please provide grid details!");
@@ -255,9 +256,11 @@ export default function TempretureRecordsEffective() {
       const newRow = {
         unique_id: `TPR000${nextIndex + 1}`,
         time: currentTime,
+        date: formatDate(Date.now()),
         temprature_record: "",
         humidity_record: "",
-        remarks: "initiator",
+        done_by: "initiator",
+        remarks: "",
         reviewed_by: "",
         approver_remarks: "",
         approved_by: "",
@@ -271,6 +274,10 @@ export default function TempretureRecordsEffective() {
       }));
     }
   };
+
+
+  
+  
 
   const deleteRow = (index) => {
     if (
@@ -439,25 +446,25 @@ export default function TempretureRecordsEffective() {
     return object != null && typeof object === "object";
   }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
-
-    const utcDate = new Date(dateString);
-    // Check if the date is valid
-    if (isNaN(utcDate.getTime())) {
-      return "";
-    }
-
-    return utcDate.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
-  };
+ const formatDate = (dateString) =>{
+      if (!dateString) return ""; // Return empty if the input is falsy
+  
+      const utcDate = new Date(dateString);
+      // Check if the date is valid
+      if (isNaN(utcDate.getTime())) {
+        return "";
+      }
+  
+      return utcDate.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        // hour: "2-digit",
+        // minute: "2-digit",
+        // second: "2-digit",
+        // hour12: false,
+      });
+    };
 
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.TempratureRecords];
@@ -969,19 +976,20 @@ export default function TempretureRecordsEffective() {
                   {/* temprature limit */}
 
                   <div className="group-input">
-                    <label className="color-label">Temprature Limit</label>
+                    <label className="color-label">Acceptence Temperature Criteria</label>
                     <div className="instruction"></div>
                     <input
-                      name="tempraturelimit"
+                      name="acceptance_temperature"
                       type="number"
+                      disabled
                       className={`${
-                        editData?.tempraturelimit < 23
-                          ? "tempraturelimit"
-                          : editData?.tempraturelimit > 27
-                          ? "tempraturelimit"
+                        editData?.acceptance_temperature < 23
+                          ? "acceptance_temperature"
+                          : editData?.acceptance_temperature > 27
+                          ? "acceptance_temperature"
                           : ""
                       }`}
-                      value={editData?.tempraturelimit}
+                      value={editData?.acceptance_temperature}
                       onChange={handleInputChange1}
                       readOnly={[3, 2, 4].includes(
                         userDetails.roles[0].role_id
@@ -991,19 +999,20 @@ export default function TempretureRecordsEffective() {
 
                   {/* humidity limit */}
                   <div className="group-input">
-                    <label className="color-label">Humidity Limit</label>
+                    <label className="color-label">Relative Humidity Criteria</label>
                     <div className="instruction"></div>
                     <input
-                      name="humiditylimit"
+                      name="relative_humidity_criteria"
                       type="number"
+                      disabled
                       className={`${
-                        editData?.humiditylimit < 20
-                          ? "humiditylimit"
-                          : editData?.humiditylimit > 27
-                          ? "humiditylimit"
+                        editData?.relative_humidity_criteria < 20
+                          ? "relative_humidity_criteria"
+                          : editData?.relative_humidity_criteria > 27
+                          ? "relative_humidity_criteria"
                           : ""
                       }`}
-                      value={editData?.humiditylimit}
+                      value={editData?.relative_humidity_criteria}
                       onChange={handleInputChange2}
                       readOnly={[3, 2, 4].includes(
                         userDetails.roles[0].role_id
@@ -1022,14 +1031,17 @@ export default function TempretureRecordsEffective() {
                       <tr>
                         <th>S no.</th>
                         <th>Unique Id</th>
+                        <th>Date</th>
                         <th>Time</th>
                         <th>Temperature </th>
                         <th>Humidity</th>
-                        <th>Reviewer Remark</th>
-                        <th>Checked By Reviewer</th>
-                        <th>Approver Remark</th>
-                        <th>Checked By Approver</th>
+                        <th>Done By</th>
+                        <th>Checked By</th>
+                        {/* <th>Checked By Reviewer</th>
+                        <th>Approver Remark</th> */}
                         <th>Supporting Documents</th>
+                        <th>Remark</th>
+                        
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -1038,6 +1050,7 @@ export default function TempretureRecordsEffective() {
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{item.unique_id}</td>
+                          <td>{item.date}</td>
                           <td>
                             <input value={item.time} readOnly />
                           </td>
@@ -1046,9 +1059,9 @@ export default function TempretureRecordsEffective() {
                               type="number"
                               value={item.temprature_record}
                               className={`${
-                                Number(item.temprature_record) < Number(editData.tempraturelimit) 
+                                Number(item.temprature_record) < Number(editData.acceptance_temperature) 
                                   ? "text-green-500"
-                                  : Number(item.temprature_record) > Number(editData.tempraturelimit) 
+                                  : Number(item.temprature_record) > Number(editData.acceptance_temperature) 
                                   ? "text-red-600"
                                   : ""
                               }`}
@@ -1071,10 +1084,10 @@ export default function TempretureRecordsEffective() {
                               type="number"
                               value={item.humidity_record}
                               className={`${
-                                Number(item.humidity_record )< Number(editData.humiditylimit)
+                                Number(item.humidity_record )< Number(editData.relative_humidity_criteria)
                                   ? "text-green-500"
                                   : Number(item.humidity_record) >
-                                    Number(editData.humiditylimit)
+                                    Number(editData.relative_humidity_criteria)
                                   ? "text-red-600"
                                   : ""
                               }`}
@@ -1094,10 +1107,10 @@ export default function TempretureRecordsEffective() {
 
                           <td>
                             <input
-                              value={item.remarks}
+                              value={item.done_by}
                               onChange={(e) => {
                                 const newData = [...editData.TempratureRecords];
-                                newData[index].remarks = e.target.value;
+                                newData[index].done_by = e.target.value;
                                 setEditData({
                                   ...editData,
                                   TempratureRecords: newData,
@@ -1137,7 +1150,7 @@ export default function TempretureRecordsEffective() {
                               </div>
                             </div>
                           </td>
-                          <td>
+                          {/* <td>
                             <input
                               value={item.approver_remarks}
                               onChange={(e) => {
@@ -1182,7 +1195,7 @@ export default function TempretureRecordsEffective() {
                                 {item.approved_by && <p>{item.approved_by}</p>}
                               </div>
                             </div>
-                          </td>
+                          </td> */}
 
                           <td style={{ width: "250px" }}>
                             <div className="d-flex">
@@ -1247,6 +1260,24 @@ export default function TempretureRecordsEffective() {
                               />
                             </div>
                           </td>
+
+                          <td>
+                            <input
+                              value={item.remarks}
+                              onChange={(e) => {
+                                const newData = [...editData.TempratureRecords];
+                                newData[index].remarks =
+                                  e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  TempratureRecords: newData,
+                                });
+                              }}
+                              disabled={[1, 3].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                            />
+                          </td> 
 
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />

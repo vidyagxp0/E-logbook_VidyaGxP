@@ -381,7 +381,7 @@ const AnalitycalBalancePanel = () => {
         ? "EMEA"
         : location.state?.site_id === 4
         ? "EU"
-        : "Biologics",
+        : "Medicef",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Analytical Balance",
@@ -448,7 +448,7 @@ const AnalitycalBalancePanel = () => {
                 ? "EMEA"
                 : location.state?.site_id === 4
                 ? "EU"
-                : "Biologics"}
+                : "Medicef"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>

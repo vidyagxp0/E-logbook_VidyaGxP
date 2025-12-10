@@ -61,7 +61,7 @@ function EffectiveElogs() {
     const shortName = processShortName[processId] || "NA";
     const index = String(item.form_id).padStart(3, "0");
 
-    return `IPC/BIOS/${shortName}/${index}`;
+    return `MED/${shortName}/${index}`;
   };
 
   const [instrumentFilter, setInstrumentFilter] = useState("All");
@@ -1304,18 +1304,15 @@ function EffectiveElogs() {
                   >
                     {/* Tooltip */}
                    <span
-  className="absolute -bottom-4 left-0 
-    bg-slate-300 border border-black/40 
-    text-black text-xs px-2 py-1 rounded 
-    opacity-0 group-hover:opacity-100 pointer-events-none
-    transition-opacity duration-150"
->
-  Click to select
-</span>
-
-
-
-                    {item.DifferentialPressureRecords
+                    className="absolute -bottom-4 left-0 
+                      bg-slate-300 border border-black/40 
+                      text-black text-xs px-2 py-1 rounded 
+                      opacity-0 group-hover:opacity-100 pointer-events-none
+                      transition-opacity duration-150"
+                  >
+                    Click to select
+                  </span>
+                      {item.DifferentialPressureRecords
                       ? getElogNumber(item)
                       : item.TempratureRecords
                       ? getElogNumber(item)
@@ -1355,7 +1352,7 @@ function EffectiveElogs() {
                       : item.site_id === 3
                       ? "EMEA"
                       : item.site_id === 5
-                      ? "Biologics"
+                      ? "Medicef"
                       : item.site_id === 6
                       ? "AR&D"
                       : "EU"}

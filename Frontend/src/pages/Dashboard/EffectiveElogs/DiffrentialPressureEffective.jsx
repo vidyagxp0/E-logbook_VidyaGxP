@@ -1040,6 +1040,7 @@ export default function DPREffective() {
                     <input
                       name="limit"
                       type="number"
+                      disabled
                       // className={`${
                       //   editData?.limit < 0.6
                       //     ? "limit"

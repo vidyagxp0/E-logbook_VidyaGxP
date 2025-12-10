@@ -559,7 +559,7 @@ const getElogNumber = (item) => {
   const shortName = processShortName[processId];
   const index = String(item.form_id).padStart(3, "0");
   
-  return `MED/BIOS/${shortName}/${index}`;
+  return `MED/${shortName}/${index}`;
   
 };
 
@@ -758,11 +758,11 @@ useEffect(() => {
                <option value="diffrential_pressure">
                 Differential Pressure Record
               </option>
-              <option value="equipment_cleaning">
+              {/* <option value="equipment_cleaning">
                 Equipment Cleaning Checklist
-              </option>
+              </option> */}
               <option value="temperature_records">Temperature Records</option>
-              <option value="loaded_quantity">Equipment Usage</option>
+              {/* <option value="loaded_quantity">Equipment Usage</option>
               <option value="media_record">Media Record</option>
               <option value="operation_of_sterilizer">
                 Operation Of Sterilizer
@@ -778,7 +778,7 @@ useEffect(() => {
               <option value="Gel Doc iGene">Gel Doc iGene</option>
               <option value="UV-Vis Calibration">UV-Vis Calibration</option>
               <option value="UV/White Light Transilluminator">UV/White Light Transilluminator</option>
-              <option value="Vacuum Oven Calibration">Vacuum Oven Calibration</option>
+              <option value="Vacuum Oven Calibration">Vacuum Oven Calibration</option> */}
             </select>
           </div> 
 
@@ -825,6 +825,7 @@ useEffect(() => {
               <th>Instrument No.</th>
               <th>Name</th>
               <th>Department</th>
+              <th>Compression Area</th>
               <th>Short description</th>
               <th>Created By</th>
               <th>Date of Creation</th>
@@ -863,11 +864,15 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
                       </td>
+                      <td>
+                        {item.compression_area}
+                      </td>
+                      
                       <td
                         dangerouslySetInnerHTML={{
                           __html: cleanHTML,
@@ -932,10 +937,13 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
+                      </td>
+                      <td>
+                        {item.compression_area}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -982,7 +990,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1084,7 +1092,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1137,7 +1145,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1189,7 +1197,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1241,7 +1249,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1293,7 +1301,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1346,7 +1354,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1398,7 +1406,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1450,7 +1458,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1502,7 +1510,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1554,7 +1562,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1606,7 +1614,7 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
@@ -1719,10 +1727,13 @@ useEffect(() => {
                           : item.site_id === 3
                           ? "EMEA"
                           : item.site_id === 5
-                          ? "Biologics"
+                          ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
                           : "EU"}
+                      </td>
+                      <td>
+                        {item.compression_area}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
