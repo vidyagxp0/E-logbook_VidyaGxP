@@ -257,6 +257,7 @@ export default function DPREffective() {
         remarks: "",
         reviewed_by: "",
         approver_remarks: "",
+        done_by :location?.state?.initiator_name,
         approved_by: "",
         checked_by: location?.state?.initiator_name,
         supporting_docs: null,
@@ -1143,10 +1144,10 @@ export default function DPREffective() {
                                   ...editData,
                                   DifferentialPressureRecords: newData,
                                 });
+
+                                
                               }}
-                              disabled={[1, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              disabled
                             />
                           </td>
                             <td>

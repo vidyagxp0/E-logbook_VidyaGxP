@@ -411,6 +411,10 @@ export default function TempretureRecordsPanel() {
       description: content,
     }));
   };
+
+
+  console.log(location.state?.site_id, 'location.state?.site_id');
+  
   return (
     <>
       <HeaderTop />

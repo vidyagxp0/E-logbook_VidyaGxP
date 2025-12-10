@@ -27,7 +27,8 @@ Site.addHook('afterSync', async () => {
                 // { site: 'Malaysia' },
                 // { site: 'EMEA' },
                 // { site: 'EU' },
-                { site: 'Medicef'},
+                
+                {site_id:5, site: 'Medicef'},
                 // { site_id:6, site : "AR&D"}
             ]);
             console.log('Sites created');

@@ -543,7 +543,7 @@ export default function TemperatureRecord() {
                     <div>
                       <input
                         className="w-full mt-2 mb-4 border border-gray-500 rounded-md p-2"
-                        type="text"
+                        type="number"
 
                         value={tempratureRecord.acceptance_temperature || ""}
                           onChange={(e) =>
@@ -555,7 +555,7 @@ export default function TemperatureRecord() {
                     <label className="color-label text-lg">Relative Humidity Criteria</label>
                     <div>
                       <input
-                        type="text"
+                        type="number"
                         className="w-full mt-2 mb-4 border border-gray-500 rounded-md p-2"
                         value={tempratureRecord.relative_humidity_criteria || ""}
                           onChange={(e) =>
