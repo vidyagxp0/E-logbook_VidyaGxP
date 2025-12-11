@@ -49,7 +49,7 @@ export default function TempretureRecordsEffective() {
     HumidityRecords: '',
     relative_humidity_criteria: "",
   });
-  console.log(editData, "Edit Dataaa");
+  // console.log(editData, "Edit Dataaa");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -227,8 +227,71 @@ export default function TempretureRecordsEffective() {
   };
 
   useEffect(() => {
-    setEditData(location.state);
+    if (location.state) {
+      const cloned = JSON.parse(JSON.stringify(location.state));
+      setEditData(cloned);
+    }
   }, [location.state]);
+
+
+   const INITIATOR_LOCKED_FIELDS = [
+  "additionalInfo",
+  "temprature_record",
+  "humidity_record",
+  "additionalAttachment",
+  "differential_pressure",
+];
+
+const REVIEWER_LOCKED_FIELDS = [
+  "additionalInfo",
+  "additionalAttachment",
+  "remarks",
+  "supporting_docs",
+  "chacked_by",
+];
+
+// Identify new row
+const isNewRow = (item) => {
+  if (!item) return false; // no row, treat as non-new
+  return !item.record_id;
+};
+
+const originalData = location.state;
+
+ const canReviewerEdit = (item) => {
+    // find original version of this record by record_id
+    const original = originalData?.TempratureRecords?.find(
+      (o) => o.record_id === item.record_id
+    );
+
+    // If we found the original row
+    if (original) {
+      // If original remarksType was OK → Lock it
+      if (original.remarks) {
+        return false;
+      }
+    }
+
+    // Otherwise allow editing
+    return true;
+  };
+
+
+// MAIN EDITABLE LOGIC
+const isFieldEditable = (item, fieldName) => {
+  const roleId = Number(userDetails?.roles?.[0]?.role_id);
+
+  // New row → always editable
+  if (isNewRow(item)) return true;
+
+    if (!item) {
+    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false; // initiator blocked fields
+    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false; // reviewer blocked fields
+    return true; // everyone else can edit
+  }
+
+  
+};
 
   const object = getCurrentDateTime();
   let date = object.currentDate;
@@ -259,12 +322,12 @@ export default function TempretureRecordsEffective() {
         date: formatDate(Date.now()),
         temprature_record: "",
         humidity_record: "",
-        done_by: "initiator",
+        done_by: location?.state?.initiator_name,
         remarks: "",
         reviewed_by: "",
         approver_remarks: "",
         approved_by: "",
-        checked_by: location?.state?.initiator_name,
+        // checked_by: location?.state?.initiator_name,
         supporting_docs: null,
       };
       setEditData((prevState) => ({
@@ -305,13 +368,13 @@ export default function TempretureRecordsEffective() {
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
-    console.log(name, value);
+    // console.log(name, value);
   };
 
   const handleInputChange2 = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
-    console.log(name, value);
+    // console.log(name, value);
   };
 
   const EmptyreportData = {
@@ -1041,7 +1104,6 @@ export default function TempretureRecordsEffective() {
                         <th>Approver Remark</th> */}
                         <th>Supporting Documents</th>
                         <th>Remark</th>
-                        
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -1058,6 +1120,7 @@ export default function TempretureRecordsEffective() {
                             <input
                               type="number"
                               value={item.temprature_record}
+                              disabled={!isFieldEditable( item, "temprature_record")}
                               className={`${
                                 Number(item.temprature_record) < Number(editData.acceptance_temperature) 
                                   ? "text-green-500"
@@ -1083,6 +1146,7 @@ export default function TempretureRecordsEffective() {
                             <input
                               type="number"
                               value={item.humidity_record}
+                              disabled={!isFieldEditable( item, "humidity_record")}
                               className={`${
                                 Number(item.humidity_record )< Number(editData.relative_humidity_criteria)
                                   ? "text-green-500"
@@ -1143,9 +1207,11 @@ export default function TempretureRecordsEffective() {
                                       TempratureRecords: newData,
                                     });
                                   }}
-                                  disabled={[1, 3].includes(
-                                    userDetails.roles[0].role_id
-                                  )}
+                                  disabled={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
                                 />
                                 {item.reviewed_by && <p>{item.reviewed_by}</p>}
                               </div>
@@ -1274,9 +1340,11 @@ export default function TempretureRecordsEffective() {
                                   TempratureRecords: newData,
                                 });
                               }}
-                              disabled={[1, 3].includes(
-                                userDetails.roles[0].role_id
-                              )}
+                              disabled={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
                             />
                           </td> 
 
@@ -1317,6 +1385,7 @@ export default function TempretureRecordsEffective() {
                             <button
                               className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                               type="button"
+                              disabled={!isFieldEditable( null, "additionalAttachment")}
                               onClick={() =>
                                 document
                                   .getElementById("additionalAttachment")
@@ -1370,12 +1439,13 @@ export default function TempretureRecordsEffective() {
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
                     </label>
                     <textarea
-                      className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
-                      rows="4"
-                      name="additionalInfo"
-                      value={editData?.additionalInfo}
-                      onChange={handleInputChange1}
-                    ></textarea>
+                        className="block w-full mb-8 border border-gray-900 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        rows="4"
+                        name="additionalInfo"
+                        value={editData?.additionalInfo}
+                        disabled={!isFieldEditable( null, "additionalInfo")}
+                        onChange={handleInputChange1}
+                      ></textarea>
                   </div>
                 </>
               ) : null}
@@ -1768,7 +1838,7 @@ export default function TempretureRecordsEffective() {
                     </button>
                   )
                 : null} */}
-              <button
+              {/* <button
                 className="themeBtn"
                 onClick={() => {
                   if (!deepEqual(location.state, editData)) {
@@ -1779,7 +1849,7 @@ export default function TempretureRecordsEffective() {
                 }}
               >
                 Exit
-              </button>
+              </button> */}
             </div>
             {isPopupOpen && (
               <UserVerificationPopUp

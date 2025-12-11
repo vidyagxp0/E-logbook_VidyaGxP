@@ -231,50 +231,121 @@ export default function DPREffective() {
     setPopupAction(null);
   };
 
-  useEffect(() => {
-    setEditData(location.state);
+   useEffect(() => {
+    if (location.state) {
+      const cloned = JSON.parse(JSON.stringify(location.state));
+      setEditData(cloned);
+    }
   }, [location.state]);
 
-  const addRow = () => {
-    if (
-      userDetails.roles[0].role_id === 1 ||
-      userDetails.roles[0].role_id === 5
-    ) {
-      const options = {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true, // Use 12-hour format
-      };
-      const nextIndex = editData?.DifferentialPressureRecords?.length || 0;
+  const INITIATOR_LOCKED_FIELDS = [
+  "additionalInfo",
+  "additionalAttachment",
+  "differential_pressure",
+];
 
-      const currentTime = new Date().toLocaleTimeString("en-US", options);
-      const newRow = {
-        date: formatDate(Date.now()),
-        time: currentTime,
-        unique_id: `DPR000${nextIndex + 1}`,
-        differential_pressure: "",
-        remarks: "",
-        reviewed_by: "",
-        approver_remarks: "",
-        done_by :location?.state?.initiator_name,
-        approved_by: "",
-        checked_by: location?.state?.initiator_name,
-        supporting_docs: null,
-      };
-      setEditData((prevState) => ({
-        ...prevState,
-        DifferentialPressureRecords: [
-          ...prevState.DifferentialPressureRecords,
-          newRow,
-        ],
-      }));
-    } else if (location.state == reviewer_id) {
-      console.warn("Only Initiator can add new Row here");
-    } else if (location.state == approver_id) {
-      console.warn("Only Initiator can add new Row here");
+const REVIEWER_LOCKED_FIELDS = [
+  "additionalInfo",
+  "additionalAttachment",
+  "remarks",
+  "supporting_docs",
+  "reviewed_by",
+];
+
+// Identify new row
+const isNewRow = (item) => {
+  if (!item) return false; // no row, treat as non-new
+  return !item.record_id;
+};
+
+  const originalData = location.state;
+
+  
+  
+
+  const canReviewerEdit = (item) => {
+    // find original version of this record by record_id
+    const original = originalData?.DifferentialPressureRecords?.find(
+      (o) => o.record_id === item.record_id
+    );
+
+    
+    // If we found the original row
+    if (original) {
+      // If original remarksType was OK → Lock it
+      if (original.remarks) {
+        return false;
+      }
     }
+
+    // Otherwise allow editing
+    return true;
   };
+
+// MAIN EDITABLE LOGIC
+const isFieldEditable = (item, fieldName) => {
+  const roleId = Number(userDetails?.roles?.[0]?.role_id);
+console.log(roleId,"roleId")
+  // New row → always editable
+  if (isNewRow(item)) return true;
+
+    if (!item) {
+    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false; // initiator blocked fields
+    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false; // reviewer blocked fields
+    return true; // everyone else can edit
+  }
+
+  
+};
+
+ const addRow = () => {
+  const roleId = Number(userDetails?.roles?.[0]?.role_id);
+
+  // Only Initiator (1) and Approver (5) can add rows
+  if (roleId === 1 || roleId === 5) {
+
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    };
+
+    const nextIndex = editData?.DifferentialPressureRecords?.length || 0;
+
+    const currentTime = new Date().toLocaleTimeString("en-US", options);
+
+    const newRow = {
+      date: formatDate(Date.now()),
+      time: currentTime,
+      unique_id: `DPR000${nextIndex + 1}`,
+      differential_pressure: "",
+      remarks: "",
+      // reviewed_by: "",
+       
+      approver_remarks: "",
+      done_by: location?.state?.initiator_name,
+      approved_by: "",
+      reviewed_by: "",
+       checked_by: "",  
+      supporting_docs: null,
+      isNew: true,        // optional (helps if you want new-row editable logic)
+    };
+
+    setEditData((prev) => ({
+      ...prev,
+      DifferentialPressureRecords: [
+        ...prev.DifferentialPressureRecords,
+        newRow,
+      ],
+    }));
+
+    return;
+  }
+
+  // If unauthorized user tries to add row
+  console.warn("Only Initiator or Approver can add a new row.");
+};
 
   function deepEqual(object1, object2) {
     // First, check if they are the same object (reference equality)
@@ -1109,6 +1180,7 @@ export default function DPREffective() {
                               <input
                                 type="number"
                                 value={item?.differential_pressure}
+                                disabled={!isFieldEditable(item, "differential_pressure")}
                                 className={`${
                                   Number(item?.differential_pressure) <=
                                   Number(editData?.limit)
@@ -1172,9 +1244,11 @@ export default function DPREffective() {
                                         DifferentialPressureRecords: newData,
                                       });
                                     }}
-                                    disabled={[1, 3].includes(
-                                      userDetails.roles[0].role_id
-                                    )}
+                                   disabled={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
                                   />
                                   {item.reviewed_by && (
                                     <p>{item.reviewed_by}</p>
@@ -1245,12 +1319,13 @@ export default function DPREffective() {
                                     <button
                                       type="button"
                                       className="btn-upload"
+                                       disabled={!isFieldEditable( item, "supporting_docs")}
                                       onClick={() =>
                                         document
                                           .getElementsByName("supporting_docs")
                                           [index].click()
                                       }
-                                      disabled={
+                                      readOnly={
                                         location.state?.stage !== 1 ||
                                         location.state?.initiator_id !==
                                           userDetails.userId
@@ -1314,9 +1389,11 @@ export default function DPREffective() {
                                     DifferentialPressureRecords: newData,
                                   });
                                 }}
-                                disabled={[1, 3].includes(
-                                  userDetails.roles[0].role_id
-                                )}
+                                disabled={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
                               />
                             </td>
 
@@ -1358,7 +1435,8 @@ export default function DPREffective() {
                           <div className="flex items-center gap-x-4 ml-3">
                             <button
                               className="py-1 bg-blue-500 hover:bg-blue-600 text-white px-3 rounded"
-                              type="button"
+                              type="button" 
+                              disabled={!isFieldEditable( null, "additionalAttachment")}
                               onClick={() =>
                                 document
                                   .getElementById("additionalAttachment")
@@ -1441,6 +1519,7 @@ export default function DPREffective() {
                         rows="4"
                         name="additionalInfo"
                         value={editData?.additionalInfo}
+                        disabled={!isFieldEditable( null, "additionalInfo")}
                         onChange={handleInputChange1}
                       ></textarea>
                     </div>

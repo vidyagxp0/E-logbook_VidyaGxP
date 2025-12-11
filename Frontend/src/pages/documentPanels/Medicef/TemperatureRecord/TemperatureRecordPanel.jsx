@@ -207,6 +207,7 @@ export default function TempretureRecordsPanel() {
     setPopupAction(null);
   };
 
+  
   useEffect(() => {
     setEditData(location.state);
   }, [location.state]);
@@ -377,6 +378,8 @@ export default function TempretureRecordsPanel() {
     });
   };
 
+
+  
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.TempratureRecords];
     updatedGridData[index].supporting_docs = file;
@@ -413,7 +416,6 @@ export default function TempretureRecordsPanel() {
   };
 
 
-  console.log(location.state?.site_id, 'location.state?.site_id');
   
   return (
     <>

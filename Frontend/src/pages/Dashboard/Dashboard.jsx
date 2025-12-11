@@ -866,7 +866,7 @@ useEffect(() => {
                           : item.site_id === 4
                           ? "Medicef"
                           : item.site_id === 5
-                          ? "AR&D"
+                          ? "Medicef"
                           : "Medicef"}
                       </td>
                       <td>

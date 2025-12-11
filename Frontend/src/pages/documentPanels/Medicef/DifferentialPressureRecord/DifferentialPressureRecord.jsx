@@ -162,7 +162,7 @@ export default function DiffrentialPressure() {
       currentDate: currentDate,
     };
   }
-  console.log(allTableData, "allTableData");
+  
   const addRow = () => {
     const options = {
       hour: "2-digit",
@@ -519,7 +519,7 @@ export default function DiffrentialPressure() {
                           Acceptance Criteria
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-500 rounded-md p-2 w-full max-w-full"
                           value={differentialPRecord.acceptance_criteria || ""}
                           onChange={(e) =>

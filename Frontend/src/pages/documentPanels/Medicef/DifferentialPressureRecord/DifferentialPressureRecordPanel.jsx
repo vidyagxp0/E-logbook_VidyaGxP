@@ -32,7 +32,7 @@ export default function DifferentialPressureRecordPanel() {
     DifferentialPressureRecords: [],
     limit: "",
   });
-  console.log(editData, "0000000000000000");
+  // console.log(editData, "0000000000000000");
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
