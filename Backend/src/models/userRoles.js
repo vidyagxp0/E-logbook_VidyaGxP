@@ -67,21 +67,21 @@ Process.hasMany(UserRole, { foreignKey: "process_id" });
 RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
 
   const rolesArray1 = [
-    { label: "Medicef-Differential Pressure Record-Initiator", value: 1 },
-    { label: "Medicef-Temperature Records-Initiator", value: 2 },
+    { label: "Shilpa-EBMR-Initiator", value: 1 },
+    // { label: "Shilpa-Temperature Records-Initiator", value: 2 },
   ];
   const rolesArray2 = [
-    { label: "Medicef-Differential Pressure Record-Reviewer", value: 3},
-    { label: "Medicef-Temperature Records-Reviewer", value: 4 },
+    { label: "Shilpa-EBMR-Reviewer", value: 2},
+    // { label: "Shilpa-Temperature Records-Reviewer", value: 4 },
 
   ];
   const rolesArray3 = [
-    { label: "Medicef-Differential Pressure Record-Approver", value: 5 },
-    { label: "Medicef-Temperature Records-Approver", value: 6},
+    { label: "Shilpa-EBMR-Approver", value: 2 },
+    // { label: "Shilpa-Temperature Records-Approver", value: 6},
   ];
   const rolesArray4 = [
-    { label: "Medicef-Differential Pressure Record-Fullpermission", value: 7 },
-    { label: "Medicef-Temperature Records-Fullpermission", value: 8 },
+    { label: "Shilpa-EBMR-Fullpermission", value: 4 },
+    // { label: "Shilpa-Temperature Records-Fullpermission", value: 8 },
   ];
 
 
