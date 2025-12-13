@@ -20,6 +20,7 @@ const karlFischerRoutes = require("./routes/karlFischer")
 const hplcRoutes = require("./routes/hplcRoutes")
 const vidyagxpFeedback = require("./config/vidyagxp_feedback");
 const siteRoutes = require("./routes/sites");
+const equipment = require("./routes/equipmentRoutes")
 const cors = require("cors");
 const path = require("path");
 const helmet = require("helmet");
@@ -75,6 +76,7 @@ app.use("/uv-wl-transi",whiteLightTransilliminator);
 app.use("/vo-cal",voCalibProcess);
 app.use("/karl-fischer",karlFischerRoutes);
 app.use("/hplc",hplcRoutes)
+app.use("/equipment",equipment)
 app.use(express.static(path.join(__dirname, "documents")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));

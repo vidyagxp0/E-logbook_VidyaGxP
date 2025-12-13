@@ -68,20 +68,15 @@ RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
 
   const rolesArray1 = [
     { label: "Shilpa-EBMR-Initiator", value: 1 },
-    // { label: "Shilpa-Temperature Records-Initiator", value: 2 },
   ];
   const rolesArray2 = [
     { label: "Shilpa-EBMR-Reviewer", value: 2},
-    // { label: "Shilpa-Temperature Records-Reviewer", value: 4 },
-
   ];
   const rolesArray3 = [
     { label: "Shilpa-EBMR-Approver", value: 2 },
-    // { label: "Shilpa-Temperature Records-Approver", value: 6},
   ];
   const rolesArray4 = [
     { label: "Shilpa-EBMR-Fullpermission", value: 4 },
-    // { label: "Shilpa-Temperature Records-Fullpermission", value: 8 },
   ];
 
 
