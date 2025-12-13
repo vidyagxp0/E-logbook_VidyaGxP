@@ -79,7 +79,7 @@ function CreateRecordModal(_props) {
     console.log(element, "leel");
     switch (element.process_id) {
       case 1:
-        navigate("/differential-pressure-record", {
+        navigate("/bmr-record", {
           state: division,
         });
         break;
@@ -162,7 +162,7 @@ function CreateRecordModal(_props) {
       <div className="custom-modal" id="create-record-modal">
         <div className="modal-container">
           <div className="modal-top">
-            <div className="head">Initiate eLog</div>
+            <div className="head">Initiate eBMR</div>
           </div>
 
           <div className="modal-middle">

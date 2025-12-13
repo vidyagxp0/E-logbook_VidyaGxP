@@ -1,9 +1,9 @@
 {
     "development" : {
             "PORT": 1000,
-            "dbName": "elogbook",
+            "dbName": "shilpa-ebmr",
             "username": "root",
-            "password": "Root@123",
+            "password": "root",
             "dialect": "mysql",
             "host": "localhost",
             "JWT_SECRET": "NAHKNAHRAF",

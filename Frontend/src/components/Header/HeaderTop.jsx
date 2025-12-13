@@ -121,7 +121,7 @@ function HeaderTop() {
                   width: "200px",
                   marginTop: "10px",
                 }}
-                src="/medicef-logo.png"
+                src="/vb-shilpa.png"
                 alt="Logo"
               />
             </div>
@@ -155,9 +155,9 @@ function HeaderTop() {
               </div>
             </div> */}
             <div className="flex flex-col items-center justify-center">
-              <h1 className="text-3xl font-bold font-serif">eLog-Book</h1>
+              <h1 className="text-3xl font-bold font-serif">eBMR</h1>
               <h1 className="text-2xl font-bold font-serif">
-                Medicef Pharmaceuticals 
+                Shilpa Medicare 
               </h1>
             </div>
           </div>

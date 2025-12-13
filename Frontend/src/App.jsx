@@ -80,6 +80,7 @@ import TemperatureRecord from "./pages/documentPanels/Medicef/TemperatureRecord/
 import EquipmentUsage from "./pages/documentPanels/Medicef/EquipmentUsage/EquipmentUsage.jsx";
 import DifferentialPressureRecordPanel from "./pages/documentPanels/Medicef/DifferentialPressureRecord/DifferentialPressureRecordPanel.jsx";
 import EquipmentUsagePanel from "./pages/documentPanels/Medicef/EquipmentUsage/EquipmentUsagePanel.jsx";
+import BMR from "./pages/configForms/eBMR/BMR.jsx";
 
 function App() {
   return (
@@ -298,6 +299,10 @@ function App() {
             <Route
               path="/differential-pressure-record"
               element={<ProtectedRoute element={<DiffrentialPressure />} />}
+            />
+            <Route
+              path="/bmr-record"
+              element={<ProtectedRoute element={<BMR />} />}
             />
             <Route
               path="/analytical-balance"
