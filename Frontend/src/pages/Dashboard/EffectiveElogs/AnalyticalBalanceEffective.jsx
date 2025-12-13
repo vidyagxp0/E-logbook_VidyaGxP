@@ -328,7 +328,7 @@ const AnalyticalBalancesEffective = () => {
       }
       if (lastRow.factorValue === "Calibration/Verification") {
         toast.warn(
-          "Machine is under maintenance (Calibration/Verification). Please complete the process before adding a new entry."
+          "Machine is under maintenance/Calibration/Verification. Please contact responsible person."
         );
         return;
       }
@@ -337,7 +337,7 @@ const AnalyticalBalancesEffective = () => {
         lastRow.performance !== "OK"
       ) {
         toast.warn(
-          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+          `Machine is under maintenance (${lastRow.performance}). Please contact responsible person.`
         );
         return;
       }
@@ -1674,23 +1674,23 @@ const AnalyticalBalancesEffective = () => {
                             S no.
                           </th>
 
-                          <th className="sticky top-0 z-10 text-center !text-wrap">
+                          <th className="sticky top-0 z-10 text-center w-40 !text-wrap">
                             Date and Time
                           </th>
-                          <th className="sticky top-0 z-10 text-center">
+                          {/* <th className="sticky top-0 z-10 text-center">
                             Instrument/Equipment Name
-                          </th>
-                          <th className="sticky top-0 z-10 text-center">
-                            Instrument/Equipment No.
+                          </th> */}
+                          <th className="sticky top-0 w-36 z-10 text-center">
+                            Inst/Equip No.
                           </th>
 
-                          <th className="sticky top-0 z-10 text-center !text-wrap ">
-                            Reg. No./Lot no.
+                          <th className="sticky top-0 z-10 w-36 text-center !text-wrap ">
+                            Reg/Lot no.
                           </th>
                           <th className="sticky top-0 z-10 text-center !text-wrap ">
                             Sample Name
                           </th>
-                          <th className="sticky top-0 z-10 text-center !text-wrap ">
+                          <th className="sticky top-0 z-10 w-36 text-center !text-wrap ">
                             Weight Taken
                           </th>
                           <th className="sticky top-0 z-10 text-center !text-wrap ">
@@ -1739,13 +1739,13 @@ const AnalyticalBalancesEffective = () => {
                                   readOnly
                                 />
                               </td>
-                              <td className="!text-center !justify-center">
+                              {/* <td className="!text-center !justify-center">
                                 <input
                                   value={item.instrument_name || ""}
                                   readOnly
-                                  // className="bg-gray-100 cursor-not-allowed"
+                                  className="bg-gray-100 cursor-not-allowed"
                                 />
-                              </td>
+                              </td> */}
                               <td className="!text-center !justify-center">
                                 <input
                                   value={item.instrument_no || ""}
@@ -2457,7 +2457,7 @@ const AnalyticalBalancesEffective = () => {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan="9" className="!text-center">
+                            <td colSpan="14" className="!text-center">
                               No records found
                             </td>
                           </tr>

@@ -1068,7 +1068,7 @@ function EffectiveElogs() {
 
             <input
               type="text"
-              placeholder="Search Instrument, Name, Dept, Creator..."
+              placeholder="Search Instrument No., Created by, Date of Creation, Description"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="
@@ -1111,9 +1111,9 @@ function EffectiveElogs() {
                 }}
               >
                 <option value="All">All</option>
-                <option value="PendingForCreate">Pending For Create</option>
-                <option value="Pending">Pending For Review</option>
-                <option value="Complete">Complete </option>
+                <option value="PendingForCreate">Pending for Creation</option>
+                <option value="Pending">Pending for Review</option>
+                <option value="Complete">Completed </option>
               </select>
             </div>
 
