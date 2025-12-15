@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import HeaderTop from "../../../components/Header/HeaderTop";
 // import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -9,6 +9,10 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import TinyEditor from "../../../components/TinyEditor";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
+import { Checkbox, DatePicker } from "antd";
+import dayjs from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 
 export default function TempretureRecordsEffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -26,6 +30,14 @@ export default function TempretureRecordsEffective() {
 
   const [reviewed_by, setReviewed_by] = useState(UserName?.name);
   const [approved_by, setApproved_by] = useState(UserName?.name);
+  const [dateRange, setDateRange] = useState(null);
+  const [showReviewerCheckedOnly, setShowReviewerCheckedOnly] = useState(false);
+  
+  
+    const { RangePicker } = DatePicker;
+      dayjs.extend(isSameOrAfter);
+      dayjs.extend(isSameOrBefore);
+  
 
   useEffect(() => {
     setReviewed_by(UserName?.name);
@@ -561,13 +573,52 @@ const isFieldEditable = (item, fieldName) => {
       description: content,
     }));
   };
+
+  const filteredTemperatureRecords = useMemo(() => {
+    if (!Array.isArray(editData?.TempratureRecords)) return [];
+  
+    let rows = editData.TempratureRecords;
+  
+    // Date filter
+    if (dateRange) {
+      const [start, end] = dateRange;
+      rows = rows.filter((row) => {
+        if (!row.date) return false;
+        const rowDate = dayjs(row.date, "DD-MM-YYYY");
+        return (
+          rowDate.isSameOrAfter(start, "day") &&
+          rowDate.isSameOrBefore(end, "day")
+        );
+      });
+    }
+  
+    // Reviewer checked filter
+    if (showReviewerCheckedOnly) {
+      rows = rows.filter(
+        (row) =>
+          row.reviewed_by !== null &&
+          row.reviewed_by !== undefined &&
+          row.reviewed_by !== ""
+      );
+    }
+  
+    return rows;
+  }, [
+    editData?.TempratureRecords,
+    dateRange,
+    showReviewerCheckedOnly,
+  ]);
+  
+  
+  // console.log(showReviewerCheckedOnly, "showReviewerCheckedOnly");
+  
   return (
     <>
       <HeaderTop />
-      <LaunchQMS />
+      {/* <LaunchQMS /> */}
       <div id="main-form-container">
-        <div id="config-form-document-page" className="min-w-full">
-          <div className="top-block">
+        <div id="config-form-document-page" className="min-w-full" >
+          <div className="top-block"  style={{  gridTemplateColumns:"repeat(3, 1fr)"}}>
             <div>
               <strong> Record Name:&nbsp;</strong>Temperature Record
             </div>
@@ -581,10 +632,7 @@ const isFieldEditable = (item, fieldName) => {
                 ? "EMEA"
                 : "Medicef"}
             </div>
-            <div>
-              <strong> Current Status:&nbsp;</strong>
-              {location.state?.status}
-            </div>
+            
             <div>
               <strong> Initiated By:&nbsp;</strong>
               {location.state?.initiator_name}
@@ -818,8 +866,8 @@ const isFieldEditable = (item, fieldName) => {
                   </div>
                 </div>
               </div> */}
-              <div className="outerDiv4">
-                <div className="btn-forms invisible">
+              {/* <div className="outerDiv4">
+                <div className="btn-forms invisible"> */}
                   {/* <div
                     className={`${
                       isSelectedGeneral === true
@@ -836,7 +884,7 @@ const isFieldEditable = (item, fieldName) => {
                   >
                     General Information
                   </div> */}
-                  <div
+                  {/* <div
                     className={`${
                       isSelectedDetails === true
                         ? "btn-forms-isSelected"
@@ -851,7 +899,7 @@ const isFieldEditable = (item, fieldName) => {
                     }}
                   >
                     Details
-                  </div>
+                  </div> */}
                   {/* <div
                     className={`${
                       initiatorRemarks === true
@@ -900,8 +948,8 @@ const isFieldEditable = (item, fieldName) => {
                   >
                     Approver Remarks
                   </div> */}
-                </div>
-              </div>
+                {/* </div>
+              </div> */}
 
               {/* {isSelectedGeneral === true ? (
                 <>
@@ -1036,6 +1084,34 @@ const isFieldEditable = (item, fieldName) => {
                     </select>
                   </div> */}
 
+                  
+                                      <div className="flex flex-wrap items-end gap-6 mt-6 mb-6 p-4 bg-white border border-blue-500 rounded-lg shadow-sm filter-input">
+                  
+                                        {/* Date Range */}
+                                        <div className="flex flex-col">
+                                          <label className="text-sm font-medium text-gray-800 mb-1">
+                                            Date Range
+                                          </label>
+                                          <RangePicker
+                                            onChange={(dates) => setDateRange(dates)}
+                                            className="w-[260px]"
+                                            placeholder={["Start Date", "End Date"]}
+                                          />
+                                        </div>
+                  
+                                        {/* Reviewer Checked */}
+                                        <div className="flex flex-col items-start h-[56px]">
+                                          <span className="text-sm font-medium text-gray-800 mb-2">
+                                            Reviewed Elogs
+                                          </span>
+                                          <Checkbox
+                                            checked={showReviewerCheckedOnly}
+                                            onChange={(e) => setShowReviewerCheckedOnly(e.target.checked)}
+                                          />
+                                        </div>
+                  
+                                      </div>
+
                   {/* temprature limit */}
 
                   <div className="group-input">
@@ -1108,7 +1184,7 @@ const isFieldEditable = (item, fieldName) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.TempratureRecords?.map((item, index) => (
+                      {filteredTemperatureRecords.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{item.unique_id}</td>
@@ -1434,12 +1510,12 @@ const isFieldEditable = (item, fieldName) => {
                     </div>
                   </div>
                   <div className="flex flex-col w-full">
-                    <label className=" text-lg text-gray-900 mb-1">
+                    <label className=" text-lg text-gray-900 mb-1 ">
                       Additional Info{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
                     </label>
                     <textarea
-                        className="block w-full mb-8 border border-gray-900 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        className="block w-full  mb-8 border border-blue-600 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                         rows="4"
                         name="additionalInfo"
                         value={editData?.additionalInfo}

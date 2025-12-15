@@ -1270,9 +1270,9 @@ function EffectiveElogs() {
                 <option value="Open">Open</option>
                 <option value="Closed">Closed</option>
               </select>
-            </div> */}
+            </div>*/}
           </div>
-        </div>
+        </div> 
 
         {/* Table */}
         <table className="w-full border border-collapse text-center">
@@ -1288,6 +1288,7 @@ function EffectiveElogs() {
               <th className="text-center">Created By</th>
               {/* <th className="text-center">Initiator</th> */}
               <th className="text-center">Date of Creation</th>
+              {/* <th className="text-center">Status</th> */}
             </tr>
           </thead>
           <tbody>
@@ -1360,6 +1361,7 @@ function EffectiveElogs() {
                   <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
                   <td>{item.initiator_name}</td>
                   <td>{dayjs(item.date_of_initiation).format("DD-MM-YYYY hh:mm a")}</td>
+                  {/* <td>{item.status}</td> */}
                 </tr>
               );
             })}

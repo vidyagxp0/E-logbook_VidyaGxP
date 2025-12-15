@@ -15,7 +15,38 @@
     padding: 5px 0px;
     margin-bottom: 20px;
   }
-  
+/* Common filter inputs */
+.filter-input .ant-picker {
+  background-color: #ffffff;
+  border: 1px solid #374151; /* dark border */
+}
+
+.filter-input .ant-picker:hover,
+.filter-input .ant-picker-focused {
+  border-color: #1f2937;
+}
+
+/* Input text */
+.filter-input .ant-picker input {
+  color: #111827;
+}
+
+/* Placeholder color */
+.filter-input .ant-picker input::placeholder {
+  color: #1f2228; /* dark gray */
+}
+
+/* Checkbox border */
+.filter-input .ant-checkbox-inner {
+  background-color: #ffffff;
+  border-color: #374151;
+}
+
+.filter-input .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
   .desktop-input-table-wrapper > .input-wrapper > .group-input-2 {
     /* border: 1px solid rgb(231, 227, 227); */
   }
