@@ -101,9 +101,10 @@ export default function BMR() {
 
   const handlePopupSubmit = (credentials) => {
     if (
-      differentialPRecord.site_id === null ||
-      differentialPRecord.approver_id === null ||
-      differentialPRecord.reviewer_id === null
+      differentialPRecord.site_id === null
+      //  ||
+      // differentialPRecord.approver_id === null ||
+      // differentialPRecord.reviewer_id === null
     ) {
       toast.error(
         "Please select an approver and a reviewer before saving e-log!"
@@ -141,8 +142,8 @@ export default function BMR() {
 
     axios
       .post(
-        "http://localhost:1000/differential-pressure/post-differential-pressure",
-        differentialPRecord,
+        "http://localhost:1000/equipment/equipments",
+        bmrData,
         config
       )
       .then(() => {
@@ -201,6 +202,23 @@ export default function BMR() {
   const generateUniqueId = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
+ const [bmrData, setBmrData] = useState(
+   (prev, next) => ({
+      ...prev,
+      ...next,
+    }),
+    {
+    site_id:location.state?.site_id,
+    initiator_id:"",
+    initiator_name:"",
+    date_of_initiation:"",
+    equipmentName:"",
+    equipmentID:"",
+    equipmentClearance:"",
+    generalPrecautions:"",
+    manufacturingPrecautions:""
+    }
+ );
 
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
     (prev, next) => ({
@@ -223,6 +241,8 @@ export default function BMR() {
       initiatorDeclaration: "",
     }
   );
+
+ 
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
     setDifferentialPRecord({ ...differentialPRecord, [name]: value });
@@ -723,25 +743,25 @@ const handleManufacturingSave = () => {
                   >
                     General Information
                   </div>
-                  <div
-                    className={`${
-                      isSelectedDetails === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
-                    }`}
-                    onClick={() => {
-                      setIsSelectedDetails(true),
-                        setIsSelectedGeneral(false),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false),
-                        setIsSelectedEquipmentClearance(false),
-                        setIsSelectedGeneralManufacturing(false),
-                        setIsSelectedManufacturing(false);
-                    }}
-                  >
-                    Details
-                  </div>
+                    {/* <div
+                      className={`${
+                        isSelectedDetails === true
+                          ? "btn-forms-isSelected"
+                          : "btn-forms-select"
+                      }`}
+                      onClick={() => {
+                        setIsSelectedDetails(true),
+                          setIsSelectedGeneral(false),
+                          setInitiatorRemarks(false),
+                          setReviewerRemarks(false),
+                          setApproverRemarks(false),
+                          setIsSelectedEquipmentClearance(false),
+                          setIsSelectedGeneralManufacturing(false),
+                          setIsSelectedManufacturing(false);
+                      }}
+                    >
+                      Details
+                    </div> */}
                   <div
                     className={`${
                       isSelectedEquipmentClearance === true
@@ -929,7 +949,7 @@ const handleManufacturingSave = () => {
                 </>
               ) : null}
 
-              {isSelectedDetails === true ? (
+              {/* {isSelectedDetails === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Department</label>
@@ -1299,88 +1319,204 @@ const handleManufacturingSave = () => {
                     </div>
                   </div>
                 </>
-              ) : null}
-        {isSelectedEquipmentClearance === true ? (
+              ) : null} */}
+     {isSelectedEquipmentClearance === true ? (
   <div className="overflow-x-auto mt-4">
-    <table className="w-full border border-black text-sm">
+    <table className="w-full border border-black text-sm border-collapse">
+
+      {/* ================= EQUIPMENT DETAILS ================= */}
       <thead>
-        <tr>
+        <tr className="bg-gray-100">
+          <th className="border  border-black p-2 text-left" colSpan={2}>
+            Equipment Name / Accessories Name
+          </th>
+          <th className="border border-black p-2 text-center" colSpan={2}>
+            Vibratory sifter
+          </th>
+          <th className="border border-black p-2 text-center" colSpan={2}>
+            SS Container
+          </th>
+        </tr>
+
+        {[
+          "Equipment ID. / Accessories ID.",
+          "Previous Product / Material",
+          "Batch No. / A.R. No.",
+          "Type of cleaning",
+        ].map((label, i) => (
+          <tr key={i}>
+            <th className="border bg-white text-black border-black p-2 text-left" colSpan={2}>
+              {label}
+            </th>
+
+            {/* Vibratory Sifter input */}
+            <th className="border bg-white text-black border-black p-2" colSpan={2}>
+              <input
+                className="w-full border border-gray-400 px-2 py-1 rounded text-sm"
+                type="text"
+              />
+            </th>
+
+            {/* SS Container input */}
+            <th className="border bg-white text-black border-black p-2" colSpan={2}>
+              <input
+                className="w-full border border-gray-400 px-2 py-1 rounded text-sm"
+                type="text"
+              />
+            </th>
+          </tr>
+        ))}
+
+        {/* ================= CHECKLIST HEADER ================= */}
+        <tr className="bg-gray-100">
           <th className="border border-black p-2 text-center">Sr. No.</th>
           <th className="border border-black p-2 text-left">Check points</th>
-          <th className="border border-black p-2 text-center">Checked by (PDO)</th>
-          <th className="border border-black p-2 text-center">Verified by (QAD)</th>
-          <th className="border border-black p-2 text-center">Checked by (PDO)</th>
-          <th className="border border-black p-2 text-center">Verified by (QAD)</th>
+          <th className="border border-black p-2 text-center">
+            Checked by (PDO)
+          </th>
+          <th className="border border-black p-2 text-center">
+            Verified by (QAD)
+          </th>
+          <th className="border border-black p-2 text-center">
+            Checked by (PDO)
+          </th>
+          <th className="border border-black p-2 text-center">
+            Verified by (QAD)
+          </th>
         </tr>
       </thead>
 
+      {/* ================= CHECKLIST BODY ================= */}
       <tbody>
-        {checkpoints.map((point, index) => (
-          <tr key={index}>
-            <td className="border border-black p-2 text-center">
-              {index + 1}
-            </td>
+        {checkpoints.map((point, index) => {
+          const ssContainerNA = [2, 3, 4].includes(index);
 
-            <td className="border border-black p-2">
-              {point}
-            </td>
+          return (
+            <tr key={index}>
+              <td className="border border-black p-2 text-center">
+                {index + 1}
+              </td>
 
-            <td className="border border-black p-2">
-              <Dropdown
-                value={equipmentClearance[index].pdoChecked}
-                onChange={(val) => {
-                  const data = [...equipmentClearance];
-                  data[index].pdoChecked = val;
-                  setEquipmentClearance(data);
-                }}
-                 disabled={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
-                      )}
+              <td className="border border-black p-2">
+                {point}
+              </td>
+
+              <td className="border border-black p-2">
+                <Dropdown
+                  value={equipmentClearance[index].pdoChecked}
+                  onChange={(val) => {
+                    const data = [...equipmentClearance];
+                    data[index].pdoChecked = val;
+                    setEquipmentClearance(data);
+                  }}
+                />
+              </td>
+
+              <td className="border border-black p-2">
+                <Dropdown
+                  value={equipmentClearance[index].qadVerified}
+                  onChange={(val) => {
+                    const data = [...equipmentClearance];
+                    data[index].qadVerified = val;
+                    setEquipmentClearance(data);
+                  }}
+                />
+              </td>
+
+              <td
+                className={`border border-black p-2 ${
+                  ssContainerNA ? "bg-gray-200" : ""
+                }`}
+              >
+                <Dropdown
+                  value={equipmentClearance[index].pdoChecked2}
+                  onChange={(val) => {
+                    const data = [...equipmentClearance];
+                    data[index].pdoChecked2 = val;
+                    setEquipmentClearance(data);
+                  }}
+                  disabled={ssContainerNA}
+                />
+              </td>
+
+              <td
+                className={`border border-black p-2 ${
+                  ssContainerNA ? "bg-gray-200" : ""
+                }`}
+              >
+                <Dropdown
+                  value={equipmentClearance[index].qadVerified2}
+                  onChange={(val) => {
+                    const data = [...equipmentClearance];
+                    data[index].qadVerified2 = val;
+                    setEquipmentClearance(data);
+                  }}
+                  disabled={ssContainerNA}
+                />
+              </td>
+            </tr>
+          );
+        })}
+
+        {/* ================= SIGN ================= */}
+        <tr>
+          <td
+            className="border border-black p-3 font-medium text-center"
+            colSpan={2}
+          >
+            Sign & Date / Time
+          </td>
+          {[1, 2, 3, 4].map((_, i) => (
+            <td key={i} className="border border-black p-2">
+              <input
+                type="text"
+                className="w-full border border-gray-400 px-2 py-1 rounded text-sm"
               />
             </td>
-
-            <td className="border border-black p-2">
-              <Dropdown
-                value={equipmentClearance[index].qadVerified}
-                onChange={(val) => {
-                  const data = [...equipmentClearance];
-                  data[index].qadVerified = val;
-                  setEquipmentClearance(data);
-                }}
-              />
-            </td>
-
-            <td className="border border-black p-2">
-              <Dropdown
-                value={equipmentClearance[index].pdoChecked2}
-                onChange={(val) => {
-                  const data = [...equipmentClearance];
-                  data[index].pdoChecked2 = val;
-                  setEquipmentClearance(data);
-                }}
-              />
-            </td>
-
-            <td className="border border-black p-2">
-              <Dropdown
-                value={equipmentClearance[index].qadVerified2}
-                onChange={(val) => {
-                  const data = [...equipmentClearance];
-                  data[index].qadVerified2 = val;
-                  setEquipmentClearance(data);
-                }}
-              />
-            </td>
-          </tr>
-        ))}
+          ))}
+        </tr>
       </tbody>
     </table>
   </div>
 ) : null}
 
+
+
 {isSelectedGeneralManufacturing === true ? (
   <>
     <div className="mt-4 overflow-x-auto">
+      <div className="grid grid-cols-2 gap-4">
+<div className="group-input">
+                    <label className="color-label">Area Name</label>
+                    <div className="instruction"></div>
+                    <input
+                      type="text"
+                      // className={`${
+                      //   differentialPRecord.limit < 0.6
+                      //     ? "limit"
+                      //     : differentialPRecord.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                      
+                    />
+                  </div>
+                  <div className="group-input">
+                    <label className="color-label">Room No</label>
+                    <div className="instruction"></div>
+                    <input
+                      type="text"
+                      // className={`${
+                      //   differentialPRecord.limit < 0.6
+                      //     ? "limit"
+                      //     : differentialPRecord.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                   
+                    />
+                  </div>
+      </div>
       <table className="w-full border border-black text-sm">
         <thead>
           <tr>
