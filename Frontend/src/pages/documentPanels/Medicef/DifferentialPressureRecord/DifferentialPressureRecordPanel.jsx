@@ -826,6 +826,10 @@ export default function DifferentialPressureRecordPanel() {
                         editorContent={editData.description}
                         setEditorContent={setTinyContent}
                         tinyNo={1}
+                        isDisabled={
+                          location.state?.stage !== 1 ||
+                          location.state?.initiator_id !== userDetails.userId
+                        }
                       />
                     </div>
                   </div>

@@ -306,7 +306,7 @@ const TinyEditor = ({
   setEditorContent,
   isDisabled = false,
   placeholder = "Enter Your Content Here!",
-  height = "250px",
+  height = "300px",
   tinyNo,
   toolbarButtons = {
     moreText: {
@@ -404,232 +404,232 @@ const TinyEditor = ({
     }
   }, [isDisabled]);
 
-//   const config = {
-//     key: "wFE7nD5F4B3J4A11A8C7fLUQZf1ASFb1EFRNh1Hb1BCCQDUHnA8B6E5C5B1D3C3A1C8A6==",
-//     placeholderText: placeholder,
-//     charCounterCount: true,
-//     theme: "gray",
-//     height: height,
-//     fontSizeDefaultSelection: "14",
-//     toolbarButtons: toolbarButtons,
+  const config = {
+    key: "wFE7nD5F4B3J4A11A8C7fLUQZf1ASFb1EFRNh1Hb1BCCQDUHnA8B6E5C5B1D3C3A1C8A6==",
+    placeholderText: placeholder,
+    charCounterCount: true,
+    theme: "gray",
+    height: height,
+    fontSizeDefaultSelection: "14",
+    toolbarButtons: toolbarButtons,
 
-//     // Upload configurations
-//     imageUploadParam: "files[]",
-//     imageUploadMethod: "POST",
-//     imageUploadURL: `${ANUH_BASE_URL}/api/upload-multiple-attachments`,
+    // Upload configurations
+    imageUploadParam: "files[]",
+    imageUploadMethod: "POST",
+    // imageUploadURL: `${ANUH_BASE_URL}/api/upload-multiple-attachments`,
 
-//     fileUploadParam: "files[]",
-//     fileUploadMethod: "POST",
-//     fileUploadURL: `${ANUH_BASE_URL}/api/upload-multiple-attachments`,
+    fileUploadParam: "files[]",
+    fileUploadMethod: "POST",
+    // fileUploadURL: `${ANUH_BASE_URL}/api/upload-multiple-attachments`,
 
-//     videoUploadParam: "files[]",
-//     videoUploadMethod: "POST",
-//     videoUploadURL: `${ANUH_BASE_URL}/api/upload-multiple-attachments`,
+    videoUploadParam: "files[]",
+    videoUploadMethod: "POST",
+    // videoUploadURL: `${ANUH_BASE_URL}/api/upload-multiple-attachments`,
 
-//     imageMaxSize: 20 * 1024 * 1024,
-//     videoMaxSize: 500 * 1024 * 1024,
-//     fileMaxSize: 50 * 1024 * 1024,
+    imageMaxSize: 20 * 1024 * 1024,
+    videoMaxSize: 500 * 1024 * 1024,
+    fileMaxSize: 50 * 1024 * 1024,
 
-//     // Video specific configurations
-//     videoAllowedTypes: ["mp4", "webm", "ogg"],
-//     videoDefaultWidth: 600,
-//     videoDefaultAlign: "center",
-//     videoResize: true,
-//     videoResponsive: true,
-//     listAdvancedTypes: true,
+    // Video specific configurations
+    videoAllowedTypes: ["mp4", "webm", "ogg"],
+    videoDefaultWidth: 600,
+    videoDefaultAlign: "center",
+    videoResize: true,
+    videoResponsive: true,
+    listAdvancedTypes: true,
 
-//     // Request headers
-//     requestHeaders: {
-//       Authorization: "Bearer " + localStorage.getItem("access_token"),
-//     },
+    // Request headers
+    requestHeaders: {
+      Authorization: "Bearer " + localStorage.getItem("access_token"),
+    },
 
-//     events: {
-//       initialized: function () {
-//         editorRef.current = this;
-//         if (isDisabled){ this.edit.off();
-//           const fullscreenBtn = this.$tb.find('.fr-command[data-cmd="fullscreen"]');
-//       fullscreenBtn.removeClass('fr-disabled');
-//       fullscreenBtn.on("mousedown", (e) => {
-//         e.preventDefault();
-//         this.fullscreen.toggle();
-//       });
-//     }
-//         else this.edit.on();
-//       },
+    events: {
+      initialized: function () {
+        editorRef.current = this;
+        if (isDisabled){ this.edit.off();
+          const fullscreenBtn = this.$tb.find('.fr-command[data-cmd="fullscreen"]');
+      fullscreenBtn.removeClass('fr-disabled');
+      fullscreenBtn.on("mousedown", (e) => {
+        e.preventDefault();
+        this.fullscreen.toggle();
+      });
+    }
+        else this.edit.on();
+      },
 
-//       // Upload Before Handlers for BASE64 Conversion
-//       "image.beforeUpload": function (files) {
-//       const editor = this;
+      // Upload Before Handlers for BASE64 Conversion
+      "image.beforeUpload": function (files) {
+      const editor = this;
 
-//       if (files.length) {
-//         const reader = new FileReader();
+      if (files.length) {
+        const reader = new FileReader();
 
-//         reader.onload = function (e) {
-//           const base64 = e.target.result;
+        reader.onload = function (e) {
+          const base64 = e.target.result;
 
-//           // Insert Base64 image directly
-//           editor.image.insert(base64, null, null, editor.image.get());
-//         };
+          // Insert Base64 image directly
+          editor.image.insert(base64, null, null, editor.image.get());
+        };
 
-//         reader.readAsDataURL(files[0]);
-//       }
+        reader.readAsDataURL(files[0]);
+      }
 
-//       // Hide the popup
-//       editor.popups.hideAll();
+      // Hide the popup
+      editor.popups.hideAll();
 
-//       // ❗ Prevent Froala from uploading the image to the server
-//       return false;
-//     },
-// // Image Upload Success Handler
-// //     "image.uploaded": function (response) {
-// //         try {
-// //           const data =
-// //             typeof response === "string" ? JSON.parse(response) : response;
-
-// //           if (Array.isArray(data) && data[0]?.url) {
-// //             this.image.insert(data[0].url, false, null, this.image.get(), null);
-// //           } else if (data?.url) {
-// //             this.image.insert(data.url, false, null, this.image.get(), null);
-// //           } else if (data?.data?.[0]?.url) {
-// //             this.image.insert(
-// //               data.data[0].url,
-// //               false,
-// //               null,
-// //               this.image.get(),
-// //               null
-// //             );
-// //           } else {
-// //             console.error("Invalid image upload response format:", data);
-// //           }
-// //         } catch (error) {
-// //           console.error("Error parsing image upload response:", error);
-// //       }
-// //   return false; // prevent default behavior
-// // },
-
-//       //  Video Upload Success Handler - CORRECTED
-//       "video.uploaded": function (response) {
+      // ❗ Prevent Froala from uploading the image to the server
+      return false;
+    },
+// Image Upload Success Handler
+//     "image.uploaded": function (response) {
 //         try {
 //           const data =
 //             typeof response === "string" ? JSON.parse(response) : response;
-//           let videoUrl;
 
-//           // Handle different response formats
 //           if (Array.isArray(data) && data[0]?.url) {
-//             videoUrl = data[0].url;
+//             this.image.insert(data[0].url, false, null, this.image.get(), null);
 //           } else if (data?.url) {
-//             videoUrl = data.url;
+//             this.image.insert(data.url, false, null, this.image.get(), null);
 //           } else if (data?.data?.[0]?.url) {
-//             videoUrl = data.data[0].url;
-//           } else {
-//             console.error("Invalid video upload response format:", data);
-//             return false;
-//           }
-
-//           if (videoUrl) {
-//             // Create video element with proper attributes
-//             const videoHtml = `
-//               <video 
-//                 controls 
-//                 style="max-width: 100%; height: auto; display: block; margin: 0 auto;" 
-//                 class="fr-draggable"
-//               >
-//                 <source src="${videoUrl}" type="video/mp4">
-//                 Your browser does not support the video tag.
-//               </video>
-//             `;
-
-//             // Insert the video HTML
-//             this.html.insert(videoHtml);
-
-//             // Alternative method using Froala's video.insert
-//             // this.video.insert(videoUrl, null, null, this.video.get(), {
-//             //   attributes: {
-//             //     controls: true,
-//             //     style: "max-width: 100%; height: auto;"
-//             //   }
-//             // });
-//           }
-//         } catch (error) {
-//           console.error("Error parsing video upload response:", error);
-//         }
-//         return false;
-//       },
-
-//       //  File Upload Success Handler
-//       "file.uploaded": function (response) {
-//         try {
-//           const data =
-//             typeof response === "string" ? JSON.parse(response) : response;
-//           let fileUrl, fileName;
-
-//           if (Array.isArray(data) && data[0]) {
-//             fileUrl = data[0].url;
-//             fileName = data[0].name || data[0].original_name || "download";
-//           } else if (data?.url) {
-//             fileUrl = data.url;
-//             fileName = data.name || data.original_name || "download";
-//           } else if (data?.data?.[0]) {
-//             fileUrl = data.data[0].url;
-//             fileName =
-//               data.data[0].name || data.data[0].original_name || "download";
-//           } else {
-//             console.error("Invalid file upload response format:", data);
-//             return false;
-//           }
-
-//           if (fileUrl) {
-//             this.file.insert(
-//               fileUrl,
-//               {
-//                 text: fileName,
-//                 target: "_blank",
-//               },
-//               {
-//                 title: fileName,
-//                 download: fileName,
-//               }
+//             this.image.insert(
+//               data.data[0].url,
+//               false,
+//               null,
+//               this.image.get(),
+//               null
 //             );
+//           } else {
+//             console.error("Invalid image upload response format:", data);
 //           }
 //         } catch (error) {
-//           console.error("Error parsing file upload response:", error);
-//         }
-//         return false;
-//       },
+//           console.error("Error parsing image upload response:", error);
+//       }
+//   return false; // prevent default behavior
+// },
 
-//       //  Upload Error Handlers
-//       "file.uploadError": function (error) {
-//         console.error("File upload error:", error);
-//       },
+      //  Video Upload Success Handler - CORRECTED
+      "video.uploaded": function (response) {
+        try {
+          const data =
+            typeof response === "string" ? JSON.parse(response) : response;
+          let videoUrl;
 
-//       "image.uploadError": function (error) {
-//         console.error("Image upload error:", error);
-//       },
+          // Handle different response formats
+          if (Array.isArray(data) && data[0]?.url) {
+            videoUrl = data[0].url;
+          } else if (data?.url) {
+            videoUrl = data.url;
+          } else if (data?.data?.[0]?.url) {
+            videoUrl = data.data[0].url;
+          } else {
+            console.error("Invalid video upload response format:", data);
+            return false;
+          }
 
-//       "video.uploadError": function (error) {
-//         console.error("Video upload error:", error);
-//       },
+          if (videoUrl) {
+            // Create video element with proper attributes
+            const videoHtml = `
+              <video 
+                controls 
+                style="max-width: 100%; height: auto; display: block; margin: 0 auto;" 
+                class="fr-draggable"
+              >
+                <source src="${videoUrl}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            `;
 
-//       //  Video specific events
-//       "video.loaded": function (video) {
-//         console.log("Video loaded:", video);
-//       },
+            // Insert the video HTML
+            this.html.insert(videoHtml);
 
-//       "video.error": function (error) {
-//         console.error("Video error:", error);
-//       },
+            // Alternative method using Froala's video.insert
+            // this.video.insert(videoUrl, null, null, this.video.get(), {
+            //   attributes: {
+            //     controls: true,
+            //     style: "max-width: 100%; height: auto;"
+            //   }
+            // });
+          }
+        } catch (error) {
+          console.error("Error parsing video upload response:", error);
+        }
+        return false;
+      },
 
-//       contentChanged: function () {
-//         if (isMountedRef.current && setEditorContent) {
-//           try {
-//             setEditorContent(this.html.get(), tinyNo);
-//           } catch (error) {
-//             console.warn("Error in contentChanged:", error);
-//           }
-//         }
-//       },
-//     },
-//   };
+      //  File Upload Success Handler
+      "file.uploaded": function (response) {
+        try {
+          const data =
+            typeof response === "string" ? JSON.parse(response) : response;
+          let fileUrl, fileName;
+
+          if (Array.isArray(data) && data[0]) {
+            fileUrl = data[0].url;
+            fileName = data[0].name || data[0].original_name || "download";
+          } else if (data?.url) {
+            fileUrl = data.url;
+            fileName = data.name || data.original_name || "download";
+          } else if (data?.data?.[0]) {
+            fileUrl = data.data[0].url;
+            fileName =
+              data.data[0].name || data.data[0].original_name || "download";
+          } else {
+            console.error("Invalid file upload response format:", data);
+            return false;
+          }
+
+          if (fileUrl) {
+            this.file.insert(
+              fileUrl,
+              {
+                text: fileName,
+                target: "_blank",
+              },
+              {
+                title: fileName,
+                download: fileName,
+              }
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing file upload response:", error);
+        }
+        return false;
+      },
+
+      //  Upload Error Handlers
+      "file.uploadError": function (error) {
+        console.error("File upload error:", error);
+      },
+
+      "image.uploadError": function (error) {
+        console.error("Image upload error:", error);
+      },
+
+      "video.uploadError": function (error) {
+        console.error("Video upload error:", error);
+      },
+
+      //  Video specific events
+      "video.loaded": function (video) {
+        console.log("Video loaded:", video);
+      },
+
+      "video.error": function (error) {
+        console.error("Video error:", error);
+      },
+
+      contentChanged: function () {
+        if (isMountedRef.current && setEditorContent) {
+          try {
+            setEditorContent(this.html.get(), tinyNo);
+          } catch (error) {
+            console.warn("Error in contentChanged:", error);
+          }
+        }
+      },
+    },
+  };
 
   return (
     <div ref={containerRef} style={{ minHeight: "160px" }}>
@@ -663,7 +663,7 @@ const TinyEditor = ({
           tag="textarea"
           model={editorContent}
           onModelChange={setEditorContent}
-          // config={config}
+          config={config}
         />
       )}
     </div>
