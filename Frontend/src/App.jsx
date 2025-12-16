@@ -81,6 +81,7 @@ import EquipmentUsage from "./pages/documentPanels/Medicef/EquipmentUsage/Equipm
 import DifferentialPressureRecordPanel from "./pages/documentPanels/Medicef/DifferentialPressureRecord/DifferentialPressureRecordPanel.jsx";
 import EquipmentUsagePanel from "./pages/documentPanels/Medicef/EquipmentUsage/EquipmentUsagePanel.jsx";
 import BMR from "./pages/configForms/eBMR/BMR.jsx";
+import MasterDashboard from "./components/Masters/MasterDashboard/MasterDashboard.jsx";
 
 function App() {
   return (
@@ -301,7 +302,7 @@ function App() {
               element={<ProtectedRoute element={<DiffrentialPressure />} />}
             />
             <Route
-              path="/bmr-record"
+              path="/differential-pressure-record"
               element={<ProtectedRoute element={<BMR />} />}
             />
             <Route
@@ -311,6 +312,10 @@ function App() {
             <Route
               path="/karl-fischer"
               element={<ProtectedRoute element={<Karl />} />}
+            />
+            <Route
+             path="/master-dashboard" 
+              element={<ProtectedRoute element={<MasterDashboard />} />}
             />
             <Route
               path="/pHMeter-OpCal"

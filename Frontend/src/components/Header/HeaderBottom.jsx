@@ -1,16 +1,19 @@
 import { useState } from "react";
 import "./HeaderBottom.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CreateRecordModal from "../Modals/CreateRecordModal/CreateRecordModal";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import MasterDashboard from "../Masters/MasterDashboard/MasterDashboard";
 
 function HeaderBottom() {
   const [eLogSelect, setELogSelect] = useState("All_Records");
   const [recordModal, setRecordModal] = useState(false);
+  const [masterDashboard, setMasterDashboard] = useState(false);
   const closeRecordModal = () => setRecordModal(false);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -41,7 +44,7 @@ function HeaderBottom() {
               >
                 Dashboard
               </Link>
-              <Link
+              {/* <Link
                 to="/effectiveElogs"
                 className={`tab py-1 px-3 min-w-fit rounded-md  ${
                   window.location.pathname === "/effectiveElogs"
@@ -50,7 +53,7 @@ function HeaderBottom() {
                 } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
                  E-Logs
-              </Link>
+              </Link> */}
               <Link
                 to="/analytics2"
                 className={`tab py-1 px-4 rounded-md  ${
@@ -64,6 +67,15 @@ function HeaderBottom() {
             </div>
           </div>
 
+         <div className="flex gap-5">
+          
+          
+            <div className="headerBottomRgt">
+              <div className="themeBtn" onClick={() => navigate("/master-dashboard")}>
+                Master Dashboard
+              </div>
+            </div>
+          
           {userDetails.roles?.some(
             (itm) => itm.role_id === 5 || itm.role_id === 1
           ) &&
@@ -74,10 +86,12 @@ function HeaderBottom() {
               </div>
             </div>
           ) : null}
+         </div>
         </div>
       </div>
 
       {recordModal && <CreateRecordModal closeModal={closeRecordModal} />}
+      {masterDashboard && <MasterDashboard />}
     </>
   );
 }

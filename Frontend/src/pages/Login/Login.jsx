@@ -63,7 +63,7 @@ function Login() {
         }
         // navigate("/effectiveElogs");
         // navigate("/dept-selection");
-        navigate("/effectiveElogs");
+        navigate("/dashboard");
         toast.success("Login Successful");
       })
       .catch((error) => {
