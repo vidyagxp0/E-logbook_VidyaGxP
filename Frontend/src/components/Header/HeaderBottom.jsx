@@ -33,7 +33,7 @@ function HeaderBottom() {
             <div className="tabs flex items-center justify-center space-x-6 ml-5">
               <Link
                 to="/dashboard"
-                className={`tab py-2 px-4 rounded-md  ${
+                className={`tab py-1 px-3 rounded-md  ${
                   window.location.pathname === "/dashboard"
                     ? "bg-blue-600 text-white"
                     : "bg-white text-blue-500 border border-blue-500"

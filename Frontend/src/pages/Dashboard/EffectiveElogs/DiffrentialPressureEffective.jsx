@@ -47,6 +47,9 @@ export default function DPREffective() {
     setApproved_by(UserName?.name);
   }, []);
 
+  const navState = location.state ?? {};
+
+
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -250,18 +253,27 @@ export default function DPREffective() {
   }, [location.state]);
 
   const INITIATOR_LOCKED_FIELDS = [
-  "additionalInfo",
-  "additionalAttachment",
+
   "differential_pressure",
 ];
 
 const REVIEWER_LOCKED_FIELDS = [
-  "additionalInfo",
-  "additionalAttachment",
+ 
   "remarks",
   "supporting_docs",
   "reviewed_by",
 ];
+
+const APPROWER_LOCKED_FIELDS=[
+  "additionalInfo",
+  "additionalAttachment",
+]
+
+const originalData = location.state;
+const isAdditionalDataSaved =
+  Boolean(originalData?.additionalInfo) ||
+  Boolean(originalData?.additionalAttachment);
+
 
 // Identify new row
 const isNewRow = (item) => {
@@ -269,7 +281,6 @@ const isNewRow = (item) => {
   return !item.record_id;
 };
 
-  const originalData = location.state;
 
   
   
@@ -296,18 +307,29 @@ const isNewRow = (item) => {
 // MAIN EDITABLE LOGIC
 const isFieldEditable = (item, fieldName) => {
   const roleId = Number(userDetails?.roles?.[0]?.role_id);
-console.log(roleId,"roleId")
+
   // New row → always editable
   if (isNewRow(item)) return true;
 
-    if (!item) {
-    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false; // initiator blocked fields
-    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false; // reviewer blocked fields
-    return true; // everyone else can edit
-  }
+  if (!item) {
 
-  
+    //  SAVE ke baad initiator + reviewer lock
+    if (
+      (roleId === 1 || roleId === 2) &&
+      ["additionalInfo", "additionalAttachment"].includes(fieldName) &&
+      isAdditionalDataSaved
+    ) {
+      return false;
+    }
+
+    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false;
+    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false;
+    if (roleId === 3 && APPROWER_LOCKED_FIELDS.includes(fieldName)) return false;
+
+    return true;
+  }
 };
+
 
  const addRow = () => {
   const roleId = Number(userDetails?.roles?.[0]?.role_id);
@@ -505,9 +527,9 @@ console.log(roleId,"roleId")
 
   const EmptyreportData = {
     title: "Differential Pressure",
-    status: location.state.status,
+    status: navState.status,
     blankRows: 17,
-    form_id: location.state.form_id,
+    form_id: navState.form_id,
     DifferentialPressureRecords: [],
   };
   const generateEmptyReport = async () => {
@@ -539,15 +561,15 @@ console.log(roleId,"roleId")
 
   const reportData = {
     site:
-      location.state.site_id === 1
+      navState.site_id === 1
         ? "India"
-        : location.state.site_id === 2
+        : navState.site_id === 2
         ? "Malaysia"
-        : location.state.site_id === 3
+        : navState.site_id === 3
         ? "EMEA"
         : "EU",
-    status: location.state.status,
-    initiator_name: location.state.initiator_name,
+    status: navState.status,
+    initiator_name: navState.initiator_name,
     title: "Differential Pressure Record",
     ...editData,
   };
@@ -702,7 +724,7 @@ const filteredDifferentialRecords = useMemo(() => {
                     Audit Trail
                   </button>
 
-                  {/* Generate Empty Report Button */}
+                  {/* Generate Empty Report Button
                   <button
                     onClick={generateEmptyReport}
                     className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
@@ -733,7 +755,7 @@ const filteredDifferentialRecords = useMemo(() => {
           }
         `}
                     </style>
-                  </button>
+                  </button> */}
 
                   {/* Generate Report Button */}
                   <button

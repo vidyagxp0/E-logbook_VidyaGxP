@@ -47,6 +47,8 @@ export default function TempretureRecordsEffective() {
     setApproved_by(UserName?.name);
   }, []);
 
+  const navState = location.state ?? {};
+
   const [editData, setEditData] = useState({
     initiator_name: "",
     status: "",
@@ -73,8 +75,8 @@ export default function TempretureRecordsEffective() {
 
   const handlePopupSubmit = (credentials) => {
     const data = {
-      site_id: location.state?.site_id,
-      form_id: location.state?.form_id,
+      site_id: navState.site_id,
+      form_id: location.state.form_id,
       email: credentials?.email,
       password: credentials?.password,
       reviewComment: editData.reviewComment,
@@ -247,28 +249,36 @@ export default function TempretureRecordsEffective() {
 
 
    const INITIATOR_LOCKED_FIELDS = [
-  "additionalInfo",
+
   "temprature_record",
   "humidity_record",
-  "additionalAttachment",
   "differential_pressure",
 ];
 
 const REVIEWER_LOCKED_FIELDS = [
-  "additionalInfo",
-  "additionalAttachment",
+
   "remarks",
   "supporting_docs",
   "chacked_by",
 ];
+
+
+const APPROWER_LOCKED_FIELDS=[
+  "additionalInfo",
+  "additionalAttachment",
+]
+
+const originalData = location.state;
+const isAdditionalDataSaved =
+  Boolean(originalData?.additionalInfo) ||
+  Boolean(originalData?.additionalAttachment);
+
 
 // Identify new row
 const isNewRow = (item) => {
   if (!item) return false; // no row, treat as non-new
   return !item.record_id;
 };
-
-const originalData = location.state;
 
  const canReviewerEdit = (item) => {
     // find original version of this record by record_id
@@ -296,13 +306,23 @@ const isFieldEditable = (item, fieldName) => {
   // New row → always editable
   if (isNewRow(item)) return true;
 
-    if (!item) {
-    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false; // initiator blocked fields
-    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false; // reviewer blocked fields
-    return true; // everyone else can edit
-  }
+  if (!item) {
 
-  
+    //  SAVE ke baad initiator + reviewer lock
+    if (
+      (roleId === 1 || roleId === 2) &&
+      ["additionalInfo", "additionalAttachment"].includes(fieldName) &&
+      isAdditionalDataSaved
+    ) {
+      return false;
+    }
+
+    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false;
+    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false;
+    if (roleId === 3 && APPROWER_LOCKED_FIELDS.includes(fieldName)) return false;
+
+    return true;
+  }
 };
 
   const object = getCurrentDateTime();
@@ -391,9 +411,9 @@ const isFieldEditable = (item, fieldName) => {
 
   const EmptyreportData = {
     title: "Temperature Process",
-    status: location.state.status,
+    status: location.state?.status ?? "",
     blankRows: 17,
-    form_id: location.state.form_id,
+    form_id: location.state?.form_id ?? "",
     temprature_record: [],
     humidity_record: [],
   };
@@ -426,15 +446,17 @@ const isFieldEditable = (item, fieldName) => {
 
   const reportData = {
     site:
-      location.state.site_id === 1
+      location.state?.site_id === 1
         ? "India"
-        : location.state.site_id === 2
+        : location.state?.site_id === 2
         ? "Malaysia"
-        : location.state.site_id === 3
+        : location.state?.site_id === 3
         ? "EMEA"
-        : "EU",
-    status: location.state.status,
-    initiator_name: location.state.initiator_name,
+        : location.state?.site_id === 5
+        ? "Medicef"
+        : "Medicef",
+    status: navState.status,
+    initiator_name: navState.initiator_name,
     title: "Temperature Record",
     ...editData,
   };
@@ -670,7 +692,7 @@ const isFieldEditable = (item, fieldName) => {
                     Audit Trail
                   </button>
 
-                  {/* Generate Empty Report Button */}
+                  {/* Generate Empty Report Button
                   <button
                     onClick={generateEmptyReport}
                     className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
@@ -701,7 +723,7 @@ const isFieldEditable = (item, fieldName) => {
           }
         `}
                     </style>
-                  </button>
+                  </button> */}
 
                   {/* Generate Report Button */}
                   <button

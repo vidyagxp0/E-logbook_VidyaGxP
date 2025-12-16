@@ -933,10 +933,10 @@ function EffectiveElogs() {
         : item.site_id === 3
         ? "emea"
         : item.site_id === 5
-        ? "biologics"
+        ? "Medicef"
         : item.site_id === 6
         ? "ar&d"
-        : "eu";
+        : "Medicef";
     const creator = item.initiator_name?.toLowerCase() || "";
 
     return (
@@ -1296,7 +1296,7 @@ function EffectiveElogs() {
               const cleanHTML =
                 item?.description?.replace(/^"|"$/g, "").trim() || "NA";
               return (
-                <tr key={item.form_id || item.eLogId}>
+                <tr key={`${item.form_id || item.eLogId}-${item.id || index}`}>
                   <td>{index + 1}</td>
 
                   <td
@@ -1356,9 +1356,12 @@ function EffectiveElogs() {
                       ? "Medicef"
                       : item.site_id === 6
                       ? "AR&D"
-                      : "EU"}
+                      : "Medicef"}
                   </td>
-                  <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
+                  <td dangerouslySetInnerHTML={{ __html: cleanHTML }} style={{
+    verticalAlign: "top",
+    textAlign: "left",
+  }}></td>
                   <td>{item.initiator_name}</td>
                   <td>{dayjs(item.date_of_initiation).format("DD-MM-YYYY hh:mm a")}</td>
                   {/* <td>{item.status}</td> */}
