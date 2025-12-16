@@ -22,6 +22,7 @@ const vidyagxpFeedback = require("./config/vidyagxp_feedback");
 const siteRoutes = require("./routes/sites");
 const equipment = require("./routes/equipmentRoutes")
 const siteMasterRoutes = require("./routes/siteMasterRoutes")
+const apiIdentificationMasterRoutes = require("./routes/apiIdentificationMasterRoutes")
 const cors = require("cors");
 const path = require("path");
 const helmet = require("helmet");
