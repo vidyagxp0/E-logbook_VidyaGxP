@@ -79,6 +79,7 @@ app.use("/karl-fischer",karlFischerRoutes);
 app.use("/hplc",hplcRoutes)
 app.use("/equipment",equipment)
 app.use("/site-master",siteMasterRoutes);
+app.use("/identification-master",apiIdentificationMasterRoutes);
 app.use(express.static(path.join(__dirname, "documents")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
