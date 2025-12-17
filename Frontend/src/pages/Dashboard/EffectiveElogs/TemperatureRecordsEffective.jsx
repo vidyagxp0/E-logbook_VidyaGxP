@@ -1134,6 +1134,117 @@ const isFieldEditable = (item, fieldName) => {
                   
                                       </div>
 
+                      <div className="group-input">
+                            
+                            <label className="color-label">Area Name </label>
+                            <div>
+                              <input
+                                type="text"
+                                name="area_name"
+                              value={editData?.area_name}
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !== userDetails.userId
+                              }  
+                              />
+                            </div>
+                        </div>
+                        <div className="group-input">
+                            
+                            <label className="color-label">Room ID. </label>
+                            <div>
+                              <input
+                                type="text"
+                                name="room_id"
+                              value={editData?.room_id}
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !== userDetails.userId
+                              } 
+                              />
+                            </div>
+                        </div>
+                        <div className="group-input">
+                            
+                            <label className="color-label mb-4">Instrument Id. No. </label>
+                            <div>
+                              <input
+                                type="text"
+                                name="instrument_id"
+                                value={editData?.instrument_id}disabled={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !== userDetails.userId
+                              }
+                              />
+                            </div>
+                        </div>
+
+                    <label className="color-label text-lg">Department</label>
+
+                      {/* <div className="instruction" style={{ height: "6px" }}>&nbsp;</div> */}
+                          <div>
+                            <select
+                              className="form-control"
+                              name="department"
+                              value={editData?.department}
+                              onChange={handleInputChange1}
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !== userDetails.userId
+                              }
+                            >
+                              <option value="">-- Select --</option>
+                              <option value="Corporate Quality Assurance">
+                                Corporate Quality Assurance
+                              </option>
+                              <option value="Quality Assurance Bio-Pharma">
+                                Quality Assurance Bio-Pharma
+                              </option>
+                              <option value="Central Quality Control">
+                                Central Quality Control
+                              </option>
+                              <option value="Manufacturing">Manufacturing</option>
+                              <option value="Plasma Sourcing Grou">
+                                Plasma Sourcing Group
+                              </option>
+                              <option value="Central Stores">Central Stores</option>
+                              <option value="Information Technology Group">
+                                Information Technology Group
+                              </option>
+                              <option value="Molecular Medicine">
+                                Molecular Medicine
+                              </option>
+                              <option value="Central Laboratory">
+                                Central Laboratory
+                              </option>
+                              <option value="Tech team">Tech team</option>
+                            </select>
+                          </div>
+
+                          <div className="group-input">
+                            <label className="">Compression Area with respect to Corridor</label>
+
+                            {/* <div className="instruction">&nbsp;</div> */}
+                            <select
+                              className="form-control mt-0"
+                              name="compression_area"
+                              value={editData?.compression_area}
+                              onChange={handleInputChange1}
+                              disabled={
+                                location.state?.stage !== 1 ||
+                                location.state?.initiator_id !== userDetails.userId
+                              }
+                            >
+                              <option value="Select a value">Select a value</option>
+                              <option value="Area 1">Area 1</option>
+                              <option value="Area 2">Area 2</option>
+                              <option value="Area 3">Area 3</option>
+                              <option value="Area 4">Area 4</option>
+                              <option value="Area 5">Area 5</option>
+                              <option value="Area 6">Area 6</option>
+                            </select>
+                          </div>
+
                   {/* temprature limit */}
 
                   <div className="group-input">
@@ -1467,9 +1578,9 @@ const isFieldEditable = (item, fieldName) => {
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="flex flex-col w-full">
                       <label
-                        htmlFor="additionalAttachment"
-                        className="color-label"
-                        name="additionalAttachment"
+                        // htmlFor="additionalAttachment"
+                        // className="color-label"
+                        // name="additionalAttachment"
                       >
                         Additional Attachment{" "}
                         <span className="text-sm text-zinc-600">

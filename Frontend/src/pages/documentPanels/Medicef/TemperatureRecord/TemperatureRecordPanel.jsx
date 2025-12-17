@@ -1186,7 +1186,7 @@ export default function TempretureRecordsPanel() {
                     <textarea
                       className="block w-full border border-gray-800 rounded-md shadow-sm px-3 py-2 text-gray-700 "
                       rows="4"
-                      // disabled
+                      disabled
                       name="additionalInfo"
                       value={editData?.additionalInfo}
                       onChange={handleInputChange1}
