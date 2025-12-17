@@ -493,8 +493,12 @@ exports.EditTempratureRecord = async (req, res) => {
         limit,
         reviewer_id,
         approver_id,
-        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
-        additionalAttachment: getElogDocsUrl(additionalAttachment),
+        initiatorAttachment: initiatorAttachment
+        ? getElogDocsUrl(initiatorAttachment)
+        : form.initiatorAttachment,
+        additionalAttachment: additionalAttachment
+        ? getElogDocsUrl(additionalAttachment)
+        : form.additionalAttachment,
         initiatorComment,
         additionalInfo,
       },

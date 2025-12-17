@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import dayjs from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import HeaderTop from "../../../components/Header/HeaderTop";
 // import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -9,6 +12,8 @@ import axios from "axios";
 import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
+import { Checkbox, DatePicker } from "antd";
+
 
 export default function DPREffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -26,6 +31,13 @@ export default function DPREffective() {
 
   const [reviewed_by, setReviewed_by] = useState(UserName?.name);
   const [approved_by, setApproved_by] = useState(UserName?.name);
+  const [dateRange, setDateRange] = useState(null);
+  const [showReviewerCheckedOnly, setShowReviewerCheckedOnly] = useState(false);
+
+
+  const { RangePicker } = DatePicker;
+    dayjs.extend(isSameOrAfter);
+    dayjs.extend(isSameOrBefore);
 
   useEffect(() => {
     setReviewed_by(UserName?.name);
@@ -34,6 +46,9 @@ export default function DPREffective() {
   useEffect(() => {
     setApproved_by(UserName?.name);
   }, []);
+
+  const navState = location.state ?? {};
+
 
   const [editData, setEditData] = useState({
     initiator_name: "",
@@ -46,8 +61,7 @@ export default function DPREffective() {
     DifferentialPressureRecords: [],
     limit: "",
   });
-  console.log(editData, "editdata");
-
+  
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -239,18 +253,27 @@ export default function DPREffective() {
   }, [location.state]);
 
   const INITIATOR_LOCKED_FIELDS = [
-  "additionalInfo",
-  "additionalAttachment",
+
   "differential_pressure",
 ];
 
 const REVIEWER_LOCKED_FIELDS = [
-  "additionalInfo",
-  "additionalAttachment",
+ 
   "remarks",
   "supporting_docs",
   "reviewed_by",
 ];
+
+const APPROWER_LOCKED_FIELDS=[
+  "additionalInfo",
+  "additionalAttachment",
+]
+
+const originalData = location.state;
+const isAdditionalDataSaved =
+  Boolean(originalData?.additionalInfo) ||
+  Boolean(originalData?.additionalAttachment);
+
 
 // Identify new row
 const isNewRow = (item) => {
@@ -258,7 +281,6 @@ const isNewRow = (item) => {
   return !item.record_id;
 };
 
-  const originalData = location.state;
 
   
   
@@ -285,18 +307,29 @@ const isNewRow = (item) => {
 // MAIN EDITABLE LOGIC
 const isFieldEditable = (item, fieldName) => {
   const roleId = Number(userDetails?.roles?.[0]?.role_id);
-console.log(roleId,"roleId")
+
   // New row → always editable
   if (isNewRow(item)) return true;
 
-    if (!item) {
-    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false; // initiator blocked fields
-    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false; // reviewer blocked fields
-    return true; // everyone else can edit
-  }
+  if (!item) {
 
-  
+    //  SAVE ke baad initiator + reviewer lock
+    if (
+      (roleId === 1 || roleId === 2) &&
+      ["additionalInfo", "additionalAttachment"].includes(fieldName) &&
+      isAdditionalDataSaved
+    ) {
+      return false;
+    }
+
+    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false;
+    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false;
+    if (roleId === 3 && APPROWER_LOCKED_FIELDS.includes(fieldName)) return false;
+
+    return true;
+  }
 };
+
 
  const addRow = () => {
   const roleId = Number(userDetails?.roles?.[0]?.role_id);
@@ -471,13 +504,16 @@ console.log(roleId,"roleId")
     }));
   };
 
-  const handleInitiatorFileChange = (e) => {
-    setEditData({
-      ...editData,
-      // initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[0],
-    });
-  };
+ const handleInitiatorFileChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setEditData((prev) => ({
+    ...prev,
+    additionalAttachment: file,
+  }));
+};
+
   const handleReviewerFileChange = (e) => {
     setEditData({ ...editData, reviewerAttachment: e.target.files[0] });
   };
@@ -491,9 +527,9 @@ console.log(roleId,"roleId")
 
   const EmptyreportData = {
     title: "Differential Pressure",
-    status: location.state.status,
+    status: navState.status,
     blankRows: 17,
-    form_id: location.state.form_id,
+    form_id: navState.form_id,
     DifferentialPressureRecords: [],
   };
   const generateEmptyReport = async () => {
@@ -525,15 +561,15 @@ console.log(roleId,"roleId")
 
   const reportData = {
     site:
-      location.state.site_id === 1
+      navState.site_id === 1
         ? "India"
-        : location.state.site_id === 2
+        : navState.site_id === 2
         ? "Malaysia"
-        : location.state.site_id === 3
+        : navState.site_id === 3
         ? "EMEA"
         : "EU",
-    status: location.state.status,
-    initiator_name: location.state.initiator_name,
+    status: navState.status,
+    initiator_name: navState.initiator_name,
     title: "Differential Pressure Record",
     ...editData,
   };
@@ -579,13 +615,52 @@ console.log(roleId,"roleId")
       description: content,
     }));
   };
+
+const filteredDifferentialRecords = useMemo(() => {
+  if (!Array.isArray(editData?.DifferentialPressureRecords)) return [];
+
+  let rows = editData.DifferentialPressureRecords;
+
+  // Date filter
+  if (dateRange) {
+    const [start, end] = dateRange;
+    rows = rows.filter((row) => {
+      if (!row.date) return false;
+      const rowDate = dayjs(row.date, "DD-MM-YYYY");
+      return (
+        rowDate.isSameOrAfter(start, "day") &&
+        rowDate.isSameOrBefore(end, "day")
+      );
+    });
+  }
+
+  // Reviewer checked filter
+  if (showReviewerCheckedOnly) {
+    rows = rows.filter(
+      (row) =>
+        row.reviewed_by !== null &&
+        row.reviewed_by !== undefined &&
+        row.reviewed_by !== ""
+    );
+  }
+
+  return rows;
+}, [
+  editData?.DifferentialPressureRecords,
+  dateRange,
+  showReviewerCheckedOnly,
+]);
+
+
+// console.log(showReviewerCheckedOnly, "showReviewerCheckedOnly");
+
+
   return (
     <>
       <HeaderTop />
-      <LaunchQMS />
-      <div id="main-form-container">
+      <div id="three-col-layout">
         <div id="config-form-document-page" className="min-w-full">
-          <div className="top-block">
+          <div className="top-block" style={{  gridTemplateColumns:"repeat(3, 1fr)"}}>
             <div>
               <strong> Record Name:&nbsp;</strong>Differential Pressure
             </div>
@@ -599,10 +674,10 @@ console.log(roleId,"roleId")
                 ? "Medicef"
                 : "Medicef"}
             </div>
-            <div>
+            {/* <div>
               <strong> Current Status:&nbsp;</strong>
               {location.state?.status}
-            </div>
+            </div> */}
             <div>
               <strong> Initiated By:&nbsp;</strong>
               {location.state?.initiator_name}
@@ -649,7 +724,7 @@ console.log(roleId,"roleId")
                     Audit Trail
                   </button>
 
-                  {/* Generate Empty Report Button */}
+                  {/* Generate Empty Report Button
                   <button
                     onClick={generateEmptyReport}
                     className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
@@ -680,7 +755,7 @@ console.log(roleId,"roleId")
           }
         `}
                     </style>
-                  </button>
+                  </button> */}
 
                   {/* Generate Report Button */}
                   <button
@@ -954,32 +1029,8 @@ console.log(roleId,"roleId")
                   </button>
                 </div> */}
               </div>
-              <div className="flex gap-2">
-                <div className="flex gap-2">
-                  <div>
-                    <label> Start Date</label>
-                    <input type="date" />
-                  </div>
-                  <div>
-                    <label> End Date</label>
-                    <input type="date" />
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <div>
-                    <label> Start Date and Time</label>
-                    <input type="datetime-local" />
-                  </div>
-                  <div>
-                    <label> End Date and Time</label>
-                    <input type="datetime-local" />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="">Shift Vise</label>
-                  <input type="text" />
-                </div>
-              </div>
+              
+            
 
               {/* {isSelectedGeneral === true ? (
                 <>
@@ -1105,8 +1156,37 @@ console.log(roleId,"roleId")
                       <option value="Area 6">Area 6</option>
                     </select>
                   </div> */}
+                  
+                  
 
-                  <div className="group-input">
+                    <div className="flex flex-wrap items-end gap-6 mt-4 p-4 bg-white border border-blue-500 rounded-lg shadow-sm filter-input">
+
+                      {/* Date Range */}
+                      <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-800 mb-1">
+                          Date Range
+                        </label>
+                        <RangePicker
+                          onChange={(dates) => setDateRange(dates)}
+                          className="w-[260px]"
+                          placeholder={["Start Date", "End Date"]}
+                        />
+                      </div>
+
+                      {/* Reviewer Checked */}
+                      <div className="flex flex-col items-start h-[56px]">
+                        <span className="text-sm font-medium text-gray-800 mb-2">
+                          Reviewed Elogs
+                        </span>
+                        <Checkbox
+                          checked={showReviewerCheckedOnly}
+                          onChange={(e) => setShowReviewerCheckedOnly(e.target.checked)}
+                        />
+                      </div>
+
+                    </div>
+
+                    <div className="group-input">
                     <label className="color-label">Limit</label>
                     {/* <div className="instruction"></div> */}
                     <input
@@ -1150,7 +1230,7 @@ console.log(roleId,"roleId")
                       </tr>
                     </thead>
                     <tbody>
-                      {editData?.DifferentialPressureRecords.map(
+                      {filteredDifferentialRecords.map(
                         (item, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>

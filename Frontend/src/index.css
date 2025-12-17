@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Froala full screen button css */
+.fr-command[data-cmd="fullscreen"] {
+  opacity: 1 !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  color: #2b6cb0 !important;
+}
+
+.fr-command.fr-disabled[data-cmd="fullscreen"] {
+  opacity: 1 !important;
+}
+
+/* Froala List Type */
+
+.fr-view ol:not([style]),
+.fr-element ol:not([style]) {
+  list-style-type: decimal !important;
+}
+
+.fr-view ul:not([style]),
+.fr-element ul:not([style]) {
+  list-style-type: disc !important;
+}
+
+.fr-view li,
+.fr-element li {
+  list-style-type: inherit !important;
+  margin-left:10px;
+}

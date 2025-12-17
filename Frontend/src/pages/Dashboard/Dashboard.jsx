@@ -13,6 +13,11 @@ function Dashboard() {
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
     []
   );
+  differentialPressureElogs?.map((item, index) => {
+    console.log(item,"item")
+  })
+  // console.log(differentialPressureElogs, "differentialPressureElogs");
+  
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState([]);
   const [karlFischerElogs, setKarlFischerElogs] = useState([]);
@@ -64,9 +69,12 @@ useEffect(() => {
       },
     };
 
+   
+    
     axios(newConfig)
       .then((response) => {
         const allDifferentialPressureElogs = response.data.message;
+        
         let filteredArray = allDifferentialPressureElogs.filter((elog) => {
           const userId = userDetails.userId;
 
@@ -829,7 +837,7 @@ useEffect(() => {
               <th>Short description</th>
               <th>Created By</th>
               <th>Date of Creation</th>
-              {/* <th>Status</th> */}
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -880,7 +888,7 @@ useEffect(() => {
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item?.status}</td>
                     </tr>
                   );
                 })
@@ -952,7 +960,7 @@ useEffect(() => {
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1002,7 +1010,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1052,7 +1060,7 @@ useEffect(() => {
                         ></td>
                         <td>{item.initiator_name}</td>
                         <td>{formatDate(item.date_of_initiation)}</td>
-                        {/* <td>{item.status}</td> */}
+                        <td>{item.status}</td>
                       </tr>
                     </>
                   );
@@ -1104,7 +1112,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1157,7 +1165,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1209,7 +1217,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1261,7 +1269,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1313,7 +1321,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1366,7 +1374,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1418,7 +1426,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1470,7 +1478,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1522,7 +1530,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1626,7 +1634,7 @@ useEffect(() => {
                       ></td>{" "}
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })
@@ -1742,7 +1750,7 @@ useEffect(() => {
                       ></td>
                       <td>{item.initiator_name}</td>
                       <td>{formatDate(item.date_of_initiation)}</td>
-                      {/* <td>{item.status}</td> */}
+                      <td>{item.status}</td>
                     </tr>
                   );
                 })}

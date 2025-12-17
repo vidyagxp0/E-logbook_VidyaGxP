@@ -420,7 +420,6 @@ export default function TempretureRecordsPanel() {
   return (
     <>
       <HeaderTop />
-      <LaunchQMS />
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
