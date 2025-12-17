@@ -28,7 +28,7 @@ const upload = multer({ storage: storage });
 router.post("/Involved", personInvolvedController.createPersonInvolved);
 router.get("/Involved/get-all", personInvolvedController.getAllPersonInvolved);
 router.get("/Involved/:id", personInvolvedController.getPersonInvolvedById);
-router.put("/Involved-update/:id", personInvolvedController.updatePersonInvolved);
-router.delete("/Involved-delete/:id", personInvolvedController.deletePersonInvolved);
+router.put("/Involved/:id", personInvolvedController.updatePersonInvolved);
+router.delete("/Involved/:id", personInvolvedController.deletePersonInvolved);
 
 module.exports = router;
