@@ -20,11 +20,11 @@ export const MASTER_API_MAP = {
     dataKey: "equipmentInstrumentData",
   },
   "PM Master": {
-    base: "pm-master",
-    dataKey: "pmMasterData",
+    base: "Pm-Meter/meter",
+    dataKey: "pmMeterMasterData",
   },
   "Connected ElogBook": {
-    base: "elogbook",
-    dataKey: "connectedElogBookData",
+    base: "connected-elogbook/connected",
+    dataKey: "connectedElogbookData",
   },
 };

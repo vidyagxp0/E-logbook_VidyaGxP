@@ -86,6 +86,7 @@ export const MASTER_CONFIG = {
   },
 
   "PM Master": {
+    nestedPath: "pmMeterMasterData",
     fields: [
       { name: "pmDoneOn", label: "PM Done On", type: "date" },
       { name: "pmDueOn", label: "PM Due On", type: "date" },
@@ -94,6 +95,7 @@ export const MASTER_CONFIG = {
   },
 
   "Connected ElogBook": {
+    nestedPath: "connectedElogbookData",
     fields: [
       { name: "areaCleaning", label: "Area Cleaning" },
       { name: "equipmentCleaning", label: "Equipment Cleaning" },
