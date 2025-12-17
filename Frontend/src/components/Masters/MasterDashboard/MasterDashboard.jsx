@@ -56,29 +56,38 @@ const MasterDashboard = () => {
 
   /* ---------- DYNAMIC COLUMNS ---------- */
   const columns = [
-    ...MASTER_CONFIG[activeMaster].fields.map((field) => ({
-      title: field.label,
-      dataIndex: field.name,
-      key: field.name,
-      ellipsis: true,
-    })),
-    {
-      title: "Action",
-      fixed: "right",
-      width: 80,
-      render: (_, record) => (
-        <Button
-          type="link"
-          onClick={() => {
-            setEditRow(record);
-            setOpenModal(true);
-          }}
-        >
-          Edit
-        </Button>
-      ),
-    },
-  ];
+  {
+    title: "Sr No.",
+    key: "srNo",
+    width: 70,
+    fixed: "left",
+    render: (_, __, index) => index + 1,
+  },
+  ...MASTER_CONFIG[activeMaster].fields.map((field) => ({
+    title: field.label,
+    dataIndex: field.name,
+    key: field.name,
+    ellipsis: true,
+  })),
+  {
+    title: "Action",
+    fixed: "right",
+    width: 80,
+    render: (_, record) => (
+      <Button
+        type="link"
+        onClick={() => {
+          setEditRow(record);
+          setOpenModal(true);
+        }}
+      >
+        Edit
+      </Button>
+    ),
+  },
+];
+
+
 
   return (
     <>
@@ -119,17 +128,18 @@ const MasterDashboard = () => {
           {/* TABLE CARD */}
          
             <Table
-              columns={columns}
-              dataSource={filteredData}
-              rowKey="key"
-              scroll={{ x: "max-content" }}
-              pagination={{
-                pageSize: 5,
-                showSizeChanger: false,
-              }}
-              locale={{ emptyText: "No records found" }}
-              className="rounded-xl"
-            />
+  columns={columns}
+  dataSource={filteredData}
+  rowKey="key"
+  scroll={{ x: "max-content" }}
+  pagination={{
+    pageSize: 5,
+    showSizeChanger: false,
+  }}
+  locale={{ emptyText: "No records found" }}
+  className="master-no-extra-border"
+/>
+
         
 
           {/* MODAL */}
