@@ -24,6 +24,7 @@ const equipment = require("./routes/equipmentRoutes")
 const siteMasterRoutes = require("./routes/siteMasterRoutes")
 const apiIdentificationMasterRoutes = require("./routes/apiIdentificationMasterRoutes")
 const excipientsDispensingRoutes = require("./routes/excipientsDispensingRoute")
+const personInvolvedMasterRoutes = require("./routes/personInvolvedMasterRoutes")
 const cors = require("cors");
 const path = require("path");
 const helmet = require("helmet");
@@ -83,6 +84,7 @@ app.use("/equipment",equipment)
 app.use("/site-master",siteMasterRoutes);
 app.use("/identification-master",apiIdentificationMasterRoutes);
 app.use("/excipients-dispensing",excipientsDispensingRoutes);
+app.use("/person-involved",personInvolvedMasterRoutes);
 app.use(express.static(path.join(__dirname, "documents")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
