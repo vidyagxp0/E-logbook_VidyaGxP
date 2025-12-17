@@ -24,7 +24,7 @@ const EquipmentUsageRecord = sequelize.define(
     },
     date: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     product_name: {
       type: DataTypes.STRING,

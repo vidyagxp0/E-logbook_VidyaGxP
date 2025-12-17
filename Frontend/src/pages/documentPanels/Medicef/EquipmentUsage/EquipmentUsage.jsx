@@ -45,7 +45,7 @@ export default function EquipmentUsage() {
     data: {
       site_id: siteId,
       role_id: 2, // Reviewer
-      process_id: 2,
+      process_id: 3,
     },
   };
 
@@ -286,6 +286,7 @@ export default function EquipmentUsage() {
   toast.success("Data logged in console");
 };
 
+
   return (
     <>
       <HeaderTop />
@@ -296,7 +297,7 @@ export default function EquipmentUsage() {
               <strong> Record Name:&nbsp;</strong>Equipment Usage Records
             </div>
             <div>
-              <strong> Site:&nbsp;</strong>
+              <strong>Site:&nbsp;</strong>
               {location.state?.site}
             </div>
             <div>
@@ -689,7 +690,7 @@ export default function EquipmentUsage() {
 
                   <div>
                     <div className="AddRows d-flex" >
-                      <button onClick={addRow} >
+                      <button onClick={addRow}  disabled>
                           <NoteAdd />
                       </button>
                       <div className="addrowinstruction"></div>

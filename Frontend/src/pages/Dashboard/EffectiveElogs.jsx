@@ -17,7 +17,7 @@ function EffectiveElogs() {
   );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   // const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
-  const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
+  const [equipmentRecordElogs, setEquipmentRecordElogs] = useState([]);
   const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
   const [mediaRecordElogs, setMediaRecordElogs] = useState([]);
   const [dispensingOfMaterialsElogs, setDispensingOfMaterialsElogs] = useState(
@@ -68,7 +68,7 @@ function EffectiveElogs() {
   const processShortName = {
     1: "DP",
     2: "TR",
-    3: "LQ",
+    3: "EU",
     4: "OS",
     5: "MR",
     6: "DM",
@@ -149,7 +149,7 @@ function EffectiveElogs() {
 
     const newConfigloaded = {
       method: "get",
-      url: "http://localhost:1000/loaded-quantity/get-all",
+      url: "http://localhost:1000/equipment-usage/get-all",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -159,11 +159,11 @@ function EffectiveElogs() {
     axios(newConfigloaded)
       .then((response) => {
         const temp = response.data.message;
-        const allLoadedQuantityElogs = temp.filter(
+        const allEquipmentRecordsElogs = temp.filter(
           (log) => log.status === "Closed"
         );
-        setLoadedQuantityElogs(allLoadedQuantityElogs);
-        let filteredArray = allLoadedQuantityElogs.filter((elog) => {
+        setEquipmentRecordElogs(allEquipmentRecordsElogs);
+        let filteredArray = allEquipmentRecordsElogs.filter((elog) => {
           const userId = userDetails.userId;
 
           return (
@@ -544,7 +544,7 @@ function EffectiveElogs() {
   const combinedRecords = [
     ...differentialPressureElogs.map((r) => ({ ...r, process_id: 1 })),
     ...tempratureRecordElogs.map((r) => ({ ...r, process_id: 2 })),
-    ...loadedQuantityElogs.map((r) => ({ ...r, process_id: 3 })),
+    ...equipmentRecordElogs.map((r) => ({ ...r, process_id: 3 })),
     ...operationOfSterilizerElogs.map((r) => ({ ...r, process_id: 4 })),
     ...mediaRecordElogs.map((r) => ({ ...r, process_id: 5 })),
     ...dispensingOfMaterialsElogs.map((r) => ({ ...r, process_id: 6 })),
@@ -568,8 +568,8 @@ function EffectiveElogs() {
       navigate("/effective-tpr", { state: item });
     } else if (item.process === "Equipment cleaning checklist") {
       navigate("/effective-ecc", { state: item });
-    } else if (item.LoadedQuantityRecords) {
-      navigate("/effective-loaded-quantity", { state: item });
+    } else if (item.EquipmentUsageRecords) {
+      navigate("/effective-equipment-usage", { state: item });
     } else if (item.MediaRecords) {
       navigate("/effective-media-record", { state: item });
     } else if (item.OperationOfSterilizerRecords) {
@@ -871,8 +871,8 @@ function EffectiveElogs() {
       ? "Differential Pressure"
       : item.TempratureRecords
       ? "Temperature Records"
-      : item.LoadedQuantityRecords
-      ? "Loaded Quantity"
+      : item.EquipmentUsageRecords
+      ? "Equipment Usage"
       : item.OperationOfSterilizerRecords
       ? "Operation of Sterilizer"
       : item.MediaRecords
@@ -964,8 +964,8 @@ function EffectiveElogs() {
       ? "DP"
       : item.TempratureRecords
       ? "TR"
-      : item.LoadedQuantityRecords
-      ? "LQ"
+      : item.EquipmentUsageRecords
+      ? "EU"
       : item.OperationOfSterilizerRecords
       ? "OF"
       : item.MediaRecords
@@ -1316,7 +1316,7 @@ function EffectiveElogs() {
                       ? getElogNumber(item)
                       : item.TempratureRecords
                       ? getElogNumber(item)
-                      : item.LoadedQuantityRecords
+                      : item.EquipmentUsageRecords
                       ? getElogNumber(item)
                       : item.OperationOfSterilizerRecords
                       ? getElogNumber(item)

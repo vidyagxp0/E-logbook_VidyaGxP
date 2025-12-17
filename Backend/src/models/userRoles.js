@@ -69,19 +69,23 @@ RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
   const rolesArray1 = [
     { label: "Medicef-Differential Pressure Record-Initiator", value: 1 },
     { label: "Medicef-Temperature Records-Initiator", value: 2 },
+    { label: "Medicef-Equipment Usage-Initiator", value: 3 },
   ];
   const rolesArray2 = [
-    { label: "Medicef-Differential Pressure Record-Reviewer", value: 3},
-    { label: "Medicef-Temperature Records-Reviewer", value: 4 },
+    { label: "Medicef-Differential Pressure Record-Reviewer", value: 4},
+    { label: "Medicef-Temperature Records-Reviewer", value: 5 },
+    { label: "Medicef-Equipment Usage-Reviewer", value: 6 },
 
   ];
   const rolesArray3 = [
-    { label: "Medicef-Differential Pressure Record-Approver", value: 5 },
-    { label: "Medicef-Temperature Records-Approver", value: 6},
+    { label: "Medicef-Differential Pressure Record-Approver", value: 7 },
+    { label: "Medicef-Temperature Records-Approver", value: 8},
+    { label: "Medicef-Equipment Usage-Approver", value: 9},
   ];
   const rolesArray4 = [
-    { label: "Medicef-Differential Pressure Record-Fullpermission", value: 7 },
-    { label: "Medicef-Temperature Records-Fullpermission", value: 8 },
+    { label: "Medicef-Differential Pressure Record-Fullpermission", value: 13 },
+    { label: "Medicef-Temperature Records-Fullpermission", value: 14 },
+    { label: "Medicef-Equipment Usage-Fullpermission", value: 15 },
   ];
 
 

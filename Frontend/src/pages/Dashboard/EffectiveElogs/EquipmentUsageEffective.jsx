@@ -1,36 +1,55 @@
 import { useEffect, useState } from "react";
-import "../../docPanel.css";
+import HeaderTop from "../../../components/Header/HeaderTop";
+// import "../docPanel.css";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { NoteAdd } from "@mui/icons-material";
 import axios from "axios";
-import HeaderTop from "../../../../components/Header/HeaderTop";
-import UserVerificationPopUp from "../../../../components/UserVerificationPopUp/UserVerificationPopUp";
-import TinyEditor from "../../../../components/TinyEditor";
-import LaunchQMS from "../../../../components/LaunchQMS/LaunchQMS";
+import UserVerificationPopUp from "../../../components/UserVerificationPopUp/UserVerificationPopUp";
+import TinyEditor from "../../../components/TinyEditor";
+import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 
-
-export default function TempretureRecordsPanel() {
+export default function EquipmentUsageEffective() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
-  const [isSelectedDetails, setIsSelectedDetails] = useState(false);
+  const [isSelectedDetails, setIsSelectedDetails] = useState(true);
   const [initiatorRemarks, setInitiatorRemarks] = useState(false);
   const [reviewerRemarks, setReviewerRemarks] = useState(false);
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [isLoading1, setIsLoading1] = useState(false);
 
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
+  const UserName = JSON.parse(localStorage.getItem("Username"));
+
+  const [reviewed_by, setReviewed_by] = useState(UserName?.name);
+  const [approved_by, setApproved_by] = useState(UserName?.name);
+
+  useEffect(() => {
+    setReviewed_by(UserName?.name);
+  }, []);
+
+  useEffect(() => {
+    setApproved_by(UserName?.name);
+  }, []);
+
   const [editData, setEditData] = useState({
     initiator_name: "",
-    status: "",
+    // status: "",
     description: "",
     department: "",
+    remarks: "",
     additionalAttachment: "",
     additionalInfo: "",
     compression_area: "",
-    limit: "",
+    EquipmentRecords: [],
+    acceptance_temperature: "",
+    relative_humidity_criteria: "",
+    limit:"",
   });
+  // console.log(editData, "Edit Dataaa");
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupAction, setPopupAction] = useState(null);
@@ -38,8 +57,7 @@ export default function TempretureRecordsPanel() {
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
-  };
-  
+  }; 
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -70,7 +88,7 @@ export default function TempretureRecordsPanel() {
       }
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-for-review",
+          "http://localhost:1000/equipment-usage/send-for-review",
           data,
           config
         )
@@ -88,7 +106,7 @@ export default function TempretureRecordsPanel() {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
+          "http://localhost:1000/equipment-usage/send-review-to-approval",
           data,
           config
         )
@@ -108,7 +126,7 @@ export default function TempretureRecordsPanel() {
 
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
+          "http://localhost:1000/equipment-usage/send-review-to-open",
           data,
           config
         )
@@ -124,7 +142,7 @@ export default function TempretureRecordsPanel() {
       data.approverAttachment = editData.approverAttachment;
       axios
         .put(
-          "http://localhost:1000/temprature-record/approve-TR-elog",
+          "http://localhost:1000/equipment-usage/approve",
           data,
           config
         )
@@ -142,7 +160,7 @@ export default function TempretureRecordsPanel() {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
+          "http://localhost:1000/equipment-usage/send-approval-to-open",
           data,
           config
         )
@@ -169,8 +187,8 @@ export default function TempretureRecordsPanel() {
       // }
 
       if (
-        editData?.TempratureRecords?.some(
-          (record) => record.temprature_record === "" || record.remarks === ""
+        editData?.EquipmentRecords?.some(
+          (record) => record.temprature_record === "" || record.humidity_record === ""
         )
       ) {
         toast.error("Please provide grid details!");
@@ -190,13 +208,13 @@ export default function TempretureRecordsPanel() {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/temprature-record/update-temprature-record",
+        url: "http://localhost:1000/equipment-usage/update",
       };
 
       axios(requestOptions)
         .then(() => {
           toast.success("Data saved successfully!");
-          navigate("/dashboard");
+          navigate("/effectiveElogs");
         })
         .catch((error) => {
           console.error(error);
@@ -207,45 +225,144 @@ export default function TempretureRecordsPanel() {
     setPopupAction(null);
   };
 
-  
   useEffect(() => {
-    setEditData(location.state);
+    if (location.state) {
+      const cloned = JSON.parse(JSON.stringify(location.state));
+      setEditData(cloned);
+    }
   }, [location.state]);
+
+
+   const INITIATOR_LOCKED_FIELDS = [
+  "additionalInfo",
+  "temprature_record",
+  "humidity_record",
+  "additionalAttachment",
+  "differential_pressure",
+];
+
+const REVIEWER_LOCKED_FIELDS = [
+  "additionalInfo",
+  "additionalAttachment",
+  "remarks",
+  "supporting_docs",
+  "chacked_by",
+];
+
+// Identify new row
+const isNewRow = (item) => {
+  if (!item) return false; // no row, treat as non-new
+  return !item.record_id;
+};
+
+const originalData = location.state;
+
+ const canReviewerEdit = (item) => {
+    // find original version of this record by record_id
+    const original = originalData?.EquipmentRecords?.find(
+      (o) => o.record_id === item.record_id
+    );
+
+    // If we found the original row
+    if (original) {
+      // If original remarksType was OK → Lock it
+      if (original.remarks) {
+        return false;
+      }
+    }
+
+    // Otherwise allow editing
+    return true;
+  };
+
+
+// MAIN EDITABLE LOGIC
+const isFieldEditable = (item, fieldName) => {
+  const roleId = Number(userDetails?.roles?.[0]?.role_id);
+
+  // New row → always editable
+  if (isNewRow(item)) return true;
+
+    if (!item) {
+    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false; // initiator blocked fields
+    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false; // reviewer blocked fields
+    return true; // everyone else can edit
+  }
+
+  
+};
+
+  const object = getCurrentDateTime();
+  let date = object.currentDate;
+  function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(0);
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const currentDate = `${year}/${month}/${day}`;
+    return {
+      currentDate: currentDate,
+    };
+  }
 
   const addRow = () => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
       const currentTime = new Date().toLocaleTimeString("en-GB", {
         hour12: false,
       });
+      const nextIndex = editData?.EquipmentRecords?.length || 0;
+
       const newRow = {
-        unique_id: generateUniqueId(),
+        unique_id: `TPR000${nextIndex + 1}`,
         time: currentTime,
+        date: formatDate(Date.now()),
+        product_name:"",
         temprature_record: "",
+        humidity_record: "",
+        done_by: location?.state?.initiator_name,
         remarks: "",
-        checked_by: location?.state?.initiator_name,
+        reviewed_by: "",
+        approver_remarks: "",
+        approved_by: "",
+        // checked_by: location?.state?.initiator_name,
         supporting_docs: null,
       };
+
+      
+      
       setEditData((prevState) => ({
         ...prevState,
-
-        TempratureRecords: [...prevState.TempratureRecords, newRow],
+        EquipmentRecords: [...prevState.EquipmentRecords ?? [], newRow],
       }));
     }
   };
 
+
+  
+  
+
   const deleteRow = (index) => {
     if (
-      location.state?.stage === 1 &&
-      location.state?.initiator_id === userDetails.userId
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
     ) {
-      const updatedGridData = [...editData.TempratureRecords];
+      const updatedGridData = [...editData.EquipmentRecords];
+      const rowToDelete = updatedGridData[index];
+
+      if (rowToDelete?.record_id) {
+        toast.warn("Record Can't be deleted ");
+
+        return;
+      }
+
+      // Allow deletion of rows without a `record_id`
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
-        TempratureRecords: updatedGridData,
+        EquipmentRecords: updatedGridData,
       }));
     }
   };
@@ -253,6 +370,48 @@ export default function TempretureRecordsPanel() {
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
+    // console.log(name, value);
+  };
+
+  const handleInputChange2 = (e) => {
+    const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
+    // console.log(name, value);
+  };
+
+  const EmptyreportData = {
+    title: "Temperature Process",
+    status: location.state.status,
+    blankRows: 17,
+    form_id: location.state.form_id,
+    temprature_record: [],
+    humidity_record: [],
+  };
+  const generateEmptyReport = async () => {
+    setIsLoading1(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:1000/equipment-usage/blank-report/${formId}`,
+        {
+          reportData: EmptyreportData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { filename } = response.data;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+
+      // Open the report in a new tab
+      window.open(reportUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Error opening chat PDF:", error);
+    } finally {
+      setIsLoading1(false);
+    }
   };
 
   const reportData = {
@@ -263,22 +422,16 @@ export default function TempretureRecordsPanel() {
         ? "Malaysia"
         : location.state.site_id === 3
         ? "EMEA"
-        : location.state.site_id === 5
-        ? "Medicef"
-        : location.state?.site_id === 4
-        ? "EU"
         : "Medicef",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
-    title: "Temperature Record",
+    title: "Equipment Record",
     ...editData,
   };
 
   useEffect(() => {
     if (reportData && reportData.form_id) {
       setFormId(reportData.form_id);
-      // console.log(reportData.form_id, "hjjjjj");
-      // console.log(formId, "formidddd");
     }
   }, [reportData]);
 
@@ -286,7 +439,7 @@ export default function TempretureRecordsPanel() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/temprature-record/chat-pdf/${formId}`,
+        `http://localhost:1000/equipment-usage/effective-chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -300,7 +453,7 @@ export default function TempretureRecordsPanel() {
 
       const { filename } = response.data; // Access filename from response.data
 
-      const reportUrl = `/view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -358,44 +511,40 @@ export default function TempretureRecordsPanel() {
     return object != null && typeof object === "object";
   }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return ""; // Return empty if the input is falsy
-
-    const utcDate = new Date(dateString);
-    // Check if the date is valid
-    if (isNaN(utcDate.getTime())) {
-      return "";
-    }
-
-    return utcDate.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
-  };
-
-
+ const formatDate = (dateString) =>{
+      // if (!dateString) return ""; // Return empty if the input is falsy
   
+      const utcDate = new Date(dateString);
+      // Check if the date is valid
+      if (isNaN(utcDate.getTime())) {
+        return "";
+      }
+  
+      return utcDate.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        // hour: "2-digit",
+        // minute: "2-digit",
+        // second: "2-digit",
+        // hour12: false,
+      });
+    };
+
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.TempratureRecords];
+    const updatedGridData = [...editData.EquipmentRecords];
     updatedGridData[index].supporting_docs = file;
-    setEditData((prevState) =>
-      e({
-        ...prevState,
-        TempratureRecords: updatedGridData,
-      })
-    );
+    setEditData((prevState) => ({
+      ...prevState,
+      EquipmentRecords: updatedGridData,
+    }));
   };
 
   const handleInitiatorFileChange = (e) => {
     setEditData({
       ...editData,
-      initiatorAttachment: e.target.files[0],
-      additionalAttachment: e.target.files[1],
+      // initiatorAttachment: e.target.files[0],
+      additionalAttachment: e.target.files[0],
     });
   };
   const handleReviewerFileChange = (e) => {
@@ -415,17 +564,15 @@ export default function TempretureRecordsPanel() {
     }));
   };
 
-
-  
   return (
     <>
       <HeaderTop />
-      <LaunchQMS />
+      {/* <LaunchQMS /> */}
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
             <div>
-              <strong> Record Name:&nbsp;</strong>Temperature Record
+              <strong> Record Name:&nbsp;</strong>Equipment Record
             </div>
             <div>
               <strong> Site:&nbsp;</strong>
@@ -458,8 +605,8 @@ export default function TempretureRecordsPanel() {
                 </div>
               </div>
               <div className="sub-head-2 p-4 bg-white rounded-md shadow-md flex flex-col sm:flex-row justify-between items-center">
-                <span className="text-lg font-semibold text-white mb-4 sm:mb-0">
-                  Temperature Record
+                <span className="text-xl font-semibold text-white mb-4 sm:mb-0">
+                  Equipment Usage Details
                 </span>
 
                 <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -467,16 +614,49 @@ export default function TempretureRecordsPanel() {
                   <button
                     className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
                     onClick={() =>
-                      navigate("/audit-trail", {
+                      navigate("/effective-audit-trail", {
                         state: {
                           formId: location.state?.form_id,
-                          process: "Temperature Record",
+                          process: "Equipment Record",
                         },
                       })
                     }
                   >
                     Audit Trail
                   </button>
+
+                  {/* Generate Empty Report Button */}
+                  {/* <button
+                    onClick={generateEmptyReport}
+                    className="flex items-center justify-center relative px-4 py-2 border-none rounded-md bg-white text-sm  cursor-pointer text-black font-normal"
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <span>Blank Draft</span>
+                        <div
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid black",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite",
+                            marginLeft: "10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      "Blank Draft"
+                    )}
+                    <style>
+                      {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+                    </style>
+                  </button> */}
 
                   {/* Generate Report Button */}
                   <button
@@ -512,7 +692,7 @@ export default function TempretureRecordsPanel() {
                   </button>
 
                   {/* Conditional Buttons Based on Stages */}
-                  {location.state?.stage === 1 &&
+                  {/* {location.state?.stage === 1 &&
                     location.state?.initiator_id === userDetails.userId && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -571,24 +751,24 @@ export default function TempretureRecordsPanel() {
                           More Info Required
                         </button>
                       </>
-                    )}
+                    )} */}
 
                   {/* Save Button */}
-                  {location.state?.stage === 1 &&
-                    userDetails.userId === location.state?.initiator_id && (
-                      <button
-                        className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
-                        onClick={() => {
-                          setIsPopupOpen(true);
-                          setPopupAction("updateElog");
-                        }}
-                      >
-                        Save
-                      </button>
-                    )}
+                  {/* {location.state?.stage === 1 &&
+                    userDetails.userId === location.state?.initiator_id && ( */}
+                  <button
+                    className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => {
+                      setIsPopupOpen(true);
+                      setPopupAction("updateElog");
+                    }}
+                  >
+                    Save
+                  </button>
+                  {/*    )}*/}
                 </div>
               </div>
-              <div className="outerDiv4 bg-slate-300 py-4">
+              {/* <div className="outerDiv4 bg-slate-300 py-4">
                 <div className="status-container">
                   <div className="flex gap-3 ">
                     <div
@@ -627,7 +807,6 @@ export default function TempretureRecordsPanel() {
                       UNDER APPROVAL
                     </div>
 
-                    {/* Button 4: CLOSED DONE */}
                     <div
                       className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
                         location.state?.stage > 4
@@ -641,10 +820,10 @@ export default function TempretureRecordsPanel() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="outerDiv4">
-                <div className="btn-forms">
-                  <div
+                <div className="btn-forms invisible">
+                  {/* <div
                     className={`${
                       isSelectedGeneral === true
                         ? "btn-forms-isSelected"
@@ -659,7 +838,7 @@ export default function TempretureRecordsPanel() {
                     }}
                   >
                     General Information
-                  </div>
+                  </div> */}
                   <div
                     className={`${
                       isSelectedDetails === true
@@ -676,7 +855,7 @@ export default function TempretureRecordsPanel() {
                   >
                     Details
                   </div>
-                  <div
+                  {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -723,11 +902,11 @@ export default function TempretureRecordsPanel() {
                     }}
                   >
                     Approver Remarks
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
-              {isSelectedGeneral === true ? (
+              {/* {isSelectedGeneral === true ? (
                 <>
                   <div className="group-input">
                     <label className="color-label">Initiator </label>
@@ -758,7 +937,7 @@ export default function TempretureRecordsPanel() {
                       <span className="required-asterisk text-red-500">*</span>
                     </label>
                     <div>
-                      {/* <input
+                      <input
                         name="description"
                         type="text"
                         value={editData.description}
@@ -767,7 +946,7 @@ export default function TempretureRecordsPanel() {
                           location.state?.stage !== 1 ||
                           location.state?.initiator_id !== userDetails.userId
                         }
-                      /> */}
+                      />
                       <TinyEditor
                         editorContent={editData.description}
                         setEditorContent={setTinyContent}
@@ -788,88 +967,14 @@ export default function TempretureRecordsPanel() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
 
               {isSelectedDetails === true ? (
                 <>
-                  <div>
-                    <div className="group-input">
-                    
-                    <label className="color-label">Area Name </label>
-                    <div>
-                      <input
-                        type="text"
-                         name="area_name"
-                      value={editData?.area_name}
-                      disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }  
-                      />
-                    </div>
-                </div>
-                <div className="group-input">
-                    
-                    <label className="color-label">Room ID. </label>
-                    <div>
-                      <input
-                        type="text"
-                         name="room_id"
-                      value={editData?.room_id}
-                       disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      } 
-                      />
-                    </div>
-                </div>
-                <div className="group-input">
-                    
-                    <label className="color-label mb-4">Instrument Id. No. </label>
-                    <div>
-                      <input
-                        type="text"
-                        name="instrument_id"
-                        value={editData?.instrument_id}disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
-                      />
-                    </div>
-                </div>
+                  {/* <div className="group-input">
+                    <label className="color-label">Department</label>
 
-
-                <div className=" ">
-
-                  <label className="color-label text-lg max-w-full ">Acceptance Temperature </label>
-                    <div>
-                      <input
-                        className="w-full mt-4 mb-4 border border-gray-500 rounded-md p-2"
-                        type="text"
-
-                         name="acceptance_temperature"
-                         value={editData?.acceptance_temperature}
-                      />
-                    </div>
-                    <label className="color-label text-lg ">Relative Humidity Criteria</label>
-                    <div>
-                      <input
-                        type="text"
-                        className="w-full mt-4 mb-4 border border-gray-500 rounded-md p-2"
-                        name="relative_humidity_criteria"
-                        value={editData?.relative_humidity_criteria}
-                        disabled={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
-                      />
-                    </div>
-                  </div>
-                  
-                    <label className="color-label text-lg">Department</label>
-
-               <div className="instruction" style={{ height: "6px" }}>&nbsp;</div>
-
+                    <div className="instruction">&nbsp;</div>
                     <select
                       className="form-control"
                       name="department"
@@ -909,11 +1014,13 @@ export default function TempretureRecordsPanel() {
                   </div>
 
                   <div className="group-input">
-                    <label className="">Compression Area with respect to Corridor</label>
+                    <label className="color-label">
+                      Compression Area with respect to Corridor
+                    </label>
 
-                    {/* <div className="instruction">&nbsp;</div> */}
+                    <div className="instruction">&nbsp;</div>
                     <select
-                      className="form-control mt-0"
+                      className="form-control"
                       name="compression_area"
                       value={editData?.compression_area}
                       onChange={handleInputChange1}
@@ -930,30 +1037,33 @@ export default function TempretureRecordsPanel() {
                       <option value="Area 5">Area 5</option>
                       <option value="Area 6">Area 6</option>
                     </select>
-                  </div>
+                  </div> */}
 
-                  {/* <div className="group-input">
+                  {/* temprature limit */}
+
+                  <div className="group-input">
                     <label className="color-label">Limit</label>
-                    <div className="instruction"></div>
+                    {/* <div className="instruction"></div> */}
                     <input
                       name="limit"
-                      disabled
                       type="number"
+                      disabled
                       // className={`${
-                      //   editData?.limit < 23
+                      //   editData?.limit < 0.6
                       //     ? "limit"
-                      //     : editData?.limit > 27
+                      //     : editData?.limit > 2.6
                       //     ? "limit"
                       //     : ""
                       // }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
-                      readOnly={
-                        location.state?.stage !== 1 ||
-                        location.state?.initiator_id !== userDetails.userId
-                      }
+                      readOnly={[3, 2, 4].includes(
+                        userDetails.roles[0].role_id
+                      )}
                     />
-                  </div> */}
+                  </div>
+
+                  
 
                   <div>
                     <div className="AddRows d-flex">
@@ -964,105 +1074,217 @@ export default function TempretureRecordsPanel() {
                   <table>
                     <thead>
                       <tr>
+                        <th>Sr no.</th>
+                        <th>Unique Id</th>
                         <th>Date</th>
                         <th>Time</th>
-                        <th>Temperature (°C)</th>
-                        <th>Relative Humidity (%)</th>
-                        <th>Done By</th>
-                        <th>Checked By </th>
-                        <th>Actions</th>
+                        <th>Product Name</th>
+                        <th>Batch No.</th>
+                        <th>Batch Size</th>
+                        <th>Type of activity</th>
+                        <th>Start time</th>
+                        <th>End time</th>
+                        <th>Done by</th>
+                        <th>Checked by(Prod.)</th>
+                        <th>Verified by(IPOA)</th>
+                        <th>Remarks</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {/* {editData?.TempratureRecords.map((item, index) => (
+                      {editData?.EquipmentRecords?.map((item, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{item.unique_id}</td>
+                          <td>{item.date}</td>
                           <td>
                             <input value={item.time} readOnly />
                           </td>
                           <td>
                             <input
+                              value={item.product_name}
+                              type="text"
+                              onChange={(e) => {
+                                const newData = [...editData.EquipmentRecords];
+                                newData[index].product_name = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  EquipmentRecords: newData,
+                                });
+                              }}
+                             
+ 
+                              // disabled
+                            />
+                            </td>
+                          <td>
+                            <input
                               type="number"
                               value={item.temprature_record}
+                              disabled={!isFieldEditable( item, "temprature_record")}
                               className={`${
-                                item.temprature_record < 23
-                                  ? "limit"
-                                  : item.temprature_record > 27
-                                  ? "limit"
+                                Number(item.temprature_record) < Number(editData.acceptance_temperature) 
+                                  ? "text-green-500"
+                                  : Number(item.temprature_record) > Number(editData.acceptance_temperature) 
+                                  ? "text-red-600"
                                   : ""
                               }`}
                               onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
+                                const newData = [...editData.EquipmentRecords];
                                 newData[index].temprature_record =
                                   e.target.value;
                                 setEditData({
                                   ...editData,
-                                  TempratureRecords: newData,
+                                  EquipmentRecords: newData,
                                 });
                               }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              readOnly={[3, 2, 4].includes(
+                                userDetails.roles[0].role_id
+                              )}
                             />
                           </td>
                           <td>
                             <input
-                              value={item.remarks}
+                              type="number"
+                              value={item.humidity_record}
+                              disabled={!isFieldEditable( item, "humidity_record")}
+                              className={`${
+                                Number(item.humidity_record )< Number(editData.relative_humidity_criteria)
+                                  ? "text-green-500"
+                                  : Number(item.humidity_record) >
+                                    Number(editData.relative_humidity_criteria)
+                                  ? "text-red-600"
+                                  : ""
+                              }`}
                               onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].remarks = e.target.value;
+                                const newData = [...editData.EquipmentRecords];
+                                newData[index].humidity_record = e.target.value;
                                 setEditData({
                                   ...editData,
-                                  TempratureRecords: newData,
+                                  EquipmentRecords: newData,
                                 });
                               }}
-                              readOnly={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !==
-                                  userDetails.userId
-                              }
+                              readOnly={[3, 2, 4].includes(
+                                userDetails.roles[0].role_id
+                              )}
+                            />
+                          </td>
+
+                          <td>
+                            <input
+                              value={item.done_by}
+                              onChange={(e) => {
+                                const newData = [...editData.EquipmentRecords];
+                                newData[index].done_by = e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  EquipmentRecords: newData,
+                                });
+                              }}
+                             
+ 
+                              disabled
+                            />
+                                                        
+                          </td>
+                          <td>
+                            <div>
+                              <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                <input
+                                  className="h-4 w-4 cursor-pointer"
+                                  type="checkbox"
+                                  checked={!!item.reviewed_by}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.EquipmentRecords,
+                                    ];
+                                    if (e?.target?.checked) {
+                                      newData[index].reviewed_by = reviewed_by;
+                                    } else {
+                                      newData[index].reviewed_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      EquipmentRecords: newData,
+                                    });
+                                  }}
+                                  disabled={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
+                                />
+                                {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                              </div>
+                            </div>
+                          </td>
+                          {/* <td>
+                            <input
+                              value={item.approver_remarks}
+                              onChange={(e) => {
+                                const newData = [...editData.EquipmentRecords];
+                                newData[index].approver_remarks =
+                                  e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  EquipmentRecords: newData,
+                                });
+                              }}
+                              disabled={[1, 2].includes(
+                                userDetails.roles[0].role_id
+                              )}
                             />
                           </td>
                           <td>
-                            <input
-                              value={item.checked_by}
-                              onChange={(e) => {
-                                const newData = [...editData.TempratureRecords];
-                                newData[index].checked_by = e.target.value;
-                                setEditData({
-                                  ...editData,
-                                  TempratureRecords: newData,
-                                });
-                              }}
-                              readOnly
-                            />
-                          </td>
+                            <div>
+                              <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                <input
+                                  className="h-4 w-4 cursor-pointer"
+                                  type="checkbox"
+                                  checked={!!item.approved_by}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.EquipmentRecords,
+                                    ];
+                                    if (e?.target?.checked) {
+                                      newData[index].approved_by = approved_by;
+                                    } else {
+                                      newData[index].approved_by = "";
+                                    }
+                                    setEditData({
+                                      ...editData,
+                                      EquipmentRecords: newData,
+                                    });
+                                  }}
+                                  disabled={[1, 2].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
+                                />
+                                {item.approved_by && <p>{item.approved_by}</p>}
+                              </div>
+                            </div>
+                          </td> */}
+
                           <td style={{ width: "250px" }}>
-                            <div className="d-flex align-items-center">
-                              <button
-                                type="button"
-                                className="btn-upload"
-                                onClick={() =>
-                                  document
-                                    .getElementsByName("supporting_docs")
-                                    [index].click()
-                                }
-                                style={{ marginRight: "10px" }}
-                                disabled={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
-                              >
-                                {item.supporting_docs
-                                  ? "Change File"
-                                  : "Select File"}
-                              </button>
-                              {item.supporting_docs && (
-                                <div>
+                            <div className="d-flex">
+                              {item.supporting_docs ? (
+                                <div className="file-upload-wrapper">
+                                  <button
+                                    type="button"
+                                    className="btn-upload"
+                                    onClick={() =>
+                                      document
+                                        .getElementsByName("supporting_docs")
+                                        [index].click()
+                                    }
+                                    disabled={
+                                      location.state?.stage !== 1 ||
+                                      location.state?.initiator_id !==
+                                        userDetails.userId
+                                    }
+                                  >
+                                    Change File
+                                  </button>
                                   <h3>
                                     Selected File:{" "}
                                     <a
@@ -1072,7 +1294,28 @@ export default function TempretureRecordsPanel() {
                                     >
                                       View File
                                     </a>
+                                    {/* <DeleteIcon
+                                    style={{ color: "red", cursor: "pointer" }}
+                                    onClick={() => handleDeleteFile(index)}
+                                  /> */}
                                   </h3>
+                                </div>
+                              ) : (
+                                <div className="file-upload-wrapper">
+                                  <button
+                                    type="button"
+                                    className="btn-upload"
+                                    onClick={() =>
+                                      document
+                                        .getElementsByName("supporting_docs")
+                                        [index].click()
+                                    }
+                                    readOnly={[3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    )}
+                                  >
+                                    Select File
+                                  </button>
                                 </div>
                               )}
                               <input
@@ -1082,19 +1325,34 @@ export default function TempretureRecordsPanel() {
                                 onChange={(e) =>
                                   handleFileChange(index, e.target.files[0])
                                 }
-                                disabled={
-                                  location.state?.stage !== 1 ||
-                                  location.state?.initiator_id !==
-                                    userDetails.userId
-                                }
                               />
                             </div>
                           </td>
 
                           <td>
+                            <input
+                              value={item.remarks}
+                              onChange={(e) => {
+                                const newData = [...editData.EquipmentRecords];
+                                newData[index].remarks =
+                                  e.target.value;
+                                setEditData({
+                                  ...editData,
+                                  EquipmentRecords: newData,
+                                });
+                              }}
+                              disabled={
+                                        [1, 3].includes(
+                                          userDetails.roles[0].role_id
+                                        ) || !canReviewerEdit(item)
+                                      }
+                            />
+                          </td> 
+
+                          <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
                             {item.limit !== "" &&
-                              (item.limit < 23 || item.limit > 27) && (
+                              (item.limit < 0.6 || item.limit > 2.6) && (
                                 <button
                                   className="deviation-btn"
                                   onClick={() => {
@@ -1106,14 +1364,14 @@ export default function TempretureRecordsPanel() {
                               )}
                           </td>
                         </tr>
-                      ))} */}
+                      ))}
                     </tbody>
                   </table>
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="flex flex-col w-full">
                       <label
-                        // htmlFor="additionalAttachment"
-                        // className="color-label"
+                        htmlFor="additionalAttachment"
+                        className="color-label"
                         name="additionalAttachment"
                       >
                         Additional Attachment{" "}
@@ -1126,14 +1384,14 @@ export default function TempretureRecordsPanel() {
                         {editData.additionalAttachment ? (
                           <div className="flex items-center gap-x-10">
                             <button
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white cursor-not-allowed ml-2"
+                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                               type="button"
-                              disabled
-                              // onClick={() =>
-                              //   document
-                              //     .getElementById("additionalAttachment")
-                              //     .click()
-                              // }
+                              disabled={!isFieldEditable( null, "additionalAttachment")}
+                              onClick={() =>
+                                document
+                                  .getElementById("additionalAttachment")
+                                  .click()
+                              }
                             >
                               Change File
                             </button>
@@ -1144,7 +1402,6 @@ export default function TempretureRecordsPanel() {
                               <a
                                 href={editData.additionalAttachment}
                                 target="_blank"
-                                disabled
                                 rel="noopener noreferrer"
                                 className="text-blue-600 underline"
                               >
@@ -1155,9 +1412,8 @@ export default function TempretureRecordsPanel() {
                         ) : (
                           <div>
                             <button
+                              className="py-1 bg-[#0C5FC6] hover:bg-blue-600 text-white ml-3 px-3 rounded"
                               type="button"
-                              disabled
-                              className="py-1 bg-blue-500 text-white cursor-not-allowed !scale-100 ml-2"
                               onClick={() =>
                                 document
                                   .getElementById("additionalAttachment")
@@ -1171,7 +1427,6 @@ export default function TempretureRecordsPanel() {
                         <input
                           type="file"
                           name="additionalAttachment"
-                          disabled
                           id="additionalAttachment"
                           onChange={handleInitiatorFileChange}
                           style={{ display: "none" }}
@@ -1179,25 +1434,102 @@ export default function TempretureRecordsPanel() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex  flex-col w-full border border-gray-500 p-4 rounded-md pb-12 mb-6">
+                  <div className="flex flex-col w-full">
                     <label className=" text-lg text-gray-900 mb-1">
                       Additional Info{" "}
                       <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
                     </label>
                     <textarea
-                      className="block w-full border border-gray-800 rounded-md shadow-sm px-3 py-2 text-gray-700 "
-                      rows="4"
-                      // disabled
-                      name="additionalInfo"
-                      value={editData?.additionalInfo}
-                      onChange={handleInputChange1}
-                    ></textarea>
+                        className="block w-full mb-8 border border-gray-900 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                        rows="4"
+                        name="additionalInfo"
+                        value={editData?.additionalInfo}
+                        disabled={!isFieldEditable( null, "additionalInfo")}
+                        onChange={handleInputChange1}
+                      ></textarea>
                   </div>
                 </>
               ) : null}
 
-              {initiatorRemarks === true ? (
+              {/* {initiatorRemarks === true ? (
                 <>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">
+                        Initiator Comment
+                        {location.state?.stage === 1 &&
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
+                          )}
+                      </label>
+                      <div className="instruction"></div>
+                      <input
+                        name="initiatorComment"
+                        value={editData?.initiatorComment}
+                        onChange={handleInputChange1}
+                        readOnly={
+                          location.state?.stage !== 1 ||
+                          location.state?.initiator_id !== userDetails.userId
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                        htmlFor="initiatorAttachment"
+                        className="color-label"
+                      >
+                        Initiator Attachment
+                      </label>
+                      <div>
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("initiatorAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 1 ||
+                            location.state?.initiator_id !== userDetails.userId
+                          }
+                        >
+                          {editData.initiatorAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.initiatorAttachment && (
+                          <div>
+                            <h3>
+                              Selected File:{" "}
+                              <a
+                                href={editData.initiatorAttachment}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View File
+                              </a>
+                            </h3>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          name="initiatorAttachment"
+                          id="initiatorAttachment"
+                          onChange={handleInitiatorFileChange}
+                          style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 1 ||
+                            location.state?.initiator_id !== userDetails.userId
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Initiator </label>
@@ -1221,122 +1553,6 @@ export default function TempretureRecordsPanel() {
                       </div>
                     </div>
                   </div>
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label">
-                        Initiator Comment
-                        {location.state?.stage === 1 &&
-                          [1, 5].includes(userDetails.roles[0].role_id) && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
-                          )}
-                      </label>
-                      <div className="instruction"></div>
-                      <input
-                        name="initiatorComment"
-                        value={editData?.initiatorComment}
-                        onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 1 ||
-                          [2, 3].includes(userDetails.roles[0].role_id)
-                        }
-                      />
-                    </div>
-                    <div className="group-input">
-                      <label
-                      // htmlFor="initiatorAttachment"
-                      // className="color-label"
-                      // name="initiatorAttachment"
-                      >
-                        Initiator Attachment
-                      </label>
-                      <div>
-                        {editData.initiatorAttachment ? (
-                          <div className="flex items-center gap-x-10">
-                            {" "}
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("initiatorAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                [2, 3].includes(userDetails.roles[0].role_id)
-                              }
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
-                            >
-                              Change File
-                            </button>
-                            <h3>
-                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                                Selected File:{" "}
-                              </span>
-                              <a
-                                href={
-                                  editData.initiatorAttachment instanceof File
-                                    ? URL.createObjectURL(
-                                        editData.initiatorAttachment
-                                      )
-                                    : editData.initiatorAttachment
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline"
-                              >
-                                {editData?.initiatorAttachment?.name?.slice(
-                                  0,
-                                  30
-                                ) ||
-                                  editData?.initiatorAttachment?.slice(46)}{" "}
-                              </a>
-                              {editData.initiatorAttachment.name && (
-                                <button
-                                  className="text-red-500 hover:text-red-700 text-lg"
-                                  type="button"
-                                  onClick={() =>
-                                    setEditData({
-                                      ...editData,
-                                      initiatorAttachment: null,
-                                    })
-                                  }
-                                >
-                                  ✖
-                                </button>
-                              )}
-                            </h3>
-                          </div>
-                        ) : (
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("initiatorAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                [2, 3].includes(userDetails.roles[0].role_id)
-                              }
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
-                            >
-                              Select File
-                            </button>
-                          </div>
-                        )}
-                        <input
-                          type="file"
-                          name="initiatorAttachment"
-                          id="initiatorAttachment"
-                          onChange={handleInitiatorFileChange}
-                          style={{ display: "none" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
               ) : null}
 
@@ -1344,12 +1560,89 @@ export default function TempretureRecordsPanel() {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
+                      <label className="color-label" htmlFor="reviewComment">
+                        Review Comment
+                        {location.state?.stage === 2 &&
+                          location.state?.initiator_id ===
+                            userDetails.userId && (
+                            <span style={{ color: "red", marginLeft: "2px" }}>
+                              *
+                            </span>
+                          )}
+                      </label>
+                      <input
+                        id="reviewComment"
+                        name="reviewComment"
+                        value={editData.reviewComment || ""}
+                        onChange={handleInputChange1}
+                        readOnly={
+                          location.state?.stage !== 2 ||
+                          location.state?.reviewer_id !== userDetails.userId
+                        }
+                      />
+                    </div>
+                    <div className="group-input">
+                      <label
+                        htmlFor="reviewerAttachment"
+                        className="color-label"
+                      >
+                        Reviewer Attachment
+                      </label>
+                      <div>
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("reviewerAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 2 ||
+                            location.state?.reviewer_id !== userDetails.userId
+                          }
+                        >
+                          {editData.reviewerAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.reviewerAttachment && (
+                          <div>
+                            <h3>
+                              Selected File:{" "}
+                              <a
+                                href={editData.reviewerAttachment}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View File
+                              </a>
+                            </h3>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          name="reviewerAttachment"
+                          id="reviewerAttachment"
+                          onChange={handleReviewerFileChange}
+                          style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 2 ||
+                            location.state?.reviewer_id !== userDetails.userId
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="form-flex">
+                    <div className="group-input">
                       <label className="color-label">Reviewer </label>
                       <div>
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.LQreviewer?.name}
+                          value={editData?.tpreviewer?.name}
                           readOnly
                         />
                       </div>
@@ -1365,127 +1658,88 @@ export default function TempretureRecordsPanel() {
                       </div>
                     </div>
                   </div>
+                </>
+              ) : null}
+
+              {approverRemarks === true ? (
+                <>
                   <div className="form-flex">
                     <div className="group-input">
-                      <label className="color-label" htmlFor="reviewComment">
-                        Review Comment
-                        {location.state?.stage === 2 &&
-                          [2, 5].includes(userDetails.roles[0].role_id) && (
+                      <label className="color-label" htmlFor="approverComment">
+                        Approver Comment
+                        {location.state?.stage === 3 &&
+                          location.state?.approver_id ===
+                            userDetails.userId && (
                             <span style={{ color: "red", marginLeft: "2px" }}>
                               *
                             </span>
                           )}
                       </label>
                       <input
-                        id="reviewComment"
-                        name="reviewComment"
-                        value={editData.reviewComment || ""}
+                        id="approverComment"
+                        name="approverComment"
+                        value={editData.approverComment || ""}
                         onChange={handleInputChange1}
-                        readOnly={
-                          location.state?.stage !== 2 ||
-                          [1, 3].includes(userDetails.roles[0].role_id)
+                        disabled={
+                          location.state?.stage !== 3 ||
+                          location.state?.approver_id !== userDetails.userId
                         }
                       />
                     </div>
                     <div className="group-input">
                       <label
-                      // htmlFor="reviewerAttachment"
-                      // className="color-label"
-                      // name="reviewerAttachment"
+                        htmlFor="approverAttachment"
+                        className="color-label"
                       >
-                        Reviewer Attachment
+                        Approver Attachment
                       </label>
                       <div>
-                        {editData.reviewerAttachment ? (
-                          <div className="flex items-center gap-x-10">
-                            {" "}
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("reviewerAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                [1, 3].includes(userDetails.roles[0].role_id)
-                              }
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
-                            >
-                              Change File
-                            </button>
+                        <button
+                          type="button"
+                          className="btn-upload"
+                          onClick={() =>
+                            document
+                              .getElementById("approverAttachment")
+                              .click()
+                          }
+                          disabled={
+                            location.state?.stage !== 3 ||
+                            location.state?.approver_id !== userDetails.userId
+                          }
+                        >
+                          {editData.approverAttachment
+                            ? "Change File"
+                            : "Select File"}
+                        </button>
+                        {editData.approverAttachment && (
+                          <div>
                             <h3>
-                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                                Selected File:{" "}
-                              </span>
+                              Selected File:{" "}
                               <a
-                                href={
-                                  editData.reviewerAttachment instanceof File
-                                    ? URL.createObjectURL(
-                                        editData.reviewerAttachment
-                                      )
-                                    : editData.reviewerAttachment
-                                }
+                                href={editData.approverAttachment}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 underline"
                               >
-                                {editData?.reviewerAttachment?.name?.slice(
-                                  0,
-                                  30
-                                ) || editData?.reviewerAttachment?.slice(46)}
+                                View File
                               </a>
-                              {editData.reviewerAttachment.name && (
-                                <button
-                                  className="text-red-500 hover:text-red-700 text-lg"
-                                  type="button"
-                                  onClick={() =>
-                                    setEditData({
-                                      ...editData,
-                                      reviewerAttachment: null,
-                                    })
-                                  }
-                                >
-                                  ✖
-                                </button>
-                              )}
                             </h3>
-                          </div>
-                        ) : (
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("reviewerAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 2 ||
-                                [1, 3].includes(userDetails.roles[0].role_id)
-                              }
-                              className="py-1
-                              bg-blue-500 hover:bg-blue-600 text-white ml-3"
-                            >
-                              Select File
-                            </button>
                           </div>
                         )}
                         <input
                           type="file"
-                          name="reviewerAttachment"
-                          id="reviewerAttachment"
-                          onChange={handleReviewerFileChange}
+                          name="approverAttachment"
+                          id="approverAttachment"
+                          onChange={handleApproverFileChange}
                           style={{ display: "none" }}
+                          disabled={
+                            location.state?.stage !== 3 ||
+                            location.state?.approver_id !== userDetails.userId
+                          }
                         />
                       </div>
                     </div>
                   </div>
-                </>
-              ) : null}
 
-              {approverRemarks === true ? (
-                <>
                   <div className="form-flex">
                     <div className="group-input">
                       <label className="color-label">Approver </label>
@@ -1509,124 +1763,8 @@ export default function TempretureRecordsPanel() {
                       </div>
                     </div>
                   </div>
-                  <div className="form-flex">
-                    <div className="group-input">
-                      <label className="color-label" htmlFor="approverComment">
-                        Approver Comment
-                        {location.state?.stage === 3 &&
-                          [3, 5].includes(userDetails.roles[0].role_id) && (
-                            <span style={{ color: "red", marginLeft: "2px" }}>
-                              *
-                            </span>
-                          )}
-                      </label>
-                      <input
-                        id="approverComment"
-                        name="approverComment"
-                        value={editData.approverComment || ""}
-                        onChange={handleInputChange1}
-                        disabled={
-                          location.state?.stage !== 3 ||
-                          [1, 2].includes(userDetails.roles[0].role_id)
-                        }
-                      />
-                    </div>
-                    <div className="group-input">
-                      <label
-                      // htmlFor="approverAttachment"
-                      // className="color-label"
-                      // name="approverAttachment"
-                      >
-                        Approver Attachment
-                      </label>
-                      <div>
-                        {editData.approverAttachment ? (
-                          <div className="flex items-center gap-x-10">
-                            {" "}
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("approverAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                [1, 2].includes(userDetails.roles[0].role_id)
-                              }
-                              className="py-1 hover:bg-blue-600 bg-blue-500 text-white ml-3"
-                            >
-                              Change File
-                            </button>
-                            <h3>
-                              <span className="py-1 bg-zinc-300 px-2 rounded-md mr-2">
-                                Selected File:{" "}
-                              </span>
-                              <a
-                                href={
-                                  editData.approverAttachment instanceof File
-                                    ? URL.createObjectURL(
-                                        editData.approverAttachment
-                                      )
-                                    : editData.approverAttachment
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline"
-                              >
-                                {editData?.approverAttachment?.name?.slice(
-                                  0,
-                                  30
-                                ) ||
-                                  editData?.approverAttachment?.slice(46)}{" "}
-                              </a>
-                              {editData.approverAttachment.name && (
-                                <button
-                                  className="text-red-500 hover:text-red-700 text-lg"
-                                  type="button"
-                                  onClick={() =>
-                                    setEditData({
-                                      ...editData,
-                                      approverAttachment: null,
-                                    })
-                                  }
-                                >
-                                  ✖
-                                </button>
-                              )}
-                            </h3>
-                          </div>
-                        ) : (
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document
-                                  .getElementById("approverAttachment")
-                                  .click()
-                              }
-                              disabled={
-                                location.state?.stage !== 3 ||
-                                [1, 2].includes(userDetails.roles[0].role_id)
-                              }
-                              className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
-                            >
-                              Select File
-                            </button>
-                          </div>
-                        )}
-                        <input
-                          type="file"
-                          name="approverAttachment"
-                          id="approverAttachment"
-                          onChange={handleApproverFileChange}
-                          style={{ display: "none" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </>
-              ) : null}
+              ) : null} */}
             </div>
             <div className="button-block" style={{ width: "100%" }}>
               {/* {location.state?.stage === 1
@@ -1701,7 +1839,7 @@ export default function TempretureRecordsPanel() {
                     </button>
                   )
                 : null} */}
-              <button
+              {/* <button
                 className="themeBtn"
                 onClick={() => {
                   if (!deepEqual(location.state, editData)) {
@@ -1712,7 +1850,7 @@ export default function TempretureRecordsPanel() {
                 }}
               >
                 Exit
-              </button>
+              </button> */}
             </div>
             {isPopupOpen && (
               <UserVerificationPopUp

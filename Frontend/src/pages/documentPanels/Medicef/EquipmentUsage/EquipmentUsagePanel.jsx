@@ -265,7 +265,7 @@ export default function EquipmentUsagePanel() {
         ? "Malaysia"
         : location.state.site_id === 3
         ? "EMEA"
-        : "EU",
+        : "Medicef",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Equipment Record",
@@ -413,7 +413,7 @@ export default function EquipmentUsagePanel() {
   return (
     <>
       <HeaderTop />
-      <LaunchQMS />
+      {/* <LaunchQMS /> */}
       <div id="main-form-container">
         <div id="config-form-document-page" className="min-w-full">
           <div className="top-block">
@@ -428,7 +428,7 @@ export default function EquipmentUsagePanel() {
                 ? "Malaysia"
                 : location.state?.site_id === 3
                 ? "EMEA"
-                : "EU"}
+                : "Medicef"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -923,20 +923,25 @@ export default function EquipmentUsagePanel() {
 
                   <div>
                     <div className="AddRows d-flex">
-                      <NoteAdd onClick={addRow} />
+                      <NoteAdd onClick={addRow} disabled/>
                       <div className="addrowinstruction"></div>
                     </div>
                   </div>
                   <table>
                     <thead>
                       <tr>
+                        <th>Sr no.</th>
                         <th>Date</th>
-                        <th>Time</th>
-                        <th>Temperature (°C)</th>
-                        <th>Relative Humidity (%)</th>
-                        <th>Done By</th>
-                        <th>Checked By </th>
-                        <th>Actions</th>
+                        <th>Product Name</th>
+                        <th>Batch No.</th>
+                        <th>Batch Size</th>
+                        <th>Type of activity</th>
+                        <th>Start time</th>
+                        <th>End time</th>
+                        <th>Done by</th>
+                        <th>Checked by(Prod.)</th>
+                        <th>Verified by(IPOA)</th>
+                        <th>Remarks</th>
                       </tr>
                     </thead>
                     <tbody>

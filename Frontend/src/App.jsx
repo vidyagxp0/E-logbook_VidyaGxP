@@ -41,7 +41,7 @@ import EffectiveElogs from "./pages/Dashboard/EffectiveElogs.jsx";
 import ViewReport from "./components/viewReport/ViewReport.jsx";
 import DPREffective from "./pages/Dashboard/EffectiveElogs/DiffrentialPressureEffective.jsx";
 import TempretureRecordsEffective from "./pages/Dashboard/EffectiveElogs/TemperatureRecordsEffective.jsx";
-import LoadedQuantityEffective from "./pages/Dashboard/EffectiveElogs/LoadedQuantityEffective.jsx";
+import LoadedQuantityEffective from "./pages/Dashboard/EffectiveElogs/EquipmentUsageEffective.jsx";
 import OperationOfSterilizerEffective from "./pages/Dashboard/EffectiveElogs/OperationOfSterilizerEffective.jsx";
 import MediaRecordEffective from "./pages/Dashboard/EffectiveElogs/MediaRecordEffective.jsx";
 import DispensingOfMaterialsEffective from "./pages/Dashboard/EffectiveElogs/DispensingOfMaterialsEffective.jsx";
@@ -80,6 +80,7 @@ import TemperatureRecord from "./pages/documentPanels/Medicef/TemperatureRecord/
 import EquipmentUsage from "./pages/documentPanels/Medicef/EquipmentUsage/EquipmentUsage.jsx";
 import DifferentialPressureRecordPanel from "./pages/documentPanels/Medicef/DifferentialPressureRecord/DifferentialPressureRecordPanel.jsx";
 import EquipmentUsagePanel from "./pages/documentPanels/Medicef/EquipmentUsage/EquipmentUsagePanel.jsx";
+import EquipmentUsageEffective from "./pages/Dashboard/EffectiveElogs/EquipmentUsageEffective.jsx";
 
 function App() {
   return (
@@ -175,8 +176,8 @@ function App() {
               }
             />
             <Route
-              path="/effective-loaded-quantity"
-              element={<ProtectedRoute element={<LoadedQuantityEffective />} />}
+              path="/effective-equipment-usage"
+              element={<ProtectedRoute element={<EquipmentUsageEffective />} />}
             />
             <Route
               path="/effective-tpr"

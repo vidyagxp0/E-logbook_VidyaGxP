@@ -366,7 +366,7 @@ exports.EditEquipmentUsage = async (req, res) => {
     limit,
     reviewer_id,
     approver_id,
-    LoadedQuantityRecords,
+    EquipmentRecords,
     email,
     password,
     initiatorComment,
@@ -494,8 +494,8 @@ exports.EditEquipmentUsage = async (req, res) => {
 
     // Update the Form Records if provided
     if (
-      Array.isArray(LoadedQuantityRecords) &&
-      LoadedQuantityRecords.length > 0
+      Array.isArray(EquipmentRecords) &&
+      EquipmentRecords.length > 0
     ) {
       const existingRecords = await EquipmentUsageRecord.findAll({
         where: { form_id: form_id },
@@ -506,10 +506,10 @@ exports.EditEquipmentUsage = async (req, res) => {
 
       // Track changes for existing records
       existingRecords.forEach((existingRecord, index) => {
-        LoadedQuantityRecords.sort(
+        EquipmentRecords.sort(
           (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
         );
-        const newRecord = LoadedQuantityRecords[index];
+        const newRecord = EquipmentRecords[index];
         if (newRecord) {
           const recordFields = {
             product_name: newRecord?.product_name,
@@ -550,13 +550,13 @@ exports.EditEquipmentUsage = async (req, res) => {
       });
 
       // Handle new records added
-      if (LoadedQuantityRecords.length > existingRecords.length) {
+      if (EquipmentRecords.length > existingRecords.length) {
         for (
           let i = existingRecords.length;
-          i < LoadedQuantityRecords.length;
+          i < EquipmentRecords.length;
           i++
         ) {
-          const newRecord = LoadedQuantityRecords[i];
+          const newRecord = EquipmentRecords[i];
           const recordFields = {
             unique_id: newRecord?.unique_id,
             product_name: newRecord?.product_name,
@@ -597,7 +597,7 @@ exports.EditEquipmentUsage = async (req, res) => {
       });
 
       // Create new records
-      const formRecords = LoadedQuantityRecords.map((record, index) => ({
+      const formRecords = EquipmentRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
         date:

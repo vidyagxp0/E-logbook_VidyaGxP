@@ -122,8 +122,8 @@ useEffect(() => {
   
     axios(newConfigloaded)
       .then((response) => {
-        const allLoadedQuantityElogs = response.data.message;
-        let filteredArray = allLoadedQuantityElogs.filter((elog) => {
+        const allEquiepmentUsageElogs = response.data.message;
+        let filteredArray = allEquiepmentUsageElogs.filter((elog) => {
           const userId = userDetails.userId;
 
           return (
@@ -133,7 +133,7 @@ useEffect(() => {
             hasAccess(4, elog.site_id, 4)
           );
         });
-        setEquipmentUsageElogs(allLoadedQuantityElogs);
+        setEquipmentUsageElogs(allEquiepmentUsageElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -762,8 +762,8 @@ useEffect(() => {
                 Equipment Cleaning Checklist
               </option> */}
               <option value="temperature_records">Temperature Records</option>
-              {/* <option value="loaded_quantity">Equipment Usage</option>
-              <option value="media_record">Media Record</option>
+             <option value="loaded_quantity">Equipment Usage</option>
+               {/* <option value="media_record">Media Record</option>
               <option value="operation_of_sterilizer">
                 Operation Of Sterilizer
               </option>
@@ -993,7 +993,7 @@ useEffect(() => {
                           ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
-                          : "EU"}
+                          : "Medicef"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1095,7 +1095,7 @@ useEffect(() => {
                           ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
-                          : "EU"}
+                          : "Medicef"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1730,7 +1730,7 @@ useEffect(() => {
                           ? "Medicef"
                           : item.site_id === 6
                           ? "AR&D"
-                          : "EU"}
+                          : "Medicef"}
                       </td>
                       <td>
                         {item.compression_area}
