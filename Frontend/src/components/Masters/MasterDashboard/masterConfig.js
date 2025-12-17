@@ -1,5 +1,6 @@
 export const MASTER_CONFIG = {
   "Site Master": {
+    nestedPath: "siteMasterData",
     fields: [
       { name: "siteName", label: "Site Name" },
       { name: "siteCode", label: "Site Code" },
@@ -11,7 +12,11 @@ export const MASTER_CONFIG = {
       { name: "market", label: "Market" },
       { name: "mfgDate", label: "Mfg Date", type: "date" },
       { name: "expiryDate", label: "Expiry Date", type: "date" },
-      { name: "generalInstructions", label: "General Instructions", type: "textarea" },
+      {
+        name: "generalInstructions",
+        label: "General Instructions",
+        type: "textarea",
+      },
       { name: "bmrVersion", label: "BMR Version" },
       { name: "remarks", label: "Remarks" },
       { name: "preparedBy", label: "Prepared By" },
@@ -24,6 +29,7 @@ export const MASTER_CONFIG = {
   },
 
   "API Identification Master": {
+    nestedPath: "apiIdentificationData",
     fields: [
       { name: "materialName", label: "Material Name" },
       { name: "sapCode", label: "SAP / Item Code" },
@@ -41,6 +47,7 @@ export const MASTER_CONFIG = {
   },
 
   "Excipients Dispensing (Grid) Master": {
+    nestedPath: "excipientsDispensingData",
     fields: [
       { name: "materialName", label: "Material Name" },
       { name: "lotNo", label: "Lot / Batch No" },
@@ -49,6 +56,7 @@ export const MASTER_CONFIG = {
   },
 
   "Persons Involved": {
+    nestedPath: "personInvolvedData",
     fields: [
       { name: "name", label: "Name" },
       { name: "employeeCode", label: "Employee Code" },
@@ -59,6 +67,7 @@ export const MASTER_CONFIG = {
   },
 
   "Equipment/Instrument Master": {
+    nestedPath: "equipmentInstrumentData",
     fields: [
       { name: "equipmentName", label: "Equipment Name" },
       { name: "equipmentId", label: "Equipment ID" },
@@ -68,7 +77,11 @@ export const MASTER_CONFIG = {
       { name: "model", label: "Equipment Model" },
       { name: "calibrationDoneOn", label: "Calibration Done On", type: "date" },
       { name: "calibrationDueOn", label: "Calibration Due On", type: "date" },
-      { name: "validCalibration", label: "Under Valid Calibration?", type: "select" },
+      {
+        name: "validCalibration",
+        label: "Under Valid Calibration?",
+        type: "select",
+      },
     ],
   },
 
@@ -89,4 +102,15 @@ export const MASTER_CONFIG = {
       { name: "pressureRecord", label: "Pressure Differential Record" },
     ],
   },
+};
+
+// frontend label -> backend key
+export const MASTER_KEY_MAP = {
+  "Site Master": "site",
+  "API Identification Master": "apiIdentificationData",
+  "Excipients Dispensing (Grid) Master": "excipientsDispensingData",
+  "Persons Involved": "persons",
+  "Equipment/Instrument Master": "equipment",
+  "PM Master": "pm",
+  "Connected ElogBook": "elogbook",
 };

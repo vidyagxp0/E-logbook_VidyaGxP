@@ -1,10 +1,12 @@
-import React, { useState, useMemo } from "react";
-import { Button, Table, Input, Card } from "antd";
+import React, { useState, useMemo, useEffect } from "react";
+import { Button, Table, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import HeaderTop from "../../Header/HeaderTop";
 import MasterSidebar from "./MasterSidebar";
 import MasterModal from "./MasterModal";
 import { MASTER_CONFIG } from "./masterConfig";
+import { getMasterList } from "../MasterServices";
+import { extractMasterData } from "../MasterMapper";
 
 const { Search } = Input;
 
@@ -16,78 +18,90 @@ const MasterDashboard = () => {
   const [openModal, setOpenModal] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [masterData, setMasterData] = useState({
-    "Site Master": [],
-    "API Identification Master": [],
-    "Excipients Dispensing (Grid) Master": [],
-    "Persons Involved": [],
-    "Equipment/Instrument Master": [],
-    "PM Master": [],
-    "Connected ElogBook": [],
-  });
+  // API table data
+  const [tableData, setTableData] = useState([]);
 
-  /* ---------- SAVE HANDLER ---------- */
-  const handleSave = (values) => {
-    setMasterData((prev) => ({
-      ...prev,
-      [activeMaster]: editRow
-        ? prev[activeMaster].map((r) =>
-            r.key === editRow.key ? { ...values, key: r.key } : r
-          )
-        : [...prev[activeMaster], { ...values, key: Date.now() }],
-    }));
-    setOpenModal(false);
-    setEditRow(null);
+  /* ================= FETCH MASTER DATA ================= */
+  const fetchMasterData = async () => {
+    try {
+      setLoading(true);
+
+      const res = await getMasterList(activeMaster);
+
+      // 🔴 IMPORTANT: confirm correct response path
+      const apiData = res?.data?.data || [];
+
+      const { fields, nestedPath } = MASTER_CONFIG[activeMaster];
+
+      const mappedData = apiData.map((item) => ({
+        key: item.id,
+        id: item.id,
+
+        // table fields
+        ...extractMasterData(item, fields, nestedPath),
+
+        // 🔥 IMPORTANT: keep full original object
+        __original: item,
+      }));
+
+      setTableData(mappedData);
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to load master data");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  /* ---------- FILTERED DATA (GLOBAL SEARCH) ---------- */
-  const filteredData = useMemo(() => {
-    if (!searchText) return masterData[activeMaster];
+  /* ================= LOAD ON MASTER CHANGE ================= */
+  useEffect(() => {
+    fetchMasterData();
+  }, [activeMaster]);
 
-    return masterData[activeMaster].filter((row) =>
+  /* ================= SEARCH ================= */
+  const filteredData = useMemo(() => {
+    if (!searchText) return tableData;
+
+    return tableData.filter((row) =>
       Object.values(row).some(
         (value) =>
           value &&
           value.toString().toLowerCase().includes(searchText.toLowerCase())
       )
     );
-  }, [searchText, masterData, activeMaster]);
+  }, [searchText, tableData]);
 
-  /* ---------- DYNAMIC COLUMNS ---------- */
+  /* ================= COLUMNS ================= */
   const columns = [
-  {
-    title: "Sr No.",
-    key: "srNo",
-    width: 70,
-    fixed: "left",
-    render: (_, __, index) => index + 1,
-  },
-  ...MASTER_CONFIG[activeMaster].fields.map((field) => ({
-    title: field.label,
-    dataIndex: field.name,
-    key: field.name,
-    ellipsis: true,
-  })),
-  {
-    title: "Action",
-    fixed: "right",
-    width: 80,
-    render: (_, record) => (
-      <Button
-        type="link"
-        onClick={() => {
-          setEditRow(record);
-          setOpenModal(true);
-        }}
-      >
-        Edit
-      </Button>
-    ),
-  },
-];
-
-
+    {
+      title: "Sr No.",
+      width: 70,
+      render: (_, __, index) => index + 1,
+    },
+    ...MASTER_CONFIG[activeMaster].fields.map((field) => ({
+      title: field.label,
+      dataIndex: field.name,
+      key: field.name,
+      ellipsis: true,
+    })),
+    {
+      title: "Action",
+      width: 80,
+      render: (_, record) => (
+        <Button
+          type="link"
+          onClick={() => {
+            setEditRow(record);
+            setOpenModal(true);
+          }}
+        >
+          Edit
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -101,46 +115,43 @@ const MasterDashboard = () => {
           setCollapsed={setCollapsed}
         />
 
-        {/* CONTENT */}
         <div className="flex-1 p-6 overflow-auto">
           {/* TOP BAR */}
           <div className="flex justify-between items-center mb-4">
             <Button onClick={() => navigate("/dashboard")}>⬅ Back</Button>
-            <Button type="primary" onClick={() => setOpenModal(true)}>
+            <Button
+              type="primary"
+              onClick={() => {
+                setEditRow(null);
+                setOpenModal(true);
+              }}
+            >
               Add {activeMaster}
             </Button>
           </div>
 
           {/* TITLE + SEARCH */}
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">
-              {activeMaster} Entries
-            </h2>
+            <h2 className="text-lg font-semibold">{activeMaster} Entries</h2>
 
             <Search
-              placeholder="Search in all fields..."
+              placeholder="Search..."
               allowClear
-              onChange={(e) => setSearchText(e.target.value)}
               className="w-72"
+              onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
 
-          {/* TABLE CARD */}
-         
-            <Table
-  columns={columns}
-  dataSource={filteredData}
-  rowKey="key"
-  scroll={{ x: "max-content" }}
-  pagination={{
-    pageSize: 5,
-    showSizeChanger: false,
-  }}
-  locale={{ emptyText: "No records found" }}
-  className="master-no-extra-border"
-/>
-
-        
+          {/* TABLE */}
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            loading={loading}
+            rowKey="key"
+            pagination={{ pageSize: 5 }}
+            scroll={{ x: "max-content" }}
+            locale={{ emptyText: "No records found" }}
+          />
 
           {/* MODAL */}
           {openModal && (
@@ -148,10 +159,13 @@ const MasterDashboard = () => {
               open={openModal}
               activeMaster={activeMaster}
               editData={editRow}
-              onSave={handleSave}
-              onClose={() => {
+              onClose={(shouldRefresh) => {
                 setOpenModal(false);
                 setEditRow(null);
+
+                if (shouldRefresh) {
+                  fetchMasterData(); // 🔥 reload after add/edit
+                }
               }}
             />
           )}
