@@ -40,7 +40,8 @@ function EffectiveElogs() {
   const [selectedProcess, setSelectedProcess] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [reviewStatusFilter, setReviewStatusFilter] = useState("All");
-
+  const [filteredRecords, setFilteredRecords] = useState([]);
+  
   useEffect(() => {
     // Get from location if available
     if (location.state?.selectedProcess) {
@@ -1084,42 +1085,7 @@ function EffectiveElogs() {
           </div>
 
 
-            {/* Dropdown */}
-           <div className=" max-w-md flex flex-col">
-            <span className="bg-gray-200 font-medium px-4 py-1  rounded-2xl mb-1 from-neutral-800">All Records</span>
-            <select
-              value={eLogSelect}
-              onChange={(e) => setELogSelect(e.target.value)}
-              className="w-[230px] h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
-              style={{ border: "1px solid gray", padding: "2px 0px" }}
-            >
-              <option value="All_Records" className="bg-slate-400">All Records</option> 
-               <option value="diffrential_pressure">
-                Differential Pressure Record
-              </option>
-              {/* <option value="equipment_cleaning">
-                Equipment Cleaning Checklist
-              </option> */}
-              <option value="temperature_records">Temperature Records</option>
-              {/* <option value="loaded_quantity">Equipment Usage</option>
-              <option value="media_record">Media Record</option>
-              <option value="operation_of_sterilizer">
-                Operation Of Sterilizer
-              </option>
-              <option value="dispensing_of_material">
-                Dispensing Of Materials
-              </option> 
-               <option value="analytical_balance">Analytical Balance</option>
-              <option value="karl_fischer">KARL Fischer</option>
-              <option value="hplc">hplc</option>
-              <option value="pH Meter OP/CAL">pH Meter OP/CAL</option>
-              <option value="SDS Page">SDS PAGE</option>
-              <option value="Gel Doc iGene">Gel Doc iGene</option>
-              <option value="UV-Vis Calibration">UV-Vis Calibration</option>
-              <option value="UV/White Light Transilluminator">UV/White Light Transilluminator</option>
-              <option value="Vacuum Oven Calibration">Vacuum Oven Calibration</option> */}
-            </select>
-          </div> 
+           
           <div
             style={{
               display: "flex",
@@ -1193,51 +1159,52 @@ function EffectiveElogs() {
               </select>
             </div>
 
-            {/* Equipment Filter */}
-            {/* <div
-              className="group-input"
-              style={{ marginBottom: "0", minWidth: "200px" }}
-            >
-              <label
-                className="color-label"
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#495057",
-                  marginBottom: "8px",
-                  padding: "0",
-                }}
-              >
-                Instrument / Equipment
-              </label>
-              <select
-                value={eLogSelect}
-                onChange={(e) => setELogSelect(e.target.value)}
-                style={{
-                  padding: "8px 12px",
-                  border: "1px solid #ced4da",
-                  borderRadius: "4px",
-                  fontSize: "14px",
-                  backgroundColor: "white",
-                  width: "100%",
-                }}
-              >
-                <option value="All_Records">All Records</option>
-                <option value="analytical_balance">Analytical Balance</option>
-                <option value="karl_fischer">KARL Fischer</option>
-                <option value="hplc">HPLC</option>
-                <option value="pH Meter OP/Cal">pH Meter OP/Cal</option>
-                <option value="UV-Vis Calibration">UV-Vis Calibration</option>
-                <option value="SDS PAGE">SDS PAGE</option>
-                <option value="Gel Doc iGene">Gel Doc iGene</option>
-                <option value="UV/WL Transilluminator">
-                  UV/WL Transilluminator
-                </option>
-                <option value="VO Calibration">
-                  VO Calibration
-                </option>
-              </select>
-            </div> */}
+                  {/* Equipment Filter
+                  <div
+                    className="group-input"
+                    style={{ marginBottom: "0", minWidth: "200px" }}
+                  >
+                    <label
+                      className="color-label"
+                      style={{
+                        labelStyle,
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#495057",
+                        marginBottom: "8px",
+                        padding: "0",
+                      }}
+                    >
+                      Instrument / Equipment
+                    </label>
+                    <select
+                      value={eLogSelect}
+                      onChange={(e) => setELogSelect(e.target.value)}
+                      style={{
+                        padding: "8px 12px",
+                        border: "1px solid #ced4da",
+                        borderRadius: "4px",
+                        fontSize: "14px",
+                        backgroundColor: "white",
+                        width: "100%",
+                      }}
+                    >
+                      <option value="All_Records">All Records</option>
+                      <option value="diffrential_pressure">Diffrential Pressure</option>
+                      <option value="temperature_records">Temperature Records</option>
+                      {/* <option value="hplc">HPLC</option>
+                      <option value="pH Meter OP/Cal">pH Meter OP/Cal</option>
+                      <option value="UV-Vis Calibration">UV-Vis Calibration</option>
+                      <option value="SDS PAGE">SDS PAGE</option>
+                      <option value="Gel Doc iGene">Gel Doc iGene</option>
+                      <option value="UV/WL Transilluminator">
+                        UV/WL Transilluminator
+                      </option>
+                      <option value="VO Calibration">
+                        VO Calibration
+                      </option> 
+                    </select>
+                  </div> */}
 
             {/* Role Filter */}
             {/* <div

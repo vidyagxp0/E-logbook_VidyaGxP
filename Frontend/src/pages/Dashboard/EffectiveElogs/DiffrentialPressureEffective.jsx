@@ -1186,145 +1186,131 @@ const filteredDifferentialRecords = useMemo(() => {
 
                     </div>
                     <div className="group-input">
-                    <div className=" gap-6 mt-6 mb-0">
-                      {/* Area Name */}
-                      <div className="flex flex-col">
-                        <label className="color-label text-lg">
-                          Area Name
-                        </label>
-                        <input
-                          type="text"
-                          className="border border-gray-500 rounded-md p-2 w-full max-w-full"
-                          name="area_name"
-                          value={editData?.area_name}
-                        />
-                      </div>
 
-                      {/* Acceptance Criteria */}
-                      <div className="flex flex-col">
-                        <label className="color-label text-lg">
-                          Acceptance Criteria
-                        </label>
-                        <input
-                          type="text"
-                          className="border border-gray-500 rounded-md p-2 w-full max-w-full"
-                          name="acceptance_criteria"
-                          value={editData?.acceptance_criteria}
+  {/* ROW 1 */}
+  <div className="grid grid-cols-2 gap-6 mt-4">
+    <div className="flex flex-col">
+      <label className="color-label text-lg">Area Name</label>
+      <input
+        type="text"
+        className="border border-gray-500 rounded-md p-2 w-full"
+        name="area_name"
+        value={editData?.area_name || ""}
+      />
+    </div>
 
-                        />
-                      </div>
+    <div className="flex flex-col">
+      <label className="color-label text-lg">Acceptance Criteria</label>
+      <input
+        type="text"
+        className="border border-gray-500 rounded-md p-2 w-full"
+        name="acceptance_criteria"
+        value={editData?.acceptance_criteria || ""}
+      />
+    </div>
+  </div>
 
-                      {/* Differential Pressure */}
-                      <div className="flex flex-col">
-                        <label className="color-label text-lg">
-                          Differential Pressure
-                        </label>
-                        <input
-                          type="text"
-                          className="border border-gray-500 rounded-md p-2 w-full max-w-full"
-                         name="differential_pressure"
-                          value={editData?.differential_pressure}
-                        />
-                      </div>
+  {/* ROW 2 */}
+  <div className="grid grid-cols-2 gap-6 mt-2">
+    <div className="flex flex-col">
+      <label className="color-label text-lg">Differential Pressure</label>
+      <input
+        type="text"
+        className="border border-gray-500 rounded-md p-2 w-full"
+        name="differential_pressure"
+        value={editData?.differential_pressure || ""}
+      />
+    </div>
 
-                      {/* Instrument ID No */}
-                      <div className="flex flex-col">
-                        <label className="color-label text-lg">
-                          Instrument ID No
-                        </label>
-                        <input
-                          type="text"
-                          className="border border-gray-500 rounded-md p-2 w-full max-w-full"
-                         name="instrument_id_no"
-                          value={editData?.instrument_id_no}
-                        />
-                      </div>
-                    </div>
-                    <label className="color-label text-lg mt-0">Department</label>
+    <div className="flex flex-col">
+      <label className="color-label text-lg">Instrument ID No</label>
+      <input
+        type="text"
+        className="border border-gray-500 rounded-md p-2 w-full"
+        name="instrument_id_no"
+        value={editData?.instrument_id_no || ""}
+      />
+    </div>
+  </div>
 
-                    {/* <div className="instruction" style={{ height: "6px" }}>&nbsp;</div> */}
-                    <select
-                      className="form-control"
-                      disabled
-                      name="department"
-                      value={editData?.department}
-                      onChange={handleInputChange1}
-                      // disabled={
-                      //   location.state?.stage !== 1 ||
-                      //   location.state?.initiator_id !== userDetails.userId
-                      // }
-                    >
-                      <option value="">-- Select --</option>
-                      <option value="Corporate Quality Assurance">
-                        Corporate Quality Assurance
-                      </option>
-                      <option value="Quality Assurance Bio-Pharma">
-                        Quality Assurance Bio-Pharma
-                      </option>
-                      <option value="Central Quality Control">
-                        Central Quality Control
-                      </option>
-                      <option value="Manufacturing">Manufacturing</option>
-                      <option value="Plasma Sourcing Grou">
-                        Plasma Sourcing Group
-                      </option>
-                      <option value="Central Stores">Central Stores</option>
-                      <option value="Information Technology Group">
-                        Information Technology Group
-                      </option>
-                      <option value="Molecular Medicine">
-                        Molecular Medicine
-                      </option>
-                      <option value="Central Laboratory">
-                        Central Laboratory
-                      </option>
-                      <option value="Tech team">Tech team</option>
-                    </select>
-                  </div>
+  {/* ROW 3 */}
+  <div className="grid grid-cols-2 gap-6 mt-2">
+    <div className="flex flex-col">
+      <label className="color-label text-lg">Department</label>
+      <select
+        className="form-control"
+        disabled
+        name="department"
+        value={(editData?.department || "").trim()}
+        onChange={handleInputChange1}
+      >
+        <option value="">-- Select --</option>
+        <option value="Corporate Quality Assurance">
+          Corporate Quality Assurance
+        </option>
+        <option value="Quality Assurance Bio-Pharma">
+          Quality Assurance Bio-Pharma
+        </option>
+        <option value="Central Quality Control">
+          Central Quality Control
+        </option>
+        <option value="Manufacturing">Manufacturing</option>
+        <option value="Plasma Sourcing Group">
+          Plasma Sourcing Group
+        </option>
+        <option value="Central Stores">Central Stores</option>
+        <option value="Information Technology Group">
+          Information Technology Group
+        </option>
+        <option value="Molecular Medicine">
+          Molecular Medicine
+        </option>
+        <option value="Central Laboratory">
+          Central Laboratory
+        </option>
+        <option value="Tech team">Tech team</option>
+      </select>
+    </div>
 
-                  <div className="group-input mt-0">
-                    <label className="color-label">Compression Area with respect to Corridor</label>
+    <div className="flex flex-col">
+      <label className="color-label text-lg">
+        Compression Area with respect to Corridor
+      </label>
+      <select
+        className="form-control"
+        name="compression_area"
+        value={(editData?.compression_area || "").trim()}
+        onChange={handleInputChange1}
+        disabled
+      >
+        <option value="">Select a value</option>
+        <option value="Area 1">Area 1</option>
+        <option value="Area 2">Area 2</option>
+        <option value="Area 3">Area 3</option>
+        <option value="Area 4">Area 4</option>
+        <option value="Area 5">Area 5</option>
+        <option value="Area 6">Area 6</option>
+      </select>
+    </div>
+  </div>
 
-                    {/* <div className="instruction" style={{ height: "6px" }}>&nbsp;</div> */}
-                    <select
-                      className="form-control"
-                      name="compression_area"
-                      value={editData?.compression_area}
-                      onChange={handleInputChange1}
-                      disabled
-                    >
-                      <option value="Select a value">Select a value</option>
-                      <option value="Area 1">Area 1</option>
-                      <option value="Area 2">Area 2</option>
-                      <option value="Area 3">Area 3</option>
-                      <option value="Area 4">Area 4</option>
-                      <option value="Area 5">Area 5</option>
-                      <option value="Area 6">Area 6</option>
-                    </select>
-                  </div>
+  {/* ROW 4 */}
+  <div className="grid grid-cols-2 gap-6 mt-2">
+    <div className="flex flex-col">
+      <label className="color-label text-lg">Limit</label>
+      <input
+        name="limit"
+        type="number"
+        disabled
+        value={editData?.limit || ""}
+        readOnly={[2, 3, 4].includes(
+          userDetails.roles[0].role_id
+        )}
+      />
+    </div>
+  </div>
 
-
-                    <div className="group-input">
-                    <label className="color-label">Limit</label>
-                    {/* <div className="instruction"></div> */}
-                    <input
-                      name="limit"
-                      type="number"
-                      disabled
-                      // className={`${
-                      //   editData?.limit < 0.6
-                      //     ? "limit"
-                      //     : editData?.limit > 2.6
-                      //     ? "limit"
-                      //     : ""
-                      // }`}
-                      value={editData?.limit}
-                      onChange={handleInputChange1}
-                      readOnly={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
-                      )}
-                    />
-                  </div>
+</div>
 
                   <div>
                     <div className="AddRows d-flex">

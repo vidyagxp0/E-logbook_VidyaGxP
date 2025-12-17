@@ -32,12 +32,10 @@ export default function TempretureRecordsEffective() {
   const [approved_by, setApproved_by] = useState(UserName?.name);
   const [dateRange, setDateRange] = useState(null);
   const [showReviewerCheckedOnly, setShowReviewerCheckedOnly] = useState(false);
-  
-  
-    const { RangePicker } = DatePicker;
-      dayjs.extend(isSameOrAfter);
-      dayjs.extend(isSameOrBefore);
-  
+
+  const { RangePicker } = DatePicker;
+  dayjs.extend(isSameOrAfter);
+  dayjs.extend(isSameOrBefore);
 
   useEffect(() => {
     setReviewed_by(UserName?.name);
@@ -60,7 +58,7 @@ export default function TempretureRecordsEffective() {
     compression_area: "",
     TempratureRecords: [],
     acceptance_temperature: "",
-    HumidityRecords: '',
+    HumidityRecords: "",
     relative_humidity_criteria: "",
   });
   // console.log(editData, "Edit Dataaa");
@@ -202,7 +200,8 @@ export default function TempretureRecordsEffective() {
 
       if (
         editData?.TempratureRecords?.some(
-          (record) => record.temprature_record === "" || record.humidity_record === ""
+          (record) =>
+            record.temprature_record === "" || record.humidity_record === ""
         )
       ) {
         toast.error("Please provide grid details!");
@@ -247,40 +246,28 @@ export default function TempretureRecordsEffective() {
     }
   }, [location.state]);
 
+  const INITIATOR_LOCKED_FIELDS = [
+    "temprature_record",
+    "humidity_record",
+    "differential_pressure",
+  ];
 
-   const INITIATOR_LOCKED_FIELDS = [
+  const REVIEWER_LOCKED_FIELDS = ["remarks", "supporting_docs", "chacked_by"];
 
-  "temprature_record",
-  "humidity_record",
-  "differential_pressure",
-];
+  const APPROWER_LOCKED_FIELDS = ["additionalInfo", "additionalAttachment"];
 
-const REVIEWER_LOCKED_FIELDS = [
+  const originalData = location.state;
+  const isAdditionalDataSaved =
+    Boolean(originalData?.additionalInfo) ||
+    Boolean(originalData?.additionalAttachment);
 
-  "remarks",
-  "supporting_docs",
-  "chacked_by",
-];
+  // Identify new row
+  const isNewRow = (item) => {
+    if (!item) return false; // no row, treat as non-new
+    return !item.record_id;
+  };
 
-
-const APPROWER_LOCKED_FIELDS=[
-  "additionalInfo",
-  "additionalAttachment",
-]
-
-const originalData = location.state;
-const isAdditionalDataSaved =
-  Boolean(originalData?.additionalInfo) ||
-  Boolean(originalData?.additionalAttachment);
-
-
-// Identify new row
-const isNewRow = (item) => {
-  if (!item) return false; // no row, treat as non-new
-  return !item.record_id;
-};
-
- const canReviewerEdit = (item) => {
+  const canReviewerEdit = (item) => {
     // find original version of this record by record_id
     const original = originalData?.TempratureRecords?.find(
       (o) => o.record_id === item.record_id
@@ -298,32 +285,33 @@ const isNewRow = (item) => {
     return true;
   };
 
+  // MAIN EDITABLE LOGIC
+  const isFieldEditable = (item, fieldName) => {
+    const roleId = Number(userDetails?.roles?.[0]?.role_id);
 
-// MAIN EDITABLE LOGIC
-const isFieldEditable = (item, fieldName) => {
-  const roleId = Number(userDetails?.roles?.[0]?.role_id);
+    // New row → always editable
+    if (isNewRow(item)) return true;
 
-  // New row → always editable
-  if (isNewRow(item)) return true;
+    if (!item) {
+      //  SAVE ke baad initiator + reviewer lock
+      if (
+        (roleId === 1 || roleId === 2) &&
+        ["additionalInfo", "additionalAttachment"].includes(fieldName) &&
+        isAdditionalDataSaved
+      ) {
+        return false;
+      }
 
-  if (!item) {
+      if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName))
+        return false;
+      if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName))
+        return false;
+      if (roleId === 3 && APPROWER_LOCKED_FIELDS.includes(fieldName))
+        return false;
 
-    //  SAVE ke baad initiator + reviewer lock
-    if (
-      (roleId === 1 || roleId === 2) &&
-      ["additionalInfo", "additionalAttachment"].includes(fieldName) &&
-      isAdditionalDataSaved
-    ) {
-      return false;
+      return true;
     }
-
-    if (roleId === 1 && INITIATOR_LOCKED_FIELDS.includes(fieldName)) return false;
-    if (roleId === 2 && REVIEWER_LOCKED_FIELDS.includes(fieldName)) return false;
-    if (roleId === 3 && APPROWER_LOCKED_FIELDS.includes(fieldName)) return false;
-
-    return true;
-  }
-};
+  };
 
   const object = getCurrentDateTime();
   let date = object.currentDate;
@@ -369,10 +357,6 @@ const isFieldEditable = (item, fieldName) => {
       }));
     }
   };
-
-
-  
-  
 
   const deleteRow = (index) => {
     if (
@@ -543,25 +527,25 @@ const isFieldEditable = (item, fieldName) => {
     return object != null && typeof object === "object";
   }
 
- const formatDate = (dateString) =>{
-      if (!dateString) return ""; // Return empty if the input is falsy
-  
-      const utcDate = new Date(dateString);
-      // Check if the date is valid
-      if (isNaN(utcDate.getTime())) {
-        return "";
-      }
-  
-      return utcDate.toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        // hour: "2-digit",
-        // minute: "2-digit",
-        // second: "2-digit",
-        // hour12: false,
-      });
-    };
+  const formatDate = (dateString) => {
+    if (!dateString) return ""; // Return empty if the input is falsy
+
+    const utcDate = new Date(dateString);
+    // Check if the date is valid
+    if (isNaN(utcDate.getTime())) {
+      return "";
+    }
+
+    return utcDate.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      // hour: "2-digit",
+      // minute: "2-digit",
+      // second: "2-digit",
+      // hour12: false,
+    });
+  };
 
   const handleFileChange = (index, file) => {
     const updatedGridData = [...editData.TempratureRecords];
@@ -598,9 +582,9 @@ const isFieldEditable = (item, fieldName) => {
 
   const filteredTemperatureRecords = useMemo(() => {
     if (!Array.isArray(editData?.TempratureRecords)) return [];
-  
+
     let rows = editData.TempratureRecords;
-  
+
     // Date filter
     if (dateRange) {
       const [start, end] = dateRange;
@@ -613,7 +597,7 @@ const isFieldEditable = (item, fieldName) => {
         );
       });
     }
-  
+
     // Reviewer checked filter
     if (showReviewerCheckedOnly) {
       rows = rows.filter(
@@ -623,24 +607,22 @@ const isFieldEditable = (item, fieldName) => {
           row.reviewed_by !== ""
       );
     }
-  
+
     return rows;
-  }, [
-    editData?.TempratureRecords,
-    dateRange,
-    showReviewerCheckedOnly,
-  ]);
-  
-  
+  }, [editData?.TempratureRecords, dateRange, showReviewerCheckedOnly]);
+
   // console.log(showReviewerCheckedOnly, "showReviewerCheckedOnly");
-  
+
   return (
     <>
       <HeaderTop />
       {/* <LaunchQMS /> */}
       <div id="main-form-container">
-        <div id="config-form-document-page" className="min-w-full" >
-          <div className="top-block"  style={{  gridTemplateColumns:"repeat(3, 1fr)"}}>
+        <div id="config-form-document-page" className="min-w-full">
+          <div
+            className="top-block"
+            style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
+          >
             <div>
               <strong> Record Name:&nbsp;</strong>Temperature Record
             </div>
@@ -654,7 +636,7 @@ const isFieldEditable = (item, fieldName) => {
                 ? "EMEA"
                 : "Medicef"}
             </div>
-            
+
             <div>
               <strong> Initiated By:&nbsp;</strong>
               {location.state?.initiator_name}
@@ -890,7 +872,7 @@ const isFieldEditable = (item, fieldName) => {
               </div> */}
               {/* <div className="outerDiv4">
                 <div className="btn-forms invisible"> */}
-                  {/* <div
+              {/* <div
                     className={`${
                       isSelectedGeneral === true
                         ? "btn-forms-isSelected"
@@ -906,7 +888,7 @@ const isFieldEditable = (item, fieldName) => {
                   >
                     General Information
                   </div> */}
-                  {/* <div
+              {/* <div
                     className={`${
                       isSelectedDetails === true
                         ? "btn-forms-isSelected"
@@ -922,7 +904,7 @@ const isFieldEditable = (item, fieldName) => {
                   >
                     Details
                   </div> */}
-                  {/* <div
+              {/* <div
                     className={`${
                       initiatorRemarks === true
                         ? "btn-forms-isSelected"
@@ -970,7 +952,7 @@ const isFieldEditable = (item, fieldName) => {
                   >
                     Approver Remarks
                   </div> */}
-                {/* </div>
+              {/* </div>
               </div> */}
 
               {/* {isSelectedGeneral === true ? (
@@ -1106,191 +1088,160 @@ const isFieldEditable = (item, fieldName) => {
                     </select>
                   </div> */}
 
-                  
-                                      <div className="flex flex-wrap items-end gap-6 mt-6 mb-6 p-4 bg-white border border-blue-500 rounded-lg shadow-sm filter-input">
-                  
-                                        {/* Date Range */}
-                                        <div className="flex flex-col">
-                                          <label className="text-sm font-medium text-gray-800 mb-1">
-                                            Date Range
-                                          </label>
-                                          <RangePicker
-                                            onChange={(dates) => setDateRange(dates)}
-                                            className="w-[260px]"
-                                            placeholder={["Start Date", "End Date"]}
-                                          />
-                                        </div>
-                  
-                                        {/* Reviewer Checked */}
-                                        <div className="flex flex-col items-start h-[56px]">
-                                          <span className="text-sm font-medium text-gray-800 mb-2">
-                                            Reviewed Elogs
-                                          </span>
-                                          <Checkbox
-                                            checked={showReviewerCheckedOnly}
-                                            onChange={(e) => setShowReviewerCheckedOnly(e.target.checked)}
-                                          />
-                                        </div>
-                  
-                                      </div>
+                  <div className="flex flex-wrap items-end gap-6 mt-6 mb-6 p-4 bg-white border border-blue-500 rounded-lg shadow-sm filter-input">
+                    {/* Date Range */}
+                    <div className="flex flex-col">
+                      <label className="text-sm font-medium text-gray-800 mb-1">
+                        Date Range
+                      </label>
+                      <RangePicker
+                        onChange={(dates) => setDateRange(dates)}
+                        className="w-[260px]"
+                        placeholder={["Start Date", "End Date"]}
+                      />
+                    </div>
 
-                      <div className="group-input">
-                            
-                            <label className="color-label">Area Name </label>
-                            <div>
-                              <input
-                                type="text"
-                                name="area_name"
-                              value={editData?.area_name}
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !== userDetails.userId
-                              }  
-                              />
-                            </div>
-                        </div>
-                        <div className="group-input">
-                            
-                            <label className="color-label">Room ID. </label>
-                            <div>
-                              <input
-                                type="text"
-                                name="room_id"
-                              value={editData?.room_id}
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !== userDetails.userId
-                              } 
-                              />
-                            </div>
-                        </div>
-                        <div className="group-input">
-                            
-                            <label className="color-label mb-4">Instrument Id. No. </label>
-                            <div>
-                              <input
-                                type="text"
-                                name="instrument_id"
-                                value={editData?.instrument_id}disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !== userDetails.userId
-                              }
-                              />
-                            </div>
-                        </div>
-
-                    <label className="color-label text-lg">Department</label>
-
-                      {/* <div className="instruction" style={{ height: "6px" }}>&nbsp;</div> */}
-                          <div>
-                            <select
-                              className="form-control"
-                              name="department"
-                              value={editData?.department}
-                              onChange={handleInputChange1}
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !== userDetails.userId
-                              }
-                            >
-                              <option value="">-- Select --</option>
-                              <option value="Corporate Quality Assurance">
-                                Corporate Quality Assurance
-                              </option>
-                              <option value="Quality Assurance Bio-Pharma">
-                                Quality Assurance Bio-Pharma
-                              </option>
-                              <option value="Central Quality Control">
-                                Central Quality Control
-                              </option>
-                              <option value="Manufacturing">Manufacturing</option>
-                              <option value="Plasma Sourcing Grou">
-                                Plasma Sourcing Group
-                              </option>
-                              <option value="Central Stores">Central Stores</option>
-                              <option value="Information Technology Group">
-                                Information Technology Group
-                              </option>
-                              <option value="Molecular Medicine">
-                                Molecular Medicine
-                              </option>
-                              <option value="Central Laboratory">
-                                Central Laboratory
-                              </option>
-                              <option value="Tech team">Tech team</option>
-                            </select>
-                          </div>
-
-                          <div className="group-input">
-                            <label className="">Compression Area with respect to Corridor</label>
-
-                            {/* <div className="instruction">&nbsp;</div> */}
-                            <select
-                              className="form-control mt-0"
-                              name="compression_area"
-                              value={editData?.compression_area}
-                              onChange={handleInputChange1}
-                              disabled={
-                                location.state?.stage !== 1 ||
-                                location.state?.initiator_id !== userDetails.userId
-                              }
-                            >
-                              <option value="Select a value">Select a value</option>
-                              <option value="Area 1">Area 1</option>
-                              <option value="Area 2">Area 2</option>
-                              <option value="Area 3">Area 3</option>
-                              <option value="Area 4">Area 4</option>
-                              <option value="Area 5">Area 5</option>
-                              <option value="Area 6">Area 6</option>
-                            </select>
-                          </div>
-
-                  {/* temprature limit */}
-
-                  <div className="group-input">
-                    <label className="color-label">Acceptence Temperature Criteria</label>
-                    <div className="instruction"></div>
-                    <input
-                      name="acceptance_temperature"
-                      type="number"
-                      disabled
-                      className={`${
-                        editData?.acceptance_temperature < 23
-                          ? "acceptance_temperature"
-                          : editData?.acceptance_temperature > 27
-                          ? "acceptance_temperature"
-                          : ""
-                      }`}
-                      value={editData?.acceptance_temperature}
-                      onChange={handleInputChange1}
-                      readOnly={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
-                      )}
-                    />
+                    {/* Reviewer Checked */}
+                    <div className="flex flex-col items-start h-[56px]">
+                      <span className="text-sm font-medium text-gray-800 mb-2">
+                        Reviewed Elogs
+                      </span>
+                      <Checkbox
+                        checked={showReviewerCheckedOnly}
+                        onChange={(e) =>
+                          setShowReviewerCheckedOnly(e.target.checked)
+                        }
+                      />
+                    </div>
                   </div>
 
-                  {/* humidity limit */}
-                  <div className="group-input">
-                    <label className="color-label">Relative Humidity Criteria</label>
-                    <div className="instruction"></div>
-                    <input
-                      name="relative_humidity_criteria"
-                      type="number"
-                      disabled
-                      className={`${
-                        editData?.relative_humidity_criteria < 20
-                          ? "relative_humidity_criteria"
-                          : editData?.relative_humidity_criteria > 27
-                          ? "relative_humidity_criteria"
-                          : ""
-                      }`}
-                      value={editData?.relative_humidity_criteria}
-                      onChange={handleInputChange2}
-                      readOnly={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
-                      )}
-                    />
-                  </div>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-0">
+  {/* Area Name */}
+  <div className="group-input">
+    <label className="color-label">Area Name</label>
+    <input
+      type="text"
+      name="area_name"
+      value={editData?.area_name}
+      disabled={
+        location.state?.stage !== 1 ||
+        location.state?.initiator_id !== userDetails.userId
+      }
+    />
+  </div>
+
+  {/* Room ID */}
+  <div className="group-input">
+    <label className="color-label">Room ID.</label>
+    <input
+      type="text"
+      name="room_id"
+      value={editData?.room_id}
+      disabled={
+        location.state?.stage !== 1 ||
+        location.state?.initiator_id !== userDetails.userId
+      }
+    />
+  </div>
+
+  {/* Instrument ID */}
+  <div className="group-input">
+    <label className="color-label">Instrument Id. No.</label>
+    <input
+      type="text"
+      name="instrument_id"
+      value={editData?.instrument_id}
+      disabled={
+        location.state?.stage !== 1 ||
+        location.state?.initiator_id !== userDetails.userId
+      }
+    />
+  </div>
+
+  {/* Department */}
+  <div className="group-input">
+    <label className="color-label">Department</label>
+    <select
+      className="form-control"
+      name="department"
+      value={editData?.department}
+      onChange={handleInputChange1}
+      disabled={
+        location.state?.stage !== 1 ||
+        location.state?.initiator_id !== userDetails.userId
+      }
+    >
+      <option value="">-- Select --</option>
+      <option value="Corporate Quality Assurance">Corporate Quality Assurance</option>
+      <option value="Quality Assurance Bio-Pharma">Quality Assurance Bio-Pharma</option>
+      <option value="Central Quality Control">Central Quality Control</option>
+      <option value="Manufacturing">Manufacturing</option>
+      <option value="Plasma Sourcing Group">Plasma Sourcing Group</option>
+      <option value="Central Stores">Central Stores</option>
+      <option value="Information Technology Group">Information Technology Group</option>
+      <option value="Molecular Medicine">Molecular Medicine</option>
+      <option value="Central Laboratory">Central Laboratory</option>
+      <option value="Tech team">Tech team</option>
+    </select>
+  </div>
+
+  {/* Compression Area */}
+  <div className="group-input">
+    <label>Compression Area with respect to Corridor</label>
+    <select
+      className="form-control"
+      name="compression_area"
+      value={editData?.compression_area}
+      onChange={handleInputChange1}
+      disabled={
+        location.state?.stage !== 1 ||
+        location.state?.initiator_id !== userDetails.userId
+      }
+    >
+      <option value="">Select a value</option>
+      <option value="Area 1">Area 1</option>
+      <option value="Area 2">Area 2</option>
+      <option value="Area 3">Area 3</option>
+      <option value="Area 4">Area 4</option>
+      <option value="Area 5">Area 5</option>
+      <option value="Area 6">Area 6</option>
+    </select>
+  </div>
+
+  {/* Acceptance Temperature */}
+  <div className="group-input">
+    <label className="color-label">Acceptance Temperature Criteria</label>
+    <input
+      type="number"
+      name="acceptance_temperature"
+      value={editData?.acceptance_temperature}
+      disabled
+      className={
+        editData?.acceptance_temperature < 23 ||
+        editData?.acceptance_temperature > 27
+          ? "acceptance_temperature"
+          : ""
+      }
+    />
+  </div>
+
+  {/* Relative Humidity */}
+  <div className="group-input">
+    <label className="color-label">Relative Humidity Criteria</label>
+    <input
+      type="number"
+      name="relative_humidity_criteria"
+      value={editData?.relative_humidity_criteria}
+      disabled
+      className={
+        editData?.relative_humidity_criteria < 20 ||
+        editData?.relative_humidity_criteria > 27
+          ? "relative_humidity_criteria"
+          : ""
+      }
+    />
+  </div>
+</div>
 
                   <div>
                     <div className="AddRows d-flex">
@@ -1329,11 +1280,15 @@ const isFieldEditable = (item, fieldName) => {
                             <input
                               type="number"
                               value={item.temprature_record}
-                              disabled={!isFieldEditable( item, "temprature_record")}
+                              disabled={
+                                !isFieldEditable(item, "temprature_record")
+                              }
                               className={`${
-                                Number(item.temprature_record) < Number(editData.acceptance_temperature) 
+                                Number(item.temprature_record) <
+                                Number(editData.acceptance_temperature)
                                   ? "text-green-500"
-                                  : Number(item.temprature_record) > Number(editData.acceptance_temperature) 
+                                  : Number(item.temprature_record) >
+                                    Number(editData.acceptance_temperature)
                                   ? "text-red-600"
                                   : ""
                               }`}
@@ -1355,9 +1310,12 @@ const isFieldEditable = (item, fieldName) => {
                             <input
                               type="number"
                               value={item.humidity_record}
-                              disabled={!isFieldEditable( item, "humidity_record")}
+                              disabled={
+                                !isFieldEditable(item, "humidity_record")
+                              }
                               className={`${
-                                Number(item.humidity_record )< Number(editData.relative_humidity_criteria)
+                                Number(item.humidity_record) <
+                                Number(editData.relative_humidity_criteria)
                                   ? "text-green-500"
                                   : Number(item.humidity_record) >
                                     Number(editData.relative_humidity_criteria)
@@ -1389,11 +1347,8 @@ const isFieldEditable = (item, fieldName) => {
                                   TempratureRecords: newData,
                                 });
                               }}
-                             
- 
                               disabled
                             />
-                                                        
                           </td>
                           <td>
                             <div>
@@ -1417,10 +1372,10 @@ const isFieldEditable = (item, fieldName) => {
                                     });
                                   }}
                                   disabled={
-                                        [1, 3].includes(
-                                          userDetails.roles[0].role_id
-                                        ) || !canReviewerEdit(item)
-                                      }
+                                    [1, 3].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !canReviewerEdit(item)
+                                  }
                                 />
                                 {item.reviewed_by && <p>{item.reviewed_by}</p>}
                               </div>
@@ -1542,20 +1497,18 @@ const isFieldEditable = (item, fieldName) => {
                               value={item.remarks}
                               onChange={(e) => {
                                 const newData = [...editData.TempratureRecords];
-                                newData[index].remarks =
-                                  e.target.value;
+                                newData[index].remarks = e.target.value;
                                 setEditData({
                                   ...editData,
                                   TempratureRecords: newData,
                                 });
                               }}
                               disabled={
-                                        [1, 3].includes(
-                                          userDetails.roles[0].role_id
-                                        ) || !canReviewerEdit(item)
-                                      }
+                                [1, 3].includes(userDetails.roles[0].role_id) ||
+                                !canReviewerEdit(item)
+                              }
                             />
-                          </td> 
+                          </td>
 
                           <td>
                             <DeleteIcon onClick={() => deleteRow(index)} />
@@ -1578,9 +1531,9 @@ const isFieldEditable = (item, fieldName) => {
                   <div className="group-input flex flex-col gap-4 mt-4 items-start">
                     <div className="flex flex-col w-full">
                       <label
-                        // htmlFor="additionalAttachment"
-                        // className="color-label"
-                        // name="additionalAttachment"
+                      // htmlFor="additionalAttachment"
+                      // className="color-label"
+                      // name="additionalAttachment"
                       >
                         Additional Attachment{" "}
                         <span className="text-sm text-zinc-600">
@@ -1594,7 +1547,9 @@ const isFieldEditable = (item, fieldName) => {
                             <button
                               className="py-1 bg-blue-500 hover:bg-blue-600 text-white"
                               type="button"
-                              disabled={!isFieldEditable( null, "additionalAttachment")}
+                              disabled={
+                                !isFieldEditable(null, "additionalAttachment")
+                              }
                               onClick={() =>
                                 document
                                   .getElementById("additionalAttachment")
@@ -1643,19 +1598,21 @@ const isFieldEditable = (item, fieldName) => {
                     </div>
                   </div>
                   <div className="flex flex-col w-full">
-                    <label className=" text-lg text-gray-900 mb-1 ">
-                      Additional Info{" "}
-                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
-                    </label>
-                    <textarea
-                        className="block w-full  mb-8 border border-blue-600 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+                      <label className="text-sm font-medium text-gray-900 mb-1">
+                        Additional Info{" "}
+                        <span className="text-sm text-zinc-600">
+                          (If / Any)
+                        </span>{" "}
+                      </label>
+                      <textarea
+                        className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                         rows="4"
                         name="additionalInfo"
                         value={editData?.additionalInfo}
                         disabled={!isFieldEditable( null, "additionalInfo")}
                         onChange={handleInputChange1}
                       ></textarea>
-                  </div>
+                    </div>
                 </>
               ) : null}
 
