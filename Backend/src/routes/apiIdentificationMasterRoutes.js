@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Auth = require("../middlewares/authentication");
-const apiIndentificationController = require("../controllers/apiIndentificationController")
+const apiIndentificationController = require("../controllers/apiIdentificationController")
 const multer = require("multer");
 const path = require("path");
 

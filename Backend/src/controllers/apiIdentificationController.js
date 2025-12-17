@@ -2,16 +2,16 @@ const IdentificationMaster = require("../models/apiIdentificationMasterModel");
 
 exports.createIdentification = async (req, res) => {
   try {
-    const { apiIndentificationData } = req.body;
+    const { apiIdentificationData } = req.body;
 
-    if (!apiIndentificationData) {
+    if (!apiIdentificationData) {
       return res.status(400).json({
-        message: "apiIndentificationData is required",
+        message: "apiIdentificationData is required",
       });
     }
 
     const data = await IdentificationMaster.create({
-      apiIndentificationData,
+      apiIdentificationData,
     });
 
     return res.status(201).json({
@@ -71,7 +71,7 @@ exports.getIdentificationById = async (req, res) => {
 exports.updateIdentification = async (req, res) => {
   try {
     const { id } = req.params;
-    const { apiIndentificationData } = req.body;
+    const { apiIdentificationData } = req.body;
 
     const data = await IdentificationMaster.findByPk(id);
 
@@ -82,7 +82,7 @@ exports.updateIdentification = async (req, res) => {
     }
 
     await data.update({
-      apiIndentificationData,
+      apiIdentificationData,
     });
 
     return res.status(200).json({
