@@ -104,7 +104,7 @@ function HeaderTop() {
             <div className="logo">
               {/* <img src="/logo1.png" alt="..." /> */}
               <img
-                onClick={() => navigate("/effectiveElogs")}
+                onClick={() => navigate("/dashboard")}
                 style={{
                   cursor: "pointer",
                   objectFit: "contain",
@@ -114,7 +114,7 @@ function HeaderTop() {
                 alt="Logo"
               />
               <img
-                onClick={() => navigate("/effectiveElogs")}
+                onClick={() => navigate("/dashboard")}
                 style={{
                   cursor: "pointer",
                   objectFit: "contain",

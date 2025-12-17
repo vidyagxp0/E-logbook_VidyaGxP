@@ -177,6 +177,12 @@ function App() {
               }
             />
             <Route
+              path="/bmr-record"
+              element={
+                <ProtectedRoute element={<BMR />} />
+              }
+            />
+            <Route
               path="/effective-loaded-quantity"
               element={<ProtectedRoute element={<LoadedQuantityEffective />} />}
             />
