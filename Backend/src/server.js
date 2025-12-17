@@ -26,6 +26,8 @@ const apiIdentificationMasterRoutes = require("./routes/apiIdentificationMasterR
 const excipientsDispensingRoutes = require("./routes/excipientsDispensingRoute")
 const personInvolvedMasterRoutes = require("./routes/personInvolvedMasterRoutes")
 const equipmentInstrumentMasterRoute = require("./routes/equipmentInstrumentMasterRoute")
+const pmMeterMasterRoute = require("./routes/pmMeterMasterRoute")
+const connectedElogbookMasterRoute = require("./routes/connectedElogbookMasterRoute")
 const cors = require("cors");
 const path = require("path");
 const helmet = require("helmet");
@@ -87,6 +89,8 @@ app.use("/identification-master",apiIdentificationMasterRoutes);
 app.use("/excipients-dispensing",excipientsDispensingRoutes);
 app.use("/person-involved",personInvolvedMasterRoutes);
 app.use("/Equipment-Instrument",equipmentInstrumentMasterRoute);
+app.use("/Pm-Meter",pmMeterMasterRoute);
+app.use("/connected-elogbook",connectedElogbookMasterRoute);
 app.use(express.static(path.join(__dirname, "documents")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
