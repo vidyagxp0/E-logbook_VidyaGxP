@@ -41,7 +41,6 @@ exports.InsertTempratureRecord = async (req, res) => {
       relative_humidity_criteria,
     additionalInfo,
   } = req.body;
-console.log(req.body,"shivam")
   if (!approver_id) {
     return res
       .status(400)
@@ -1743,7 +1742,6 @@ exports.viewReport = async (req, res) => {
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const reportData = req.body.reportData;
-    console.log(reportData,"reportData")
     const formId = req.params.form_id;
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)
