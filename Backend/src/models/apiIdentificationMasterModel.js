@@ -10,7 +10,7 @@ const identificationMaster = sequelize.define(
       primaryKey: true,
 
     },
-     siteMasterData: { 
+     apiIdentificationData: { 
       type: DataTypes.JSON, 
       allowNull: false 
     },
