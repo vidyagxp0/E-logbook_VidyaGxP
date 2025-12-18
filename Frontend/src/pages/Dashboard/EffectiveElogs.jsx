@@ -1158,8 +1158,8 @@ function EffectiveElogs() {
                   ))}
               </select>
             </div>
-
-                  {/* Equipment Filter
+ 
+                  {/* Equipment Filter */}
                   <div
                     className="group-input"
                     style={{ marginBottom: "0", minWidth: "200px" }}
@@ -1202,9 +1202,9 @@ function EffectiveElogs() {
                       </option>
                       <option value="VO Calibration">
                         VO Calibration
-                      </option> 
+                      </option> */}
                     </select>
-                  </div> */}
+                  </div> 
 
             {/* Role Filter */}
             {/* <div

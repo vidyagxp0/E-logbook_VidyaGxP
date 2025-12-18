@@ -39,6 +39,17 @@ export default function TempretureRecordsPanel() {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
+
+  const isInitiator = userDetails.roles[0].role_id === 1;
+
+  // backend se aayi hui saved file (URL string hoti hai)
+  const isTPRAttachmentSaved =
+    editData.initiatorAttachment &&
+    !(editData.initiatorAttachment instanceof File);
+
+  // final lock
+  const isTPRAttachmentLocked = isInitiator && isTPRAttachmentSaved;
+
   
 
   const handlePopupSubmit = (credentials) => {
@@ -1261,7 +1272,8 @@ export default function TempretureRecordsPanel() {
                                   .getElementById("initiatorAttachment")
                                   .click()
                               }
-                              disabled={
+                             disabled={
+                                isTPRAttachmentLocked ||
                                 location.state?.stage !== 1 ||
                                 [2, 3].includes(userDetails.roles[0].role_id)
                               }
@@ -1291,7 +1303,7 @@ export default function TempretureRecordsPanel() {
                                 ) ||
                                   editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
-                              {editData.initiatorAttachment.name && (
+                              {editData.initiatorAttachment instanceof File && !isTPRAttachmentLocked && (
                                 <button
                                   className="text-red-500 hover:text-red-700 text-lg"
                                   type="button"

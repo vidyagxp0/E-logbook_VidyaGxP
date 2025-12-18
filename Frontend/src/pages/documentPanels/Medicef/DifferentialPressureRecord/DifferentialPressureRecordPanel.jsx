@@ -42,6 +42,14 @@ export default function DifferentialPressureRecordPanel() {
     setPopupAction(null);
   };
 
+  const isInitiator = userDetails.roles[0].role_id === 1;
+  const isFileAlreadyGiven =
+  editData.initiatorAttachment &&
+  !(editData.initiatorAttachment instanceof File);
+
+// final lock condition
+const isInitiatorAttachmentLocked = isInitiator && isFileAlreadyGiven;
+
   const handlePopupSubmit = (credentials) => {
     const data = {
       site_id: location.state?.site_id,
@@ -436,6 +444,9 @@ export default function DifferentialPressureRecordPanel() {
       description: content,
     }));
   };
+
+  // console.log("Backend attachment:", elogDetails?.initiatorAttachment);
+console.log("EditData attachment:", editData?.initiatorAttachment);
   return (
     <>
       <HeaderTop />
@@ -1315,7 +1326,7 @@ export default function DifferentialPressureRecordPanel() {
                       <label
                       // htmlFor="initiatorAttachment"
                       // className="color-label"
-                      // name="initiatorAttachment"
+                      name="initiatorAttachment"
                       >
                         Initiator Attachment
                       </label>
@@ -1331,9 +1342,10 @@ export default function DifferentialPressureRecordPanel() {
                                   .click()
                               }
                               disabled={
-                                location.state?.stage !== 1 ||
-                                [2, 3].includes(userDetails.roles[0].role_id)
-                              }
+  isInitiatorAttachmentLocked ||
+  location.state?.stage !== 1 ||
+  [2, 3].includes(userDetails.roles[0].role_id)
+}
                               className="py-1 bg-blue-500 hover:bg-blue-600 text-white ml-3"
                             >
                               Change File
@@ -1360,7 +1372,7 @@ export default function DifferentialPressureRecordPanel() {
                                 ) ||
                                   editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
-                              {editData.initiatorAttachment.name && (
+                              {editData.initiatorAttachment instanceof File && !isInitiatorAttachmentLocked && (
                                 <button
                                   className="text-red-500 hover:text-red-700 text-lg"
                                   type="button"
@@ -1407,6 +1419,8 @@ export default function DifferentialPressureRecordPanel() {
                   </div>
                 </>
               ) : null}
+              
+
 
               {reviewerRemarks === true ? (
                 <>
