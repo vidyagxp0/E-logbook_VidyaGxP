@@ -7,10 +7,7 @@ exports.createEquipment = async (req, res) => {
     const {
     site_id,
     initiator_id,
-    initiator_name,
     date_of_initiation,
-    equipmentName,
-    equipmentID,
     equipmentClearance,
     generalPrecautions,
     manufacturingPrecautions
@@ -19,10 +16,7 @@ exports.createEquipment = async (req, res) => {
     if (
       !initiator_id ||
       !site_id ||
-      !initiator_name ||
       !date_of_initiation ||
-      !equipmentName ||
-      !equipmentID ||
       !equipmentClearance ||
       !generalPrecautions ||
       !manufacturingPrecautions
@@ -34,10 +28,9 @@ exports.createEquipment = async (req, res) => {
       {
         site_id,
         initiator_id,
-        initiator_name,
+     
         date_of_initiation,
-        equipmentName,
-        equipmentID,
+   
         equipmentClearance,
         generalPrecautions,
         manufacturingPrecautions

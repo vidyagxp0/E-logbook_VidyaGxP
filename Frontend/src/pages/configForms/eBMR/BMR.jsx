@@ -33,270 +33,16 @@ export default function BMR() {
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
-  useEffect(() => {
-    const config = {
-      method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "application/json",
-      },
-      data: {
-        site_id: location.state?.site_id,
-        role_id: 2,
-        process_id: 1,
-      },
-    };
-
-    axios(config)
-      .then((response) => {
-        setReviewers(response.data.message);
-      })
-      .catch((error) => {
-        console.error("Error: ", error);
-      });
-
-    const newConfig = {
-      method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "application/json",
-      },
-      data: {
-        site_id: location.state?.site_id,
-        role_id: 3,
-        process_id: 1,
-      },
-    };
-
-    axios(newConfig)
-      .then((response) => {
-        setApprovers(response.data.message);
-      })
-      .catch((error) => {
-        console.error("Error: ", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    const requestOptions = {
-      method: "GET",
-      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
-      headers: {}, // You can add any necessary headers here
-    };
-
-    axios(requestOptions)
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  const handlePopupClose = () => {
-    setIsPopupOpen(false);
-  };
-
-  const handlePopupSubmit = (credentials) => {
-    if (
-      differentialPRecord.site_id === null
-      //  ||
-      // differentialPRecord.approver_id === null ||
-      // differentialPRecord.reviewer_id === null
-    ) {
-      toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
-      );
-      return;
-    }
-
-    // if (differentialPRecord.initiatorComment === "") {
-    //   toast.error("Please provide an initiator comment!");
-    //   return;
-    // }
-    // if (differentialPRecord.description === "") {
-    //   toast.error("Please provide a short description!");
-    //   return;
-    // }
-    if (
-      differentialPRecord?.FormRecordsArray?.some(
-        (record) => record.differential_pressure === "" || record.remarks === ""
-      )
-    ) {
-      toast.error("Please provide grid details!");
-      return;
-    }
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "multipart/form-data",
-      },
-    };
-
-    differentialPRecord.email = credentials?.email;
-    differentialPRecord.password = credentials?.password;
-    differentialPRecord.initiatorDeclaration = credentials?.declaration;
-
-    axios
-      .post(
-        "http://localhost:1000/equipment/equipments",
-        bmrData,
-        config
-      )
-      .then(() => {
-        toast.success("eLog Saved Successfully!");
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.error("There was an error creating eLog:", error);
-        toast.error("There was an error creating eLog");
-      });
-  };
-
-  const object = getCurrentDateTime();
-  let date = object.currentDate;
   function getCurrentDateTime() {
-    const now = new Date();
-    const year = now.getFullYear().toString().slice(0);
-    const month = (now.getMonth() + 1).toString().padStart(2, "0");
-    const day = now.getDate().toString().padStart(2, "0");
-    const currentDate = `${year}/${month}/${day}`;
-    return {
-      currentDate: currentDate,
-    };
-  }
-  console.log(allTableData, "allTableData");
-  const addRow = () => {
-    const options = {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true, // Use 24-hour format
-    };
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
 
-    const currentTime = new Date().toLocaleTimeString("en-us", options);
-    const newRow = {
-      unique_id: generateUniqueId(),
-      date: date,
-      time: currentTime,
-      differential_pressure: "",
-      remarks: "",
-      checked_by: User?.name,
-      supporting_docs: null,
-    };
-    setAllTableData([...allTableData, newRow]);
-  };
-
-  const deleteRow = (index) => {
-    const updatedData = [...allTableData];
-    updatedData.splice(index, 1);
-    setAllTableData(updatedData);
-  };
-
-  // const currentDate = new Date();
-  // const currentMonth = currentDate.toLocaleString("default", { month: "long" });
-
-  const generateUniqueId = () => {
-    return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
-  };
- const [bmrData, setBmrData] = useState(
-   (prev, next) => ({
-      ...prev,
-      ...next,
-    }),
-    {
-    site_id:location.state?.site_id,
-    initiator_id:"",
-    initiator_name:"",
-    date_of_initiation:"",
-    equipmentName:"",
-    equipmentID:"",
-    equipmentClearance:"",
-    generalPrecautions:"",
-    manufacturingPrecautions:""
-    }
- );
-
-  const [differentialPRecord, setDifferentialPRecord] = useReducer(
-    (prev, next) => ({
-      ...prev,
-      ...next,
-    }),
-    {
-      site_id: location.state?.site_id,
-      reviewer_id: null,
-      approver_id: null,
-      description: "",
-      department: "",
-      review_comments: "",
-      compression_area: "",
-      additionalAttachment: "",
-      additionalInfo: "",
-      limit: null,
-      initiatorComment: "",
-      initiatorAttachment: null,
-      initiatorDeclaration: "",
-    }
-  );
-
- 
-  const handleInputChange1 = (e) => {
-    const { name, value } = e.target;
-    setDifferentialPRecord({ ...differentialPRecord, [name]: value });
-  };
-
-  const handleReviewerFileChange = (e) => {
-    setDifferentialPRecord({
-      ...differentialPRecord,
-      reviewerAttachment: e.target.files[0],
-    });
-  };
-  const handleApproverFileChange = (e) => {
-    setDifferentialPRecord({
-      ...differentialPRecord,
-      approverAttachment: e.target.files[0],
-    });
-  };
-
-  useEffect(() => {
-    setDifferentialPRecord({ FormRecordsArray: allTableData });
-  }, [allTableData]);
-
-  const handleDeleteFile = (index) => {
-    const updatedData = [...allTableData];
-    updatedData[index].supporting_docs = null; // This should remove the file
-    setAllTableData(updatedData);
-  };
-
-  const handleFileChange = (index, file) => {
-    const updatedData = [...allTableData];
-    updatedData[index].supporting_docs = file;
-    setAllTableData(updatedData);
-  };
-  const handleFileChangeAttachment = (e) => {
-    setDifferentialPRecord({
-      ...differentialPRecord,
-      additionalAttachment: e.target.files[0],
-    });
-  };
-
-  const handleInitiatorFileChange = (e) => {
-    setDifferentialPRecord({
-      ...differentialPRecord,
-      initiatorAttachment: e.target.files[0],
-    });
-  };
-
-  const setTinyContent = (content) => {
-    setDifferentialPRecord({
-      description: content,
-    });
-  };
-
-  const checkpoints = [
+  return `${year}/${month}/${day}`;
+}
+// const currentDate = getCurrentDateTime();
+ const checkpoints = [
   "Check the updation of Status Label and Log book.",
   "Check the safety precautions are taken wherever required.",
   "Check the Calibrations, Validation and Preventive Maintenance status.",
@@ -309,20 +55,7 @@ export default function BMR() {
   "Check absence of previous product/material on the equipment.",
   "Other if any specify ________",
 ];
-const Dropdown = ({ value, onChange }) => (
-  <select
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    className="border rounded px-2 py-1 text-sm w-full"
-  >
-    <option value="">Select</option>
-    <option value="YES">✔ Yes</option>
-    <option value="NO">✖ No</option>
-    <option value="NA">NA</option>
-  </select>
-);
-
-  const [equipmentClearance, setEquipmentClearance] = useState(
+const [equipmentClearance, setEquipmentClearance] = useState(
   checkpoints.map(() => ({
     pdoChecked: "",
     qadVerified: "",
@@ -331,10 +64,6 @@ const Dropdown = ({ value, onChange }) => (
   }))
 );
 
-// ===== ROLE (demo / prod me backend se aayega) =====
-const userRole = "PDO"; // "PDO" | "QAD"
-
-// ===== STATE =====
 const [generalManufacturing, setGeneralManufacturing] = useState({
   date: "",
   time: "",
@@ -345,112 +74,6 @@ const [generalManufacturing, setGeneralManufacturing] = useState({
   checkedByQAD: { name: "", date: "" },
 });
 
-// ===== TEMP VALIDATION (23 ± 2 °C → 21–25) =====
-const getTempStatus = (temp) => {
-  if (temp === "" || temp === null) return null;
-  const v = Number(temp);
-  if (isNaN(v)) return null;
-
-  if (v < 21 || v > 25) {
-    return {
-      status: "OUT_OF_LIMIT",
-      color: "bg-red-100 border-red-500 text-red-700",
-      label: "Out of Limit (21–25°C)",
-    };
-  }
-
-  return {
-    status: "WITHIN_LIMIT",
-    color: "bg-green-100 border-green-500 text-green-700",
-    label: "Within Limit",
-  };
-};
-
-// ===== RH VALIDATION (NMT 55%) =====
-const getRHStatus = (rh) => {
-  if (rh === "" || rh === null) return null;
-  const v = Number(rh);
-  if (isNaN(v)) return null;
-
-  if (v > 55) {
-    return {
-      status: "OUT_OF_LIMIT",
-      color: "bg-red-100 border-red-500 text-red-700",
-      label: "Out of Limit (≤ 55%)",
-    };
-  }
-
-  return {
-    status: "WITHIN_LIMIT",
-    color: "bg-green-100 border-green-500 text-green-700",
-    label: "Within Limit",
-  };
-};
-
-// ===== SIGN HANDLER =====
-const handleSign = () => {
-  const today = new Date().toISOString().split("T")[0];
-
-  if (userRole === "PDO") {
-    setGeneralManufacturing((p) => ({
-      ...p,
-      recordedByPDO: { name: "PDO USER", date: today },
-    }));
-  }
-
-  if (userRole === "QAD") {
-    setGeneralManufacturing((p) => ({
-      ...p,
-      checkedByQAD: { name: "QAD USER", date: today },
-    }));
-  }
-};
-
-// ===== SAVE HANDLER =====
-const handleSave = () => {
-  const tempStatus = getTempStatus(generalManufacturing.temp);
-  const rhStatus = getRHStatus(generalManufacturing.rh);
-
-  if (
-    !generalManufacturing.date ||
-    !generalManufacturing.time ||
-    !generalManufacturing.dp ||
-    !generalManufacturing.temp ||
-    !generalManufacturing.rh
-  ) {
-    alert("Please fill all mandatory fields");
-    return;
-  }
-
-  if (userRole === "PDO" && !generalManufacturing.recordedByPDO.name) {
-    alert("PDO must sign before saving");
-    return;
-  }
-
-  if (userRole === "QAD" && !generalManufacturing.checkedByQAD.name) {
-    alert("QAD must sign before saving");
-    return;
-  }
-
-  if (tempStatus?.status === "OUT_OF_LIMIT" || rhStatus?.status === "OUT_OF_LIMIT") {
-    alert("⚠ One or more parameters are OUT OF LIMIT. Deviation must be recorded.");
-  }
-
-  const payload = {
-    ...generalManufacturing,
-    tempStatus: tempStatus?.status || "NA",
-    rhStatus: rhStatus?.status || "NA",
-  };
-
-  console.log("FINAL PAYLOAD:", payload);
-
-  // axios.post("/api/general-manufacturing", payload);
-};
-
-// ===== ROLE =====
-// const userRole = "PDO"; // "PDO" | "QAD"
-
-// ===== TABLE DATA (BOTH LOT-A & LOT-B) =====
 const [manufacturingRows, setManufacturingRows] = useState([
   {
     section: "8.7",
@@ -649,6 +272,393 @@ const [manufacturingRows, setManufacturingRows] = useState([
   qadSign: "",
 },
 ]);
+ const [bmrData, setBmrData] = useState({
+  site_id: location.state?.site_id || "",
+  initiator_id: loggedInUser?.userId || "",
+  date_of_initiation: getCurrentDateTime(),
+ 
+  equipmentClearance: equipmentClearance||[],
+  generalPrecautions: generalManufacturing||[],
+    manufacturingPrecautions: manufacturingRows||[]
+});
+
+ 
+  useEffect(() => {
+    const config = {
+      method: "post",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        site_id: location.state?.site_id,
+        role_id: 2,
+        process_id: 1,
+      },
+    };
+
+    axios(config)
+      .then((response) => {
+        setReviewers(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+    const newConfig = {
+      method: "post",
+      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        site_id: location.state?.site_id,
+        role_id: 3,
+        process_id: 1,
+      },
+    };
+
+    axios(newConfig)
+      .then((response) => {
+        setApprovers(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      url: `http://localhost:1000/user/get-a-user/${loggedInUser?.userId}`, // Ensure you use the correct URL format including 'http://'
+      headers: {}, // You can add any necessary headers here
+    };
+
+    axios(requestOptions)
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const handlePopupClose = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handlePopupSubmit = (credentials) => {
+    if (
+      differentialPRecord.site_id === null
+      //  ||
+      // differentialPRecord.approver_id === null ||
+      // differentialPRecord.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
+      return;
+    }
+
+    // if (differentialPRecord.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
+    // if (differentialPRecord.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
+    if (
+      differentialPRecord?.FormRecordsArray?.some(
+        (record) => record.differential_pressure === "" || record.remarks === ""
+      )
+    ) {
+      toast.error("Please provide grid details!");
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    differentialPRecord.email = credentials?.email;
+    differentialPRecord.password = credentials?.password;
+    differentialPRecord.initiatorDeclaration = credentials?.declaration;
+
+   const payload = {
+  ...bmrData,
+  equipmentClearance: JSON.stringify(bmrData.equipmentClearance),
+  generalPrecautions: JSON.stringify(bmrData.generalPrecautions),
+  manufacturingPrecautions: JSON.stringify(bmrData.manufacturingPrecautions)
+};
+
+axios.post(
+  "http://localhost:1000/equipment/equipments",
+  payload,
+  {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+)
+
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
+  };
+
+ 
+  console.log(allTableData, "allTableData");
+  const addRow = () => {
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true, // Use 24-hour format
+    };
+
+    const currentTime = new Date().toLocaleTimeString("en-us", options);
+    const newRow = {
+      unique_id: generateUniqueId(),
+      date: date,
+      time: currentTime,
+      differential_pressure: "",
+      remarks: "",
+      checked_by: User?.name,
+      supporting_docs: null,
+    };
+    setAllTableData([...allTableData, newRow]);
+  };
+
+  const deleteRow = (index) => {
+    const updatedData = [...allTableData];
+    updatedData.splice(index, 1);
+    setAllTableData(updatedData);
+  };
+
+  // const currentDate = new Date();
+  // const currentMonth = currentDate.toLocaleString("default", { month: "long" });
+
+  const generateUniqueId = () => {
+    return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
+  };
+
+
+  const [differentialPRecord, setDifferentialPRecord] = useReducer(
+    (prev, next) => ({
+      ...prev,
+      ...next,
+    }),
+    {
+      site_id: location.state?.site_id,
+      reviewer_id: null,
+      approver_id: null,
+      description: "",
+      department: "",
+      review_comments: "",
+      compression_area: "",
+      additionalAttachment: "",
+      additionalInfo: "",
+      limit: null,
+      initiatorComment: "",
+      initiatorAttachment: null,
+      initiatorDeclaration: "",
+    }
+  );
+
+ 
+  const handleInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setDifferentialPRecord({ ...differentialPRecord, [name]: value });
+  };
+
+  const handleReviewerFileChange = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      reviewerAttachment: e.target.files[0],
+    });
+  };
+  const handleApproverFileChange = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      approverAttachment: e.target.files[0],
+    });
+  };
+
+  useEffect(() => {
+    setDifferentialPRecord({ FormRecordsArray: allTableData });
+  }, [allTableData]);
+
+  const handleDeleteFile = (index) => {
+    const updatedData = [...allTableData];
+    updatedData[index].supporting_docs = null; // This should remove the file
+    setAllTableData(updatedData);
+  };
+
+  const handleFileChange = (index, file) => {
+    const updatedData = [...allTableData];
+    updatedData[index].supporting_docs = file;
+    setAllTableData(updatedData);
+  };
+  const handleFileChangeAttachment = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      additionalAttachment: e.target.files[0],
+    });
+  };
+
+  const handleInitiatorFileChange = (e) => {
+    setDifferentialPRecord({
+      ...differentialPRecord,
+      initiatorAttachment: e.target.files[0],
+    });
+  };
+
+  const setTinyContent = (content) => {
+    setDifferentialPRecord({
+      description: content,
+    });
+  };
+
+ 
+const Dropdown = ({ value, onChange }) => (
+  <select
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    className="border rounded px-2 py-1 text-sm w-full"
+  >
+    <option value="">Select</option>
+    <option value="YES">✔ Yes</option>
+    <option value="NO">✖ No</option>
+    <option value="NA">NA</option>
+  </select>
+);
+
+  
+
+// ===== ROLE (demo / prod me backend se aayega) =====
+const userRole = "PDO"; // "PDO" | "QAD"
+
+// ===== STATE =====
+
+
+// ===== TEMP VALIDATION (23 ± 2 °C → 21–25) =====
+const getTempStatus = (temp) => {
+  if (temp === "" || temp === null) return null;
+  const v = Number(temp);
+  if (isNaN(v)) return null;
+
+  if (v < 21 || v > 25) {
+    return {
+      status: "OUT_OF_LIMIT",
+      color: "bg-red-100 border-red-500 text-red-700",
+      label: "Out of Limit (21–25°C)",
+    };
+  }
+
+  return {
+    status: "WITHIN_LIMIT",
+    color: "bg-green-100 border-green-500 text-green-700",
+    label: "Within Limit",
+  };
+};
+
+// ===== RH VALIDATION (NMT 55%) =====
+const getRHStatus = (rh) => {
+  if (rh === "" || rh === null) return null;
+  const v = Number(rh);
+  if (isNaN(v)) return null;
+
+  if (v > 55) {
+    return {
+      status: "OUT_OF_LIMIT",
+      color: "bg-red-100 border-red-500 text-red-700",
+      label: "Out of Limit (≤ 55%)",
+    };
+  }
+
+  return {
+    status: "WITHIN_LIMIT",
+    color: "bg-green-100 border-green-500 text-green-700",
+    label: "Within Limit",
+  };
+};
+
+// ===== SIGN HANDLER =====
+const handleSign = () => {
+  const today = new Date().toISOString().split("T")[0];
+
+  if (userRole === "PDO") {
+    setGeneralManufacturing((p) => ({
+      ...p,
+      recordedByPDO: { name: "PDO USER", date: today },
+    }));
+  }
+
+  if (userRole === "QAD") {
+    setGeneralManufacturing((p) => ({
+      ...p,
+      checkedByQAD: { name: "QAD USER", date: today },
+    }));
+  }
+};
+
+// ===== SAVE HANDLER =====
+const handleSave = () => {
+  const tempStatus = getTempStatus(generalManufacturing.temp);
+  const rhStatus = getRHStatus(generalManufacturing.rh);
+
+  if (
+    !generalManufacturing.date ||
+    !generalManufacturing.time ||
+    !generalManufacturing.dp ||
+    !generalManufacturing.temp ||
+    !generalManufacturing.rh
+  ) {
+    alert("Please fill all mandatory fields");
+    return;
+  }
+
+  if (userRole === "PDO" && !generalManufacturing.recordedByPDO.name) {
+    alert("PDO must sign before saving");
+    return;
+  }
+
+  if (userRole === "QAD" && !generalManufacturing.checkedByQAD.name) {
+    alert("QAD must sign before saving");
+    return;
+  }
+
+  if (tempStatus?.status === "OUT_OF_LIMIT" || rhStatus?.status === "OUT_OF_LIMIT") {
+    alert("⚠ One or more parameters are OUT OF LIMIT. Deviation must be recorded.");
+  }
+
+  const payload = {
+    ...generalManufacturing,
+    tempStatus: tempStatus?.status || "NA",
+    rhStatus: rhStatus?.status || "NA",
+  };
+
+  console.log("FINAL PAYLOAD:", payload);
+
+  // axios.post("/api/general-manufacturing", payload);
+};
+
+// ===== ROLE =====
+// const userRole = "PDO"; // "PDO" | "QAD"
+
+// ===== TABLE DATA (BOTH LOT-A & LOT-B) =====
+
 
 // ===== UPDATE HANDLER =====
 
@@ -797,7 +807,7 @@ const handleManufacturingSave = () => {
                     <div>
                       <input
                         type="text"
-                        value={date}
+                        value={bmrData.date_of_initiation}
                         onChange={(e) =>
                           setDifferentialPRecord({
                             dateOfInitiation: e.target.value,

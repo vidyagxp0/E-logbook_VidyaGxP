@@ -27,23 +27,23 @@ const Equipments = sequelize.define(
       key: "site_id",
     },
   },
-  initiator_name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
+  // initiator_name: {
+  //   type: DataTypes.STRING,
+  //   allowNull: false,
+  // },
   date_of_initiation: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: Sequelize.NOW,
   },
-    equipmentName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    equipmentID: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    // equipmentName: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
+    // equipmentID: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
      equipmentClearance: { 
       type: DataTypes.JSON, 
       allowNull: false 
