@@ -24,36 +24,49 @@ const MasterDashboard = () => {
   const [tableData, setTableData] = useState([]);
 
   /* ================= FETCH MASTER DATA ================= */
-  const fetchMasterData = async () => {
-    try {
-      setLoading(true);
+const fetchMasterData = async () => {
+  setLoading(true);
 
-      const res = await getMasterList(activeMaster);
+  try {
+    const res = await getMasterList(activeMaster);
+    const apiData = res?.data?.data;
 
-      // 🔴 IMPORTANT: confirm correct response path
-      const apiData = res?.data?.data || [];
-
-      const { fields, nestedPath } = MASTER_CONFIG[activeMaster];
-
-      const mappedData = apiData.map((item) => ({
-        key: item.id,
-        id: item.id,
-
-        // table fields
-        ...extractMasterData(item, fields, nestedPath),
-
-        // 🔥 IMPORTANT: keep full original object
-        __original: item,
-      }));
-
-      setTableData(mappedData);
-    } catch (error) {
-      console.error(error);
-      message.error("Failed to load master data");
-    } finally {
-      setLoading(false);
+    if (!Array.isArray(apiData)) {
+      setTableData([]);
+      return;
     }
-  };
+
+    const config = MASTER_CONFIG?.[activeMaster];
+    if (!config) {
+      setTableData([]);
+      return;
+    }
+
+    const { fields, nestedPath } = config;
+
+    const mappedData = apiData.map((item, index) => ({
+      key: item?.id ?? index,
+      id: item?.id,
+      ...(() => {
+        try {
+          return extractMasterData(item, fields, nestedPath);
+        } catch {
+          return {};
+        }
+      })(),
+      __original: item,
+    }));
+
+    setTableData(mappedData);
+  } catch (e) {
+    console.error("ACTUAL ERROR:", e);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
 
   /* ================= LOAD ON MASTER CHANGE ================= */
   useEffect(() => {
