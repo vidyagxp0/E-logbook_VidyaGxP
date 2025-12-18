@@ -629,6 +629,7 @@ function EffectiveElogs() {
     const statusMatch = status === "All_Records" || item.status === status;
     return roleMatch && statusMatch;
   };
+  
 
   //   const getFilteredData = () => {
   //     const applyInstrumentFilter = (data) => {
@@ -867,6 +868,8 @@ function EffectiveElogs() {
     );
   };
 
+  
+
   const getEquipmentType = (item) => {
     return item.DifferentialPressureRecords
       ? "Differential Pressure"
@@ -898,10 +901,10 @@ function EffectiveElogs() {
       ? "UV/WL Transilluminator"
       : item.voCalibRecords
       ? "VO Calibration"
-      : eLogSelect === "analytical_balance"
-      ? "Analytical Balance"
-      : eLogSelect === "karl_fischer"
-      ? "KARL Fischer"
+      : eLogSelect === "temperature_records"
+      ? "TP Records"
+      : eLogSelect === "diffrential_pressure"
+      ? "DP Records"
       : eLogSelect === "hplc"
       ? "HPLC"
       : eLogSelect === "pH Meter OP/Cal"
@@ -919,34 +922,54 @@ function EffectiveElogs() {
       : "NA";
   };
   // const filteredData = getFilteredData();
-  const filteredData = getFilteredData()?.filter((item) => {
-    if (!searchTerm.trim()) return true;
+const filteredData = getFilteredData()?.filter((item) => {
+  // 🔹 Dropdown filter
+if (eLogSelect !== "All_Records") {
+  const type = getEquipmentType(item)?.toLowerCase();
 
-    const term = searchTerm.toLowerCase();
+  if (
+    (eLogSelect === "diffrential_pressure" &&
+      !type?.includes("differential pressure")) ||
+    (eLogSelect === "temperature_records" &&
+      !type?.includes("temperature")) ||
+    (eLogSelect === "hplc" && !type?.includes("hplc")) ||
+    (eLogSelect === "pH Meter OP/CAL" &&
+      !type?.includes("ph meter"))
+  ) {
+    return false;
+  }
+}
 
-    const instrument = getElogNumber(item)?.toLowerCase() || "";
-    const name = getEquipmentType(item)?.toLowerCase() || "";
-    const dept =
-      item.site_id === 1
-        ? "india"
-        : item.site_id === 2
-        ? "malaysia"
-        : item.site_id === 3
-        ? "emea"
-        : item.site_id === 5
-        ? "Medicef"
-        : item.site_id === 6
-        ? "ar&d"
-        : "Medicef";
-    const creator = item.initiator_name?.toLowerCase() || "";
+  // 🔹 Search filter (existing logic)
+  if (!searchTerm.trim()) return true;
 
-    return (
-      instrument.includes(term) ||
-      name.includes(term) ||
-      dept.includes(term) ||
-      creator.includes(term)
-    );
-  });
+  const term = searchTerm.toLowerCase();
+
+  const instrument = getElogNumber(item)?.toLowerCase() || "";
+  const name = getEquipmentType(item)?.toLowerCase() || "";
+  const dept =
+    item.site_id === 1
+      ? "india"
+      : item.site_id === 2
+      ? "malaysia"
+      : item.site_id === 3
+      ? "emea"
+      : item.site_id === 5
+      ? "medicef"
+      : item.site_id === 6
+      ? "ar&d"
+      : "medicef";
+  const creator = item.initiator_name?.toLowerCase() || "";
+
+  return (
+    instrument.includes(term) ||
+    name.includes(term) ||
+    dept.includes(term) ||
+    creator.includes(term)
+  );
+});
+
+  
 
   const formatDate = (dateString) => {
     const utcDate = new Date(dateString);
@@ -1013,6 +1036,8 @@ function EffectiveElogs() {
       ? "VO-CAL"
       : "";
   };
+
+  
 
   const labelStyle = {
     display: "inline-block",
@@ -1159,53 +1184,43 @@ function EffectiveElogs() {
               </select>
             </div>
  
-                  {/* Equipment Filter */}
-                  <div
-                    className="group-input"
-                    style={{ marginBottom: "0", minWidth: "200px" }}
-                  >
-                    <label
-                      className="color-label"
-                      style={{
-                        labelStyle,
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        color: "#495057",
-                        marginBottom: "8px",
-                        padding: "0",
-                      }}
-                    >
-                      Instrument / Equipment
-                    </label>
-                    <select
-                      value={eLogSelect}
-                      onChange={(e) => setELogSelect(e.target.value)}
-                      style={{
-                        padding: "8px 12px",
-                        border: "1px solid #ced4da",
-                        borderRadius: "4px",
-                        fontSize: "14px",
-                        backgroundColor: "white",
-                        width: "100%",
-                      }}
-                    >
-                      <option value="All_Records">All Records</option>
-                      <option value="diffrential_pressure">Diffrential Pressure</option>
-                      <option value="temperature_records">Temperature Records</option>
-                      {/* <option value="hplc">HPLC</option>
-                      <option value="pH Meter OP/Cal">pH Meter OP/Cal</option>
-                      <option value="UV-Vis Calibration">UV-Vis Calibration</option>
-                      <option value="SDS PAGE">SDS PAGE</option>
-                      <option value="Gel Doc iGene">Gel Doc iGene</option>
-                      <option value="UV/WL Transilluminator">
-                        UV/WL Transilluminator
-                      </option>
-                      <option value="VO Calibration">
-                        VO Calibration
-                      </option> */}
-                    </select>
-                  </div> 
 
+            
+           {/* Record Type Dropdown */}
+<div className="flex flex-col gap-2 w-[260px]">
+  {/* Header pill */}
+  <div className="bg-gray-200 text-center text-sm font-semibold py-1 rounded-xl">
+    All Records
+  </div>
+
+  {/* Select box */}
+  <select
+    value={eLogSelect}
+    onChange={(e) => setELogSelect(e.target.value)}
+    style={{
+                  padding: "8px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+  >
+    <option value="All_Records" style={{padding:"2px"}}>All Records</option>
+    <option value="diffrential_pressure">
+      Differential Pressure Record
+    </option>
+    <option value="temperature_records">
+      Temperature Records
+    </option>
+    {/* <option value="hplc">HPLC</option>
+    <option value="pH Meter OP/CAL">pH Meter OP/CAL</option> */}
+  </select>
+</div>
+
+ 
+ 
+                  
             {/* Role Filter */}
             {/* <div
               className="group-input"
@@ -1266,7 +1281,8 @@ function EffectiveElogs() {
                   border: "1px solid #ced4da",
                   borderRadius: "4px",
                   fontSize: "14px",
-                  backgroundColor: "white",
+                  backgroundColor: "white",All Instruments/Equipment ID's
+
                   width: "100%",
                 }}
               >

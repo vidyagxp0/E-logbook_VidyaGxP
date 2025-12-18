@@ -1407,34 +1407,34 @@ const filteredDifferentialRecords = useMemo(() => {
                             />
                           </td>
                            <td>
-  <div>
-    <div className="flex text-nowrap items-center gap-x-2 justify-center">
-      <input
-        className="h-4 w-4 cursor-pointer"
-        type="checkbox"
-        checked={!!item.reviewed_by}
-        onChange={(e) => {
-          const newData = [...editData.DifferentialPressureRecords];
-          if (e.target.checked) {
-            newData[index].reviewed_by = reviewed_by;
-          } else {
-            newData[index].reviewed_by = "";
-          }
-          setEditData({
-            ...editData,
-            DifferentialPressureRecords: newData,
-          });
-        }}
-        disabled={
-          !!item.reviewed_by || // already checked hone par disable
-          [1, 3].includes(userDetails.roles[0].role_id) || 
-          !canReviewerEdit(item)
-        }
-      />
-      {item.reviewed_by && <p>{item.reviewed_by}</p>}
-    </div>
-  </div>
-</td>
+                              <div>
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    className="h-4 w-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={!!item.reviewed_by}
+                                    onChange={(e) => {
+                                      const newData = [...editData.DifferentialPressureRecords];
+                                      if (e.target.checked) {
+                                        newData[index].reviewed_by = reviewed_by;
+                                      } else {
+                                        newData[index].reviewed_by = "";
+                                      }
+                                      setEditData({
+                                        ...editData,
+                                        DifferentialPressureRecords: newData,
+                                      });
+                                    }}
+                                    disabled={
+                                      !!item.reviewed_by || // already checked hone par disable
+                                      [1, 3].includes(userDetails.roles[0].role_id) || 
+                                      !canReviewerEdit(item)
+                                    }
+                                  />
+                                  {item.reviewed_by && <p>{item.reviewed_by}</p>}
+                                </div>
+                              </div>
+                            </td>
 
                             {/* <td>
                               <input
