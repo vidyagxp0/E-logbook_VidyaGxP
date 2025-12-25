@@ -4,27 +4,20 @@ export const MASTER_CONFIG = {
     fields: [
       { name: "siteName", label: "Site Name" },
       { name: "siteCode", label: "Site Code" },
-      { name: "productName", label: "Product Name" },
-      { name: "productCode", label: "Product Code" },
-      { name: "strength", label: "Strength" },
-      { name: "batchNo", label: "Batch No" },
-      { name: "batchSize", label: "Batch Size" },
-      { name: "market", label: "Market" },
-      { name: "mfgDate", label: "Mfg Date", type: "date" },
-      { name: "expiryDate", label: "Expiry Date", type: "date" },
-      {
-        name: "generalInstructions",
-        label: "General Instructions",
-        type: "textarea",
-      },
-      { name: "bmrVersion", label: "BMR Version" },
-      { name: "remarks", label: "Remarks" },
-      { name: "preparedBy", label: "Prepared By" },
-      { name: "checkedBy", label: "Checked By (QA)" },
-      { name: "approvedBy", label: "Approved By (QA Head)" },
-      { name: "totalPages", label: "Total Pages Issued" },
-      { name: "pagesVerified", label: "Page Nos Verified" },
-      { name: "reissueReason", label: "Re-issue Reason" },
+      
+      // {
+      //   name: "generalInstructions",
+      //   label: "General Instructions",
+      //   type: "textarea",
+      // },
+      // { name: "bmrVersion", label: "BMR Version" },
+      // { name: "remarks", label: "Remarks" },
+      // { name: "preparedBy", label: "Prepared By" },
+      // { name: "checkedBy", label: "Checked By (QA)" },
+      // { name: "approvedBy", label: "Approved By (QA Head)" },
+      // { name: "totalPages", label: "Total Pages Issued" },
+      // { name: "pagesVerified", label: "Page Nos Verified" },
+      // { name: "reissueReason", label: "Re-issue Reason" },
     ],
   },
 
@@ -69,6 +62,16 @@ export const MASTER_CONFIG = {
   "Equipment/Instrument Master": {
     nestedPath: "equipmentInstrumentData",
     fields: [
+       {
+      name: "productCode",
+      label: "Product Code",
+      type: "select",
+      api: {
+        url: "http://localhost:1000/Pm-Meter/meter/get-all",          // API endpoint
+        valueKey: "pmMeterMasterData.productCode",
+    labelKey: "pmMeterMasterData.productCode",     // text shown in dropdown
+      },
+    },
       { name: "equipmentName", label: "Equipment Name" },
       { name: "equipmentId", label: "Equipment ID" },
       { name: "location", label: "Equipment Location" },
@@ -77,22 +80,44 @@ export const MASTER_CONFIG = {
       { name: "model", label: "Equipment Model" },
       { name: "calibrationDoneOn", label: "Calibration Done On", type: "date" },
       { name: "calibrationDueOn", label: "Calibration Due On", type: "date" },
-      {
-        name: "validCalibration",
-        label: "Under Valid Calibration?",
-        type: "select",
-      },
+    {
+  name: "validCalibration",
+  label: "Under Valid Calibration?",
+  type: "select",
+  options: [
+    { label: "Yes", value: "Yes" },
+    { label: "No", value: "No" },
+  ],
+},
+
     ],
   },
 
   "PM Master": {
-    nestedPath: "pmMeterMasterData",
-    fields: [
-      { name: "pmDoneOn", label: "PM Done On", type: "date" },
-      { name: "pmDueOn", label: "PM Due On", type: "date" },
-      { name: "validPM", label: "Under Valid PM?", type: "select" },
-    ],
-  },
+  nestedPath: "pmMeterMasterData",
+  fields: [
+    {
+      name: "siteName",
+      label: "Site Name",
+      type: "select",
+      api: {
+        url: "http://localhost:1000/site-master/site/get-all",          // API endpoint
+        valueKey: "siteMasterData.siteName",
+    labelKey: "siteMasterData.siteName",     // text shown in dropdown
+      },
+    },
+{ name: "productName", label: "Product Name" },
+      { name: "productCode", label: "Product Code" },
+      { name: "strength", label: "Strength" },
+      { name: "batchNo", label: "Batch No" },
+      { name: "batchSize", label: "Batch Size" },
+      { name: "market", label: "Market" },
+      { name: "mfgDate", label: "Mfg Date", type: "date" },
+      { name: "expiryDate", label: "Expiry Date", type: "date" },
+   
+  ],
+},
+
 
   "Connected ElogBook": {
     nestedPath: "connectedElogbookData",

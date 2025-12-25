@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, DatePicker, Select, Button, message } from "antd";
 import dayjs from "dayjs";
+import axios from "axios";
 import { MASTER_CONFIG } from "./masterConfig";
 import { createMaster, updateMaster } from "../MasterServices";
 
 /* ================= BUILD NESTED OBJECT ================= */
 const buildNestedObject = (path, value) => {
   if (!path) return value;
-
   return path.split(".").reduceRight((acc, key) => ({ [key]: acc }), value);
 };
 
@@ -18,8 +18,43 @@ const MasterModal = ({ open, onClose, activeMaster, editData }) => {
   // add-multiple
   const [entries, setEntries] = useState([{}]);
 
+  // 🔥 NEW: store select options per field
+  const [selectOptions, setSelectOptions] = useState({});
+console.log("Options for siteName:", selectOptions.siteName);
+
   const config = MASTER_CONFIG[activeMaster];
   const isEdit = !!editData;
+
+  /* ================= LOAD SELECT OPTIONS FROM API ================= */
+ useEffect(() => {
+  if (!config) return;
+
+ 
+
+  config.fields.forEach((field) => {
+    console.log("FIELD CHECK:", field.name, field.type, field.api);
+const getValueByPath = (obj, path) =>
+  path.split(".").reduce((acc, key) => acc?.[key], obj);
+
+    if (field.type === "select" && field.api) {
+      console.log("CALLING API FOR:", field.name);
+
+     axios.get(field.api.url).then((res) => {
+  const apiData = Array.isArray(res.data)
+    ? res.data
+    : res.data.data || res.data[0] || [];
+
+  setSelectOptions((prev) => ({
+    ...prev,
+    [field.name]: apiData.map((item) => ({
+      label: getValueByPath(item, field.api.labelKey),
+      value: getValueByPath(item, field.api.valueKey),
+    })),
+  }));
+});
+    }
+  });
+}, [activeMaster]);
 
   /* ================= PREFILL (EDIT SAFE) ================= */
   useEffect(() => {
@@ -30,7 +65,7 @@ const MasterModal = ({ open, onClose, activeMaster, editData }) => {
       config.fields.forEach((field) => {
         let value = editData[field.name];
         if (field.type === "date" && value) value = dayjs(value);
-        mapped[field.name] = value ?? null;
+        mapped[field.name] = value ?? undefined;
       });
       form.setFieldsValue(mapped);
     } else {
@@ -69,25 +104,19 @@ const MasterModal = ({ open, onClose, activeMaster, editData }) => {
       const values = await form.validateFields();
       setLoading(true);
 
-      /* ===== ADD MULTIPLE ===== */
       if (!isEdit && entries.length > 1) {
         const rows = entries.map(buildPayload);
         const requestBody = buildNestedObject(config.addPath, rows);
-
         await createMaster(activeMaster, requestBody);
         message.success("Created successfully");
       } else {
-        /* ===== ADD / EDIT SINGLE ===== */
         const payload = buildPayload(values);
 
         if (isEdit) {
-          // ✅ EDIT = FLAT
           await updateMaster(activeMaster, editData.id, payload);
           message.success("Updated successfully");
         } else {
-          // ✅ ADD = NESTED
           const requestBody = buildNestedObject(config.addPath, payload);
-
           await createMaster(activeMaster, requestBody);
           message.success("Created successfully");
         }
@@ -103,60 +132,34 @@ const MasterModal = ({ open, onClose, activeMaster, editData }) => {
     }
   };
 
-  /* ================= FIELD RENDER ================= */
+  /* ================= FIELD RENDER (UPDATED) ================= */
   const renderField = (field, entryIndex) => {
-    if (isEdit) {
-      switch (field.type) {
-        case "date":
-          return <DatePicker className="w-full" />;
-        case "textarea":
-          return <Input.TextArea rows={2} />;
-        case "select":
-          return (
-            <Select>
-              <Select.Option value="Yes">Yes</Select.Option>
-              <Select.Option value="No">No</Select.Option>
-            </Select>
-          );
-        default:
-          return <Input />;
-      }
-    }
+    const onChangeHandler = (val) => {
+      const value = val?.target ? val.target.value : val;
+      handleEntryChange(entryIndex, field.name, value);
+    };
 
     switch (field.type) {
       case "date":
-        return (
-          <DatePicker
-            className="w-full"
-            onChange={(d) => handleEntryChange(entryIndex, field.name, d)}
-          />
-        );
+        return <DatePicker className="w-full" onChange={onChangeHandler} />;
+
       case "textarea":
-        return (
-          <Input.TextArea
-            rows={2}
-            onChange={(e) =>
-              handleEntryChange(entryIndex, field.name, e.target.value)
-            }
-          />
-        );
+        return <Input.TextArea rows={2} onChange={onChangeHandler} />;
+
       case "select":
-        return (
-          <Select
-            onChange={(v) => handleEntryChange(entryIndex, field.name, v)}
-          >
-            <Select.Option value="Yes">Yes</Select.Option>
-            <Select.Option value="No">No</Select.Option>
-          </Select>
-        );
+  return (
+    <Select
+      allowClear
+      options={field.options || selectOptions[field.name] || []}
+      onChange={(val) =>
+        handleEntryChange(entryIndex, field.name, val)
+      }
+    />
+  );
+
+
       default:
-        return (
-          <Input
-            onChange={(e) =>
-              handleEntryChange(entryIndex, field.name, e.target.value)
-            }
-          />
-        );
+        return <Input onChange={onChangeHandler} />;
     }
   };
 

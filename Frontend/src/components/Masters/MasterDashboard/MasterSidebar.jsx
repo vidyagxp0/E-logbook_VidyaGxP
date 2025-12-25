@@ -13,11 +13,12 @@ import {
 
 const masters = [
   { label: "Site Master", icon: <ApartmentOutlined /> },
+  { label: "PM Master", icon: <ScheduleOutlined /> },
+  { label: "Equipment/Instrument Master", icon: <ToolOutlined /> },
+
   { label: "API Identification Master", icon: <DatabaseOutlined /> },
   { label: "Excipients Dispensing (Grid) Master", icon: <DeploymentUnitOutlined /> },
   { label: "Persons Involved", icon: <TeamOutlined /> },
-  { label: "Equipment/Instrument Master", icon: <ToolOutlined /> },
-  { label: "PM Master", icon: <ScheduleOutlined /> },
   { label: "Connected ElogBook", icon: <BookOutlined /> },
 ];
 

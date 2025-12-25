@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { Button, Table, Input, message } from "antd";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
+import { Button, Table, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import HeaderTop from "../../Header/HeaderTop";
 import MasterSidebar from "./MasterSidebar";
@@ -19,59 +19,53 @@ const MasterDashboard = () => {
   const [editRow, setEditRow] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // API table data
   const [tableData, setTableData] = useState([]);
 
-  /* ================= FETCH MASTER DATA ================= */
-const fetchMasterData = async () => {
-  setLoading(true);
+  /* ================= FETCH MASTER DATA (FIXED) ================= */
+  const fetchMasterData = useCallback(async (masterName) => {
+    setLoading(true);
 
-  try {
-    const res = await getMasterList(activeMaster);
-    const apiData = res?.data?.data;
+    try {
+      const res = await getMasterList(masterName);
+      const apiData = res?.data?.data ?? [];
 
-    if (!Array.isArray(apiData)) {
-      setTableData([]);
-      return;
-    }
+      const config = MASTER_CONFIG[masterName];
+      if (!Array.isArray(apiData) || !config) {
+        setTableData([]);
+        return;
+      }
 
-    const config = MASTER_CONFIG?.[activeMaster];
-    if (!config) {
-      setTableData([]);
-      return;
-    }
+      const { fields, nestedPath } = config;
 
-    const { fields, nestedPath } = config;
-
-    const mappedData = apiData.map((item, index) => ({
-      key: item?.id ?? index,
-      id: item?.id,
-      ...(() => {
+      const mapped = apiData.map((item) => {
+        let extracted = {};
         try {
-          return extractMasterData(item, fields, nestedPath);
-        } catch {
-          return {};
+          extracted = extractMasterData(item, fields, nestedPath);
+        } catch (e) {
+          console.warn("Mapping failed:", e);
         }
-      })(),
-      __original: item,
-    }));
 
-    setTableData(mappedData);
-  } catch (e) {
-    console.error("ACTUAL ERROR:", e);
-  } finally {
-    setLoading(false);
-  }
-};
+        return {
+          id: item.id, // 🔥 stable key
+          ...extracted,
+          __original: item,
+        };
+      });
 
-
-
+      // 🔥 FORCE RE-RENDER (new reference)
+      setTableData([...mapped]);
+    } catch (e) {
+      console.error("Fetch error:", e);
+      setTableData([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   /* ================= LOAD ON MASTER CHANGE ================= */
   useEffect(() => {
-    fetchMasterData();
-  }, [activeMaster]);
+    fetchMasterData(activeMaster);
+  }, [activeMaster, fetchMasterData]);
 
   /* ================= SEARCH ================= */
   const filteredData = useMemo(() => {
@@ -79,42 +73,47 @@ const fetchMasterData = async () => {
 
     return tableData.filter((row) =>
       Object.values(row).some(
-        (value) =>
-          value &&
-          value.toString().toLowerCase().includes(searchText.toLowerCase())
+        (val) =>
+          val &&
+          typeof val === "string" &&
+          val.toLowerCase().includes(searchText.toLowerCase())
       )
     );
   }, [searchText, tableData]);
 
   /* ================= COLUMNS ================= */
-  const columns = [
-    {
-      title: "Sr No.",
-      width: 70,
-      render: (_, __, index) => index + 1,
-    },
-    ...MASTER_CONFIG[activeMaster].fields.map((field) => ({
-      title: field.label,
-      dataIndex: field.name,
-      key: field.name,
-      ellipsis: true,
-    })),
-    {
-      title: "Action",
-      width: 80,
-      render: (_, record) => (
-        <Button
-          type="link"
-          onClick={() => {
-            setEditRow(record);
-            setOpenModal(true);
-          }}
-        >
-          Edit
-        </Button>
-      ),
-    },
-  ];
+  const columns = useMemo(() => {
+    const baseCols = [
+      {
+        title: "Sr No.",
+        width: 70,
+        render: (_, __, index) => index + 1,
+      },
+      ...MASTER_CONFIG[activeMaster].fields.map((field) => ({
+        title: field.label,
+        dataIndex: field.name,
+        key: field.name,
+        ellipsis: true,
+      })),
+      {
+        title: "Action",
+        width: 80,
+        render: (_, record) => (
+          <Button
+            type="link"
+            onClick={() => {
+              setEditRow(record.__original);
+              setOpenModal(true);
+            }}
+          >
+            Edit
+          </Button>
+        ),
+      },
+    ];
+
+    return baseCols;
+  }, [activeMaster]);
 
   return (
     <>
@@ -132,6 +131,7 @@ const fetchMasterData = async () => {
           {/* TOP BAR */}
           <div className="flex justify-between items-center mb-4">
             <Button onClick={() => navigate("/dashboard")}>⬅ Back</Button>
+
             <Button
               type="primary"
               onClick={() => {
@@ -151,6 +151,7 @@ const fetchMasterData = async () => {
               placeholder="Search..."
               allowClear
               className="w-72"
+              value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
@@ -160,7 +161,7 @@ const fetchMasterData = async () => {
             columns={columns}
             dataSource={filteredData}
             loading={loading}
-            rowKey="key"
+            rowKey="id" // 🔥 IMPORTANT FIX
             pagination={{ pageSize: 5 }}
             scroll={{ x: "max-content" }}
             locale={{ emptyText: "No records found" }}
@@ -177,7 +178,7 @@ const fetchMasterData = async () => {
                 setEditRow(null);
 
                 if (shouldRefresh) {
-                  fetchMasterData(); // 🔥 reload after add/edit
+                  fetchMasterData(activeMaster); // 🔥 guaranteed refresh
                 }
               }}
             />
