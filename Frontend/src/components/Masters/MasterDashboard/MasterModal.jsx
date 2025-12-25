@@ -14,47 +14,37 @@ const buildNestedObject = (path, value) => {
 const MasterModal = ({ open, onClose, activeMaster, editData }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-
-  // add-multiple
   const [entries, setEntries] = useState([{}]);
-
-  // 🔥 NEW: store select options per field
   const [selectOptions, setSelectOptions] = useState({});
-console.log("Options for siteName:", selectOptions.siteName);
 
   const config = MASTER_CONFIG[activeMaster];
   const isEdit = !!editData;
 
   /* ================= LOAD SELECT OPTIONS FROM API ================= */
- useEffect(() => {
-  if (!config) return;
+  useEffect(() => {
+    if (!config) return;
 
- 
+    config.fields.forEach((field) => {
+      const getValueByPath = (obj, path) =>
+        path.split(".").reduce((acc, key) => acc?.[key], obj);
 
-  config.fields.forEach((field) => {
-    console.log("FIELD CHECK:", field.name, field.type, field.api);
-const getValueByPath = (obj, path) =>
-  path.split(".").reduce((acc, key) => acc?.[key], obj);
+      if (field.type === "select" && field.api) {
+        axios.get(field.api.url).then((res) => {
+          const apiData = Array.isArray(res.data)
+            ? res.data
+            : res.data.data || res.data[0] || [];
 
-    if (field.type === "select" && field.api) {
-      console.log("CALLING API FOR:", field.name);
-
-     axios.get(field.api.url).then((res) => {
-  const apiData = Array.isArray(res.data)
-    ? res.data
-    : res.data.data || res.data[0] || [];
-
-  setSelectOptions((prev) => ({
-    ...prev,
-    [field.name]: apiData.map((item) => ({
-      label: getValueByPath(item, field.api.labelKey),
-      value: getValueByPath(item, field.api.valueKey),
-    })),
-  }));
-});
-    }
-  });
-}, [activeMaster]);
+          setSelectOptions((prev) => ({
+            ...prev,
+            [field.name]: apiData.map((item) => ({
+              label: getValueByPath(item, field.api.labelKey),
+              value: getValueByPath(item, field.api.valueKey),
+            })),
+          }));
+        });
+      }
+    });
+  }, [activeMaster, config]);
 
   /* ================= PREFILL (EDIT SAFE) ================= */
   useEffect(() => {
@@ -68,11 +58,12 @@ const getValueByPath = (obj, path) =>
         mapped[field.name] = value ?? undefined;
       });
       form.setFieldsValue(mapped);
+      setEntries([{}]); // no multiple rows in edit mode
     } else {
       form.resetFields();
       setEntries([{}]);
     }
-  }, [open, editData, activeMaster]);
+  }, [open, editData, activeMaster, form, config, isEdit]);
 
   /* ================= ADD MODE ENTRY CHANGE ================= */
   const handleEntryChange = (index, field, value) => {
@@ -104,27 +95,38 @@ const getValueByPath = (obj, path) =>
       const values = await form.validateFields();
       setLoading(true);
 
-      if (!isEdit && entries.length > 1) {
-        const rows = entries.map(buildPayload);
-        const requestBody = buildNestedObject(config.addPath, rows);
+    if (!isEdit && entries.length > 1) {
+  const rows = entries.map(buildPayload);
+  const requestBody = buildNestedObject(config.addPath, rows);
+  const res = await createMaster(activeMaster, requestBody);
+
+  // append created data to table
+  const createdRows = (res.data?.data || rows).map((row) => ({
+    id: row.id || Date.now(), // fallback if no ID
+    ...row,
+    __original: row,
+  }));
+
+  onClose(true, createdRows); // pass newly created rows to dashboard
+  message.success("Created successfully");
+  return;
+}
+
+
+      const payload = isEdit ? buildPayload(values) : buildPayload(values);
+      const requestBody = buildNestedObject(config.addPath, payload);
+
+      if (isEdit) {
+        await updateMaster(activeMaster, editData.id, payload);
+        message.success("Updated successfully");
+      } else {
         await createMaster(activeMaster, requestBody);
         message.success("Created successfully");
-      } else {
-        const payload = buildPayload(values);
-
-        if (isEdit) {
-          await updateMaster(activeMaster, editData.id, payload);
-          message.success("Updated successfully");
-        } else {
-          const requestBody = buildNestedObject(config.addPath, payload);
-          await createMaster(activeMaster, requestBody);
-          message.success("Created successfully");
-        }
       }
 
       form.resetFields();
       setEntries([{}]);
-      onClose(true);
+      onClose(true); // ✅ refresh table after API completes
     } catch (error) {
       message.error(error?.response?.data?.message || "Failed to save data");
     } finally {
@@ -132,7 +134,7 @@ const getValueByPath = (obj, path) =>
     }
   };
 
-  /* ================= FIELD RENDER (UPDATED) ================= */
+  /* ================= FIELD RENDER ================= */
   const renderField = (field, entryIndex) => {
     const onChangeHandler = (val) => {
       const value = val?.target ? val.target.value : val;
@@ -147,16 +149,13 @@ const getValueByPath = (obj, path) =>
         return <Input.TextArea rows={2} onChange={onChangeHandler} />;
 
       case "select":
-  return (
-    <Select
-      allowClear
-      options={field.options || selectOptions[field.name] || []}
-      onChange={(val) =>
-        handleEntryChange(entryIndex, field.name, val)
-      }
-    />
-  );
-
+        return (
+          <Select
+            allowClear
+            options={field.options || selectOptions[field.name] || []}
+            onChange={(val) => handleEntryChange(entryIndex, field.name, val)}
+          />
+        );
 
       default:
         return <Input onChange={onChangeHandler} />;

@@ -78,23 +78,23 @@ export const MASTER_CONFIG = {
       { name: "site", label: "Equipment Site" },
       { name: "make", label: "Equipment Make" },
       { name: "model", label: "Equipment Model" },
-      { name: "calibrationDoneOn", label: "Calibration Done On", type: "date" },
-      { name: "calibrationDueOn", label: "Calibration Due On", type: "date" },
-    {
-  name: "validCalibration",
-  label: "Under Valid Calibration?",
-  type: "select",
-  options: [
-    { label: "Yes", value: "Yes" },
-    { label: "No", value: "No" },
-  ],
-},
+      // { name: "calibrationDoneOn", label: "Calibration Done On", type: "date" },
+      // { name: "calibrationDueOn", label: "Calibration Due On", type: "date" },
+//     {
+//   name: "validCalibration",
+//   label: "Under Valid Calibration?",
+//   type: "select",
+//   options: [
+//     { label: "Yes", value: "Yes" },
+//     { label: "No", value: "No" },
+//   ],
+// },
 
     ],
   },
 
   "PM Master": {
-  nestedPath: "pmMeterMasterData",
+  nestedPath: "pmMeterMasterData"||"pmMeterMasterData?.pmMeterMasterData",
   fields: [
     {
       name: "siteName",

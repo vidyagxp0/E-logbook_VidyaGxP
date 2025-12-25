@@ -173,12 +173,16 @@ const MasterDashboard = () => {
               open={openModal}
               activeMaster={activeMaster}
               editData={editRow}
-              onClose={(shouldRefresh) => {
+              onClose={(shouldRefresh, newRows) => {
                 setOpenModal(false);
                 setEditRow(null);
 
                 if (shouldRefresh) {
-                  fetchMasterData(activeMaster); // 🔥 guaranteed refresh
+                  if (newRows) {
+                    setTableData((prev) => [...prev, ...newRows]); // append new rows
+                  } else {
+                    fetchMasterData(activeMaster); // fallback
+                  }
                 }
               }}
             />
