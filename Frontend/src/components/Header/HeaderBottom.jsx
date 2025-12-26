@@ -44,7 +44,7 @@ function HeaderBottom() {
               >
                 Dashboard
               </Link>
-              {/* <Link
+              <Link
                 to="/effectiveElogs"
                 className={`tab py-1 px-3 min-w-fit rounded-md  ${
                   window.location.pathname === "/effectiveElogs"
@@ -52,8 +52,8 @@ function HeaderBottom() {
                     : "bg-white text-blue-500 border border-blue-600"
                 } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
-                 E-Logs
-              </Link> */}
+                 BMR
+              </Link>
               <Link
                 to="/analytics2"
                 className={`tab py-1 px-4 rounded-md  ${
@@ -82,7 +82,7 @@ function HeaderBottom() {
           !["/effectiveElogs", "/analytics2"].includes(location.pathname) ? (
             <div className="headerBottomRgt">
               <div className="themeBtn" onClick={() => setRecordModal(true)}>
-                Create eBMR
+                MFR Draft
               </div>
             </div>
           ) : null}
