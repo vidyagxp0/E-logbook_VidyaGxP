@@ -767,7 +767,7 @@ formData: formData || [],
         <div id="config-form-document-pages" className="min-w-full">
           <div className="document-form">
             <div className="details-form-data">
-              <div className="sub-head-2">eBMR</div>
+              <div className="sub-head-2">Master Formula Record</div>
 
               <div className="outerDiv4">
                 <div className="btn-forms">
