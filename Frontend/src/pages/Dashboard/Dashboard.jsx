@@ -28,6 +28,8 @@ function Dashboard() {
   const [sdsPage, setSdsPage] = useState([]);
   const [gelDociGene, setGelDociGene] = useState([]);
   const [uVWhiteLightTrans, setUVWlTrans] = useState([]);
+  const [equipmentsClearanceRecords, setEquipmentsClearanceRecords] = useState([]);
+  console.log(equipmentsClearanceRecords,"equipmentsClearanceRecords")
   const [voCalibElogs, setVOCalibElogs] = useState([]);
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
     []
@@ -299,6 +301,33 @@ useEffect(() => {
         console.error("Error: ", error);
       });
 
+
+    const equipmentClearance = {
+      method: "get",
+      url: "http://localhost:1000/equipment/equipments/get-all",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios(equipmentClearance)
+      .then((response) => {
+        const allEquipmentClearance = response.data.message;
+        let filteredArray = allEquipmentClearance?.filter((elog) => {
+          const userId = userDetails.userId;
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setEquipmentsClearanceRecords(allEquipmentClearance);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
     const newpHMeterOPCal = {
       method: "get",
       url: "http://localhost:1000/op-and-calParameter/get-all",
@@ -494,6 +523,8 @@ useEffect(() => {
       navigate("/uv-wl-transilluminator-panel", { state: item });
     } else if (item.voCalibRecords) {
       navigate("/vo-calibration-panel", { state: item });
+    } else if (item.equipmentsClearanceRecords) {
+      navigate("/bmr-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
@@ -529,6 +560,7 @@ useEffect(() => {
   12: "sdsPageRecords",
   13: "gelDocIGeneRecords",
   14: "uvWhiteLightRecords",
+  15: "equipmentsClearanceRecords",
 };
 
 const processShortName = {
@@ -546,6 +578,7 @@ const processShortName = {
   12: "SDS",
   13: "GDI",     // Gel Doc iGene
   14: "UVWL",    // UV White Light
+  15: "EC",      // Equipment Clearance
 };
 const [eLogInstrument, setELogInstrument] = useState("All");
 
@@ -593,6 +626,7 @@ useEffect(() => {
     ...gelDociGene.map(r => ({ ...r, process_id: 13 })),
     ...uVWhiteLightTrans.map(r => ({ ...r, process_id: 14 })),
     ...voCalibElogs.map(r => ({ ...r, process_id: 15 })),
+    ...equipmentsClearanceRecords.map(r => ({ ...r, process_id: 16 })),
   ];
 
   // ⭐ FILTER BY SELECTED PROCESS  
@@ -639,7 +673,8 @@ useEffect(() => {
   sdsPage,
   gelDociGene,
   uVWhiteLightTrans,
-  voCalibElogs
+  voCalibElogs,
+  equipmentsClearanceRecords
 ]);
 
 
@@ -660,6 +695,7 @@ useEffect(() => {
       ...sdsPage,
       ...gelDociGene,
       ...uVWhiteLightTrans,
+      ...equipmentsClearanceRecords,
     ].filter((item) => {
       const matchesSearchTerm =
         item.date_of_initiation
@@ -686,6 +722,8 @@ useEffect(() => {
           ? `AB${item.form_id}`
           : item?.karlFischerRecords
           ? `KF${item.form_id}`
+          : item?.equipmentsClearanceRecords
+          ? `EC${item.form_id}`
           : `HP${item.form_id}`
         )
           ?.toLowerCase()
@@ -717,6 +755,7 @@ useEffect(() => {
     sdsPage,
     gelDociGene,
     uVWhiteLightTrans,
+    equipmentsClearanceRecords,
   ]);
 
   return (
@@ -1684,6 +1723,8 @@ useEffect(() => {
                           ? getElogNumber(item)
                           : item.voCalibRecords
                           ? getElogNumber(item)
+                          : item.equipmentsClearanceRecords
+                          ? getElogNumber(item)
                           : null}
                       </td>
                       <td>
@@ -1717,6 +1758,8 @@ useEffect(() => {
                           ? "UV/WL Transilluminator"
                           : item.voCalibRecords
                           ? "VO Calibration"
+                          : item.equipmentsClearanceRecords
+                          ? "Equipment Clearance"
                           : null}
                       </td>
                       <td>

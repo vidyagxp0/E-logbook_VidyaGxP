@@ -82,6 +82,7 @@ import DifferentialPressureRecordPanel from "./pages/documentPanels/Medicef/Diff
 import EquipmentUsagePanel from "./pages/documentPanels/Medicef/EquipmentUsage/EquipmentUsagePanel.jsx";
 import BMR from "./pages/configForms/eBMR/BMR.jsx";
 import MasterDashboard from "./components/Masters/MasterDashboard/MasterDashboard.jsx";
+import BMRPanel from "./pages/documentPanels/BMRPanel/BMRPanel.jsx";
 
 function App() {
   return (
@@ -238,6 +239,10 @@ function App() {
             <Route
               path="/area-and-equipment-panel"
               element={<ProtectedRoute element={<AreaAndEquipmentPanel />} />}
+            />
+            <Route
+              path="/bmr-panel"
+              element={<ProtectedRoute element={<BMRPanel />} />}
             />
             <Route
               path="/loaded-quantity-panel"

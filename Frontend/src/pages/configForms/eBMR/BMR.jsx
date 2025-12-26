@@ -14,6 +14,8 @@ const userRole = "PDO";
 
 export default function BMR() {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
+  const [isProductInformation, setIsProductInformation] = useState(false);
+  const [isBatchFormulaAndMaterialIdentification, setIsBatchFormulaAndMaterialIdentification] = useState(false);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [isSelectedGeneralManufacturing, setIsSelectedGeneralManufacturing] = useState(false);
   const [isSelectedManufacturing, setIsSelectedManufacturing] = useState(false);
@@ -30,7 +32,7 @@ export default function BMR() {
 
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
-  const location = useLocation();
+  const location =useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
 
   function getCurrentDateTime() {
@@ -457,6 +459,7 @@ axios.post(
   const [differentialPRecord, setDifferentialPRecord] = useReducer(
     (prev, next) => ({
       ...prev,
+      
       ...next,
     }),
     {
@@ -717,10 +720,55 @@ const handleManufacturingSave = () => {
                         setIsSelectedEquipmentClearance(false),
                         setIsSelectedGeneralManufacturing(false),
                         setIsSelectedManufacturing(false);
-
+                        setIsProductInformation(false);
+                        setIsBatchFormulaAndMaterialIdentification(false);
                     }}
                   >
                     General Information
+                  </div>
+                  <div
+                    className={`${
+                      isProductInformation === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false),
+                      setIsProductInformation(true);
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false),
+                        setIsSelectedEquipmentClearance(false),
+                        setIsSelectedGeneralManufacturing(false),
+                        setIsSelectedManufacturing(false);
+                        setIsBatchFormulaAndMaterialIdentification(false);
+
+                    }}
+                  >
+                    Product Information
+                  </div>
+                  <div
+                    className={`${
+                      isBatchFormulaAndMaterialIdentification === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+                      setIsSelectedDetails(false),
+                      setIsProductInformation(false);
+                      setIsBatchFormulaAndMaterialIdentification(true);
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false),
+                        setIsSelectedEquipmentClearance(false),
+                        setIsSelectedGeneralManufacturing(false),
+                        setIsSelectedManufacturing(false);
+
+                    }}
+                  >
+                    Batch Formula and Material Identification
                   </div>
                   
                   <div
@@ -738,6 +786,8 @@ const handleManufacturingSave = () => {
                         setApproverRemarks(false),
                         setIsSelectedGeneralManufacturing(false),
                         setIsSelectedManufacturing(false);
+                        setIsProductInformation(false);
+                        setIsBatchFormulaAndMaterialIdentification(false);
                     }}
                   >
                   Equipment Clearance
@@ -757,6 +807,8 @@ const handleManufacturingSave = () => {
                         setApproverRemarks(false),
                         setIsSelectedEquipmentClearance(false),
                         setIsSelectedManufacturing(false);
+                        setIsProductInformation(false);
+                        setIsBatchFormulaAndMaterialIdentification(false);
                     }}
                   >
                     General & Manufacturing precautions
@@ -776,6 +828,8 @@ const handleManufacturingSave = () => {
                         setApproverRemarks(false),
                         setIsSelectedEquipmentClearance(false),
                         setIsSelectedGeneralManufacturing(false);
+                        setIsProductInformation(false);
+                        setIsBatchFormulaAndMaterialIdentification(false);
                     }}
                   >
                     Manufacturing Instructions
@@ -786,6 +840,7 @@ const handleManufacturingSave = () => {
 
               {isSelectedGeneral === true ? (
                 <>
+                <div className="form-flex">
                   <div className="group-input">
                     <label className="color-label">Initiator</label>
                     <div>
@@ -819,7 +874,73 @@ const handleManufacturingSave = () => {
                       />
                     </div>
                   </div>
-
+                  </div>
+<div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">
+                        Reviewer
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
+                      <div>
+                        <select
+                          value={differentialPRecord.reviewer_id}
+                          onChange={(e) => {
+                            setDifferentialPRecord({
+                              reviewer_id: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="">Select a reviewer</option>
+                          {[
+                            ...new Map(
+                              reviewers.map((reviewer) => [
+                                reviewer.user_id,
+                                reviewer,
+                              ])
+                            ).values(),
+                          ].map((reviewer, index) => (
+                            <option key={index} value={reviewer.user_id}>
+                              {reviewer.User.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">
+                        Approver
+                        <span style={{ color: "red", marginLeft: "2px" }}>
+                          *
+                        </span>
+                      </label>
+                      <div>
+                        <select
+                          value={differentialPRecord.approver_id}
+                          onChange={(e) => {
+                            setDifferentialPRecord({
+                              approver_id: e.target.value,
+                            });
+                          }}
+                        >
+                          <option value="">Select an approver</option>
+                          {[
+                            ...new Map(
+                              approvers.map((approver) => [
+                                approver.user_id,
+                                approver,
+                              ])
+                            ).values(),
+                          ].map((approver, index) => (
+                            <option key={index} value={approver.user_id}>
+                              {approver.User.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div className="group-input">
                     <label className="color-label">
                       Description{" "}
@@ -862,6 +983,307 @@ const handleManufacturingSave = () => {
                   </div>
                 </>
               ) : null}
+          {isProductInformation === true ? (
+  <div className="mt-4 border border-black p-4">
+
+    {/* MAIN GRID */}
+    <div className="grid grid-cols-2 gap-6">
+
+      {/* ================= LEFT BLOCK ================= */}
+      <div className="space-y-4">
+
+        {[
+          "Label Claim",
+          "Product Synonym",
+          "Shelf Life",
+          "Customer Code",
+          "Ref. MFC Number",
+          
+        ].map((label, i) => (
+          <div key={i}>
+            <label className="font-medium text-sm">{label}</label>
+            <input
+              type="text"
+              className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+            />
+          </div>
+        ))}
+
+      </div>
+
+      {/* ================= RIGHT BLOCK ================= */}
+      <div className="space-y-4">
+
+        <div>
+          <label className="font-medium text-sm">
+            Supersedes BMR / Document No.
+          </label>
+          <input
+            type="text"
+            className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+          />
+        </div>
+
+        
+
+      <div>
+        <label className="font-medium text-sm">Manufacturing Date</label>
+        <input
+          type="date"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="font-medium text-sm">Expiry Date</label>
+        <input
+          type="date"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="font-medium text-sm">Signature & Date (QAD)</label>
+        <input
+          type="text"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+      <div>
+        <label className="font-medium text-sm">Reference Change Control No.</label>
+        <input
+          type="text"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+      
+      </div>
+
+
+      {/* ================= 3rd ROW ================= */}
+      <div>
+        <label className="font-medium text-sm">Batch Started on Date</label>
+        <input
+          type="date"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="font-medium text-sm">Batch Completed on Date</label>
+        <input
+          type="date"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="font-medium text-sm">
+          Production (Sign & Date)
+        </label>
+        <input
+          type="text"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="font-medium text-sm">
+          QAD (Sign & Date)
+        </label>
+        <input
+          type="text"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="font-medium text-sm">Mother Batch No.</label>
+        <input
+          type="text"
+          className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+        />
+      </div>
+
+    </div>
+     
+  <div className="font-bold  pt-5">
+          Reconciliation of Executed BMR pages
+        </div>
+<div className="grid grid-cols-2 gap-6">
+        {[
+          "No. of pages issued in first issue",
+          "No. of additional pages issued",
+          "Total No. of pages issued"
+        ].map((label, i) => (
+          <div key={i}>
+            <label className="font-medium text-sm">{label}</label>
+            <input
+              type="text"
+              className="w-full mt-1 border border-gray-400 px-3 py-2 rounded text-sm"
+            />
+          </div>
+        ))}
+</div>
+  </div>
+) : null}
+{isBatchFormulaAndMaterialIdentification === true ? (
+  <div className="overflow-x-auto mt-4">
+<div className="font-bold">Intragranular Material</div>
+ <div className="AddRows d-flex">
+                      <NoteAdd
+                      // onClick={addRow}
+                      />
+                      <div className="addrowinstruction"></div>
+                    </div>
+    <table className="w-full  border border-black text-xs border-collapse">
+
+      {/* HEADER */}
+      <thead className="text-center h-[50px] font-semibold">
+        <tr>
+          <th className="border p-2">Sr. No.</th>
+          <th className="border p-2">Material Code (As per SAP)</th>
+          <th className="border p-2">Material Description</th>
+          <th className="border p-2">Vendor / mfg.</th>
+          <th className="border p-2">Quantity / Unit Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">LOT</th>
+          <th className="border p-2">Quantity / Batch Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">Retest Date</th>
+          <th className="border p-2">Exp. Date</th>
+          <th className="border p-2">A.R. No.</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      </tbody>
+    </table>
+<div className="font-bold pt-5">Granulating Agent</div>
+ <div className="AddRows d-flex">
+                      <NoteAdd
+                      // onClick={addRow}
+                      />
+                      <div className="addrowinstruction"></div>
+                    </div>
+    <table className="w-full border border-black text-xs border-collapse">
+
+      {/* HEADER */}
+      <thead className="text-center h-[50px] font-semibold">
+        <tr>
+          <th className="border p-2">Sr. No.</th>
+          <th className="border p-2">Material Code (As per SAP)</th>
+          <th className="border p-2">Material Description</th>
+          <th className="border p-2">Vendor / mfg.</th>
+          <th className="border p-2">Quantity / Unit Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">LOT</th>
+          <th className="border p-2">Quantity / Batch Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">Retest Date</th>
+          <th className="border p-2">Exp. Date</th>
+          <th className="border p-2">A.R. No.</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      </tbody>
+    </table>
+<div className="font-bold pt-5">Extragranular Material</div>
+ <div className="AddRows d-flex">
+                      <NoteAdd
+                      // onClick={addRow}
+                      />
+                      <div className="addrowinstruction"></div>
+                    </div>
+    <table className="w-full border border-black text-xs border-collapse">
+
+      {/* HEADER */}
+      <thead className="text-center h-[50px] font-semibold">
+        <tr>
+          <th className="border p-2">Sr. No.</th>
+          <th className="border p-2">Material Code (As per SAP)</th>
+          <th className="border p-2">Material Description</th>
+          <th className="border p-2">Vendor / mfg.</th>
+          <th className="border p-2">Quantity / Unit Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">LOT</th>
+          <th className="border p-2">Quantity / Batch Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">Retest Date</th>
+          <th className="border p-2">Exp. Date</th>
+          <th className="border p-2">A.R. No.</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      </tbody>
+    </table>
+<div className="font-bold pt-5">Lubricant</div>
+ <div className="AddRows d-flex">
+                      <NoteAdd
+                      // onClick={addRow}
+                      />
+                      <div className="addrowinstruction"></div>
+                    </div>
+    <table className="w-full border border-black text-xs border-collapse">
+
+      {/* HEADER */}
+      <thead className="text-center h-[50px] font-semibold">
+        <tr>
+          <th className="border p-2">Sr. No.</th>
+          <th className="border p-2">Material Code (As per SAP)</th>
+          <th className="border p-2">Material Description</th>
+          <th className="border p-2">Vendor / mfg.</th>
+          <th className="border p-2">Quantity / Unit Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">LOT</th>
+          <th className="border p-2">Quantity / Batch Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">Retest Date</th>
+          <th className="border p-2">Exp. Date</th>
+          <th className="border p-2">A.R. No.</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      </tbody>
+    </table>
+<div className="font-bold pt-5">Film coating Material: (XX % w/w suspension / dispersion)</div>
+     <div className="AddRows d-flex">
+                      <NoteAdd
+                      // onClick={addRow}
+                      />
+                      <div className="addrowinstruction"></div>
+                    </div>
+    <table className="w-full border border-black text-xs border-collapse">
+
+      {/* HEADER */}
+      <thead className="text-center h-[50px] font-semibold">
+        <tr>
+          <th className="border p-2">Sr. No.</th>
+          <th className="border p-2">Material Code (As per SAP)</th>
+          <th className="border p-2">Material Description</th>
+          <th className="border p-2">Vendor / mfg.</th>
+          <th className="border p-2">Quantity / Unit Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">LOT</th>
+          <th className="border p-2">Quantity / Batch Quantity</th>
+          <th className="border p-2">UOM</th>
+          <th className="border p-2">Retest Date</th>
+          <th className="border p-2">Exp. Date</th>
+          <th className="border p-2">A.R. No.</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      </tbody>
+    </table>
+
+
+  </div>
+) : null}
+
 
      {isSelectedEquipmentClearance === true ? (
   <div className="overflow-x-auto mt-4">
@@ -1022,7 +1444,6 @@ const handleManufacturingSave = () => {
     </table>
   </div>
 ) : null}
-
 
 
 {isSelectedGeneralManufacturing === true ? (

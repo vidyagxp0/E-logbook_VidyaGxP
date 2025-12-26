@@ -162,14 +162,14 @@ function CreateRecordModal(_props) {
       <div className="custom-modal" id="create-record-modal">
         <div className="modal-container">
           <div className="modal-top">
-            <div className="head">Initiate eBMR</div>
+            <div className="head">Available Drafts</div>
           </div>
 
           <div className="modal-middle">
             <div className="selection-block">
               <div className="division">
                 <div className="head text-lg font-semibold mb-2">
-                  Department
+                  Site
                 </div>
                 <div className="select-list division-list flex flex-col gap-2">
                   {sites?.map((item) => (
@@ -193,7 +193,7 @@ function CreateRecordModal(_props) {
               </div>
 
               <div className="project">
-                <div className="head gap-2 mb-3">Equipment/Instrument</div>
+                <div className="head text-lg font-semibold mb-2">Products</div>
                 <div className="select-list division-list gap-2">
                   {processes.map((item, index) => (
                     <div
