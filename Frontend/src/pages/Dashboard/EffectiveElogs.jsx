@@ -1121,7 +1121,7 @@ function EffectiveElogs() {
               className="group-input"
               style={{ marginBottom: "0", minWidth: "200px" }}
             >
-              <label style={labelStyle}>All Instruments/Equipment ID's</label>
+              <label style={labelStyle}>All Products</label>
 
               <select
                 value={instrumentFilter}
@@ -1280,9 +1280,9 @@ function EffectiveElogs() {
             <tr>
               <th className="text-center">S no</th>
               {/* <th className="text-center">E.Log no</th> */}
-              <th className="text-center">Instrument No.</th>
+              <th className="text-center">Product Name</th>
               {/* <th className="text-center">Instrument / Equipment</th> */}
-              <th className="text-center">Name</th>
+              <th className="text-center">Product Code</th>
               <th className="text-center">Department</th>
               <th className="text-center">Short description</th>
               <th className="text-center">Created By</th>
