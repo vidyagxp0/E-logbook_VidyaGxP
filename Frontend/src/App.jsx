@@ -83,6 +83,7 @@ import EquipmentUsagePanel from "./pages/documentPanels/Medicef/EquipmentUsage/E
 import BMR from "./pages/configForms/eBMR/BMR.jsx";
 import MasterDashboard from "./components/Masters/MasterDashboard/MasterDashboard.jsx";
 import BMRPanel from "./pages/documentPanels/BMRPanel/BMRPanel.jsx";
+import EbmrDashboard from "./pages/Dashboard/EbmrDashboard.jsx";
 
 function App() {
   return (
@@ -302,7 +303,7 @@ function App() {
             />
             <Route
               path="/dashboard"
-              element={<ProtectedRoute element={<Dashboard />} />}
+              element={<ProtectedRoute element={<EbmrDashboard />} />}
             />p
             <Route
               path="/effectiveElogs"
