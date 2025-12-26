@@ -19,6 +19,11 @@ export default function BMR() {
     isBatchFormulaAndMaterialIdentification,
     setIsBatchFormulaAndMaterialIdentification,
   ] = useState(false);
+     const [isPersonMakingEntries, setIsPersonMakingEntries] = useState(false);
+      const [isAbbreviations, setIsAbbreviations] = useState(false);
+      const [isAPIAssay, setIsAPIAssay] = useState(false);
+      const [isAPIDispensing, setIsAPIDispensing] = useState(false);
+      const [isGeneralManufacturingPrecaution, setIsGeneralManufacturingPrecaution] = useState(false);
   const [isSelectedDetails, setIsSelectedDetails] = useState(false);
   const [isSelectedGeneralManufacturing, setIsSelectedGeneralManufacturing] =
     useState(false);
@@ -33,7 +38,11 @@ export default function BMR() {
   const [approvers, setApprovers] = useState([]);
   const [User, setUser] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
+    const [wc, setWc] = useState("");     // Water Content
+    const [rc, setRc] = useState("");     // Residual Content
+    const [theoreticalQty, setTheoreticalQty] = useState("");
+    const [xValue, setXValue] = useState("");
+    const [finalKg, setFinalKg] = useState("");
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const navigate = useNavigate();
   const location = useLocation();
@@ -760,6 +769,24 @@ formData: formData || [],
       });
   };
 
+    const resetAll = () => {
+setIsSelectedDetails(false),
+                        setIsSelectedGeneral(false),
+                        setInitiatorRemarks(false),
+                        setReviewerRemarks(false),
+                        setApproverRemarks(false),
+                        setIsSelectedEquipmentClearance(false),
+                        setIsSelectedGeneralManufacturing(false),
+                        setIsSelectedManufacturing(false);
+                        setIsProductInformation(false);
+                        setIsBatchFormulaAndMaterialIdentification(false);
+                        setIsPersonMakingEntries(false);
+                        setIsAbbreviations(false);
+                        setIsAPIAssay(false);
+                        setIsAPIDispensing(false);
+                        setIsGeneralManufacturingPrecaution(false);
+  };
+
   return (
     <>
       <HeaderTop />
@@ -769,26 +796,18 @@ formData: formData || [],
             <div className="details-form-data">
               <div className="sub-head-2">Master Formula Record</div>
 
-              <div className="outerDiv4">
-                <div className="btn-forms">
+               <div className="outerDiv4">
+                <div className="flex gap-3 overflow-x-auto whitespace-nowrap scroll-smooth px-2 py-2">
                   <div
                     className={`${
                       isSelectedGeneral === true
                         ? "btn-forms-isSelected"
                         : "btn-forms-select"
                     }`}
-                    onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsSelectedGeneral(true),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false),
-                        setIsSelectedEquipmentClearance(false),
-                        setIsSelectedGeneralManufacturing(false),
-                        setIsSelectedManufacturing(false);
-                      setIsProductInformation(false);
-                      setIsBatchFormulaAndMaterialIdentification(false);
-                    }}
+                   onClick={() => {
+            resetAll();
+            setIsSelectedGeneral(true);
+          }}
                   >
                     General Information
                   </div>
@@ -799,17 +818,9 @@ formData: formData || [],
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsProductInformation(true);
-                      setIsSelectedGeneral(false),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false),
-                        setIsSelectedEquipmentClearance(false),
-                        setIsSelectedGeneralManufacturing(false),
-                        setIsSelectedManufacturing(false);
-                      setIsBatchFormulaAndMaterialIdentification(false);
-                    }}
+            resetAll();
+            setIsProductInformation(true);
+          }}
                   >
                     Product Information
                   </div>
@@ -819,63 +830,92 @@ formData: formData || [],
                         ? "btn-forms-isSelected"
                         : "btn-forms-select"
                     }`}
-                    onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsProductInformation(false);
-                      setIsBatchFormulaAndMaterialIdentification(true);
-                      setIsSelectedGeneral(false),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false),
-                        setIsSelectedEquipmentClearance(false),
-                        setIsSelectedGeneralManufacturing(false),
-                        setIsSelectedManufacturing(false);
-                    }}
+                   onClick={() => {
+            resetAll();
+            setIsBatchFormulaAndMaterialIdentification(true);
+          }}
                   >
                     Batch Formula and Material Identification
                   </div>
-
+                  <div
+                    className={`${
+                      isPersonMakingEntries === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                   onClick={() => {
+            resetAll();
+            setIsPersonMakingEntries(true);
+          }}
+                  >
+                    Persons making entries
+                  </div>
+                  <div
+                    className={`${
+                      isAbbreviations === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+            resetAll();
+            setIsAbbreviations(true);
+          }}
+                  >
+                    Abbreviations
+                  </div>
+                  
+                  <div
+                    className={`${
+                      isAPIAssay === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+            resetAll();
+            setIsAPIAssay(true);
+          }}
+                  >
+                   API Assay as is basis calculation 
+                  </div>
+                  <div
+                    className={`${
+                      isAPIDispensing === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+            resetAll();
+            setIsAPIDispensing(true);
+          }}
+                  >
+                   API Dispensing calculation 
+                  </div>
+                  <div
+                    className={`${
+                      isGeneralManufacturingPrecaution === true
+                        ? "btn-forms-isSelected"
+                        : "btn-forms-select"
+                    }`}
+                    onClick={() => {
+            resetAll();
+            setIsGeneralManufacturingPrecaution(true);
+          }}
+                  >
+                   General Manufacturing Precaution
+                  </div>
+                  
                   <div
                     className={`${
                       isSelectedEquipmentClearance === true
                         ? "btn-forms-isSelected"
                         : "btn-forms-select"
                     }`}
-                    onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsSelectedGeneral(false),
-                        setIsSelectedEquipmentClearance(true),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false),
-                        setIsSelectedGeneralManufacturing(false),
-                        setIsSelectedManufacturing(false);
-                      setIsProductInformation(false);
-                      setIsBatchFormulaAndMaterialIdentification(false);
-                    }}
+                   onClick={() => {
+            resetAll();
+            setIsSelectedEquipmentClearance(true);
+          }}
                   >
-                    Equipment Clearance
-                  </div>
-                  <div
-                    className={`${
-                      isSelectedGeneralManufacturing === true
-                        ? "btn-forms-isSelected"
-                        : "btn-forms-select"
-                    }`}
-                    onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsSelectedGeneral(false),
-                        setIsSelectedGeneralManufacturing(true),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false),
-                        setIsSelectedEquipmentClearance(false),
-                        setIsSelectedManufacturing(false);
-                      setIsProductInformation(false);
-                      setIsBatchFormulaAndMaterialIdentification(false);
-                    }}
-                  >
-                    General & Manufacturing precautions
+                  Equipment Clearance
                   </div>
                   <div
                     className={`${
@@ -884,20 +924,13 @@ formData: formData || [],
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
-                        setIsSelectedGeneral(false),
-                        setIsSelectedManufacturing(true),
-                        setInitiatorRemarks(false),
-                        setReviewerRemarks(false),
-                        setApproverRemarks(false),
-                        setIsSelectedEquipmentClearance(false),
-                        setIsSelectedGeneralManufacturing(false);
-                      setIsProductInformation(false);
-                      setIsBatchFormulaAndMaterialIdentification(false);
-                    }}
+            resetAll();
+            setIsSelectedManufacturing(true);
+          }}
                   >
                     Manufacturing Instructions
                   </div>
+                 
                 </div>
               </div>
 
@@ -1364,6 +1397,735 @@ formData: formData || [],
                 </div>
               ) : null}
 
+{ isPersonMakingEntries === true ?
+ (<>
+ <div className="pt-5 font-bold text-xl">Persons making entries in the BMR</div>
+ <p className="py-2">Note: Signature on this page indicates that I read the procedure given for listed activity and understand to perform the particular activity.</p>
+ <table className="w-full border border-black border-collapse text-sm">
+  <thead>
+    <tr className="text-center font-semibold">
+      <th className="border border-black p-2 w-20">Sr. No.</th>
+      <th className="border border-black p-2">Employee Name</th>
+      <th className="border border-black p-2">Employee Code</th>
+      <th className="border border-black p-2">Department</th>
+      <th className="border border-black p-2">Sign & Date</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {Array.from({ length: 10 }).map((_, i) => (
+      <tr key={i} className="h-10">
+        <td className="border border-black p-2 text-center">{i + 1}.</td>
+        <td className="border border-black p-2"></td>
+        <td className="border border-black p-2"></td>
+        <td className="border border-black p-2"></td>
+        <td className="border border-black p-2"></td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+</>)
+ : null}
+{ isAbbreviations === true ?
+ (<>
+ <div className="pt-5 font-bold text-xl">Abbreviations</div>
+ <table className="w-full border border-black border-collapse text-sm">
+  <thead>
+    <tr>
+      <th colSpan={4} className="border border-black p-2 font-semibold text-center">
+        List of Abbreviation
+      </th>
+    </tr>
+    <tr className="text-center font-semibold">
+      <th className="border border-black p-2 w-28">Abbrev.</th>
+      <th className="border border-black p-2">Meaning</th>
+      <th className="border border-black p-2 w-28">Abbrev.</th>
+      <th className="border border-black p-2">Meaning</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td className="border border-black p-2 text-center">%</td>
+      <td className="border border-black p-2">Percentage</td>
+      <td className="border border-black p-2 text-center">No.</td>
+      <td className="border border-black p-2">Number</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">°C</td>
+      <td className="border border-black p-2">Degree Centigrade</td>
+      <td className="border border-black p-2 text-center">°C</td>
+      <td className="border border-black p-2">Degree Centigrade</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">µ</td>
+      <td className="border border-black p-2">Micron</td>
+      <td className="border border-black p-2 text-center">Pa</td>
+      <td className="border border-black p-2">Pascal</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">A.R</td>
+      <td className="border border-black p-2">Analytical Reference</td>
+      <td className="border border-black p-2 text-center">PD</td>
+      <td className="border border-black p-2">Production</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">API</td>
+      <td className="border border-black p-2">Active Pharmaceutical Ingredient</td>
+      <td className="border border-black p-2 text-center">PDI</td>
+      <td className="border border-black p-2">Production Injectable</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">BMR</td>
+      <td className="border border-black p-2">Batch Manufacturing Record</td>
+      <td className="border border-black p-2 text-center">PDO</td>
+      <td className="border border-black p-2">Production Oral</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">cGMP</td>
+      <td className="border border-black p-2">Current Good Manufacturing Practice</td>
+      <td className="border border-black p-2 text-center">Ph.Eur.</td>
+      <td className="border border-black p-2">European Pharmacopoeia</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">Ckd.</td>
+      <td className="border border-black p-2">Checked</td>
+      <td className="border border-black p-2 text-center">PSD</td>
+      <td className="border border-black p-2">Particle Size Distribution</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">cm²</td>
+      <td className="border border-black p-2">Square Centimetre</td>
+      <td className="border border-black p-2 text-center">QA</td>
+      <td className="border border-black p-2">Quality Assurance</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">Emp.</td>
+      <td className="border border-black p-2">Employee</td>
+      <td className="border border-black p-2 text-center">QAD</td>
+      <td className="border border-black p-2">Quality Assurance Department</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">FBP</td>
+      <td className="border border-black p-2">Fluid Bed Processor</td>
+      <td className="border border-black p-2 text-center">Qty.</td>
+      <td className="border border-black p-2">Quantity</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">FDD</td>
+      <td className="border border-black p-2">Formulation Development Department</td>
+      <td className="border border-black p-2 text-center">RH</td>
+      <td className="border border-black p-2">Relative Humidity</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">g / gm</td>
+      <td className="border border-black p-2">Gram</td>
+      <td className="border border-black p-2 text-center">RLAF</td>
+      <td className="border border-black p-2">Reverse Laminar Air Flow</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">HEPA</td>
+      <td className="border border-black p-2">High Efficiency Particulate Air</td>
+      <td className="border border-black p-2 text-center">RPM</td>
+      <td className="border border-black p-2">Rotation Per Minute</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">I.D.</td>
+      <td className="border border-black p-2">Identification Number</td>
+      <td className="border border-black p-2 text-center">SBV</td>
+      <td className="border border-black p-2">Split Butterfly Valve</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">IBC</td>
+      <td className="border border-black p-2">In-process bulk container</td>
+      <td className="border border-black p-2 text-center">Sign.</td>
+      <td className="border border-black p-2">Signature</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">ID</td>
+      <td className="border border-black p-2">Identification</td>
+      <td className="border border-black p-2 text-center">SOP</td>
+      <td className="border border-black p-2">Standard Operating Procedure</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">IH</td>
+      <td className="border border-black p-2">In-house</td>
+      <td className="border border-black p-2 text-center">Sr.No.</td>
+      <td className="border border-black p-2">Serial Number</td>
+    </tr>
+
+    <tr>
+      <td className="border border-black p-2 text-center">IPC</td>
+      <td className="border border-black p-2">Intermediate Product Container</td>
+      <td className="border border-black p-2 text-center">Temp.</td>
+      <td className="border border-black p-2">Temperature</td>
+    </tr>
+  </tbody>
+</table>
+
+
+</>)
+ : null}
+
+ {
+isAPIAssay === true ? (<>
+  <div className="pt-5 font-bold text-xl">API Assay as is basis calculation </div>
+      <div className="text-sm leading-relaxed">
+
+      {/* ====== MAIN HEADING ====== */}
+      <div className="font-bold mt-4">
+        1. API Dispensing calculation
+      </div>
+
+      <div className="ml-6">
+        Quantity of XXXXXXXX, in (Kg)
+      </div>
+
+
+      {/* ====== FORMULA SECTION ====== */}
+      <div className="text-center mt-6">
+
+        <div className="font-semibold">
+          Theoretical qty. × 100 × 100 × 100
+        </div>
+
+        <div className="mt-2">
+          [Assay on anhydrous basis and solvent free basis (%w/w)]
+          × [100 − WC (%w/w)]
+          × [100 − RC (%w/w)]
+        </div>
+
+        <div className="mt-4 font-bold">=</div>
+
+        <div className="mt-2">
+          x 100 × 100 × 100
+        </div>
+
+        <div className="mt-2">
+          x (100 −
+          <input
+            type="text"
+            value={wc}
+            onChange={(e) => setWc(e.target.value)}
+            className="border-b border-black outline-none w-16 text-center mx-1"
+          />)
+          × (100 −
+          <input
+            type="text"
+            value={rc}
+            onChange={(e) => setRc(e.target.value)}
+            className="border-b border-black outline-none w-16 text-center mx-1"
+          />)
+        </div>
+
+        <div className="mt-4 font-bold">=</div>
+
+        <div className="mt-3">
+          <input
+            type="text"
+            value={theoreticalQty}
+            onChange={(e) => setTheoreticalQty(e.target.value)}
+            className="border-b border-black outline-none w-24 text-center"
+          />
+          &nbsp;×&nbsp;
+          <input
+            type="text"
+            value={xValue}
+            onChange={(e) => setXValue(e.target.value)}
+            className="border-b border-black outline-none w-24 text-center"
+          />
+        </div>
+
+        <div className="mt-4 font-bold">=</div>
+
+        <div className="mt-3">
+          <input
+            type="text"
+            value={finalKg}
+            onChange={(e) => setFinalKg(e.target.value)}
+            className="border-b border-black outline-none w-28 text-center"
+          />
+          &nbsp;Kg
+        </div>
+
+      </div>
+
+
+      {/* ====== SIGNATURE AREA ====== */}
+      <div className="mt-6 flex flex-col gap-2">
+        <div>
+          Calculated by (WHD) (Sign & Date) __________________________
+        </div>
+        <div>
+          Checked by (Production) (Sign & Date) ______________________
+        </div>
+        <div>
+          Verified by (QAD) (Sign & Date) ____________________________
+        </div>
+      </div>
+
+
+      {/* ====== NEXT SECTION HEADING ====== */}
+      <div className="font-bold mt-6">
+        2. Calculation for Multiple AR. No.:
+      </div>
+
+      <div className="font-bold mt-2">
+        3. API Assay as is basis calculation
+      </div>
+
+
+      {/* ====== TABLE ====== */}
+      <div className="mt-3 overflow-x-auto">
+        <table className="w-full border border-black border-collapse text-xs">
+
+          <thead>
+            <tr>
+              <th rowSpan={2} className="border border-black p-2 text-center w-10">
+                Sr. No.
+              </th>
+
+              <th colSpan={6} className="border border-black p-2 text-center font-semibold">
+                Quantity
+              </th>
+
+              <th rowSpan={2} className="border border-black p-2 w-28 text-center">
+                A.R. Number
+              </th>
+
+              <th rowSpan={2} className="border border-black p-2 w-32 text-center">
+                Material GRN No.
+              </th>
+
+              <th rowSpan={2} className="border border-black p-2 w-44 text-center">
+                Assay on anhydrous basis and solvent free basis (%w/w) (F)
+              </th>
+
+              <th rowSpan={2} className="border border-black p-2 w-44 text-center">
+                Water content %w/w RC (Total residual solvent NMT 3000 ppm) (G)
+              </th>
+
+              <th rowSpan={2} className="border border-black p-2 w-32 text-center">
+                Assay as is basis (H = F − G)
+              </th>
+            </tr>
+
+            <tr>
+              <th className="border border-black p-2 text-center">Required Qty. (A)</th>
+              <th className="border border-black p-2 text-center">Available Qty. (B)</th>
+              <th className="border border-black p-2 text-center">Qty. @ 100% Assay (C)</th>
+              <th className="border border-black p-2 text-center">Issued Qty. (D)</th>
+              <th className="border border-black p-2 text-center">Balance Qty. (E = A − C)</th>
+              <th className="border border-black p-2 text-center">Batch No.</th>
+            </tr>
+          </thead>
+
+
+          <tbody>
+
+            {Array.from({ length: 6 }).map((_, i) => (
+              <tr key={i}>
+                <td className="border border-black text-center p-2">{i + 1}</td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+                <td className="border border-black p-2"><input/></td>
+
+              </tr>
+            ))}
+
+            <tr className="font-semibold">
+              <td className="border border-black p-2 text-right" colSpan={7}>
+                Total issued Qty. :
+              </td>
+              <td className="border border-black p-2" colSpan={5}><input type="text" /></td>
+            </tr>
+
+          </tbody>
+
+        </table>
+      </div>
+
+    </div>
+</>) : null
+ }
+ {isAPIDispensing === true ? (<>
+  <div className="pt-5 font-bold text-xl">	API Dispensing calculation                                                                        </div>
+<div className="text-sm leading-relaxed">
+
+    {/* Heading */}
+    <div className="font-bold">
+      1. API Dispensing calculation
+    </div>
+
+    <div className="ml-6">
+      Quantity of XXXXXXXX, in (Kg)
+    </div>
+
+    {/* ==== FORMULA BOX ==== */}
+    <div className="text-center mt-4">
+
+      <div className="font-semibold">
+        Theoretical Qty. × 100 × 100 × 100
+      </div>
+
+      <div className="mt-1">
+        [Assay on anhydrous basis and solvent free basis (%w/w)] × [100 - WC (%w/w)] × [100 - RC (%w/w)]
+      </div>
+
+      <div className="mt-3 font-bold">=</div>
+
+      <div className="mt-2">
+        x 100 × 100 × 100
+      </div>
+
+      <div className="mt-1">
+        x (100 − 
+        <input 
+          type="text"
+          className="border-b border-black outline-none w-16 text-center mx-1"
+        />) × (100 − 
+        <input 
+          type="text"
+          className="border-b border-black outline-none w-16 text-center mx-1"
+        />)
+      </div>
+
+      <div className="mt-3 font-bold">=</div>
+
+      <div className="mt-2">
+        x &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; x
+      </div>
+
+      <div className="mt-3 font-bold">=</div>
+
+      <div className="mt-2">
+        <input 
+          type="text"
+          className="border-b border-black outline-none w-24 text-center"
+        /> 
+        &nbsp; = &nbsp; 
+        <input 
+          type="text"
+          className="border-b border-black outline-none w-28 text-center"
+        /> Kg
+      </div>
+
+    </div>
+
+    {/* ==== SIGNATURE LINES ==== */}
+    <div className="mt-6">
+      Calculated by (WHD) (Sign & Date) ____________________
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      Checked by (Production) (Sign & Date) ____________________
+      <br />
+      <br />
+      Verified by (QAD) (Sign & Date) ____________________
+    </div>
+
+
+    {/* ==== NEXT HEADING ==== */}
+    <div className="font-bold mt-5">
+      2. Calculation for Multiple AR. No.:
+    </div>
+
+    <div className="font-bold mt-1">
+      3. API Assay as is basis calculation:
+    </div>
+
+
+    {/* ==== TABLE ==== */}
+    <div className="mt-3 overflow-x-auto">
+      <table className="w-full border border-black border-collapse text-xs">
+
+        <thead>
+          <tr>
+            <th rowSpan={2} className="border border-black p-2 text-center w-10">
+              Sr. No.
+            </th>
+
+            <th colSpan={6} className="border border-black p-2 text-center">
+              Quantity
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-24 text-center">
+              A.R. Number
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-28 text-center">
+              Material GRN No.
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-36 text-center">
+              Assay on anhydrous basis & solvent free basis (%w/w)(F)
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-32 text-center">
+              Water content RC %w/w (ppm) (G)
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-28 text-center">
+              Assay as is basis (H = F − G)
+            </th>
+          </tr>
+
+          <tr>
+            <th className="border border-black p-2 text-center w-24">
+              Required Qty. (A)
+            </th>
+            <th className="border border-black p-2 text-center w-24">
+              Available Qty. (B)
+            </th>
+            <th className="border border-black p-2 text-center w-28">
+              Qty. as per 100% Assay (C)
+            </th>
+            <th className="border border-black p-2 text-center w-24">
+              Issued Qty. (D)
+            </th>
+            <th className="border border-black p-2 text-center w-28">
+              Balance Qty. (E = A − C)
+            </th>
+            <th className="border border-black p-2 text-center w-24">
+              Batch No.
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          {Array.from({ length: 5 }).map((_, i) => (
+            <tr key={i}>
+              <td className="border border-black p-2 text-center">{i + 1}</td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+              <td className="border border-black p-2"><input type="text" /></td>
+            </tr>
+          ))}
+
+          <tr className="font-semibold">
+            <td className="border border-black p-2 text-right" colSpan={7}>
+              Total issued Qty. :
+            </td>
+            <td className="border border-black p-2" colSpan={5}><input type="text" /></td>
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+    </div>
+</>) : null
+ }
+
+{isGeneralManufacturingPrecaution === true ? (
+  <div className="text-sm leading-relaxed">
+
+    {/* Heading */}
+    <div className="pt-5 font-bold text-xl">
+      General Manufacturing Precaution
+    </div>
+
+    {/* Instruction */}
+    <div className="mt-3">
+      1. Record the environmental conditions of area, Differential pressure and Differential pressure of RLAF at start of the activity.
+    </div>
+
+    {/* Area & Room */}
+      <div className="grid grid-cols-2 gap-4">
+<div className="group-input">
+                    <label className="color-label">Area Name</label>
+                    <div className="instruction"></div>
+                    <input
+                      type="text"
+                      // className={`${
+                      //   differentialPRecord.limit < 0.6
+                      //     ? "limit"
+                      //     : differentialPRecord.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                      
+                    />
+                  </div>
+                  <div className="group-input">
+                    <label className="color-label">Room No</label>
+                    <div className="instruction"></div>
+                    <input
+                      type="text"
+                      // className={`${
+                      //   differentialPRecord.limit < 0.6
+                      //     ? "limit"
+                      //     : differentialPRecord.limit > 2.6
+                      //     ? "limit"
+                      //     : ""
+                      // }`}
+                   
+                    />
+                  </div>
+      </div>
+
+    {/* TABLE */}
+    <div className="mt-5 overflow-x-auto">
+      <table className="w-full border border-black border-collapse text-xs text-center">
+
+        <thead>
+
+          <tr>
+            <th rowSpan={2} className="border border-black p-2 w-20">
+              Date
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-20">
+              Time
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-24">
+              <div className="">
+                D.P. (mm of WC) NLT 1.0 mm of WC
+              </div>
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-24">
+              <div className="">
+                Temp. (°C) 23°C ± 2°C
+              </div>
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-20">
+              <div className="">
+                RH (%) NMT 55%
+              </div>
+            </th>
+
+            {/* Group Header */}
+            <th colSpan={3} className="border border-black p-2">
+              Reverse LAF (mm of WC)
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-28">
+              <div className="">
+                Recorded by (WH/PD) Sign & Date
+              </div>
+            </th>
+
+            <th rowSpan={2} className="border border-black p-2 w-28">
+              <div className="">
+                Checked by (QAD) Sign & Date
+              </div>
+            </th>
+          </tr>
+
+          <tr>
+            <th className="border border-black p-2 w-24">
+              <div className="">
+                Intermediate 10.0 to 15.0 mm of WC
+              </div>
+            </th>
+
+            <th className="border border-black p-2 w-24">
+              <div className="">
+                HEPA 7.0 to 15.0 mm of WC
+              </div>
+            </th>
+
+            <th className="border border-black p-2 w-24">
+              <div className="">
+                Pre-Filter 0.1 to 2.0 mm of WC
+              </div>
+            </th>
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          {Array.from({ length: 6 }).map((_, i) => (
+            <tr key={i}>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+              <td className="border border-black p-2">
+                <input className="w-full outline-none text-center" type="text" />
+              </td>
+
+            </tr>
+          ))}
+
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+) : null}
+
               {isSelectedEquipmentClearance === true ? (
                 <div className="overflow-x-auto mt-4">
                   <table className="w-full border border-black text-sm border-collapse">
@@ -1543,185 +2305,7 @@ formData: formData || [],
                 </div>
               ) : null}
 
-              {isSelectedGeneralManufacturing === true ? (
-                <>
-                  <div className="mt-4 overflow-x-auto">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="group-input">
-                        <label className="color-label">Area Name</label>
-                        <div className="instruction"></div>
-                        <input
-                          type="text"
-                          // className={`${
-                          //   differentialPRecord.limit < 0.6
-                          //     ? "limit"
-                          //     : differentialPRecord.limit > 2.6
-                          //     ? "limit"
-                          //     : ""
-                          // }`}
-                        />
-                      </div>
-                      <div className="group-input">
-                        <label className="color-label">Room No</label>
-                        <div className="instruction"></div>
-                        <input
-                          type="text"
-                          // className={`${
-                          //   differentialPRecord.limit < 0.6
-                          //     ? "limit"
-                          //     : differentialPRecord.limit > 2.6
-                          //     ? "limit"
-                          //     : ""
-                          // }`}
-                        />
-                      </div>
-                    </div>
-                    <table className="w-full border border-black text-sm">
-                      <thead>
-                        <tr>
-                          <th className="border p-2">Date</th>
-                          <th className="border p-2">Time</th>
-                          <th className="border p-2">
-                            D.P. (mm WC)
-                            <br />
-                            NLT 1.0
-                          </th>
-                          <th className="border p-2">
-                            Temp (°C)
-                            <br />
-                            23 ± 2
-                          </th>
-                          <th className="border p-2">
-                            R.H. (%)
-                            <br />
-                            NMT 55
-                          </th>
-                          <th className="border p-2">Recorded by (PDO)</th>
-                          <th className="border p-2">Checked by (QAD)</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          {/* DATE */}
-                          <td className="border p-2">
-                            <input
-                              type="date"
-                              className="w-full border px-2 py-1"
-                              value={generalManufacturing.date}
-                              onChange={(e) =>
-                                setGeneralManufacturing({
-                                  ...generalManufacturing,
-                                  date: e.target.value,
-                                })
-                              }
-                            />
-                          </td>
-
-                          {/* TIME */}
-                          <td className="border p-2">
-                            <input
-                              type="time"
-                              className="w-full border px-2 py-1"
-                              value={generalManufacturing.time}
-                              onChange={(e) =>
-                                setGeneralManufacturing({
-                                  ...generalManufacturing,
-                                  time: e.target.value,
-                                })
-                              }
-                            />
-                          </td>
-
-                          {/* DP */}
-                          <td className="border p-2">
-                            <input
-                              className="w-full border px-2 py-1"
-                              value={generalManufacturing.dp}
-                              onChange={(e) =>
-                                setGeneralManufacturing({
-                                  ...generalManufacturing,
-                                  dp: e.target.value,
-                                })
-                              }
-                            />
-                          </td>
-
-                          {/* TEMP */}
-                          <td className="border p-2">
-                            <input
-                              type="number"
-                              className={`w-full border px-2 py-1 ${
-                                getTempStatus(generalManufacturing.temp)
-                                  ?.color || ""
-                              }`}
-                              value={generalManufacturing.temp}
-                              onChange={(e) =>
-                                setGeneralManufacturing({
-                                  ...generalManufacturing,
-                                  temp: e.target.value,
-                                })
-                              }
-                            />
-                            {getTempStatus(generalManufacturing.temp) && (
-                              <div
-                                className={`text-xs font-semibold mt-1 ${
-                                  getTempStatus(generalManufacturing.temp)
-                                    .status === "OUT_OF_LIMIT"
-                                    ? "text-red-600"
-                                    : "text-green-600"
-                                }`}
-                              >
-                                {getTempStatus(generalManufacturing.temp).label}
-                              </div>
-                            )}
-                          </td>
-
-                          {/* RH */}
-                          <td className="border p-2">
-                            <input
-                              type="number"
-                              className={`w-full border px-2 py-1 ${
-                                getRHStatus(generalManufacturing.rh)?.color ||
-                                ""
-                              }`}
-                              value={generalManufacturing.rh}
-                              onChange={(e) =>
-                                setGeneralManufacturing({
-                                  ...generalManufacturing,
-                                  rh: e.target.value,
-                                })
-                              }
-                            />
-                            {getRHStatus(generalManufacturing.rh) && (
-                              <div
-                                className={`text-xs font-semibold mt-1 ${
-                                  getRHStatus(generalManufacturing.rh)
-                                    .status === "OUT_OF_LIMIT"
-                                    ? "text-red-600"
-                                    : "text-green-600"
-                                }`}
-                              >
-                                {getRHStatus(generalManufacturing.rh).label}
-                              </div>
-                            )}
-                          </td>
-
-                          {/* PDO */}
-                          <td className="border p-2 text-center">
-                            <input className="w-full border px-2 py-1 " />
-                          </td>
-
-                          {/* QAD */}
-                          <td className="border p-2 text-center">
-                            <input className="w-full border px-2 py-1 " />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              ) : null}
+            
 
               {isSelectedManufacturing === true ? (
                 <>
