@@ -10,6 +10,7 @@ import UserVerificationPopUp from "../../../components/UserVerificationPopUp/Use
 import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 import { useSelector } from "react-redux";
+import WorkflowStepper from "../../../components/StaticWorkFlow";
 
 const BMRPanel = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -36,6 +37,8 @@ const BMRPanel = () => {
     const [finalKg, setFinalKg] = useState("");
  const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
   const location = useLocation();
+  const recordId = location.state?.mfrId;
+  console.log(recordId,"record")
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
     initiator_name: "",
@@ -301,12 +304,12 @@ const BMRPanel = () => {
     site_id: location.state?.site_id || "",
     initiator_id: loggedInUser?.userId || "",
     date_of_initiation: getCurrentDateTime(),
-   
+    
     equipmentClearance: equipmentClearance||[],
     generalPrecautions: generalManufacturing||[],
       manufacturingPrecautions: manufacturingRows||[]
   });
-  
+   console.log(location.state , "qqq")
 
   const handlePopupSubmit = (credentials) => {
     const data = {
@@ -331,91 +334,95 @@ const BMRPanel = () => {
     if (popupAction === "sendFromOpenToReview") {
       data.initiatorDeclaration = credentials?.declaration;
       data.initiatorAttachment = editData?.initiatorAttachment;
-
-      if (!data.initiatorComment || data.initiatorComment.trim() === "") {
-        toast.error("Please provide an initiator comment!");
-        return;
-      }
-      axios
-        .put(
-          "http://localhost:1000/analytical-balance/send-for-review",
-          data,
-          config
-        )
-        .then(() => {
-          toast.success("Elog successfully sent for review");
-          navigate(-1);
-        })
-        .catch((error) => {
-          toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
-          );
-        });
+      localStorage.setItem("currentStage", 2);
+      // if (!data.initiatorComment || data.initiatorComment.trim() === "") {
+      //   toast.error("Please provide an initiator comment!");
+      //   return;
+      // }
+      // axios
+      //   .put(
+      //     "http://localhost:1000/analytical-balance/send-for-review",
+      //     data,
+      //     config
+      //   )
+      //   .then(() => {
+      //     toast.success("Elog successfully sent for review");
+      //     navigate(-1);
+      //   })
+      //   .catch((error) => {
+      //     toast.error(
+      //       error?.response?.data?.message || "Couldn't send elog for review!!"
+      //     );
+      //   });
     } else if (popupAction === "sendFromReviewToApproval") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
-      axios
-        .put(
-          "http://localhost:1000/analytical-balance/send-review-to-approval",
-          data,
-          config
-        )
-        .then(() => {
-          toast.success("Elog successfully sent for approval");
-          navigate(-1);
-        })
-        .catch((error) => {
-          toast.error(
-            error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
-          );
-        });
+      localStorage.setItem("currentStage", 3);
+      // axios
+      //   .put(
+      //     "http://localhost:1000/analytical-balance/send-review-to-approval",
+      //     data,
+      //     config
+      //   )
+      //   .then(() => {
+      //     toast.success("Elog successfully sent for approval");
+      //     navigate(-1);
+      //   })
+      //   .catch((error) => {
+      //     toast.error(
+      //       error?.response?.data?.message ||
+      //         "Couldn't send elog for approval!!"
+      //     );
+      //   });
     } else if (popupAction === "sendFromReviewToOpen") {
       data.reviewerDeclaration = credentials?.declaration;
       data.reviewerAttachment = editData.reviewerAttachment;
-      axios
-        .put(
-          "http://localhost:1000/analytical-balance/send-review-to-open",
-          data,
-          config
-        )
-        .then(() => {
-          toast.success("Elog successfully opened");
-          navigate(-1);
-        })
-        .catch((error) => {
-          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
-        });
+      localStorage.setItem("currentStage", 2);
+      // axios
+      //   .put(
+      //     "http://localhost:1000/analytical-balance/send-review-to-open",
+      //     data,
+      //     config
+      //   )
+      //   .then(() => {
+      //     toast.success("Elog successfully opened");
+      //     navigate(-1);
+      //   })
+      //   .catch((error) => {
+      //     toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+      //   });
     } else if (popupAction === "sendFromApprovalToClosedDone") {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
-      axios
-        .put("http://localhost:1000/analytical-balance/approve", data, config)
-        .then(() => {
-          toast.success("Elog successfully Closed Done");
-          navigate(-1);
-        })
-        .catch((error) => {
-          toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
-          );
-        });
+      localStorage.setItem("currentStage", 4);
+      // axios
+      //   .put("http://localhost:1000/analytical-balance/approve", data, config)
+      //   .then(() => {
+      //     toast.success("Elog successfully Closed Done");
+      //     navigate(-1);
+      //   })
+      //   .catch((error) => {
+      //     toast.error(
+      //       error?.response?.data?.message || "Couldn't approve elog!!"
+      //     );
+      //   });
     } else if (popupAction === "sendFromApprovalToOpen") {
       data.approverAttachment = editData.approverAttachment;
       data.approverDeclaration = credentials?.declaration;
-      axios
-        .put(
-          "http://localhost:1000/analytical-balance/send-approval-to-open",
-          data,
-          config
-        )
-        .then(() => {
-          toast.success("Elog successfully opened");
-          navigate(-1);
-        })
-        .catch((error) => {
-          toast.error(error?.response?.data?.message || "Couldn't open elog!!");
-        });
+      localStorage.setItem("currentStage", 3);
+      // axios
+      //   .put(
+      //     "http://localhost:1000/analytical-balance/send-approval-to-open",
+      //     data,
+      //     config
+      //   )
+      //   .then(() => {
+      //     toast.success("Elog successfully opened");
+      //     navigate(-1);
+      //   })
+      //   .catch((error) => {
+      //     toast.error(error?.response?.data?.message || "Couldn't open elog!!");
+      //   });
     } else if (popupAction === "updateElog") {
       data.initiatorDeclaration = credentials?.declaration;
       // if (
@@ -468,6 +475,57 @@ const BMRPanel = () => {
     setIsPopupOpen(false);
     setPopupAction(null);
   };
+
+
+useEffect(() => {
+  const fetchEquipment = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:1000/equipment/equipments/${recordId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+const apiData = res.data.data; // <-- main payload
+
+      const formattedData = {
+        ...apiData,
+        differentialPRecord: apiData.differentialPRecord
+          ? JSON.parse(apiData.differentialPRecord)
+          : null,
+
+        equipmentClearance: apiData.equipmentClearance
+          ? JSON.parse(apiData.equipmentClearance)
+          : [],
+
+        formData: apiData.formData
+          ? JSON.parse(apiData.formData)
+          : null,
+
+        generalPrecautions: apiData.generalPrecautions
+          ? JSON.parse(apiData.generalPrecautions)
+          : null,
+
+        manufacturingPrecautions: apiData.manufacturingPrecautions
+          ? JSON.parse(apiData.manufacturingPrecautions)
+          : [],
+      };
+      console.log(formattedData,"formattedData")
+
+        } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (recordId) {
+    fetchEquipment();
+  }
+}, [recordId]);
+
 
   useEffect(() => {
     setEditData(location.state);
@@ -850,6 +908,22 @@ const handleManufacturingSave = () => {
   console.log("FINAL MANUFACTURING PAYLOAD:", manufacturingRows);
   alert("Manufacturing data saved (check console)");
 };
+      const stage = JSON.parse(localStorage.getItem("currentStage"));
+      console.log(stage,"stage")
+const [currentStage, setCurrentStage] = useState(1);
+
+  useEffect(() => {
+    if(stage){
+      setCurrentStage(stage);
+    }
+  }, [stage]);
+
+const EQUIPMENT_WORKFLOW = [
+  { id: 1, label: "OPENED" },
+  { id: 2, label: "UNDER REVIEW" },
+  { id: 3, label: "UNDER APPROVAL" },
+  { id: 4, label: "APPROVED" },
+];
 
   const resetAll = () => {
 setIsSelectedDetails(false),
@@ -965,7 +1039,7 @@ setIsSelectedDetails(false),
                   </button>
 
                  
-                  {/* {location.state?.stage === 1 &&
+                  {currentStage === 1 &&
                     [1, 5].includes(userDetails.roles[0].role_id) && (
                       <button
                         className="px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg shadow-md transition-all duration-300 hover:bg-white hover:text-black hover:border-gray-600 hover:shadow-lg"
@@ -978,7 +1052,7 @@ setIsSelectedDetails(false),
                       </button>
                     )}
 
-                  {location.state?.stage === 2 &&
+                  {currentStage === 2 &&
                     [2, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
@@ -1002,7 +1076,7 @@ setIsSelectedDetails(false),
                       </>
                     )}
 
-                  {location.state?.stage === 3 &&
+                  {currentStage === 3 &&
                     [3, 5].includes(userDetails.roles[0].role_id) && (
                       <>
                         <button
@@ -1038,61 +1112,13 @@ setIsSelectedDetails(false),
                       >
                         Save
                       </button>
-                    )} */}
+                    )}
                 </div>
               </div>
-              {/* <div className="outerDiv4 bg-slate-300 py-4">
-                <div className="flex gap-3 ">
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 1
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 1
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    OPENED
-                  </div>
-
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 2
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 2
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    UNDER REVIEW
-                  </div>
-
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 3
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 3
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    UNDER APPROVAL
-                  </div>
-
-                 
-                  <div
-                    className={`px-6 py-2 rounded-lg font-semibold text-center transition-all ${
-                      location.state?.stage > 4
-                        ? "bg-green-500 text-white"
-                        : location.state?.stage === 4
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    Approved
-                  </div>
-                </div>
-              </div> */}
+              <WorkflowStepper
+  stages={EQUIPMENT_WORKFLOW}
+  currentStage={currentStage}
+/>
               <div className="outerDiv4">
                 <div className="flex gap-3 overflow-x-auto whitespace-nowrap scroll-smooth px-2 py-2">
                   <div
