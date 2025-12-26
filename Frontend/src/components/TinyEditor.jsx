@@ -182,7 +182,6 @@
 //   );
 // }
 
-
 // import React, { useEffect, useRef, useState } from "react";
 
 // export default function TinyEditor({
@@ -391,13 +390,15 @@ const TinyEditor = ({
     if (editorRef.current) {
       if (isDisabled) {
         editorRef.current.edit.off();
-         // Allow fullscreen even when disabled
-  const fullscreenBtn = this.$tb.find('.fr-command[data-cmd="fullscreen"]');
-  fullscreenBtn.removeClass('fr-disabled');
-  fullscreenBtn.on("mousedown", (e) => {
-    e.preventDefault();
-    this.fullscreen.toggle();
-  });
+        // Allow fullscreen even when disabled
+        const fullscreenBtn = this.$tb.find(
+          '.fr-command[data-cmd="fullscreen"]'
+        );
+        fullscreenBtn.removeClass("fr-disabled");
+        fullscreenBtn.on("mousedown", (e) => {
+          e.preventDefault();
+          this.fullscreen.toggle();
+        });
       } else {
         editorRef.current.edit.on();
       }
@@ -446,66 +447,68 @@ const TinyEditor = ({
     events: {
       initialized: function () {
         editorRef.current = this;
-        if (isDisabled){ this.edit.off();
-          const fullscreenBtn = this.$tb.find('.fr-command[data-cmd="fullscreen"]');
-      fullscreenBtn.removeClass('fr-disabled');
-      fullscreenBtn.on("mousedown", (e) => {
-        e.preventDefault();
-        this.fullscreen.toggle();
-      });
-    }
-        else this.edit.on();
+        if (isDisabled) {
+          this.edit.off();
+          const fullscreenBtn = this.$tb.find(
+            '.fr-command[data-cmd="fullscreen"]'
+          );
+          fullscreenBtn.removeClass("fr-disabled");
+          fullscreenBtn.on("mousedown", (e) => {
+            e.preventDefault();
+            this.fullscreen.toggle();
+          });
+        } else this.edit.on();
       },
 
       // Upload Before Handlers for BASE64 Conversion
       "image.beforeUpload": function (files) {
-      const editor = this;
+        const editor = this;
 
-      if (files.length) {
-        const reader = new FileReader();
+        if (files.length) {
+          const reader = new FileReader();
 
-        reader.onload = function (e) {
-          const base64 = e.target.result;
+          reader.onload = function (e) {
+            const base64 = e.target.result;
 
-          // Insert Base64 image directly
-          editor.image.insert(base64, null, null, editor.image.get());
-        };
+            // Insert Base64 image directly
+            editor.image.insert(base64, null, null, editor.image.get());
+          };
 
-        reader.readAsDataURL(files[0]);
-      }
+          reader.readAsDataURL(files[0]);
+        }
 
-      // Hide the popup
-      editor.popups.hideAll();
+        // Hide the popup
+        editor.popups.hideAll();
 
-      // ❗ Prevent Froala from uploading the image to the server
-      return false;
-    },
-// Image Upload Success Handler
-//     "image.uploaded": function (response) {
-//         try {
-//           const data =
-//             typeof response === "string" ? JSON.parse(response) : response;
+        // ❗ Prevent Froala from uploading the image to the server
+        return false;
+      },
+      // Image Upload Success Handler
+      //     "image.uploaded": function (response) {
+      //         try {
+      //           const data =
+      //             typeof response === "string" ? JSON.parse(response) : response;
 
-//           if (Array.isArray(data) && data[0]?.url) {
-//             this.image.insert(data[0].url, false, null, this.image.get(), null);
-//           } else if (data?.url) {
-//             this.image.insert(data.url, false, null, this.image.get(), null);
-//           } else if (data?.data?.[0]?.url) {
-//             this.image.insert(
-//               data.data[0].url,
-//               false,
-//               null,
-//               this.image.get(),
-//               null
-//             );
-//           } else {
-//             console.error("Invalid image upload response format:", data);
-//           }
-//         } catch (error) {
-//           console.error("Error parsing image upload response:", error);
-//       }
-//   return false; // prevent default behavior
-// },
+      //           if (Array.isArray(data) && data[0]?.url) {
+      //             this.image.insert(data[0].url, false, null, this.image.get(), null);
+      //           } else if (data?.url) {
+      //             this.image.insert(data.url, false, null, this.image.get(), null);
+      //           } else if (data?.data?.[0]?.url) {
+      //             this.image.insert(
+      //               data.data[0].url,
+      //               false,
+      //               null,
+      //               this.image.get(),
+      //               null
+      //             );
+      //           } else {
+      //             console.error("Invalid image upload response format:", data);
+      //           }
+      //         } catch (error) {
+      //           console.error("Error parsing image upload response:", error);
+      //       }
+      //   return false; // prevent default behavior
+      // },
 
       //  Video Upload Success Handler - CORRECTED
       "video.uploaded": function (response) {
