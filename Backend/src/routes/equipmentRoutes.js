@@ -34,4 +34,5 @@ router.get("/equipments/:id", EquipmentProcess.getEquipmentById);
 
 router.put("/update-equipments/:id", EquipmentProcess.updateEquipment);
 router.delete("/equipments/:id", EquipmentProcess.deleteEquipment);
+
 module.exports = router;

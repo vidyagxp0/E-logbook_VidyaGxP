@@ -1,4 +1,5 @@
 const Equipments = require("../models/equipmentClearanceModel");
+const User = require("../models/users");
 const sequelize = require("../config/db").sequelize;
 
 exports.createEquipment = async (req, res) => {
