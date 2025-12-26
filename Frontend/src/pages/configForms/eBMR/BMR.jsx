@@ -282,15 +282,7 @@ export default function BMR() {
       qadSign: "",
     },
   ]);
-  const [bmrData, setBmrData] = useState({
-    site_id: location.state?.site_id || "",
-    initiator_id: loggedInUser?.userId || "",
-    date_of_initiation: getCurrentDateTime(),
 
-    equipmentClearance: equipmentClearance || [],
-    generalPrecautions: generalManufacturing || [],
-    manufacturingPrecautions: manufacturingRows || [],
-  });
 
   useEffect(() => {
     const config = {
@@ -358,72 +350,7 @@ export default function BMR() {
     setIsPopupOpen(false);
   };
 
-  const handlePopupSubmit = (credentials) => {
-    if (
-      differentialPRecord.site_id === null
-      //  ||
-      // differentialPRecord.approver_id === null ||
-      // differentialPRecord.reviewer_id === null
-    ) {
-      toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
-      );
-      return;
-    }
 
-    // if (differentialPRecord.initiatorComment === "") {
-    //   toast.error("Please provide an initiator comment!");
-    //   return;
-    // }
-    // if (differentialPRecord.description === "") {
-    //   toast.error("Please provide a short description!");
-    //   return;
-    // }
-    if (
-      differentialPRecord?.FormRecordsArray?.some(
-        (record) => record.differential_pressure === "" || record.remarks === ""
-      )
-    ) {
-      toast.error("Please provide grid details!");
-      return;
-    }
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        "Content-Type": "multipart/form-data",
-      },
-    };
-
-    differentialPRecord.email = credentials?.email;
-    differentialPRecord.password = credentials?.password;
-    differentialPRecord.initiatorDeclaration = credentials?.declaration;
-
-    const payload = {
-      ...bmrData,
-      equipmentClearance: JSON.stringify(bmrData.equipmentClearance),
-      generalPrecautions: JSON.stringify(bmrData.generalPrecautions),
-      manufacturingPrecautions: JSON.stringify(
-        bmrData.manufacturingPrecautions
-      ),
-    };
-
-    axios
-      .post("http://localhost:1000/equipment/equipments", payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-
-      .then(() => {
-        toast.success("eLog Saved Successfully!");
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.error("There was an error creating eLog:", error);
-        toast.error("There was an error creating eLog");
-      });
-  };
 
   console.log(allTableData, "allTableData");
   const addRow = () => {
@@ -635,14 +562,23 @@ export default function BMR() {
     batchStartedOn: "",
     batchCompletedOn: "",
   });
-
+  const [bmrData, setBmrData] = useState({
+    site_id: location.state?.site_id || "",
+    initiator_id: loggedInUser?.userId || "",
+    date_of_initiation: getCurrentDateTime(),
+differentialPRecord:differentialPRecord|| [],
+formData: formData || [],
+    equipmentClearance: equipmentClearance || [],
+    generalPrecautions: generalManufacturing || [],
+    manufacturingPrecautions: manufacturingRows || [],
+  });
   // 🔹 Fetch product list
   useEffect(() => {
     axios
       .get("http://localhost:1000/Pm-Meter/meter/get-all") // 🔁 API URL
       .then((res) => setProducts(res.data.data))
       .catch((err) => console.error(err));
-  }, []);
+  }, [isProductInformation]);
 
   // 🔹 On product select
   const handleProductChange = (e) => {
@@ -753,6 +689,75 @@ export default function BMR() {
   const handleManufacturingSave = () => {
     console.log("FINAL MANUFACTURING PAYLOAD:", manufacturingRows);
     alert("Manufacturing data saved (check console)");
+  };
+
+    const handlePopupSubmit = (credentials) => {
+    if (
+      differentialPRecord.site_id === null
+      //  ||
+      // differentialPRecord.approver_id === null ||
+      // differentialPRecord.reviewer_id === null
+    ) {
+      toast.error(
+        "Please select an approver and a reviewer before saving e-log!"
+      );
+      return;
+    }
+
+    // if (differentialPRecord.initiatorComment === "") {
+    //   toast.error("Please provide an initiator comment!");
+    //   return;
+    // }
+    // if (differentialPRecord.description === "") {
+    //   toast.error("Please provide a short description!");
+    //   return;
+    // }
+    if (
+      differentialPRecord?.FormRecordsArray?.some(
+        (record) => record.differential_pressure === "" || record.remarks === ""
+      )
+    ) {
+      toast.error("Please provide grid details!");
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    differentialPRecord.email = credentials?.email;
+    differentialPRecord.password = credentials?.password;
+    differentialPRecord.initiatorDeclaration = credentials?.declaration;
+
+    const payload = {
+      ...bmrData,
+      differentialPRecord: JSON.stringify(differentialPRecord),
+      formData: JSON.stringify(formData),
+      equipmentClearance: JSON.stringify(bmrData.equipmentClearance),
+      generalPrecautions: JSON.stringify(bmrData.generalPrecautions),
+      manufacturingPrecautions: JSON.stringify(
+        bmrData.manufacturingPrecautions
+      ),
+    };
+
+    axios
+      .post("http://localhost:1000/equipment/equipments", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      .then(() => {
+        toast.success("eLog Saved Successfully!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("There was an error creating eLog:", error);
+        toast.error("There was an error creating eLog");
+      });
   };
 
   return (
