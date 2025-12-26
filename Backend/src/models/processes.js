@@ -23,7 +23,7 @@ Process.addHook('afterSync', async () => {
         const processesCount = await Process.count();
         if (processesCount === 0) {
             await Process.bulkCreate([
-                { process_id: 1, process: 'EBMR' },
+                { process_id: 1, process: 'Oral Solid Dosage' },
                 // { process_id: 2,process: 'Temperature Records' },
                 // { process_id: 3,process: 'Equipment Usage' },
                 // { process: 'Operation Of Sterilizer' },

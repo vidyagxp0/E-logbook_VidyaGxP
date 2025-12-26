@@ -33,6 +33,8 @@ function HeaderBottom() {
               <option value="temperature_records">Temperature Records</option>
             </select>
           </div> */}
+
+          
             <div className="tabs flex items-center justify-center space-x-6 ml-5">
               <Link
                 to="/dashboard"
@@ -42,7 +44,7 @@ function HeaderBottom() {
                     : "bg-white text-blue-500 border border-blue-500"
                 } hover:bg-blue-600 transition duration-300 hover:text-white`}
               >
-                Dashboard
+                MFR Dashboard
               </Link>
               <Link
                 to="/effectiveElogs"
@@ -52,7 +54,7 @@ function HeaderBottom() {
                     : "bg-white text-blue-500 border border-blue-600"
                 } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
-                 BMR
+                 BMR Dashboard
               </Link>
               <Link
                 to="/analytics2"
