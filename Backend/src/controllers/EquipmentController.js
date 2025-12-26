@@ -10,7 +10,9 @@ exports.createEquipment = async (req, res) => {
     date_of_initiation,
     equipmentClearance,
     generalPrecautions,
-    manufacturingPrecautions
+    manufacturingPrecautions,
+    formData,
+    differentialPRecord
     } = req.body;
 
     if (
@@ -19,7 +21,7 @@ exports.createEquipment = async (req, res) => {
       !date_of_initiation ||
       !equipmentClearance ||
       !generalPrecautions ||
-      !manufacturingPrecautions
+      !manufacturingPrecautions||!formData||!differentialPRecord
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -33,7 +35,9 @@ exports.createEquipment = async (req, res) => {
    
         equipmentClearance,
         generalPrecautions,
-        manufacturingPrecautions
+        manufacturingPrecautions,
+        formData,
+        differentialPRecord
       },
       { transaction: t }
     );

@@ -56,6 +56,14 @@ const Equipments = sequelize.define(
       type: DataTypes.JSON, 
       allowNull: false 
     },
+     differentialPRecord: { 
+      type: DataTypes.JSON, 
+      allowNull: false 
+    },
+     formData: { 
+      type: DataTypes.JSON, 
+      allowNull: false 
+    },
   }
 );
 
