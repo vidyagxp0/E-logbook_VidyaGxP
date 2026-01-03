@@ -79,7 +79,7 @@ function HeaderTop() {
       person: "Pankaj Jat",
       division: "Tech Support",
       phone: 8435507087,
-      email: "amit.g@gmail.com",
+      email: "pankaj.jat@gmail.com",
     },
   ];
   const modalData = {
@@ -120,7 +120,7 @@ function HeaderTop() {
                   objectFit: "contain",
                   width: "255px",
                 }}
-                src="/image.png"
+                src="/vb-shilpa.png"
                 alt="Logo"
               />
             </div>
@@ -155,9 +155,9 @@ function HeaderTop() {
             </div> */}
             <div className="flex flex-col items-center justify-center">
               <h1 className="text-3xl font-bold font-serif">eLog-Book</h1>
-              <h1 className="text-2xl font-bold font-serif">
+              {/* <h1 className="text-2xl font-bold font-serif">
                 Indian Pharmacopoeia Commission
-              </h1>
+              </h1> */}
             </div>
           </div>
           <div className="right">

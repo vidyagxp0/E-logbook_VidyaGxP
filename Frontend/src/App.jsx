@@ -76,6 +76,9 @@ import UvWITransilluminatorEffective from "./pages/Dashboard/EffectiveElogs/UvWl
 import VacuumOvenOpEffective from "./pages/Dashboard/EffectiveElogs/VacuumOvenOpEffective.jsx";
 import VacuumOvenOpPanel from "./pages/documentPanels/VacuumOvenOp/VacuumOvenOpPanel.jsx";
 import VacuumOvenOp from "./pages/configForms/VacuumOvenOp/VacuumOvenOp.jsx";
+import FoggingSolution from "./pages/configForms/FoggingSolution/FoggingSolution.jsx";
+import FoggingSolutionPanel from "./pages/documentPanels/FoggingSolution/FoggingSolutionPanel.jsx";
+import FoggingSolutionEffective from "./pages/Dashboard/EffectiveElogs/FoggingSolutionEffective.jsx";
 
 function App() {
   return (
@@ -246,6 +249,18 @@ function App() {
             <Route
               path="/analytical-balance-panel"
               element={<ProtectedRoute element={<AnalitycalBalancePanel />} />}
+            />
+            <Route
+              path="/fogging-solution-panel"
+              element={<ProtectedRoute element={<FoggingSolutionPanel />} />}
+            />
+            <Route
+              path="/fogging-solution"
+              element={<ProtectedRoute element={<FoggingSolution />} />}
+            />
+            <Route
+              path="/effective-fogging-solution"
+              element={<ProtectedRoute element={<FoggingSolutionEffective />} />}
             />
             <Route
               path="/karl-fischer-panel"
