@@ -1111,7 +1111,7 @@ function EffectiveElogs() {
                 }}
               >
                 <option value="All">All</option>
-                <option value="PendingForCreate">Pending for Creation</option>
+                <option value="PendingForCreate">Pending for Create</option>
                 <option value="Pending">Pending for Review</option>
                 <option value="Complete">Completed </option>
               </select>

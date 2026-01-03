@@ -1351,7 +1351,7 @@ const PhMeterOpCalEffective = () => {
                               Factor Value
                             </th>
                             <th className="sticky top-0 z-10 text-center">
-                              Performance
+                              Performance / Failure
                             </th>
                             <th className="sticky top-0 z-10 text-center">
                               Done by
