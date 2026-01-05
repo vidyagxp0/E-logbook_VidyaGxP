@@ -19,6 +19,7 @@ const FoggingSolution = () => {
   const [allTableData, setAllTableData] = useState([]);
   const [reviewers, setReviewers] = useState([]);
   const [approvers, setApprovers] = useState([]);
+  console.log(reviewers,"reviewers")
   const [User, setUser] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -29,7 +30,7 @@ const FoggingSolution = () => {
   useEffect(() => {
     const config = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/fogging-solution/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -51,7 +52,7 @@ const FoggingSolution = () => {
 
     const newConfig = {
       method: "post",
-      url: "http://localhost:1000/differential-pressure/get-user-roleGroups",
+      url: "http://localhost:1000/fogging-solution/get-user-roleGroups",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         "Content-Type": "application/json",
@@ -134,7 +135,7 @@ const FoggingSolution = () => {
 
     axios
       .post(
-        "http://localhost:1000/analytical-balance/post",
+        "http://localhost:1000/fogging-solution/post-fogging-solution",
         analyticalBalance,
         config
       )

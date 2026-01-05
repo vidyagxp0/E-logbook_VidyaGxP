@@ -152,6 +152,11 @@ function CreateRecordModal(_props) {
           state: division,
         });
         break;
+         case 16:
+        navigate("/fogging-solution", {
+          state: division,
+        });
+        break;
       default:
         break;
     }

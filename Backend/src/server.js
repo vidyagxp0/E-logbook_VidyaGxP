@@ -4,6 +4,8 @@ const config = require("./config/config.json");
 const http = require("http");
 const userRoutes = require("./routes/users");
 const differentialPressureRoutes = require("./routes/differentialPressure");
+const foggingSolutionRoutes=  require("./routes/FoggingSolution");
+
 const tempratureRecordRoutes = require("./routes/tempratureRecords");
 const loadedQuantityRoutes = require("./routes/loadedQuantity");
 const mediaRecordRoutes = require("./routes/mediaRecord");
@@ -60,6 +62,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
 app.use("/feedback", vidyagxpFeedback);
 app.use("/differential-pressure", differentialPressureRoutes);
+app.use("/fogging-solution", foggingSolutionRoutes);
+
 app.use("/temprature-record", tempratureRecordRoutes);
 app.use("/loaded-quantity", loadedQuantityRoutes);
 app.use("/operation-sterlizer", operationOfSterlizerRoutes);
