@@ -40,11 +40,11 @@ console.log("API error", err);
 
 // 🔍 SEARCH FILTER
 const filteredEquipments = equipments.filter((item) => {
-const formData = parseJSON(item.formData);
-const dpRecord = parseJSON(item.differentialPRecord);
+const formData = item.formData;
+const dpRecord = item.differentialPRecord;
 
 const productName = formData.productName || "";
-const description = stripHtml(dpRecord.description);
+const description = dpRecord.description;
 const mfrId = `MFR${item.id}`;
 
 return (
@@ -53,6 +53,7 @@ return (
   mfrId.toLowerCase().includes(searchTerm.toLowerCase())
 );
 });
+console.log(filteredEquipments,"filter")
 
 return (
 <>
@@ -90,7 +91,7 @@ return (
     <table>
       <thead>
         <tr>
-          <th>Sr No</th>
+          <th>Sr. No.</th>
           {/* <th>Product Name</th> */}
           <th>Short Description</th>
           <th>Product Type</th>
@@ -108,8 +109,8 @@ return (
           </tr>
         ) : (
           filteredEquipments.map((item, index) => {
-            const formData = parseJSON(item.formData);
-            const dpRecord = parseJSON(item.differentialPRecord);
+            const formData = item.formData;
+            const dpRecord = item.differentialPRecord;
 
             return (
               <tr key={item.id || index}>

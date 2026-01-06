@@ -44,6 +44,7 @@ export default function BMR() {
     const [xValue, setXValue] = useState("");
     const [finalKg, setFinalKg] = useState("");
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
+  // console.log(location?.state)
   const navigate = useNavigate();
   const location = useLocation();
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
@@ -743,13 +744,11 @@ formData: formData || [],
 
     const payload = {
       ...bmrData,
-      differentialPRecord: JSON.stringify(differentialPRecord),
-      formData: JSON.stringify(formData),
-      equipmentClearance: JSON.stringify(bmrData.equipmentClearance),
-      generalPrecautions: JSON.stringify(bmrData.generalPrecautions),
-      manufacturingPrecautions: JSON.stringify(
-        bmrData.manufacturingPrecautions
-      ),
+      differentialPRecord: differentialPRecord,
+      formData: formData,
+      equipmentClearance: bmrData.equipmentClearance,
+      generalPrecautions: bmrData.generalPrecautions,
+      manufacturingPrecautions:bmrData.manufacturingPrecautions,
     };
 
     axios

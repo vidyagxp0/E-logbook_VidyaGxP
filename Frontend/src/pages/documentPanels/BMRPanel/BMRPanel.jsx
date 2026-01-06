@@ -30,6 +30,7 @@ const BMRPanel = () => {
   const [approverRemarks, setApproverRemarks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formId, setFormId] = useState(null);
+  const [data,setData]=useState({});
     const [wc, setWc] = useState("");     // Water Content
     const [rc, setRc] = useState("");     // Residual Content
     const [theoreticalQty, setTheoreticalQty] = useState("");
@@ -491,30 +492,19 @@ useEffect(() => {
       );
 
 const apiData = res.data.data; // <-- main payload
-
+console.log(apiData,"apiData")
       const formattedData = {
         ...apiData,
-        differentialPRecord: apiData.differentialPRecord
-          ? JSON.parse(apiData.differentialPRecord)
-          : null,
+        differentialPRecord: apiData.differentialPRecord,
+        equipmentClearance: apiData.equipmentClearance,
 
-        equipmentClearance: apiData.equipmentClearance
-          ? JSON.parse(apiData.equipmentClearance)
-          : [],
+        formData: apiData.formData,
 
-        formData: apiData.formData
-          ? JSON.parse(apiData.formData)
-          : null,
-
-        generalPrecautions: apiData.generalPrecautions
-          ? JSON.parse(apiData.generalPrecautions)
-          : null,
+        generalPrecautions: apiData.generalPrecautions,
 
         manufacturingPrecautions: apiData.manufacturingPrecautions
-          ? JSON.parse(apiData.manufacturingPrecautions)
-          : [],
       };
-      console.log(formattedData,"formattedData")
+      setData(formattedData)
 
         } catch (error) {
       console.error(error);
@@ -525,6 +515,26 @@ const apiData = res.data.data; // <-- main payload
     fetchEquipment();
   }
 }, [recordId]);
+
+console.log(data,"data")
+  useEffect(() => {
+    const newConfig = {
+      method: "get",
+      url: `http://localhost:1000/user/get-a-user/4`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios(newConfig)
+      .then((response) => {
+        console.log(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
 
 
   useEffect(() => {
