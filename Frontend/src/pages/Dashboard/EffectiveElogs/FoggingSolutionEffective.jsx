@@ -108,9 +108,9 @@ const FoggingSolutionEffective = () => {
     }
     const cleanedData = editData?.FoggingSolutionRecords.filter((record) => {
       const hasRequiredFields =
-        record.reg_no?.trim() !== "" &&
-        record.sample_name?.trim() !== "" &&
-        record.weight_taken?.trim() !== "";
+        record.nameOfArea?.trim() !== "" &&
+        record.AHUNo?.trim() !== "" &&
+        record.ahuOffDateAndTime?.trim() !== "";
       return hasRequiredFields;
     });
 
@@ -278,7 +278,7 @@ const FoggingSolutionEffective = () => {
         method: "PUT",
         headers: myHeaders,
         data: updatedEditData,
-        url: "http://localhost:1000/analytical-balance/update",
+        url: "http://localhost:1000/fogging-solution/update-fogging-solution",
       };
 
       axios(requestOptions)
@@ -357,11 +357,14 @@ const FoggingSolutionEffective = () => {
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
         date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
-        sample_name: "",
-        weight_taken: "",
-        instrument_name: "Analytical Balance",
-        factorValue: "Ok",
-        performance: "OK",
+        nameOfArea: "",
+        AHUNo: "",
+        ahuOffDateAndTime: "",
+        volumeOfArea: "",
+        foggingSolutionQty: "",
+        foggingStartTime: "",
+        foggingEndTime: "",
+        instrument_name: "Fogging Solution",
         instrument_no: location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         reviewed_by: "",
@@ -843,14 +846,49 @@ const FoggingSolutionEffective = () => {
     return disableFieldMap[item.remarksSubType] || [];
   };
 
+  const isAfterOneHour = (offTime, currentTime) => {
+    if (!offTime) return false;
+
+    const off = new Date(offTime);
+    const now = new Date(currentTime);
+
+    return now - off >= 60 * 60 * 1; // 1 hour in ms
+  };
+
+  const isFieldEnabledByFlow = (item, fieldName) => {
+    // Nothing after OffTime is allowed until OffTime exists
+    if (!item.ahuOffDateAndTime) {
+      const lockedFields = [
+        "volumeOfArea",
+        "foggingSolutionQty",
+        "foggingStartTime",
+        "foggingEndTime",
+        "reviewed_by",
+        "ahuOnDateAndTime",
+        "supporting_docs",
+        "remarks",
+      ];
+
+      if (lockedFields.includes(fieldName)) return false;
+    }
+
+    // Enforce 1-hour rule for AHU ON
+    if (fieldName === "ahuOnDateAndTime") {
+      console.log("Checking AHU ON time:", item.ahuOffDateAndTime);
+      return isAfterOneHour(item.ahuOffDateAndTime, new Date());
+    }
+
+    return true;
+  };
+
   const isFieldEditable = (item, fieldName) => {
-    const factor = item?.factorValue;
+    const ahuOffDateAndTime = item?.ahuOffDateAndTime;
 
     // Disable all fields if factorValue is Calibration/Verification
-    if (fieldName === "factorValue") {
+    if (fieldName === "ahuOffDateAndTime") {
       return isRowEditable(item);
     }
-    if (factor === "Calibration/Verification") {
+    if (ahuOffDateAndTime === "") {
       return false;
     }
 
@@ -1680,7 +1718,72 @@ const FoggingSolutionEffective = () => {
                       </div>
                     )}
                   </div>
-
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">
+                        Name of fogging solution
+                      </label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.nameOfFoggingSolution}
+                          onChange={handleInputChange1}
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">
+                        Qty of fogging solution
+                      </label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.quantityOfFoggingSolution}
+                          onChange={(e) =>
+                            setAnalyticalBalance({ initiator: e.target.value })
+                          }
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-flex">
+                    <div className="group-input">
+                      <label className="color-label">
+                        Qty of purified water
+                      </label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.quantityOfPurifiedWater}
+                          onChange={handleInputChange1}
+                          // disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
+                      </div>
+                    </div>
+                    <div className="group-input">
+                      <label className="color-label">Total Qty</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.totalQuantity}
+                          // onChange={(e) =>
+                          //   setAnalyticalBalance({ initiator: e.target.value })
+                          // }
+                          // disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div>
                     <div className="AddRows d-flex items-center">
                       <NoteAdd onClick={addRow} className="cursor-pointer" />
@@ -1765,20 +1868,34 @@ const FoggingSolutionEffective = () => {
                                   readOnly
                                 />
                               </td>
-                              {/* <td className="!text-center !justify-center">
-                                <input
-                                  value={item.instrument_name || ""}
-                                  readOnly
-                                  className="bg-gray-100 cursor-not-allowed"
-                                />
-                              </td> */}
+
                               <td className="!text-center !justify-center">
-                                <input
-                                  value={item.nameOfArea || ""}
-                                  // readOnly
-                                  // className="bg-gray-100 cursor-not-allowed"
-                                />
+                                <select
+                                  className="form-control"
+                                  name="nameOfArea"
+                                  value={item?.nameOfArea}
+                                  onChange={handleInputChange1}
+                                  style={{
+                                    padding: "8px 12px",
+                                    border: "1px solid #ced4da",
+                                    borderRadius: "4px",
+                                    fontSize: "14px",
+                                    backgroundColor: "white",
+                                    width: "100%",
+                                  }}
+                                  readOnly={[3, 2, 4].includes(
+                                    userDetails.roles[0].role_id
+                                  )}
+                                >
+                                  <option value="Select Area">
+                                    Select Area
+                                  </option>
+                                  <option value="Area 1">Area 1</option>
+                                  <option value="Area 2">Area 2</option>
+                                  <option value="Area 3">Area 3</option>
+                                </select>
                               </td>
+
                               <td>
                                 <input
                                   value={item.AHUNo}
@@ -1799,56 +1916,36 @@ const FoggingSolutionEffective = () => {
                                   }
                                 />
                               </td>
+
                               <td>
-                                <div>
-                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                    <input
-                                      type="checkbox"
-                                      className="h-4 w-4 cursor-pointer"
-                                      style={{ marginLeft: "8px" }}
-                                      checked={!!item.ahuOffDateAndTime}
-                                      onChange={(e) => {
-                                        const newData = [
-                                          ...editData.FoggingSolutionRecords,
-                                        ];
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    type="checkbox"
+                                    className="h-4 w-4 cursor-pointer"
+                                    style={{ marginLeft: "8px" }}
+                                    checked={!!item.ahuOffDateAndTime}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.FoggingSolutionRecords,
+                                      ];
 
-                                        if (e.target.checked) {
-                                          newData[index].ahuOffDateAndTime =
-                                            getCurrentDateTime12Hr();
-                                        } else {
-                                          newData[index].ahuOffDateAndTime = "";
-                                        }
-
-                                        setEditData({
-                                          ...editData,
-                                          FoggingSolutionRecords: newData,
-                                        });
-                                      }}
-                                    />
-                                    <input
-                                      value={item.ahuOffDateAndTime || ""}
-                                      onChange={(e) => {
-                                        const newData = [
-                                          ...editData.FoggingSolutionRecords,
-                                        ];
+                                      if (e.target.checked) {
                                         newData[index].ahuOffDateAndTime =
-                                          e.target.value;
-                                        setEditData({
-                                          ...editData,
-                                          FoggingSolutionRecords: newData,
-                                        });
-                                      }}
-                                      readOnly={
-                                        [2, 3, 4].includes(
-                                          userDetails.roles[0].role_id
-                                        ) ||
-                                        !isFieldEditable(
-                                          item,
-                                          "ahuOffDateAndTime"
-                                        )
+                                          getCurrentDateTime12Hr();
+                                      } else {
+                                        newData[index].ahuOffDateAndTime = "";
                                       }
-                                    />
-                                  </div>
+
+                                      setEditData({
+                                        ...editData,
+                                        FoggingSolutionRecords: newData,
+                                      });
+                                    }}
+                                  />
+                                  <input
+                                    value={item.ahuOffDateAndTime || ""}
+                                    readOnly={true}
+                                  />
                                 </div>
                               </td>
 
@@ -1870,7 +1967,9 @@ const FoggingSolutionEffective = () => {
                                   readOnly={
                                     [3, 2, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "volumeOfArea")
+                                    ) ||
+                                    !isFieldEditable(item, "volumeOfArea") ||
+                                    !isFieldEnabledByFlow(item, "volumeOfArea")
                                   }
                                 />
                               </td>
@@ -1894,12 +1993,18 @@ const FoggingSolutionEffective = () => {
                                     [3, 2, 4].includes(
                                       userDetails.roles[0].role_id
                                     ) ||
-                                    !isFieldEditable(item, "foggingSolutionQty")
+                                    !isFieldEditable(
+                                      item,
+                                      "foggingSolutionQty"
+                                    ) ||
+                                    !isFieldEnabledByFlow(
+                                      item,
+                                      "foggingSolutionQty"
+                                    )
                                   }
                                 />
                               </td>
                               <td className="!text-center !justify-center">
-                                <div>
                                   <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                     <input
                                       type="checkbox"
@@ -1922,6 +2027,19 @@ const FoggingSolutionEffective = () => {
                                           FoggingSolutionRecords: newData,
                                         });
                                       }}
+                                      disabled={
+                                        [3, 2, 4].includes(
+                                          userDetails.roles[0].role_id
+                                        ) ||
+                                        !isFieldEditable(
+                                          item,
+                                          "foggingStartTime"
+                                        ) ||
+                                        !isFieldEnabledByFlow(
+                                          item,
+                                          "foggingStartTime"
+                                        )
+                                      }
                                     />
                                     <input
                                       value={item.foggingStartTime || ""}
@@ -1936,18 +2054,9 @@ const FoggingSolutionEffective = () => {
                                           FoggingSolutionRecords: newData,
                                         });
                                       }}
-                                      readOnly={
-                                        [3, 2, 4].includes(
-                                          userDetails.roles[0].role_id
-                                        ) ||
-                                        !isFieldEditable(
-                                          item,
-                                          "foggingStartTime"
-                                        )
-                                      }
+                                      readOnly={true}
                                     />
                                   </div>
-                                </div>
                               </td>
 
                               <td className="!text-center !justify-center">
@@ -1974,6 +2083,19 @@ const FoggingSolutionEffective = () => {
                                           FoggingSolutionRecords: newData,
                                         });
                                       }}
+                                      disabled={
+                                        [3, 2, 4].includes(
+                                          userDetails.roles[0].role_id
+                                        ) ||
+                                        !isFieldEditable(
+                                          item,
+                                          "foggingEndTime"
+                                        ) ||
+                                        !isFieldEnabledByFlow(
+                                          item,
+                                          "foggingEndTime"
+                                        )
+                                      }
                                     />
                                     <input
                                       value={item.foggingEndTime || ""}
@@ -1988,12 +2110,7 @@ const FoggingSolutionEffective = () => {
                                           FoggingSolutionRecords: newData,
                                         });
                                       }}
-                                      readOnly={
-                                        [3, 2, 4].includes(
-                                          userDetails.roles[0].role_id
-                                        ) ||
-                                        !isFieldEditable(item, "foggingEndTime")
-                                      }
+                                      readOnly={true}
                                     />
                                   </div>
                                 </div>
@@ -2030,7 +2147,12 @@ const FoggingSolutionEffective = () => {
                                       disabled={
                                         [1, 3].includes(
                                           userDetails.roles[0].role_id
-                                        ) || !canReviewerEdit(item)
+                                        ) ||
+                                        !canReviewerEdit(item) ||
+                                        !isFieldEnabledByFlow(
+                                          item,
+                                          "reviewed_by"
+                                        )
                                       }
                                     />
                                     {item.reviewed_by && (
@@ -2049,6 +2171,10 @@ const FoggingSolutionEffective = () => {
                                       style={{ marginLeft: "8px" }}
                                       checked={!!item.ahuOnDateAndTime}
                                       onChange={(e) => {
+                                      if (!isFieldEnabledByFlow(item, "ahuOnDateAndTime")) {
+                                        toast.warn("AHU can only be turned ON after 1 hour of OFF time.");
+                                        return;
+                                      }
                                         const newData = [
                                           ...editData.FoggingSolutionRecords,
                                         ];
@@ -2065,6 +2191,15 @@ const FoggingSolutionEffective = () => {
                                           FoggingSolutionRecords: newData,
                                         });
                                       }}
+                                      disabled={
+                                        [2, 3, 4].includes(
+                                          userDetails.roles[0].role_id
+                                        ) ||
+                                        !isFieldEditable(
+                                          item,
+                                          "ahuOnDateAndTime"
+                                        )
+                                      }
                                     />
                                     <input
                                       value={item.ahuOnDateAndTime || ""}
@@ -2079,15 +2214,7 @@ const FoggingSolutionEffective = () => {
                                           FoggingSolutionRecords: newData,
                                         });
                                       }}
-                                      readOnly={
-                                        [2, 3, 4].includes(
-                                          userDetails.roles[0].role_id
-                                        ) ||
-                                        !isFieldEditable(
-                                          item,
-                                          "ahuOnDateAndTime"
-                                        )
-                                      }
+                                      readOnly={true}
                                     />
                                   </div>
                                 </div>
@@ -2124,7 +2251,12 @@ const FoggingSolutionEffective = () => {
                                       disabled={
                                         [1, 3].includes(
                                           userDetails.roles[0].role_id
-                                        ) || !canReviewerEdit(item)
+                                        ) ||
+                                        !canReviewerEdit(item) ||
+                                        !isFieldEnabledByFlow(
+                                          item,
+                                          "reviewed_by"
+                                        )
                                       }
                                     />
                                     {item.reviewed_by && (
@@ -2134,7 +2266,27 @@ const FoggingSolutionEffective = () => {
                                 </div>
                               </td>
                               <td>
-                                <input />
+                                <input
+                                  type="text"
+                                  value={item.remarks}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.FoggingSolutionRecords,
+                                    ];
+                                    newData[index].remarks = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      FoggingSolutionRecords: newData,
+                                    });
+                                  }}
+                                  disabled={
+                                    [1, 3].includes(
+                                      userDetails.roles[0].role_id
+                                    ) ||
+                                    !canReviewerEdit(item) ||
+                                    !isFieldEnabledByFlow(item, "remarks")
+                                  }
+                                />
                               </td>
                               <td style={{ width: "200px" }}>
                                 <div className="d-flex">
@@ -2213,7 +2365,12 @@ const FoggingSolutionEffective = () => {
                                     disabled={
                                       [3, 4].includes(
                                         userDetails.roles[0].role_id
-                                      ) || !isRowEditable(item)
+                                      ) ||
+                                      !isRowEditable(item) ||
+                                      !isFieldEnabledByFlow(
+                                        item,
+                                        "supporting_docs"
+                                      )
                                     }
                                   />
                                 </div>

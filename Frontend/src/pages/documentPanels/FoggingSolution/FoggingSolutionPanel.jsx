@@ -26,12 +26,12 @@ const FoggingSolutionPanel = () => {
     description: "",
     additionalAttachment: "",
     additionalInfo: "",
-      nameOfFoggingSolution: "",
-      quantityOfFoggingSolution: "",
-      quantityOfPurifiedWater: "",
-      totalQuantity: "",
+    nameOfFoggingSolution: "",
+    quantityOfFoggingSolution: "",
+    quantityOfPurifiedWater: "",
+    totalQuantity: "",
   });
-  console.log(editData,"editt")
+  console.log(editData, "editt");
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -123,7 +123,11 @@ const FoggingSolutionPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/fogging-solution/approve-FS-elog", data, config)
+        .put(
+          "http://localhost:1000/fogging-solution/approve-FS-elog",
+          data,
+          config
+        )
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -843,63 +847,69 @@ const FoggingSolutionPanel = () => {
                 <>
                   <div className="form-flex">
                     <div className="group-input">
-                    <label className="color-label">Name of fogging solution</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={editData?.nameOfFoggingSolution}
-                        onChange={handleInputChange1}
-                        disabled
-                        style={{ backgroundColor: "#fafafa" }}
-                        className="shadow-xl"
-                      />
+                      <label className="color-label">
+                        Name of fogging solution
+                      </label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.nameOfFoggingSolution}
+                          onChange={handleInputChange1}
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="group-input">
-                    <label className="color-label">Qty of fogging solution</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={editData?.quantityOfFoggingSolution}
-                        onChange={(e) =>
-                          setAnalyticalBalance({ initiator: e.target.value })
-                        }
-                        disabled
-                        style={{ backgroundColor: "#fafafa" }}
-                        className="shadow-xl"
-                      />
+                    <div className="group-input">
+                      <label className="color-label">
+                        Qty of fogging solution
+                      </label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.quantityOfFoggingSolution}
+                          onChange={(e) =>
+                            setAnalyticalBalance({ initiator: e.target.value })
+                          }
+                          disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
+                      </div>
                     </div>
-                  </div>
                   </div>
                   <div className="form-flex">
                     <div className="group-input">
-                    <label className="color-label">Qty of purified water</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={editData?.quantityOfPurifiedWater}
-                        onChange={handleInputChange1}
-                        // disabled
-                        style={{ backgroundColor: "#fafafa" }}
-                        className="shadow-xl"
-                      />
+                      <label className="color-label">
+                        Qty of purified water
+                      </label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.quantityOfPurifiedWater}
+                          onChange={handleInputChange1}
+                          // disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="group-input">
-                    <label className="color-label">Total Qty</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={editData?.totalQuantity}
-                        // onChange={(e) =>
-                        //   setAnalyticalBalance({ initiator: e.target.value })
-                        // }
-                        // disabled
-                        style={{ backgroundColor: "#fafafa" }}
-                        className="shadow-xl"
-                      />
+                    <div className="group-input">
+                      <label className="color-label">Total Qty</label>
+                      <div>
+                        <input
+                          type="text"
+                          value={editData?.totalQuantity}
+                          // onChange={(e) =>
+                          //   setAnalyticalBalance({ initiator: e.target.value })
+                          // }
+                          // disabled
+                          style={{ backgroundColor: "#fafafa" }}
+                          className="shadow-xl"
+                        />
+                      </div>
                     </div>
-                  </div>
                   </div>
 
                   <div>
@@ -923,14 +933,14 @@ const FoggingSolutionPanel = () => {
                         <th>Fogging Start time</th>
                         <th>Fogging End time</th>
                         <th>Performed by (sign/date)</th>
-                        <th>   AHU on date & time</th>
-                        <th>   Verified by (sign/date)</th>
+                        <th>AHU on date & time</th>
+                        <th>Verified by (sign/date)</th>
                         <th>Remarks</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {/*  {editData?.AnalyticalBalances.map(
+                       {editData?.AnalyticalBalances.map(
                          (item, index) => (
                            <tr key={index}>
                              <td>{index + 1}</td>
@@ -1034,11 +1044,11 @@ const FoggingSolutionPanel = () => {
                                        >
                                          View File
                                        </a>
-                                       {/* <DeleteIcon
+                                       <DeleteIcon
                                      style={{ color: "red", cursor: "pointer" }}
                                      onClick={() => handleDeleteFile(index)}
-                                   /> */}
-                      {/* </h3>
+                                   /> 
+                      </h3>
                                    </div>
                                  ) : (
                                    <div className="file-upload-wrapper">
@@ -1089,7 +1099,6 @@ const FoggingSolutionPanel = () => {
                            </tr>
                          )
                        )}
-                       */}
                     </tbody>
                   </table>
 
@@ -1334,7 +1343,7 @@ const FoggingSolutionPanel = () => {
                         <input
                           type="text"
                           name="reviewer"
-                          value={editData?.reviewer6?.name}
+                          value={editData?.reviewer9?.name}
                           readOnly
                         />
                       </div>
@@ -1478,7 +1487,7 @@ const FoggingSolutionPanel = () => {
                         <input
                           type="text"
                           name="approver"
-                          value={editData?.approver6?.name}
+                          value={editData?.approver9?.name}
                           readOnly
                         />
                       </div>
