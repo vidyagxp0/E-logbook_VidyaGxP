@@ -55,13 +55,13 @@ const FoggingSolutionForm = sequelize.define("FoggingSolutionForm", {
     type: DataTypes.STRING,
   },
   quantityOfFoggingSolution: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.STRING,
   },
   quantityOfPurifiedWater: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.STRING,
   },
   totalQuantity: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.STRING,
   },
  
   reviewer_id: {

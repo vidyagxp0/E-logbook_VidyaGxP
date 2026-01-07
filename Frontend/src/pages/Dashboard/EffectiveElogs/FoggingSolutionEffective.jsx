@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import HeaderTop from "../../../components/Header/HeaderTop";
 // import "../docPanel.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
@@ -12,6 +11,7 @@ import LaunchQMS from "../../../components/LaunchQMS/LaunchQMS";
 import TinyEditor from "../../../components/TinyEditor";
 import dayjs from "dayjs";
 import { Autocomplete, TextField } from "@mui/material";
+import HeaderTop from "../../../components/Header/HeaderTop";
 
 const FoggingSolutionEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
@@ -84,7 +84,7 @@ const FoggingSolutionEffective = () => {
     compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
-    AnalyticalBalances: [],
+    FoggingSolutionRecords: [],
     limit: "",
   });
 
@@ -97,7 +97,7 @@ const FoggingSolutionEffective = () => {
   };
 
   const handlePopupSubmit = (credentials) => {
-    const hasMissingFactor = editData.AnalyticalBalances.some(
+    const hasMissingFactor = editData.FoggingSolutionRecords.some(
       (row) => !row.factorValue || row.factorValue.trim() === ""
     );
 
@@ -106,7 +106,7 @@ const FoggingSolutionEffective = () => {
       setShowFactorErrorModal(true); // open modal
       return; // stop submit
     }
-    const cleanedData = editData?.AnalyticalBalances.filter((record) => {
+    const cleanedData = editData?.FoggingSolutionRecords.filter((record) => {
       const hasRequiredFields =
         record.reg_no?.trim() !== "" &&
         record.sample_name?.trim() !== "" &&
@@ -116,7 +116,7 @@ const FoggingSolutionEffective = () => {
 
     // Check if any empty rows will be removed
     const emptyRowsCount =
-      editData?.AnalyticalBalances.length - cleanedData.length;
+      editData?.FoggingSolutionRecords.length - cleanedData.length;
     if (emptyRowsCount > 0) {
       toast.warn(
         `${emptyRowsCount} empty row(s) will be removed before saving.`
@@ -125,7 +125,7 @@ const FoggingSolutionEffective = () => {
 
     const updatedEditData = {
       ...editData,
-      AnalyticalBalances: cleanedData,
+      FoggingSolutionRecords: cleanedData,
     };
 
     // Check if there are any valid records to save
@@ -257,7 +257,7 @@ const FoggingSolutionEffective = () => {
       //   return;
       // }
       if (
-        updatedEditData?.AnalyticalBalances?.some(
+        updatedEditData?.FoggingSolutionRecords?.some(
           (record) => record.analytical_balance === ""
         )
       ) {
@@ -303,7 +303,7 @@ const FoggingSolutionEffective = () => {
   }, [location.state]);
 
   const addRow = () => {
-    const records = editData?.AnalyticalBalances || [];
+    const records = editData?.FoggingSolutionRecords || [];
 
     console.log(records, "records");
     // Function to check if a row is filled
@@ -352,7 +352,7 @@ const FoggingSolutionEffective = () => {
         second: "2-digit",
         hour12: true, // Use 12-hour format
       };
-      const nextIndex = editData?.AnalyticalBalances?.length || 0;
+      const nextIndex = editData?.FoggingSolutionRecords?.length || 0;
 
       const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
@@ -372,9 +372,11 @@ const FoggingSolutionEffective = () => {
         remarksSubType: "",
         status: "Open",
       };
+
+      console.log(newRow, "newRoe");
       setEditData((prevState) => ({
         ...prevState,
-        AnalyticalBalances: [...prevState?.AnalyticalBalances, newRow],
+        FoggingSolutionRecords: [...prevState?.FoggingSolutionRecords, newRow],
       }));
     } else if (location.state.reviewer_id) {
       toast.warn("Only Initiator can add new Row here");
@@ -382,7 +384,7 @@ const FoggingSolutionEffective = () => {
       toast.warn("Only Initiator can add new Row here");
     }
   };
-
+  console.log(editData, "editDataa");
   function deepEqual(object1, object2) {
     // First, check if they are the same object (reference equality)
     if (object1 === object2) {
@@ -435,7 +437,7 @@ const FoggingSolutionEffective = () => {
       userDetails.roles[0].role_id === 1 ||
       userDetails.roles[0].role_id === 5
     ) {
-      const updatedGridData = [...editData.AnalyticalBalances];
+      const updatedGridData = [...editData.FoggingSolutionRecords];
       const rowToDelete = updatedGridData[index];
 
       if (rowToDelete?.record_id) {
@@ -448,11 +450,15 @@ const FoggingSolutionEffective = () => {
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
-        AnalyticalBalances: updatedGridData,
+        FoggingSolutionRecords: updatedGridData,
       }));
     }
   };
 
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /**
+
+/*******  ee311324-3a4d-4383-9f12-6368df95e116  *******/
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
 
@@ -482,8 +488,8 @@ const FoggingSolutionEffective = () => {
   };
 
   const filteredGridData = useMemo(() => {
-    const records = editData?.AnalyticalBalances || [];
-
+    const records = editData?.FoggingSolutionRecords || [];
+    console.log(records, "records");
     return records.filter((record) => {
       const matchInitiator =
         selectedInitiator && selectedInitiator !== "All Records"
@@ -507,19 +513,19 @@ const FoggingSolutionEffective = () => {
       return matchInitiator && matchReviewer && matchStatus;
     });
   }, [
-    editData?.AnalyticalBalances,
+    editData?.FoggingSolutionRecords,
     selectedInitiator,
     selectedReviewer,
     selectedStatus,
   ]);
 
-  console.log(editData, "editDAta");
+  console.log(filteredGridData, "filteredGridData");
   // const handleDeleteFile = (index) => {
   //   if (
   //     location.state?.stage === 1 &&
   //     location.state?.initiator_id === userDetails.userId
   //   ) {
-  //     const updatedGridData = editData.AnalyticalBalances.map(
+  //     const updatedGridData = editData.FoggingSolutionRecords.map(
   //       (item, i) => {
   //         if (i === index) {
   //           return { ...item, supporting_docs: null };
@@ -529,7 +535,7 @@ const FoggingSolutionEffective = () => {
   //     );
   //     setEditData((prevState) => ({
   //       ...prevState,
-  //       AnalyticalBalances: updatedGridData,
+  //       FoggingSolutionRecords: updatedGridData,
   //     }));
   //   }
   // };
@@ -555,16 +561,16 @@ const FoggingSolutionEffective = () => {
   };
 
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.AnalyticalBalances];
+    const updatedGridData = [...editData.FoggingSolutionRecords];
     updatedGridData[index].supporting_docs = file;
     setEditData((prevState) => ({
       ...prevState,
-      AnalyticalBalances: updatedGridData,
+      FoggingSolutionRecords: updatedGridData,
     }));
   };
 
   const handleDeleteFile = async (index) => {
-    const record = editData.AnalyticalBalances[index];
+    const record = editData.FoggingSolutionRecords[index];
 
     if (!record?.record_id) {
       console.error("Record ID not found for deletion");
@@ -578,12 +584,12 @@ const FoggingSolutionEffective = () => {
 
       if (res.data?.error === false) {
         // Clear file from UI state
-        const newData = [...editData.AnalyticalBalances];
+        const newData = [...editData.FoggingSolutionRecords];
         newData[index].supporting_docs = null;
 
         setEditData((prev) => ({
           ...prev,
-          AnalyticalBalances: newData,
+          FoggingSolutionRecords: newData,
         }));
       } else {
         alert(res.data?.message || "Failed to delete attachment.");
@@ -617,7 +623,7 @@ const FoggingSolutionEffective = () => {
     status: location?.state?.status,
     blankRows: 17,
     form_id: location?.state?.form_id,
-    AnalyticalBalances: [],
+    FoggingSolutionRecords: [],
   };
   const generateEmptyReport = async () => {
     setIsLoading1(true);
@@ -696,7 +702,7 @@ const FoggingSolutionEffective = () => {
   //   }
   // };
 
-  const allRecordDates = editData?.AnalyticalBalances?.map(
+  const allRecordDates = editData?.FoggingSolutionRecords?.map(
     (r) => new Date(r.date)
   );
   const firstRecordDate = allRecordDates?.length
@@ -747,12 +753,11 @@ const FoggingSolutionEffective = () => {
       }
 
       if (start) {
-        filteredData.AnalyticalBalances = editData.AnalyticalBalances.filter(
-          (record) => {
+        filteredData.FoggingSolutionRecords =
+          editData.FoggingSolutionRecords.filter((record) => {
             const recordDate = new Date(record.date);
             return recordDate >= start && recordDate <= end;
-          }
-        );
+          });
       }
 
       const payload = {
@@ -801,7 +806,7 @@ const FoggingSolutionEffective = () => {
   // Check if reviewer can edit a record (prevent changes after saving)
   const canReviewerEdit = (item) => {
     // find original version of this record by record_id
-    const original = originalData?.AnalyticalBalances?.find(
+    const original = originalData?.FoggingSolutionRecords?.find(
       (o) => o.record_id === item.record_id
     );
 
@@ -899,6 +904,24 @@ const FoggingSolutionEffective = () => {
 
     return false;
   };
+
+  const getCurrentDateTime12Hr = () => {
+    const now = new Date();
+
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    hours = hours % 12 || 12;
+
+    const day = now.getDate().toString().padStart(2, "0");
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const year = now.getFullYear();
+    const seconds = now.getSeconds().toString().padStart(2, "0");
+
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+  };
+
   return (
     <>
       <HeaderTop />
@@ -1604,7 +1627,7 @@ const FoggingSolutionEffective = () => {
                               <option value="All Records">All</option>
                               {[
                                 ...new Set(
-                                  editData?.AnalyticalBalances?.map(
+                                  editData?.FoggingSolutionRecords?.map(
                                     (r) => r.done_by
                                   )
                                 ),
@@ -1639,7 +1662,7 @@ const FoggingSolutionEffective = () => {
                               <option value="All Records">All</option>
                               {[
                                 ...new Set(
-                                  editData?.AnalyticalBalances?.map(
+                                  editData?.FoggingSolutionRecords?.map(
                                     (r) => r.reviewed_by
                                   )
                                 ),
@@ -1685,7 +1708,7 @@ const FoggingSolutionEffective = () => {
                           </th>
 
                           <th className="sticky top-0 z-10 w-36 text-center !text-wrap ">
-                           AHU No.
+                            AHU No.
                           </th>
                           <th className="sticky top-0 z-10 text-center !text-wrap ">
                             AHU off date & time
@@ -1751,429 +1774,229 @@ const FoggingSolutionEffective = () => {
                               </td> */}
                               <td className="!text-center !justify-center">
                                 <input
-                                  value={item.instrument_no || ""}
-                                  readOnly
+                                  value={item.nameOfArea || ""}
+                                  // readOnly
                                   // className="bg-gray-100 cursor-not-allowed"
                                 />
                               </td>
                               <td>
                                 <input
-                                  value={item.reg_no}
+                                  value={item.AHUNo}
                                   onChange={(e) => {
                                     const newData = [
-                                      ...editData.AnalyticalBalances,
+                                      ...editData.FoggingSolutionRecords,
                                     ];
-                                    newData[index].reg_no = e.target.value;
+                                    newData[index].AHUNo = e.target.value;
                                     setEditData({
                                       ...editData,
-                                      AnalyticalBalances: newData,
+                                      FoggingSolutionRecords: newData,
                                     });
                                   }}
                                   readOnly={
                                     [3, 2, 4].includes(
                                       userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "reg_no")
+                                    ) || !isFieldEditable(item, "AHUNo")
                                   }
                                 />
                               </td>
                               <td>
-                                <input
-                                  value={item.sample_name}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.AnalyticalBalances,
-                                    ];
-                                    newData[index].sample_name = e.target.value;
-                                    setEditData({
-                                      ...editData,
-                                      AnalyticalBalances: newData,
-                                    });
-                                  }}
-                                  readOnly={
-                                    [2, 3, 4].includes(
-                                      userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "sample_name")
-                                  }
-                                />
-                              </td>
-
-                              <td>
-                                <input
-                                  value={item.weight_taken}
-                                  // disabled
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.AnalyticalBalances,
-                                    ];
-                                    newData[index].weight_taken =
-                                      e.target.value;
-                                    setEditData({
-                                      ...editData,
-                                      AnalyticalBalances: newData,
-                                    });
-                                  }}
-                                  readOnly={
-                                    [3, 2, 4].includes(
-                                      userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "weight_taken")
-                                  }
-                                />
-                              </td>
-
-                              <td>
-                                <div className="flex flex-col gap-2">
-                                  {/* UOM Dropdown */}
-                                  <select
-                                    value={item.uom || ""}
-                                    onChange={(e) => {
-                                      const newData = [
-                                        ...editData.AnalyticalBalances,
-                                      ];
-                                      newData[index].uom = e.target.value;
-
-                                      // Reset input if UOM != Others
-                                      if (e.target.value !== "Others") {
-                                        newData[index].uomOther = "";
-                                      } else {
-                                        newData[index].remarks =
-                                          newData[index].uomOther || "";
-                                      }
-
-                                      setEditData({
-                                        ...editData,
-                                        AnalyticalBalances: newData,
-                                      });
-                                    }}
-                                    className="border rounded px-2 py-1 w-auto"
-                                    disabled={
-                                      [2, 3, 4].includes(
-                                        userDetails.roles[0].role_id
-                                      ) || !isFieldEditable(item, "uom")
-                                    }
-                                  >
-                                    <option value="">Select UOM</option>
-                                    <option value="mg">mg</option>
-                                    <option value="kg">kg</option>
-                                    <option value="Others">Others</option>
-                                  </select>
-
-                                  {/* Custom UOM input, only if "Others" selected */}
-                                  {item.uom === "Others" && (
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
                                     <input
-                                      type="text"
-                                      placeholder="Enter custom UOM"
-                                      value={item.uomOther || ""}
+                                      type="checkbox"
+                                      className="h-4 w-4 cursor-pointer"
+                                      style={{ marginLeft: "8px" }}
+                                      checked={!!item.ahuOffDateAndTime}
                                       onChange={(e) => {
                                         const newData = [
-                                          ...editData.AnalyticalBalances,
+                                          ...editData.FoggingSolutionRecords,
                                         ];
-                                        newData[index].uomOther =
-                                          e.target.value;
+
+                                        if (e.target.checked) {
+                                          newData[index].ahuOffDateAndTime =
+                                            getCurrentDateTime12Hr();
+                                        } else {
+                                          newData[index].ahuOffDateAndTime = "";
+                                        }
 
                                         setEditData({
                                           ...editData,
-                                          AnalyticalBalances: newData,
+                                          FoggingSolutionRecords: newData,
                                         });
                                       }}
-                                      className="border rounded px-2 py-1 w-auto"
+                                    />
+                                    <input
+                                      value={item.ahuOffDateAndTime || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.FoggingSolutionRecords,
+                                        ];
+                                        newData[index].ahuOffDateAndTime =
+                                          e.target.value;
+                                        setEditData({
+                                          ...editData,
+                                          FoggingSolutionRecords: newData,
+                                        });
+                                      }}
                                       readOnly={
                                         [2, 3, 4].includes(
                                           userDetails.roles[0].role_id
-                                        ) || !isFieldEditable(item, "uom")
+                                        ) ||
+                                        !isFieldEditable(
+                                          item,
+                                          "ahuOffDateAndTime"
+                                        )
                                       }
                                     />
-                                  )}
+                                  </div>
                                 </div>
-                              </td>
-
-                              <td className="relative align-middle">
-                                {/* PERFORMANCE DROPDOWN */}
-                                <select
-                                  value={item.performance}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.AnalyticalBalances,
-                                    ];
-                                    newData[index].performance = e.target.value;
-
-                                    // 👉 Auto-set START DATETIME (DD-MM-YYYY hh:mm:ss A)
-                                    if (e.target.value !== "OK") {
-                                      newData[index].performanceStartTime =
-                                        dayjs().format("DD-MM-YYYY hh:mm:ss A");
-                                    } else {
-                                      newData[index].performanceStartTime = "";
-                                      newData[index].performanceEndDate = "";
-                                      newData[index].performanceEndTime = "";
-                                      newData[index].performanceEndDateTime =
-                                        "";
-                                      newData[index].performanceRemark = "";
-                                    }
-
-                                    setEditData({
-                                      ...editData,
-                                      AnalyticalBalances: newData,
-                                    });
-                                  }}
-                                  className="border px-2 py-1 rounded w-full text-sm text-center"
-                                  disabled={
-                                    [2, 3, 4].includes(
-                                      userDetails.roles[0].role_id
-                                    ) || !isFieldEditable(item, "performance")
-                                  }
-                                >
-                                  <option value="OK">OK</option>
-                                  <option value="Preventive / Maintenance">
-                                    Preventive / Maintenance
-                                  </option>
-                                  <option value="Out of Order">
-                                    Out of Order
-                                  </option>
-                                  <option value="Under Calibration">
-                                    Under Calibration
-                                  </option>
-                                </select>
-
-                                {/* SHOW ONLY IF NOT OK */}
-                                {item.performance &&
-                                  item.performance !== "OK" && (
-                                    <div className="mt-1 border rounded p-1 bg-yellow-50 text-xs">
-                                      <table className="w-full border-collapse text-center text-xs">
-                                        <thead>
-                                          <tr className="bg-yellow-100">
-                                            <th className="border text-center px-1 py-1">
-                                              Start Date & Time
-                                            </th>
-                                            <th className="border text-center px-1 py-1">
-                                              End Date & Time
-                                            </th>
-                                            <th className="border text-center px-1 py-1">
-                                              Remark
-                                            </th>
-                                          </tr>
-                                        </thead>
-
-                                        <tbody>
-                                          <tr>
-                                            {/* START TIME DISPLAY */}
-                                            <td className="border px-1 py-1">
-                                              <input
-                                                type="text"
-                                                readOnly
-                                                value={
-                                                  item.performanceStartTime ||
-                                                  ""
-                                                }
-                                                className="text-center border px-2 py-[6px] w-auto bg-gray-200 rounded text-sm"
-                                              />
-                                            </td>
-
-                                            {/* END DATE + TIME */}
-                                            <td className="border px-1 py-1">
-                                              <div className="flex flex-col gap-1">
-                                                {/* END DATE */}
-                                                <input
-                                                  type="date"
-                                                  value={
-                                                    item.performanceEndDate ||
-                                                    ""
-                                                  }
-                                                  onChange={(e) => {
-                                                    const newData = [
-                                                      ...editData.AnalyticalBalances,
-                                                    ];
-                                                    newData[
-                                                      index
-                                                    ].performanceEndDate =
-                                                      e.target.value;
-
-                                                    // Combine & Format Only When Time Exists
-                                                    if (
-                                                      newData[index]
-                                                        .performanceEndDate &&
-                                                      newData[index]
-                                                        .performanceEndTime
-                                                    ) {
-                                                      newData[
-                                                        index
-                                                      ].performanceEndDateTime =
-                                                        dayjs(
-                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
-                                                        ).format(
-                                                          "DD-MM-YYYY hh:mm:ss A"
-                                                        );
-                                                    }
-
-                                                    setEditData({
-                                                      ...editData,
-                                                      AnalyticalBalances:
-                                                        newData,
-                                                    });
-                                                  }}
-                                                  disabled={
-                                                    [2, 3, 4].includes(
-                                                      userDetails.roles[0]
-                                                        .role_id
-                                                    ) ||
-                                                    !!originalData
-                                                      ?.AnalyticalBalances[
-                                                      index
-                                                    ]?.performanceEndDate
-                                                  }
-                                                  className="border px-2 py-[6px] w-full rounded text-sm"
-                                                />
-
-                                                {/* END TIME (Normal Input) */}
-                                                <input
-                                                  type="time"
-                                                  step="1"
-                                                  value={
-                                                    item.performanceEndTime ||
-                                                    ""
-                                                  }
-                                                  onChange={(e) => {
-                                                    const newData = [
-                                                      ...editData.AnalyticalBalances,
-                                                    ];
-                                                    newData[
-                                                      index
-                                                    ].performanceEndTime =
-                                                      e.target.value;
-
-                                                    // Combine & Format Only When Date Exists
-                                                    if (
-                                                      newData[index]
-                                                        .performanceEndDate &&
-                                                      newData[index]
-                                                        .performanceEndTime
-                                                    ) {
-                                                      newData[
-                                                        index
-                                                      ].performanceEndDateTime =
-                                                        dayjs(
-                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
-                                                        ).format(
-                                                          "DD-MM-YYYY hh:mm:ss A"
-                                                        );
-                                                    }
-
-                                                    setEditData({
-                                                      ...editData,
-                                                      AnalyticalBalances:
-                                                        newData,
-                                                    });
-                                                  }}
-                                                  disabled={
-                                                    [2, 3, 4].includes(
-                                                      userDetails.roles[0]
-                                                        .role_id
-                                                    ) ||
-                                                    !!originalData
-                                                      ?.AnalyticalBalances[
-                                                      index
-                                                    ]?.performanceEndTime
-                                                  }
-                                                  className="border px-2 py-[6px] w-full rounded text-sm"
-                                                />
-
-                                                {/* FINAL READONLY DISPLAY SAME AS START */}
-                                                <input
-                                                  type="text"
-                                                  readOnly
-                                                  value={
-                                                    item.performanceEndDateTime ||
-                                                    ""
-                                                  }
-                                                  className="text-center border px-2 py-[6px] w-full bg-gray-200 rounded text-sm mt-1"
-                                                />
-                                              </div>
-                                            </td>
-
-                                            {/* REMARK BOX */}
-                                            <td className="border px-1 py-1">
-                                              <textarea
-                                                placeholder="Enter remark"
-                                                value={
-                                                  item.performanceRemark || ""
-                                                }
-                                                onChange={(e) => {
-                                                  const newData = [
-                                                    ...editData.AnalyticalBalances,
-                                                  ];
-                                                  newData[
-                                                    index
-                                                  ].performanceRemark =
-                                                    e.target.value;
-                                                  setEditData({
-                                                    ...editData,
-                                                    AnalyticalBalances: newData,
-                                                  });
-                                                }}
-                                                className="border px-2 py-[6px] w-full rounded resize-none text-sm"
-                                                rows={2}
-                                                disabled={
-                                                  [2, 3, 4].includes(
-                                                    userDetails.roles[0].role_id
-                                                  ) ||
-                                                  !!originalData
-                                                    ?.AnalyticalBalances[index]
-                                                    ?.performanceRemark
-                                                }
-                                              ></textarea>
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  )}
-                              </td>
-                              <td className="!text-center !justify-center">
-                                <select
-                                  value={item.factorValue || ""}
-                                  onChange={(e) => {
-                                    const newData = [
-                                      ...editData.AnalyticalBalances,
-                                    ];
-                                    newData[index].factorValue = e.target.value;
-                                    setEditData({
-                                      ...editData,
-                                      AnalyticalBalances: newData,
-                                    });
-                                  }}
-                                  disabled={
-                                    originalData?.AnalyticalBalances[index]
-                                      ?.factorValue === "Ok" ||
-                                    (!allowInitiator(item, "factorValue") &&
-                                      [3, 2, 4].includes(
-                                        userDetails.roles[0].role_id
-                                      ))
-                                  }
-                                  className="border px-2 py-1 rounded w-full"
-                                >
-                                  <option value="Select">--Select--</option>
-                                  <option value="Ok">Ok</option>
-                                  <option value="Calibration/Verification">
-                                    Calibration / Verification
-                                  </option>
-                                </select>
                               </td>
 
                               <td>
                                 <input
-                                  value={item.done_by}
+                                  value={item.volumeOfArea}
                                   // disabled
-                                  //           onChange={(e) => {
-                                  //    const newData = [
-                                  //      ...editData.AnalyticalBalances,
-                                  //    ];
-                                  //    newData[index].done_by =
-                                  //      e.target.value;
-                                  //    setEditData({
-                                  //      ...editData,
-                                  //      AnalyticalBalances: newData,
-                                  //    });
-                                  //  }}
-                                  readOnly={true}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.FoggingSolutionRecords,
+                                    ];
+                                    newData[index].volumeOfArea =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      FoggingSolutionRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    [3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "volumeOfArea")
+                                  }
                                 />
+                              </td>
+
+                              <td className="relative align-middle">
+                                <input
+                                  value={item.foggingSolutionQty}
+                                  // disabled
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.FoggingSolutionRecords,
+                                    ];
+                                    newData[index].foggingSolutionQty =
+                                      e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      FoggingSolutionRecords: newData,
+                                    });
+                                  }}
+                                  readOnly={
+                                    [3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) ||
+                                    !isFieldEditable(item, "foggingSolutionQty")
+                                  }
+                                />
+                              </td>
+                              <td className="!text-center !justify-center">
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                    <input
+                                      type="checkbox"
+                                      className="h-4 w-4 cursor-pointer"
+                                      style={{ marginLeft: "8px" }}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.FoggingSolutionRecords,
+                                        ];
+
+                                        if (e.target.checked) {
+                                          newData[index].foggingStartTime =
+                                            getCurrentDateTime12Hr();
+                                        } else {
+                                          newData[index].foggingStartTime = "";
+                                        }
+
+                                        setEditData({
+                                          ...editData,
+                                          FoggingSolutionRecords: newData,
+                                        });
+                                      }}
+                                    />
+                                    <input
+                                      value={item.foggingStartTime || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.FoggingSolutionRecords,
+                                        ];
+                                        newData[index].foggingStartTime =
+                                          e.target.value;
+                                        setEditData({
+                                          ...editData,
+                                          FoggingSolutionRecords: newData,
+                                        });
+                                      }}
+                                      readOnly={
+                                        [3, 2, 4].includes(
+                                          userDetails.roles[0].role_id
+                                        ) ||
+                                        !isFieldEditable(
+                                          item,
+                                          "foggingStartTime"
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td className="!text-center !justify-center">
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                    <input
+                                      className="h-4 w-4 cursor-pointer"
+                                      type="checkbox"
+                                      style={{ marginLeft: "8px" }}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.FoggingSolutionRecords,
+                                        ];
+
+                                        if (e.target.checked) {
+                                          newData[index].foggingEndTime =
+                                            getCurrentDateTime12Hr();
+                                        } else {
+                                          newData[index].foggingEndTime = "";
+                                        }
+
+                                        setEditData({
+                                          ...editData,
+                                          FoggingSolutionRecords: newData,
+                                        });
+                                      }}
+                                    />
+                                    <input
+                                      value={item.foggingEndTime || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.FoggingSolutionRecords,
+                                        ];
+                                        newData[index].foggingEndTime =
+                                          e.target.value;
+                                        setEditData({
+                                          ...editData,
+                                          FoggingSolutionRecords: newData,
+                                        });
+                                      }}
+                                      readOnly={
+                                        [3, 2, 4].includes(
+                                          userDetails.roles[0].role_id
+                                        ) ||
+                                        !isFieldEditable(item, "foggingEndTime")
+                                      }
+                                    />
+                                  </div>
+                                </div>
                               </td>
 
                               <td>
@@ -2185,7 +2008,7 @@ const FoggingSolutionEffective = () => {
                                       checked={!!item.reviewed_by}
                                       onChange={(e) => {
                                         const newData = [
-                                          ...editData.AnalyticalBalances,
+                                          ...editData.FoggingSolutionRecords,
                                         ];
                                         if (e.target.checked) {
                                           newData[index].reviewed_by =
@@ -2201,7 +2024,7 @@ const FoggingSolutionEffective = () => {
                                         }
                                         setEditData({
                                           ...editData,
-                                          AnalyticalBalances: newData,
+                                          FoggingSolutionRecords: newData,
                                         });
                                       }}
                                       disabled={
@@ -2218,140 +2041,101 @@ const FoggingSolutionEffective = () => {
                               </td>
 
                               <td>
-                                {item.reviewed_by && (
-                                  <div className="flex flex-col gap-2">
-                                    {/* First Dropdown: OK / Action Needed */}
-                                    <select
-                                      value={item.remarksType || ""}
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                    <input
+                                      className="h-4 w-4 cursor-pointer"
+                                      type="checkbox"
+                                      style={{ marginLeft: "8px" }}
+                                      checked={!!item.ahuOnDateAndTime}
                                       onChange={(e) => {
                                         const newData = [
-                                          ...editData.AnalyticalBalances,
+                                          ...editData.FoggingSolutionRecords,
                                         ];
-                                        newData[index].remarksType =
-                                          e.target.value;
 
-                                        // Clear related fields when not "action-needed"
-                                        if (e.target.value === "OK") {
-                                          newData[index].status = "Closed";
-                                        } else if (
-                                          e.target.value === "action-needed"
-                                        ) {
-                                          newData[index].status = "Returned";
-                                        }
-                                        if (
-                                          e.target.value !== "action-needed"
-                                        ) {
-                                          newData[index].remarksSubType = "";
-                                          newData[index].remarksOther = "";
-                                          newData[index].remarks =
-                                            e.target.value;
+                                        if (e.target.checked) {
+                                          newData[index].ahuOnDateAndTime =
+                                            getCurrentDateTime12Hr();
                                         } else {
-                                          newData[index].remarks = "";
+                                          newData[index].ahuOnDateAndTime = "";
                                         }
 
                                         setEditData({
                                           ...editData,
-                                          AnalyticalBalances: newData,
+                                          FoggingSolutionRecords: newData,
                                         });
                                       }}
-                                      className="border rounded px-2 py-1 w-auto"
+                                    />
+                                    <input
+                                      value={item.ahuOnDateAndTime || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.FoggingSolutionRecords,
+                                        ];
+                                        newData[index].ahuOnDateAndTime =
+                                          e.target.value;
+                                        setEditData({
+                                          ...editData,
+                                          FoggingSolutionRecords: newData,
+                                        });
+                                      }}
+                                      readOnly={
+                                        [2, 3, 4].includes(
+                                          userDetails.roles[0].role_id
+                                        ) ||
+                                        !isFieldEditable(
+                                          item,
+                                          "ahuOnDateAndTime"
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td>
+                                <div>
+                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                    <input
+                                      className="h-4 w-4 cursor-pointer"
+                                      type="checkbox"
+                                      checked={!!item.reviewed_by}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...editData.FoggingSolutionRecords,
+                                        ];
+                                        if (e.target.checked) {
+                                          newData[index].reviewed_by =
+                                            reviewed_by;
+                                          newData[index].status = "Closed";
+                                        } else {
+                                          newData[index].reviewed_by = "";
+                                          newData[index].status = "Open";
+                                          newData[index].remarks = "";
+                                          newData[index].remarksType = "";
+                                          newData[index].remarksOther = "";
+                                          newData[index].remarksSubType = "";
+                                        }
+                                        setEditData({
+                                          ...editData,
+                                          FoggingSolutionRecords: newData,
+                                        });
+                                      }}
                                       disabled={
                                         [1, 3].includes(
                                           userDetails.roles[0].role_id
                                         ) || !canReviewerEdit(item)
                                       }
-                                    >
-                                      <option value="Select">--Select--</option>
-                                      <option value="OK">OK</option>
-                                      <option value="action-needed">
-                                        Action Needed
-                                      </option>
-                                    </select>
-
-                                    {/* Show Second Dropdown if "action-needed" */}
-                                    {item.remarksType === "action-needed" && (
-                                      <div className="flex flex-col gap-2">
-                                        <select
-                                          value={item.remarksSubType || ""}
-                                          onChange={(e) => {
-                                            const newData = [
-                                              ...editData.AnalyticalBalances,
-                                            ];
-                                            newData[index].remarksSubType =
-                                              e.target.value;
-
-                                            if (e.target.value !== "Others") {
-                                              newData[index].remarksOther = "";
-                                              newData[index].remarks =
-                                                e.target.value;
-                                            } else {
-                                              newData[index].remarks =
-                                                newData[index].remarksOther ||
-                                                "";
-                                            }
-
-                                            setEditData({
-                                              ...editData,
-                                              AnalyticalBalances: newData,
-                                            });
-                                          }}
-                                          className="border rounded px-2 py-1 w-auto"
-                                          disabled={
-                                            [1, 3].includes(
-                                              userDetails.roles[0].role_id
-                                            ) || !isRowEditable(item)
-                                          }
-                                        >
-                                          <option value="">Select Issue</option>
-                                          <option value="Incorrect Sample Name">
-                                            Incorrect Sample Name
-                                          </option>
-                                          <option value="Incorrect Reg No./ Lot No.">
-                                            Incorrect Reg No./ Lot No.
-                                          </option>
-                                          <option value="Incorrect Weight Taken">
-                                            Incorrect Weight Taken
-                                          </option>
-                                          <option value="Incorrect UOM">
-                                            Incorrect UOM
-                                          </option>
-                                          <option value="Others">Others</option>
-                                        </select>
-
-                                        {/* Show Input if "Others" is selected */}
-                                        {item.remarksSubType && (
-                                          <input
-                                            type="text"
-                                            placeholder="Enter remark"
-                                            value={item.remarksOther || ""}
-                                            onChange={(e) => {
-                                              const newData = [
-                                                ...editData.AnalyticalBalances,
-                                              ];
-                                              newData[index].remarksOther =
-                                                e.target.value;
-                                              newData[index].remarks =
-                                                e.target.value;
-
-                                              setEditData({
-                                                ...editData,
-                                                AnalyticalBalances: newData,
-                                              });
-                                            }}
-                                            className="border rounded px-2 py-1 w-auto"
-                                            readOnly={
-                                              [1, 3].includes(
-                                                userDetails.roles[0].role_id
-                                              ) || !canReviewerEdit(item)
-                                            }
-                                          />
-                                        )}
-                                      </div>
+                                    />
+                                    {item.reviewed_by && (
+                                      <p>{item.reviewed_by}</p>
                                     )}
                                   </div>
-                                )}
+                                </div>
                               </td>
-
+                              <td>
+                                <input />
+                              </td>
                               <td style={{ width: "200px" }}>
                                 <div className="d-flex">
                                   {(() => {

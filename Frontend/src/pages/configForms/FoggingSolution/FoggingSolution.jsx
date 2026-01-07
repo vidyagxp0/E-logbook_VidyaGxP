@@ -19,7 +19,6 @@ const FoggingSolution = () => {
   const [allTableData, setAllTableData] = useState([]);
   const [reviewers, setReviewers] = useState([]);
   const [approvers, setApprovers] = useState([]);
-  console.log(reviewers,"reviewers")
   const [User, setUser] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -38,7 +37,7 @@ const FoggingSolution = () => {
       data: {
         site_id: location.state?.site_id,
         role_id: 2,
-        process_id: 7,
+        process_id: 16,
       },
     };
 
@@ -60,7 +59,7 @@ const FoggingSolution = () => {
       data: {
         site_id: location.state?.site_id,
         role_id: 3,
-        process_id: 7,
+        process_id: 16,
       },
     };
 
@@ -95,9 +94,9 @@ const FoggingSolution = () => {
 
   const handlePopupSubmit = (credentials) => {
     if (
-      analyticalBalance.site_id === null ||
-      analyticalBalance.approver_id === null ||
-      analyticalBalance.reviewer_id === null
+      foggingSolution.site_id === null ||
+      foggingSolution.approver_id === null ||
+      foggingSolution.reviewer_id === null
     ) {
       toast.error(
         "Please select an approver and a reviewer before saving e-log!"
@@ -105,16 +104,16 @@ const FoggingSolution = () => {
       return;
     }
 
-    // if (analyticalBalance.initiatorComment === "") {
+    // if (foggingSolution.initiatorComment === "") {
     //   toast.error("Please provide an initiator comment!");
     //   return;
     // }
-    // if (analyticalBalance.description === "") {
+    // if (foggingSolution.description === "") {
     //   toast.error("Please provide a short description!");
     //   return;
     // }
     if (
-      analyticalBalance?.FormRecordsArray?.some(
+      foggingSolution?.FormRecordsArray?.some(
         (record) => record.sampleName === "" || record.remarks === ""
       )
     ) {
@@ -129,14 +128,14 @@ const FoggingSolution = () => {
       },
     };
 
-    analyticalBalance.email = credentials?.email;
-    analyticalBalance.password = credentials?.password;
-    analyticalBalance.initiatorDeclaration = credentials?.declaration;
+    foggingSolution.email = credentials?.email;
+    foggingSolution.password = credentials?.password;
+    foggingSolution.initiatorDeclaration = credentials?.declaration;
 
     axios
       .post(
         "http://localhost:1000/fogging-solution/post-fogging-solution",
-        analyticalBalance,
+        foggingSolution,
         config
       )
       .then(() => {
@@ -197,7 +196,7 @@ const FoggingSolution = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
-  const [analyticalBalance, setAnalyticalBalance] = useReducer(
+  const [foggingSolution, setFoggingSolution] = useReducer(
     (prev, next) => ({
       ...prev,
       ...next,
@@ -207,7 +206,11 @@ const FoggingSolution = () => {
       reviewer_id: null,
       approver_id: null,
       description: "",
-      department: "",
+      nameOfFoggingSolution: "",
+      quantityOfFoggingSolution: "",
+      quantityOfPurifiedWater: "",
+      totalQuantity: "",
+      // department: "",
       review_comments: "",
       // compression_area: "",
       additionalAttachment: "",
@@ -218,27 +221,26 @@ const FoggingSolution = () => {
       initiatorDeclaration: "",
     }
   );
-  console.log(analyticalBalance, "analyticalBalance");
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
-    setAnalyticalBalance({ ...analyticalBalance, [name]: value });
+    setFoggingSolution({ ...foggingSolution, [name]: value });
   };
 
   const handleReviewerFileChange = (e) => {
-    setAnalyticalBalance({
-      ...analyticalBalance,
+    setFoggingSolution({
+      ...foggingSolution,
       reviewerAttachment: e.target.files[0],
     });
   };
   const handleApproverFileChange = (e) => {
-    setAnalyticalBalance({
-      ...analyticalBalance,
+    setFoggingSolution({
+      ...foggingSolution,
       approverAttachment: e.target.files[0],
     });
   };
 
   useEffect(() => {
-    setAnalyticalBalance({ FormRecordsArray: allTableData });
+    setFoggingSolution({ FormRecordsArray: allTableData });
   }, [allTableData]);
 
   const handleDeleteFile = (index) => {
@@ -253,21 +255,21 @@ const FoggingSolution = () => {
     setAllTableData(updatedData);
   };
   const handleFileChangeAttachment = (e) => {
-    setAnalyticalBalance({
-      ...analyticalBalance,
+    setFoggingSolution({
+      ...foggingSolution,
       additionalAttachment: e.target.files[0],
     });
   };
 
   const handleInitiatorFileChange = (e) => {
-    setAnalyticalBalance({
-      ...analyticalBalance,
+    setFoggingSolution({
+      ...foggingSolution,
       initiatorAttachment: e.target.files[0],
     });
   };
 
   const setTinyContent = (content) => {
-    setAnalyticalBalance({
+    setFoggingSolution({
       description: content,
     });
   };
@@ -407,7 +409,7 @@ const FoggingSolution = () => {
                         type="text"
                         value={User?.name}
                         onChange={(e) =>
-                          setAnalyticalBalance({ initiator: e.target.value })
+                          setFoggingSolution({ initiator: e.target.value })
                         }
                         disabled
                         style={{ backgroundColor: "#fafafa" }}
@@ -423,7 +425,7 @@ const FoggingSolution = () => {
                         type="text"
                         value={date}
                         onChange={(e) =>
-                          setAnalyticalBalance({
+                          setFoggingSolution({
                             dateOfInitiation: e.target.value,
                           })
                         }
@@ -442,9 +444,9 @@ const FoggingSolution = () => {
                     <div>
                       {/* <input
                                   type="text"
-                                  value={analyticalBalance.description}
+                                  value={foggingSolution.description}
                                   onChange={(e) =>
-                                    setAnalyticalBalance({
+                                    setFoggingSolution({
                                       description: e.target.value,
                                     })
                                   }
@@ -452,7 +454,7 @@ const FoggingSolution = () => {
                                 /> */}
 
                       <TinyEditor
-                        editorContent={analyticalBalance.description}
+                        editorContent={foggingSolution.description}
                         setEditorContent={setTinyContent}
                         tinyNo={1}
                       />
@@ -466,7 +468,7 @@ const FoggingSolution = () => {
                         type="text"
                         value="Under Initiation"
                         onChange={(e) =>
-                          setAnalyticalBalance({ status: e.target.value })
+                          setFoggingSolution({ status: e.target.value })
                         }
                         disabled
                         style={{ backgroundColor: "#fafafa" }}
@@ -484,9 +486,9 @@ const FoggingSolution = () => {
                     <select
                       className="form-control"
                       name="assign_to"
-                      value={analyticalBalance.department}
+                      value={foggingSolution.department}
                       onChange={(e) =>
-                        setAnalyticalBalance({
+                        setFoggingSolution({
                           department: e.target.value,
                         })
                       }
@@ -527,11 +529,11 @@ const FoggingSolution = () => {
                     <div>
                       <input
                         type="text"
-                        // value={""}
-                        // onChange={(e) =>
-                        //   setAnalyticalBalance({ initiator: e.target.value })
-                        // }
-                        // disabled
+                        value={foggingSolution.nameOfFoggingSolution}
+                        onChange={(e) =>
+                          setFoggingSolution({ nameOfFoggingSolution: e.target.value })
+                        }
+                        
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
                       />
@@ -542,10 +544,10 @@ const FoggingSolution = () => {
                     <div>
                       <input
                         type="text"
-                        // value={User?.name}
-                        // onChange={(e) =>
-                        //   setAnalyticalBalance({ initiator: e.target.value })
-                        // }
+                        value={foggingSolution.quantityOfFoggingSolution}
+                        onChange={(e) =>
+                          setFoggingSolution({ quantityOfFoggingSolution: e.target.value })
+                        }
                         // disabled
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
@@ -559,10 +561,10 @@ const FoggingSolution = () => {
                     <div>
                       <input
                         type="text"
-                        // value={User?.name}
-                        // onChange={(e) =>
-                        //   setAnalyticalBalance({ initiator: e.target.value })
-                        // }
+                          value={foggingSolution.quantityOfPurifiedWater}
+                          onChange={(e) =>
+                            setFoggingSolution({ quantityOfPurifiedWater: e.target.value })
+                          }
                         // disabled
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
@@ -574,10 +576,10 @@ const FoggingSolution = () => {
                     <div>
                       <input
                         type="text"
-                        // value={User?.name}
-                        // onChange={(e) =>
-                        //   setAnalyticalBalance({ initiator: e.target.value })
-                        // }
+                        value={foggingSolution.totalQuantity}
+                        onChange={(e) =>
+                          setFoggingSolution({ totalQuantity: e.target.value })
+                        }
                         // disabled
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
@@ -596,9 +598,9 @@ const FoggingSolution = () => {
                       </label>
                       <div>
                         <select
-                          value={analyticalBalance.reviewer_id}
+                          value={foggingSolution.reviewer_id}
                           onChange={(e) => {
-                            setAnalyticalBalance({
+                            setFoggingSolution({
                               reviewer_id: e.target.value,
                             });
                           }}
@@ -628,9 +630,9 @@ const FoggingSolution = () => {
                       </label>
                       <div>
                         <select
-                          value={analyticalBalance.approver_id}
+                          value={foggingSolution.approver_id}
                           onChange={(e) => {
-                            setAnalyticalBalance({
+                            setFoggingSolution({
                               approver_id: e.target.value,
                             });
                           }}
@@ -823,10 +825,10 @@ const FoggingSolution = () => {
                       <textarea
                         className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                         rows="4"
-                        value={analyticalBalance.additionalInfo}
+                        value={foggingSolution.additionalInfo}
                         disabled
                         onChange={(e) => {
-                          setAnalyticalBalance({
+                          setFoggingSolution({
                             additionalInfo: e.target.value,
                           });
                         }}
@@ -850,7 +852,7 @@ const FoggingSolution = () => {
                       <input
                         name="initiatorComment"
                         onChange={(e) =>
-                          setAnalyticalBalance({
+                          setFoggingSolution({
                             initiatorComment: e.target.value,
                           })
                         }

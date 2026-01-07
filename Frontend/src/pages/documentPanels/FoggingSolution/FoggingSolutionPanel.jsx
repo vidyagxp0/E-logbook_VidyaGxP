@@ -23,17 +23,15 @@ const FoggingSolutionPanel = () => {
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
   const [editData, setEditData] = useState({
     initiator_name: "",
-    status: "",
     description: "",
-    department: "",
-    compression_area: "",
     additionalAttachment: "",
     additionalInfo: "",
-    additionalAttachment: "",
-    additionalInfo: "",
-    AnalyticalBalance: [],
-    limit: "",
+      nameOfFoggingSolution: "",
+      quantityOfFoggingSolution: "",
+      quantityOfPurifiedWater: "",
+      totalQuantity: "",
   });
+  console.log(editData,"editt")
 
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -73,7 +71,7 @@ const FoggingSolutionPanel = () => {
       }
       axios
         .put(
-          "http://localhost:1000/analytical-balance/send-for-review",
+          "http://localhost:1000/fogging-solution/send-FS-elog-for-review",
           data,
           config
         )
@@ -91,7 +89,7 @@ const FoggingSolutionPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/analytical-balance/send-review-to-approval",
+          "http://localhost:1000/fogging-solution/send-FS-from-review-to-approval",
           data,
           config
         )
@@ -110,7 +108,7 @@ const FoggingSolutionPanel = () => {
       data.reviewerAttachment = editData.reviewerAttachment;
       axios
         .put(
-          "http://localhost:1000/analytical-balance/send-review-to-open",
+          "http://localhost:1000/fogging-solution/send-FS-elog-from-review-to-open",
           data,
           config
         )
@@ -125,7 +123,7 @@ const FoggingSolutionPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       data.approverAttachment = editData.approverAttachment;
       axios
-        .put("http://localhost:1000/analytical-balance/approve", data, config)
+        .put("http://localhost:1000/fogging-solution/approve-FS-elog", data, config)
         .then(() => {
           toast.success("Elog successfully Closed Done");
           navigate(-1);
@@ -140,7 +138,7 @@ const FoggingSolutionPanel = () => {
       data.approverDeclaration = credentials?.declaration;
       axios
         .put(
-          "http://localhost:1000/analytical-balance/send-approval-to-open",
+          "http://localhost:1000/fogging-solution/send-FS-elog-from-approval-to-open",
           data,
           config
         )
@@ -187,7 +185,7 @@ const FoggingSolutionPanel = () => {
         method: "PUT",
         headers: myHeaders,
         data: editData,
-        url: "http://localhost:1000/analytical-balance/update",
+        url: "http://localhost:1000/fogging-solution/update-fogging-solution",
       };
 
       axios(requestOptions)
@@ -397,7 +395,7 @@ const FoggingSolutionPanel = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:1000/analytical-balance/chat-pdf/${formId}`,
+        `http://localhost:1000/fogging-solution/chat-pdf/${formId}`,
         {
           reportData: reportData,
         },
@@ -448,6 +446,8 @@ const FoggingSolutionPanel = () => {
                 ? "EMEA"
                 : location.state?.site_id === 4
                 ? "EU"
+                : location.state?.site_id === 7
+                ? "Shilpa"
                 : "Biologics"}
             </div>
             <div>
@@ -847,11 +847,9 @@ const FoggingSolutionPanel = () => {
                     <div>
                       <input
                         type="text"
-                        // value={""}
-                        // onChange={(e) =>
-                        //   setAnalyticalBalance({ initiator: e.target.value })
-                        // }
-                        // disabled
+                        value={editData?.nameOfFoggingSolution}
+                        onChange={handleInputChange1}
+                        disabled
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
                       />
@@ -862,11 +860,11 @@ const FoggingSolutionPanel = () => {
                     <div>
                       <input
                         type="text"
-                        // value={User?.name}
-                        // onChange={(e) =>
-                        //   setAnalyticalBalance({ initiator: e.target.value })
-                        // }
-                        // disabled
+                        value={editData?.quantityOfFoggingSolution}
+                        onChange={(e) =>
+                          setAnalyticalBalance({ initiator: e.target.value })
+                        }
+                        disabled
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
                       />
@@ -879,10 +877,8 @@ const FoggingSolutionPanel = () => {
                     <div>
                       <input
                         type="text"
-                        // value={User?.name}
-                        // onChange={(e) =>
-                        //   setAnalyticalBalance({ initiator: e.target.value })
-                        // }
+                        value={editData?.quantityOfPurifiedWater}
+                        onChange={handleInputChange1}
                         // disabled
                         style={{ backgroundColor: "#fafafa" }}
                         className="shadow-xl"
@@ -894,7 +890,7 @@ const FoggingSolutionPanel = () => {
                     <div>
                       <input
                         type="text"
-                        // value={User?.name}
+                        value={editData?.totalQuantity}
                         // onChange={(e) =>
                         //   setAnalyticalBalance({ initiator: e.target.value })
                         // }

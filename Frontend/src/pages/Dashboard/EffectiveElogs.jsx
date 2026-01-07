@@ -16,6 +16,7 @@ function EffectiveElogs() {
     []
   );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
+  const [foggingSolutionElogs, setFoggingSolutionElogs] = useState([]);
   // const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
   const [equipmentCRecordElogs, setEquipmentCRecordElogs] = useState([]);
   const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
@@ -56,12 +57,12 @@ function EffectiveElogs() {
 
   const getElogNumber = (item) => {
     const processId = item.process_id;
-    if (!processId) return "IPC/BIOS/NA/000";
+    if (!processId) return "Shilpa/FS/NA/000";
 
     const shortName = processShortName[processId] || "NA";
     const index = String(item.form_id).padStart(3, "0");
 
-    return `IPC/BIOS/${shortName}/${index}`;
+    return `Shilpa/${shortName}/${index}`;
   };
 
   const [instrumentFilter, setInstrumentFilter] = useState("All");
@@ -81,6 +82,7 @@ function EffectiveElogs() {
     13: "GDI",
     14: "UVWL",
     15: "VOCAL",
+    16: "FS",
   };
 
   useEffect(() => {
@@ -133,6 +135,37 @@ function EffectiveElogs() {
         );
         setTempratureRecordElogs(allTempratureRecordElogs);
         let filteredArray = allTempratureRecordElogs.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+    const newConfigFS = {
+      method: "get",
+      url: "http://localhost:1000/fogging-solution/get-all-fogging-solution",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios(newConfigFS)
+      .then((response) => {
+        const temp = response.data.message;
+        const allFoggingSolutionElogs = temp.filter(
+          (log) => log.status === "Closed"
+        );
+        setFoggingSolutionElogs(allFoggingSolutionElogs);
+        let filteredArray = allFoggingSolutionElogs.filter((elog) => {
           const userId = userDetails.userId;
 
           return (
@@ -557,6 +590,7 @@ function EffectiveElogs() {
     ...gelDociGene.map((r) => ({ ...r, process_id: 13 })),
     ...uVWhiteLightTrans.map((r) => ({ ...r, process_id: 14 })),
     ...voCalibElogs.map((r) => ({ ...r, process_id: 15 })),
+    ...foggingSolutionElogs.map((r) => ({ ...r, process_id: 16 })),
   ];
 
   const handleNavigation = (item) => {
@@ -615,6 +649,8 @@ function EffectiveElogs() {
       navigate("/effective-uv-wl-transilluminator", { state: item });
     } else if (item.voCalibRecords) {
       navigate("/effective-vo-calibration", { state: item });
+    } else if (item.FoggingSolutionRecords) {
+      navigate("/effective-fogging-solution", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
@@ -775,6 +811,16 @@ function EffectiveElogs() {
       );
     }
 
+    if (eLogSelect === "fogging_solution") {
+      return applyInstrumentFilter(
+        foggingSolutionElogs.filter(
+          (item) =>
+            reviewStatusFilter === "All" ||
+            checkReviewStatus(item, reviewStatusFilter)
+        )
+      );
+    }
+
     if (eLogSelect === "karl_fischer") {
       return applyInstrumentFilter(
         karlFischerElogs.filter(
@@ -871,6 +917,8 @@ function EffectiveElogs() {
       ? "Differential Pressure"
       : item.TempratureRecords
       ? "Temperature Records"
+      : item.FoggingSolutionRecords
+      ? "Fogging Solution"
       : item.LoadedQuantityRecords
       ? "Loaded Quantity"
       : item.OperationOfSterilizerRecords
@@ -936,6 +984,8 @@ function EffectiveElogs() {
         ? "biologics"
         : item.site_id === 6
         ? "ar&d"
+        : item.site_id === 7
+        ? "Shilpa"
         : "eu";
     const creator = item.initiator_name?.toLowerCase() || "";
 
@@ -992,6 +1042,8 @@ function EffectiveElogs() {
       ? "UV-WLTI"
       : item.voCalibRecords
       ? "VO-CAL"
+      : item.FoggingSolutionElogs
+      ? "FS"
       : eLogSelect === "analytical_balance"
       ? "AB"
       : eLogSelect === "karl_fischer"
@@ -1010,6 +1062,8 @@ function EffectiveElogs() {
       ? "UV-WLTI"
       : eLogSelect === "VO Calibration"
       ? "VO-CAL"
+      : eLogSelect === "Fogging Solution"
+      ? "FS"
       : "";
   };
 
@@ -1343,6 +1397,8 @@ function EffectiveElogs() {
                       ? getElogNumber(item)
                       : item.uvWhiteLightRecords
                       ? getElogNumber(item)
+                      : item.FoggingSolutionRecords
+                      ? getElogNumber(item)
                       : null}
                   </td>
 
@@ -1358,6 +1414,8 @@ function EffectiveElogs() {
                       ? "Biologics"
                       : item.site_id === 6
                       ? "AR&D"
+                      : item.site_id === 7
+                      ? "Shilpa"
                       : "EU"}
                   </td>
                   <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>

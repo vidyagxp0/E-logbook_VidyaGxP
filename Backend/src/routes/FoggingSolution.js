@@ -30,7 +30,7 @@ router.post(
   "/post-fogging-solution",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(16, 1),
   FoggingSolution.InsertFoggingSolution
 );
 
@@ -62,7 +62,7 @@ router.put(
   "/send-FS-elog-for-review",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(16, 1),
   FoggingSolution.SendFSLogForReview
 );
 
@@ -80,7 +80,7 @@ router.put(
   "/send-FS-from-review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
+  Auth.authorizeUserRole(16, 2),
   FoggingSolution.SendFSfromReviewToApproval
 );
 
@@ -89,7 +89,7 @@ router.put(
   "/send-FS-elog-from-approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
+  Auth.authorizeUserRole(16, 3),
   FoggingSolution.SendFSfromApprovalToOpen
 );
 
@@ -98,7 +98,7 @@ router.put(
   "/approve-FS-elog",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
+  Auth.authorizeUserRole(16, 3),
   FoggingSolution.ApproveFSElog
 );
 

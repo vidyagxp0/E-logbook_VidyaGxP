@@ -14,6 +14,7 @@ function Dashboard() {
     []
   );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
+  const [foggingSolutionElogs, setFoggingSolutionElogs] = useState([]);
   const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState([]);
   const [karlFischerElogs, setKarlFischerElogs] = useState([]);
   const [hplcElogs, setHplcElogs] = useState([]);
@@ -107,6 +108,35 @@ useEffect(() => {
           );
         });
         setTempratureRecordElogs(allTempratureRecordElogs);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+
+
+    const newConfigfogging = {
+      method: "get",
+      url: "http://localhost:1000/fogging-solution/get-all-fogging-solution",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios(newConfigfogging)
+      .then((response) => {
+        const allFoggingSolutionElogs = response.data.message;
+        let filteredArray = allFoggingSolutionElogs.filter((elog) => {
+          const userId = userDetails.userId;
+
+          return (
+            userId === elog.reviewer_id ||
+            userId === elog.initiator_id ||
+            userId === elog.approver_id ||
+            hasAccess(4, elog.site_id, 4)
+          );
+        });
+        setFoggingSolutionElogs(allFoggingSolutionElogs);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -495,6 +525,8 @@ useEffect(() => {
       navigate("/uv-wl-transilluminator-panel", { state: item });
     } else if (item.voCalibRecords) {
       navigate("/vo-calibration-panel", { state: item });
+    } else if (item.FoggingSolutionRecords) {
+      navigate("/fogging-solution-panel", { state: item });
     } else {
       // Handle default or fallback navigation if needed
     }
@@ -530,6 +562,7 @@ useEffect(() => {
   12: "sdsPageRecords",
   13: "gelDocIGeneRecords",
   14: "uvWhiteLightRecords",
+  15: "foggingSolution",
 };
 
 const processShortName = {
@@ -547,6 +580,7 @@ const processShortName = {
   12: "SDS",
   13: "GDI",     // Gel Doc iGene
   14: "UVWL",    // UV White Light
+  15: "FS",
 };
 const [eLogInstrument, setELogInstrument] = useState("All");
 
@@ -567,12 +601,12 @@ const [eLogInstrument, setELogInstrument] = useState("All");
 
 const getElogNumber = (item) => {
   const processId = item.process_id;
-  if (!processId) return "IPC/BIOS/NA/000";
+  if (!processId) return "SHILPA/NA/000";
 
   const shortName = processShortName[processId] || "NA";
   const index = String(item.form_id).padStart(3, "0");
 
-  return `IPC/BIOS/${shortName}/${index}`;
+  return `SHILPA/${shortName}/${index}`;
 };
 
 
@@ -593,6 +627,7 @@ useEffect(() => {
     ...gelDociGene.map(r => ({ ...r, process_id: 13 })),
     ...uVWhiteLightTrans.map(r => ({ ...r, process_id: 14 })),
     ...voCalibElogs.map(r => ({ ...r, process_id: 15 })),
+    ...foggingSolutionElogs.map(r => ({ ...r, process_id: 16 })),
   ];
 
   // ⭐ FILTER BY SELECTED PROCESS  
@@ -602,12 +637,10 @@ useEffect(() => {
 
   // ⭐ FILTER FINAL  
   const finalFiltered = allData.filter((item) => {
-    console.log(item,"this is itemsss")
     const elogNo = getElogNumber(item);
 
     const instrumentMatch =
       eLogInstrument === "All" || elogNo === eLogInstrument;
-      console.log(instrumentMatch,"instrumentMatch>>>>>")
 
     const searchMatch =
       item?.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -641,7 +674,8 @@ useEffect(() => {
   sdsPage,
   gelDociGene,
   uVWhiteLightTrans,
-  voCalibElogs
+  voCalibElogs,
+  foggingSolutionElogs
 ]);
 
 
@@ -870,6 +904,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -955,6 +991,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1005,6 +1043,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1055,6 +1095,8 @@ useEffect(() => {
                             ? "Malaysia"
                             : item.site_id === 3
                             ? "EMEA"
+                            : item.site_id === 7
+                          ? "Shilpa"
                             : "EU"}
                         </td>
                         <td
@@ -1107,6 +1149,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1160,6 +1204,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1212,6 +1258,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1264,6 +1312,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1316,6 +1366,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1369,6 +1421,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1421,6 +1475,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1473,6 +1529,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1525,6 +1583,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1577,6 +1637,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1629,6 +1691,62 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
+                          : "EU"}
+                      </td>
+                      <td
+                        dangerouslySetInnerHTML={{
+                          __html: item.cleanHTML,
+                        }}
+                      ></td>{" "}
+                      <td>{item.initiator_name}</td>
+                      <td>{formatDate(item.date_of_initiation)}</td>
+                      {/* <td>{item.status}</td> */}
+                    </tr>
+                  );
+                })
+              : null}
+            {eLogSelect === "Fogging Solution"
+              ? foggingSolutionElogs?.map((item, index) => {
+                  const cleanHTML =
+                    item?.description.replace(/^"|"$/g, "").trim() || "NA";
+                  return (
+                    <tr key={item.index}>
+                      <td> {index + 1}</td>
+                      <td
+                        style={{
+                          cursor: "pointer",
+                          color: "black",
+                        }}
+                        onClick={() =>
+                          navigate("/fogging-solution-panel", {
+                            state: item,
+                          })
+                        }
+                        onMouseEnter={(e) => {
+                          e.target.style.color = "blue";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = "black";
+                        }}
+                      >
+                        {`FS${item?.form_id}`}
+                      </td>
+                      <td>FOGGING SOLUTION</td>
+                      <td>
+                        {item.site_id === 1
+                          ? "India"
+                          : item.site_id === 2
+                          ? "Malaysia"
+                          : item.site_id === 3
+                          ? "EMEA"
+                          : item.site_id === 5
+                          ? "Biologics"
+                          : item.site_id === 6
+                          ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td
@@ -1696,6 +1814,8 @@ useEffect(() => {
                           ? getElogNumber(item)
                           : item.voCalibRecords
                           ? getElogNumber(item)
+                          : item.FoggingSolutionRecords
+                          ? getElogNumber(item)
                           : null}
                       </td>
                       <td>
@@ -1729,6 +1849,8 @@ useEffect(() => {
                           ? "UV/WL Transilluminator"
                           : item.voCalibRecords
                           ? "VO Calibration"
+                          : item.FoggingSolutionRecords
+                          ? "Fogging Solution"
                           : null}
                       </td>
                       <td>
@@ -1742,6 +1864,8 @@ useEffect(() => {
                           ? "Biologics"
                           : item.site_id === 6
                           ? "AR&D"
+                          : item.site_id === 7
+                          ? "Shilpa"
                           : "EU"}
                       </td>
                       <td

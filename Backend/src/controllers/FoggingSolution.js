@@ -122,7 +122,7 @@ exports.InsertFoggingSolution = async (req, res) => {
     });
 
     // Create new Differential Pressure Form
-    const newForm = await DifferentialPressureForm.create(
+    const newForm = await FoggingSolutionForm.create(
       {
         site_id: site_id,
         initiator_id: user.user_id,
@@ -148,9 +148,10 @@ exports.InsertFoggingSolution = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
-      compression_area,
-      limit,
+      nameOfFoggingSolution,
+      quantityOfFoggingSolution,
+      quantityOfPurifiedWater,
+      totalQuantity,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -214,7 +215,7 @@ exports.InsertFoggingSolution = async (req, res) => {
         supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
-      await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+      await FoggingSolutionRecord.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
@@ -288,7 +289,7 @@ exports.InsertFoggingSolution = async (req, res) => {
       });
     }
 
-    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+    await FoggingSolutionAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
