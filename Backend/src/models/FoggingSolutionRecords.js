@@ -22,15 +22,45 @@ const FoggingSolutionRecords = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    time: {
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    nameOfArea: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    fogging_solution: {
-      type: DataTypes.FLOAT,
-    },
-    remarks: {
+    AHUNo: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    ahuOffDateAndTime: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    volumeOfArea: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    foggingSolutionQty: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    foggingStartTime: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    foggingEndTime: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    performedBy: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    ahuOnDateAndTime: {
+      type: DataTypes.DATE,
+      allowNull: false,
     },
     approver_remarks: {
       type: DataTypes.STRING,
@@ -44,7 +74,13 @@ const FoggingSolutionRecords = sequelize.define(
     approved_by: {
       type: DataTypes.STRING,
     },
+    remarks: {
+      type: DataTypes.STRING,
+    },
     supporting_docs: {
+      type: DataTypes.STRING,
+    },
+    status: {
       type: DataTypes.STRING,
     },
   }

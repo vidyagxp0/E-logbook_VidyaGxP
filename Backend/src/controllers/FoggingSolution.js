@@ -450,10 +450,10 @@ exports.EditFoggingSolution = async (req, res) => {
       {
         site_id,
         description,
-       nameOfFoggingSolution,
-    quantityOfFoggingSolution,
-    quantityOfPurifiedWater,
-    totalQuantity,
+        nameOfFoggingSolution,
+        quantityOfFoggingSolution,
+        quantityOfPurifiedWater,
+        totalQuantity,
         reviewer_id,
         approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -484,11 +484,25 @@ exports.EditFoggingSolution = async (req, res) => {
         const newRecord = FoggingSolutionRecords[index];
         if (newRecord) {
           const recordFields = {
-            fogging_solution: newRecord.fogging_solution,
+
+            unique_id: newRecord.unique_id,
+            date: newRecord.date,
+            nameOfArea: newRecord.nameOfArea,
+            AHUNo: newRecord.AHUNo,
+            ahuOffDateAndTime: newRecord.ahuOffDateAndTime,
+            volumeOfArea: newRecord.volumeOfArea,
+            foggingSolutionQty: newRecord.foggingSolutionQty,
+            foggingStartTime: newRecord.foggingStartTime,
+            foggingEndTime: newRecord.foggingEndTime,
+            performedBy: newRecord.performedBy,
+            ahuOnDateAndTime: newRecord.ahuOnDateAndTime,
+            approver_remarks: newRecord.approver_remarks,
+            checked_by: newRecord.checked_by,
+            reviewed_by: newRecord.reviewed_by,
+            approved_by: newRecord.approved_by,
             remarks: newRecord.remarks,
-            approver_remarks:newRecord.approver_remarks,
-            reviewed_by: newRecord?.reviewed_by,
-            approved_by: newRecord?.approved_by,
+            status: newRecord.status,
+            // fogging_solution: newRecord.fogging_solution,
             supporting_docs:
               newRecord.supporting_docs ||
               getElogDocsUrl(supportingDocs[index]),
@@ -509,7 +523,7 @@ exports.EditFoggingSolution = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "Opened",
+                new_status: form.status,
                 declaration: initiatorDeclaration,
                 action: "Update Elog",
               });
@@ -527,16 +541,28 @@ exports.EditFoggingSolution = async (req, res) => {
         ) {
           const newRecord = FoggingSolutionRecords[i];
           const recordFields = {
+
             unique_id: newRecord?.unique_id,
-            time: newRecord?.time,
+            date: newRecord?.date,
+            nameOfArea: newRecord?.nameOfArea,
+            AHUNo: newRecord?.AHUNo,
+            ahuOffDateAndTime: newRecord?.ahuOffDateAndTime,
+            volumeOfArea: newRecord?.volumeOfArea,
+            foggingSolutionQty: newRecord?.foggingSolutionQty,
+            foggingStartTime: newRecord?.foggingStartTime,
+            foggingEndTime: newRecord?.foggingEndTime,
+            performedBy: newRecord?.performedBy,
+            ahuOnDateAndTime: newRecord?.ahuOnDateAndTime,
+            approver_remarks: newRecord?.approver_remarks,
             checked_by: newRecord?.checked_by,
-            fogging_solution: newRecord.fogging_solution,
-            remarks: newRecord.remarks,
-            approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
+            remarks: newRecord?.remarks,
+            status: newRecord?.status,
+            // fogging_solution: newRecord?.fogging_solution,
             supporting_docs:
-              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+              newRecord?.supporting_docs ||
+              getElogDocsUrl(supportingDocs[index]),
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -548,7 +574,7 @@ exports.EditFoggingSolution = async (req, res) => {
                 new_value: newValue,
                 changed_by: user.user_id,
                 previous_status: form.status,
-                new_status: "Opened",
+                new_status: form.status,
                 declaration: initiatorDeclaration,
                 action: "Update Elog",
               });
@@ -565,18 +591,28 @@ exports.EditFoggingSolution = async (req, res) => {
 
       // Create new records
       const formRecords = FoggingSolutionRecords.map((record, index) => ({
-        form_id: form_id,
-        unique_id: record?.unique_id,
-        time: record?.time,
-        fogging_solution: record?.fogging_solution,
-        remarks: record?.remarks,
-        approver_remarks:record?.approver_remarks,
-        checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
-        supporting_docs: record?.supporting_docs
-          ? record?.supporting_docs
-          : getElogDocsUrl(supportingDocs[index]),
+           form_id: form_id,
+            unique_id: record?.unique_id,
+            date: record?.date,
+            nameOfArea: record?.nameOfArea,
+            AHUNo: record?.AHUNo,
+            ahuOffDateAndTime: record?.ahuOffDateAndTime,
+            volumeOfArea: record?.volumeOfArea,
+            foggingSolutionQty: record?.foggingSolutionQty,
+            foggingStartTime: record?.foggingStartTime,
+            foggingEndTime: record?.foggingEndTime,
+            performedBy: record?.performedBy,
+            ahuOnDateAndTime: record?.ahuOnDateAndTime,
+            approver_remarks: record?.approver_remarks,
+            checked_by: record?.checked_by,
+            reviewed_by: record?.reviewed_by,
+            approved_by: record?.approved_by,
+            remarks: record?.remarks,
+            status: record?.status,
+            // fogging_solution: record?.fogging_solution,
+            supporting_docs:
+              record?.supporting_docs ||
+              getElogDocsUrl(supportingDocs[index]),
       }));
 
       await FoggingSolutionRecord.bulkCreate(formRecords, { transaction });
