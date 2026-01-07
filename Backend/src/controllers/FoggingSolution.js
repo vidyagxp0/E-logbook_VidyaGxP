@@ -204,7 +204,7 @@ exports.InsertFoggingSolution = async (req, res) => {
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
-        unique_id: record?.unique_id,
+        // unique_id: record?.unique_id,
         time: record?.time, // Assuming time was meant here instead of unique_id again
         fogging_solution: record?.fogging_solution,
         remarks: record?.remarks,
@@ -485,7 +485,7 @@ exports.EditFoggingSolution = async (req, res) => {
         if (newRecord) {
           const recordFields = {
 
-            unique_id: newRecord.unique_id,
+            // unique_id: newRecord.unique_id,
             date: newRecord.date,
             nameOfArea: newRecord.nameOfArea,
             AHUNo: newRecord.AHUNo,
@@ -542,7 +542,7 @@ exports.EditFoggingSolution = async (req, res) => {
           const newRecord = FoggingSolutionRecords[i];
           const recordFields = {
 
-            unique_id: newRecord?.unique_id,
+            // unique_id: newRecord?.unique_id,
             date: newRecord?.date,
             nameOfArea: newRecord?.nameOfArea,
             AHUNo: newRecord?.AHUNo,
@@ -592,7 +592,7 @@ exports.EditFoggingSolution = async (req, res) => {
       // Create new records
       const formRecords = FoggingSolutionRecords.map((record, index) => ({
            form_id: form_id,
-            unique_id: record?.unique_id,
+            // unique_id: record?.unique_id,
             date: record?.date,
             nameOfArea: record?.nameOfArea,
             AHUNo: record?.AHUNo,
@@ -1871,7 +1871,7 @@ exports.blankReport = async (req, res) => {
     const blankRows = Array(reportData?.blankRows);
 
     const data = reportData?.FoggingSolutionRecords?.map((record) => ({
-      unique_id: record?.unique_id || "",
+      // unique_id: record?.unique_id || "",
       time: record?.time || "",
       fogging_solution: record?.fogging_solution || "",
       remarks: record?.remarks || "",
