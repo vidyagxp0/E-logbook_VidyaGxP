@@ -167,7 +167,7 @@ const FoggingSolutionPanel = () => {
       //   return;
       // }
       if (
-        editData?.AnalyticalBalances?.some(
+        editData?.FoggingSolutionRecords?.some(
           (record) =>
             record.differential_pressure === "" || record.remarks === ""
         )
@@ -234,7 +234,7 @@ const FoggingSolutionPanel = () => {
       setEditData((prevState) => ({
         ...prevState,
 
-        AnalyticalBalances: [...prevState.AnalyticalBalances, newRow],
+        FoggingSolutionRecords: [...prevState.FoggingSolutionRecords, newRow],
       }));
     }
   };
@@ -291,11 +291,11 @@ const FoggingSolutionPanel = () => {
       location.state?.stage === 1 &&
       location.state?.initiator_id === userDetails.userId
     ) {
-      const updatedGridData = [...editData.AnalyticalBalances];
+      const updatedGridData = [...editData.FoggingSolutionRecords];
       updatedGridData.splice(index, 1);
       setEditData((prevState) => ({
         ...prevState,
-        AnalyticalBalances: updatedGridData,
+        FoggingSolutionRecords: updatedGridData,
       }));
     }
   };
@@ -310,7 +310,7 @@ const FoggingSolutionPanel = () => {
   //     location.state?.stage === 1 &&
   //     location.state?.initiator_id === userDetails.userId
   //   ) {
-  //     const updatedGridData = editData.AnalyticalBalances.map(
+  //     const updatedGridData = editData.FoggingSolutionRecords.map(
   //       (item, i) => {
   //         if (i === index) {
   //           return { ...item, supporting_docs: null };
@@ -320,7 +320,7 @@ const FoggingSolutionPanel = () => {
   //     );
   //     setEditData((prevState) => ({
   //       ...prevState,
-  //       AnalyticalBalances: updatedGridData,
+  //       FoggingSolutionRecords: updatedGridData,
   //     }));
   //   }
   // };
@@ -346,11 +346,11 @@ const FoggingSolutionPanel = () => {
   };
 
   const handleFileChange = (index, file) => {
-    const updatedGridData = [...editData.AnalyticalBalances];
+    const updatedGridData = [...editData.FoggingSolutionRecords];
     updatedGridData[index].supporting_docs = file;
     setEditData((prevState) => ({
       ...prevState,
-      AnalyticalBalances: updatedGridData,
+      FoggingSolutionRecords: updatedGridData,
     }));
   };
 
@@ -940,7 +940,7 @@ const FoggingSolutionPanel = () => {
                       </tr>
                     </thead>
                     <tbody>
-                       {editData?.AnalyticalBalances.map(
+                       {editData?.FoggingSolutionRecords.map(
                          (item, index) => (
                            <tr key={index}>
                              <td>{index + 1}</td>
@@ -961,13 +961,13 @@ const FoggingSolutionPanel = () => {
                                  }`}
                                  onChange={(e) => {
                                    const newData = [
-                                     ...editData.AnalyticalBalances,
+                                     ...editData.FoggingSolutionRecords,
                                    ];
                                    newData[index].differential_pressure =
                                      e.target.value;
                                    setEditData({
                                      ...editData,
-                                     AnalyticalBalances: newData,
+                                     FoggingSolutionRecords: newData,
                                    });
                                  }}
                                  readOnly={
@@ -982,12 +982,12 @@ const FoggingSolutionPanel = () => {
                                  value={item.remarks}
                                  onChange={(e) => {
                                    const newData = [
-                                     ...editData.AnalyticalBalances,
+                                     ...editData.FoggingSolutionRecords,
                                    ];
                                    newData[index].remarks = e.target.value;
                                    setEditData({
                                      ...editData,
-                                     AnalyticalBalances: newData,
+                                     FoggingSolutionRecords: newData,
                                    });
                                  }}
                                  readOnly={
@@ -1003,12 +1003,12 @@ const FoggingSolutionPanel = () => {
                                  disabled
                                  onChange={(e) => {
                                    const newData = [
-                                     ...editData.AnalyticalBalances,
+                                     ...editData.FoggingSolutionRecords,
                                    ];
                                    newData[index].checked_by = e.target.value;
                                    setEditData({
                                      ...editData,
-                                     AnalyticalBalances: newData,
+                                     FoggingSolutionRecords: newData,
                                    });
                                  }}
                                  readOnly

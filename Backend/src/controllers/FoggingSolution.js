@@ -19,15 +19,15 @@ const LoadedQuantityProcessAuditTrail = require("../models/loadedQuantityProcess
 const MediaRecordAuditTrail = require("../models/mediaRecordAuditTrail");
 const OperationOfSterilizerProcessAuditTrail = require("../models/OperationOfSterilizerProcessAuditTrail");
 const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
-const AnalyticalBalanceAuditTrail = require("../models/AnalyticalBalanceAuditTrail")
-const hplcAuditTrails = require("../models/hplcAuditTrails")
-const karlFischer = require("../models/karlFischerAuditTrail")
-const GelDocIGeneAuditTrails = require("../models/gelDocIGeneAuditTrail")
-const OpAndCalParameterAuditTrails = require("../models/OpAndCalParameterAuditTrail")
-const OpAndCalUvVisAuditTrails = require("../models/OpAndCalUvVisAuditTrail")
-const sdsPageAuditTrails = require("../models/sdsPageAuditTrail")
-const uvWhiteLightAuditTrails = require("../models/uvWhiteLightAuditTrail")
-const vocalibAuditTrails = require("../models/voCalibAuditTrail")
+const AnalyticalBalanceAuditTrail = require("../models/AnalyticalBalanceAuditTrail");
+const hplcAuditTrails = require("../models/hplcAuditTrails");
+const karlFischer = require("../models/karlFischerAuditTrail");
+const GelDocIGeneAuditTrails = require("../models/gelDocIGeneAuditTrail");
+const OpAndCalParameterAuditTrails = require("../models/OpAndCalParameterAuditTrail");
+const OpAndCalUvVisAuditTrails = require("../models/OpAndCalUvVisAuditTrail");
+const sdsPageAuditTrails = require("../models/sdsPageAuditTrail");
+const uvWhiteLightAuditTrails = require("../models/uvWhiteLightAuditTrail");
+const vocalibAuditTrails = require("../models/voCalibAuditTrail");
 const FoggingSolutionAuditTrail = require("../models/FoggingSolutionAuditTrail");
 const FoggingSolutionForm = require("../models/FoggingSolutionForm");
 const FoggingSolutionRecord = require("../models/FoggingSolutionRecords");
@@ -320,7 +320,7 @@ exports.EditFoggingSolution = async (req, res) => {
     form_id,
     site_id,
     description,
-   nameOfFoggingSolution,
+    nameOfFoggingSolution,
     quantityOfFoggingSolution,
     quantityOfPurifiedWater,
     totalQuantity,
@@ -333,7 +333,8 @@ exports.EditFoggingSolution = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
-
+  console.log(req.body, "req.body");
+  console.log(req.files, "req.files");
   if (!form_id) {
     return res
       .status(400)
@@ -372,7 +373,7 @@ exports.EditFoggingSolution = async (req, res) => {
     let initiatorAttachment = null;
     let additionalAttachment = null;
     const supportingDocs = {};
-
+    console.log("upper side", req.files);
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
@@ -409,10 +410,10 @@ exports.EditFoggingSolution = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-    nameOfFoggingSolution,
-    quantityOfFoggingSolution,
-    quantityOfPurifiedWater,
-    totalQuantity,
+      nameOfFoggingSolution,
+      quantityOfFoggingSolution,
+      quantityOfPurifiedWater,
+      totalQuantity,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -482,9 +483,9 @@ exports.EditFoggingSolution = async (req, res) => {
           (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
         );
         const newRecord = FoggingSolutionRecords[index];
+        console.log("newRecord", newRecord);
         if (newRecord) {
           const recordFields = {
-
             // unique_id: newRecord.unique_id,
             date: newRecord.date,
             nameOfArea: newRecord.nameOfArea,
@@ -516,6 +517,7 @@ exports.EditFoggingSolution = async (req, res) => {
                 !areFloatsEqual(oldValue, newValue)) ||
                 oldValue != newValue)
             ) {
+              console.log(newValue, "newValue");
               auditTrailEntries.push({
                 form_id: form.form_id,
                 field_name: `${field}[${index}]`,
@@ -540,8 +542,8 @@ exports.EditFoggingSolution = async (req, res) => {
           i++
         ) {
           const newRecord = FoggingSolutionRecords[i];
+          console.log(newRecord);
           const recordFields = {
-
             // unique_id: newRecord?.unique_id,
             date: newRecord?.date,
             nameOfArea: newRecord?.nameOfArea,
@@ -561,8 +563,7 @@ exports.EditFoggingSolution = async (req, res) => {
             status: newRecord?.status,
             // fogging_solution: newRecord?.fogging_solution,
             supporting_docs:
-              newRecord?.supporting_docs ||
-              getElogDocsUrl(supportingDocs[index]),
+              newRecord?.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -571,7 +572,7 @@ exports.EditFoggingSolution = async (req, res) => {
                 form_id: form.form_id,
                 field_name: `${field}[${i}]`,
                 previous_value: null,
-                new_value: newValue,
+                new_value: newValue || "",
                 changed_by: user.user_id,
                 previous_status: form.status,
                 new_status: form.status,
@@ -591,28 +592,27 @@ exports.EditFoggingSolution = async (req, res) => {
 
       // Create new records
       const formRecords = FoggingSolutionRecords.map((record, index) => ({
-           form_id: form_id,
-            // unique_id: record?.unique_id,
-            date: record?.date,
-            nameOfArea: record?.nameOfArea,
-            AHUNo: record?.AHUNo,
-            ahuOffDateAndTime: record?.ahuOffDateAndTime,
-            volumeOfArea: record?.volumeOfArea,
-            foggingSolutionQty: record?.foggingSolutionQty,
-            foggingStartTime: record?.foggingStartTime,
-            foggingEndTime: record?.foggingEndTime,
-            performedBy: record?.performedBy,
-            ahuOnDateAndTime: record?.ahuOnDateAndTime,
-            approver_remarks: record?.approver_remarks,
-            checked_by: record?.checked_by,
-            reviewed_by: record?.reviewed_by,
-            approved_by: record?.approved_by,
-            remarks: record?.remarks,
-            status: record?.status,
-            // fogging_solution: record?.fogging_solution,
-            supporting_docs:
-              record?.supporting_docs ||
-              getElogDocsUrl(supportingDocs[index]),
+        form_id: form_id,
+        // unique_id: record?.unique_id,
+        date: record?.date,
+        nameOfArea: record?.nameOfArea,
+        AHUNo: record?.AHUNo,
+        ahuOffDateAndTime: record?.ahuOffDateAndTime,
+        volumeOfArea: record?.volumeOfArea,
+        foggingSolutionQty: record?.foggingSolutionQty,
+        foggingStartTime: record?.foggingStartTime,
+        foggingEndTime: record?.foggingEndTime,
+        performedBy: record?.performedBy,
+        ahuOnDateAndTime: record?.ahuOnDateAndTime,
+        approver_remarks: record?.approver_remarks,
+        checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
+        remarks: record?.remarks,
+        status: record?.status,
+        // fogging_solution: record?.fogging_solution,
+        supporting_docs:
+          record?.supporting_docs || getElogDocsUrl(supportingDocs[index]),
       }));
 
       await FoggingSolutionRecord.bulkCreate(formRecords, { transaction });
@@ -629,6 +629,7 @@ exports.EditFoggingSolution = async (req, res) => {
       message: "E-log Updated successfully",
     });
   } catch (error) {
+    console.log("error", error);
     await transaction.rollback();
 
     let errorMessage = "Error during updating elog";
@@ -712,7 +713,7 @@ exports.GetAllFoggingSolutionElog = async (req, res) => {
 };
 
 //send differential pressure elog for review
-exports.SendFSLogForReview = async (req, res) => {  
+exports.SendFSLogForReview = async (req, res) => {
   const { form_id, email, password, initiatorDeclaration, initiatorComment } =
     req.body;
 
@@ -2056,12 +2057,12 @@ exports.blankReport = async (req, res) => {
 exports.sendReportOnMail = async (req, res) => {
   const { to, cc, bcc, subject, message } = req.body;
   const elogId = req.params.id;
-  console.log(elogId,"elogId")
+  console.log(elogId, "elogId");
 
-  const filePath = path.resolve("public",elogId);
+  const filePath = path.resolve("public", elogId);
 
   const fileExists = fs.existsSync(filePath);
-console.log(fileExists,"fileExists")
+  console.log(fileExists, "fileExists");
   if (!fileExists) {
     return res.status(404).json({
       status: 404,
@@ -2138,7 +2139,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
-      
+
       case "DispenseOfMatrialAuditTrail":
         getData = await DispenseOfMatrialAuditTrail.findAll({
           where: { form_id: formId },
@@ -2149,7 +2150,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
-      
+
       case "LoadedQuantityProcessAuditTrail":
         getData = await LoadedQuantityProcessAuditTrail.findAll({
           where: { form_id: formId },
@@ -2160,7 +2161,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
-      
+
       case "MediaRecordAuditTrail":
         getData = await MediaRecordAuditTrail.findAll({
           where: { form_id: formId },
@@ -2171,7 +2172,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
-      
+
       case "OperationOfSterilizerProcessAuditTrail":
         getData = await OperationOfSterilizerProcessAuditTrail.findAll({
           where: { form_id: formId },
@@ -2182,7 +2183,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
-      
+
       case "TemperatureRecordsAuditTrail":
         getData = await TemperatureRecordsAuditTrail.findAll({
           where: { form_id: formId },
@@ -2283,7 +2284,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
           order: [["auditTrail_id", "DESC"]],
         });
         break;
-      
+
       default:
         return res.status(400).json({
           error: true,
@@ -2342,16 +2343,16 @@ exports.generateAuditPdfbyId = async (req, res) => {
 
     const pdfBuffer = await page.pdf({
       format: "A4",
-      landscape:true,
+      landscape: true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: headerHtml,
       footerTemplate: footerHtml,
       margin: {
-      top: "180px",
-      bottom: "60px",
-      left: "40px",
-      right: "40px"
+        top: "180px",
+        bottom: "60px",
+        left: "40px",
+        right: "40px",
       },
     });
 

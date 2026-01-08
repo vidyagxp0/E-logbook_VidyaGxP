@@ -26,7 +26,6 @@ const FoggingSolutionEffective = () => {
   const [reportType, setReportType] = useState("quick");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [showFactorErrorModal, setShowFactorErrorModal] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -97,15 +96,6 @@ const FoggingSolutionEffective = () => {
   };
 
   const handlePopupSubmit = (credentials) => {
-    const hasMissingFactor = editData.FoggingSolutionRecords.some(
-      (row) => !row.factorValue || row.factorValue.trim() === ""
-    );
-
-    if (hasMissingFactor) {
-      setIsPopupOpen(false);
-      setShowFactorErrorModal(true); // open modal
-      return; // stop submit
-    }
     const cleanedData = editData?.FoggingSolutionRecords.filter((record) => {
       const hasRequiredFields =
         record.nameOfArea?.trim() !== "" &&
@@ -354,9 +344,8 @@ const FoggingSolutionEffective = () => {
       };
       const nextIndex = editData?.FoggingSolutionRecords?.length || 0;
 
-      const currentTime = new Date().toLocaleTimeString("en-US", options);
       const newRow = {
-        date: dayjs().format("DD-MM-YYYY hh:mm:ss a"),
+        date: dayjs().toISOString(),
         nameOfArea: "",
         AHUNo: "",
         ahuOffDateAndTime: "",
@@ -364,18 +353,15 @@ const FoggingSolutionEffective = () => {
         foggingSolutionQty: "",
         foggingStartTime: "",
         foggingEndTime: "",
+        performedBy: location?.state?.initiator_name || "",
+        ahuOnDateAndTime: "",
         instrument_name: "Fogging Solution",
-        instrument_no: location.state.instrument_no,
         done_by: location?.state?.initiator_name || "",
         reviewed_by: "",
-        checked_by: location?.state?.initiator_name || "",
+        checked_by: "",
         remarks: "",
-        remarksOther: "",
-        remarksType: "",
-        remarksSubType: "",
         status: "Open",
       };
-
       console.log(newRow, "newRoe");
       setEditData((prevState) => ({
         ...prevState,
@@ -799,9 +785,16 @@ const FoggingSolutionEffective = () => {
   };
 
   const isRowEditable = (item) => {
-    const isInitiator = userDetails.userId == location.state?.initiator_id;
-    const isNewRow = !item.form_id; // ya item.isNew === true if you manually add it
-    return isInitiator ? isNewRow : true;
+    const isInitiator = userDetails.userId === location.state?.initiator_id;
+    const isNewRow = !item.form_id;
+
+    // New rows → only initiator can edit
+    if (isNewRow) {
+      return isInitiator;
+    }
+
+    // Existing rows → only initiator can edit
+    return isInitiator;
   };
 
   const originalData = location.state;
@@ -813,17 +806,10 @@ const FoggingSolutionEffective = () => {
       (o) => o.record_id === item.record_id
     );
 
-    if (item.factorValue === "Calibration/Verification") {
-      return false;
-    }
-    if (item.performanceEndDateTime === null && item.performance !== "OK") {
-      return false;
-    }
-
     // If we found the original row
     if (original) {
       // If original remarksType was OK → Lock it
-      if (original.remarksType === "OK") {
+      if (original.remarks !== "" || original.reviewed_by !== null) {
         return false;
       }
     }
@@ -847,12 +833,11 @@ const FoggingSolutionEffective = () => {
   };
 
   const isAfterOneHour = (offTime, currentTime) => {
-    if (!offTime) return false;
+    console.log(offTime, "offtime");
+    console.log(currentTime, "currentTimee");
+    if (!offTime || !currentTime) return false;
 
-    const off = new Date(offTime);
-    const now = new Date(currentTime);
-
-    return now - off >= 60 * 60 * 1; // 1 hour in ms
+    return dayjs(currentTime).diff(dayjs(offTime), "minute") >= 3;
   };
 
   const isFieldEnabledByFlow = (item, fieldName) => {
@@ -874,32 +859,54 @@ const FoggingSolutionEffective = () => {
 
     // Enforce 1-hour rule for AHU ON
     if (fieldName === "ahuOnDateAndTime") {
-      console.log("Checking AHU ON time:", item.ahuOffDateAndTime);
-      return isAfterOneHour(item.ahuOffDateAndTime, new Date());
+      return isAfterOneHour(
+        dayjs(item.ahuOffDateAndTime).format("YYYY-MM-DD HH:mm:ss"),
+        dayjs().format("YYYY-MM-DD HH:mm:ss")
+      );
     }
 
     return true;
   };
 
   const isFieldEditable = (item, fieldName) => {
-    const ahuOffDateAndTime = item?.ahuOffDateAndTime;
+    const originalRecord = originalData?.FoggingSolutionRecords?.find(
+      (o) => o.record_id === item.record_id
+    );
 
-    // Disable all fields if factorValue is Calibration/Verification
-    if (fieldName === "ahuOffDateAndTime") {
-      return isRowEditable(item);
-    }
-    if (ahuOffDateAndTime === "") {
+    // If we don't have original data, allow editing
+    if (!originalRecord) return true;
+
+    const currentValue = item[fieldName];
+    const originalValue = originalRecord[fieldName];
+
+    // If value is same as original → disable
+    if (String(currentValue ?? "") === String(originalValue ?? "")) {
       return false;
     }
 
-    const allowedFields = getReviewerMarkedField(item);
+    return isRowEditable(item);
+  };
 
-    // If reviewer marked a specific issue
-    if (allowedFields.length > 0) {
-      return allowedFields.includes(fieldName);
+  const ifAhuOnDateAndTimeEditable = (item) => {
+    const originalRecord = originalData?.FoggingSolutionRecords?.find(
+      (o) => o.record_id === item.record_id
+    );
+
+    if (!originalRecord) return true;
+
+    const currentValue = item.ahuOnDateAndTime ?? "";
+    const originalValue = originalRecord.ahuOnDateAndTime ?? "";
+
+    // If both empty → allow editing
+    if (!currentValue && !originalValue) {
+      return isRowEditable(item);
     }
 
-    // Else fallback default
+    // If same value → lock
+    if (String(currentValue) === String(originalValue)) {
+      return false;
+    }
+
     return isRowEditable(item);
   };
 
@@ -941,23 +948,6 @@ const FoggingSolutionEffective = () => {
     //   return true;
 
     return false;
-  };
-
-  const getCurrentDateTime12Hr = () => {
-    const now = new Date();
-
-    let hours = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    const ampm = hours >= 12 ? "PM" : "AM";
-
-    hours = hours % 12 || 12;
-
-    const day = now.getDate().toString().padStart(2, "0");
-    const month = (now.getMonth() + 1).toString().padStart(2, "0");
-    const year = now.getFullYear();
-    const seconds = now.getSeconds().toString().padStart(2, "0");
-
-    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
   };
 
   return (
@@ -1863,7 +1853,11 @@ const FoggingSolutionEffective = () => {
                               </td>
                               <td>
                                 <input
-                                  value={item?.date || ""}
+                                  value={
+                                    dayjs(item?.date).format(
+                                      "DD-MM-YYYY hh:mm:ss a"
+                                    ) || ""
+                                  }
                                   type="text"
                                   readOnly
                                 />
@@ -1874,18 +1868,29 @@ const FoggingSolutionEffective = () => {
                                   className="form-control"
                                   name="nameOfArea"
                                   value={item?.nameOfArea}
-                                  onChange={handleInputChange1}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...editData.FoggingSolutionRecords,
+                                    ];
+                                    newData[index].nameOfArea = e.target.value;
+                                    setEditData({
+                                      ...editData,
+                                      FoggingSolutionRecords: newData,
+                                    });
+                                  }}
                                   style={{
                                     padding: "8px 12px",
                                     border: "1px solid #ced4da",
                                     borderRadius: "4px",
                                     fontSize: "14px",
-                                    backgroundColor: "white",
+                                    // backgroundColor: "white",
                                     width: "100%",
                                   }}
-                                  readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
-                                  )}
+                                  disabled={
+                                    [3, 2, 4].includes(
+                                      userDetails.roles[0].role_id
+                                    ) || !isFieldEditable(item, "nameOfArea")
+                                  }
                                 >
                                   <option value="Select Area">
                                     Select Area
@@ -1931,7 +1936,7 @@ const FoggingSolutionEffective = () => {
 
                                       if (e.target.checked) {
                                         newData[index].ahuOffDateAndTime =
-                                          getCurrentDateTime12Hr();
+                                          dayjs().toISOString();
                                       } else {
                                         newData[index].ahuOffDateAndTime = "";
                                       }
@@ -1941,9 +1946,24 @@ const FoggingSolutionEffective = () => {
                                         FoggingSolutionRecords: newData,
                                       });
                                     }}
+                                    disabled={
+                                      [3, 2, 4].includes(
+                                        userDetails.roles[0].role_id
+                                      ) ||
+                                      !isFieldEditable(
+                                        item,
+                                        "ahuOffDateAndTime"
+                                      )
+                                    }
                                   />
                                   <input
-                                    value={item.ahuOffDateAndTime || ""}
+                                    value={
+                                      item.ahuOffDateAndTime
+                                        ? dayjs(item?.ahuOffDateAndTime).format(
+                                            "DD-MM-YYYY hh:mm:ss a"
+                                          )
+                                        : ""
+                                    }
                                     readOnly={true}
                                   />
                                 </div>
@@ -1968,8 +1988,11 @@ const FoggingSolutionEffective = () => {
                                     [3, 2, 4].includes(
                                       userDetails.roles[0].role_id
                                     ) ||
-                                    !isFieldEditable(item, "volumeOfArea") ||
-                                    !isFieldEnabledByFlow(item, "volumeOfArea")
+                                    !isFieldEnabledByFlow(
+                                      item,
+                                      "volumeOfArea"
+                                    ) ||
+                                    !isFieldEditable(item, "volumeOfArea")
                                   }
                                 />
                               </td>
@@ -1993,70 +2016,63 @@ const FoggingSolutionEffective = () => {
                                     [3, 2, 4].includes(
                                       userDetails.roles[0].role_id
                                     ) ||
-                                    !isFieldEditable(
-                                      item,
-                                      "foggingSolutionQty"
-                                    ) ||
                                     !isFieldEnabledByFlow(
                                       item,
                                       "foggingSolutionQty"
-                                    )
+                                    ) ||
+                                    !isFieldEditable(item, "foggingSolutionQty")
                                   }
                                 />
                               </td>
                               <td className="!text-center !justify-center">
-                                  <div className="flex text-nowrap items-center gap-x-2 justify-center">
-                                    <input
-                                      type="checkbox"
-                                      className="h-4 w-4 cursor-pointer"
-                                      style={{ marginLeft: "8px" }}
-                                      onChange={(e) => {
-                                        const newData = [
-                                          ...editData.FoggingSolutionRecords,
-                                        ];
+                                <div className="flex text-nowrap items-center gap-x-2 justify-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={!!item.foggingStartTime}
+                                    className="h-4 w-4 cursor-pointer"
+                                    style={{ marginLeft: "8px" }}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...editData.FoggingSolutionRecords,
+                                      ];
 
-                                        if (e.target.checked) {
-                                          newData[index].foggingStartTime =
-                                            getCurrentDateTime12Hr();
-                                        } else {
-                                          newData[index].foggingStartTime = "";
-                                        }
-
-                                        setEditData({
-                                          ...editData,
-                                          FoggingSolutionRecords: newData,
-                                        });
-                                      }}
-                                      disabled={
-                                        [3, 2, 4].includes(
-                                          userDetails.roles[0].role_id
-                                        ) ||
-                                        !isFieldEditable(
-                                          item,
-                                          "foggingStartTime"
-                                        ) ||
-                                        !isFieldEnabledByFlow(
-                                          item,
-                                          "foggingStartTime"
-                                        )
-                                      }
-                                    />
-                                    <input
-                                      value={item.foggingStartTime || ""}
-                                      onChange={(e) => {
-                                        const newData = [
-                                          ...editData.FoggingSolutionRecords,
-                                        ];
+                                      if (e.target.checked) {
                                         newData[index].foggingStartTime =
-                                          e.target.value;
-                                        setEditData({
-                                          ...editData,
-                                          FoggingSolutionRecords: newData,
-                                        });
-                                      }}
-                                      readOnly={true}
-                                    />
-                                  </div>
+                                          dayjs().toISOString();
+                                      } else {
+                                        newData[index].foggingStartTime = "";
+                                      }
+
+                                      setEditData({
+                                        ...editData,
+                                        FoggingSolutionRecords: newData,
+                                      });
+                                    }}
+                                    disabled={
+                                      [3, 2, 4].includes(
+                                        userDetails.roles[0].role_id
+                                      ) ||
+                                      !isFieldEditable(
+                                        item,
+                                        "foggingStartTime"
+                                      ) ||
+                                      !isFieldEnabledByFlow(
+                                        item,
+                                        "foggingStartTime"
+                                      )
+                                    }
+                                  />
+                                  <input
+                                    value={
+                                      item?.foggingStartTime
+                                        ? dayjs(item?.foggingStartTime).format(
+                                            "DD-MM-YYYY hh:mm:ss a"
+                                          )
+                                        : ""
+                                    }
+                                    readOnly={true}
+                                  />
+                                </div>
                               </td>
 
                               <td className="!text-center !justify-center">
@@ -2065,6 +2081,7 @@ const FoggingSolutionEffective = () => {
                                     <input
                                       className="h-4 w-4 cursor-pointer"
                                       type="checkbox"
+                                      checked={!!item.foggingEndTime}
                                       style={{ marginLeft: "8px" }}
                                       onChange={(e) => {
                                         const newData = [
@@ -2073,7 +2090,7 @@ const FoggingSolutionEffective = () => {
 
                                         if (e.target.checked) {
                                           newData[index].foggingEndTime =
-                                            getCurrentDateTime12Hr();
+                                            dayjs().toISOString();
                                         } else {
                                           newData[index].foggingEndTime = "";
                                         }
@@ -2098,18 +2115,13 @@ const FoggingSolutionEffective = () => {
                                       }
                                     />
                                     <input
-                                      value={item.foggingEndTime || ""}
-                                      onChange={(e) => {
-                                        const newData = [
-                                          ...editData.FoggingSolutionRecords,
-                                        ];
-                                        newData[index].foggingEndTime =
-                                          e.target.value;
-                                        setEditData({
-                                          ...editData,
-                                          FoggingSolutionRecords: newData,
-                                        });
-                                      }}
+                                      value={
+                                        item?.foggingEndTime
+                                          ? dayjs(item?.foggingEndTime).format(
+                                              "DD-MM-YYYY hh:mm:ss a"
+                                            )
+                                          : ""
+                                      }
                                       readOnly={true}
                                     />
                                   </div>
@@ -2122,22 +2134,16 @@ const FoggingSolutionEffective = () => {
                                     <input
                                       className="h-4 w-4 cursor-pointer"
                                       type="checkbox"
-                                      checked={!!item.reviewed_by}
+                                      checked={!!item.checked_by}
                                       onChange={(e) => {
                                         const newData = [
                                           ...editData.FoggingSolutionRecords,
                                         ];
                                         if (e.target.checked) {
-                                          newData[index].reviewed_by =
-                                            reviewed_by;
-                                          newData[index].status = "Closed";
-                                        } else {
-                                          newData[index].reviewed_by = "";
-                                          newData[index].status = "Open";
-                                          newData[index].remarks = "";
-                                          newData[index].remarksType = "";
-                                          newData[index].remarksOther = "";
-                                          newData[index].remarksSubType = "";
+                                          newData[index].checked_by =
+                                            location?.state?.initiator_name;
+                                        }else{
+                                          newData[index].checked_by = "";
                                         }
                                         setEditData({
                                           ...editData,
@@ -2145,18 +2151,21 @@ const FoggingSolutionEffective = () => {
                                         });
                                       }}
                                       disabled={
-                                        [1, 3].includes(
+                                        [3, 2, 4].includes(
                                           userDetails.roles[0].role_id
                                         ) ||
-                                        !canReviewerEdit(item) ||
+                                        !isFieldEditable(
+                                          item,
+                                          "checked_by"
+                                        ) ||
                                         !isFieldEnabledByFlow(
                                           item,
-                                          "reviewed_by"
+                                          "checked_by"
                                         )
                                       }
                                     />
-                                    {item.reviewed_by && (
-                                      <p>{item.reviewed_by}</p>
+                                    {item.checked_by && (
+                                      <p>{item.checked_by}</p>
                                     )}
                                   </div>
                                 </div>
@@ -2171,17 +2180,24 @@ const FoggingSolutionEffective = () => {
                                       style={{ marginLeft: "8px" }}
                                       checked={!!item.ahuOnDateAndTime}
                                       onChange={(e) => {
-                                      if (!isFieldEnabledByFlow(item, "ahuOnDateAndTime")) {
-                                        toast.warn("AHU can only be turned ON after 1 hour of OFF time.");
-                                        return;
-                                      }
+                                        if (
+                                          !isFieldEnabledByFlow(
+                                            item,
+                                            "ahuOnDateAndTime"
+                                          )
+                                        ) {
+                                          toast.warn(
+                                            "AHU can only be turned ON after 3 Minutes of OFF time."
+                                          );
+                                          return;
+                                        }
                                         const newData = [
                                           ...editData.FoggingSolutionRecords,
                                         ];
 
                                         if (e.target.checked) {
                                           newData[index].ahuOnDateAndTime =
-                                            getCurrentDateTime12Hr();
+                                            dayjs().toISOString();
                                         } else {
                                           newData[index].ahuOnDateAndTime = "";
                                         }
@@ -2194,27 +2210,18 @@ const FoggingSolutionEffective = () => {
                                       disabled={
                                         [2, 3, 4].includes(
                                           userDetails.roles[0].role_id
-                                        ) ||
-                                        !isFieldEditable(
-                                          item,
-                                          "ahuOnDateAndTime"
-                                        )
+                                        ) || !ifAhuOnDateAndTimeEditable(item)
                                       }
                                     />
                                     <input
-                                      value={item.ahuOnDateAndTime || ""}
-                                      onChange={(e) => {
-                                        const newData = [
-                                          ...editData.FoggingSolutionRecords,
-                                        ];
-                                        newData[index].ahuOnDateAndTime =
-                                          e.target.value;
-                                        setEditData({
-                                          ...editData,
-                                          FoggingSolutionRecords: newData,
-                                        });
-                                      }}
-                                      readOnly={true}
+                                      value={
+                                        item.ahuOnDateAndTime
+                                          ? dayjs(item.ahuOnDateAndTime).format(
+                                              "DD-MM-YYYY hh:mm:ss a"
+                                            )
+                                          : ""
+                                      }
+                                      readOnly
                                     />
                                   </div>
                                 </div>
@@ -2376,9 +2383,7 @@ const FoggingSolutionEffective = () => {
                                 </div>
                               </td>
                               <td>
-                                {item.remarksSubType
-                                  ? "Returned"
-                                  : item.remarks?.toLowerCase() === "ok"
+                                {item.reviewed_by
                                   ? "Closed"
                                   : "Open"}
                               </td>
@@ -2962,7 +2967,8 @@ const FoggingSolutionEffective = () => {
               />
             )}
           </div>
-          {showFactorErrorModal && (
+
+          {/* {showFactorErrorModal && (
             <div
               className="
       fixed inset-0 bg-black/30 backdrop-blur-sm 
@@ -2997,7 +3003,7 @@ const FoggingSolutionEffective = () => {
                 </button>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>

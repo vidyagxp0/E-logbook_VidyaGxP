@@ -18,10 +18,6 @@ const FoggingSolutionRecords = sequelize.define(
         key: 'form_id',
       }
     },
-    unique_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     date: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -56,11 +52,11 @@ const FoggingSolutionRecords = sequelize.define(
     },
     performedBy: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     ahuOnDateAndTime: {
-      type: DataTypes.DATE,
-      allowNull: false,
+      type: DataTypes.STRING,
+      // allowNull: false,
     },
     approver_remarks: {
       type: DataTypes.STRING,
