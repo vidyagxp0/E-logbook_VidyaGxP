@@ -800,23 +800,29 @@ const FoggingSolutionEffective = () => {
   const originalData = location.state;
 
   // Check if reviewer can edit a record (prevent changes after saving)
-  const canReviewerEdit = (item) => {
-    // find original version of this record by record_id
-    const original = originalData?.FoggingSolutionRecords?.find(
-      (o) => o.record_id === item.record_id
-    );
+ const canReviewerEdit = (item) => {
+  // find original version of this record by record_id
+  const original = originalData?.FoggingSolutionRecords?.find(
+    (o) => o.record_id === item.record_id
+  );
 
-    // If we found the original row
-    if (original) {
-      // If original remarksType was OK → Lock it
-      if (original.remarks !== "" || original.reviewed_by !== null) {
-        return false;
-      }
+  // Agar original mila
+  if (original) {
+    // dono empty hain to editing allow
+    if (
+      (original.remarks === "" || original.remarks == null) &&
+      (original.reviewed_by === "" || original.reviewed_by == null)
+    ) {
+      return true;
     }
+    // warna editing allow nahi
+    return false;
+  }
 
-    // Otherwise allow editing
-    return true;
-  };
+  // agar original hi na mile, safe side par editing allow
+  return true;
+};
+
 
   const disableFieldMap = {
     "Incorrect Sample Name": ["sample_name"],
