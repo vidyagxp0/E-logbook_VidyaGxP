@@ -13,6 +13,40 @@ import TinyEditor from "../../../components/TinyEditor";
 import dayjs from "dayjs";
 import { Autocomplete, TextField } from "@mui/material";
 
+const parseDateString = (dateStr) => {
+  if (!dateStr) return new Date(NaN);
+  
+  const parts = dateStr.split(/[- :]/);
+  if (parts.length >= 3) {
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    
+    let hour = 0;
+    let minute = 0;
+    let second = 0;
+    
+    if (parts.length >= 6) {
+      hour = parseInt(parts[3], 10);
+      minute = parseInt(parts[4], 10);
+      second = parseInt(parts[5], 10);
+    }
+    
+    const ampmMatch = dateStr.match(/(am|pm)$/i);
+    if (ampmMatch) {
+      const meridiem = ampmMatch[0].toLowerCase();
+      if (meridiem === "pm" && hour < 12) hour += 12;
+      if (meridiem === "am" && hour === 12) hour = 0;
+    }
+    
+    const parsedDate = new Date(year, month, day, hour, minute, second);
+    if (!isNaN(parsedDate.getTime())) {
+      return parsedDate;
+    }
+  }
+  return new Date(dateStr);
+};
+
 const AnalyticalBalancesEffective = () => {
   const [isSelectedGeneral, setIsSelectedGeneral] = useState(true);
   const [isSelectedDetails, setIsSelectedDetails] = useState(true);
@@ -194,7 +228,7 @@ const AnalyticalBalancesEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+            "Couldn't send elog for approval!!"
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -299,6 +333,9 @@ const AnalyticalBalancesEffective = () => {
     if (location.state) {
       const cloned = JSON.parse(JSON.stringify(location.state));
       setEditData(cloned);
+      if (cloned.form_id) {
+        setFormId(cloned.form_id);
+      }
     }
   }, [location.state]);
 
@@ -499,10 +536,10 @@ const AnalyticalBalancesEffective = () => {
         selectedStatus === "Open"
           ? record.status === "Open"
           : selectedStatus === "Closed"
-          ? record.status === "Closed"
-          : selectedStatus === "Returned"
-          ? record.status === "Returned"
-          : true;
+            ? record.status === "Closed"
+            : selectedStatus === "Returned"
+              ? record.status === "Returned"
+              : true;
 
       return matchInitiator && matchReviewer && matchStatus;
     });
@@ -612,6 +649,7 @@ const AnalyticalBalancesEffective = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
+
   const EmptyreportData = {
     title: "Analytical Balance",
     status: location.state.status,
@@ -621,9 +659,10 @@ const AnalyticalBalancesEffective = () => {
   };
   const generateEmptyReport = async () => {
     setIsLoading1(true);
+    const currentFormId = location.state?.form_id || formId;
     try {
       const response = await axios.post(
-        `http://localhost:1000/analytical-balance/blank-report/${formId}`,
+        `http://localhost:1000/analytical-balance/blank-report/${currentFormId}`,
         {
           reportData: EmptyreportData,
         },
@@ -635,7 +674,7 @@ const AnalyticalBalancesEffective = () => {
         }
       );
       const { filename } = response.data;
-      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${currentFormId}&filename=${filename}`;
 
       // Open the report in a new tab
       window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -651,10 +690,10 @@ const AnalyticalBalancesEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Analytical Balance Record",
@@ -697,15 +736,18 @@ const AnalyticalBalancesEffective = () => {
   // };
 
   const allRecordDates = editData?.AnalyticalBalances?.map(
-    (r) => new Date(r.date)
-  );
+    (r) => parseDateString(r.date)
+  ).filter((d) => !isNaN(d.getTime()));
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
-  const formattedFirstDate = firstRecordDate;
+  const formattedFirstDate = firstRecordDate && !isNaN(firstRecordDate.getTime())
+    ? firstRecordDate.toISOString().split("T")[0]
+    : "";
 
   const generateReport = async () => {
     setIsLoading(true);
+    const currentFormId = location.state?.form_id || formId;
 
     try {
       let filteredData = { ...editData };
@@ -749,7 +791,7 @@ const AnalyticalBalancesEffective = () => {
       if (start) {
         filteredData.AnalyticalBalances = editData.AnalyticalBalances.filter(
           (record) => {
-            const recordDate = new Date(record.date);
+            const recordDate = parseDateString(record.date);
             return recordDate >= start && recordDate <= end;
           }
         );
@@ -762,7 +804,7 @@ const AnalyticalBalancesEffective = () => {
       };
 
       const response = await axios.post(
-        `http://localhost:1000/analytical-balance/effective-chat-pdf/${formId}`,
+        `http://localhost:1000/analytical-balance/effective-chat-pdf/${currentFormId}`,
         payload,
         {
           headers: {
@@ -773,7 +815,7 @@ const AnalyticalBalancesEffective = () => {
       );
 
       const { filename } = response.data;
-      const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
+      const reportUrl = `/effective-view-report?formId=${currentFormId}&filename=${filename}`;
       window.open(reportUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
       console.error("Error opening chat PDF:", error);
@@ -938,12 +980,12 @@ const AnalyticalBalancesEffective = () => {
                 {location.state?.site_id === 1
                   ? "India"
                   : location.state?.site_id === 2
-                  ? "Malaysia"
-                  : location.state?.site_id === 3
-                  ? "EMEA"
-                  : location.state?.site_id === 4
-                  ? "EU"
-                  : "Biologics"}
+                    ? "Malaysia"
+                    : location.state?.site_id === 3
+                      ? "EMEA"
+                      : location.state?.site_id === 4
+                        ? "EU"
+                        : "Biologics"}
               </span>
             </div>
             {/* <div>
@@ -1750,7 +1792,7 @@ const AnalyticalBalancesEffective = () => {
                                 <input
                                   value={item.instrument_no || ""}
                                   readOnly
-                                  // className="bg-gray-100 cursor-not-allowed"
+                                // className="bg-gray-100 cursor-not-allowed"
                                 />
                               </td>
                               <td>
@@ -2368,7 +2410,7 @@ const AnalyticalBalancesEffective = () => {
                                               .getElementsByName(
                                                 "supporting_docs"
                                               )
-                                              [index].click()
+                                            [index].click()
                                           }
                                           disabled={isDisabled}
                                         >
@@ -2407,7 +2449,7 @@ const AnalyticalBalancesEffective = () => {
                                               .getElementsByName(
                                                 "supporting_docs"
                                               )
-                                              [index].click()
+                                            [index].click()
                                           }
                                           disabled={isDisabled}
                                         >
@@ -2435,8 +2477,8 @@ const AnalyticalBalancesEffective = () => {
                                 {item.remarksSubType
                                   ? "Returned"
                                   : item.remarks?.toLowerCase() === "ok"
-                                  ? "Closed"
-                                  : "Open"}
+                                    ? "Closed"
+                                    : "Open"}
                               </td>
                               {/*  
                              <td>

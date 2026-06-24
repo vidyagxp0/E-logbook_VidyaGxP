@@ -27,27 +27,23 @@ const helmet = require("helmet");
 const app = express();
 const server = http.createServer(app);
 
-const pdfsFolder = path.resolve("public");
-
-app.use("/public", express.static(pdfsFolder));
-
 app.use(express.json());
+
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["*"],
-        frameAncestors: ["self"], // Allow iframe embedding from any source
-      },
-    },
-    crossOriginResourcePolicy: true,
-    crossOriginEmbedderPolicy: true,
+    frameguard: false,
+    contentSecurityPolicy: false,
+    crossOriginResourcePolicy: false,
+    crossOriginEmbedderPolicy: false,
   })
 );
 
-// Remove 'X-Frame-Options' header
 app.use((req, res, next) => {
   res.removeHeader("X-Frame-Options");
+  res.setHeader(
+    "Content-Security-Policy",
+    "frame-ancestors 'self' https://elogbook.vidyagxp.com"
+  );
   next();
 });
 
@@ -56,6 +52,10 @@ app.use(
     origin: "*",
   })
 );
+
+const pdfsFolder = path.resolve("public");
+app.use("/public", express.static(pdfsFolder));
+
 app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
 app.use("/feedback", vidyagxpFeedback);
@@ -66,15 +66,15 @@ app.use("/operation-sterlizer", operationOfSterlizerRoutes);
 app.use("/media-record", mediaRecordRoutes);
 app.use("/dispensing-material", dispensingOfMaterialRoutes);
 app.use("/site", siteRoutes);
-app.use("/analytical-balance",analyticalBalanceRoutes);
-app.use("/op-and-calParameter",opAndCalParamterRoute);
-app.use("/uv-vis-calib",OpAndCalUvVisRoute);
-app.use("/sds-page",sdsPage);
-app.use("/gel-doc-igene",igeneProcess);
-app.use("/uv-wl-transi",whiteLightTransilliminator);
-app.use("/vo-cal",voCalibProcess);
-app.use("/karl-fischer",karlFischerRoutes);
-app.use("/hplc",hplcRoutes)
+app.use("/analytical-balance", analyticalBalanceRoutes);
+app.use("/op-and-calParameter", opAndCalParamterRoute);
+app.use("/uv-vis-calib", OpAndCalUvVisRoute);
+app.use("/sds-page", sdsPage);
+app.use("/gel-doc-igene", igeneProcess);
+app.use("/uv-wl-transi", whiteLightTransilliminator);
+app.use("/vo-cal", voCalibProcess);
+app.use("/karl-fischer", karlFischerRoutes);
+app.use("/hplc", hplcRoutes)
 app.use(express.static(path.join(__dirname, "documents")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
