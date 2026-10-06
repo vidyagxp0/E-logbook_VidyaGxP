@@ -76,6 +76,7 @@ import UvWITransilluminatorEffective from "./pages/Dashboard/EffectiveElogs/UvWl
 import VacuumOvenOpEffective from "./pages/Dashboard/EffectiveElogs/VacuumOvenOpEffective.jsx";
 import VacuumOvenOpPanel from "./pages/documentPanels/VacuumOvenOp/VacuumOvenOpPanel.jsx";
 import VacuumOvenOp from "./pages/configForms/VacuumOvenOp/VacuumOvenOp.jsx";
+import ELogIntelligence from "./pages/eLogIntelligence.jsx";
 
 function App() {
   return (
@@ -122,6 +123,10 @@ function App() {
             <Route
               path="/analytics2"
               element={<ProtectedRoute element={<Analytics />} />}
+            />
+            <Route
+              path="/eLogIntelligence"
+              element={<ProtectedRoute element={<ELogIntelligence />} />}
             />
             <Route
               path="/analytics"

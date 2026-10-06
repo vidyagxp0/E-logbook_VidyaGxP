@@ -113,7 +113,7 @@ function HeaderTop() {
                 src="/gxplogo1.png"
                 alt="Logo"
               />
-              <img
+              {/* <img
                 onClick={() => navigate("/effectiveElogs")}
                 style={{
                   cursor: "pointer",
@@ -122,7 +122,7 @@ function HeaderTop() {
                 }}
                 src="/image.png"
                 alt="Logo"
-              />
+              /> */}
             </div>
           </div>
           <div className="center">
@@ -155,9 +155,9 @@ function HeaderTop() {
             </div> */}
             <div className="flex flex-col items-center justify-center">
               <h1 className="text-3xl font-bold font-serif">eLog-Book</h1>
-              <h1 className="text-2xl font-bold font-serif">
+              {/* <h1 className="text-2xl font-bold font-serif">
                 Indian Pharmacopoeia Commission
-              </h1>
+              </h1> */}
             </div>
           </div>
           <div className="right">

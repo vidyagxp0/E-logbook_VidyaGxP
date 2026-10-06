@@ -51,7 +51,7 @@ function HeaderBottom() {
               >
                  E-Log
               </Link>
-              <Link
+              {/* <Link
                 to="/analytics2"
                 className={`tab py-1 px-4 rounded-md  ${
                   window.location.pathname === "/analytics2"
@@ -60,6 +60,16 @@ function HeaderBottom() {
                 } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
                 Analytics
+              </Link> */}
+              <Link
+                to="/eLogIntelligence"
+                className={`tab py-1 px-4 rounded-md ${
+                  location.pathname === "/eLogIntelligence"
+                    ? "bg-blue-600 text-white border border-blue-600"
+                    : "bg-white text-blue-500 border border-blue-600"
+                } hover:bg-blue-600 transition duration-300 hover:text-white`}
+              >
+                eLog Intelligence
               </Link>
             </div>
           </div>
@@ -67,7 +77,7 @@ function HeaderBottom() {
           {userDetails.roles?.some(
             (itm) => itm.role_id === 5 || itm.role_id === 1
           ) &&
-          !["/effectiveElogs", "/analytics2"].includes(location.pathname) ? (
+          !["/effectiveElogs", "/analytics2", "/eLogIntelligence"].includes(location.pathname) ? (
             <div className="headerBottomRgt">
               <div className="themeBtn" onClick={() => setRecordModal(true)}>
                 Create eLogbook

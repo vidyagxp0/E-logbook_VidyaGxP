@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VidyaGxP eLOG • Electronic Logbook Command Center</title>
+<style>
+:root{
+  --navy:#0b1f33;--navy2:#102a43;--blue:#1769aa;--teal:#0f8b8d;--teal2:#16a3a6;
+  --green:#1f8f5f;--greenbg:#eaf7f1;--amber:#c27a0e;--amberbg:#fff7e6;--red:#c33b45;--redbg:#fff0f1;
+  --ink:#142334;--muted:#667788;--line:#dfe7ee;--bg:#f4f7fa;--card:#fff;--soft:#f8fafc;
+  --shadow:0 8px 24px rgba(16,42,67,.08);--r:15px;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,select,input{font:inherit}
+button{cursor:pointer}
+.topbar{position:sticky;top:0;z-index:80;background:var(--navy);color:#fff;box-shadow:0 3px 14px rgba(0,0,0,.18)}
+.brandrow{height:64px;display:flex;align-items:center;gap:18px;padding:0 20px;border-bottom:1px solid rgba(255,255,255,.10)}
+.brandmark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#16a3a6,#5ad0d2);display:grid;place-items:center;font-weight:900;color:#08213b}
+.brand h1{font-size:17px;margin:0;letter-spacing:.1px}.brand p{font-size:11px;margin:3px 0 0;color:#b9cada}
+.header-actions{margin-left:auto;display:flex;align-items:center;gap:7px}
+.iconbtn{width:36px;height:36px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;border-radius:9px;display:grid;place-items:center;position:relative}
+.iconbtn:hover{background:rgba(255,255,255,.12)}
+.badge{position:absolute;right:-4px;top:-5px;background:#d94951;color:#fff;border:2px solid var(--navy);font-size:9px;min-width:18px;height:18px;padding:0 4px;border-radius:10px;display:grid;place-items:center;font-weight:800}
+.avatar{width:34px;height:34px;border-radius:50%;background:#e9f6f6;color:var(--navy);display:grid;place-items:center;font-size:12px;font-weight:800;margin-left:2px}
+.filterbar{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr)) 1.2fr;gap:9px;padding:10px 20px;background:#0e263d}
+.field label{display:block;font-size:9px;letter-spacing:.6px;text-transform:uppercase;color:#9fb4c7;margin:0 0 4px 2px}
+.field select,.searchbox input{width:100%;height:34px;border:1px solid rgba(255,255,255,.12);background:#132f4a;color:#eef7fb;border-radius:8px;padding:0 9px;font-size:11px;outline:none}
+.searchbox{align-self:end;position:relative}.searchbox input{padding-left:30px}.searchbox span{position:absolute;left:10px;bottom:9px;color:#a8bccd;font-size:13px}
+.app{display:grid;grid-template-columns:220px minmax(0,1fr)}
+.sidebar{position:sticky;top:118px;height:calc(100vh - 118px);background:#102a43;color:#dbe8f2;padding:14px 10px;overflow:auto;border-right:1px solid #0d2338}
+.navgroup{font-size:9px;text-transform:uppercase;letter-spacing:.9px;color:#7893aa;padding:9px 10px 5px}
+.backButton{display:flex;align-items:center;gap:10px;color:#d8e4ee;  background:#16a3a6;color:#fff; text-decoration:none;font-size:12px;padding:9px 10px;border-radius:9px;margin:2px 0}
+.navitem{display:flex;align-items:center;gap:10px;color:#d8e4ee;text-decoration:none;font-size:12px;padding:9px 10px;border-radius:9px;margin:2px 0}
+.navitem:hover,.navitem.active{background:#183955;color:#fff}.navdot{width:7px;height:7px;border-radius:50%;background:#5baeb0}
+.sidebar .refresh-meta{font-size:10px;color:#86a0b5;line-height:1.5;padding:12px 10px;border-top:1px solid rgba(255,255,255,.08);margin-top:10px}
+.main{min-width:0;padding:18px 20px 34px}
+.pagehead{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:15px}
+.pagehead h2{font-size:22px;margin:0;color:#102a43}.pagehead p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.statuspill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:var(--greenbg);color:var(--green);font-size:11px;font-weight:700;border:1px solid #d2ebdf}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.grid{display:grid;gap:12px}
+.kpi-grid{grid-template-columns:1.25fr repeat(4,1fr);margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.kpi{padding:14px;min-height:123px;position:relative;overflow:hidden;transition:.18s transform,.18s box-shadow}
+.kpi:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(16,42,67,.12)}
+.kpi-title{font-size:10px;text-transform:uppercase;letter-spacing:.55px;color:#6f8090;font-weight:800}
+.kpi-value{font-size:25px;font-weight:780;letter-spacing:-.4px;color:#102a43;margin-top:8px}
+.kpi-sub{font-size:10px;color:#7c8d9d;margin-top:3px}
+.trend{font-size:10px;margin-top:6px;font-weight:700}.up{color:var(--green)}.warn{color:var(--amber)}.downbad{color:var(--red)}
+.spark{position:absolute;right:10px;bottom:9px;width:74px;height:30px;opacity:.9}
+.health-card{padding:12px 14px;display:grid;grid-template-columns:94px 1fr;align-items:center;gap:10px}
+.gauge{width:88px;height:88px;position:relative}.gauge svg{transform:rotate(-90deg)}.gauge .score{position:absolute;inset:0;display:grid;place-items:center;text-align:center}.gauge .score b{font-size:20px}.gauge .score small{display:block;font-size:9px;color:var(--muted)}
+.health-components{display:grid;grid-template-columns:1fr 1fr;gap:5px 8px;margin-top:8px}.mini{font-size:9px;color:#607182}.mini b{float:right;color:#2d4b60}
+.section{margin-top:14px;scroll-margin-top:130px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 0 8px}.section-head h3{font-size:15px;margin:0;color:#102a43}.section-head p{margin:4px 0 0;font-size:10px;color:#7b8996}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#fff;color:#506170;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:700}.chip.active{background:#102a43;color:#fff;border-color:#102a43}
+.two{grid-template-columns:1.15fr .85fr}.three{grid-template-columns:repeat(3,1fr)}.four{grid-template-columns:repeat(4,1fr)}
+.panel{padding:14px}.panel-title{font-size:12px;font-weight:800;color:#1b3347;margin-bottom:9px}.panel-sub{font-size:10px;color:#788896}
+.chartbox{height:230px;position:relative}.chartbox.short{height:185px}.chartbox.tall{height:270px}
+svg.chart{width:100%;height:100%;overflow:visible}
+.chart text{font-family:inherit;fill:#718294;font-size:9px}.chart .gridline{stroke:#e7edf2;stroke-width:1}.chart .axis{stroke:#cbd7e0;stroke-width:1}.chart .line{fill:none;stroke-width:2.2}.chart .area{opacity:.08}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:9px;color:#68798a}.legend span{display:flex;align-items:center;gap:5px}.legend i{width:8px;height:8px;border-radius:2px;background:currentColor}
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:9px}.stat{padding:9px;background:var(--soft);border:1px solid #e8eef3;border-radius:10px}.stat small{display:block;font-size:9px;color:#7b8995}.stat b{font-size:14px;color:#203a4d}
+.progress{height:10px;background:#eaf0f4;border-radius:99px;overflow:hidden;display:flex}.progress span{height:100%}
+.progress-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.progress-legend div{padding:8px;background:var(--soft);border-radius:9px;font-size:10px;color:#667}.progress-legend b{display:block;font-size:14px;color:#1d3a4e;margin-top:2px}
+.completion-total{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:11px;margin-top:11px}.completion-total b{font-size:19px;color:#102a43}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:11px}
+table{width:100%;border-collapse:collapse;font-size:10px;min-width:720px}th{position:sticky;top:0;background:#f6f9fb;color:#536575;text-align:left;padding:9px;border-bottom:1px solid var(--line);font-size:9px;text-transform:uppercase;letter-spacing:.4px}td{padding:9px;border-bottom:1px solid #edf1f4;color:#314a5c}tr:last-child td{border-bottom:0}tbody tr:hover{background:#f8fbfd}
+.heat{display:inline-grid;place-items:center;min-width:45px;padding:5px 7px;border-radius:7px;font-weight:800;font-size:9px}.good{background:var(--greenbg);color:var(--green)}.medium{background:var(--amberbg);color:var(--amber)}.bad{background:var(--redbg);color:var(--red)}.info{background:#eaf3fb;color:#1d6fa8}
+.product-name{font-weight:750;color:#163247;white-space:nowrap}.risk-high{color:var(--red);font-weight:800}.risk-med{color:var(--amber);font-weight:800}.risk-low{color:var(--green);font-weight:800}
+.metric-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.metric{padding:10px;border-radius:10px;border:1px solid var(--line);background:#fff}.metric small{display:block;color:#718292;font-size:9px}.metric b{display:block;font-size:18px;color:#17364a;margin-top:2px}.metric em{font-size:9px;color:#70808f;font-style:normal}
+.donutwrap{display:grid;grid-template-columns:160px 1fr;align-items:center}.donut{width:145px;height:145px;border-radius:50%;position:relative;margin:auto}.donut:after{content:"";position:absolute;inset:28px;background:white;border-radius:50%}.donut-center{position:absolute;inset:0;z-index:2;display:grid;place-items:center;text-align:center}.donut-center b{font-size:22px}.donut-center span{font-size:9px;color:#738392;display:block}
+.list{display:grid;gap:7px}.list-item{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:center;padding:8px 0;border-bottom:1px solid #edf1f4}.list-item:last-child{border:0}.list-item strong{font-size:10px}.list-item small{display:block;font-size:9px;color:#7b8995;margin-top:2px}.barline{width:120px;height:7px;background:#eef2f5;border-radius:99px;overflow:hidden}.barline span{display:block;height:100%;border-radius:99px}
+.select-inline{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff;color:#42586a;font-size:10px}
+.capability-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:9px}.cap{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fbfdfe}.cap small{display:block;font-size:9px;color:#718191}.cap b{font-size:20px;color:#17394d}.cap span{display:block;font-size:9px;color:var(--green);margin-top:2px}
+.pareto{height:220px}.matrix{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,44px);gap:3px;position:relative}.matrix-cell{border-radius:7px;display:flex;align-items:flex-end;justify-content:flex-end;padding:4px;font-size:8px;color:rgba(0,0,0,.48)}.matrix-point{position:absolute;transform:translate(-50%,-50%);width:16px;height:16px;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 7px rgba(0,0,0,.22);cursor:pointer}.matrix-point::after{content:attr(data-label);position:absolute;left:12px;top:-8px;background:#fff;border:1px solid #dae4eb;border-radius:6px;padding:3px 5px;white-space:nowrap;font-size:8px;font-weight:700;color:#234;box-shadow:0 4px 10px rgba(0,0,0,.08)}
+.corr-grid{display:grid;grid-template-columns:180px repeat(5,1fr);gap:3px;align-items:stretch}.corr-h{font-size:8px;text-transform:uppercase;color:#6e7e8e;padding:7px;text-align:center}.corr-name{font-size:9px;font-weight:700;padding:8px;background:#f7fafc;border-radius:6px}.corr-cell{display:grid;place-items:center;border-radius:6px;font-size:9px;font-weight:800;min-height:34px}
+.validation-list{display:grid;gap:9px}.validation-row{display:grid;grid-template-columns:170px 1fr 48px;gap:9px;align-items:center;font-size:10px}.validation-row .track{height:8px;border-radius:99px;background:#edf2f5;overflow:hidden}.validation-row .track span{height:100%;display:block;border-radius:99px}
+.alert-tabs{display:flex;gap:7px;margin-bottom:10px}.alert-tab{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;font-size:10px;font-weight:750;color:#536879}.alert-tab.active{background:#102a43;color:#fff;border-color:#102a43}
+.alert-list{display:grid;gap:8px}.alert-item{display:grid;grid-template-columns:5px 86px 1.2fr .8fr .8fr .55fr 78px;gap:9px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:11px;background:#fff}.alert-stripe{height:100%;min-height:50px;border-radius:5px}.alert-item h4{margin:0;font-size:10px;color:#18354a}.alert-item p{margin:3px 0 0;font-size:9px;color:#6e7f8f}.alert-item .tag{font-size:8px;font-weight:900;letter-spacing:.4px;text-transform:uppercase}.actionbtn{border:1px solid #bfd0db;background:#f7fafc;color:#1d4965;border-radius:7px;padding:6px 8px;font-size:9px;font-weight:750}.actionbtn:hover{background:#edf5fa}
+.callout{border-left:4px solid var(--teal);background:#f4fbfb;border-radius:10px;padding:10px 12px;font-size:10px;color:#47616d}.callout b{color:#173d4a}
+.footer{margin-top:18px;padding:14px 0;color:#81909d;font-size:9px;text-align:center}
+.modalback{position:fixed;inset:0;background:rgba(8,24,39,.58);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}.modalback.show{display:flex}.modal{width:min(860px,96vw);max-height:85vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.32)}.modal-head{display:flex;justify-content:space-between;align-items:center;padding:15px 17px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2}.modal-head h3{margin:0;font-size:15px}.close{border:0;background:#eef3f6;border-radius:8px;width:31px;height:31px}.modal-body{padding:16px}
+.toast{position:fixed;right:18px;bottom:18px;z-index:300;background:#102a43;color:#fff;padding:10px 13px;border-radius:9px;font-size:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1280px){.app{grid-template-columns:190px 1fr}.kpi-grid{grid-template-columns:1.5fr repeat(4,1fr)}.metric-strip{grid-template-columns:repeat(3,1fr)}.filterbar{grid-template-columns:repeat(3,1fr)}.sidebar{top:162px;height:calc(100vh - 162px)}}
+@media(max-width:980px){.sidebar{display:none}.app{grid-template-columns:1fr}.two,.three,.four{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}.health-card{grid-column:1/-1}.filterbar{grid-template-columns:1fr 1fr}.alert-item{grid-template-columns:5px 80px 1fr}.alert-item>div:nth-child(n+4){display:none}}
+@media print{.topbar,.sidebar,.chiprow,.alert-tabs,.actionbtn{display:none!important}.app{display:block}.main{padding:0}.card{box-shadow:none;break-inside:avoid}.section{break-inside:avoid}.pagehead{margin-top:0}}
+/* ===== v2: compact header, filters, scrollbars ===== */
+:root{--hdr:104px}
+.topbar{box-shadow:0 1px 0 rgba(255,255,255,.04),0 6px 18px rgba(4,16,28,.22)}
+.brandrow{height:54px;gap:14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.brandmark{width:34px;height:34px;border-radius:10px;font-size:15px}
+.brand h1{font-size:15px;letter-spacing:0}.brand p{font-size:10.5px;margin-top:2px;color:#9fb4c7}
+.iconbtn{width:34px;height:34px;border-radius:9px;transition:background .15s,border-color .15s}
+.iconbtn:hover{border-color:rgba(255,255,255,.28)}
+.filterbar{display:flex!important;align-items:center;gap:8px;padding:8px 20px 9px;background:#0d2338;overflow-x:auto;scrollbar-width:none;grid-template-columns:none!important}
+.filterbar::-webkit-scrollbar{display:none}
+.filterbar .field{display:flex;align-items:center;flex:1 1 150px;min-width:150px;height:34px;background:#132f4a;border:1px solid rgba(255,255,255,.09);border-radius:8px;padding-left:10px;transition:border-color .15s,background .15s}
+.filterbar .field:hover{background:#163552}
+.filterbar .field:focus-within{border-color:#5ad0d2}
+.filterbar .field label{margin:0;padding-right:8px;border-right:1px solid rgba(255,255,255,.1);font-size:10.5px;letter-spacing:0;text-transform:none;color:#8fa9be;white-space:nowrap;line-height:16px}
+.filterbar .field select{flex:1;min-width:0;height:32px;border:0;border-radius:0 8px 8px 0;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%239fb4c7' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 9px center;-webkit-appearance:none;appearance:none;padding:0 26px 0 8px;font-size:11.5px;font-weight:600;color:#eef7fb;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.filterbar .field select option{color:#142334;background:#fff;font-weight:500}
+.filterbar .field:nth-child(2){flex-grow:1.5}.filterbar .field:nth-child(4){flex-grow:1.35;min-width:200px}
+.filterbar .searchbox{flex:1.4 1 220px;min-width:210px;align-self:center}
+.filterbar .searchbox input{height:34px;border-color:rgba(255,255,255,.09);font-size:11.5px;transition:border-color .15s}
+.filterbar .searchbox input:focus{border-color:#5ad0d2}
+.filterbar .searchbox span{bottom:auto;top:50%;transform:translateY(-50%)}
+.scrollprog{position:absolute;left:0;right:0;bottom:-2px;height:2px;pointer-events:none}
+.scrollprog span{display:block;height:100%;width:0;background:linear-gradient(90deg,#16a3a6,#5ad0d2);transition:width .08s linear}
+.sidebar{top:var(--hdr)!important;height:calc(100vh - var(--hdr))!important;padding:12px 10px;scrollbar-width:thin;scrollbar-color:#2b4d6b transparent}
+.sidebar::-webkit-scrollbar{width:6px}.sidebar::-webkit-scrollbar-thumb{background:#2b4d6b;border-radius:6px}.sidebar::-webkit-scrollbar-track{background:transparent}
+.navitem{position:relative;transition:background .15s,color .15s}
+.navitem.active{background:#1a3e5c}
+.navitem.active::before{content:"";position:absolute;left:-10px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:#5ad0d2}
+.navitem.active .navdot{background:#5ad0d2;box-shadow:0 0 0 3px rgba(90,208,210,.18)}
+.section,#overview{scroll-margin-top:calc(var(--hdr) + 12px)}
+html{scrollbar-width:thin;scrollbar-color:#b6c6d3 transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#c3d1dc;border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:#9db1c1;border:3px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+.table-wrap{scrollbar-width:thin}
+:focus-visible{outline:2px solid #16a3a6;outline-offset:2px}
+.totop{position:fixed;right:18px;bottom:18px;z-index:90;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#fff;color:#102a43;box-shadow:var(--shadow);font-size:16px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}
+.totop.show{opacity:1;transform:none;pointer-events:auto}
+/* ===== v2: chart explanations ===== */
+.panel-title.has-info{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.infobtn{flex:none;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;color:#1d5b7e;border-radius:7px;padding:4px 8px;font-size:10px;font-weight:700;transition:background .15s,border-color .15s}
+.infobtn:hover{background:#eef7f8;border-color:#b9dcdd}
+.infobtn svg{width:12px;height:12px}
+.chart-click{cursor:pointer}
+.chart-click svg.chart [data-tip]{transition:opacity .12s}
+.chart-click svg.chart rect[data-tip]:hover{opacity:.78}
+.chart-click svg.chart circle[data-tip]:hover{r:5.5}
+.charthint{font-size:9.5px;color:#8a99a7;margin-top:6px}
+.chart-tip{position:fixed;z-index:400;pointer-events:none;background:#102a43;color:#fff;font-size:10.5px;line-height:1.35;padding:6px 9px;border-radius:7px;box-shadow:0 8px 22px rgba(0,0,0,.25);opacity:0;transition:opacity .1s;max-width:260px}
+.chart-tip.show{opacity:1}
+.chart-tip small{display:block;color:#9fc3d6;font-size:9.5px;margin-top:2px}
+.info-block{margin-top:14px}
+.info-block h4{margin:0 0 6px;font-size:12px;color:#102a43}
+.info-block p{margin:0;font-size:11.5px;line-height:1.55;color:#3d5466}
+.info-block ul{margin:0;padding-left:18px;font-size:11.5px;line-height:1.6;color:#3d5466}
+.info-block li+li{margin-top:2px}
+.selected-point{display:flex;gap:12px;align-items:center;padding:11px 13px;border-radius:10px;background:#f2f8fb;border:1px solid #d8e8f1;font-size:11.5px;color:#25455a}
+.selected-point b{font-size:16px;color:#102a43}
+.finding{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #edf1f4;font-size:11.5px;line-height:1.5;color:#2d4659}
+.finding:last-child{border:0}
+.finding i{flex:none;width:8px;height:8px;border-radius:50%;margin-top:5px}
+.modal-body table{min-width:0}
+.corr-cell{cursor:pointer}
+@media(max-width:980px){.filterbar .field{min-width:160px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* ===== eLOG specific ===== */
+.brandmark{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:19px}
+.brand h1 small{font-weight:600;color:#5ad0d2;margin-left:2px}
+.heatgrid{display:grid;grid-template-columns:120px repeat(7,1fr);gap:4px;align-items:stretch}
+.heatgrid .hh{font-size:9.5px;color:#6e7e8e;text-align:center;padding:4px 0}
+.heatgrid .hr{font-size:10px;color:#40576a;font-weight:700;display:flex;flex-direction:column;justify-content:center;padding-left:2px}
+.heatgrid .hr small{font-weight:500;color:#8796a4;font-size:9px}
+.heatcell{border-radius:7px;min-height:44px;display:grid;place-items:center;font-size:10.5px;font-weight:750;cursor:pointer;transition:transform .12s}
+.heatcell:hover{transform:scale(1.04)}
+.eq-filter{display:flex;gap:6px;flex-wrap:wrap}
+.eq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.eq{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 12px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s}
+.eq:hover{border-color:#b9cfdd;box-shadow:0 6px 16px rgba(16,42,67,.08)}
+.eq-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.eq-id{font-size:12px;font-weight:800;color:#102a43}
+.eq-name{font-size:10px;color:#6b7c8c;margin-top:2px}
+.eq-status{font-size:9.5px;font-weight:800;padding:3px 7px;border-radius:6px;white-space:nowrap}
+.st-inuse{background:#e8f1fa;color:#1769aa}.st-clean{background:var(--greenbg);color:var(--green)}.st-dirty{background:var(--amberbg);color:var(--amber)}.st-maint{background:#f1ecfa;color:#6a4bb0}.st-idle{background:#f0f3f6;color:#5b6b79}
+.eq-line{font-size:10.5px;color:#2f4a5d;margin-top:9px;min-height:15px}
+.eq-meta{font-size:9.5px;color:#8291a0;margin-top:2px}
+.hold{margin-top:8px}.hold-lab{display:flex;justify-content:space-between;font-size:9.5px;color:#5f7182;margin-bottom:4px}
+.hold-track{height:6px;border-radius:99px;background:#edf2f5;overflow:hidden}.hold-track span{display:block;height:100%;border-radius:99px}
+.audit td:first-child{white-space:nowrap;color:#5e7182}
+.act{font-weight:750}
+.select-row{display:flex;gap:6px;align-items:center}
+.health-card .mini{font-size:9.5px}
+.scope-note{font-size:9.5px;color:#8a99a7;margin-top:4px}
+.excursion{display:grid;grid-template-columns:5px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #edf1f4}
+.excursion:last-child{border:0}
+.excursion .bar{align-self:stretch;border-radius:4px}
+.excursion h4{margin:0;font-size:10.5px;color:#18354a}.excursion p{margin:2px 0 0;font-size:9.5px;color:#6e7f8f}
+@media(max-width:1280px){.eq-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:980px){.eq-grid{grid-template-columns:1fr 1fr}.heatgrid{grid-template-columns:90px repeat(7,1fr)}}
+@media(max-width:600px){.eq-grid{grid-template-columns:1fr}}
+
+.chart text{font-size:10px}.chartbox.short{height:200px}
+.health-components{gap:5px 14px}
+@media(max-width:980px){.kpi-grid{grid-template-columns:1fr 1fr!important}.metric-strip{grid-template-columns:repeat(2,1fr)!important}.pagehead{flex-direction:column;align-items:flex-start;gap:10px}.section-head{flex-wrap:wrap;align-items:flex-start}}
+@media(max-width:600px){.brand p{display:none}.header-actions .iconbtn:nth-child(3),.header-actions .iconbtn:nth-child(4){display:none}.main{padding:14px 12px 28px}.heatgrid{grid-template-columns:64px repeat(7,1fr);gap:3px}.heatcell{font-size:9px;min-height:36px}.heatgrid .hr small{display:none}.donutwrap{grid-template-columns:1fr;gap:12px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brandrow">
+    <div class="brandmark">e</div>
+    <div class="brand"><h1>VidyaGxP <small>eLOG</small></h1><p>Electronic Logbook | GMP Data Integrity Command Center</p></div>
+    <div class="header-actions">
+      <button class="iconbtn" title="Alerts" onclick="document.getElementById('alerts').scrollIntoView()"><span>🔔</span><span class="badge" id="notifCount">10</span></button>
+      <button class="iconbtn" title="Refresh" onclick="refreshData()">↻</button>
+      <button class="iconbtn" title="Export / Print" onclick="window.print()">⇩</button>
+      <button class="iconbtn" title="Full screen" onclick="toggleFull()">⛶</button>
+      <!-- <div class="avatar" title="QA Reviewer">QA</div> -->
+    </div>
+  </div>
+  <div class="filterbar">
+    <div class="field"><label for="siteFilter">Site</label><select id="siteFilter"><option>All Sites</option><option>Unit-I</option><option>Unit-II</option><option>Unit-III</option></select></div>
+    <div class="field"><label for="deptFilter">Department</label><select id="deptFilter"><option>All Departments</option><option>Production</option><option>QC</option><option>Microbiology</option><option>Warehouse</option><option>Engineering</option><option>QA</option></select></div>
+    <div class="field"><label for="typeFilter">Logbook Type</label><select id="typeFilter"><option>All Types</option><option>Equipment Usage</option><option>Cleaning</option><option>Area / Room</option><option>Instrument Usage</option><option>Balance Verification</option><option>Environmental Monitoring</option><option>Preventive Maintenance</option><option>Line Clearance</option></select></div>
+    <div class="field"><label for="periodFilter">Period</label><select id="periodFilter"><option>Last 30 Days</option><option>Last 7 Days</option><option>Last 90 Days</option><option>Rolling 12 Months</option></select></div>
+    <div class="searchbox"><span>⌕</span><input id="globalSearch" placeholder="Search logbook, equipment, user, entry ID..."></div>
+  </div>
+</header>
+
+<div class="app">
+<aside class="sidebar">
+  <a class="backButton" href="/dashboard" target="_top"><span class="navdot"></span>← Back to Dashboard</a>
+  <div class="navgroup">Command Center</div>
+  <a class="navitem active" href="#overview"><span class="navdot"></span>Executive Overview</a>
+  <a class="navitem" href="#inventory"><span class="navdot"></span>Logbook Inventory</a>
+  <a class="navitem" href="#areaHealth"><span class="navdot"></span>Area Health Matrix</a>
+  <div class="navgroup">Logbook Operations</div>
+  <a class="navitem" href="#activity"><span class="navdot"></span>Entry Activity</a>
+  <a class="navitem" href="#review"><span class="navdot"></span>Review & Approval</a>
+  <a class="navitem" href="#equipment"><span class="navdot"></span>Equipment & Cleaning</a>
+  <a class="navitem" href="#em"><span class="navdot"></span>Environmental Monitoring</a>
+  <a class="navitem" href="#instruments"><span class="navdot"></span>Instruments & Balances</a>
+  <div class="navgroup">Compliance</div>
+  <a class="navitem" href="#integrity"><span class="navdot"></span>Data Integrity (ALCOA+)</a>
+  <a class="navitem" href="#audit"><span class="navdot"></span>Audit Trail</a>
+  <a class="navitem" href="#alerts"><span class="navdot"></span>Alerts & Actions</a>
+  <div class="refresh-meta">Last data sync<br><b id="refreshTime" style="color:#d8e8f3">06 Oct 2026 • 09:20 IST</b><br><br>System: <span style="color:#72d2ac">● Validated • 21 CFR Part 11</span></div>
+</aside>
+
+<main class="main">
+<section id="overview">
+  <div class="pagehead">
+    <div><h2>eLOG Executive Command Center</h2><p>Real-time view of GMP logbook entries, reviews, equipment status and data integrity across all manufacturing and laboratory areas.</p></div>
+    <div class="statuspill"><span class="dot"></span> Logbook Compliance: Healthy</div>
+  </div>
+
+  <div class="grid kpi-grid">
+    <div class="card health-card" onclick="showHealthDetails()" style="cursor:pointer">
+      <div class="gauge"><svg width="88" height="88"><circle cx="44" cy="44" r="36" stroke="#e6eef3" stroke-width="8" fill="none"/><circle cx="44" cy="44" r="36" stroke="#1f8f5f" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="214.2 226.2"/></svg><div class="score"><div><b>94.7</b><small>/100</small></div></div></div>
+      <div><div class="kpi-title">Data Integrity Score</div><div class="trend up">▲ 1.6 pts vs previous 30 days</div><div class="health-components">
+        <div class="mini">Timeliness <b>96</b></div><div class="mini">Complete <b>97</b></div><div class="mini">Review <b>89</b></div><div class="mini">Corrections <b>95</b></div><div class="mini">E-sign <b>99</b></div><div class="mini">Hold Time <b>92</b></div>
+      </div></div>
+    </div>
+    <div class="card kpi" onclick="drillAreas('Active eLogbooks')"><div class="kpi-title">Active eLogbooks</div><div class="kpi-value" id="kBooks">412</div><div class="kpi-sub" id="kBooksSub">Across 12 areas • 3 units</div><div class="trend up">▲ 18 issued this month</div><div class="spark" id="sp1"></div></div>
+    <div class="card kpi" onclick="document.getElementById('activity').scrollIntoView()"><div class="kpi-title">Entries Recorded</div><div class="kpi-value" id="kEntries">48,926</div><div class="kpi-sub">Last 30 days</div><div class="trend up">▲ 6.2% vs previous period</div><div class="spark" id="sp2"></div></div>
+    <div class="card kpi" onclick="document.getElementById('review').scrollIntoView()"><div class="kpi-title">Pending Review</div><div class="kpi-value" id="kPending">186</div><div class="kpi-sub" id="kPendingSub">163 within 72 h SLA</div><div class="trend warn" id="kOverdueTxt">23 beyond SLA</div><div class="spark" id="sp3"></div></div>
+    <div class="card kpi" onclick="drillEquipment('All')"><div class="kpi-title">Equipment In Use</div><div class="kpi-value">64 <span style="font-size:15px;color:#7c8d9d">/ 318</span></div><div class="kpi-sub">142 cleaned • 38 to be cleaned</div><div class="trend warn">17 under maintenance</div><div class="spark" id="sp4"></div></div>
+  </div>
+
+  <div class="grid kpi-grid" style="grid-template-columns:repeat(5,1fr)">
+    <div class="card kpi"><div class="kpi-title">On-time Entries</div><div class="kpi-value" id="kOntime">98.2%</div><div class="kpi-sub">Recorded at time of activity</div><div class="trend up">▲ 0.4%</div><div class="spark" id="sp5"></div></div>
+    <div class="card kpi" onclick="document.getElementById('integrity').scrollIntoView()"><div class="kpi-title">Late Entries</div><div class="kpi-value" id="kLate">881</div><div class="kpi-sub" id="kLateSub">1.80% of entries • justified</div><div class="trend up">▼ 0.1% vs previous</div><div class="spark" id="sp6"></div></div>
+    <div class="card kpi" onclick="openChartInfo('corrPareto')"><div class="kpi-title">Corrections</div><div class="kpi-value" id="kCorr">412</div><div class="kpi-sub" id="kCorrSub">0.84% of entries • reason captured</div><div class="trend up">▼ 9% vs previous</div><div class="spark" id="sp7"></div></div>
+    <div class="card kpi" onclick="setAlertTab('critical')"><div class="kpi-title">Missed Entries</div><div class="kpi-value" id="kMissed">14</div><div class="kpi-sub">Mandatory fields left blank</div><div class="trend downbad">3 in cleaning logbooks</div><div class="spark" id="sp8"></div></div>
+    <div class="card kpi" onclick="document.getElementById('review').scrollIntoView()"><div class="kpi-title">Overdue Reviews</div><div class="kpi-value" id="kOverdue">23</div><div class="kpi-sub">Older than 72 h</div><div class="trend downbad">8 older than 7 days</div><div class="spark" id="sp9"></div></div>
+  </div>
+  <div class="grid kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:0">
+    <div class="card kpi" onclick="document.getElementById('em').scrollIntoView()"><div class="kpi-title">EM Excursions</div><div class="kpi-value">5</div><div class="kpi-sub">2 open • 3 closed</div><div class="trend warn">RH excursion in C-112 today</div><div class="spark" id="sp10"></div></div>
+    <div class="card kpi" onclick="document.getElementById('equipment').scrollIntoView()"><div class="kpi-title">Hold Time Breaches</div><div class="kpi-value">3</div><div class="kpi-sub">1 dirty hold • 2 clean hold</div><div class="trend warn">OCT-01 dirty hold expires in 1.5 h</div><div class="spark" id="sp11"></div></div>
+    <div class="card kpi"><div class="kpi-title">E-signature Compliance</div><div class="kpi-value">99.7%</div><div class="kpi-sub">21 CFR Part 11 / EU Annex 11</div><div class="trend up">1 account locked after 3 failures</div><div class="spark" id="sp12"></div></div>
+    <div class="card kpi" onclick="document.getElementById('instruments').scrollIntoView()"><div class="kpi-title">Calibration Due</div><div class="kpi-value">11</div><div class="kpi-sub">Next 30 days • 1 overdue</div><div class="trend downbad">BAL-WH-03 locked from use</div><div class="spark" id="sp13"></div></div>
+  </div>
+</section>
+
+<section class="section" id="inventory">
+  <div class="section-head"><div><h3>Logbook Inventory</h3><p>Electronic logbooks in service by type and lifecycle stage.</p></div></div>
+  <div class="grid two">
+    <div class="card panel"><div class="panel-title">Active Logbooks by Type</div><div class="chartbox short"><svg id="typeChart" class="chart"></svg></div></div>
+    <div class="card panel"><div class="panel-title">Logbook Lifecycle</div><div class="donutwrap"><div style="position:relative"><div class="donut" id="lifeDonut"></div><div class="donut-center"><div><b>498</b><span>Logbooks</span></div></div></div><div class="list" id="lifeList"></div></div></div>
+  </div>
+</section>
+
+<section class="section" id="areaHealth">
+  <div class="section-head"><div><h3>Area Logbook Health Matrix</h3><p>Entry discipline and review status for every area. Click a row for its logbook details.</p></div><div class="chiprow"><button class="chip active" onclick="sortAreas('risk',this)">Risk Priority</button><button class="chip" onclick="sortAreas('entries',this)">Most Entries</button><button class="chip" onclick="sortAreas('name',this)">Area A–Z</button></div></div>
+  <div class="card panel"><div class="table-wrap"><table id="areaTable"><thead><tr><th>Area</th><th>Site</th><th>Department</th><th>Logbooks</th><th>Entries</th><th>On-time</th><th>Pending</th><th>Overdue</th><th>Corrections</th><th>Missed</th><th>DI Score</th><th>Risk</th></tr></thead><tbody></tbody></table></div><div class="scope-note" id="areaScope"></div></div>
+</section>
+
+<section class="section" id="activity">
+  <div class="section-head"><div><h3>Entry Activity</h3><p>Volume and timing of logbook entries across months, departments and shifts.</p></div></div>
+  <div class="grid two">
+    <div class="card panel"><div class="panel-title">Monthly Entries • Oct 2025 – Sep 2026</div><div class="chartbox"><svg id="entryTrend" class="chart"></svg></div><div class="legend"><span style="color:#1769aa"><i></i>Entries recorded</span></div></div>
+    <div class="card panel"><div class="panel-title">Entries by Department</div><div class="chartbox"><svg id="deptChart" class="chart"></svg></div><div class="legend"><span style="color:#0f8b8d"><i></i>Entries (last 30 days)</span></div></div>
+  </div>
+  <div class="card panel" style="margin-top:12px"><div class="panel-title">Average Daily Entries by Shift</div><div class="heatgrid" id="shiftHeat"></div><div class="legend" style="margin-top:9px"><span>Lighter = fewer entries • darker = more entries</span></div></div>
+</section>
+
+<section class="section" id="review">
+  <div class="section-head"><div><h3>Review & Approval</h3><p>Supervisor and QA review of logbook entries against the 72-hour review SLA.</p></div></div>
+  <div class="metric-strip"><div class="metric"><small>Pending Review</small><b>186</b><em>All levels</em></div><div class="metric"><small>Within SLA</small><b>163</b><em>87.6%</em></div><div class="metric"><small>Beyond SLA</small><b class="downbad">23</b><em>&gt; 72 h</em></div><div class="metric"><small>Reviewed (30 d)</small><b>47,912</b><em>97.9% of entries</em></div><div class="metric"><small>Avg Cycle Time</small><b>20 h</b><em>Target 24 h</em></div><div class="metric"><small>Rejected on Review</small><b>57</b><em>Returned to author</em></div></div>
+  <div class="grid two" style="margin-top:12px">
+    <div class="card panel"><div class="panel-title">Pending Review Aging</div><div class="chartbox short"><svg id="reviewAging" class="chart"></svg></div></div>
+    <div class="card panel"><div class="panel-title">Average Review Cycle Time</div><div class="chartbox short"><svg id="cycleTrend" class="chart"></svg></div><div class="legend"><span style="color:#0f8b8d"><i></i>Avg hours from entry to approval</span><span style="color:#c27a0e"><i></i>Target 24 h</span></div></div>
+  </div>
+</section>
+
+<section class="section" id="equipment">
+  <div class="section-head"><div><h3>Equipment & Cleaning Status</h3><p>Live status from equipment usage and cleaning logbooks, with dirty and clean hold time tracking.</p></div><div class="eq-filter" id="eqFilter"></div></div>
+  <div class="grid two">
+    <div class="card panel"><div class="panel-title">Equipment Status</div><div class="donutwrap"><div style="position:relative"><div class="donut" id="eqDonut"></div><div class="donut-center"><div><b>318</b><span>Equipment</span></div></div></div><div class="list" id="eqList"></div></div></div>
+    <div class="card panel"><div class="panel-title">Hold Time Breaches by Month</div><div class="chartbox short"><svg id="holdTrend" class="chart"></svg></div><div class="legend"><span style="color:#c27a0e"><i></i>Dirty hold exceeded</span><span style="color:#c33b45"><i></i>Clean hold exceeded</span></div></div>
+  </div>
+  <div class="card panel" style="margin-top:12px"><div class="panel-title">Critical Equipment Board</div><div class="eq-grid" id="eqGrid" style="margin-top:0"></div></div>
+</section>
+
+<section class="section" id="em">
+  <div class="section-head"><div><h3>Environmental Monitoring Logs</h3><p>Hourly temperature, humidity and differential pressure readings captured in area logbooks.</p></div><div class="select-row"><select class="select-inline" id="emRoom"></select><select class="select-inline" id="emParam"><option>Temperature</option><option>Relative Humidity</option><option>Differential Pressure</option></select></div></div>
+  <div class="grid two">
+    <div class="card panel"><div class="panel-title">Last 24 Hours</div><div class="chartbox tall"><svg id="emChart" class="chart"></svg></div><div class="legend"><span style="color:#0f8b8d"><i></i>Reading</span><span style="color:#c33b45"><i></i>Action limit</span><span style="color:#c27a0e"><i></i>Alert limit</span></div><div class="callout" id="emInsight" style="margin-top:8px"></div></div>
+    <div class="card panel"><div class="panel-title">Excursions • Last 30 Days</div><div id="excList"></div></div>
+  </div>
+</section>
+
+<section class="section" id="instruments">
+  <div class="section-head"><div><h3>Instruments & Balances</h3><p>Daily verification, calibration currency and usage-log completeness for laboratory and weighing instruments.</p></div></div>
+  <div class="grid two">
+    <div class="card panel"><div class="panel-title">Verification & Calibration Compliance</div><div class="validation-list" id="instList"></div></div>
+    <div class="card panel"><div class="panel-title">Calibration Due • Next 30 Days</div><div class="table-wrap"><table style="min-width:0"><thead><tr><th>Instrument</th><th>Area</th><th>Due</th><th>Status</th></tr></thead><tbody>
+      <tr><td>BAL-WH-03 Platform Balance</td><td>RM Warehouse</td><td>04 Oct 2026</td><td><span class="heat bad">Overdue</span></td></tr>
+      <tr><td>PH-QC-04 pH Meter</td><td>QC Wet Chem</td><td>09 Oct 2026</td><td><span class="heat medium">3 days</span></td></tr>
+      <tr><td>HPLC-QC-11</td><td>QC Instrument Lab</td><td>12 Oct 2026</td><td><span class="heat medium">6 days</span></td></tr>
+      <tr><td>DH-G104 Data Logger</td><td>Granulation G-104</td><td>15 Oct 2026</td><td><span class="heat info">9 days</span></td></tr>
+      <tr><td>BAL-QC-12 Analytical Balance</td><td>QC Instrument Lab</td><td>21 Oct 2026</td><td><span class="heat info">15 days</span></td></tr>
+      <tr><td>DPG-C112 Pressure Gauge</td><td>Compression C-112</td><td>28 Oct 2026</td><td><span class="heat good">22 days</span></td></tr>
+    </tbody></table></div><div class="scope-note">Showing 6 of 11. Instruments past due are automatically blocked from new logbook entries.</div></div>
+  </div>
+</section>
+
+<section class="section" id="integrity">
+  <div class="section-head"><div><h3>Data Integrity • ALCOA+</h3><p>How well logbook records meet ALCOA+ expectations, and where corrections and late entries come from.</p></div></div>
+  <div class="grid two">
+    <div class="card panel"><div class="panel-title">ALCOA+ Attribute Compliance</div><div class="validation-list" id="alcoaList"></div></div>
+    <div class="card panel"><div class="panel-title">Correction Reasons • Pareto</div><div class="chartbox"><svg id="corrPareto" class="chart"></svg></div></div>
+  </div>
+  <div class="grid two" style="margin-top:12px">
+    <div class="card panel"><div class="panel-title">Late Entry Rate Trend</div><div class="chartbox short"><svg id="lateTrend" class="chart"></svg></div><div class="legend"><span style="color:#c27a0e"><i></i>Late entries (% of total)</span><span style="color:#1f8f5f"><i></i>Target ≤ 2%</span></div></div>
+    <div class="card panel"><div class="panel-title">Late Entries by Department</div><div class="chartbox short"><svg id="lateDept" class="chart"></svg></div></div>
+  </div>
+</section>
+
+<section class="section" id="audit">
+  <div class="section-head"><div><h3>Audit Trail</h3><p>Most recent GMP-relevant audit trail events. Every create, correct, review and signature action is recorded with user, time and reason.</p></div><button class="actionbtn" onclick="toast('Full audit trail report queued for export')">Export Audit Trail</button></div>
+  <div class="card panel"><div class="table-wrap"><table class="audit"><thead><tr><th>Timestamp</th><th>User</th><th>Logbook</th><th>Action</th><th>Reason / Detail</th></tr></thead><tbody id="auditBody"></tbody></table></div></div>
+</section>
+
+<section class="section" id="alerts">
+  <div class="section-head"><div><h3>eLOG Alerts & Actions</h3><p>Prioritized logbook, equipment and data integrity issues needing attention.</p></div><button class="actionbtn" onclick="exportAlerts()">Export Alerts</button></div>
+  <div class="card panel">
+    <div class="alert-tabs"><button class="alert-tab active" data-tab="all">All</button><button class="alert-tab" data-tab="critical">Critical</button><button class="alert-tab" data-tab="warning">Warning</button><button class="alert-tab" data-tab="information">Information</button></div>
+    <div class="alert-list" id="alertList"></div>
+  </div>
+</section>
+<div class="footer">VidyaGxP Private Limited • VidyaGxP eLOG • Electronic Logbook | GMP Data Integrity Command Center</div>
+</main>
+</div>
+
+<div class="modalback" id="modalBack"><div class="modal" role="dialog" aria-modal="true"><div class="modal-head"><h3 id="modalTitle">Details</h3><button class="close" onclick="closeModal()" aria-label="Close">✕</button></div><div class="modal-body" id="modalBody"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DATA ================= */
+const colors={blue:"#1769aa",teal:"#0f8b8d",green:"#1f8f5f",amber:"#c27a0e",red:"#c33b45",muted:"#b7c7d4",orange:"#d66726",purple:"#6a4bb0",grey:"#8d9aa6"};
+const areas=[
+{name:"Granulation Block A",site:"Unit-I",dept:"Production",books:46,entries:6920,late:131,pending:31,overdue:4,corr:64,missed:3,di:93.8},
+{name:"Compression Block A",site:"Unit-I",dept:"Production",books:52,entries:7610,late:158,pending:28,overdue:3,corr:71,missed:4,di:92.6},
+{name:"Coating & Blister Packing",site:"Unit-I",dept:"Production",books:38,entries:5950,late:113,pending:19,overdue:1,corr:48,missed:2,di:95.1},
+{name:"Capsule Filling Suite",site:"Unit-III",dept:"Production",books:22,entries:2600,late:49,pending:12,overdue:2,corr:36,missed:1,di:94.0},
+{name:"QC Instrument Lab",site:"Unit-I",dept:"QC",books:41,entries:6230,late:124,pending:26,overdue:5,corr:60,missed:1,di:91.7},
+{name:"QC Wet Chemistry",site:"Unit-II",dept:"QC",books:29,entries:3410,late:61,pending:14,overdue:2,corr:27,missed:0,di:95.8},
+{name:"Microbiology Lab",site:"Unit-II",dept:"Microbiology",books:24,entries:3460,late:41,pending:11,overdue:1,corr:22,missed:1,di:96.4},
+{name:"Raw Material Warehouse",site:"Unit-I",dept:"Warehouse",books:34,entries:3720,late:74,pending:9,overdue:0,corr:21,missed:1,di:96.9},
+{name:"Finished Goods Warehouse",site:"Unit-II",dept:"Warehouse",books:21,entries:2400,late:44,pending:6,overdue:0,corr:14,missed:0,di:97.6},
+{name:"Engineering & Utilities",site:"Unit-I",dept:"Engineering",books:48,entries:2860,late:52,pending:14,overdue:3,corr:29,missed:1,di:94.2},
+{name:"Engineering Unit-III",site:"Unit-III",dept:"Engineering",books:29,entries:1450,late:22,pending:6,overdue:1,corr:11,missed:0,di:96.1},
+{name:"QA Shop Floor",site:"Unit-II",dept:"QA",books:28,entries:2316,late:12,pending:10,overdue:1,corr:9,missed:0,di:98.3}
+];
+areas.forEach(a=>a.risk=(a.di<93||a.overdue>=4)?"High":a.di<95.5?"Medium":"Low");
+const months=["Oct","Nov","Dec","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep"];
+const monthlyEntries=[42110,43580,41920,44760,45230,46110,45870,47320,46890,47950,46070,48926];
+const lateRate=[2.9,2.7,2.8,2.5,2.4,2.3,2.2,2.1,2.0,1.9,1.9,1.8];
+const cycleHours=[31,29,30,27,26,25,24,23,22,22,21,20];
+const bookTypes={labels:["Equip. Usage","Cleaning","Area/Room","Instrument","Balance","Env. Mon.","Prev. Maint.","Line Clear."],full:["Equipment Usage","Cleaning","Area / Room","Instrument Usage","Balance Verification","Environmental Monitoring","Preventive Maintenance","Line Clearance"],values:[118,96,54,48,32,28,20,16]};
+const lifecycle=[{name:"Active",value:412,color:colors.green,desc:"In use on the shop floor or lab"},{name:"Issued, not started",value:9,color:colors.blue,desc:"Issued to an area, no entries yet"},{name:"Closure review",value:14,color:colors.amber,desc:"Full; awaiting QA closure review"},{name:"Archived (YTD)",value:63,color:colors.grey,desc:"Closed and retained read-only"}];
+const reviewAging={labels:["0–24 h","24–48 h","2–3 days","3–7 days","> 7 days"],values:[98,41,24,15,8]};
+const corrReasons={labels:["Transcription","Wrong field","Time corr.","Missed sign.","Unit/format","Equip. ID","Other"],values:[128,92,71,48,37,21,15]};
+const holdBreach={dirty:[1,0,1,0,0,1,0,0,1,0,0,1],clean:[0,1,0,0,1,0,0,0,0,1,0,2]};
+const shifts=[["Shift A","06:00–14:00",[742,756,731,749,738,612,318]],["Shift B","14:00–22:00",[618,629,604,622,611,488,262]],["Shift C","22:00–06:00",[284,291,276,288,279,214,132]]];
+const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const eqStatus=[{name:"In Use",value:64,color:colors.blue,cls:"st-inuse",key:"inuse"},{name:"Cleaned / Ready",value:142,color:colors.green,cls:"st-clean",key:"clean"},{name:"To Be Cleaned",value:38,color:colors.amber,cls:"st-dirty",key:"dirty"},{name:"Under Maintenance",value:17,color:colors.purple,cls:"st-maint",key:"maint"},{name:"Idle",value:57,color:colors.grey,cls:"st-idle",key:"idle"}];
+const equipment=[
+{id:"RMG-01",name:"Rapid Mixer Granulator 600 L",area:"Granulation G-104",status:"inuse",line:"Metformin 500 mg • B.No. MF26-0918",meta:"Started 08:42 by r.sharma"},
+{id:"FBD-02",name:"Fluid Bed Dryer 300 kg",area:"Granulation G-104",status:"dirty",line:"Last product: Metformin 500 mg",meta:"Batch completed 04 Oct 19:20",hold:{type:"Dirty hold",used:38,max:48}},
+{id:"OCT-01",name:"Octagonal Blender 1000 L",area:"Granulation G-106",status:"dirty",line:"Last product: Atorvastatin 10 mg",meta:"Batch completed 04 Oct 10:50",hold:{type:"Dirty hold",used:46.5,max:48}},
+{id:"CT-011",name:"Compression Machine 45-stn",area:"Compression C-112",status:"inuse",line:"Atorvastatin 10 mg • B.No. AT26-0331",meta:"Started 07:15 by p.nair"},
+{id:"CT-014",name:"Compression Machine 37-stn",area:"Compression C-112",status:"maint",line:"PM-2026-0412 • Turret alignment",meta:"Engineering • ETA 07 Oct 16:00"},
+{id:"CTG-03",name:"Auto Coater 48 inch",area:"Coating CT-118",status:"clean",line:"Cleaned after Pantoprazole 40 mg",meta:"Cleaning verified by QA 04 Oct",hold:{type:"Clean hold",used:52,max:72}},
+{id:"BLS-05",name:"Blister Packing Line",area:"Packing P-130",status:"inuse",line:"Pantoprazole 40 mg • B.No. PT26-0207",meta:"Line clearance 06:30 • QA m.iyer"},
+{id:"CPF-02",name:"Capsule Filling Machine",area:"Capsule Suite U3",status:"clean",line:"Cleaned after Amoxicillin 500 mg",meta:"Cleaning verified 03 Oct",hold:{type:"Clean hold",used:69,max:72}},
+{id:"HPLC-QC-07",name:"HPLC System",area:"QC Instrument Lab",status:"inuse",line:"Assay • Paracetamol PC26-0611",meta:"Sequence 14/36 • a.khan"},
+{id:"BAL-QC-12",name:"Analytical Balance 0.01 mg",area:"QC Instrument Lab",status:"idle",line:"Daily verification pending",meta:"Due 10:00 today"},
+{id:"AHU-07",name:"Air Handling Unit",area:"Utilities • serves C-112",status:"inuse",line:"Filter ΔP 182 Pa (limit 250)",meta:"Logged hourly • last 09:00"},
+{id:"BAL-WH-03",name:"Platform Balance 300 kg",area:"RM Warehouse",status:"maint",line:"Calibration overdue • locked",meta:"Due 04 Oct • blocked from use"}
+];
+const emRooms={"Granulation G-104":{t:22.4,rh:48,dp:15.2},"Compression C-112":{t:22.1,rh:51,dp:14.6,exc:"rh"},"Coating CT-118":{t:23.0,rh:46,dp:15.8},"Dispensing D-101":{t:21.8,rh:44,dp:16.1},"Cold Room CR-01":{t:5.2,rh:58,exc:"t",cold:true}};
+const emLimits={Temperature:{lo:20,hi:25,alo:21,ahi:24,unit:" °C"},"Relative Humidity":{lo:40,hi:60,alo:45,ahi:55,unit:"%"},"Differential Pressure":{lo:10,hi:20,alo:12,ahi:18,unit:" Pa"}};
+const emCold={Temperature:{lo:2,hi:8,alo:3,ahi:7,unit:" °C"},"Relative Humidity":{lo:30,hi:75,alo:35,ahi:70,unit:"%"}};
+const excursions=[
+{id:"EXC-2610-031",room:"Compression C-112",param:"RH 62.0% (limit 60%)",when:"05 Oct • 13:00–15:40",status:"Open",sev:"red",note:"Investigation DEV-2026-0211 raised; AHU-07 dehumidifier checked"},
+{id:"EXC-2610-029",room:"Cold Room CR-01",param:"Temp 8.4 °C (limit 8 °C)",when:"06 Oct • 03:00–03:25",status:"Open",sev:"red",note:"Door-open event; product impact assessment pending"},
+{id:"EXC-2609-024",room:"Dispensing D-101",param:"DP 9.2 Pa (limit 10 Pa)",when:"21 Sep • 11:05–11:20",status:"Closed",sev:"green",note:"Door interlock fault; repaired and verified"},
+{id:"EXC-2609-017",room:"Coating CT-118",param:"Temp 25.6 °C (limit 25 °C)",when:"14 Sep • 15:30–16:10",status:"Closed",sev:"green",note:"Chiller trip; no product exposed"},
+{id:"EXC-2609-008",room:"Granulation G-104",param:"RH 39.1% (limit 40%)",when:"08 Sep • 02:10–02:50",status:"Closed",sev:"green",note:"Area idle; no impact"}
+];
+const instList=[["Daily balance verification",99.4],["pH meter daily calibration",98.8],["HPLC / GC usage log completeness",99.7],["Instrument calibration currency",97.3],["Data logger calibration currency",96.0]];
+const alcoa=[["Attributable",99.6],["Legible",100],["Contemporaneous",98.2],["Original",99.8],["Accurate",99.2],["Complete",97.1],["Consistent",98.6],["Enduring",100],["Available",99.9]];
+const audit=[
+["06 Oct 2026 09:14","r.sharma • Production Officer","EQ-UL-RMG-01","Entry created","Granulation start recorded for MF26-0918"],
+["06 Oct 2026 09:02","a.khan • QC Analyst","INS-HPLC-QC-07","Entry corrected","Transcription error: column serial number"],
+["06 Oct 2026 08:47","system","CL-GRN-04","Missed entry flagged","Cleaning step 3 (rinse) not recorded"],
+["06 Oct 2026 08:31","m.iyer • QA Reviewer","EQ-UL-CT-011","Reviewed & approved","E-signature: meaning = Reviewed"],
+["06 Oct 2026 07:55","p.nair • Prod. Supervisor","AR-C112","Late entry","Recorded 2 h 10 m after activity; justification captured"],
+["06 Oct 2026 07:12","system","EQ-UL-OCT-01","Backdated entry blocked","Entered time earlier than server time"],
+["05 Oct 2026 23:40","s.verma • Warehouse Officer","BAL-WH-03","E-signature failed ×3","Account locked; IT ticket INC-58213"],
+["05 Oct 2026 22:18","k.das • Engineering","EM-CR-01","Excursion acknowledged","Door-open alarm acknowledged at panel"]
+];
+const alerts=[
+{id:"ELA-0412",severity:"critical",source:"Cleaning",area:"Granulation Block A",record:"CL-GRN-04",title:"Missed cleaning step entry",desc:"Rinse step not recorded for FBD-02 cleaning; equipment cannot be released until resolved.",owner:"Production",due:"06 Oct 2026",aging:"0d",status:"Open"},
+{id:"ELA-0411",severity:"critical",source:"EM",area:"Compression Block A",record:"EXC-2610-031",title:"RH excursion above action limit",desc:"RH 62.0% for 2 h 40 m in C-112 while CT-011 in use.",owner:"QA / Engineering",due:"07 Oct 2026",aging:"0d",status:"Open"},
+{id:"ELA-0410",severity:"critical",source:"Hold Time",area:"Granulation Block A",record:"EQ-UL-OCT-01",title:"Dirty hold time expires in 1.5 h",desc:"OCT-01 at 46.5 h of 48 h dirty hold; start cleaning or raise deviation.",owner:"Production",due:"06 Oct 2026",aging:"0d",status:"Open"},
+{id:"ELA-0407",severity:"warning",source:"Review",area:"QC Instrument Lab",record:"INS-QC (5 logbooks)",title:"5 entries pending review > 72 h",desc:"Instrument usage entries awaiting QC supervisor review.",owner:"QC",due:"06 Oct 2026",aging:"4d",status:"Overdue"},
+{id:"ELA-0405",severity:"warning",source:"EM",area:"Warehouse",record:"EXC-2610-029",title:"Cold room temperature excursion",desc:"8.4 °C for 25 min after door-open event; impact assessment pending.",owner:"Warehouse / QA",due:"07 Oct 2026",aging:"0d",status:"Open"},
+{id:"ELA-0403",severity:"warning",source:"Calibration",area:"Raw Material Warehouse",record:"BAL-WH-03",title:"Balance calibration overdue",desc:"Locked from new entries; dispensing moved to BAL-WH-04.",owner:"Engineering",due:"04 Oct 2026",aging:"2d",status:"Overdue"},
+{id:"ELA-0401",severity:"warning",source:"Hold Time",area:"Capsule Filling Suite",record:"EQ-UL-CPF-02",title:"Clean hold time expires in 3 h",desc:"CPF-02 at 69 h of 72 h clean hold; re-clean if not used.",owner:"Production",due:"06 Oct 2026",aging:"0d",status:"Open"},
+{id:"ELA-0398",severity:"information",source:"Security",area:"Raw Material Warehouse",record:"USR s.verma",title:"User account locked",desc:"Three failed e-signature attempts; reset requires IT and QA approval.",owner:"IT / QA",due:"07 Oct 2026",aging:"1d",status:"Open"},
+{id:"ELA-0396",severity:"information",source:"Lifecycle",area:"QC Wet Chemistry",record:"LB-QC-WC-0217",title:"Logbook ready for closure review",desc:"Logbook reached its page limit; successor logbook issued.",owner:"QA",due:"10 Oct 2026",aging:"2d",status:"Planned"},
+{id:"ELA-0392",severity:"information",source:"Maintenance",area:"Compression Block A",record:"PM-2026-0412",title:"Preventive maintenance in progress",desc:"CT-014 turret alignment; equipment status locked to Under Maintenance.",owner:"Engineering",due:"07 Oct 2026",aging:"1d",status:"In Progress"}
+];
+
+/* ================= HELPERS ================= */
+function $(s){return document.querySelector(s)} function $$(s){return [...document.querySelectorAll(s)]}
+function svgEl(tag,attrs={}){const e=document.createElementNS("http://www.w3.org/2000/svg",tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e}
+function txt(svg,x,y,s,a={}){const t=svgEl("text",{x,y,...a});t.textContent=s;svg.appendChild(t);return t}
+const nf=n=>Number(n).toLocaleString("en-IN");
+const fmt=(v,d=1)=>Number(v).toFixed(d).replace(/\.0+$/,"");
+const sumA=a=>a.reduce((x,y)=>x+y,0),avgA=a=>sumA(a)/a.length,pct=(a,b)=>b?a/b*100:0;
+const chartData={};
+
+function lineChart(id,series,opts={}){const svg=document.getElementById(id);svg.innerHTML="";const W=Math.max(300,svg.clientWidth||700),H=svg.clientHeight||opts.h||230,p={l:44,r:16,t:14,b:28},iw=W-p.l-p.r,ih=H-p.t-p.b;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+ let all=series.flatMap(s=>s.data).concat((opts.lines||[]).map(l=>l.value));let min=opts.min??Math.min(...all),max=opts.max??Math.max(...all);const pad=(max-min)*.08||1;min-=pad;max+=pad;
+ const n=series[0].data.length,X=i=>p.l+iw*(i/((n-1)||1)),Y=v=>p.t+ih-(v-min)/(max-min)*ih;
+ for(let i=0;i<5;i++){const y=p.t+ih*i/4;svg.appendChild(svgEl("line",{x1:p.l,y1:y,x2:W-p.r,y2:y,class:"gridline"}));txt(svg,p.l-6,y+3,fmt(max-(max-min)*i/4,opts.decimals??1),{"text-anchor":"end"})}
+ (opts.labels||[]).forEach((l,i)=>{if(i%(opts.labelEvery||1)===0)txt(svg,X(i),H-8,l,{"text-anchor":"middle"})});
+ (opts.lines||[]).forEach(l=>{const y=Y(l.value);svg.appendChild(svgEl("line",{x1:p.l,y1:y,x2:W-p.r,y2:y,stroke:l.color,"stroke-dasharray":"5 4","stroke-width":1.2}));txt(svg,W-p.r-2,y-4,l.label,{"text-anchor":"end",style:`fill:${l.color}`})});
+ series.forEach(s=>{const d=s.data.map((v,i)=>(i?"L":"M")+X(i)+" "+Y(v)).join(" ");if(opts.area)svg.appendChild(svgEl("path",{d:d+` L${X(n-1)} ${p.t+ih} L${X(0)} ${p.t+ih} Z`,fill:s.color,opacity:.07}));svg.appendChild(svgEl("path",{d,class:"line",stroke:s.color}));
+  s.data.forEach((v,i)=>{const c=svgEl("circle",{cx:X(i),cy:Y(v),r:opts.r||3.2,fill:s.pointColor?s.pointColor(v,i):s.color,stroke:"#fff","stroke-width":1.5});c.dataset.tip=`${opts.labels?.[i]??i+1}${series.length>1?" • "+s.name:""}: ${opts.fmtv?opts.fmtv(v):v}${opts.unit||""}`;svg.appendChild(c)})});
+ chartData[id]={series,opts};}
+function bars(id,labels,series,opts={}){const svg=document.getElementById(id);svg.innerHTML="";const W=Math.max(300,svg.clientWidth||700),H=svg.clientHeight||opts.h||220,p={l:46,r:12,t:16,b:30},iw=W-p.l-p.r,ih=H-p.t-p.b;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+ const max=opts.max||Math.max(...series.flatMap(s=>s.data))*1.15;const f=opts.axisFmt||(v=>Math.round(v));
+ for(let i=0;i<5;i++){const y=p.t+ih*i/4;svg.appendChild(svgEl("line",{x1:p.l,y1:y,x2:W-p.r,y2:y,class:"gridline"}));txt(svg,p.l-6,y+3,f(max*(1-i/4)),{"text-anchor":"end"})}
+ const gw=iw/labels.length,bw=Math.min(opts.bw||26,(gw-8)/series.length);
+ labels.forEach((lab,i)=>{txt(svg,p.l+gw*(i+.5),H-9,lab,{"text-anchor":"middle"});series.forEach((s,j)=>{const v=s.data[i],h=v/max*ih,x=p.l+i*gw+(gw-series.length*bw)/2+j*bw,y=p.t+ih-h;const r=svgEl("rect",{x,y,width:bw-2,height:Math.max(h,v?1:0),rx:3,fill:s.color});r.dataset.tip=`${lab}${series.length>1?" • "+s.name:""}: ${nf(v)}${opts.unit||""}`;svg.appendChild(r);
+  if(opts.values&&series.length===1)txt(svg,x+(bw-2)/2,y-4,opts.valFmt?opts.valFmt(v):nf(v),{"text-anchor":"middle",style:"fill:#4a6072;font-weight:700"})})});
+ chartData[id]={labels,series,opts};}
+function pareto(id,labels,values){const svg=document.getElementById(id);svg.innerHTML="";const W=Math.max(300,svg.clientWidth||700),H=svg.clientHeight||230,p={l:40,r:40,t:14,b:30},iw=W-p.l-p.r,ih=H-p.t-p.b;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+ const max=Math.max(...values)*1.15,tot=sumA(values);let cum=0;const pts=[];
+ for(let i=0;i<5;i++){const y=p.t+ih*i/4;svg.appendChild(svgEl("line",{x1:p.l,y1:y,x2:W-p.r,y2:y,class:"gridline"}));txt(svg,p.l-6,y+3,Math.round(max*(1-i/4)),{"text-anchor":"end"});txt(svg,W-p.r+6,y+3,(100-25*i)+"%")}
+ const y80=p.t+ih*.2;svg.appendChild(svgEl("line",{x1:p.l,y1:y80,x2:W-p.r,y2:y80,stroke:colors.amber,"stroke-dasharray":"3 4","stroke-width":1,opacity:.6}));
+ values.forEach((v,i)=>{const gw=iw/labels.length,bw=gw*.56,h=v/max*ih,x=p.l+i*gw+(gw-bw)/2,y=p.t+ih-h;cum+=v;const r=svgEl("rect",{x,y,width:bw,height:h,rx:4,fill:"#4b86b4"});r.dataset.tip=`${labels[i]}: ${v} (${fmt(pct(v,tot))}%) • cumulative ${fmt(pct(cum,tot))}%`;svg.appendChild(r);txt(svg,p.l+gw*(i+.5),H-9,labels[i],{"text-anchor":"middle"});pts.push([p.l+gw*(i+.5),p.t+ih-cum/tot*ih])});
+ svg.appendChild(svgEl("path",{d:pts.map((q,i)=>(i?"L":"M")+q[0]+" "+q[1]).join(" "),fill:"none",stroke:colors.amber,"stroke-width":2.2}));pts.forEach(q=>svg.appendChild(svgEl("circle",{cx:q[0],cy:q[1],r:3,fill:colors.amber,stroke:"#fff","stroke-width":1.5})));
+ chartData[id]={labels,values};}
+function donut(id,parts){const sum=sumA(parts.map(p=>p.value));let a=0;document.getElementById(id).style.background=`conic-gradient(${parts.map(p=>{const s=a/sum*360;a+=p.value;return `${p.color} ${s}deg ${a/sum*360}deg`}).join(",")})`}
+function miniSpark(id,vals,color="#0f8b8d"){const el=document.getElementById(id);if(!el)return;const mn=Math.min(...vals),mx=Math.max(...vals);el.innerHTML=`<svg viewBox="0 0 74 30"><polyline points="${vals.map((v,i)=>`${i*74/(vals.length-1)},${27-(v-mn)/(mx-mn||1)*23}`).join(" ")}" fill="none" stroke="${color}" stroke-width="1.7"/><line x1="0" y1="28" x2="74" y2="28" stroke="#e3ebf0"/></svg>`}
+function barList(el,data,good=99,ok=97){$(el).innerHTML=data.map(x=>`<div class="validation-row"><span>${x[0]}</span><div class="track"><span style="width:${x[1]}%;background:${x[1]>=good?colors.green:x[1]>=ok?colors.teal:colors.amber}"></span></div><b>${x[1]}%</b></div>`).join("")}
+function table(head,rows){return `<div class="table-wrap"><table style="min-width:0"><thead><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`}
+
+/* ================= FILTERS / AREAS ================= */
+function filteredAreas(){const s=$("#siteFilter").value,d=$("#deptFilter").value;return areas.filter(a=>(s==="All Sites"||a.site===s)&&(d==="All Departments"||a.dept===d))}
+let areaSort="risk";
+function renderAreas(){let d=[...filteredAreas()];const rk={High:3,Medium:2,Low:1};
+ if(areaSort==="name")d.sort((a,b)=>a.name.localeCompare(b.name));else if(areaSort==="entries")d.sort((a,b)=>b.entries-a.entries);else d.sort((a,b)=>rk[b.risk]-rk[a.risk]||a.di-b.di);
+ const hv=(v,g,m,inv)=>inv?(v<=g?"good":v<=m?"medium":"bad"):(v>=g?"good":v>=m?"medium":"bad");
+ $("#areaTable tbody").innerHTML=d.length?d.map(a=>{const ot=100-pct(a.late,a.entries);return `<tr style="cursor:pointer" onclick="showArea('${a.name}')"><td class="product-name">${a.name}</td><td>${a.site}</td><td>${a.dept}</td><td>${a.books}</td><td>${nf(a.entries)}</td><td><span class="heat ${hv(ot,98,97)}">${fmt(ot,1)}%</span></td><td>${a.pending}</td><td><span class="heat ${hv(a.overdue,0,2,true)}">${a.overdue}</span></td><td>${a.corr}</td><td><span class="heat ${hv(a.missed,0,2,true)}">${a.missed}</span></td><td><span class="heat ${hv(a.di,96,94)}">${a.di}</span></td><td class="${a.risk==="High"?"risk-high":a.risk==="Medium"?"risk-med":"risk-low"}">${a.risk}</td></tr>`}).join(""):`<tr><td colspan="12" style="text-align:center;padding:18px;color:#7b8995">No areas match these filters. Change Site or Department above.</td></tr>`;
+ $("#areaScope").textContent=`${d.length} of ${areas.length} areas shown • figures for the last 30 days`;}
+function sortAreas(t,btn){areaSort=t;$$("#areaHealth .chip").forEach(c=>c.classList.toggle("active",c===btn));renderAreas()}
+function updateKPIs(){const f=filteredAreas(),S=k=>sumA(f.map(a=>a[k]));const e=S("entries");
+ $("#kBooks").textContent=S("books");$("#kBooksSub").textContent=`Across ${f.length} area${f.length===1?"":"s"} • ${new Set(f.map(a=>a.site)).size} unit(s)`;
+ $("#kEntries").textContent=nf(e);$("#kPending").textContent=S("pending");$("#kPendingSub").textContent=`${S("pending")-S("overdue")} within 72 h SLA`;$("#kOverdueTxt").textContent=`${S("overdue")} beyond SLA`;
+ $("#kLate").textContent=nf(S("late"));$("#kLateSub").textContent=`${fmt(pct(S("late"),e),2)}% of entries • justified`;$("#kOntime").textContent=fmt(100-pct(S("late"),e),1)+"%";
+ $("#kCorr").textContent=S("corr");$("#kCorrSub").textContent=`${fmt(pct(S("corr"),e),2)}% of entries • reason captured`;$("#kMissed").textContent=S("missed");$("#kOverdue").textContent=S("overdue");
+ renderAreas();renderDeptCharts();}
+function deptTotals(key){const ds=["Production","QC","Microbiology","Warehouse","Engineering","QA"];const f=filteredAreas();return{labels:ds.map(d=>d==="Microbiology"?"Micro":d==="Engineering"?"Engg.":d),full:ds,values:ds.map(d=>sumA(f.filter(a=>a.dept===d).map(a=>a[key])))}}
+function renderDeptCharts(){const e=deptTotals("entries");bars("deptChart",e.labels,[{name:"Entries",color:colors.teal,data:e.values}],{values:true,axisFmt:v=>v>=1000?fmt(v/1000,1)+"k":Math.round(v)});
+ const l=deptTotals("late");bars("lateDept",l.labels,[{name:"Late entries",color:colors.amber,data:l.values}],{values:true,h:200});}
+
+/* ================= RENDER ================= */
+function renderInventory(){bars("typeChart",bookTypes.labels,[{name:"Logbooks",color:colors.blue,data:bookTypes.values}],{values:true,h:200});donut("lifeDonut",lifecycle);
+ $("#lifeList").innerHTML=lifecycle.map(x=>`<div class="list-item"><div><strong>${x.name}</strong><small>${x.desc}</small></div><b style="color:${x.color}">${x.value}</b></div>`).join("")}
+function renderActivity(){bars("entryTrend",months,[{name:"Entries",color:colors.blue,data:monthlyEntries}],{bw:30,axisFmt:v=>fmt(v/1000,0)+"k",max:56000});
+ const all=shifts.flatMap(s=>s[2]),mx=Math.max(...all),mn=Math.min(...all);
+ $("#shiftHeat").innerHTML=`<div></div>`+days.map(d=>`<div class="hh">${d}</div>`).join("")+shifts.map(s=>`<div class="hr">${s[0]}<small>${s[1]}</small></div>`+s[2].map((v,i)=>{const t=(v-mn)/(mx-mn),bg=`rgba(15,139,141,${.1+t*.8})`;return `<div class="heatcell" data-tip="${s[0]} • ${days[i]}: ${v} entries/day" style="background:${bg};color:${t>.5?"#fff":"#1d4552"}" onclick="openChartInfo('shiftHeat','${s[0]} • ${days[i]}: ${v} entries/day')">${v}</div>`}).join("")).join("")}
+function renderReview(){bars("reviewAging",reviewAging.labels,[{name:"Pending entries",color:colors.blue,data:reviewAging.values}],{values:true,h:200});
+ const r=$("#reviewAging").querySelectorAll("rect");[2,3,4].forEach(i=>{if(r[i])r[i].setAttribute("fill",i===2?colors.amber:colors.red)});
+ lineChart("cycleTrend",[{name:"Cycle time",color:colors.teal,data:cycleHours,pointColor:v=>v>24?colors.amber:colors.teal}],{labels:months,h:200,min:15,max:35,decimals:0,unit:" h",area:true,lines:[{value:24,label:"Target 24 h",color:colors.amber}]})}
+function renderEquipment(){donut("eqDonut",eqStatus);$("#eqList").innerHTML=eqStatus.map(x=>`<div class="list-item" style="cursor:pointer" onclick="drillEquipment('${x.key}')"><div><strong>${x.name}</strong><small>${fmt(pct(x.value,318))}% of equipment</small></div><b style="color:${x.color}">${x.value}</b></div>`).join("");
+ bars("holdTrend",months,[{name:"Dirty hold exceeded",color:colors.amber,data:holdBreach.dirty},{name:"Clean hold exceeded",color:colors.red,data:holdBreach.clean}],{max:4,h:200,bw:14});
+ $("#eqFilter").innerHTML=[["all","All"],...eqStatus.map(s=>[s.key,s.name])].map(([k,n],i)=>`<button class="chip${i?"":" active"}" data-k="${k}">${n}</button>`).join("");
+ $$("#eqFilter .chip").forEach(b=>b.onclick=()=>{$$("#eqFilter .chip").forEach(c=>c.classList.toggle("active",c===b));renderEqGrid(b.dataset.k)});renderEqGrid("all")}
+function eqTile(e){const st=eqStatus.find(s=>s.key===e.status);let hold="";if(e.hold){const r=e.hold.used/e.hold.max,col=r>=.95?colors.red:r>=.75?colors.amber:colors.green,left=e.hold.max-e.hold.used;hold=`<div class="hold"><div class="hold-lab"><span>${e.hold.type} ${e.hold.used} h / ${e.hold.max} h</span><b style="color:${col}">${fmt(left,1)} h left</b></div><div class="hold-track"><span style="width:${r*100}%;background:${col}"></span></div></div>`}
+ return `<div class="eq" onclick="showEquipment('${e.id}')" tabindex="0"><div class="eq-top"><div><div class="eq-id">${e.id}</div><div class="eq-name">${e.name} • ${e.area}</div></div><span class="eq-status ${st.cls}">${st.name}</span></div><div class="eq-line">${e.line}</div><div class="eq-meta">${e.meta}</div>${hold}</div>`}
+function renderEqGrid(k){const list=equipment.filter(e=>k==="all"||e.status===k);$("#eqGrid").innerHTML=list.length?list.map(eqTile).join(""):`<div class="scope-note">No critical equipment in this status right now.</div>`}
+function emSeries(room,param){const r=emRooms[room],key=param==="Temperature"?"t":param==="Relative Humidity"?"rh":"dp",base=r[key];let seed=room.length*7+key.length*13;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280-.5};
+ const amp=key==="t"?(r.cold?.5:.7):key==="rh"?2.4:.8;let v=Array.from({length:24},(_,h)=>+(base+amp*Math.sin((h-6)/24*2*Math.PI)+rnd()*amp*.5).toFixed(1));
+ if(r.exc==="rh"&&key==="rh"){v[12]=56.8;v[13]=60.9;v[14]=62.0;v[15]=60.4;v[16]=56.2}
+ if(r.exc==="t"&&key==="t"){v[2]=6.6;v[3]=8.4;v[4]=6.1}return v}
+function emLim(room,param){return emRooms[room].cold?emCold[param]:emLimits[param]}
+function renderEM(){const room=$("#emRoom").value,param=$("#emParam").value,L=emLim(room,param),v=emSeries(room,param),labels=Array.from({length:24},(_,i)=>String(i).padStart(2,"0")+":00");
+ lineChart("emChart",[{name:param,color:colors.teal,data:v,pointColor:x=>x<L.lo||x>L.hi?colors.red:x<L.alo||x>L.ahi?colors.amber:colors.teal}],{labels,labelEvery:3,h:250,unit:L.unit,lines:[{value:L.hi,label:"Action "+L.hi,color:colors.red},{value:L.ahi,label:"Alert "+L.ahi,color:colors.amber},{value:L.alo,label:"Alert "+L.alo,color:colors.amber},{value:L.lo,label:"Action "+L.lo,color:colors.red}],min:Math.min(L.lo,...v),max:Math.max(L.hi,...v)});
+ const out=v.filter(x=>x<L.lo||x>L.hi).length,al=v.filter(x=>(x<L.alo||x>L.ahi)&&x>=L.lo&&x<=L.hi).length;
+ $("#emInsight").innerHTML=out?`<b>Excursion:</b> ${out} hourly reading(s) outside the action limit (${L.lo}–${L.hi}${L.unit}). Linked excursion record is open in the list alongside.`:al?`<b>Watch:</b> ${al} reading(s) between alert and action limits. No action limit breach in the last 24 hours.`:`<b>In control:</b> all 24 readings within alert limits (${L.alo}–${L.ahi}${L.unit}). Range ${Math.min(...v)}–${Math.max(...v)}${L.unit}.`}
+function renderExc(){$("#excList").innerHTML=excursions.map(x=>`<div class="excursion"><div class="bar" style="background:${x.sev==="red"?colors.red:colors.green}"></div><div><h4>${x.room} • ${x.param}</h4><p>${x.id} • ${x.when}</p><p>${x.note}</p></div><span class="heat ${x.status==="Open"?"bad":"good"}">${x.status}</span></div>`).join("")}
+function renderIntegrity(){barList("#alcoaList",alcoa);pareto("corrPareto",corrReasons.labels,corrReasons.values);
+ lineChart("lateTrend",[{name:"Late entry rate",color:colors.amber,data:lateRate,pointColor:v=>v>2?colors.amber:colors.green}],{labels:months,h:200,min:1,max:3.5,unit:"%",area:true,lines:[{value:2,label:"Target 2%",color:colors.green}]})}
+function renderAudit(){$("#auditBody").innerHTML=audit.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="act" style="color:${/blocked|failed|Missed/.test(r[3])?colors.red:/Late|corrected/.test(r[3])?colors.amber:"#1d3a4e"}">${r[3]}</td><td>${r[4]}</td></tr>`).join("")}
+function renderAlerts(filter="all"){const a=alerts.filter(x=>filter==="all"||x.severity===filter);$("#alertList").innerHTML=a.map(x=>{const col=x.severity==="critical"?colors.red:x.severity==="warning"?colors.amber:colors.blue;return `<div class="alert-item" style="cursor:pointer" onclick="showAlert('${x.id}')"><div class="alert-stripe" style="background:${col}"></div><div><span class="tag" style="color:${col}">${x.severity}</span><p>${x.source}</p></div><div><h4>${x.title}</h4><p>${x.area} • ${x.record}</p></div><div><h4>${x.owner}</h4><p>Owner</p></div><div><h4>${x.due}</h4><p>Due</p></div><div><h4>${x.aging}</h4><p>Aging</p></div><div><span class="heat ${x.status==="Overdue"?"bad":x.status==="Open"?"medium":"info"}">${x.status}</span></div></div>`}).join("")}
+function setAlertTab(t){$$(".alert-tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));renderAlerts(t);document.getElementById("alerts").scrollIntoView()}
+
+/* ================= DRILL-DOWNS ================= */
+function showModal(title,body){$("#modalTitle").textContent=title;$("#modalBody").innerHTML=body;$("#modalBack").classList.add("show");tip.classList.remove("show")}
+function closeModal(){$("#modalBack").classList.remove("show")}
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+function toggleFull(){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()}
+function refreshData(){$("#refreshTime").textContent=new Date().toLocaleString("en-IN",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})+" IST";toast("eLOG data synchronised")}
+function showArea(name){const a=areas.find(x=>x.name===name),ot=100-pct(a.late,a.entries);
+ showModal(`${a.name} • ${a.risk} risk`,`<div class="metric-strip" style="grid-template-columns:repeat(4,1fr)"><div class="metric"><small>Logbooks</small><b>${a.books}</b><em>${a.site} • ${a.dept}</em></div><div class="metric"><small>Entries (30 d)</small><b>${nf(a.entries)}</b><em>${fmt(ot,1)}% on time</em></div><div class="metric"><small>Pending review</small><b>${a.pending}</b><em>${a.overdue} beyond SLA</em></div><div class="metric"><small>DI score</small><b>${a.di}</b><em>${a.corr} corrections • ${a.missed} missed</em></div></div>
+ <div class="info-block"><h4>What needs attention</h4>${[a.overdue?["bad",`${a.overdue} entries have waited more than 72 h for review.`]:["good","No overdue reviews."],a.missed?["bad",`${a.missed} mandatory entr${a.missed>1?"ies were":"y was"} left blank and must be completed with a late-entry justification.`]:["good","No missed entries."],[pct(a.corr,a.entries)>1?"warn":"good",`Correction rate ${fmt(pct(a.corr,a.entries),2)}% (site average 0.84%).`],[ot<98?"warn":"good",`On-time entry rate ${fmt(ot,1)}% (target 98%).`]].map(f=>finding(f)).join("")}</div>`)}
+function drillAreas(title){const f=filteredAreas();showModal(title,table(["Area","Site","Department","Logbooks","Entries"],f.map(a=>[a.name,a.site,a.dept,a.books,nf(a.entries)])))}
+function drillEquipment(k){$("#equipment").scrollIntoView();const b=$(`#eqFilter .chip[data-k="${k==="All"?"all":k}"]`);if(b)b.click()}
+function showEquipment(id){const e=equipment.find(x=>x.id===id),st=eqStatus.find(s=>s.key===e.status);
+ const log={inuse:[["09:00","Process check recorded","Operator"],[e.meta.split(" by ")[0]||"08:40","Equipment usage started","Operator"],["08:20","Line clearance verified","QA"],["07:50","Status changed: Cleaned → In Use","System"]],dirty:[["04 Oct","Batch completed; status → To Be Cleaned","Operator"],["04 Oct","Dirty hold timer started","System"]],clean:[["Cleaning","Cleaning completed and verified","QA"],["Cleaning","Visual inspection passed","Production"],["Cleaning","Clean hold timer started","System"]],maint:[["Today","Status locked: Under Maintenance","System"],["Today","Work order opened","Engineering"]],idle:[["Today","Daily verification pending","System"]]}[e.status];
+ showModal(`${e.id} • ${e.name}`,`<div class="selected-point"><span>Status</span><b class="eq-status ${st.cls}" style="font-size:12px">${st.name}</b><span>${e.area}</span></div>
+ <div class="info-block"><h4>Current activity</h4><p>${e.line}. ${e.meta}.</p></div>
+ ${e.hold?`<div class="info-block"><h4>${e.hold.type} time</h4><p>${e.hold.used} h used of a validated maximum of ${e.hold.max} h (${fmt(e.hold.max-e.hold.used,1)} h remaining). ${e.hold.type==="Dirty hold"?"Cleaning must start before the limit, or a deviation is required.":"If not used before the limit, the equipment must be re-cleaned."}</p></div>`:""}
+ <div class="info-block"><h4>Recent logbook entries</h4>${table(["When","Entry","By"],log)}</div>`)}
+function showAlert(id){const x=alerts.find(a=>a.id===id);showModal(`${x.id} • ${x.title}`,`<div class="metric-strip" style="grid-template-columns:repeat(3,1fr)"><div class="metric"><small>Severity</small><b style="font-size:14px;text-transform:capitalize">${x.severity}</b></div><div class="metric"><small>Owner</small><b style="font-size:14px">${x.owner}</b></div><div class="metric"><small>Status</small><b style="font-size:14px">${x.status}</b></div></div><div class="info-block"><h4>Detail</h4><p>${x.desc}</p></div><div class="info-block"><h4>Record</h4><p>${x.area} • ${x.record} • due ${x.due}</p></div>`)}
+function showHealthDetails(){showModal("Data Integrity Score • 94.7 / 100",`<div class="callout"><b>How it is calculated.</b> The score averages six components, each scored 0–100 from the last 30 days of logbook data. Review timeliness is currently the weakest component.</div>${table(["Component","Score","Based on"],[["Timeliness",96,"On-time entry rate 98.2%"],["Completeness",97,"14 missed mandatory entries"],["Review",89,"23 reviews beyond 72 h SLA"],["Corrections",95,"Correction rate 0.84%, all with reasons"],["E-signature",99,"Part 11 signature compliance 99.7%"],["Hold Time",92,"3 hold time breaches"]])}`)}
+function exportAlerts(){const rows=[["ID","Severity","Source","Area","Record","Alert","Owner","Due","Aging","Status"],...alerts.map(x=>[x.id,x.severity,x.source,x.area,x.record,x.title,x.owner,x.due,x.aging,x.status])];const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="vidyagxp_elog_alerts.csv";a.click();toast("Alerts exported")}
+
+/* ================= CHART EXPLANATIONS ================= */
+const dot=k=>({good:colors.green,warn:colors.amber,bad:colors.red,info:colors.blue}[k]);
+const finding=([k,t])=>`<div class="finding"><i style="background:${dot(k)}"></i><span>${t}</span></div>`;
+const CHART_INFO={
+ typeChart:{title:"Active Logbooks by Type",what:"How many electronic logbooks are in service for each kind of GMP record. Each logbook is tied to one piece of equipment, room, instrument or activity.",
+  how:["Each bar is a logbook type; the number on top is how many are active.","Equipment usage and cleaning logbooks normally dominate because every major equipment item carries both.","A type with very few logbooks may mean some records are still on paper."],
+  findings:()=>{const t=sumA(bookTypes.values);return[["info",`${t} active logbooks in total.`],["info",`Equipment usage (${bookTypes.values[0]}) and cleaning (${bookTypes.values[1]}) logbooks make up ${fmt(pct(bookTypes.values[0]+bookTypes.values[1],t))}%.`],["good","Every type required by the site logbook procedure has at least one active electronic logbook."]]},
+  data:()=>table(["Type","Active logbooks","Share"],bookTypes.full.map((l,i)=>[l,bookTypes.values[i],fmt(pct(bookTypes.values[i],412))+"%"]))},
+ lifeDonut:{title:"Logbook Lifecycle",what:"Where every logbook sits in its controlled lifecycle: issued, in use, awaiting closure review after it is full, or archived. Logbooks are controlled documents, so each stage needs QA oversight.",
+  how:["Green: active logbooks taking entries.","Blue: issued but not yet used; check they are needed.","Amber: full logbooks waiting for QA closure review before archiving.","Grey: archived this year and kept read-only for the retention period."],
+  findings:()=>[["good","412 logbooks (82.7%) are active."],["warn","14 logbooks are waiting for closure review; open entries cannot be archived."],["info","63 logbooks archived so far this year."]]},
+ entryTrend:{title:"Monthly Entries",what:"Total logbook entries recorded each month across all areas. Entry volume follows production and lab activity, so sudden drops can indicate missed recording, not just less work.",
+  how:["Each bar is one month's total entries.","Compare against the production plan: fewer batches should mean fewer entries.","A dip without a matching dip in activity is a completeness warning."],
+  findings:()=>{const v=monthlyEntries,mi=v.indexOf(Math.min(...v));return[["info",`${nf(sumA(v))} entries over 12 months; average ${nf(Math.round(avgA(v)))} per month.`],["good",`Latest month (${nf(v.at(-1))}) is the highest of the year, ${fmt(pct(v.at(-1)-v[0],v[0]))}% above ${months[0]}.`],["info",`Lowest month: ${months[mi]} (${nf(v[mi])}), in line with the planned year-end shutdown.`]]},
+  data:()=>table(["Month","Entries"],months.map((m,i)=>[m,nf(monthlyEntries[i])]))},
+ deptChart:{title:"Entries by Department",what:"Which departments generate logbook entries in the selected scope over the last 30 days.",
+  how:["Each bar is a department total; values follow the Site and Department filters.","Production is normally highest because each batch step is logged on several pieces of equipment."],
+  findings:()=>{const d=deptTotals("entries"),t=sumA(d.values);if(!t)return[["info","No entries for the selected filters."]];const top=d.values.indexOf(Math.max(...d.values));return[["info",`${nf(t)} entries in scope.`],["info",`${d.full[top]} accounts for ${fmt(pct(d.values[top],t))}% of entries.`]]},
+  data:()=>{const d=deptTotals("entries");return table(["Department","Entries"],d.full.map((l,i)=>[l,nf(d.values[i])]))}},
+ shiftHeat:{title:"Average Daily Entries by Shift",what:"Average number of entries made per day in each shift. It shows when logbooks are being used and helps check that night and weekend activity is being recorded properly.",
+  how:["Rows are shifts, columns are days of the week.","Darker cells mean more entries per day.","Night (Shift C) and weekend cells should follow the reduced operating plan. A cell much lighter than expected can mean entries were made later in bulk."],
+  findings:()=>{const t=shifts.map(s=>sumA(s[2]));return[["info",`Shift A carries ${fmt(pct(t[0],sumA(t)))}% of entries, Shift B ${fmt(pct(t[1],sumA(t)))}%, Shift C ${fmt(pct(t[2],sumA(t)))}%.`],["info","Sunday volume is about 43% of a weekday, matching the single-shift Sunday plan."],["warn","Most late entries are recorded at the start of Shift A, suggesting some night-shift activity is written up at handover."]]}},
+ reviewAging:{title:"Pending Review Aging",what:"Entries waiting for supervisor or QA review, grouped by how long they have been waiting. Entries must be reviewed within 72 hours under the site procedure.",
+  how:["Blue bars: within the 72 h SLA.","Amber: approaching the limit. Red: beyond SLA and counted as overdue.","Overdue reviews delay batch release and are a common inspection finding."],
+  findings:()=>{const v=reviewAging.values;return[["info",`${sumA(v)} entries pending review.`],["good",`${v[0]+v[1]} (${fmt(pct(v[0]+v[1],sumA(v)))}%) are less than 48 h old.`],["bad",`${v[3]+v[4]} entries are beyond the 72 h SLA, ${v[4]} of them older than 7 days.`]]},
+  data:()=>table(["Age","Pending entries"],reviewAging.labels.map((l,i)=>[l,reviewAging.values[i]]))},
+ cycleTrend:{title:"Average Review Cycle Time",what:"Average hours between an entry being made and it being reviewed and signed. Shorter cycle time means problems in records are caught while the activity is still fresh.",
+  how:["Each point is the monthly average in hours.","Amber dashed line is the 24 h target. Amber points are months above target."],
+  findings:()=>{const v=cycleHours,f=v.findIndex(x=>x<=24);return[["good",`Cycle time fell from ${v[0]} h to ${v.at(-1)} h over the year (${fmt(pct(v[0]-v.at(-1),v[0]))}% faster).`],["info",`Target of 24 h first met in ${months[f]} and held since.`]]},
+  data:()=>table(["Month","Avg hours"],months.map((m,i)=>[m,cycleHours[i]]))},
+ eqDonut:{title:"Equipment Status",what:"The current status of all 318 GMP equipment items as recorded in their usage and cleaning logbooks. Status controls whether equipment can be used for the next batch.",
+  how:["Blue: in use for a batch. Green: cleaned and ready. Amber: used and waiting for cleaning.","Purple: under maintenance and locked from use. Grey: idle.","Click a status in the list to filter the equipment board below."],
+  findings:()=>[["info","64 items (20%) are currently in use."],["warn","38 items are waiting to be cleaned; each has a validated dirty hold time limit."],["info","17 items are locked for maintenance or calibration."]]},
+ holdTrend:{title:"Hold Time Breaches by Month",what:"Times equipment exceeded its validated hold time. Dirty hold is the maximum time used equipment can wait before cleaning; clean hold is how long cleaned equipment stays valid before re-cleaning is needed.",
+  how:["Amber bars: dirty hold exceeded. Red bars: clean hold exceeded.","Each breach requires a deviation and usually extra cleaning or verification."],
+  findings:()=>[["info",`${sumA(holdBreach.dirty)} dirty hold and ${sumA(holdBreach.clean)} clean hold breaches in 12 months.`],["warn","September had 3 breaches, the highest month. Two were clean hold expiries in the capsule suite."],["warn","OCT-01 and CPF-02 are close to their limits right now (see the equipment board)."]],
+  data:()=>table(["Month","Dirty hold","Clean hold"],months.map((m,i)=>[m,holdBreach.dirty[i],holdBreach.clean[i]]))},
+ emChart:{title:"Environmental Monitoring • Last 24 Hours",what:()=>`Hourly ${$("#emParam").value.toLowerCase()} readings in ${$("#emRoom").value}, as captured in the area logbook. Rooms must stay within limits for products to be processed or stored there.`,
+  how:["Each dot is one hourly reading.","Red dashed lines are action limits; a reading outside them is an excursion that must be investigated.","Amber dashed lines are alert limits, an early warning to act before an excursion."],
+  findings:()=>{const r=$("#emRoom").value,pm=$("#emParam").value,L=emLim(r,pm),v=emSeries(r,pm);const out=v.map((x,i)=>x<L.lo||x>L.hi?i:-1).filter(i=>i>=0);return[out.length?["bad",`${out.length} reading(s) outside action limits, between ${String(out[0]).padStart(2,"0")}:00 and ${String(out.at(-1)).padStart(2,"0")}:00. Peak ${Math.max(...out.map(i=>v[i]))}${L.unit}.`]:["good",`No readings outside action limits (${L.lo}–${L.hi}${L.unit}).`],["info",`Range ${Math.min(...v)}–${Math.max(...v)}${L.unit}; average ${fmt(avgA(v),1)}${L.unit}.`]]},
+  data:()=>{const r=$("#emRoom").value,pm=$("#emParam").value,L=emLim(r,pm),v=emSeries(r,pm);return table(["Hour","Reading","Status"],v.map((x,i)=>[String(i).padStart(2,"0")+":00",x+L.unit,x<L.lo||x>L.hi?"Excursion":x<L.alo||x>L.ahi?"Alert":"Normal"]))}},
+ instList:{title:"Verification & Calibration Compliance",what:"How consistently instruments are verified and calibrated, based on their instrument logbooks. An instrument used without a current verification makes its results unreliable.",
+  how:["Longer bars are better; 100% means no missed verifications or overdue calibrations.","Green ≥ 99%, teal 97–99%, amber below 97%."],
+  findings:()=>[["good","HPLC/GC usage logs are 99.7% complete."],["warn","Data logger calibration is lowest at 96.0%; DH-G104 is due in 9 days."],["bad","BAL-WH-03 is overdue and has been automatically locked from new entries."]]},
+ alcoaList:{title:"ALCOA+ Attribute Compliance",what:"How well logbook records meet each ALCOA+ data integrity principle: Attributable, Legible, Contemporaneous, Original, Accurate, plus Complete, Consistent, Enduring and Available.",
+  how:["Each bar is the share of entries that met that principle in the last 30 days.","Contemporaneous = recorded at the time of the activity. Complete = no mandatory field blank.","Electronic records score 100% on Legible and Enduring by design."],
+  findings:()=>[["warn","Complete (97.1%) is the weakest attribute, driven by 14 missed entries."],["warn","Contemporaneous at 98.2% reflects 881 late entries."],["good","Attributable at 99.6%: almost every entry is tied to a unique, logged-in user."]]},
+ corrPareto:{title:"Correction Reasons • Pareto",what:"Why recorded entries were corrected. In eLOG the original value is never overwritten; every correction keeps the old value, the new value, who changed it and the reason.",
+  how:["Bars: number of corrections per reason.","Amber line: cumulative share; the dashed line marks 80%.","Reasons to the left of the 80% point are where training or form design will cut corrections most."],
+  findings:()=>{const v=corrReasons.values,t=sumA(v);return[["info",`${t} corrections (0.84% of entries), all with a documented reason.`],["warn",`Transcription errors and wrong-field entries account for ${fmt(pct(v[0]+v[1],t))}%.`],["info","Pre-filling equipment IDs from barcode scans would remove most equipment-ID corrections."]]},
+  data:()=>{let c=0;const t=sumA(corrReasons.values);return table(["Reason","Corrections","Cumulative"],corrReasons.labels.map((l,i)=>{c+=corrReasons.values[i];return[l,corrReasons.values[i],fmt(pct(c,t))+"%"]}))}},
+ lateTrend:{title:"Late Entry Rate Trend",what:"Share of entries recorded after the activity they describe. Late entries are allowed only with a justification, but a high rate weakens the contemporaneous principle.",
+  how:["Each point is the monthly late-entry percentage.","Green dashed line: target of 2% or less. Amber points are above target."],
+  findings:()=>[["good",`Late entries fell from ${lateRate[0]}% to ${lateRate.at(-1)}% over the year.`],["good",`Below the 2% target since ${months[lateRate.findIndex(x=>x<2)]}.`]],
+  data:()=>table(["Month","Late %"],months.map((m,i)=>[m,lateRate[i]+"%"]))},
+ lateDept:{title:"Late Entries by Department",what:"Where late entries come from in the selected scope, last 30 days.",
+  how:["Each bar is a department total; values follow the Site and Department filters.","Compare against entry volume: a department with fewer entries but many late ones needs attention."],
+  findings:()=>{const l=deptTotals("late"),e=deptTotals("entries");return l.full.map((d,i)=>e.values[i]?[pct(l.values[i],e.values[i])>2?"warn":"good",`${d}: ${l.values[i]} late (${fmt(pct(l.values[i],e.values[i]),2)}% of its entries)`]:null).filter(Boolean)}}
+};
+function openChartInfo(id,sel){const c=CHART_INFO[id];if(!c)return;const v=x=>typeof x==="function"?x():x;
+ showModal(c.title,(sel?`<div class="selected-point"><span>Selected</span><b>${sel}</b></div>`:"")+`<div class="info-block"${sel?"":' style="margin-top:0"'}><h4>What this shows</h4><p>${v(c.what)}</p></div><div class="info-block"><h4>How to read it</h4><ul>${c.how.map(h=>`<li>${h}</li>`).join("")}</ul></div>`+(c.findings?`<div class="info-block"><h4>What the data says</h4>${c.findings().map(finding).join("")}</div>`:"")+(c.data?`<div class="info-block"><h4>Underlying data</h4>${c.data()}</div>`:""))}
+const tip=document.createElement("div");tip.className="chart-tip";document.body.appendChild(tip);
+document.addEventListener("mouseover",e=>{const t=e.target.closest?.("[data-tip]");if(!t){tip.classList.remove("show");return}tip.innerHTML=`${t.dataset.tip}<small>Click for what this means</small>`;tip.classList.add("show")});
+document.addEventListener("mousemove",e=>{if(!tip.classList.contains("show"))return;tip.style.left=Math.min(e.clientX+14,innerWidth-tip.offsetWidth-8)+"px";tip.style.top=(e.clientY+16)+"px"});
+const ICON='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4M8 4.8v.1" stroke-linecap="round"/></svg>';
+function wireCharts(){Object.keys(CHART_INFO).forEach(id=>{const el=document.getElementById(id);if(!el)return;const t=el.closest(".panel")?.querySelector(".panel-title");
+  if(t&&!t.querySelector(".infobtn")){const label=t.textContent;t.classList.add("has-info");t.innerHTML=`<span>${label}</span>`;const b=document.createElement("button");b.className="infobtn";b.type="button";b.innerHTML=ICON+"Explain";b.setAttribute("aria-label","Explain "+label);b.onclick=e=>{e.stopPropagation();openChartInfo(id)};t.appendChild(b)}
+  if(["shiftHeat","instList","alcoaList"].includes(id))return;const isD=el.classList.contains("donut");const box=el.closest(".chartbox")||el.parentElement;box.classList.add("chart-click");
+  box.addEventListener("click",e=>{const p=e.target.closest("[data-tip]");openChartInfo(id,p?p.dataset.tip:null)});
+  const h=document.createElement("div");h.className="charthint";h.textContent=isD?"Click the chart for an explanation.":"Hover a bar or point for its value. Click the chart for an explanation.";
+  const after=box.closest(".donutwrap")||box;const leg=after.nextElementSibling?.classList.contains("legend")?after.nextElementSibling:after;leg.insertAdjacentElement("afterend",h)})}
+
+/* ================= HEADER / SCROLL ================= */
+(function(){const top=$(".topbar"),setH=()=>document.documentElement.style.setProperty("--hdr",top.offsetHeight+"px");setH();addEventListener("resize",setH);if(window.ResizeObserver)new ResizeObserver(setH).observe(top);
+ const prog=document.createElement("div");prog.className="scrollprog";prog.innerHTML="<span></span>";top.appendChild(prog);const bar=prog.firstChild;
+ const tt=document.createElement("button");tt.className="totop";tt.textContent="↑";tt.title="Back to top";tt.setAttribute("aria-label","Back to top");tt.onclick=()=>scrollTo({top:0,behavior:"smooth"});document.body.appendChild(tt);
+ const links=$$(".sidebar .navitem"),secs=links.map(a=>$(a.getAttribute("href")));
+ function on(){const h=document.documentElement,max=h.scrollHeight-h.clientHeight;bar.style.width=(max>0?h.scrollTop/max*100:0)+"%";tt.classList.toggle("show",h.scrollTop>600);let cur=secs[0];secs.forEach(s=>{if(s.getBoundingClientRect().top<=top.offsetHeight+80)cur=s});if(max-h.scrollTop<4)cur=secs.at(-1);
+  links.forEach(a=>{const o=a.getAttribute("href")==="#"+cur.id;a.classList.toggle("active",o);if(o){const sb=a.closest(".sidebar"),r=a.getBoundingClientRect(),sr=sb.getBoundingClientRect();if(r.top<sr.top+10||r.bottom>sr.bottom-10)sb.scrollTop+=r.top-sr.top-sr.height/2}})}
+ addEventListener("scroll",on,{passive:true});on()})();
+let rT;addEventListener("resize",()=>{clearTimeout(rT);rT=setTimeout(()=>{renderInventory();renderActivity();renderReview();bars("holdTrend",months,[{name:"Dirty hold exceeded",color:colors.amber,data:holdBreach.dirty},{name:"Clean hold exceeded",color:colors.red,data:holdBreach.clean}],{max:4,bw:14});renderEM();renderIntegrity();renderDeptCharts()},150)});
+
+/* ================= INIT ================= */
+$("#emRoom").innerHTML=Object.keys(emRooms).map(r=>`<option${r==="Compression C-112"?" selected":""}>${r}</option>`).join("");
+function syncEmParams(){const cold=emRooms[$("#emRoom").value].cold,dp=$("#emParam").querySelector("option:nth-child(3)");dp.disabled=!!cold;if(cold&&$("#emParam").value==="Differential Pressure")$("#emParam").value="Temperature"}
+$("#emParam").value="Relative Humidity";
+$("#emRoom").addEventListener("change",()=>{syncEmParams();renderEM()});$("#emParam").addEventListener("change",renderEM);
+renderInventory();renderActivity();renderReview();renderEquipment();renderEM();renderExc();barList("#instList",instList);renderIntegrity();renderAudit();renderAlerts();updateKPIs();wireCharts();
+[["sp1",[372,381,390,394,412]],["sp2",[45230,46110,47950,46070,48926]],["sp3",[241,228,213,201,186]],["sp4",[58,61,66,60,64]],["sp5",[97.5,97.7,97.9,98.1,98.2]],["sp6",[1120,1040,980,920,881]],["sp7",[520,488,451,430,412]],["sp8",[22,19,18,16,14]],["sp9",[41,36,30,27,23]],["sp10",[3,2,4,3,5]],["sp11",[1,0,1,1,3]],["sp12",[99.3,99.5,99.5,99.6,99.7]],["sp13",[9,12,10,13,11]]].forEach(x=>miniSpark(x[0],x[1]));
+["siteFilter","deptFilter","typeFilter","periodFilter"].forEach(id=>$("#"+id).addEventListener("change",()=>{updateKPIs();toast(id==="typeFilter"||id==="periodFilter"?"Filter applied to logbook views":"Dashboard filtered")}));
+$$(".alert-tab").forEach(b=>b.addEventListener("click",()=>setAlertTab(b.dataset.tab)));
+$("#globalSearch").addEventListener("keydown",e=>{if(e.key!=="Enter")return;const q=e.target.value.toLowerCase().trim();if(!q)return;const eq=equipment.find(x=>(x.id+" "+x.name).toLowerCase().includes(q)),ar=areas.find(x=>x.name.toLowerCase().includes(q)),al=alerts.find(x=>(x.id+" "+x.record+" "+x.title).toLowerCase().includes(q));if(eq)showEquipment(eq.id);else if(ar)showArea(ar.name);else if(al)showAlert(al.id);else toast("No matching logbook, equipment or record found")});
+$("#modalBack").addEventListener("click",e=>{if(e.target.id==="modalBack")closeModal()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();if(e.key==="Enter"&&e.target.classList?.contains("eq"))e.target.click()});
+
+</script>
+</body>
+</html>
