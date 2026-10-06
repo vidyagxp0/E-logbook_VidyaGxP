@@ -30,7 +30,7 @@ function HeaderBottom() {
               <option value="temperature_records">Temperature Records</option>
             </select>
           </div> */}
-            <div className="tabs flex items-center justify-center space-x-6 ml-5">
+            <div className="tabs flex items-center justify-center space-x-6 ml-4">
               {/* <Link
                 to="/dashboard"
                 className={`tab py-2 px-4 rounded-md  ${
@@ -49,7 +49,7 @@ function HeaderBottom() {
                     : "bg-white text-blue-500 border border-blue-600"
                 } hover:bg-blue-600 transition duration-300  hover:text-white `}
               >
-                 E-Log
+                E-Log
               </Link>
               {/* <Link
                 to="/analytics2"
@@ -67,7 +67,7 @@ function HeaderBottom() {
                   location.pathname === "/eLogIntelligence"
                     ? "bg-blue-600 text-white border border-blue-600"
                     : "bg-white text-blue-500 border border-blue-600"
-                } hover:bg-blue-600 transition duration-300 hover:text-white`}
+                } hover:bg-blue-600 transition duration-300 hover:text-white text-nowrap`}
               >
                 eLog Intelligence
               </Link>
@@ -75,9 +75,11 @@ function HeaderBottom() {
           </div>
 
           {userDetails.roles?.some(
-            (itm) => itm.role_id === 5 || itm.role_id === 1
+            (itm) => itm.role_id === 5 || itm.role_id === 1,
           ) &&
-          !["/effectiveElogs", "/analytics2", "/eLogIntelligence"].includes(location.pathname) ? (
+          !["/effectiveElogs", "/analytics2", "/eLogIntelligence"].includes(
+            location.pathname,
+          ) ? (
             <div className="headerBottomRgt">
               <div className="themeBtn" onClick={() => setRecordModal(true)}>
                 Create eLogbook
