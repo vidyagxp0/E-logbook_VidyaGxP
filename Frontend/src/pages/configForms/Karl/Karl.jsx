@@ -98,7 +98,7 @@ const Karl = () => {
       analyticalBalance.reviewer_id === null
     ) {
       toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
+        "Please select an approver and a reviewer before saving e-log!",
       );
       return;
     }
@@ -113,7 +113,7 @@ const Karl = () => {
     // }
     if (
       analyticalBalance?.FormRecordsArray?.some(
-        (record) => record.sampleName === "" || record.remarks === ""
+        (record) => record.sampleName === "" || record.remarks === "",
       )
     ) {
       toast.error("Please provide grid details!");
@@ -135,7 +135,7 @@ const Karl = () => {
       .post(
         "http://localhost:1000/karl-fischer/post-karl-fischer",
         analyticalBalance,
-        config
+        config,
       )
       .then(() => {
         toast.success("eLog Saved Successfully!");
@@ -213,7 +213,7 @@ const Karl = () => {
       initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
-    }
+    },
   );
   console.log(analyticalBalance, "analyticalBalance");
   const handleInputChange1 = (e) => {
@@ -319,11 +319,11 @@ const Karl = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -335,11 +335,11 @@ const Karl = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -488,7 +488,7 @@ const Karl = () => {
                         })
                       }
                       disabled={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
+                        userDetails.roles[0].role_id,
                       )}
                     >
                       <option value="">-- Select --</option>
@@ -542,7 +542,7 @@ const Karl = () => {
                               reviewers.map((reviewer) => [
                                 reviewer.user_id,
                                 reviewer,
-                              ])
+                              ]),
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -574,7 +574,7 @@ const Karl = () => {
                               approvers.map((approver) => [
                                 approver.user_id,
                                 approver,
-                              ])
+                              ]),
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>

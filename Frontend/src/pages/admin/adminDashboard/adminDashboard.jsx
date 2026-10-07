@@ -65,7 +65,7 @@ function AdminDashboard() {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("admin-token")}`,
           },
-        }
+        },
       )
       .then((response) => {
         toast.success("Password reset successfully");
@@ -116,7 +116,7 @@ function AdminDashboard() {
       .then(() => {
         toast.success("User Disabled Successfully");
         setAllUsers((prevUsers) =>
-          prevUsers.filter((user) => user.user_id !== selectedUser.user_id)
+          prevUsers.filter((user) => user.user_id !== selectedUser.user_id),
         );
       })
       .catch(() => {

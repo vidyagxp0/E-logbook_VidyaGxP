@@ -96,7 +96,7 @@ const PhMeterOpCalEffective = () => {
 
   const handlePopupSubmit = (credentials) => {
     const hasMissingFactor = editData.OpAndCalMultiParameterProcessRecords.some(
-      (row) => !row.factorValue || row.factorValue.trim() === ""
+      (row) => !row.factorValue || row.factorValue.trim() === "",
     );
 
     if (hasMissingFactor) {
@@ -112,7 +112,7 @@ const PhMeterOpCalEffective = () => {
           !!record.adjustPH?.toString().trim();
 
         return isNotCompletelyEmpty;
-      }
+      },
     );
 
     // Calculate empty row count
@@ -123,11 +123,11 @@ const PhMeterOpCalEffective = () => {
     // Show toast ONLY if truly empty rows are being removed
     if (emptyRowsCount > 0) {
       toast.warn(
-        `${emptyRowsCount} empty row(s) will be removed before saving.`
+        `${emptyRowsCount} empty row(s) will be removed before saving.`,
       );
       console.log(
         "Original records:",
-        editData?.OpAndCalMultiParameterProcessRecords
+        editData?.OpAndCalMultiParameterProcessRecords,
       );
       console.log("Cleaned records:", cleanedData);
     }
@@ -168,7 +168,7 @@ const PhMeterOpCalEffective = () => {
         .put(
           "http://localhost:1000/op-and-calParameter/send-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -176,7 +176,7 @@ const PhMeterOpCalEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -186,7 +186,7 @@ const PhMeterOpCalEffective = () => {
         .put(
           "http://localhost:1000/op-and-calParameter/send-from-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -195,7 +195,7 @@ const PhMeterOpCalEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -205,7 +205,7 @@ const PhMeterOpCalEffective = () => {
         .put(
           "http://localhost:1000/op-and-calParameter/send-from-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -225,7 +225,7 @@ const PhMeterOpCalEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -235,7 +235,7 @@ const PhMeterOpCalEffective = () => {
         .put(
           "http://localhost:1000/op-and-calParameter/send-from-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -259,7 +259,7 @@ const PhMeterOpCalEffective = () => {
       // }
       if (
         updatedEditData?.OpAndCalMultiParameterProcessRecords?.some(
-          (record) => record.differential_pressure === ""
+          (record) => record.differential_pressure === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -325,7 +325,7 @@ const PhMeterOpCalEffective = () => {
       }
       if (lastRow.factorValue === "Calibration/Verification") {
         toast.warn(
-          "Machine is under maintenance (Calibration/Verification). Please complete the process before adding a new entry."
+          "Machine is under maintenance (Calibration/Verification). Please complete the process before adding a new entry.",
         );
         return;
       }
@@ -334,7 +334,7 @@ const PhMeterOpCalEffective = () => {
         lastRow.performance !== "OK"
       ) {
         toast.warn(
-          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`,
         );
         return;
       }
@@ -500,10 +500,10 @@ const PhMeterOpCalEffective = () => {
         selectedStatus === "Open"
           ? record.status === "Open"
           : selectedStatus === "Closed"
-          ? record.status === "Closed"
-          : selectedStatus === "Returned"
-          ? record.status === "Returned"
-          : true;
+            ? record.status === "Closed"
+            : selectedStatus === "Returned"
+              ? record.status === "Returned"
+              : true;
 
       return matchInitiator && matchReviewer && matchStatus;
     });
@@ -600,7 +600,7 @@ const PhMeterOpCalEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -619,12 +619,12 @@ const PhMeterOpCalEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : location.state.site_id === 4
-        ? "EU"
-        : "Biologics",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : location.state.site_id === 4
+              ? "EU"
+              : "Biologics",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "pH Meter OP/Cal Record",
@@ -638,7 +638,7 @@ const PhMeterOpCalEffective = () => {
   }, [reportData]);
 
   const allRecordDates = editData?.OpAndCalMultiParameterProcessRecords?.map(
-    (r) => new Date(r.date)
+    (r) => new Date(r.date),
   );
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
@@ -709,7 +709,7 @@ const PhMeterOpCalEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data;
@@ -739,7 +739,7 @@ const PhMeterOpCalEffective = () => {
     [];
     try {
       const res = await axios.delete(
-        `http://localhost:1000/op-and-calParameter/delete/attachment/${record.record_id}`
+        `http://localhost:1000/op-and-calParameter/delete/attachment/${record.record_id}`,
       );
 
       if (res.data?.error === false) {
@@ -770,7 +770,7 @@ const PhMeterOpCalEffective = () => {
   const canReviewerEdit = (item) => {
     // find original version of this record by record_id
     const original = originalData?.OpAndCalMultiParameterProcessRecords?.find(
-      (o) => o.record_id === item.record_id
+      (o) => o.record_id === item.record_id,
     );
 
     if (item.factorValue === "Calibration/Verification") {
@@ -903,12 +903,12 @@ const PhMeterOpCalEffective = () => {
                 {location.state?.site_id === 1
                   ? "India"
                   : location.state?.site_id === 2
-                  ? "Malaysia"
-                  : location.state?.site_id === 3
-                  ? "EMEA"
-                  : location.state?.site_id === 4
-                  ? "EU"
-                  : "Biologics"}
+                    ? "Malaysia"
+                    : location.state?.site_id === 3
+                      ? "EMEA"
+                      : location.state?.site_id === 4
+                        ? "EU"
+                        : "Biologics"}
               </span>
             </div>
             {/* <div>
@@ -1262,8 +1262,8 @@ const PhMeterOpCalEffective = () => {
                               {[
                                 ...new Set(
                                   editData?.OpAndCalMultiParameterProcessRecords?.map(
-                                    (r) => r.done_by
-                                  )
+                                    (r) => r.done_by,
+                                  ),
                                 ),
                               ].map(
                                 (done_by, index) =>
@@ -1271,7 +1271,7 @@ const PhMeterOpCalEffective = () => {
                                     <option key={index} value={done_by}>
                                       {done_by}
                                     </option>
-                                  )
+                                  ),
                               )}
                             </select>
                           </div>
@@ -1297,8 +1297,8 @@ const PhMeterOpCalEffective = () => {
                               {[
                                 ...new Set(
                                   editData?.OpAndCalMultiParameterProcessRecords?.map(
-                                    (r) => r.reviewed_by
-                                  )
+                                    (r) => r.reviewed_by,
+                                  ),
                                 ),
                               ].map(
                                 (reviewed_by, index) =>
@@ -1306,7 +1306,7 @@ const PhMeterOpCalEffective = () => {
                                     <option key={index} value={reviewed_by}>
                                       {reviewed_by}
                                     </option>
-                                  )
+                                  ),
                               )}
                             </select>
                           </div>
@@ -1425,7 +1425,7 @@ const PhMeterOpCalEffective = () => {
                                     }}
                                     readOnly={
                                       [3, 2, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) ||
                                       !isFieldEditable(item, "nameOfSolution")
                                     }
@@ -1449,7 +1449,7 @@ const PhMeterOpCalEffective = () => {
                                     }}
                                     readOnly={
                                       [3, 2, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !isFieldEditable(item, "adjustPH")
                                     }
                                   />
@@ -1477,7 +1477,7 @@ const PhMeterOpCalEffective = () => {
                                       ]?.factorValue === "Ok" ||
                                       (!allowInitiator(item, "factorValue") &&
                                         [3, 2, 4].includes(
-                                          userDetails.roles[0].role_id
+                                          userDetails.roles[0].role_id,
                                         ))
                                     }
                                     className="border px-2 py-1 rounded w-full"
@@ -1505,7 +1505,7 @@ const PhMeterOpCalEffective = () => {
                                       if (e.target.value !== "OK") {
                                         newData[index].performanceStartTime =
                                           dayjs().format(
-                                            "DD-MM-YYYY hh:mm:ss A"
+                                            "DD-MM-YYYY hh:mm:ss A",
                                           );
                                       } else {
                                         newData[index].performanceStartTime =
@@ -1526,7 +1526,7 @@ const PhMeterOpCalEffective = () => {
                                     className="border px-2 py-1 rounded w-full text-sm text-center"
                                     disabled={
                                       [2, 3, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !isFieldEditable(item, "performance")
                                     }
                                   >
@@ -1606,9 +1606,9 @@ const PhMeterOpCalEffective = () => {
                                                           index
                                                         ].performanceEndDateTime =
                                                           dayjs(
-                                                            `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                            `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`,
                                                           ).format(
-                                                            "DD-MM-YYYY hh:mm:ss A"
+                                                            "DD-MM-YYYY hh:mm:ss A",
                                                           );
                                                       }
 
@@ -1622,7 +1622,7 @@ const PhMeterOpCalEffective = () => {
                                                     disabled={
                                                       [2, 3, 4].includes(
                                                         userDetails.roles[0]
-                                                          .role_id
+                                                          .role_id,
                                                       ) ||
                                                       !!originalData
                                                         ?.OpAndCalMultiParameterProcessRecords[
@@ -1659,9 +1659,9 @@ const PhMeterOpCalEffective = () => {
                                                           index
                                                         ].performanceEndDateTime =
                                                           dayjs(
-                                                            `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                            `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`,
                                                           ).format(
-                                                            "DD-MM-YYYY hh:mm:ss A"
+                                                            "DD-MM-YYYY hh:mm:ss A",
                                                           );
                                                       }
 
@@ -1675,7 +1675,7 @@ const PhMeterOpCalEffective = () => {
                                                     disabled={
                                                       [2, 3, 4].includes(
                                                         userDetails.roles[0]
-                                                          .role_id
+                                                          .role_id,
                                                       ) ||
                                                       !!originalData
                                                         ?.OpAndCalMultiParameterProcessRecords[
@@ -1723,7 +1723,7 @@ const PhMeterOpCalEffective = () => {
                                                   disabled={
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
-                                                        .role_id
+                                                        .role_id,
                                                     ) ||
                                                     !!originalData
                                                       ?.OpAndCalMultiParameterProcessRecords[
@@ -1788,7 +1788,7 @@ const PhMeterOpCalEffective = () => {
                                         }}
                                         disabled={
                                           [1, 3].includes(
-                                            userDetails.roles[0].role_id
+                                            userDetails.roles[0].role_id,
                                           ) || !canReviewerEdit(item)
                                         }
                                       />
@@ -1841,7 +1841,7 @@ const PhMeterOpCalEffective = () => {
                                         className="border rounded px-2 py-1 w-auto"
                                         disabled={
                                           [1, 3].includes(
-                                            userDetails.roles[0].role_id
+                                            userDetails.roles[0].role_id,
                                           ) || !canReviewerEdit(item)
                                         }
                                       >
@@ -1885,7 +1885,7 @@ const PhMeterOpCalEffective = () => {
                                             className="border rounded px-2 py-1 w-auto"
                                             disabled={
                                               [1, 3].includes(
-                                                userDetails.roles[0].role_id
+                                                userDetails.roles[0].role_id,
                                               ) || !isRowEditable(item)
                                             }
                                           >
@@ -1927,7 +1927,7 @@ const PhMeterOpCalEffective = () => {
                                               className="border rounded px-2 py-1 w-auto"
                                               readOnly={
                                                 [1, 3].includes(
-                                                  userDetails.roles[0].role_id
+                                                  userDetails.roles[0].role_id,
                                                 ) || !canReviewerEdit(item)
                                               }
                                             />
@@ -1943,7 +1943,7 @@ const PhMeterOpCalEffective = () => {
                                     {(() => {
                                       const isDisabled =
                                         [3, 4].includes(
-                                          userDetails.roles[0].role_id
+                                          userDetails.roles[0].role_id,
                                         ) || !isRowEditable(item);
 
                                       return item.supporting_docs ? (
@@ -1955,7 +1955,7 @@ const PhMeterOpCalEffective = () => {
                                               !isDisabled &&
                                               document
                                                 .getElementsByName(
-                                                  "supporting_docs"
+                                                  "supporting_docs",
                                                 )
                                                 [index].click()
                                             }
@@ -1995,7 +1995,7 @@ const PhMeterOpCalEffective = () => {
                                               !isDisabled &&
                                               document
                                                 .getElementsByName(
-                                                  "supporting_docs"
+                                                  "supporting_docs",
                                                 )
                                                 [index].click()
                                             }
@@ -2013,12 +2013,12 @@ const PhMeterOpCalEffective = () => {
                                       onChange={(e) =>
                                         handleFileChange(
                                           index,
-                                          e.target.files[0]
+                                          e.target.files[0],
                                         )
                                       }
                                       disabled={
                                         [3, 4].includes(
-                                          userDetails.roles[0].role_id
+                                          userDetails.roles[0].role_id,
                                         ) || !isRowEditable(item)
                                       }
                                     />
@@ -2029,8 +2029,8 @@ const PhMeterOpCalEffective = () => {
                                   {item.remarksSubType
                                     ? "Returned"
                                     : item.remarks?.toLowerCase() === "ok"
-                                    ? "Closed"
-                                    : "Open"}
+                                      ? "Closed"
+                                      : "Open"}
                                 </td>
                               </tr>
                             ))

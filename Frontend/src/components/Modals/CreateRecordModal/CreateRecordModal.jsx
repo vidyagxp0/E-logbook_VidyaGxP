@@ -17,7 +17,7 @@ function CreateRecordModal(_props) {
     const fetchSites = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1000/site/get-sites"
+          "http://localhost:1000/site/get-sites",
         );
         const userSiteIds = await userDetails.roles
           .filter((role) => role.role_id === 1 || role.role_id === 5)
@@ -25,7 +25,7 @@ function CreateRecordModal(_props) {
 
         // Filter sites based on user's roles
         const filteredSites = await response.data.message.filter((site) =>
-          userSiteIds.includes(site.site_id)
+          userSiteIds.includes(site.site_id),
         );
 
         setSites(filteredSites);
@@ -40,20 +40,20 @@ function CreateRecordModal(_props) {
   const fetchProcesses = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:1000/differential-pressure/get-processes"
+        "http://localhost:1000/differential-pressure/get-processes",
       );
 
       const filteredProcessIds = userDetails.roles
         .filter(
           (role) =>
             (role.role_id === 1 || role.role_id === 5) &&
-            role?.site_id === division?.site_id
+            role?.site_id === division?.site_id,
         )
         .map((role) => role.process_id);
 
       // Filter processes based on user's roles
       const filteredProcesses = response.data.message.filter((process) =>
-        filteredProcessIds.includes(process.process_id)
+        filteredProcessIds.includes(process.process_id),
       );
       console.log(filteredProcesses, "filterdProcess");
 

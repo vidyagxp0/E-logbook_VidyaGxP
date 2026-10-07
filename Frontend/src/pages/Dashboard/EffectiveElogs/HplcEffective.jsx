@@ -95,7 +95,7 @@ const HplcEffective = () => {
     const emptyRowsCount = editData?.hplcRecords.length - cleanedData.length;
     if (emptyRowsCount > 0) {
       toast.warn(
-        `${emptyRowsCount} empty row(s) will be removed before saving.`
+        `${emptyRowsCount} empty row(s) will be removed before saving.`,
       );
       console.log("Original records:", editData?.hplcRecords);
       console.log("Cleaned records:", cleanedData);
@@ -144,7 +144,7 @@ const HplcEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -154,7 +154,7 @@ const HplcEffective = () => {
         .put(
           "http://localhost:1000/hplc/send-HP-from-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -163,7 +163,7 @@ const HplcEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -173,7 +173,7 @@ const HplcEffective = () => {
         .put(
           "http://localhost:1000/hplc/send-HP-elog-from-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -193,7 +193,7 @@ const HplcEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -203,7 +203,7 @@ const HplcEffective = () => {
         .put(
           "http://localhost:1000/hplc/send-HP-elog-from-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -216,7 +216,7 @@ const HplcEffective = () => {
       data.initiatorDeclaration = credentials?.declaration;
       if (
         updatedEditData?.hplcRecords?.some(
-          (record) => record.differential_pressure === ""
+          (record) => record.differential_pressure === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -291,7 +291,7 @@ const HplcEffective = () => {
         lastRow.performance !== "OK"
       ) {
         toast.warn(
-          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`,
         );
         return;
       }
@@ -455,10 +455,10 @@ const HplcEffective = () => {
         selectedStatus === "Open"
           ? record.status === "Open"
           : selectedStatus === "Closed"
-          ? record.status === "Closed"
-          : selectedStatus === "Returned"
-          ? record.status === "Returned"
-          : true;
+            ? record.status === "Closed"
+            : selectedStatus === "Returned"
+              ? record.status === "Returned"
+              : true;
 
       return matchInitiator && matchReviewer && matchStatus;
     });
@@ -519,7 +519,7 @@ const HplcEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -538,10 +538,10 @@ const HplcEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "HPLC Record",
@@ -623,7 +623,7 @@ const HplcEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data;
@@ -656,10 +656,10 @@ const HplcEffective = () => {
   const canReviewerEdit = (item) => {
     // find original version of this record by record_id
     const original = originalData?.hplcRecords?.find(
-      (o) => o.record_id === item.record_id
+      (o) => o.record_id === item.record_id,
     );
 
-     if (item.performanceEndDateTime === null && item.performance !== "OK") {
+    if (item.performanceEndDateTime === null && item.performance !== "OK") {
       return false;
     }
 
@@ -719,7 +719,7 @@ const HplcEffective = () => {
     [];
     try {
       const res = await axios.delete(
-        `http://localhost:1000/hplc/delete-hplc/attachment/${record.record_id}`
+        `http://localhost:1000/hplc/delete-hplc/attachment/${record.record_id}`,
       );
 
       if (res.data?.error === false) {
@@ -764,12 +764,12 @@ const HplcEffective = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : location.state?.site_id === 4
-                ? "EU"
-                : "Biologics"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : location.state?.site_id === 4
+                      ? "EU"
+                      : "Biologics"}
             </div>
           </div>
 
@@ -1042,7 +1042,7 @@ const HplcEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.hplcRecords?.map((r) => r.done_by)
+                              editData?.hplcRecords?.map((r) => r.done_by),
                             ),
                           ].map(
                             (done_by, index) =>
@@ -1050,7 +1050,7 @@ const HplcEffective = () => {
                                 <option key={index} value={done_by}>
                                   {done_by}
                                 </option>
-                              )
+                              ),
                           )}
                         </select>
                       </div>
@@ -1087,7 +1087,7 @@ const HplcEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.hplcRecords?.map((r) => r.reviewed_by)
+                              editData?.hplcRecords?.map((r) => r.reviewed_by),
                             ),
                           ].map(
                             (reviewed_by, index) =>
@@ -1095,7 +1095,7 @@ const HplcEffective = () => {
                                 <option key={index} value={reviewed_by}>
                                   {reviewed_by}
                                 </option>
-                              )
+                              ),
                           )}
                         </select>
                       </div>
@@ -1218,7 +1218,7 @@ const HplcEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isFieldEditable(item, "sample_name")
                                 }
                               />
@@ -1237,7 +1237,7 @@ const HplcEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isFieldEditable(item, "reg_no")
                                 }
                               />
@@ -1256,7 +1256,7 @@ const HplcEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isFieldEditable(item, "method_used")
                                 }
                               />
@@ -1276,11 +1276,11 @@ const HplcEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) ||
                                   !isFieldEditable(
                                     item,
-                                    "parameter_or_activity"
+                                    "parameter_or_activity",
                                   )
                                 }
                               />
@@ -1299,7 +1299,7 @@ const HplcEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isFieldEditable(item, "column_no")
                                 }
                               />
@@ -1312,7 +1312,7 @@ const HplcEffective = () => {
                                 checked={!!item.start_time}
                                 disabled={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isRowEditable(item)
                                 }
                                 onChange={(e) => {
@@ -1353,13 +1353,13 @@ const HplcEffective = () => {
                                 checked={!!item.end_time}
                                 disabled={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isRowEditable(item)
                                 }
                                 onChange={(e) => {
                                   if (!item.start_time) {
                                     toast.warn(
-                                      "Please mark the Start Time first before setting End Time."
+                                      "Please mark the Start Time first before setting End Time.",
                                     );
                                     return;
                                   }
@@ -1373,7 +1373,7 @@ const HplcEffective = () => {
                                     startParts[0],
                                     startParts[1],
                                     startParts[2] || 0,
-                                    0
+                                    0,
                                   );
 
                                   const diffInMs = now - start;
@@ -1382,7 +1382,7 @@ const HplcEffective = () => {
                                   if (e.target.checked) {
                                     if (diffInMinutes < 1) {
                                       toast.warn(
-                                        "Please wait at least 1 minute before marking End Time."
+                                        "Please wait at least 1 minute before marking End Time.",
                                       );
                                       return;
                                     }
@@ -1436,7 +1436,7 @@ const HplcEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) ||
                                   !isFieldEditable(item, "no_of_injections")
                                 }
@@ -1470,7 +1470,7 @@ const HplcEffective = () => {
                                 className="border px-2 py-1 rounded w-full text-sm text-center"
                                 disabled={
                                   [2, 3, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isFieldEditable(item, "performance")
                                 }
                               >
@@ -1548,9 +1548,9 @@ const HplcEffective = () => {
                                                       index
                                                     ].performanceEndDateTime =
                                                       dayjs(
-                                                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`,
                                                       ).format(
-                                                        "DD-MM-YYYY hh:mm:ss A"
+                                                        "DD-MM-YYYY hh:mm:ss A",
                                                       );
                                                   }
 
@@ -1561,7 +1561,8 @@ const HplcEffective = () => {
                                                 }}
                                                 disabled={
                                                   [2, 3, 4].includes(
-                                                    userDetails.roles[0].role_id
+                                                    userDetails.roles[0]
+                                                      .role_id,
                                                   ) ||
                                                   !!originalData?.hplcRecords[
                                                     index
@@ -1597,9 +1598,9 @@ const HplcEffective = () => {
                                                       index
                                                     ].performanceEndDateTime =
                                                       dayjs(
-                                                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                        `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`,
                                                       ).format(
-                                                        "DD-MM-YYYY hh:mm:ss A"
+                                                        "DD-MM-YYYY hh:mm:ss A",
                                                       );
                                                   }
 
@@ -1610,7 +1611,8 @@ const HplcEffective = () => {
                                                 }}
                                                 disabled={
                                                   [2, 3, 4].includes(
-                                                    userDetails.roles[0].role_id
+                                                    userDetails.roles[0]
+                                                      .role_id,
                                                   ) ||
                                                   !!originalData?.hplcRecords[
                                                     index
@@ -1656,7 +1658,7 @@ const HplcEffective = () => {
                                               rows={2}
                                               disabled={
                                                 [2, 3, 4].includes(
-                                                  userDetails.roles[0].role_id
+                                                  userDetails.roles[0].role_id,
                                                 ) ||
                                                 !!originalData?.hplcRecords[
                                                   index
@@ -1684,7 +1686,7 @@ const HplcEffective = () => {
                                   onChange={(e) => {
                                     if (!item.end_time) {
                                       toast.warn(
-                                        "Initiator must mark the End Time before reviewer action."
+                                        "Initiator must mark the End Time before reviewer action.",
                                       );
                                       return;
                                     }
@@ -1707,7 +1709,7 @@ const HplcEffective = () => {
                                   }}
                                   disabled={
                                     [1, 3].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !canReviewerEdit(item)
                                   }
                                 />
@@ -1752,7 +1754,7 @@ const HplcEffective = () => {
                                     className="border rounded px-2 py-1 w-auto"
                                     disabled={
                                       [1, 3].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !canReviewerEdit(item)
                                     }
                                   >
@@ -1791,7 +1793,7 @@ const HplcEffective = () => {
                                         className="border rounded px-2 py-1 w-auto"
                                         disabled={
                                           [1, 3].includes(
-                                            userDetails.roles[0].role_id
+                                            userDetails.roles[0].role_id,
                                           ) || !canReviewerEdit(item)
                                         }
                                       >
@@ -1840,7 +1842,7 @@ const HplcEffective = () => {
                                           className="border rounded px-2 py-1 w-auto"
                                           readOnly={
                                             [1, 3].includes(
-                                              userDetails.roles[0].role_id
+                                              userDetails.roles[0].role_id,
                                             ) || !canReviewerEdit(item)
                                           }
                                         />
@@ -1856,7 +1858,7 @@ const HplcEffective = () => {
                                 {(() => {
                                   const isDisabled =
                                     [3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) ||
                                     !isRowEditable(item) ||
                                     !canReviewerEdit(item);
@@ -1870,7 +1872,7 @@ const HplcEffective = () => {
                                           !isDisabled &&
                                           document
                                             .getElementsByName(
-                                              "supporting_docs"
+                                              "supporting_docs",
                                             )
                                             [index].click()
                                         }
@@ -1910,7 +1912,7 @@ const HplcEffective = () => {
                                           !isDisabled &&
                                           document
                                             .getElementsByName(
-                                              "supporting_docs"
+                                              "supporting_docs",
                                             )
                                             [index].click()
                                         }
@@ -1930,7 +1932,7 @@ const HplcEffective = () => {
                                   }
                                   disabled={
                                     [3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isRowEditable(item)
                                   }
                                 />
@@ -1941,8 +1943,8 @@ const HplcEffective = () => {
                               {item.remarksSubType
                                 ? "Returned"
                                 : item.remarks?.toLowerCase() === "ok"
-                                ? "Closed"
-                                : "Open"}
+                                  ? "Closed"
+                                  : "Open"}
                             </td>
                           </tr>
                         ))}

@@ -39,7 +39,7 @@ const LoadedQuantity = () => {
       additionalAttachment: null,
       additionalInfo: "",
       additionalAttachment: null,
-    }
+    },
   );
 
   const handleFileChange = (e) => {
@@ -121,7 +121,7 @@ const LoadedQuantity = () => {
       loadedQuantity.reviewer_id === null
     ) {
       toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
+        "Please select an approver and a reviewer before saving e-log!",
       );
       return;
     }
@@ -159,7 +159,7 @@ const LoadedQuantity = () => {
       .post(
         "http://localhost:1000/loaded-quantity/post",
         loadedQuantity,
-        config
+        config,
       )
       .then(() => {
         toast.success("eLog Saved Successfully!");
@@ -291,7 +291,7 @@ const LoadedQuantity = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false), setIsSelectedGeneral(true);
+                      (setIsSelectedDetails(false), setIsSelectedGeneral(true));
                     }}
                   >
                     General Information
@@ -303,7 +303,7 @@ const LoadedQuantity = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                      (setIsSelectedDetails(true), setIsSelectedGeneral(false));
                     }}
                   >
                     Details
@@ -415,7 +415,7 @@ const LoadedQuantity = () => {
                               reviewers.map((reviewer) => [
                                 reviewer.user_id,
                                 reviewer,
-                              ])
+                              ]),
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -447,7 +447,7 @@ const LoadedQuantity = () => {
                               approvers.map((approver) => [
                                 approver.user_id,
                                 approver,
-                              ])
+                              ]),
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>

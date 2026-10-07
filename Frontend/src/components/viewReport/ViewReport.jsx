@@ -72,7 +72,7 @@ const ViewReport = () => {
           const pdfRes = await axios.post(
             "https://api.chatpdf.com/v1/chats/message",
             chatData,
-            chatPdfConfig
+            chatPdfConfig,
           );
 
           setMessages((prevMessages) => [
@@ -125,7 +125,7 @@ const ViewReport = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const emailOptions = response.data.response.map((user) => ({
         value: user.email,
@@ -167,7 +167,7 @@ const ViewReport = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
 
     toast.promise(emailPromise, {

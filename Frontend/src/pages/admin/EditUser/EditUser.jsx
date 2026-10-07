@@ -109,7 +109,7 @@ function EditUser() {
         resultObj,
         {
           headers: myHeaders,
-        }
+        },
       )
       .then(() => {
         toast.success("User Details Updated Successfully");
@@ -117,7 +117,7 @@ function EditUser() {
       })
       .catch((error) => {
         toast.error(
-          "Couldn't Update User Details " + error.response.data.message
+          "Couldn't Update User Details " + error.response.data.message,
         );
       });
   };

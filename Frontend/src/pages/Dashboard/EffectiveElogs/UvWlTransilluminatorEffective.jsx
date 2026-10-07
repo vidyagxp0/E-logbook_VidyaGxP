@@ -96,7 +96,7 @@ const UvWITransilluminatorEffective = () => {
       editData?.uvWhiteLightRecords.length - cleanedData.length;
     if (emptyRowsCount > 0) {
       toast.warn(
-        `${emptyRowsCount} empty row(s) will be removed before saving.`
+        `${emptyRowsCount} empty row(s) will be removed before saving.`,
       );
       console.log("Original records:", editData?.uvWhiteLightRecords);
       console.log("Cleaned records:", cleanedData);
@@ -139,7 +139,7 @@ const UvWITransilluminatorEffective = () => {
         .put(
           "http://localhost:1000/uv-wl-transi/send-elog-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -147,7 +147,7 @@ const UvWITransilluminatorEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -157,7 +157,7 @@ const UvWITransilluminatorEffective = () => {
         .put(
           "http://localhost:1000/uv-wl-transi/send-from-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -166,7 +166,7 @@ const UvWITransilluminatorEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -176,7 +176,7 @@ const UvWITransilluminatorEffective = () => {
         .put(
           "http://localhost:1000/uv-wl-transi/send-elog-from-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -196,7 +196,7 @@ const UvWITransilluminatorEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -206,7 +206,7 @@ const UvWITransilluminatorEffective = () => {
         .put(
           "http://localhost:1000/uv-wl-transi/send-elog-from-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -219,7 +219,7 @@ const UvWITransilluminatorEffective = () => {
       data.initiatorDeclaration = credentials?.declaration;
       if (
         updatedEditData?.uvWhiteLightRecords?.some(
-          (record) => record.differential_pressure === ""
+          (record) => record.differential_pressure === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -415,8 +415,8 @@ const UvWITransilluminatorEffective = () => {
         selectedStatus === "Open"
           ? record.status === "Open"
           : selectedStatus === "Closed"
-          ? record.status === "Closed"
-          : true;
+            ? record.status === "Closed"
+            : true;
 
       return matchInitiator && matchReviewer && matchStatus;
     });
@@ -476,7 +476,7 @@ const UvWITransilluminatorEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -495,10 +495,10 @@ const UvWITransilluminatorEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "UV & White-Light Transilluminator",
@@ -512,7 +512,7 @@ const UvWITransilluminatorEffective = () => {
   }, [reportData]);
 
   const allRecordDates = editData?.uvWhiteLightRecords?.map(
-    (r) => new Date(r.date)
+    (r) => new Date(r.date),
   );
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
@@ -552,7 +552,7 @@ const UvWITransilluminatorEffective = () => {
           (record) => {
             const recordDate = new Date(record.date);
             return recordDate >= start && recordDate <= end;
-          }
+          },
         );
       }
 
@@ -570,7 +570,7 @@ const UvWITransilluminatorEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data;
@@ -615,7 +615,7 @@ const UvWITransilluminatorEffective = () => {
     [];
     try {
       const res = await axios.delete(
-        `http://localhost:1000/uv-wl-transi/delete-uv-wl-transi/attachment/${record.record_id}`
+        `http://localhost:1000/uv-wl-transi/delete-uv-wl-transi/attachment/${record.record_id}`,
       );
 
       if (res.data?.error === false) {
@@ -660,12 +660,12 @@ const UvWITransilluminatorEffective = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : location.state?.site_id === 4
-                ? "EU"
-                : "Biologics"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : location.state?.site_id === 4
+                      ? "EU"
+                      : "Biologics"}
             </div>
           </div>
 
@@ -794,7 +794,7 @@ const UvWITransilluminatorEffective = () => {
                                         setToDate(""); // Reset toDate on fromDate change
                                         console.log(
                                           "From Date:",
-                                          e.target.value
+                                          e.target.value,
                                         );
                                       }}
                                       className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -937,8 +937,8 @@ const UvWITransilluminatorEffective = () => {
                           {[
                             ...new Set(
                               editData?.uvWhiteLightRecords?.map(
-                                (r) => r.done_by
-                              )
+                                (r) => r.done_by,
+                              ),
                             ),
                           ].map(
                             (done_by, index) =>
@@ -946,7 +946,7 @@ const UvWITransilluminatorEffective = () => {
                                 <option key={index} value={done_by}>
                                   {done_by}
                                 </option>
-                              )
+                              ),
                           )}
                         </select>
                       </div>
@@ -984,8 +984,8 @@ const UvWITransilluminatorEffective = () => {
                           {[
                             ...new Set(
                               editData?.uvWhiteLightRecords?.map(
-                                (r) => r.reviewed_by
-                              )
+                                (r) => r.reviewed_by,
+                              ),
                             ),
                           ].map(
                             (reviewed_by, index) =>
@@ -993,7 +993,7 @@ const UvWITransilluminatorEffective = () => {
                                 <option key={index} value={reviewed_by}>
                                   {reviewed_by}
                                 </option>
-                              )
+                              ),
                           )}
                         </select>
                       </div>
@@ -1060,7 +1060,7 @@ const UvWITransilluminatorEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isRowEditable(item)
                                 }
                               />
@@ -1081,7 +1081,7 @@ const UvWITransilluminatorEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isRowEditable(item)
                                 }
                               />
@@ -1242,7 +1242,7 @@ const UvWITransilluminatorEffective = () => {
                                   }}
                                   disabled={
                                     [1, 3].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !canReviewerEdit(item)
                                   }
                                 />
@@ -1281,7 +1281,7 @@ const UvWITransilluminatorEffective = () => {
                                     className="border rounded px-2 py-1 w-auto"
                                     disabled={
                                       [1, 3].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !canReviewerEdit(item)
                                     }
                                   >
@@ -1319,7 +1319,7 @@ const UvWITransilluminatorEffective = () => {
                                         className="border rounded px-2 py-1 w-auto"
                                         disabled={
                                           [1, 3].includes(
-                                            userDetails.roles[0].role_id
+                                            userDetails.roles[0].role_id,
                                           ) || !canReviewerEdit(item)
                                         }
                                       >
@@ -1356,7 +1356,7 @@ const UvWITransilluminatorEffective = () => {
                                           className="border rounded px-2 py-1 w-auto"
                                           readOnly={
                                             [1, 3].includes(
-                                              userDetails.roles[0].role_id
+                                              userDetails.roles[0].role_id,
                                             ) || !canReviewerEdit(item)
                                           }
                                         />
@@ -1372,7 +1372,7 @@ const UvWITransilluminatorEffective = () => {
                                 {(() => {
                                   const isDisabled =
                                     [3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isRowEditable(item);
 
                                   return item.supporting_docs ? (
@@ -1384,7 +1384,7 @@ const UvWITransilluminatorEffective = () => {
                                           !isDisabled &&
                                           document
                                             .getElementsByName(
-                                              "supporting_docs"
+                                              "supporting_docs",
                                             )
                                             [index].click()
                                         }
@@ -1424,7 +1424,7 @@ const UvWITransilluminatorEffective = () => {
                                           !isDisabled &&
                                           document
                                             .getElementsByName(
-                                              "supporting_docs"
+                                              "supporting_docs",
                                             )
                                             [index].click()
                                         }
@@ -1444,7 +1444,7 @@ const UvWITransilluminatorEffective = () => {
                                   }
                                   disabled={
                                     [3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isRowEditable(item)
                                   }
                                 />
@@ -1453,7 +1453,7 @@ const UvWITransilluminatorEffective = () => {
 
                             <td>
                               {editData?.uvWhiteLightRecords?.find(
-                                (r) => r.record_id === item.record_id
+                                (r) => r.record_id === item.record_id,
                               )?.reviewed_by
                                 ? "Closed"
                                 : "Open"}

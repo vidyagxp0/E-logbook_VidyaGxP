@@ -15,30 +15,30 @@ import { Autocomplete, TextField } from "@mui/material";
 
 const parseDateString = (dateStr) => {
   if (!dateStr) return new Date(NaN);
-  
+
   const parts = dateStr.split(/[- :]/);
   if (parts.length >= 3) {
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10) - 1;
     const year = parseInt(parts[2], 10);
-    
+
     let hour = 0;
     let minute = 0;
     let second = 0;
-    
+
     if (parts.length >= 6) {
       hour = parseInt(parts[3], 10);
       minute = parseInt(parts[4], 10);
       second = parseInt(parts[5], 10);
     }
-    
+
     const ampmMatch = dateStr.match(/(am|pm)$/i);
     if (ampmMatch) {
       const meridiem = ampmMatch[0].toLowerCase();
       if (meridiem === "pm" && hour < 12) hour += 12;
       if (meridiem === "am" && hour === 12) hour = 0;
     }
-    
+
     const parsedDate = new Date(year, month, day, hour, minute, second);
     if (!isNaN(parsedDate.getTime())) {
       return parsedDate;
@@ -132,7 +132,7 @@ const AnalyticalBalancesEffective = () => {
 
   const handlePopupSubmit = (credentials) => {
     const hasMissingFactor = editData.AnalyticalBalances.some(
-      (row) => !row.factorValue || row.factorValue.trim() === ""
+      (row) => !row.factorValue || row.factorValue.trim() === "",
     );
 
     if (hasMissingFactor) {
@@ -153,7 +153,7 @@ const AnalyticalBalancesEffective = () => {
       editData?.AnalyticalBalances.length - cleanedData.length;
     if (emptyRowsCount > 0) {
       toast.warn(
-        `${emptyRowsCount} empty row(s) will be removed before saving.`
+        `${emptyRowsCount} empty row(s) will be removed before saving.`,
       );
     }
 
@@ -165,7 +165,7 @@ const AnalyticalBalancesEffective = () => {
     // Check if there are any valid records to save
     if (cleanedData.length === 0) {
       toast.error(
-        "Please add at least one record with required fields before saving."
+        "Please add at least one record with required fields before saving.",
       );
       return;
     }
@@ -201,7 +201,7 @@ const AnalyticalBalancesEffective = () => {
         .put(
           "http://localhost:1000/analytical-balance/send-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -209,7 +209,7 @@ const AnalyticalBalancesEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -219,7 +219,7 @@ const AnalyticalBalancesEffective = () => {
         .put(
           "http://localhost:1000/analytical-balance/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -228,7 +228,7 @@ const AnalyticalBalancesEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-            "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -238,7 +238,7 @@ const AnalyticalBalancesEffective = () => {
         .put(
           "http://localhost:1000/analytical-balance/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -258,7 +258,7 @@ const AnalyticalBalancesEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -268,7 +268,7 @@ const AnalyticalBalancesEffective = () => {
         .put(
           "http://localhost:1000/analytical-balance/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -292,7 +292,7 @@ const AnalyticalBalancesEffective = () => {
       // }
       if (
         updatedEditData?.AnalyticalBalances?.some(
-          (record) => record.analytical_balance === ""
+          (record) => record.analytical_balance === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -365,7 +365,7 @@ const AnalyticalBalancesEffective = () => {
       }
       if (lastRow.factorValue === "Calibration/Verification") {
         toast.warn(
-          "Machine is under maintenance/Calibration/Verification. Please contact responsible person."
+          "Machine is under maintenance/Calibration/Verification. Please contact responsible person.",
         );
         return;
       }
@@ -374,7 +374,7 @@ const AnalyticalBalancesEffective = () => {
         lastRow.performance !== "OK"
       ) {
         toast.warn(
-          `Machine is under maintenance (${lastRow.performance}). Please contact responsible person.`
+          `Machine is under maintenance (${lastRow.performance}). Please contact responsible person.`,
         );
         return;
       }
@@ -610,7 +610,7 @@ const AnalyticalBalancesEffective = () => {
 
     try {
       const res = await axios.delete(
-        `http://localhost:1000/analytical-balance/delete-analytical-balance/attachment/${record.record_id}`
+        `http://localhost:1000/analytical-balance/delete-analytical-balance/attachment/${record.record_id}`,
       );
 
       if (res.data?.error === false) {
@@ -649,7 +649,6 @@ const AnalyticalBalancesEffective = () => {
     return `UU0${new Date().getTime()}${Math.floor(Math.random() * 100)}`;
   };
 
-
   const EmptyreportData = {
     title: "Analytical Balance",
     status: location.state.status,
@@ -671,7 +670,7 @@ const AnalyticalBalancesEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${currentFormId}&filename=${filename}`;
@@ -735,15 +734,16 @@ const AnalyticalBalancesEffective = () => {
   //   }
   // };
 
-  const allRecordDates = editData?.AnalyticalBalances?.map(
-    (r) => parseDateString(r.date)
+  const allRecordDates = editData?.AnalyticalBalances?.map((r) =>
+    parseDateString(r.date),
   ).filter((d) => !isNaN(d.getTime()));
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
     : null;
-  const formattedFirstDate = firstRecordDate && !isNaN(firstRecordDate.getTime())
-    ? firstRecordDate.toISOString().split("T")[0]
-    : "";
+  const formattedFirstDate =
+    firstRecordDate && !isNaN(firstRecordDate.getTime())
+      ? firstRecordDate.toISOString().split("T")[0]
+      : "";
 
   const generateReport = async () => {
     setIsLoading(true);
@@ -793,7 +793,7 @@ const AnalyticalBalancesEffective = () => {
           (record) => {
             const recordDate = parseDateString(record.date);
             return recordDate >= start && recordDate <= end;
-          }
+          },
         );
       }
 
@@ -811,7 +811,7 @@ const AnalyticalBalancesEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data;
@@ -844,7 +844,7 @@ const AnalyticalBalancesEffective = () => {
   const canReviewerEdit = (item) => {
     // find original version of this record by record_id
     const original = originalData?.AnalyticalBalances?.find(
-      (o) => o.record_id === item.record_id
+      (o) => o.record_id === item.record_id,
     );
 
     if (item.factorValue === "Calibration/Verification") {
@@ -1647,8 +1647,8 @@ const AnalyticalBalancesEffective = () => {
                               {[
                                 ...new Set(
                                   editData?.AnalyticalBalances?.map(
-                                    (r) => r.done_by
-                                  )
+                                    (r) => r.done_by,
+                                  ),
                                 ),
                               ].map(
                                 (done_by, index) =>
@@ -1656,7 +1656,7 @@ const AnalyticalBalancesEffective = () => {
                                     <option key={index} value={done_by}>
                                       {done_by}
                                     </option>
-                                  )
+                                  ),
                               )}
                             </select>
                           </div>
@@ -1682,8 +1682,8 @@ const AnalyticalBalancesEffective = () => {
                               {[
                                 ...new Set(
                                   editData?.AnalyticalBalances?.map(
-                                    (r) => r.reviewed_by
-                                  )
+                                    (r) => r.reviewed_by,
+                                  ),
                                 ),
                               ].map(
                                 (reviewed_by, index) =>
@@ -1691,7 +1691,7 @@ const AnalyticalBalancesEffective = () => {
                                     <option key={index} value={reviewed_by}>
                                       {reviewed_by}
                                     </option>
-                                  )
+                                  ),
                               )}
                             </select>
                           </div>
@@ -1792,7 +1792,7 @@ const AnalyticalBalancesEffective = () => {
                                 <input
                                   value={item.instrument_no || ""}
                                   readOnly
-                                // className="bg-gray-100 cursor-not-allowed"
+                                  // className="bg-gray-100 cursor-not-allowed"
                                 />
                               </td>
                               <td>
@@ -1810,7 +1810,7 @@ const AnalyticalBalancesEffective = () => {
                                   }}
                                   readOnly={
                                     [3, 2, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isFieldEditable(item, "reg_no")
                                   }
                                 />
@@ -1830,7 +1830,7 @@ const AnalyticalBalancesEffective = () => {
                                   }}
                                   readOnly={
                                     [2, 3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isFieldEditable(item, "sample_name")
                                   }
                                 />
@@ -1853,7 +1853,7 @@ const AnalyticalBalancesEffective = () => {
                                   }}
                                   readOnly={
                                     [3, 2, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isFieldEditable(item, "weight_taken")
                                   }
                                 />
@@ -1886,7 +1886,7 @@ const AnalyticalBalancesEffective = () => {
                                     className="border rounded px-2 py-1 w-auto"
                                     disabled={
                                       [2, 3, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !isFieldEditable(item, "uom")
                                     }
                                   >
@@ -1917,7 +1917,7 @@ const AnalyticalBalancesEffective = () => {
                                       className="border rounded px-2 py-1 w-auto"
                                       readOnly={
                                         [2, 3, 4].includes(
-                                          userDetails.roles[0].role_id
+                                          userDetails.roles[0].role_id,
                                         ) || !isFieldEditable(item, "uom")
                                       }
                                     />
@@ -1956,7 +1956,7 @@ const AnalyticalBalancesEffective = () => {
                                   className="border px-2 py-1 rounded w-full text-sm text-center"
                                   disabled={
                                     [2, 3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isFieldEditable(item, "performance")
                                   }
                                 >
@@ -2036,9 +2036,9 @@ const AnalyticalBalancesEffective = () => {
                                                         index
                                                       ].performanceEndDateTime =
                                                         dayjs(
-                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`,
                                                         ).format(
-                                                          "DD-MM-YYYY hh:mm:ss A"
+                                                          "DD-MM-YYYY hh:mm:ss A",
                                                         );
                                                     }
 
@@ -2051,7 +2051,7 @@ const AnalyticalBalancesEffective = () => {
                                                   disabled={
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
-                                                        .role_id
+                                                        .role_id,
                                                     ) ||
                                                     !!originalData
                                                       ?.AnalyticalBalances[
@@ -2089,9 +2089,9 @@ const AnalyticalBalancesEffective = () => {
                                                         index
                                                       ].performanceEndDateTime =
                                                         dayjs(
-                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`,
                                                         ).format(
-                                                          "DD-MM-YYYY hh:mm:ss A"
+                                                          "DD-MM-YYYY hh:mm:ss A",
                                                         );
                                                     }
 
@@ -2104,7 +2104,7 @@ const AnalyticalBalancesEffective = () => {
                                                   disabled={
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
-                                                        .role_id
+                                                        .role_id,
                                                     ) ||
                                                     !!originalData
                                                       ?.AnalyticalBalances[
@@ -2151,7 +2151,8 @@ const AnalyticalBalancesEffective = () => {
                                                 rows={2}
                                                 disabled={
                                                   [2, 3, 4].includes(
-                                                    userDetails.roles[0].role_id
+                                                    userDetails.roles[0]
+                                                      .role_id,
                                                   ) ||
                                                   !!originalData
                                                     ?.AnalyticalBalances[index]
@@ -2183,7 +2184,7 @@ const AnalyticalBalancesEffective = () => {
                                       ?.factorValue === "Ok" ||
                                     (!allowInitiator(item, "factorValue") &&
                                       [3, 2, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ))
                                   }
                                   className="border px-2 py-1 rounded w-full"
@@ -2245,7 +2246,7 @@ const AnalyticalBalancesEffective = () => {
                                       }}
                                       disabled={
                                         [1, 3].includes(
-                                          userDetails.roles[0].role_id
+                                          userDetails.roles[0].role_id,
                                         ) || !canReviewerEdit(item)
                                       }
                                     />
@@ -2296,7 +2297,7 @@ const AnalyticalBalancesEffective = () => {
                                       className="border rounded px-2 py-1 w-auto"
                                       disabled={
                                         [1, 3].includes(
-                                          userDetails.roles[0].role_id
+                                          userDetails.roles[0].role_id,
                                         ) || !canReviewerEdit(item)
                                       }
                                     >
@@ -2337,7 +2338,7 @@ const AnalyticalBalancesEffective = () => {
                                           className="border rounded px-2 py-1 w-auto"
                                           disabled={
                                             [1, 3].includes(
-                                              userDetails.roles[0].role_id
+                                              userDetails.roles[0].role_id,
                                             ) || !isRowEditable(item)
                                           }
                                         >
@@ -2380,7 +2381,7 @@ const AnalyticalBalancesEffective = () => {
                                             className="border rounded px-2 py-1 w-auto"
                                             readOnly={
                                               [1, 3].includes(
-                                                userDetails.roles[0].role_id
+                                                userDetails.roles[0].role_id,
                                               ) || !canReviewerEdit(item)
                                             }
                                           />
@@ -2396,7 +2397,7 @@ const AnalyticalBalancesEffective = () => {
                                   {(() => {
                                     const isDisabled =
                                       [3, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !isRowEditable(item);
 
                                     return item.supporting_docs ? (
@@ -2408,9 +2409,9 @@ const AnalyticalBalancesEffective = () => {
                                             !isDisabled &&
                                             document
                                               .getElementsByName(
-                                                "supporting_docs"
+                                                "supporting_docs",
                                               )
-                                            [index].click()
+                                              [index].click()
                                           }
                                           disabled={isDisabled}
                                         >
@@ -2447,9 +2448,9 @@ const AnalyticalBalancesEffective = () => {
                                             !isDisabled &&
                                             document
                                               .getElementsByName(
-                                                "supporting_docs"
+                                                "supporting_docs",
                                               )
-                                            [index].click()
+                                              [index].click()
                                           }
                                           disabled={isDisabled}
                                         >
@@ -2467,7 +2468,7 @@ const AnalyticalBalancesEffective = () => {
                                     }
                                     disabled={
                                       [3, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !isRowEditable(item)
                                     }
                                   />

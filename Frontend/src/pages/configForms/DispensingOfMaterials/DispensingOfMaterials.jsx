@@ -38,7 +38,7 @@ const DispensingOfMaterials = () => {
       // initiatorDeclaration: "",
       additionalInfo: "",
       additionalAttachment: null,
-    }
+    },
   );
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
 
@@ -136,7 +136,7 @@ const DispensingOfMaterials = () => {
       dispensingOfMaterials.reviewer_id === null
     ) {
       toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
+        "Please select an approver and a reviewer before saving e-log!",
       );
       return;
     }
@@ -173,7 +173,7 @@ const DispensingOfMaterials = () => {
       .post(
         "http://localhost:1000/dispensing-material/post",
         dispensingOfMaterials,
-        config
+        config,
       )
       .then(() => {
         toast.success("eLog Saved Successfully!");
@@ -304,7 +304,7 @@ const DispensingOfMaterials = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false), setIsSelectedGeneral(true);
+                      (setIsSelectedDetails(false), setIsSelectedGeneral(true));
                     }}
                   >
                     General Information
@@ -316,7 +316,7 @@ const DispensingOfMaterials = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                      (setIsSelectedDetails(true), setIsSelectedGeneral(false));
                     }}
                   >
                     Details
@@ -430,7 +430,7 @@ const DispensingOfMaterials = () => {
                               reviewers.map((reviewer) => [
                                 reviewer.user_id,
                                 reviewer,
-                              ])
+                              ]),
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -462,7 +462,7 @@ const DispensingOfMaterials = () => {
                               approvers.map((approver) => [
                                 approver.user_id,
                                 approver,
-                              ])
+                              ]),
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>

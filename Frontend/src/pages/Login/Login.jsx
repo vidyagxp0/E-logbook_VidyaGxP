@@ -49,7 +49,7 @@ function Login() {
             headers: {
               Authorization: `Bearer ${response.data.token}`,
             },
-          }
+          },
         );
       })
       .then((permissionsResponse) => {

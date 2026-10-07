@@ -13,7 +13,7 @@ function EffectiveElogs() {
   const [role, setRole] = useState("All_Records");
   const [status, setStatus] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
-    []
+    [],
   );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   // const [areaAndERecordElogs, setAreaAndERecordElogs] = useState([]);
@@ -21,10 +21,10 @@ function EffectiveElogs() {
   const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
   const [mediaRecordElogs, setMediaRecordElogs] = useState([]);
   const [dispensingOfMaterialsElogs, setDispensingOfMaterialsElogs] = useState(
-    []
+    [],
   );
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
-    []
+    [],
   );
   const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState([]);
   const [karlFischerElogs, setKarlFischerElogs] = useState([]);
@@ -97,7 +97,7 @@ function EffectiveElogs() {
       .then((response) => {
         const temp = response.data.message;
         const allDifferentialPressureElogs = temp.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         setDifferentialPressureElogs(allDifferentialPressureElogs);
 
@@ -129,7 +129,7 @@ function EffectiveElogs() {
       .then((response) => {
         const temp = response.data.message;
         const allTempratureRecordElogs = temp.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         setTempratureRecordElogs(allTempratureRecordElogs);
         let filteredArray = allTempratureRecordElogs.filter((elog) => {
@@ -160,7 +160,7 @@ function EffectiveElogs() {
       .then((response) => {
         const temp = response.data.message;
         const allLoadedQuantityElogs = temp.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         setLoadedQuantityElogs(allLoadedQuantityElogs);
         let filteredArray = allLoadedQuantityElogs.filter((elog) => {
@@ -191,7 +191,7 @@ function EffectiveElogs() {
       .then((response) => {
         const temp = response.data.message;
         const allMediaRecordElogs = temp.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         setMediaRecordElogs(allMediaRecordElogs);
         let filteredArray = allMediaRecordElogs.filter((elog) => {
@@ -222,7 +222,7 @@ function EffectiveElogs() {
       .then((response) => {
         const temp = response.data.message;
         const allDispensingMaterialElogs = temp.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         setDispensingOfMaterialsElogs(allDispensingMaterialElogs);
         let filteredArray = allDispensingMaterialElogs.filter((elog) => {
@@ -251,7 +251,7 @@ function EffectiveElogs() {
       .then((response) => {
         const temp = response.data.message;
         const allOperationOfSterelizer = temp.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         setOperationOfSterilizerElogs(allOperationOfSterelizer);
         let filteredArray = allOperationOfSterelizer.filter((elog) => {
@@ -280,7 +280,7 @@ function EffectiveElogs() {
       .then((response) => {
         const temp = response.data.message;
         const allAnalyticalBalance = temp.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         setAnalyticalBalanceElogs(allAnalyticalBalance);
         let filteredArray = allAnalyticalBalance.filter((elog) => {
@@ -362,7 +362,7 @@ function EffectiveElogs() {
       .then((response) => {
         const pHMeterOPCal = response.data.message;
         const allPhMeterOPCal = pHMeterOPCal.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         let filteredArray = pHMeterOPCal.filter((elog) => {
           const userId = userDetails.userId;
@@ -391,7 +391,7 @@ function EffectiveElogs() {
       .then((response) => {
         const uVVisCalib = response.data.message;
         const allUVVisCalibElogs = uVVisCalib.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         let filteredArray = uVVisCalib.filter((elog) => {
           const userId = userDetails.userId;
@@ -448,7 +448,7 @@ function EffectiveElogs() {
       .then((response) => {
         const gelDociGene = response.data.message;
         const allGelDociGene = gelDociGene.filter(
-          (log) => log.status === "Closed"
+          (log) => log.status === "Closed",
         );
         let filteredArray = gelDociGene.filter((elog) => {
           const userId = userDetails.userId;
@@ -713,7 +713,7 @@ function EffectiveElogs() {
   const checkReviewStatus = (item, type) => {
     // find the key where value is an array of record objects
     const key = Object.keys(item).find(
-      (k) => Array.isArray(item[k]) && item[k]?.length >= 0
+      (k) => Array.isArray(item[k]) && item[k]?.length >= 0,
     );
     console.log(key, "filter key");
     if (!key) return false;
@@ -770,8 +770,8 @@ function EffectiveElogs() {
         analyticalBalanceElogs.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -780,8 +780,8 @@ function EffectiveElogs() {
         karlFischerElogs.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -790,8 +790,8 @@ function EffectiveElogs() {
         hplcElogs.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -800,8 +800,8 @@ function EffectiveElogs() {
         pHMeterOPCalElogs.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -810,8 +810,8 @@ function EffectiveElogs() {
         uVVisCalibElogs.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -820,8 +820,8 @@ function EffectiveElogs() {
         sdsPage.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -830,8 +830,8 @@ function EffectiveElogs() {
         gelDociGene.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -840,8 +840,8 @@ function EffectiveElogs() {
         uVWhiteLightTrans.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -850,8 +850,8 @@ function EffectiveElogs() {
         voCalibElogs.filter(
           (item) =>
             reviewStatusFilter === "All" ||
-            checkReviewStatus(item, reviewStatusFilter)
-        )
+            checkReviewStatus(item, reviewStatusFilter),
+        ),
       );
     }
 
@@ -861,8 +861,8 @@ function EffectiveElogs() {
         ?.filter(filterRecord)
         ?.sort(
           (a, b) =>
-            new Date(b.date_of_initiation) - new Date(a.date_of_initiation)
-        )
+            new Date(b.date_of_initiation) - new Date(a.date_of_initiation),
+        ),
     );
   };
 
@@ -870,52 +870,54 @@ function EffectiveElogs() {
     return item.DifferentialPressureRecords
       ? "Differential Pressure"
       : item.TempratureRecords
-      ? "Temperature Records"
-      : item.LoadedQuantityRecords
-      ? "Loaded Quantity"
-      : item.OperationOfSterilizerRecords
-      ? "Operation of Sterilizer"
-      : item.MediaRecords
-      ? "Media Record"
-      : item.DispenseOfMaterials
-      ? "Dispensing of Material"
-      : item.AnalyticalBalances
-      ? "Analytical Balance"
-      : item.karlFischerRecords
-      ? "KARL Fischer"
-      : item.hplcRecords
-      ? "HPLC"
-      : item.OpAndCalMultiParameterProcessRecords
-      ? "pH Meter"
-      : item.UvVisRecords
-      ? "UV-Vis Calibration"
-      : item.sdsPageRecords
-      ? "SDS PAGE"
-      : item.gelDocIGeneRecords
-      ? "Gel Doc iGene"
-      : item.uvWhiteLightRecords
-      ? "UV/WL Transilluminator"
-      : item.voCalibRecords
-      ? "VO Calibration"
-      : eLogSelect === "analytical_balance"
-      ? "Analytical Balance"
-      : eLogSelect === "karl_fischer"
-      ? "KARL Fischer"
-      : eLogSelect === "hplc"
-      ? "HPLC"
-      : eLogSelect === "pH Meter OP/Cal"
-      ? "pHOPCAL"
-      : eLogSelect === "UV-Vis Calibration"
-      ? "UVVIS"
-      : eLogSelect === "SDS PAGE"
-      ? "SDS PAGE"
-      : eLogSelect === "Gel Doc iGene"
-      ? "Gel Doc iGene"
-      : eLogSelect === "UV/WL Transilluminator"
-      ? "UV/WL Transilluminator"
-      : eLogSelect === "VO Calibration"
-      ? "VO-CAL"
-      : "NA";
+        ? "Temperature Records"
+        : item.LoadedQuantityRecords
+          ? "Loaded Quantity"
+          : item.OperationOfSterilizerRecords
+            ? "Operation of Sterilizer"
+            : item.MediaRecords
+              ? "Media Record"
+              : item.DispenseOfMaterials
+                ? "Dispensing of Material"
+                : item.AnalyticalBalances
+                  ? "Analytical Balance"
+                  : item.karlFischerRecords
+                    ? "KARL Fischer"
+                    : item.hplcRecords
+                      ? "HPLC"
+                      : item.OpAndCalMultiParameterProcessRecords
+                        ? "pH Meter"
+                        : item.UvVisRecords
+                          ? "UV-Vis Calibration"
+                          : item.sdsPageRecords
+                            ? "SDS PAGE"
+                            : item.gelDocIGeneRecords
+                              ? "Gel Doc iGene"
+                              : item.uvWhiteLightRecords
+                                ? "UV/WL Transilluminator"
+                                : item.voCalibRecords
+                                  ? "VO Calibration"
+                                  : eLogSelect === "analytical_balance"
+                                    ? "Analytical Balance"
+                                    : eLogSelect === "karl_fischer"
+                                      ? "KARL Fischer"
+                                      : eLogSelect === "hplc"
+                                        ? "HPLC"
+                                        : eLogSelect === "pH Meter OP/Cal"
+                                          ? "pHOPCAL"
+                                          : eLogSelect === "UV-Vis Calibration"
+                                            ? "UVVIS"
+                                            : eLogSelect === "SDS PAGE"
+                                              ? "SDS PAGE"
+                                              : eLogSelect === "Gel Doc iGene"
+                                                ? "Gel Doc iGene"
+                                                : eLogSelect ===
+                                                    "UV/WL Transilluminator"
+                                                  ? "UV/WL Transilluminator"
+                                                  : eLogSelect ===
+                                                      "VO Calibration"
+                                                    ? "VO-CAL"
+                                                    : "NA";
   };
   // const filteredData = getFilteredData();
   const filteredData = getFilteredData()?.filter((item) => {
@@ -929,14 +931,14 @@ function EffectiveElogs() {
       item.site_id === 1
         ? "india"
         : item.site_id === 2
-        ? "malaysia"
-        : item.site_id === 3
-        ? "emea"
-        : item.site_id === 5
-        ? "biologics"
-        : item.site_id === 6
-        ? "ar&d"
-        : "eu";
+          ? "malaysia"
+          : item.site_id === 3
+            ? "emea"
+            : item.site_id === 5
+              ? "biologics"
+              : item.site_id === 6
+                ? "ar&d"
+                : "eu";
     const creator = item.initiator_name?.toLowerCase() || "";
 
     return (
@@ -963,54 +965,56 @@ function EffectiveElogs() {
     return item.DifferentialPressureRecords
       ? "DP"
       : item.TempratureRecords
-      ? "TR"
-      : item.LoadedQuantityRecords
-      ? "LQ"
-      : item.OperationOfSterilizerRecords
-      ? "OF"
-      : item.MediaRecords
-      ? "MR"
-      : item.DispenseOfMaterials
-      ? "DM"
-      : item.AnalyticalBalances
-      ? "AB"
-      : item.karlFischerRecords
-      ? "KF"
-      : item.hplcRecords
-      ? "HP"
-      : item.OpAndCalMultiParameterProcessRecords
-      ? "pHOPCAL"
-      : item.UvVisRecords
-      ? "UVVIS"
-      : item.sdsPageRecords
-      ? "SDSPAGE"
-      : item.gelDocIGeneRecords
-      ? "GELDOCIGENE"
-      : item.uvWhiteLightRecords
-      ? "UV-WLTI"
-      : item.uvWhiteLightRecords
-      ? "UV-WLTI"
-      : item.voCalibRecords
-      ? "VO-CAL"
-      : eLogSelect === "analytical_balance"
-      ? "AB"
-      : eLogSelect === "karl_fischer"
-      ? "KF"
-      : eLogSelect === "hplc"
-      ? "HP"
-      : eLogSelect === "pH Meter OP/Cal"
-      ? "pHOPCAL"
-      : eLogSelect === "UV-Vis Calib"
-      ? "UVVIS"
-      : eLogSelect === "SDS PAGE"
-      ? "SDS PAGE"
-      : eLogSelect === "Gel Doc iGene"
-      ? "GELDOCIGENE"
-      : eLogSelect === "UV/WL Transilluminator"
-      ? "UV-WLTI"
-      : eLogSelect === "VO Calibration"
-      ? "VO-CAL"
-      : "";
+        ? "TR"
+        : item.LoadedQuantityRecords
+          ? "LQ"
+          : item.OperationOfSterilizerRecords
+            ? "OF"
+            : item.MediaRecords
+              ? "MR"
+              : item.DispenseOfMaterials
+                ? "DM"
+                : item.AnalyticalBalances
+                  ? "AB"
+                  : item.karlFischerRecords
+                    ? "KF"
+                    : item.hplcRecords
+                      ? "HP"
+                      : item.OpAndCalMultiParameterProcessRecords
+                        ? "pHOPCAL"
+                        : item.UvVisRecords
+                          ? "UVVIS"
+                          : item.sdsPageRecords
+                            ? "SDSPAGE"
+                            : item.gelDocIGeneRecords
+                              ? "GELDOCIGENE"
+                              : item.uvWhiteLightRecords
+                                ? "UV-WLTI"
+                                : item.uvWhiteLightRecords
+                                  ? "UV-WLTI"
+                                  : item.voCalibRecords
+                                    ? "VO-CAL"
+                                    : eLogSelect === "analytical_balance"
+                                      ? "AB"
+                                      : eLogSelect === "karl_fischer"
+                                        ? "KF"
+                                        : eLogSelect === "hplc"
+                                          ? "HP"
+                                          : eLogSelect === "pH Meter OP/Cal"
+                                            ? "pHOPCAL"
+                                            : eLogSelect === "UV-Vis Calib"
+                                              ? "UVVIS"
+                                              : eLogSelect === "SDS PAGE"
+                                                ? "SDS PAGE"
+                                                : eLogSelect === "Gel Doc iGene"
+                                                  ? "GELDOCIGENE"
+                                                  : eLogSelect ===
+                                                      "UV/WL Transilluminator"
+                                                    ? "UV-WLTI"
+                                                    : eLogSelect ===
+                                                        "VO Calibration"
+                                                      ? "VO-CAL"
+                                                      : "";
   };
 
   const labelStyle = {
@@ -1303,47 +1307,45 @@ function EffectiveElogs() {
                     className="relative group cursor-pointer text-black hover:text-blue-600"
                   >
                     {/* Tooltip */}
-                   <span
-  className="absolute -bottom-9 left-0 
+                    <span
+                      className="absolute -bottom-9 left-0 
     bg-transparent border border-black/40 
     text-black text-xs px-2 py-1 rounded 
     opacity-0 group-hover:opacity-100 pointer-events-none
     transition-opacity duration-150"
->
-  Click to select
-</span>
-
-
+                    >
+                      Click to select
+                    </span>
 
                     {item.DifferentialPressureRecords
                       ? getElogNumber(item)
                       : item.TempratureRecords
-                      ? getElogNumber(item)
-                      : item.LoadedQuantityRecords
-                      ? getElogNumber(item)
-                      : item.OperationOfSterilizerRecords
-                      ? getElogNumber(item)
-                      : item.MediaRecords
-                      ? getElogNumber(item)
-                      : item.DispenseOfMaterials
-                      ? getElogNumber(item)
-                      : item.AnalyticalBalances
-                      ? getElogNumber(item)
-                      : item.karlFischerRecords
-                      ? getElogNumber(item)
-                      : item.hplcRecords
-                      ? getElogNumber(item)
-                      : item.OpAndCalMultiParameterProcessRecords
-                      ? getElogNumber(item)
-                      : item.UvVisRecords
-                      ? getElogNumber(item)
-                      : item.sdsPageRecords
-                      ? getElogNumber(item)
-                      : item.gelDocIGeneRecords
-                      ? getElogNumber(item)
-                      : item.uvWhiteLightRecords
-                      ? getElogNumber(item)
-                      : null}
+                        ? getElogNumber(item)
+                        : item.LoadedQuantityRecords
+                          ? getElogNumber(item)
+                          : item.OperationOfSterilizerRecords
+                            ? getElogNumber(item)
+                            : item.MediaRecords
+                              ? getElogNumber(item)
+                              : item.DispenseOfMaterials
+                                ? getElogNumber(item)
+                                : item.AnalyticalBalances
+                                  ? getElogNumber(item)
+                                  : item.karlFischerRecords
+                                    ? getElogNumber(item)
+                                    : item.hplcRecords
+                                      ? getElogNumber(item)
+                                      : item.OpAndCalMultiParameterProcessRecords
+                                        ? getElogNumber(item)
+                                        : item.UvVisRecords
+                                          ? getElogNumber(item)
+                                          : item.sdsPageRecords
+                                            ? getElogNumber(item)
+                                            : item.gelDocIGeneRecords
+                                              ? getElogNumber(item)
+                                              : item.uvWhiteLightRecords
+                                                ? getElogNumber(item)
+                                                : null}
                   </td>
 
                   <td>{getEquipmentType(item)}</td>
@@ -1351,18 +1353,22 @@ function EffectiveElogs() {
                     {item.site_id === 1
                       ? "India"
                       : item.site_id === 2
-                      ? "Malaysia"
-                      : item.site_id === 3
-                      ? "EMEA"
-                      : item.site_id === 5
-                      ? "Biologics"
-                      : item.site_id === 6
-                      ? "AR&D"
-                      : "EU"}
+                        ? "Malaysia"
+                        : item.site_id === 3
+                          ? "EMEA"
+                          : item.site_id === 5
+                            ? "Biologics"
+                            : item.site_id === 6
+                              ? "AR&D"
+                              : "EU"}
                   </td>
                   <td dangerouslySetInnerHTML={{ __html: cleanHTML }}></td>
                   <td>{item.initiator_name}</td>
-                  <td>{dayjs(item.date_of_initiation).format("DD-MM-YYYY hh:mm a")}</td>
+                  <td>
+                    {dayjs(item.date_of_initiation).format(
+                      "DD-MM-YYYY hh:mm a",
+                    )}
+                  </td>
                 </tr>
               );
             })}

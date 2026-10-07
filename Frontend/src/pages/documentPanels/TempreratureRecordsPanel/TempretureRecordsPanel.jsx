@@ -71,7 +71,7 @@ export default function TempretureRecordsPanel() {
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -79,7 +79,7 @@ export default function TempretureRecordsPanel() {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -89,7 +89,7 @@ export default function TempretureRecordsPanel() {
         .put(
           "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -98,7 +98,7 @@ export default function TempretureRecordsPanel() {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -109,7 +109,7 @@ export default function TempretureRecordsPanel() {
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -125,7 +125,7 @@ export default function TempretureRecordsPanel() {
         .put(
           "http://localhost:1000/temprature-record/approve-TR-elog",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully Closed Done");
@@ -133,7 +133,7 @@ export default function TempretureRecordsPanel() {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -143,7 +143,7 @@ export default function TempretureRecordsPanel() {
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -169,7 +169,7 @@ export default function TempretureRecordsPanel() {
 
       if (
         editData?.TempratureRecords?.some(
-          (record) => record.temprature_record === "" || record.remarks === ""
+          (record) => record.temprature_record === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -258,10 +258,10 @@ export default function TempretureRecordsPanel() {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Temperature Record",
@@ -290,7 +290,7 @@ export default function TempretureRecordsPanel() {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -380,7 +380,7 @@ export default function TempretureRecordsPanel() {
       e({
         ...prevState,
         TempratureRecords: updatedGridData,
-      })
+      }),
     );
   };
 
@@ -422,10 +422,10 @@ export default function TempretureRecordsPanel() {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -586,8 +586,8 @@ export default function TempretureRecordsPanel() {
                         location.state?.stage > 1
                           ? "bg-green-500 text-white"
                           : location.state?.stage === 1
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-200 text-gray-700"
+                            ? "bg-orange-500 text-white"
+                            : "bg-gray-200 text-gray-700"
                       }`}
                     >
                       OPENED
@@ -598,8 +598,8 @@ export default function TempretureRecordsPanel() {
                         location.state?.stage > 2
                           ? "bg-green-500 text-white"
                           : location.state?.stage === 2
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-200 text-gray-700"
+                            ? "bg-orange-500 text-white"
+                            : "bg-gray-200 text-gray-700"
                       }`}
                     >
                       UNDER REVIEW
@@ -610,8 +610,8 @@ export default function TempretureRecordsPanel() {
                         location.state?.stage > 3
                           ? "bg-green-500 text-white"
                           : location.state?.stage === 3
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-200 text-gray-700"
+                            ? "bg-orange-500 text-white"
+                            : "bg-gray-200 text-gray-700"
                       }`}
                     >
                       UNDER APPROVAL
@@ -623,8 +623,8 @@ export default function TempretureRecordsPanel() {
                         location.state?.stage > 4
                           ? "bg-green-500 text-white"
                           : location.state?.stage === 4
-                          ? "bg-red-500 text-white"
-                          : "bg-gray-200 text-gray-700"
+                            ? "bg-red-500 text-white"
+                            : "bg-gray-200 text-gray-700"
                       }`}
                     >
                       CLOSED DONE
@@ -641,11 +641,11 @@ export default function TempretureRecordsPanel() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -657,11 +657,11 @@ export default function TempretureRecordsPanel() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -673,11 +673,11 @@ export default function TempretureRecordsPanel() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(true),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Initiator Remarks
@@ -689,11 +689,11 @@ export default function TempretureRecordsPanel() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(true),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Reviewer Remarks
@@ -705,11 +705,11 @@ export default function TempretureRecordsPanel() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(true);
+                        setApproverRemarks(true));
                     }}
                   >
                     Approver Remarks
@@ -1103,7 +1103,9 @@ export default function TempretureRecordsPanel() {
                   <div className="flex flex-col w-full">
                     <label className=" text-lg text-gray-900 mb-1">
                       Additional Info{" "}
-                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      <span className="text-sm text-zinc-600">
+                        (If / Any)
+                      </span>{" "}
                     </label>
                     <textarea
                       className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
@@ -1199,7 +1201,7 @@ export default function TempretureRecordsPanel() {
                                 href={
                                   editData.initiatorAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.initiatorAttachment
+                                        editData.initiatorAttachment,
                                       )
                                     : editData.initiatorAttachment
                                 }
@@ -1209,7 +1211,7 @@ export default function TempretureRecordsPanel() {
                               >
                                 {editData?.initiatorAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
@@ -1343,7 +1345,7 @@ export default function TempretureRecordsPanel() {
                                 href={
                                   editData.reviewerAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.reviewerAttachment
+                                        editData.reviewerAttachment,
                                       )
                                     : editData.reviewerAttachment
                                 }
@@ -1353,7 +1355,7 @@ export default function TempretureRecordsPanel() {
                               >
                                 {editData?.reviewerAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
                               {editData.reviewerAttachment.name && (
@@ -1487,7 +1489,7 @@ export default function TempretureRecordsPanel() {
                                 href={
                                   editData.approverAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.approverAttachment
+                                        editData.approverAttachment,
                                       )
                                     : editData.approverAttachment
                                 }
@@ -1497,7 +1499,7 @@ export default function TempretureRecordsPanel() {
                               >
                                 {editData?.approverAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.approverAttachment?.slice(46)}{" "}
                               </a>

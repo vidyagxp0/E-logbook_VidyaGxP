@@ -5,6 +5,15 @@ import { useLocation } from "react-router-dom";
 import Select from "react-select";
 import { toast, ToastContainer } from "react-toastify";
 
+const CHATPDF_KEY = "sec_qLUcsYBeIWAt564Tk5zhHg76DQHjastL";
+
+const CHATPDF_BASE = "https://api.chatpdf.com/v1";
+const chatPdfConfig = {
+  headers: {
+    "x-api-key": CHATPDF_KEY,
+    "Content-Type": "application/json",
+  },
+};
 const Effective_ViewReport = () => {
   const [data, setData] = useState([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -36,7 +45,7 @@ const Effective_ViewReport = () => {
 
   const initializeChatModal = async (data) => {
     try {
-      const addPdfUrl = "https://api.chatpdf.com/v1/sources/add-url";
+      const addPdfUrl = `${CHATPDF_BASE}/sources/add-url`;
 
       const res = await axios.post(addPdfUrl, data, chatPdfConfig);
 
@@ -51,6 +60,7 @@ const Effective_ViewReport = () => {
       // url: "https://pdfobject.com/pdf/sample.pdf",
       url: pdfUrl,
     });
+    console.log(pdfUrl, "pdfUrl");
   }, []);
 
   const handleSendMessage = async () => {
@@ -74,7 +84,7 @@ const Effective_ViewReport = () => {
           const pdfRes = await axios.post(
             "https://api.chatpdf.com/v1/chats/message",
             chatData,
-            chatPdfConfig
+            chatPdfConfig,
           );
 
           setMessages((prevMessages) => [
@@ -127,7 +137,7 @@ const Effective_ViewReport = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const emailOptions = response.data.response.map((user) => ({
         value: user.email,
@@ -169,7 +179,7 @@ const Effective_ViewReport = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
 
     toast.promise(emailPromise, {

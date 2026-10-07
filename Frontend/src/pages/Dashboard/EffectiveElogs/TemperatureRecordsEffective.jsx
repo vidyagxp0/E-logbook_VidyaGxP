@@ -87,7 +87,7 @@ export default function TempretureRecordsEffective() {
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -95,7 +95,7 @@ export default function TempretureRecordsEffective() {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -105,7 +105,7 @@ export default function TempretureRecordsEffective() {
         .put(
           "http://localhost:1000/temprature-record/send-TR-from-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -114,7 +114,7 @@ export default function TempretureRecordsEffective() {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -125,7 +125,7 @@ export default function TempretureRecordsEffective() {
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-from-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -141,7 +141,7 @@ export default function TempretureRecordsEffective() {
         .put(
           "http://localhost:1000/temprature-record/approve-TR-elog",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully Closed Done");
@@ -149,7 +149,7 @@ export default function TempretureRecordsEffective() {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -159,7 +159,7 @@ export default function TempretureRecordsEffective() {
         .put(
           "http://localhost:1000/temprature-record/send-TR-elog-from-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -185,7 +185,7 @@ export default function TempretureRecordsEffective() {
 
       if (
         editData?.TempratureRecords?.some(
-          (record) => record.temprature_record === ""
+          (record) => record.temprature_record === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -317,7 +317,7 @@ export default function TempretureRecordsEffective() {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -336,10 +336,10 @@ export default function TempretureRecordsEffective() {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Temperature Record",
@@ -365,7 +365,7 @@ export default function TempretureRecordsEffective() {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -495,10 +495,10 @@ export default function TempretureRecordsEffective() {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -762,11 +762,11 @@ export default function TempretureRecordsEffective() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -965,13 +965,13 @@ export default function TempretureRecordsEffective() {
                         editData?.limit < 23
                           ? "limit"
                           : editData?.limit > 27
-                          ? "limit"
-                          : ""
+                            ? "limit"
+                            : ""
                       }`}
                       value={editData?.limit}
                       onChange={handleInputChange1}
                       readOnly={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
+                        userDetails.roles[0].role_id,
                       )}
                     />
                   </div>
@@ -1013,8 +1013,8 @@ export default function TempretureRecordsEffective() {
                                 item.temprature_record < editData.limit
                                   ? "text-green-500"
                                   : item.temprature_record > editData.limit
-                                  ? "text-red-600"
-                                  : ""
+                                    ? "text-red-600"
+                                    : ""
                               }`}
                               onChange={(e) => {
                                 const newData = [...editData.TempratureRecords];
@@ -1026,7 +1026,7 @@ export default function TempretureRecordsEffective() {
                                 });
                               }}
                               readOnly={[3, 2, 4].includes(
-                                userDetails.roles[0].role_id
+                                userDetails.roles[0].role_id,
                               )}
                             />
                           </td>
@@ -1042,7 +1042,7 @@ export default function TempretureRecordsEffective() {
                                 });
                               }}
                               disabled={[1, 3].includes(
-                                userDetails.roles[0].role_id
+                                userDetails.roles[0].role_id,
                               )}
                             />
                           </td>
@@ -1068,7 +1068,7 @@ export default function TempretureRecordsEffective() {
                                     });
                                   }}
                                   disabled={[1, 3].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                                 {item.reviewed_by && <p>{item.reviewed_by}</p>}
@@ -1088,7 +1088,7 @@ export default function TempretureRecordsEffective() {
                                 });
                               }}
                               disabled={[1, 2].includes(
-                                userDetails.roles[0].role_id
+                                userDetails.roles[0].role_id,
                               )}
                             />
                           </td>
@@ -1114,7 +1114,7 @@ export default function TempretureRecordsEffective() {
                                     });
                                   }}
                                   disabled={[1, 2].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                                 {item.approved_by && <p>{item.approved_by}</p>}
@@ -1168,7 +1168,7 @@ export default function TempretureRecordsEffective() {
                                         [index].click()
                                     }
                                     readOnly={[3, 2, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     )}
                                   >
                                     Select File
@@ -1273,7 +1273,9 @@ export default function TempretureRecordsEffective() {
                   <div className="flex flex-col w-full">
                     <label className=" text-lg text-gray-900 mb-1">
                       Additional Info{" "}
-                      <span className="text-sm text-zinc-600">(If / Any)</span>{" "}
+                      <span className="text-sm text-zinc-600">
+                        (If / Any)
+                      </span>{" "}
                     </label>
                     <textarea
                       className="block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"

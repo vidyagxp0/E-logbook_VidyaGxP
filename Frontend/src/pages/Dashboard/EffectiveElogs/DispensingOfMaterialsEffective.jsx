@@ -89,7 +89,7 @@ const DispensingOfMaterialsEffective = () => {
         .put(
           "http://localhost:1000/dispensing-material/send-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -97,7 +97,7 @@ const DispensingOfMaterialsEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -107,7 +107,7 @@ const DispensingOfMaterialsEffective = () => {
         .put(
           "http://localhost:1000/dispensing-material/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -116,7 +116,7 @@ const DispensingOfMaterialsEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -126,7 +126,7 @@ const DispensingOfMaterialsEffective = () => {
         .put(
           "http://localhost:1000/dispensing-material/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -146,7 +146,7 @@ const DispensingOfMaterialsEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -156,7 +156,7 @@ const DispensingOfMaterialsEffective = () => {
         .put(
           "http://localhost:1000/dispensing-material/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -181,7 +181,7 @@ const DispensingOfMaterialsEffective = () => {
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+            record.differential_pressure === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -447,7 +447,7 @@ const DispensingOfMaterialsEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -466,10 +466,10 @@ const DispensingOfMaterialsEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Dispensing Of Materials",
@@ -502,7 +502,7 @@ const DispensingOfMaterialsEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -547,10 +547,10 @@ const DispensingOfMaterialsEffective = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -811,11 +811,11 @@ const DispensingOfMaterialsEffective = () => {
                       
                     `}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   ></div>
                   {/* <div
@@ -1021,7 +1021,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1039,7 +1039,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1059,7 +1059,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1078,7 +1078,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1097,7 +1097,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1115,7 +1115,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 disabled={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               >
                                 {/* <option value="">Select A Control No</option>
@@ -1141,7 +1141,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 disabled={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               >
                                 {/* <option value="" disabled>
@@ -1168,7 +1168,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 disabled={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1187,7 +1187,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 disabled={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1205,7 +1205,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1223,7 +1223,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1242,7 +1242,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1260,7 +1260,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1279,7 +1279,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1298,7 +1298,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1341,7 +1341,7 @@ const DispensingOfMaterialsEffective = () => {
                                       });
                                     }}
                                     disabled={[1, 3].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     )}
                                   />
                                   {item.reviewed_by && (
@@ -1366,7 +1366,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1384,7 +1384,7 @@ const DispensingOfMaterialsEffective = () => {
                                   });
                                 }}
                                 disabled={[1, 3].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1428,7 +1428,7 @@ const DispensingOfMaterialsEffective = () => {
                               href={
                                 editData.additionalAttachment instanceof File
                                   ? URL.createObjectURL(
-                                      editData.additionalAttachment
+                                      editData.additionalAttachment,
                                     )
                                   : editData.additionalAttachment
                               }

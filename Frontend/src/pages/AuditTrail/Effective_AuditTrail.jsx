@@ -30,7 +30,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -46,7 +46,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -62,7 +62,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -78,7 +78,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -94,7 +94,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -110,7 +110,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -126,7 +126,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/analytical-balance/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -142,7 +142,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/karl-fischer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -158,7 +158,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/hplc/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -174,7 +174,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/op-and-calParameter/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -190,7 +190,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/uv-vis-calib/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -206,7 +206,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/sds-page/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -222,7 +222,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/gel-doc-igene/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -238,7 +238,7 @@ function Effective_AuditTrail() {
             `http://localhost:1000/vo-cal/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -320,7 +320,7 @@ function Effective_AuditTrail() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`
+        `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`,
       );
 
       if (!response.ok) {
@@ -426,10 +426,8 @@ function Effective_AuditTrail() {
               className="font-semibold text-black flex items-center gap-2"
               style={{ textAlign: "center", fontSize: "1.5em", margin: "auto" }}
             >
-            <p className="">
-  {location.state?.process}
-</p>
-  <strong>Audit Trail</strong>
+              <p className="">{location.state?.process}</p>
+              <strong>Audit Trail</strong>
             </h3>
             <div className="flex flex-col gap-3 items-center justify-center">
               {/* Generate Report Button */}
@@ -515,9 +513,9 @@ function Effective_AuditTrail() {
                   ...new Set(
                     auditTrails
                       .filter((t) =>
-                        t.User?.UserRoles?.some((r) => r.role_id === 1)
+                        t.User?.UserRoles?.some((r) => r.role_id === 1),
                       )
-                      .map((t) => t.User?.name)
+                      .map((t) => t.User?.name),
                   ),
                 ].map((name, idx) => (
                   <option key={idx} value={name}>
@@ -545,9 +543,9 @@ function Effective_AuditTrail() {
                   ...new Set(
                     auditTrails
                       .filter((t) =>
-                        t.User?.UserRoles?.some((r) => r.role_id === 2)
+                        t.User?.UserRoles?.some((r) => r.role_id === 2),
                       )
-                      .map((t) => t.User?.name)
+                      .map((t) => t.User?.name),
                   ),
                 ].map((name, idx) => (
                   <option key={idx} value={name}>
@@ -725,7 +723,7 @@ function Effective_AuditTrail() {
                           "department",
                           "description",
                           "compression_area",
-                        ].includes(auditTrail.field_name)
+                        ].includes(auditTrail.field_name),
                     )
                     .map((auditTrail, index) => (
                       <tr key={index}>

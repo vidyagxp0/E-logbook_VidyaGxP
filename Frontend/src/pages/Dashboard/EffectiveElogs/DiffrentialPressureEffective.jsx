@@ -60,7 +60,7 @@ export default function DPREffective() {
     const cleanedData = editData.DifferentialPressureRecords.filter(
       (record) =>
         record.differential_pressure.trim() !== "" ||
-        record.remarks.trim() !== ""
+        record.remarks.trim() !== "",
     );
 
     const updatedEditData = {
@@ -99,7 +99,7 @@ export default function DPREffective() {
         .put(
           "http://localhost:1000/differential-pressure/send-DP-elog-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -107,7 +107,7 @@ export default function DPREffective() {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -117,7 +117,7 @@ export default function DPREffective() {
         .put(
           "http://localhost:1000/differential-pressure/send-DP-from-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -126,7 +126,7 @@ export default function DPREffective() {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -136,7 +136,7 @@ export default function DPREffective() {
         .put(
           "http://localhost:1000/differential-pressure/send-DP-elog-from-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -152,7 +152,7 @@ export default function DPREffective() {
         .put(
           "http://localhost:1000/differential-pressure/approve-DP-elog",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully Closed Done");
@@ -160,7 +160,7 @@ export default function DPREffective() {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -170,7 +170,7 @@ export default function DPREffective() {
         .put(
           "http://localhost:1000/differential-pressure/send-DP-elog-from-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -194,7 +194,7 @@ export default function DPREffective() {
       // }
       if (
         editData?.DifferentialPressureRecords?.some(
-          (record) => record.differential_pressure === ""
+          (record) => record.differential_pressure === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -436,7 +436,7 @@ export default function DPREffective() {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -455,10 +455,10 @@ export default function DPREffective() {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Differential Pressure Record",
@@ -484,7 +484,7 @@ export default function DPREffective() {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -521,10 +521,10 @@ export default function DPREffective() {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -1049,7 +1049,7 @@ export default function DPREffective() {
                       value={editData?.limit}
                       onChange={handleInputChange1}
                       readOnly={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
+                        userDetails.roles[0].role_id,
                       )}
                     />
                   </div>
@@ -1093,9 +1093,9 @@ export default function DPREffective() {
                                   Number(editData?.limit)
                                     ? "text-green-500"
                                     : Number(item?.differential_pressure) >
-                                      Number(editData?.limit)
-                                    ? "text-red-600"
-                                    : ""
+                                        Number(editData?.limit)
+                                      ? "text-red-600"
+                                      : ""
                                 }`}
                                 onChange={(e) => {
                                   const newData = [
@@ -1109,7 +1109,7 @@ export default function DPREffective() {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1127,7 +1127,7 @@ export default function DPREffective() {
                                   });
                                 }}
                                 disabled={[1, 3].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1154,7 +1154,7 @@ export default function DPREffective() {
                                       });
                                     }}
                                     disabled={[1, 3].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     )}
                                   />
                                   {item.reviewed_by && (
@@ -1178,7 +1178,7 @@ export default function DPREffective() {
                                   });
                                 }}
                                 disabled={[1, 2].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1205,7 +1205,7 @@ export default function DPREffective() {
                                       });
                                     }}
                                     disabled={[1, 2].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     )}
                                   />
                                   {item.approved_by && (
@@ -1260,7 +1260,7 @@ export default function DPREffective() {
                                           [index].click()
                                       }
                                       readOnly={[3, 2, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       )}
                                     >
                                       Select File
@@ -1293,7 +1293,7 @@ export default function DPREffective() {
                                 )}
                             </td>
                           </tr>
-                        )
+                        ),
                       )}
                     </tbody>
                   </table>
@@ -1333,7 +1333,7 @@ export default function DPREffective() {
                                 href={
                                   editData.additionalAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.additionalAttachment
+                                        editData.additionalAttachment,
                                       )
                                     : editData.additionalAttachment
                                 }
@@ -1343,7 +1343,7 @@ export default function DPREffective() {
                               >
                                 {editData?.additionalAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) || editData?.additionalAttachment?.slice(46)}
                               </a>
                               {editData.additionalAttachment.name && (

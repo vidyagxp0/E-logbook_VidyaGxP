@@ -23,7 +23,7 @@ function AuditTrail() {
             `http://localhost:1000/differential-pressure/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -39,7 +39,7 @@ function AuditTrail() {
             `http://localhost:1000/temprature-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -55,7 +55,7 @@ function AuditTrail() {
             `http://localhost:1000/loaded-quantity/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -71,7 +71,7 @@ function AuditTrail() {
             `http://localhost:1000/operation-sterlizer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -87,7 +87,7 @@ function AuditTrail() {
             `http://localhost:1000/media-record/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -103,7 +103,7 @@ function AuditTrail() {
             `http://localhost:1000/dispensing-material/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -119,7 +119,7 @@ function AuditTrail() {
             `http://localhost:1000/analytical-balance/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -135,7 +135,7 @@ function AuditTrail() {
             `http://localhost:1000/karl-fischer/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -151,7 +151,7 @@ function AuditTrail() {
             `http://localhost:1000/hplc/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -167,7 +167,7 @@ function AuditTrail() {
             `http://localhost:1000/op-and-calParameter/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -183,7 +183,7 @@ function AuditTrail() {
             `http://localhost:1000/uv-vis-calib/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -199,7 +199,7 @@ function AuditTrail() {
             `http://localhost:1000/sds-page/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -215,14 +215,13 @@ function AuditTrail() {
             `http://localhost:1000/gel-doc-igene/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
           console.error(error);
         }
-      }
-      else if (location.state?.process === "VO Calibration") {
+      } else if (location.state?.process === "VO Calibration") {
         const myHeaders = {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         };
@@ -232,7 +231,7 @@ function AuditTrail() {
             `http://localhost:1000/vo-cal/get-audit-trail-for-elog/${location.state?.formId}`,
             {
               headers: myHeaders,
-            }
+            },
           );
           setAuditTrails(response.data.auditTrail);
         } catch (error) {
@@ -329,7 +328,7 @@ function AuditTrail() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`
+        `http://localhost:1000/differential-pressure/get-audit-report/${formId}/${type}/${User.user_id}`,
       );
 
       if (!response.ok) {
@@ -621,7 +620,7 @@ function AuditTrail() {
                         <div className="text-nowrap flex">
                           New Value :{" "}
                           {auditTrail?.new_value?.includes(
-                            "http://localhost:1000/"
+                            "http://localhost:1000/",
                           ) ? (
                             <a
                               href={auditTrail.new_value}

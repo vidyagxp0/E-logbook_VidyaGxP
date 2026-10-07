@@ -117,7 +117,7 @@ const MediaRecordEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -127,7 +127,7 @@ const MediaRecordEffective = () => {
         .put(
           "http://localhost:1000/media-record/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -136,7 +136,7 @@ const MediaRecordEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -146,7 +146,7 @@ const MediaRecordEffective = () => {
         .put(
           "http://localhost:1000/media-record/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -166,7 +166,7 @@ const MediaRecordEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -176,7 +176,7 @@ const MediaRecordEffective = () => {
         .put(
           "http://localhost:1000/media-record/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -201,7 +201,7 @@ const MediaRecordEffective = () => {
       if (
         editData?.MediaRecords?.some(
           (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+            record.differential_pressure === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -462,7 +462,7 @@ const MediaRecordEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -481,10 +481,10 @@ const MediaRecordEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Media Record",
@@ -510,7 +510,7 @@ const MediaRecordEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -579,10 +579,10 @@ const MediaRecordEffective = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -843,11 +843,11 @@ const MediaRecordEffective = () => {
                       
                     `}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   ></div>
                   {/* <div
@@ -1044,7 +1044,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1062,7 +1062,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1079,7 +1079,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1119,7 +1119,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1136,7 +1136,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1153,7 +1153,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1169,7 +1169,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1186,7 +1186,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1213,7 +1213,7 @@ const MediaRecordEffective = () => {
                                       });
                                     }}
                                     disabled={[1, 3].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     )}
                                   />
                                   {item.reviewed_by && (
@@ -1234,7 +1234,7 @@ const MediaRecordEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1279,7 +1279,7 @@ const MediaRecordEffective = () => {
                               href={
                                 editData.additionalAttachment instanceof File
                                   ? URL.createObjectURL(
-                                      editData.additionalAttachment
+                                      editData.additionalAttachment,
                                     )
                                   : editData.additionalAttachment
                               }

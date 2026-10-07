@@ -17,7 +17,7 @@ function RelatedRecordModal(_props) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:1000/LabIncident/api/findAllDivision"
+          "http://localhost:1000/LabIncident/api/findAllDivision",
         );
         if (!response.ok) {
           throw new Error("Failed to fetch data");
@@ -160,7 +160,7 @@ function RelatedRecordModal(_props) {
                         <td>{item.generalInformation[0].assignedTo}</td>
                         <td>
                           {convertDateFormat(
-                            item.generalInformation[0].dueDate
+                            item.generalInformation[0].dueDate,
                           )}
                         </td>
                         <td></td>

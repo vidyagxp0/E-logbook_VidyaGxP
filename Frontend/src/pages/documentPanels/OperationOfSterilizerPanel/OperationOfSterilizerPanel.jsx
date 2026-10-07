@@ -113,7 +113,7 @@ const OperationOfSterilizerPanel = () => {
         .put(
           "http://localhost:1000/operation-sterlizer/send-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -121,7 +121,7 @@ const OperationOfSterilizerPanel = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -131,7 +131,7 @@ const OperationOfSterilizerPanel = () => {
         .put(
           "http://localhost:1000/operation-sterlizer/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -140,7 +140,7 @@ const OperationOfSterilizerPanel = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -150,7 +150,7 @@ const OperationOfSterilizerPanel = () => {
         .put(
           "http://localhost:1000/operation-sterlizer/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -170,7 +170,7 @@ const OperationOfSterilizerPanel = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -180,7 +180,7 @@ const OperationOfSterilizerPanel = () => {
         .put(
           "http://localhost:1000/operation-sterlizer/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -205,7 +205,7 @@ const OperationOfSterilizerPanel = () => {
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+            record.differential_pressure === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -380,7 +380,7 @@ const OperationOfSterilizerPanel = () => {
             return { ...item, supporting_docs: null };
           }
           return item;
-        }
+        },
       );
       setEditData((prevState) => ({
         ...prevState,
@@ -441,10 +441,10 @@ const OperationOfSterilizerPanel = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Operation Of Sterilizer",
@@ -470,7 +470,7 @@ const OperationOfSterilizerPanel = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -507,10 +507,10 @@ const OperationOfSterilizerPanel = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -671,8 +671,8 @@ const OperationOfSterilizerPanel = () => {
                       location.state?.stage > 1
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 1
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     OPENED
@@ -683,8 +683,8 @@ const OperationOfSterilizerPanel = () => {
                       location.state?.stage > 2
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 2
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER REVIEW
@@ -695,8 +695,8 @@ const OperationOfSterilizerPanel = () => {
                       location.state?.stage > 3
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 3
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER APPROVAL
@@ -708,8 +708,8 @@ const OperationOfSterilizerPanel = () => {
                       location.state?.stage > 4
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 4
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-red-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     CLOSED DONE
@@ -725,11 +725,11 @@ const OperationOfSterilizerPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -741,11 +741,11 @@ const OperationOfSterilizerPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -757,11 +757,11 @@ const OperationOfSterilizerPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(true),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Initiator Remarks
@@ -773,11 +773,11 @@ const OperationOfSterilizerPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(true),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Reviewer Remarks
@@ -789,11 +789,11 @@ const OperationOfSterilizerPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(true);
+                        setApproverRemarks(true));
                     }}
                   >
                     Approver Remarks
@@ -1311,7 +1311,7 @@ const OperationOfSterilizerPanel = () => {
                                     editData.additionalAttachment instanceof
                                     File
                                       ? URL.createObjectURL(
-                                          editData.additionalAttachment
+                                          editData.additionalAttachment,
                                         )
                                       : editData.additionalAttachment
                                   }
@@ -1321,10 +1321,10 @@ const OperationOfSterilizerPanel = () => {
                                 >
                                   {editData?.additionalAttachment?.name?.slice(
                                     0,
-                                    30
+                                    30,
                                   ) ||
                                     editData?.additionalAttachment?.slice(
-                                      46
+                                      46,
                                     )}{" "}
                                 </a>
                               </h3>
@@ -1466,7 +1466,7 @@ const OperationOfSterilizerPanel = () => {
                                 href={
                                   editData.initiatorAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.initiatorAttachment
+                                        editData.initiatorAttachment,
                                       )
                                     : editData.initiatorAttachment
                                 }
@@ -1476,7 +1476,7 @@ const OperationOfSterilizerPanel = () => {
                               >
                                 {editData?.initiatorAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
@@ -1617,7 +1617,7 @@ const OperationOfSterilizerPanel = () => {
                                 href={
                                   editData.reviewerAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.reviewerAttachment
+                                        editData.reviewerAttachment,
                                       )
                                     : editData.reviewerAttachment
                                 }
@@ -1627,7 +1627,7 @@ const OperationOfSterilizerPanel = () => {
                               >
                                 {editData?.reviewerAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
                               {editData.reviewerAttachment.name && (
@@ -1768,7 +1768,7 @@ const OperationOfSterilizerPanel = () => {
                                 href={
                                   editData.approverAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.approverAttachment
+                                        editData.approverAttachment,
                                       )
                                     : editData.approverAttachment
                                 }
@@ -1778,7 +1778,7 @@ const OperationOfSterilizerPanel = () => {
                               >
                                 {editData?.approverAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.approverAttachment?.slice(46)}{" "}
                               </a>

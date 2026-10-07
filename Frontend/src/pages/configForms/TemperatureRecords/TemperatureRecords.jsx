@@ -117,7 +117,7 @@ export default function TemperatureRecords() {
       tempratureRecord.reviewer_id === null
     ) {
       toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
+        "Please select an approver and a reviewer before saving e-log!",
       );
       return;
     }
@@ -133,7 +133,7 @@ export default function TemperatureRecords() {
     // }
     if (
       tempratureRecord?.FormRecordsArray?.some(
-        (record) => record.temprature_record === "" || record.remarks === ""
+        (record) => record.temprature_record === "" || record.remarks === "",
       )
     ) {
       toast.error("Please provide grid details!");
@@ -155,7 +155,7 @@ export default function TemperatureRecords() {
       .post(
         "http://localhost:1000/temprature-record/post-temprature-record",
         tempratureRecord,
-        config
+        config,
       )
       .then(() => {
         toast.success("eLog Saved Successfully!");
@@ -227,7 +227,7 @@ export default function TemperatureRecords() {
       initiatorDeclaration: "",
       additionalInfo: "",
       additionalAttachment: null,
-    }
+    },
   );
 
   useEffect(() => {
@@ -315,11 +315,11 @@ export default function TemperatureRecords() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -331,11 +331,11 @@ export default function TemperatureRecords() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -569,7 +569,7 @@ export default function TemperatureRecords() {
                               reviewers.map((reviewer) => [
                                 reviewer.user_id,
                                 reviewer,
-                              ])
+                              ]),
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -601,7 +601,7 @@ export default function TemperatureRecords() {
                               approvers.map((approver) => [
                                 approver.user_id,
                                 approver,
-                              ])
+                              ]),
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>
@@ -668,8 +668,8 @@ export default function TemperatureRecords() {
                                 item.temprature_record < 23
                                   ? "limit"
                                   : item.temprature_record > 27
-                                  ? "limit"
-                                  : ""
+                                    ? "limit"
+                                    : ""
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];

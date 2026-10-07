@@ -11,7 +11,7 @@ function Dashboard() {
   const [eLogSelect, setELogSelect] = useState("All_Records");
   const [eLogStatus, setELogStatus] = useState("All_Records");
   const [differentialPressureElogs, setDifferentialPressureElogs] = useState(
-    []
+    [],
   );
   const [tempratureRecordElogs, setTempratureRecordElogs] = useState([]);
   const [analyticalBalanceElogs, setAnalyticalBalanceElogs] = useState([]);
@@ -22,7 +22,7 @@ function Dashboard() {
   const [loadedQuantityElogs, setLoadedQuantityElogs] = useState([]);
   const [mediaRecordElogs, setMediaRecordElogs] = useState([]);
   const [dispensingOfMaterialsElogs, setDispensingOfMaterialsElogs] = useState(
-    []
+    [],
   );
   const [pHMeterOPCalElogs, setPHMeterOPCalElogs] = useState([]);
   const [UVVisCalibElogs, setUVVisCalibElogs] = useState([]);
@@ -31,29 +31,28 @@ function Dashboard() {
   const [uVWhiteLightTrans, setUVWlTrans] = useState([]);
   const [voCalibElogs, setVOCalibElogs] = useState([]);
   const [operationOfSterilizerElogs, setOperationOfSterilizerElogs] = useState(
-    []
+    [],
   );
   const [filteredRecords, setFilteredRecords] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem("user-details"));
-// const location = useLocation();
-// const selectedProcess = location.state?.selectedProcess;
+  // const location = useLocation();
+  // const selectedProcess = location.state?.selectedProcess;
 
-const location = useLocation();
-const [selectedProcess, setSelectedProcess] = useState(null);
+  const location = useLocation();
+  const [selectedProcess, setSelectedProcess] = useState(null);
 
-useEffect(() => {
-  // Get from location if available
-  if (location.state?.selectedProcess) {
-    setSelectedProcess(location.state.selectedProcess);
-    sessionStorage.setItem("selectedProcess", location.state.selectedProcess);
-  } else {
-    const storedProcess = sessionStorage.getItem("selectedProcess");
-    if (storedProcess) {
-      setSelectedProcess(Number(storedProcess));
+  useEffect(() => {
+    // Get from location if available
+    if (location.state?.selectedProcess) {
+      setSelectedProcess(location.state.selectedProcess);
+      sessionStorage.setItem("selectedProcess", location.state.selectedProcess);
+    } else {
+      const storedProcess = sessionStorage.getItem("selectedProcess");
+      if (storedProcess) {
+        setSelectedProcess(Number(storedProcess));
+      }
     }
-  }
-}, [location.state]);
-
+  }, [location.state]);
 
   useEffect(() => {
     const newConfig = {
@@ -514,137 +513,132 @@ useEffect(() => {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-
   const processKey = {
-  1: "DifferentialPressureRecords",
-  2: "TempratureRecords",
-  3: "LoadedQuantityRecords",
-  4: "OperationOfSterilizerRecords",
-  5: "MediaRecords",
-  6: "DispenseOfMaterials",
-  7: "AnalyticalBalances",
-  8: "karlFischerRecords",
-  9: "hplcRecords",
-  10: "OpAndCalMultiParameterProcessRecords",
-  11: "UvVisRecords",
-  12: "sdsPageRecords",
-  13: "gelDocIGeneRecords",
-  14: "uvWhiteLightRecords",
-};
+    1: "DifferentialPressureRecords",
+    2: "TempratureRecords",
+    3: "LoadedQuantityRecords",
+    4: "OperationOfSterilizerRecords",
+    5: "MediaRecords",
+    6: "DispenseOfMaterials",
+    7: "AnalyticalBalances",
+    8: "karlFischerRecords",
+    9: "hplcRecords",
+    10: "OpAndCalMultiParameterProcessRecords",
+    11: "UvVisRecords",
+    12: "sdsPageRecords",
+    13: "gelDocIGeneRecords",
+    14: "uvWhiteLightRecords",
+  };
 
-const processShortName = {
-  1: "DP",       // Differential Pressure
-  2: "TR",       // Temperature Record
-  3: "LQ",       // Loaded Quantity
-  4: "OS",       // Operation of Sterilizer
-  5: "MR",       // Media Record
-  6: "DM",       // Dispensing Material
-  7: "AB",       // Analytical Balance
-  8: "KF",       // Karl Fischer
-  9: "HPLC",
-  10: "PH",
-  11: "UVVIS",
-  12: "SDS",
-  13: "GDI",     // Gel Doc iGene
-  14: "UVWL",    // UV White Light
-};
-const [eLogInstrument, setELogInstrument] = useState("All");
+  const processShortName = {
+    1: "DP", // Differential Pressure
+    2: "TR", // Temperature Record
+    3: "LQ", // Loaded Quantity
+    4: "OS", // Operation of Sterilizer
+    5: "MR", // Media Record
+    6: "DM", // Dispensing Material
+    7: "AB", // Analytical Balance
+    8: "KF", // Karl Fischer
+    9: "HPLC",
+    10: "PH",
+    11: "UVVIS",
+    12: "SDS",
+    13: "GDI", // Gel Doc iGene
+    14: "UVWL", // UV White Light
+  };
+  const [eLogInstrument, setELogInstrument] = useState("All");
 
+  // const getElogNumber = (item) => {
+  //   // detect process ID based on object key
+  //   const processId = Object.keys(processKey).find(
+  //     (pid) => item[processKey[pid]]
+  //   );
 
-// const getElogNumber = (item) => {
-//   // detect process ID based on object key
-//   const processId = Object.keys(processKey).find(
-//     (pid) => item[processKey[pid]]
-//   );
+  //   const shortName = processShortName[processId];
+  //   const index = String(item.form_id).padStart(3, "0");
 
-//   const shortName = processShortName[processId];
-//   const index = String(item.form_id).padStart(3, "0");
+  //   return `IPC/BIOS/${shortName}/${index}`;
+  // };
 
-//   return `IPC/BIOS/${shortName}/${index}`;
-// };
+  const getElogNumber = (item) => {
+    const processId = item.process_id;
+    if (!processId) return "IPC/BIOS/NA/000";
 
-    
+    const shortName = processShortName[processId] || "NA";
+    const index = String(item.form_id).padStart(3, "0");
 
-const getElogNumber = (item) => {
-  const processId = item.process_id;
-  if (!processId) return "IPC/BIOS/NA/000";
+    return `IPC/BIOS/${shortName}/${index}`;
+  };
 
-  const shortName = processShortName[processId] || "NA";
-  const index = String(item.form_id).padStart(3, "0");
+  useEffect(() => {
+    let allData = [
+      ...differentialPressureElogs.map((r) => ({ ...r, process_id: 1 })),
+      ...tempratureRecordElogs.map((r) => ({ ...r, process_id: 2 })),
+      ...loadedQuantityElogs.map((r) => ({ ...r, process_id: 3 })),
+      ...operationOfSterilizerElogs.map((r) => ({ ...r, process_id: 4 })),
+      ...mediaRecordElogs.map((r) => ({ ...r, process_id: 5 })),
+      ...dispensingOfMaterialsElogs.map((r) => ({ ...r, process_id: 6 })),
+      ...analyticalBalanceElogs.map((r) => ({ ...r, process_id: 7 })),
+      ...karlFischerElogs.map((r) => ({ ...r, process_id: 8 })),
+      ...hplcElogs.map((r) => ({ ...r, process_id: 9 })),
+      ...pHMeterOPCalElogs.map((r) => ({ ...r, process_id: 10 })),
+      ...UVVisCalibElogs.map((r) => ({ ...r, process_id: 11 })),
+      ...sdsPage.map((r) => ({ ...r, process_id: 12 })),
+      ...gelDociGene.map((r) => ({ ...r, process_id: 13 })),
+      ...uVWhiteLightTrans.map((r) => ({ ...r, process_id: 14 })),
+      ...voCalibElogs.map((r) => ({ ...r, process_id: 15 })),
+    ];
 
-  return `IPC/BIOS/${shortName}/${index}`;
-};
+    // ⭐ FILTER BY SELECTED PROCESS
+    if (selectedProcess) {
+      allData = allData.filter((item) => item.process_id === selectedProcess);
+    }
 
+    // ⭐ FILTER FINAL
+    const finalFiltered = allData.filter((item) => {
+      console.log(item, "this is itemsss");
+      const elogNo = getElogNumber(item);
 
-useEffect(() => {
-  let allData = [
-    ...differentialPressureElogs.map(r => ({ ...r, process_id: 1 })),
-    ...tempratureRecordElogs.map(r => ({ ...r, process_id: 2 })),
-    ...loadedQuantityElogs.map(r => ({ ...r, process_id: 3 })),
-    ...operationOfSterilizerElogs.map(r => ({ ...r, process_id: 4 })),
-    ...mediaRecordElogs.map(r => ({ ...r, process_id: 5 })),
-    ...dispensingOfMaterialsElogs.map(r => ({ ...r, process_id: 6 })),
-    ...analyticalBalanceElogs.map(r => ({ ...r, process_id: 7 })),
-    ...karlFischerElogs.map(r => ({ ...r, process_id: 8 })),
-    ...hplcElogs.map(r => ({ ...r, process_id: 9 })),
-    ...pHMeterOPCalElogs.map(r => ({ ...r, process_id: 10 })),
-    ...UVVisCalibElogs.map(r => ({ ...r, process_id: 11 })),
-    ...sdsPage.map(r => ({ ...r, process_id: 12 })),
-    ...gelDociGene.map(r => ({ ...r, process_id: 13 })),
-    ...uVWhiteLightTrans.map(r => ({ ...r, process_id: 14 })),
-    ...voCalibElogs.map(r => ({ ...r, process_id: 15 })),
-  ];
+      const instrumentMatch =
+        eLogInstrument === "All" || elogNo === eLogInstrument;
+      console.log(instrumentMatch, "instrumentMatch>>>>>");
 
-  // ⭐ FILTER BY SELECTED PROCESS  
-  if (selectedProcess) {
-    allData = allData.filter((item) => item.process_id === selectedProcess);
-  }
+      const searchMatch =
+        item?.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.initiator_name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        elogNo.toLowerCase().includes(searchTerm.toLowerCase());
 
-  // ⭐ FILTER FINAL  
-  const finalFiltered = allData.filter((item) => {
-    console.log(item,"this is itemsss")
-    const elogNo = getElogNumber(item);
+      const statusMatch =
+        eLogStatus === "All_Records" ||
+        item.status?.toLowerCase() === eLogStatus.toLowerCase();
 
-    const instrumentMatch =
-      eLogInstrument === "All" || elogNo === eLogInstrument;
-      console.log(instrumentMatch,"instrumentMatch>>>>>")
+      return searchMatch && statusMatch && instrumentMatch;
+    });
 
-    const searchMatch =
-      item?.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.initiator_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      elogNo.toLowerCase().includes(searchTerm.toLowerCase())
-      
-    const statusMatch =
-      eLogStatus === "All_Records" ||
-      item.status?.toLowerCase() === eLogStatus.toLowerCase();
-
-    return searchMatch && statusMatch && instrumentMatch;
-  });
-
-  setCombinedRecords(finalFiltered);
-}, [
-  selectedProcess,
-  searchTerm,
-  eLogStatus,
-  eLogInstrument,
-  differentialPressureElogs,
-  tempratureRecordElogs,
-  loadedQuantityElogs,
-  mediaRecordElogs,
-  dispensingOfMaterialsElogs,
-  operationOfSterilizerElogs,
-  analyticalBalanceElogs,
-  karlFischerElogs,
-  hplcElogs,
-  pHMeterOPCalElogs,
-  UVVisCalibElogs,
-  sdsPage,
-  gelDociGene,
-  uVWhiteLightTrans,
-  voCalibElogs
-]);
-
-
+    setCombinedRecords(finalFiltered);
+  }, [
+    selectedProcess,
+    searchTerm,
+    eLogStatus,
+    eLogInstrument,
+    differentialPressureElogs,
+    tempratureRecordElogs,
+    loadedQuantityElogs,
+    mediaRecordElogs,
+    dispensingOfMaterialsElogs,
+    operationOfSterilizerElogs,
+    analyticalBalanceElogs,
+    karlFischerElogs,
+    hplcElogs,
+    pHMeterOPCalElogs,
+    UVVisCalibElogs,
+    sdsPage,
+    gelDociGene,
+    uVWhiteLightTrans,
+    voCalibElogs,
+  ]);
 
   // useEffect(() => {
   //   const filteredData = [
@@ -759,7 +753,7 @@ useEffect(() => {
               style={{ border: "1px solid gray", padding: "2px 0px" }}
             >
               <option value="All_Records">All Records</option> */}
-              {/* <option value="diffrential_pressure">
+          {/* <option value="diffrential_pressure">
                 Differential Pressure Record
               </option>
               <option value="equipment_cleaning">
@@ -774,7 +768,7 @@ useEffect(() => {
               <option value="dispensing_of_material">
                 Dispensing Of Materials
               </option> */}
-              {/* <option value="analytical_balance">Analytical Balance</option>
+          {/* <option value="analytical_balance">Analytical Balance</option>
               <option value="karl_fischer">KARL Fischer</option>
               <option value="hplc">hplc</option>
               <option value="pH Meter OP/CAL">pH Meter OP/CAL</option>
@@ -786,25 +780,25 @@ useEffect(() => {
             </select>
           </div> */}
 
-<div className="w-full max-w-md ">
-  <select
-    value={eLogInstrument}
-    onChange={(e) => setELogInstrument(e.target.value)}
-    className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
-    style={{ border: "1px solid gray", padding: "2px 0px" }}
-  >
-    <option value="All">All Instruments</option>
+          <div className="w-full max-w-md ">
+            <select
+              value={eLogInstrument}
+              onChange={(e) => setELogInstrument(e.target.value)}
+              className="w-full h-[38px] border border-gray-300 rounded-md p-2 shadow-sm"
+              style={{ border: "1px solid gray", padding: "2px 0px" }}
+            >
+              <option value="All">All Instruments</option>
 
-    {combinedRecords
-      .map((item) => getElogNumber(item))
-      .filter((value, index, self) => self.indexOf(value) === index) // unique
-      .map((instNo, index) => (
-        <option key={index} value={instNo}>
-          {instNo}
-        </option>
-      ))}
-  </select>
-</div>
+              {combinedRecords
+                .map((item) => getElogNumber(item))
+                .filter((value, index, self) => self.indexOf(value) === index) // unique
+                .map((instNo, index) => (
+                  <option key={index} value={instNo}>
+                    {instNo}
+                  </option>
+                ))}
+            </select>
+          </div>
 
           <div className="w-full max-w-md ">
             <select
@@ -863,14 +857,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -948,14 +942,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -998,14 +992,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1052,10 +1046,10 @@ useEffect(() => {
                           {item.site_id === 1
                             ? "India"
                             : item.site_id === 2
-                            ? "Malaysia"
-                            : item.site_id === 3
-                            ? "EMEA"
-                            : "EU"}
+                              ? "Malaysia"
+                              : item.site_id === 3
+                                ? "EMEA"
+                                : "EU"}
                         </td>
                         <td
                           dangerouslySetInnerHTML={{
@@ -1100,14 +1094,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1153,14 +1147,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1205,14 +1199,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1257,14 +1251,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1309,14 +1303,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1362,14 +1356,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1414,14 +1408,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1466,14 +1460,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1518,14 +1512,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1570,14 +1564,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1622,14 +1616,14 @@ useEffect(() => {
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{
@@ -1649,7 +1643,7 @@ useEffect(() => {
                 ?.sort(
                   (a, b) =>
                     new Date(b.date_of_initiation) -
-                    new Date(a.date_of_initiation)
+                    new Date(a.date_of_initiation),
                 )
 
                 .map((item, index) => {
@@ -1668,81 +1662,81 @@ useEffect(() => {
                         {item.DifferentialPressureRecords
                           ? getElogNumber(item)
                           : item.TempratureRecords
-                          ? getElogNumber(item)
-                          : item.LoadedQuantityRecords
-                          ? getElogNumber(item)
-                          : item.OperationOfSterilizerRecords
-                          ? getElogNumber(item)
-                          : item.MediaRecords
-                          ? getElogNumber(item)
-                          : item.DispenseOfMaterials
-                          ? getElogNumber(item)
-                          : item.AnalyticalBalances
-                          // ? `AB${item.form_id}`
-                          ? getElogNumber(item)
-                          : item.karlFischerRecords
-                          ? getElogNumber(item)
-                          : item.hplcRecords
-                          ? getElogNumber(item)
-                          : item.OpAndCalMultiParameterProcessRecords
-                          ? getElogNumber(item)
-                          : item.UvVisRecords
-                          ? getElogNumber(item)
-                          : item.sdsPageRecords
-                          ? getElogNumber(item)
-                          : item.gelDocIGeneRecords
-                          ? getElogNumber(item)
-                          : item.uvWhiteLightRecords
-                          ? getElogNumber(item)
-                          : item.voCalibRecords
-                          ? getElogNumber(item)
-                          : null}
+                            ? getElogNumber(item)
+                            : item.LoadedQuantityRecords
+                              ? getElogNumber(item)
+                              : item.OperationOfSterilizerRecords
+                                ? getElogNumber(item)
+                                : item.MediaRecords
+                                  ? getElogNumber(item)
+                                  : item.DispenseOfMaterials
+                                    ? getElogNumber(item)
+                                    : item.AnalyticalBalances
+                                      ? // ? `AB${item.form_id}`
+                                        getElogNumber(item)
+                                      : item.karlFischerRecords
+                                        ? getElogNumber(item)
+                                        : item.hplcRecords
+                                          ? getElogNumber(item)
+                                          : item.OpAndCalMultiParameterProcessRecords
+                                            ? getElogNumber(item)
+                                            : item.UvVisRecords
+                                              ? getElogNumber(item)
+                                              : item.sdsPageRecords
+                                                ? getElogNumber(item)
+                                                : item.gelDocIGeneRecords
+                                                  ? getElogNumber(item)
+                                                  : item.uvWhiteLightRecords
+                                                    ? getElogNumber(item)
+                                                    : item.voCalibRecords
+                                                      ? getElogNumber(item)
+                                                      : null}
                       </td>
                       <td>
                         {item.DifferentialPressureRecords
                           ? "Differential Pressure"
                           : item.TempratureRecords
-                          ? "Temperature Records"
-                          : item.LoadedQuantityRecords
-                          ? "Loaded Quantity"
-                          : item.OperationOfSterilizerRecords
-                          ? "Operation of Sterilizer"
-                          : item.MediaRecords
-                          ? "Media Record"
-                          : item.DispenseOfMaterials
-                          ? "Dispensing of Material"
-                          : item.AnalyticalBalances
-                          ? "Analytical Balance"
-                          : item.karlFischerRecords
-                          ? "KARL Fischer"
-                          : item.hplcRecords
-                          ? "HPLC"
-                          : item.OpAndCalMultiParameterProcessRecords
-                          ? "pH Meter OP/Cal"
-                          : item.UvVisRecords
-                          ? "UV-VIS Spectrophotometer"
-                          : item.sdsPageRecords
-                          ? "SDS PAGE"
-                          : item.gelDocIGeneRecords
-                          ? "Gel Doc iGene"
-                          : item.uvWhiteLightRecords
-                          ? "UV/WL Transilluminator"
-                          : item.voCalibRecords
-                          ? "VO Calibration"
-                          : null}
+                            ? "Temperature Records"
+                            : item.LoadedQuantityRecords
+                              ? "Loaded Quantity"
+                              : item.OperationOfSterilizerRecords
+                                ? "Operation of Sterilizer"
+                                : item.MediaRecords
+                                  ? "Media Record"
+                                  : item.DispenseOfMaterials
+                                    ? "Dispensing of Material"
+                                    : item.AnalyticalBalances
+                                      ? "Analytical Balance"
+                                      : item.karlFischerRecords
+                                        ? "KARL Fischer"
+                                        : item.hplcRecords
+                                          ? "HPLC"
+                                          : item.OpAndCalMultiParameterProcessRecords
+                                            ? "pH Meter OP/Cal"
+                                            : item.UvVisRecords
+                                              ? "UV-VIS Spectrophotometer"
+                                              : item.sdsPageRecords
+                                                ? "SDS PAGE"
+                                                : item.gelDocIGeneRecords
+                                                  ? "Gel Doc iGene"
+                                                  : item.uvWhiteLightRecords
+                                                    ? "UV/WL Transilluminator"
+                                                    : item.voCalibRecords
+                                                      ? "VO Calibration"
+                                                      : null}
                       </td>
                       <td>
                         {item.site_id === 1
                           ? "India"
                           : item.site_id === 2
-                          ? "Malaysia"
-                          : item.site_id === 3
-                          ? "EMEA"
-                          : item.site_id === 5
-                          ? "Biologics"
-                          : item.site_id === 6
-                          ? "AR&D"
-                          : "EU"}
+                            ? "Malaysia"
+                            : item.site_id === 3
+                              ? "EMEA"
+                              : item.site_id === 5
+                                ? "Biologics"
+                                : item.site_id === 6
+                                  ? "AR&D"
+                                  : "EU"}
                       </td>
                       <td
                         dangerouslySetInnerHTML={{

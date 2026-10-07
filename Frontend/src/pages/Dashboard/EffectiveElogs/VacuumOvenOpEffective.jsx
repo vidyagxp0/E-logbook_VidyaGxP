@@ -98,7 +98,7 @@ const VacuumOvenOpEffective = () => {
     const emptyRowsCount = editData?.voCalibRecords.length - cleanedData.length;
     if (emptyRowsCount > 0) {
       toast.warn(
-        `${emptyRowsCount} empty row(s) will be removed before saving.`
+        `${emptyRowsCount} empty row(s) will be removed before saving.`,
       );
       console.log("Original records:", editData?.voCalibRecords);
       console.log("Cleaned records:", cleanedData);
@@ -138,18 +138,14 @@ const VacuumOvenOpEffective = () => {
         return;
       }
       axios
-        .put(
-          "http://localhost:1000/vo-cal/send-elog-for-review",
-          data,
-          config
-        )
+        .put("http://localhost:1000/vo-cal/send-elog-for-review", data, config)
         .then(() => {
           toast.success("Elog successfully sent for review");
           navigate(-1);
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -159,7 +155,7 @@ const VacuumOvenOpEffective = () => {
         .put(
           "http://localhost:1000/vo-cal/send-from-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -168,7 +164,7 @@ const VacuumOvenOpEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -178,7 +174,7 @@ const VacuumOvenOpEffective = () => {
         .put(
           "http://localhost:1000/vo-cal/send-elog-from-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -198,7 +194,7 @@ const VacuumOvenOpEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -208,7 +204,7 @@ const VacuumOvenOpEffective = () => {
         .put(
           "http://localhost:1000/vo-cal/send-elog-from-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -221,7 +217,7 @@ const VacuumOvenOpEffective = () => {
       data.initiatorDeclaration = credentials?.declaration;
       if (
         updatedEditData?.voCalibRecords?.some(
-          (record) => record.differential_pressure === ""
+          (record) => record.differential_pressure === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -264,63 +260,62 @@ const VacuumOvenOpEffective = () => {
     setEditData(location.state);
   }, [location.state]);
 
- const addRow = () => {
-  const records = editData?.voCalibRecords || [];
+  const addRow = () => {
+    const records = editData?.voCalibRecords || [];
 
-  // Function to check if a row is filled
-  const isRowComplete = (row) => {
-    return (
-      row.start_time?.trim() !== "" &&
-      row.end_time?.trim() !== "" &&
-      row.sample_name?.trim() !== "" &&
-      row.reg_no?.trim() !== "" && 
-      row.reviewed_by !== null
-    );
-  };
-
-  // 1️⃣ Check if there is at least 1 row
-  if (records.length > 0) {
-    const lastRow = records[records.length - 1];
-
-    // 2️⃣ If last row is empty → block adding a new row
-    if (!isRowComplete(lastRow)) {
-      toast.warn("Please fill the current row before adding a new one.");
-      return;
-    }
-  }
-
-  // 3️⃣ Role-based restriction (same as your code)
-  if (
-    userDetails.roles[0].role_id === 1 ||
-    userDetails.roles[0].role_id === 5
-  ) {
-    const newRow = {
-      date: dayjs().format("YYYY-MM-DD"),
-      sample_name: "",
-      reg_no: "",
-      start_time: "",
-      end_time: "",
-      done_by: location?.state?.initiator_name || "",
-      checked_by: location?.state?.initiator_name,
-      reviewed_by: "",
-      remarks: "",
-      remarksType: "",
-      remarksSubType: "",
-      remarksOther: "",
-      status: "Open",
+    // Function to check if a row is filled
+    const isRowComplete = (row) => {
+      return (
+        row.start_time?.trim() !== "" &&
+        row.end_time?.trim() !== "" &&
+        row.sample_name?.trim() !== "" &&
+        row.reg_no?.trim() !== "" &&
+        row.reviewed_by !== null
+      );
     };
 
-    setEditData((prevState) => ({
-      ...prevState,
-      voCalibRecords: [...prevState.voCalibRecords, newRow],
-    }));
-  } else if (location.state.reviewer_id == 4) {
-    toast.warn("Only Initiator can add new Row here");
-  } else if (location.state.approver_id == 5) {
-    toast.warn("Only Initiator can add new Row here");
-  }
-};
+    // 1️⃣ Check if there is at least 1 row
+    if (records.length > 0) {
+      const lastRow = records[records.length - 1];
 
+      // 2️⃣ If last row is empty → block adding a new row
+      if (!isRowComplete(lastRow)) {
+        toast.warn("Please fill the current row before adding a new one.");
+        return;
+      }
+    }
+
+    // 3️⃣ Role-based restriction (same as your code)
+    if (
+      userDetails.roles[0].role_id === 1 ||
+      userDetails.roles[0].role_id === 5
+    ) {
+      const newRow = {
+        date: dayjs().format("YYYY-MM-DD"),
+        sample_name: "",
+        reg_no: "",
+        start_time: "",
+        end_time: "",
+        done_by: location?.state?.initiator_name || "",
+        checked_by: location?.state?.initiator_name,
+        reviewed_by: "",
+        remarks: "",
+        remarksType: "",
+        remarksSubType: "",
+        remarksOther: "",
+        status: "Open",
+      };
+
+      setEditData((prevState) => ({
+        ...prevState,
+        voCalibRecords: [...prevState.voCalibRecords, newRow],
+      }));
+    } else if (location.state.reviewer_id == 4) {
+      toast.warn("Only Initiator can add new Row here");
+    } else if (location.state.approver_id == 5) {
+      toast.warn("Only Initiator can add new Row here");
+    }
+  };
 
   function deepEqual(object1, object2) {
     // First, check if they are the same object (reference equality)
@@ -438,8 +433,8 @@ const VacuumOvenOpEffective = () => {
         selectedStatus === "Open"
           ? record.status === "Open"
           : selectedStatus === "Closed"
-          ? record.status === "Closed"
-          : true;
+            ? record.status === "Closed"
+            : true;
 
       return matchInitiator && matchReviewer && matchStatus;
     });
@@ -499,7 +494,7 @@ const VacuumOvenOpEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -518,10 +513,10 @@ const VacuumOvenOpEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Vacuum Oven Calibration Record",
@@ -569,10 +564,12 @@ const VacuumOvenOpEffective = () => {
         }
 
         // Filter hplc records
-        filteredData.voCalibRecords = editData.voCalibRecords.filter((record) => {
-          const recordDate = new Date(record.date);
-          return recordDate >= start && recordDate <= end;
-        });
+        filteredData.voCalibRecords = editData.voCalibRecords.filter(
+          (record) => {
+            const recordDate = new Date(record.date);
+            return recordDate >= start && recordDate <= end;
+          },
+        );
       }
 
       const payload = {
@@ -589,7 +586,7 @@ const VacuumOvenOpEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data;
@@ -634,7 +631,7 @@ const VacuumOvenOpEffective = () => {
     [];
     try {
       const res = await axios.delete(
-        `http://localhost:1000/vo-cal/delete-vo-cal/attachment/${record.record_id}`
+        `http://localhost:1000/vo-cal/delete-vo-cal/attachment/${record.record_id}`,
       );
 
       if (res.data?.error === false) {
@@ -679,16 +676,16 @@ const VacuumOvenOpEffective = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                 : location.state?.site_id === 4
-                ? "EU"
-                : location.state?.site_id === 5
-                ? "Biologics"
-                : location.state?.site_id === 6
-                ? "AR&D"
-                : "--"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : location.state?.site_id === 4
+                      ? "EU"
+                      : location.state?.site_id === 5
+                        ? "Biologics"
+                        : location.state?.site_id === 6
+                          ? "AR&D"
+                          : "--"}
             </div>
           </div>
 
@@ -817,7 +814,7 @@ const VacuumOvenOpEffective = () => {
                                         setToDate(""); // Reset toDate on fromDate change
                                         console.log(
                                           "From Date:",
-                                          e.target.value
+                                          e.target.value,
                                         );
                                       }}
                                       className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -959,7 +956,7 @@ const VacuumOvenOpEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.voCalibRecords?.map((r) => r.done_by)
+                              editData?.voCalibRecords?.map((r) => r.done_by),
                             ),
                           ].map(
                             (done_by, index) =>
@@ -967,7 +964,7 @@ const VacuumOvenOpEffective = () => {
                                 <option key={index} value={done_by}>
                                   {done_by}
                                 </option>
-                              )
+                              ),
                           )}
                         </select>
                       </div>
@@ -1004,7 +1001,9 @@ const VacuumOvenOpEffective = () => {
                           <option value="All Records">All Records</option>
                           {[
                             ...new Set(
-                              editData?.voCalibRecords?.map((r) => r.reviewed_by)
+                              editData?.voCalibRecords?.map(
+                                (r) => r.reviewed_by,
+                              ),
                             ),
                           ].map(
                             (reviewed_by, index) =>
@@ -1012,7 +1011,7 @@ const VacuumOvenOpEffective = () => {
                                 <option key={index} value={reviewed_by}>
                                   {reviewed_by}
                                 </option>
-                              )
+                              ),
                           )}
                         </select>
                       </div>
@@ -1052,10 +1051,11 @@ const VacuumOvenOpEffective = () => {
                               {index + 1}
                               <DeleteIcon
                                 className="absolute right-1 top-1 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                               onClick={() => {
+                                onClick={() => {
                                   Modal.confirm({
                                     title: "Delete Record",
-                                    content: "Are you sure you want to delete this record?",
+                                    content:
+                                      "Are you sure you want to delete this record?",
                                     okText: "Delete",
                                     centered: true,
                                     okType: "danger",
@@ -1087,7 +1087,7 @@ const VacuumOvenOpEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isRowEditable(item)
                                 }
                               />
@@ -1106,7 +1106,7 @@ const VacuumOvenOpEffective = () => {
                                 }}
                                 readOnly={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isRowEditable(item)
                                 }
                               />
@@ -1119,7 +1119,7 @@ const VacuumOvenOpEffective = () => {
                                 checked={!!item.start_time}
                                 disabled={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isRowEditable(item)
                                 }
                                 onChange={(e) => {
@@ -1160,13 +1160,13 @@ const VacuumOvenOpEffective = () => {
                                 checked={!!item.end_time}
                                 disabled={
                                   [3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   ) || !isRowEditable(item)
                                 }
                                 onChange={(e) => {
                                   if (!item.start_time) {
                                     toast.warn(
-                                      "Please mark the Start Time first before setting End Time."
+                                      "Please mark the Start Time first before setting End Time.",
                                     );
                                     return;
                                   }
@@ -1180,7 +1180,7 @@ const VacuumOvenOpEffective = () => {
                                     startParts[0],
                                     startParts[1],
                                     startParts[2] || 0,
-                                    0
+                                    0,
                                   );
 
                                   const diffInMs = now - start;
@@ -1189,12 +1189,14 @@ const VacuumOvenOpEffective = () => {
                                   if (e.target.checked) {
                                     if (diffInMinutes < 1) {
                                       toast.warn(
-                                        "Please wait at least 1 minute before marking End Time."
+                                        "Please wait at least 1 minute before marking End Time.",
                                       );
                                       return;
                                     }
 
-                                    const newData = [...editData.voCalibRecords];
+                                    const newData = [
+                                      ...editData.voCalibRecords,
+                                    ];
                                     newData[index].end_time =
                                       now.toLocaleTimeString([], {
                                         hour: "2-digit",
@@ -1208,7 +1210,9 @@ const VacuumOvenOpEffective = () => {
                                       voCalibRecords: newData,
                                     });
                                   } else {
-                                    const newData = [...editData.voCalibRecords];
+                                    const newData = [
+                                      ...editData.voCalibRecords,
+                                    ];
                                     newData[index].end_time = "";
                                     newData[index].reviewed_by = "";
                                     newData[index].status = "Open";
@@ -1243,11 +1247,13 @@ const VacuumOvenOpEffective = () => {
                                   onChange={(e) => {
                                     if (!item.end_time) {
                                       toast.warn(
-                                        "Initiator must mark the End Time before reviewer action."
+                                        "Initiator must mark the End Time before reviewer action.",
                                       );
                                       return;
                                     }
-                                    const newData = [...editData.voCalibRecords];
+                                    const newData = [
+                                      ...editData.voCalibRecords,
+                                    ];
                                     if (e.target.checked) {
                                       newData[index].reviewed_by = reviewed_by;
                                       newData[index].status = "Closed";
@@ -1266,7 +1272,7 @@ const VacuumOvenOpEffective = () => {
                                   }}
                                   disabled={
                                     [1, 3].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !canReviewerEdit(item)
                                   }
                                 />
@@ -1305,7 +1311,7 @@ const VacuumOvenOpEffective = () => {
                                     className="border rounded px-2 py-1 w-auto"
                                     disabled={
                                       [1, 3].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !canReviewerEdit(item)
                                     }
                                   >
@@ -1343,7 +1349,7 @@ const VacuumOvenOpEffective = () => {
                                         className="border rounded px-2 py-1 w-auto"
                                         disabled={
                                           [1, 3].includes(
-                                            userDetails.roles[0].role_id
+                                            userDetails.roles[0].role_id,
                                           ) || !canReviewerEdit(item)
                                         }
                                       >
@@ -1380,7 +1386,7 @@ const VacuumOvenOpEffective = () => {
                                           className="border rounded px-2 py-1 w-auto"
                                           readOnly={
                                             [1, 3].includes(
-                                              userDetails.roles[0].role_id
+                                              userDetails.roles[0].role_id,
                                             ) || !canReviewerEdit(item)
                                           }
                                         />
@@ -1396,7 +1402,7 @@ const VacuumOvenOpEffective = () => {
                                 {(() => {
                                   const isDisabled =
                                     [3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isRowEditable(item);
 
                                   return item.supporting_docs ? (
@@ -1408,7 +1414,7 @@ const VacuumOvenOpEffective = () => {
                                           !isDisabled &&
                                           document
                                             .getElementsByName(
-                                              "supporting_docs"
+                                              "supporting_docs",
                                             )
                                             [index].click()
                                         }
@@ -1448,7 +1454,7 @@ const VacuumOvenOpEffective = () => {
                                           !isDisabled &&
                                           document
                                             .getElementsByName(
-                                              "supporting_docs"
+                                              "supporting_docs",
                                             )
                                             [index].click()
                                         }
@@ -1468,7 +1474,7 @@ const VacuumOvenOpEffective = () => {
                                   }
                                   disabled={
                                     [3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isRowEditable(item)
                                   }
                                 />
@@ -1477,7 +1483,7 @@ const VacuumOvenOpEffective = () => {
 
                             <td>
                               {editData?.voCalibRecords?.find(
-                                (r) => r.record_id === item.record_id
+                                (r) => r.record_id === item.record_id,
                               )?.reviewed_by
                                 ? "Closed"
                                 : "Open"}

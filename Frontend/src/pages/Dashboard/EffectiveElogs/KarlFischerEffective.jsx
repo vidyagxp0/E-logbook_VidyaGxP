@@ -96,7 +96,7 @@ const KarlFischerEffective = () => {
 
   const handlePopupSubmit = (credentials) => {
     const hasMissingFactor = editData.karlFischerRecords.some(
-      (row) => !row.factorValue || row.factorValue.trim() === ""
+      (row) => !row.factorValue || row.factorValue.trim() === "",
     );
 
     if (hasMissingFactor) {
@@ -121,7 +121,7 @@ const KarlFischerEffective = () => {
     // Show toast ONLY if truly empty rows are being removed
     if (emptyRowsCount > 0) {
       toast.warn(
-        `${emptyRowsCount} empty row(s) will be removed before saving.`
+        `${emptyRowsCount} empty row(s) will be removed before saving.`,
       );
       console.log("Original records:", editData?.karlFischerRecords);
       console.log("Cleaned records:", cleanedData);
@@ -163,7 +163,7 @@ const KarlFischerEffective = () => {
         .put(
           "http://localhost:1000/karl-fischer/send-KF-elog-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -171,7 +171,7 @@ const KarlFischerEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -181,7 +181,7 @@ const KarlFischerEffective = () => {
         .put(
           "http://localhost:1000/karl-fischer/send-KF-from-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -190,7 +190,7 @@ const KarlFischerEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -200,7 +200,7 @@ const KarlFischerEffective = () => {
         .put(
           "http://localhost:1000/karl-fischer/send-KF-elog-from-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -220,7 +220,7 @@ const KarlFischerEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -230,7 +230,7 @@ const KarlFischerEffective = () => {
         .put(
           "http://localhost:1000/karl-fischer/send-KF-elog-from-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -254,7 +254,7 @@ const KarlFischerEffective = () => {
       // }
       if (
         updatedEditData?.karlFischerRecords?.some(
-          (record) => record.differential_pressure === ""
+          (record) => record.differential_pressure === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -322,13 +322,13 @@ const KarlFischerEffective = () => {
       }
       if (lastRow.factorValue === "Calibration/Verification") {
         toast.warn(
-          "Machine is under maintenance (Calibration/Verification). Please complete the process before adding a new entry."
+          "Machine is under maintenance (Calibration/Verification). Please complete the process before adding a new entry.",
         );
         return;
       }
       if (lastRow.performanceEndDateTime === null) {
         toast.warn(
-          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`
+          `Machine is under maintenance (${lastRow.performance}). Please complete the process before adding a new entry.`,
         );
         return;
       }
@@ -489,10 +489,10 @@ const KarlFischerEffective = () => {
         selectedStatus === "Open"
           ? record.status === "Open"
           : selectedStatus === "Closed"
-          ? record.status === "Closed"
-          : selectedStatus === "Returned"
-          ? record.status === "Returned"
-          : true;
+            ? record.status === "Closed"
+            : selectedStatus === "Returned"
+              ? record.status === "Returned"
+              : true;
 
       return matchInitiator && matchReviewer && matchStatus;
     });
@@ -590,7 +590,7 @@ const KarlFischerEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -609,12 +609,12 @@ const KarlFischerEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : location.state.site_id === 4
-        ? "EU"
-        : "Biologics",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : location.state.site_id === 4
+              ? "EU"
+              : "Biologics",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "KARL Fischer Record",
@@ -628,7 +628,7 @@ const KarlFischerEffective = () => {
   }, [reportData]);
 
   const allRecordDates = editData?.karlFischerRecords?.map(
-    (r) => new Date(r.date)
+    (r) => new Date(r.date),
   );
   const firstRecordDate = allRecordDates?.length
     ? new Date(Math.min(...allRecordDates))
@@ -682,7 +682,7 @@ const KarlFischerEffective = () => {
           (record) => {
             const recordDate = new Date(record.date);
             return recordDate >= start && recordDate <= end;
-          }
+          },
         );
       }
 
@@ -700,7 +700,7 @@ const KarlFischerEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data;
@@ -731,7 +731,7 @@ const KarlFischerEffective = () => {
     [];
     try {
       const res = await axios.delete(
-        `http://localhost:1000/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`
+        `http://localhost:1000/karl-fischer/delete-karl-fischer/attachment/${record.record_id}`,
       );
 
       if (res.data?.error === false) {
@@ -764,13 +764,13 @@ const KarlFischerEffective = () => {
   const canReviewerEdit = (item) => {
     // find original version of this record by record_id
     const original = originalData?.karlFischerRecords?.find(
-      (o) => o.record_id === item.record_id
+      (o) => o.record_id === item.record_id,
     );
 
     if (item.factorValue === "Calibration/Verification") {
       return false;
     }
-     if (item.performanceEndDateTime === null && item.performance !== "OK") {
+    if (item.performanceEndDateTime === null && item.performance !== "OK") {
       return false;
     }
 
@@ -901,12 +901,12 @@ const KarlFischerEffective = () => {
                 {location.state?.site_id === 1
                   ? "India"
                   : location.state?.site_id === 2
-                  ? "Malaysia"
-                  : location.state?.site_id === 3
-                  ? "EMEA"
-                  : location.state?.site_id === 4
-                  ? "EU"
-                  : "Biologics"}
+                    ? "Malaysia"
+                    : location.state?.site_id === 3
+                      ? "EMEA"
+                      : location.state?.site_id === 4
+                        ? "EU"
+                        : "Biologics"}
               </span>
             </div>
             {/* <div>
@@ -1560,8 +1560,8 @@ const KarlFischerEffective = () => {
                               {[
                                 ...new Set(
                                   editData?.karlFischerRecords?.map(
-                                    (r) => r.done_by
-                                  )
+                                    (r) => r.done_by,
+                                  ),
                                 ),
                               ].map(
                                 (done_by, index) =>
@@ -1569,7 +1569,7 @@ const KarlFischerEffective = () => {
                                     <option key={index} value={done_by}>
                                       {done_by}
                                     </option>
-                                  )
+                                  ),
                               )}
                             </select>
                           </div>
@@ -1595,8 +1595,8 @@ const KarlFischerEffective = () => {
                               {[
                                 ...new Set(
                                   editData?.karlFischerRecords?.map(
-                                    (r) => r.reviewed_by
-                                  )
+                                    (r) => r.reviewed_by,
+                                  ),
                                 ),
                               ].map(
                                 (reviewed_by, index) =>
@@ -1604,7 +1604,7 @@ const KarlFischerEffective = () => {
                                     <option key={index} value={reviewed_by}>
                                       {reviewed_by}
                                     </option>
-                                  )
+                                  ),
                               )}
                             </select>
                           </div>
@@ -1724,7 +1724,7 @@ const KarlFischerEffective = () => {
                                       ?.factorValue === "Ok" ||
                                     (!allowInitiator(item, "factorValue") &&
                                       [3, 2, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ))
                                   }
                                   className="border px-2 py-1 rounded w-full"
@@ -1751,7 +1751,7 @@ const KarlFischerEffective = () => {
                                   }}
                                   readOnly={
                                     [3, 2, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isFieldEditable(item, "lot_no")
                                   }
                                   //  readOnly={!isRowEditable(item)}
@@ -1772,7 +1772,7 @@ const KarlFischerEffective = () => {
                                   }}
                                   readOnly={
                                     [3, 2, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) || !isFieldEditable(item, "sample_name")
                                   }
                                 />
@@ -1795,11 +1795,11 @@ const KarlFischerEffective = () => {
                                   }}
                                   readOnly={
                                     [3, 2, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) ||
                                     !isFieldEditable(
                                       item,
-                                      "factor_percent_water"
+                                      "factor_percent_water",
                                     )
                                   }
                                 />
@@ -1835,7 +1835,7 @@ const KarlFischerEffective = () => {
                                   className="border px-2 py-1 rounded w-full text-sm text-center"
                                   disabled={
                                     [2, 3, 4].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     ) ||
                                     originalData?.karlFischerRecords[index]
                                       ?.performance === "OK"
@@ -1917,9 +1917,9 @@ const KarlFischerEffective = () => {
                                                         index
                                                       ].performanceEndDateTime =
                                                         dayjs(
-                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`,
                                                         ).format(
-                                                          "DD-MM-YYYY hh:mm:ss A"
+                                                          "DD-MM-YYYY hh:mm:ss A",
                                                         );
                                                     }
 
@@ -1933,7 +1933,7 @@ const KarlFischerEffective = () => {
                                                   disabled={
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
-                                                        .role_id
+                                                        .role_id,
                                                     ) ||
                                                     !!originalData
                                                       ?.karlFischerRecords[
@@ -1970,9 +1970,9 @@ const KarlFischerEffective = () => {
                                                         index
                                                       ].performanceEndDateTime =
                                                         dayjs(
-                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`
+                                                          `${newData[index].performanceEndDate} ${newData[index].performanceEndTime}`,
                                                         ).format(
-                                                          "DD-MM-YYYY hh:mm:ss A"
+                                                          "DD-MM-YYYY hh:mm:ss A",
                                                         );
                                                     }
 
@@ -1986,7 +1986,7 @@ const KarlFischerEffective = () => {
                                                   disabled={
                                                     [2, 3, 4].includes(
                                                       userDetails.roles[0]
-                                                        .role_id
+                                                        .role_id,
                                                     ) ||
                                                     !!originalData
                                                       ?.karlFischerRecords[
@@ -2032,7 +2032,8 @@ const KarlFischerEffective = () => {
                                                 rows={2}
                                                 disabled={
                                                   [2, 3, 4].includes(
-                                                    userDetails.roles[0].role_id
+                                                    userDetails.roles[0]
+                                                      .role_id,
                                                   ) ||
                                                   !!originalData
                                                     ?.karlFischerRecords[index]
@@ -2094,7 +2095,7 @@ const KarlFischerEffective = () => {
                                       }}
                                       disabled={
                                         [1, 3].includes(
-                                          userDetails.roles[0].role_id
+                                          userDetails.roles[0].role_id,
                                         ) || !canReviewerEdit(item)
                                       }
                                     />
@@ -2144,7 +2145,7 @@ const KarlFischerEffective = () => {
                                       className="border rounded px-2 py-1 w-auto"
                                       disabled={
                                         [1, 3].includes(
-                                          userDetails.roles[0].role_id
+                                          userDetails.roles[0].role_id,
                                         ) || !canReviewerEdit(item)
                                       }
                                     >
@@ -2184,7 +2185,7 @@ const KarlFischerEffective = () => {
                                           className="border rounded px-2 py-1 w-auto"
                                           disabled={
                                             [1, 3].includes(
-                                              userDetails.roles[0].role_id
+                                              userDetails.roles[0].role_id,
                                             ) || !canReviewerEdit(item)
                                           }
                                         >
@@ -2225,7 +2226,7 @@ const KarlFischerEffective = () => {
                                             className="border rounded px-2 py-1 w-auto"
                                             readOnly={
                                               [1, 3].includes(
-                                                userDetails.roles[0].role_id
+                                                userDetails.roles[0].role_id,
                                               ) || !canReviewerEdit(item)
                                             }
                                           />
@@ -2241,7 +2242,7 @@ const KarlFischerEffective = () => {
                                   {(() => {
                                     const isDisabled =
                                       [3, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !isRowEditable(item);
 
                                     return item.supporting_docs ? (
@@ -2253,7 +2254,7 @@ const KarlFischerEffective = () => {
                                             !isDisabled &&
                                             document
                                               .getElementsByName(
-                                                "supporting_docs"
+                                                "supporting_docs",
                                               )
                                               [index].click()
                                           }
@@ -2293,7 +2294,7 @@ const KarlFischerEffective = () => {
                                             !isDisabled &&
                                             document
                                               .getElementsByName(
-                                                "supporting_docs"
+                                                "supporting_docs",
                                               )
                                               [index].click()
                                           }
@@ -2313,7 +2314,7 @@ const KarlFischerEffective = () => {
                                     }
                                     disabled={
                                       [3, 4].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       ) || !isRowEditable(item)
                                     }
                                   />
@@ -2324,8 +2325,8 @@ const KarlFischerEffective = () => {
                                 {item.remarksSubType
                                   ? "Returned"
                                   : item.remarks?.toLowerCase() === "ok"
-                                  ? "Closed"
-                                  : "Open"}
+                                    ? "Closed"
+                                    : "Open"}
                               </td>
                             </tr>
                           ))

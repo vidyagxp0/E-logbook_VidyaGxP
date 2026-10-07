@@ -98,7 +98,7 @@ const PhMeterOpCal = () => {
       analyticalBalance.reviewer_id === null
     ) {
       toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
+        "Please select an approver and a reviewer before saving e-log!",
       );
       return;
     }
@@ -113,7 +113,7 @@ const PhMeterOpCal = () => {
     // }
     if (
       analyticalBalance?.FormRecordsArray?.some(
-        (record) => record.sampleName === "" || record.remarks === ""
+        (record) => record.sampleName === "" || record.remarks === "",
       )
     ) {
       toast.error("Please provide grid details!");
@@ -135,7 +135,7 @@ const PhMeterOpCal = () => {
       .post(
         "http://localhost:1000/op-and-calParameter/post",
         analyticalBalance,
-        config
+        config,
       )
       .then(() => {
         toast.success("eLog Saved Successfully!");
@@ -213,7 +213,7 @@ const PhMeterOpCal = () => {
       initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
-    }
+    },
   );
   console.log(analyticalBalance, "analyticalBalance");
   const handleInputChange1 = (e) => {
@@ -322,11 +322,11 @@ const PhMeterOpCal = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -338,11 +338,11 @@ const PhMeterOpCal = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -491,7 +491,7 @@ const PhMeterOpCal = () => {
                         })
                       }
                       disabled={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
+                        userDetails.roles[0].role_id,
                       )}
                     >
                       <option value="">-- Select --</option>
@@ -545,7 +545,7 @@ const PhMeterOpCal = () => {
                               reviewers.map((reviewer) => [
                                 reviewer.user_id,
                                 reviewer,
-                              ])
+                              ]),
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -577,7 +577,7 @@ const PhMeterOpCal = () => {
                               approvers.map((approver) => [
                                 approver.user_id,
                                 approver,
-                              ])
+                              ]),
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>

@@ -77,7 +77,7 @@ const DispensingOfMaterialsPanel = () => {
         .put(
           "http://localhost:1000/dispensing-material/send-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -85,7 +85,7 @@ const DispensingOfMaterialsPanel = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -95,7 +95,7 @@ const DispensingOfMaterialsPanel = () => {
         .put(
           "http://localhost:1000/dispensing-material/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -104,7 +104,7 @@ const DispensingOfMaterialsPanel = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -114,7 +114,7 @@ const DispensingOfMaterialsPanel = () => {
         .put(
           "http://localhost:1000/dispensing-material/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -134,7 +134,7 @@ const DispensingOfMaterialsPanel = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -144,7 +144,7 @@ const DispensingOfMaterialsPanel = () => {
         .put(
           "http://localhost:1000/dispensing-material/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -169,7 +169,7 @@ const DispensingOfMaterialsPanel = () => {
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+            record.differential_pressure === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -395,10 +395,10 @@ const DispensingOfMaterialsPanel = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Dispensing Of Materials",
@@ -431,7 +431,7 @@ const DispensingOfMaterialsPanel = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -468,10 +468,10 @@ const DispensingOfMaterialsPanel = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -632,8 +632,8 @@ const DispensingOfMaterialsPanel = () => {
                       location.state?.stage > 1
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 1
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     OPENED
@@ -644,8 +644,8 @@ const DispensingOfMaterialsPanel = () => {
                       location.state?.stage > 2
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 2
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER REVIEW
@@ -656,8 +656,8 @@ const DispensingOfMaterialsPanel = () => {
                       location.state?.stage > 3
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 3
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER APPROVAL
@@ -669,8 +669,8 @@ const DispensingOfMaterialsPanel = () => {
                       location.state?.stage > 4
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 4
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-red-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     CLOSED DONE
@@ -687,11 +687,11 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -703,11 +703,11 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -719,11 +719,11 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(true),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Initiator Remarks
@@ -735,11 +735,11 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(true),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Reviewer Remarks
@@ -751,11 +751,11 @@ const DispensingOfMaterialsPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(true);
+                        setApproverRemarks(true));
                     }}
                   >
                     Approver Remarks
@@ -1319,7 +1319,7 @@ const DispensingOfMaterialsPanel = () => {
                               href={
                                 editData.additionalAttachment instanceof File
                                   ? URL.createObjectURL(
-                                      editData.additionalAttachment
+                                      editData.additionalAttachment,
                                     )
                                   : editData.additionalAttachment
                               }
@@ -1329,7 +1329,7 @@ const DispensingOfMaterialsPanel = () => {
                             >
                               {editData?.additionalAttachment?.name?.slice(
                                 0,
-                                30
+                                30,
                               ) ||
                                 editData?.additionalAttachment?.slice(46)}{" "}
                             </a>
@@ -1461,7 +1461,7 @@ const DispensingOfMaterialsPanel = () => {
                                 href={
                                   editData.initiatorAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.initiatorAttachment
+                                        editData.initiatorAttachment,
                                       )
                                     : editData.initiatorAttachment
                                 }
@@ -1471,7 +1471,7 @@ const DispensingOfMaterialsPanel = () => {
                               >
                                 {editData?.initiatorAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
@@ -1605,7 +1605,7 @@ const DispensingOfMaterialsPanel = () => {
                                 href={
                                   editData.reviewerAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.reviewerAttachment
+                                        editData.reviewerAttachment,
                                       )
                                     : editData.reviewerAttachment
                                 }
@@ -1615,7 +1615,7 @@ const DispensingOfMaterialsPanel = () => {
                               >
                                 {editData?.reviewerAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
                               {editData.reviewerAttachment.name && (
@@ -1749,7 +1749,7 @@ const DispensingOfMaterialsPanel = () => {
                                 href={
                                   editData.approverAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.approverAttachment
+                                        editData.approverAttachment,
                                       )
                                     : editData.approverAttachment
                                 }
@@ -1759,7 +1759,7 @@ const DispensingOfMaterialsPanel = () => {
                               >
                                 {editData?.approverAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.approverAttachment?.slice(46)}{" "}
                               </a>

@@ -148,7 +148,7 @@ const OperationOfSterilizerEffective = () => {
         .put(
           "http://localhost:1000/operation-sterlizer/send-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -156,7 +156,7 @@ const OperationOfSterilizerEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -166,7 +166,7 @@ const OperationOfSterilizerEffective = () => {
         .put(
           "http://localhost:1000/operation-sterlizer/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -175,7 +175,7 @@ const OperationOfSterilizerEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -185,7 +185,7 @@ const OperationOfSterilizerEffective = () => {
         .put(
           "http://localhost:1000/operation-sterlizer/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -205,7 +205,7 @@ const OperationOfSterilizerEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -215,7 +215,7 @@ const OperationOfSterilizerEffective = () => {
         .put(
           "http://localhost:1000/operation-sterlizer/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -240,7 +240,7 @@ const OperationOfSterilizerEffective = () => {
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+            record.differential_pressure === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -424,7 +424,7 @@ const OperationOfSterilizerEffective = () => {
             return { ...item, supporting_docs: null };
           }
           return item;
-        }
+        },
       );
       setEditData((prevState) => ({
         ...prevState,
@@ -500,7 +500,7 @@ const OperationOfSterilizerEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -519,10 +519,10 @@ const OperationOfSterilizerEffective = () => {
       location?.state?.site_id === 1
         ? "India"
         : location?.state?.site_id === 2
-        ? "Malaysia"
-        : location?.state?.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location?.state?.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location?.state?.status,
     initiator_name: location?.state?.initiator_name,
     title: "Operation Of Sterilizer",
@@ -548,7 +548,7 @@ const OperationOfSterilizerEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -594,7 +594,7 @@ const OperationOfSterilizerEffective = () => {
 
               if (!isProductNamePresent && !isBatchNoPresent) {
                 toast.error(
-                  "Excel file headers do not match the required format!"
+                  "Excel file headers do not match the required format!",
                 );
                 hasErrorOccurred = true;
                 return null;
@@ -647,10 +647,10 @@ const OperationOfSterilizerEffective = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -1161,7 +1161,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1180,7 +1180,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1199,7 +1199,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1218,7 +1218,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   disabled={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 >
                                   {Array.isArray(editData.product_nameArray) &&
@@ -1231,7 +1231,7 @@ const OperationOfSterilizerEffective = () => {
                                           >
                                             {productNameArray.productName}
                                           </option>
-                                        )
+                                        ),
                                       )
                                     : [
                                         "Product 1",
@@ -1259,7 +1259,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1278,7 +1278,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1298,7 +1298,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   disabled={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 >
                                   {Array.isArray(editData.batch_noArray) &&
@@ -1311,14 +1311,14 @@ const OperationOfSterilizerEffective = () => {
                                           >
                                             {batchNoArray.batchNo}
                                           </option>
-                                        )
+                                        ),
                                       )
                                     : ["BatchNo1", "BatchNo2", "BatchNo3"].map(
                                         (BatchNo, index) => (
                                           <option key={index} value={BatchNo}>
                                             {BatchNo}
                                           </option>
-                                        )
+                                        ),
                                       )}
                                 </select>
                               </td>
@@ -1337,7 +1337,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1356,7 +1356,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1375,7 +1375,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1394,7 +1394,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1413,7 +1413,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1432,7 +1432,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1451,7 +1451,7 @@ const OperationOfSterilizerEffective = () => {
                                     });
                                   }}
                                   readOnly={[3, 2, 4].includes(
-                                    userDetails.roles[0].role_id
+                                    userDetails.roles[0].role_id,
                                   )}
                                 />
                               </td>
@@ -1478,7 +1478,7 @@ const OperationOfSterilizerEffective = () => {
                                         });
                                       }}
                                       disabled={[1, 3].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       )}
                                     />
                                     {item.reviewed_by && (
@@ -1491,7 +1491,7 @@ const OperationOfSterilizerEffective = () => {
                                 <DeleteIcon onClick={() => deleteRow(index)} />
                               </td>
                             </tr>
-                          )
+                          ),
                         )}
                       </tbody>
                     </table>
@@ -1528,7 +1528,7 @@ const OperationOfSterilizerEffective = () => {
                               href={
                                 editData.additionalAttachment instanceof File
                                   ? URL.createObjectURL(
-                                      editData.additionalAttachment
+                                      editData.additionalAttachment,
                                     )
                                   : editData.additionalAttachment
                               }

@@ -51,7 +51,7 @@ function hasAccess(userRoles, site_id, processId, roleId) {
         role.process_id === processId) ||
       (role.site_id === site_id &&
         role.process_id === processId &&
-        role.role_id === roleId)
+        role.role_id === roleId),
   );
 }
 

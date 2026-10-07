@@ -159,7 +159,7 @@ const LoadedQuantityEffective = () => {
         .put(
           "http://localhost:1000/loaded-quantity/send-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -167,7 +167,7 @@ const LoadedQuantityEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -177,7 +177,7 @@ const LoadedQuantityEffective = () => {
         .put(
           "http://localhost:1000/loaded-quantity/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -186,7 +186,7 @@ const LoadedQuantityEffective = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -196,7 +196,7 @@ const LoadedQuantityEffective = () => {
         .put(
           "http://localhost:1000/loaded-quantity/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -216,7 +216,7 @@ const LoadedQuantityEffective = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -226,7 +226,7 @@ const LoadedQuantityEffective = () => {
         .put(
           "http://localhost:1000/loaded-quantity/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -251,7 +251,7 @@ const LoadedQuantityEffective = () => {
       if (
         editData?.DifferentialPressureRecords?.some(
           (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+            record.differential_pressure === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -431,7 +431,7 @@ const LoadedQuantityEffective = () => {
             return { ...item, supporting_docs: null };
           }
           return item;
-        }
+        },
       );
       setEditData((prevState) => ({
         ...prevState,
@@ -507,7 +507,7 @@ const LoadedQuantityEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const { filename } = response.data;
       const reportUrl = `/effective-view-report?formId=${formId}&filename=${filename}`;
@@ -526,10 +526,10 @@ const LoadedQuantityEffective = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Loaded Quantity",
@@ -555,7 +555,7 @@ const LoadedQuantityEffective = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data;
@@ -600,7 +600,7 @@ const LoadedQuantityEffective = () => {
 
               if (!isProductNamePresent && !isBatchNoPresent) {
                 toast.error(
-                  "Excel file headers do not match the required format!"
+                  "Excel file headers do not match the required format!",
                 );
                 hasErrorOccurred = true;
                 return null;
@@ -654,10 +654,10 @@ const LoadedQuantityEffective = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -1152,7 +1152,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 disabled={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               >
                                 {Array.isArray(editData.product_nameArray) &&
@@ -1165,14 +1165,14 @@ const LoadedQuantityEffective = () => {
                                         >
                                           {productNameArray.productName}
                                         </option>
-                                      )
+                                      ),
                                     )
                                   : ["Product 1", "Product 2", "Product 3"].map(
                                       (productName, index) => (
                                         <option key={index} value={productName}>
                                           {productName}
                                         </option>
-                                      )
+                                      ),
                                     )}
                               </select>
                             </td>
@@ -1191,7 +1191,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 disabled={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               >
                                 {Array.isArray(editData.batch_noArray) &&
@@ -1204,14 +1204,14 @@ const LoadedQuantityEffective = () => {
                                         >
                                           {batchNoArray.batchNo}
                                         </option>
-                                      )
+                                      ),
                                     )
                                   : ["BatchNo1", "BatchNo2", "BatchNo3"].map(
                                       (BatchNo, index) => (
                                         <option key={index} value={BatchNo}>
                                           {BatchNo}
                                         </option>
-                                      )
+                                      ),
                                     )}
                               </select>
                             </td>
@@ -1231,7 +1231,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1249,7 +1249,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1268,7 +1268,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1287,7 +1287,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1305,7 +1305,7 @@ const LoadedQuantityEffective = () => {
                                   });
                                 }}
                                 readOnly={[3, 2, 4].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1329,7 +1329,7 @@ const LoadedQuantityEffective = () => {
                                 }}
                                 // readOnly={!location.state?.reviewer_id}
                                 disabled={[1, 3].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1339,7 +1339,7 @@ const LoadedQuantityEffective = () => {
                                   <input
                                     className={`h-4 w-4  ${
                                       [1, 3].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       )
                                         ? "cursor-not-allowed"
                                         : "cursor-pointer"
@@ -1362,7 +1362,7 @@ const LoadedQuantityEffective = () => {
                                       });
                                     }}
                                     disabled={[1, 3].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     )}
                                   />
                                   {item.reviewed_by && (
@@ -1392,7 +1392,7 @@ const LoadedQuantityEffective = () => {
                                 }}
                                 // readOnly={!location.state?.reviewer_id}
                                 disabled={[1, 2].includes(
-                                  userDetails.roles[0].role_id
+                                  userDetails.roles[0].role_id,
                                 )}
                               />
                             </td>
@@ -1402,7 +1402,7 @@ const LoadedQuantityEffective = () => {
                                   <input
                                     className={`h-4 w-4  ${
                                       [1, 2].includes(
-                                        userDetails.roles[0].role_id
+                                        userDetails.roles[0].role_id,
                                       )
                                         ? "cursor-not-allowed"
                                         : "cursor-pointer"
@@ -1425,7 +1425,7 @@ const LoadedQuantityEffective = () => {
                                       });
                                     }}
                                     disabled={[1, 2].includes(
-                                      userDetails.roles[0].role_id
+                                      userDetails.roles[0].role_id,
                                     )}
                                   />
                                   {item.approved_by && (
@@ -1475,7 +1475,7 @@ const LoadedQuantityEffective = () => {
                               href={
                                 editData.additionalAttachment instanceof File
                                   ? URL.createObjectURL(
-                                      editData.additionalAttachment
+                                      editData.additionalAttachment,
                                     )
                                   : editData.additionalAttachment
                               }
@@ -1485,7 +1485,7 @@ const LoadedQuantityEffective = () => {
                             >
                               {editData?.additionalAttachment?.name?.slice(
                                 0,
-                                30
+                                30,
                               ) || editData?.additionalAttachment?.slice(46)}
                             </a>
                             {editData.additionalAttachment.name && (

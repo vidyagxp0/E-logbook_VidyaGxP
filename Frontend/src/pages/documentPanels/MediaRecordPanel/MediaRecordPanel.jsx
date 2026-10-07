@@ -107,7 +107,7 @@ const MediaRecordPanel = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -117,7 +117,7 @@ const MediaRecordPanel = () => {
         .put(
           "http://localhost:1000/media-record/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -126,7 +126,7 @@ const MediaRecordPanel = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -136,7 +136,7 @@ const MediaRecordPanel = () => {
         .put(
           "http://localhost:1000/media-record/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -156,7 +156,7 @@ const MediaRecordPanel = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -166,7 +166,7 @@ const MediaRecordPanel = () => {
         .put(
           "http://localhost:1000/media-record/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -191,7 +191,7 @@ const MediaRecordPanel = () => {
       if (
         editData?.MediaRecords?.some(
           (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+            record.differential_pressure === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -407,10 +407,10 @@ const MediaRecordPanel = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : "EU",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : "EU",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Media Record",
@@ -436,7 +436,7 @@ const MediaRecordPanel = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -474,10 +474,10 @@ const MediaRecordPanel = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : "EU"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : "EU"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -638,8 +638,8 @@ const MediaRecordPanel = () => {
                       location.state?.stage > 1
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 1
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     OPENED
@@ -650,8 +650,8 @@ const MediaRecordPanel = () => {
                       location.state?.stage > 2
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 2
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER REVIEW
@@ -662,8 +662,8 @@ const MediaRecordPanel = () => {
                       location.state?.stage > 3
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 3
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER APPROVAL
@@ -675,8 +675,8 @@ const MediaRecordPanel = () => {
                       location.state?.stage > 4
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 4
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-red-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     CLOSED DONE
@@ -692,11 +692,11 @@ const MediaRecordPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -708,11 +708,11 @@ const MediaRecordPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -724,11 +724,11 @@ const MediaRecordPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(true),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Initiator Remarks
@@ -740,11 +740,11 @@ const MediaRecordPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(true),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Reviewer Remarks
@@ -756,11 +756,11 @@ const MediaRecordPanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(true);
+                        setApproverRemarks(true));
                     }}
                   >
                     Approver Remarks
@@ -1133,7 +1133,7 @@ const MediaRecordPanel = () => {
                               href={
                                 editData.additionalAttachment instanceof File
                                   ? URL.createObjectURL(
-                                      editData.additionalAttachment
+                                      editData.additionalAttachment,
                                     )
                                   : editData.additionalAttachment
                               }
@@ -1143,7 +1143,7 @@ const MediaRecordPanel = () => {
                             >
                               {editData?.additionalAttachment?.name?.slice(
                                 0,
-                                30
+                                30,
                               ) ||
                                 editData?.additionalAttachment?.slice(46)}{" "}
                             </a>
@@ -1275,7 +1275,7 @@ const MediaRecordPanel = () => {
                                 href={
                                   editData.initiatorAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.initiatorAttachment
+                                        editData.initiatorAttachment,
                                       )
                                     : editData.initiatorAttachment
                                 }
@@ -1285,7 +1285,7 @@ const MediaRecordPanel = () => {
                               >
                                 {editData?.initiatorAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
@@ -1419,7 +1419,7 @@ const MediaRecordPanel = () => {
                                 href={
                                   editData.reviewerAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.reviewerAttachment
+                                        editData.reviewerAttachment,
                                       )
                                     : editData.reviewerAttachment
                                 }
@@ -1429,7 +1429,7 @@ const MediaRecordPanel = () => {
                               >
                                 {editData?.reviewerAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
                               {editData.reviewerAttachment.name && (
@@ -1563,7 +1563,7 @@ const MediaRecordPanel = () => {
                                 href={
                                   editData.approverAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.approverAttachment
+                                        editData.approverAttachment,
                                       )
                                     : editData.approverAttachment
                                 }
@@ -1573,7 +1573,7 @@ const MediaRecordPanel = () => {
                               >
                                 {editData?.approverAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.approverAttachment?.slice(46)}{" "}
                               </a>

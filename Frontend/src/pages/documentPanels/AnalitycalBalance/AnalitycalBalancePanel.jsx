@@ -76,7 +76,7 @@ const AnalitycalBalancePanel = () => {
         .put(
           "http://localhost:1000/analytical-balance/send-for-review",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for review");
@@ -84,7 +84,7 @@ const AnalitycalBalancePanel = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't send elog for review!!"
+            error?.response?.data?.message || "Couldn't send elog for review!!",
           );
         });
     } else if (popupAction === "sendFromReviewToApproval") {
@@ -94,7 +94,7 @@ const AnalitycalBalancePanel = () => {
         .put(
           "http://localhost:1000/analytical-balance/send-review-to-approval",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully sent for approval");
@@ -103,7 +103,7 @@ const AnalitycalBalancePanel = () => {
         .catch((error) => {
           toast.error(
             error?.response?.data?.message ||
-              "Couldn't send elog for approval!!"
+              "Couldn't send elog for approval!!",
           );
         });
     } else if (popupAction === "sendFromReviewToOpen") {
@@ -113,7 +113,7 @@ const AnalitycalBalancePanel = () => {
         .put(
           "http://localhost:1000/analytical-balance/send-review-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -133,7 +133,7 @@ const AnalitycalBalancePanel = () => {
         })
         .catch((error) => {
           toast.error(
-            error?.response?.data?.message || "Couldn't approve elog!!"
+            error?.response?.data?.message || "Couldn't approve elog!!",
           );
         });
     } else if (popupAction === "sendFromApprovalToOpen") {
@@ -143,7 +143,7 @@ const AnalitycalBalancePanel = () => {
         .put(
           "http://localhost:1000/analytical-balance/send-approval-to-open",
           data,
-          config
+          config,
         )
         .then(() => {
           toast.success("Elog successfully opened");
@@ -168,7 +168,7 @@ const AnalitycalBalancePanel = () => {
       if (
         editData?.AnalyticalBalances?.some(
           (record) =>
-            record.differential_pressure === "" || record.remarks === ""
+            record.differential_pressure === "" || record.remarks === "",
         )
       ) {
         toast.error("Please provide grid details!");
@@ -376,12 +376,12 @@ const AnalitycalBalancePanel = () => {
       location.state.site_id === 1
         ? "India"
         : location.state.site_id === 2
-        ? "Malaysia"
-        : location.state.site_id === 3
-        ? "EMEA"
-        : location.state?.site_id === 4
-        ? "EU"
-        : "Biologics",
+          ? "Malaysia"
+          : location.state.site_id === 3
+            ? "EMEA"
+            : location.state?.site_id === 4
+              ? "EU"
+              : "Biologics",
     status: location.state.status,
     initiator_name: location.state.initiator_name,
     title: "Analytical Balance",
@@ -407,7 +407,7 @@ const AnalitycalBalancePanel = () => {
             Authorization: `Bearer ${localStorage.getItem("user-token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const { filename } = response.data; // Access filename from response.data
@@ -443,12 +443,12 @@ const AnalitycalBalancePanel = () => {
               {location.state?.site_id === 1
                 ? "India"
                 : location.state?.site_id === 2
-                ? "Malaysia"
-                : location.state?.site_id === 3
-                ? "EMEA"
-                : location.state?.site_id === 4
-                ? "EU"
-                : "Biologics"}
+                  ? "Malaysia"
+                  : location.state?.site_id === 3
+                    ? "EMEA"
+                    : location.state?.site_id === 4
+                      ? "EU"
+                      : "Biologics"}
             </div>
             <div>
               <strong> Current Status:&nbsp;</strong>
@@ -617,8 +617,8 @@ const AnalitycalBalancePanel = () => {
                       location.state?.stage > 1
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 1
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     OPENED
@@ -629,8 +629,8 @@ const AnalitycalBalancePanel = () => {
                       location.state?.stage > 2
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 2
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER REVIEW
@@ -641,8 +641,8 @@ const AnalitycalBalancePanel = () => {
                       location.state?.stage > 3
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 3
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     UNDER APPROVAL
@@ -654,8 +654,8 @@ const AnalitycalBalancePanel = () => {
                       location.state?.stage > 4
                         ? "bg-green-500 text-white"
                         : location.state?.stage === 4
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-200 text-gray-700"
+                          ? "bg-red-500 text-white"
+                          : "bg-gray-200 text-gray-700"
                     }`}
                   >
                     Approved
@@ -671,11 +671,11 @@ const AnalitycalBalancePanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -687,11 +687,11 @@ const AnalitycalBalancePanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -703,11 +703,11 @@ const AnalitycalBalancePanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(true),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Initiator
@@ -719,11 +719,11 @@ const AnalitycalBalancePanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(true),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Reviewer
@@ -735,11 +735,11 @@ const AnalitycalBalancePanel = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(true);
+                        setApproverRemarks(true));
                     }}
                   >
                     Approver
@@ -1242,7 +1242,7 @@ const AnalitycalBalancePanel = () => {
                                 href={
                                   editData.initiatorAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.initiatorAttachment
+                                        editData.initiatorAttachment,
                                       )
                                     : editData.initiatorAttachment
                                 }
@@ -1252,7 +1252,7 @@ const AnalitycalBalancePanel = () => {
                               >
                                 {editData?.initiatorAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.initiatorAttachment?.slice(46)}{" "}
                               </a>
@@ -1386,7 +1386,7 @@ const AnalitycalBalancePanel = () => {
                                 href={
                                   editData.reviewerAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.reviewerAttachment
+                                        editData.reviewerAttachment,
                                       )
                                     : editData.reviewerAttachment
                                 }
@@ -1396,7 +1396,7 @@ const AnalitycalBalancePanel = () => {
                               >
                                 {editData?.reviewerAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) || editData?.reviewerAttachment?.slice(46)}
                               </a>
                               {editData.reviewerAttachment.name && (
@@ -1530,7 +1530,7 @@ const AnalitycalBalancePanel = () => {
                                 href={
                                   editData.approverAttachment instanceof File
                                     ? URL.createObjectURL(
-                                        editData.approverAttachment
+                                        editData.approverAttachment,
                                       )
                                     : editData.approverAttachment
                                 }
@@ -1540,7 +1540,7 @@ const AnalitycalBalancePanel = () => {
                               >
                                 {editData?.approverAttachment?.name?.slice(
                                   0,
-                                  30
+                                  30,
                                 ) ||
                                   editData?.approverAttachment?.slice(46)}{" "}
                               </a>

@@ -38,7 +38,7 @@ const OperationOfSterilizer = () => {
       // initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
-    }
+    },
   );
   console.log(operationOfSterilizer, "operationOfSterilizer");
   const loggedInUser = useSelector((state) => state.loggedInUser.loggedInUser);
@@ -121,7 +121,7 @@ const OperationOfSterilizer = () => {
       operationOfSterilizer.reviewer_id === null
     ) {
       toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
+        "Please select an approver and a reviewer before saving e-log!",
       );
       return;
     }
@@ -158,7 +158,7 @@ const OperationOfSterilizer = () => {
       .post(
         "http://localhost:1000/operation-sterlizer/post",
         operationOfSterilizer,
-        config
+        config,
       )
       .then(() => {
         toast.success("eLog Saved Successfully!");
@@ -280,7 +280,7 @@ const OperationOfSterilizer = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false), setIsSelectedGeneral(true);
+                      (setIsSelectedDetails(false), setIsSelectedGeneral(true));
                     }}
                   >
                     General Information
@@ -292,7 +292,7 @@ const OperationOfSterilizer = () => {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true), setIsSelectedGeneral(false);
+                      (setIsSelectedDetails(true), setIsSelectedGeneral(false));
                     }}
                   >
                     Details
@@ -406,7 +406,7 @@ const OperationOfSterilizer = () => {
                               reviewers.map((reviewer) => [
                                 reviewer.user_id,
                                 reviewer,
-                              ])
+                              ]),
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -438,7 +438,7 @@ const OperationOfSterilizer = () => {
                               approvers.map((approver) => [
                                 approver.user_id,
                                 approver,
-                              ])
+                              ]),
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>

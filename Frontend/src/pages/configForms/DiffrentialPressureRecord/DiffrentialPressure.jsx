@@ -100,7 +100,7 @@ export default function DiffrentialPressure() {
       differentialPRecord.reviewer_id === null
     ) {
       toast.error(
-        "Please select an approver and a reviewer before saving e-log!"
+        "Please select an approver and a reviewer before saving e-log!",
       );
       return;
     }
@@ -115,7 +115,8 @@ export default function DiffrentialPressure() {
     // }
     if (
       differentialPRecord?.FormRecordsArray?.some(
-        (record) => record.differential_pressure === "" || record.remarks === ""
+        (record) =>
+          record.differential_pressure === "" || record.remarks === "",
       )
     ) {
       toast.error("Please provide grid details!");
@@ -137,7 +138,7 @@ export default function DiffrentialPressure() {
       .post(
         "http://localhost:1000/differential-pressure/post-differential-pressure",
         differentialPRecord,
-        config
+        config,
       )
       .then(() => {
         toast.success("eLog Saved Successfully!");
@@ -215,7 +216,7 @@ export default function DiffrentialPressure() {
       initiatorComment: "",
       initiatorAttachment: null,
       initiatorDeclaration: "",
-    }
+    },
   );
   const handleInputChange1 = (e) => {
     const { name, value } = e.target;
@@ -320,11 +321,11 @@ export default function DiffrentialPressure() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(false),
+                      (setIsSelectedDetails(false),
                         setIsSelectedGeneral(true),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     General Information
@@ -336,11 +337,11 @@ export default function DiffrentialPressure() {
                         : "btn-forms-select"
                     }`}
                     onClick={() => {
-                      setIsSelectedDetails(true),
+                      (setIsSelectedDetails(true),
                         setIsSelectedGeneral(false),
                         setInitiatorRemarks(false),
                         setReviewerRemarks(false),
-                        setApproverRemarks(false);
+                        setApproverRemarks(false));
                     }}
                   >
                     Details
@@ -489,7 +490,7 @@ export default function DiffrentialPressure() {
                         })
                       }
                       disabled={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
+                        userDetails.roles[0].role_id,
                       )}
                     >
                       <option value="">-- Select --</option>
@@ -534,7 +535,7 @@ export default function DiffrentialPressure() {
                         })
                       }
                       disabled={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
+                        userDetails.roles[0].role_id,
                       )}
                     >
                       <option value="Select a value">Select a value</option>
@@ -564,7 +565,7 @@ export default function DiffrentialPressure() {
                         setDifferentialPRecord({ limit: e.target.value })
                       }
                       disabled={[3, 2, 4].includes(
-                        userDetails.roles[0].role_id
+                        userDetails.roles[0].role_id,
                       )}
                     />
                   </div>
@@ -592,7 +593,7 @@ export default function DiffrentialPressure() {
                               reviewers.map((reviewer) => [
                                 reviewer.user_id,
                                 reviewer,
-                              ])
+                              ]),
                             ).values(),
                           ].map((reviewer, index) => (
                             <option key={index} value={reviewer.user_id}>
@@ -624,7 +625,7 @@ export default function DiffrentialPressure() {
                               approvers.map((approver) => [
                                 approver.user_id,
                                 approver,
-                              ])
+                              ]),
                             ).values(),
                           ].map((approver, index) => (
                             <option key={index} value={approver.user_id}>
@@ -693,8 +694,8 @@ export default function DiffrentialPressure() {
                                 item.differential_pressure < 0.6
                                   ? "limit"
                                   : item.differential_pressure > 2.6
-                                  ? "limit"
-                                  : ""
+                                    ? "limit"
+                                    : ""
                               }`}
                               onChange={(e) => {
                                 const newData = [...allTableData];
